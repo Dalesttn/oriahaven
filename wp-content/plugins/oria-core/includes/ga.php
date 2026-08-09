@@ -33,6 +33,18 @@ function settings(): void {
 			'default'           => '',
 		)
 	);
+	// Its own titled section, rendered by do_settings_sections() below the
+	// core table. Sitting in the 'default' section instead makes it the
+	// unlabelled last row under "Week Starts On", where it goes unnoticed.
+	add_settings_section(
+		'oria_settings',
+		__( 'Oria Haven', 'oria' ),
+		static function (): void {
+			echo '<p>' . esc_html__( 'Settings for the directory itself.', 'oria' ) . '</p>';
+		},
+		'general'
+	);
+
 	add_settings_field(
 		OPTION,
 		__( 'Google tag ID', 'oria' ),
@@ -46,7 +58,7 @@ function settings(): void {
 			);
 		},
 		'general',
-		'default',
+		'oria_settings',
 		array( 'label_for' => OPTION )
 	);
 }
