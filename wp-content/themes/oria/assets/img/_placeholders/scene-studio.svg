@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" width="1200" height="1400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Morning light through a studio window">
+  <title>Morning light through a studio window</title>
+  <defs>
+  <linearGradient id="sky9" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#E7E0D3"/>
+    <stop offset="0.62" stop-color="#D8CEBC"/>
+    <stop offset="1" stop-color="#BEB2A0"/>
+  </linearGradient>
+  <radialGradient id="glow9" cx="0.5" cy="0.35" r="0.62">
+    <stop offset="0" stop-color="#FFF6E2" stop-opacity=".85"/>
+    <stop offset=".45" stop-color="#FFF6E2" stop-opacity=".3"/>
+    <stop offset="1" stop-color="#FFF6E2" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="mist9" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#8C8574" stop-opacity="0.2"/>
+    <stop offset="1" stop-color="#8C8574" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="water9" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#D8CEBC"/>
+    <stop offset="1" stop-color="#E7E0D3"/>
+  </linearGradient>
+  <filter id="g9" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="9" result="n"/>
+    <feColorMatrix type="saturate" values="0" in="n" result="d"/>
+    <feComponentTransfer in="d" result="t"><feFuncA type="linear" slope="0.13"/></feComponentTransfer>
+    <feComposite operator="in" in="t" in2="SourceGraphic"/>
+  </filter>
+  </defs>
+  <g>
+    <rect width="1200" height="1400" fill="#E4DCCE"/>
+    <rect width="1200" height="1400" fill="url(#sky9)" opacity=".55"/>
+    <path d="M 320.0 1150 L 320.0 530.0 A 280.0 280.0 0 0 1 880.0 530.0 L 880.0 1150 Z" fill="url(#glow9)"/>
+    <path d="M 320.0 1150 L 320.0 530.0 A 280.0 280.0 0 0 1 880.0 530.0 L 880.0 1150 Z" fill="#FFF6E2" opacity=".28"/>
+    <path d="M 250.0 1400 L 360.0 1150 L 840.0 1150 L 950.0 1400 Z" fill="#FFF6E2" opacity=".16"/>
+    <rect x="0" y="1150" width="1200" height="250" fill="#C9BFAC" opacity=".92"/>
+    <rect x="0" y="1150" width="1200" height="250" fill="url(#mist9)"/>
+  </g>
+  <rect width="1200" height="1400" filter="url(#g9)" fill="#8FA79B" opacity=".5" style="mix-blend-mode:overlay"/>
+</svg>

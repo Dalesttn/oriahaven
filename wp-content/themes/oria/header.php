@@ -1,0 +1,95 @@
+<?php
+/**
+ * Site header: the floating glass pill nav from the prototype.
+ * On the front page it overlays the hero (white type); everywhere else it
+ * sticks with dark type — the same .site-head--solid switch the static
+ * pages used.
+ */
+
+declare(strict_types=1);
+?><!doctype html>
+<html <?php language_attributes(); ?>>
+<head>
+<meta charset="<?php bloginfo( 'charset' ); ?>">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/img/favicon.svg" type="image/svg+xml">
+<?php wp_head(); ?>
+</head>
+<body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
+<a class="skip-link" href="#main"><?php esc_html_e( 'Skip to content', 'oria' ); ?></a>
+
+<?php $oria_has_hero = 'hero' === \Oria\Theme\page_first_layout(); ?>
+<header class="site-head<?php echo $oria_has_hero ? '' : ' site-head--solid'; ?>">
+	<nav class="nav" aria-label="<?php esc_attr_e( 'Main', 'oria' ); ?>">
+		<a class="brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+			<?php echo \Oria\Theme\mark( 'small', 24 ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+			<b>Oria</b><i>&thinsp;Haven</i>
+		</a>
+
+		<?php
+		wp_nav_menu(
+			array(
+				'theme_location' => 'primary',
+				'container'      => false,
+				'menu_class'     => 'nav__links',
+				'fallback_cb'    => static function (): void {
+					// Sensible default until a menu is assigned in the admin.
+					echo '<ul class="nav__links">';
+					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Directory', 'oria' ) );
+					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
+					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
+					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
+					echo '</ul>';
+				},
+			)
+		);
+		?>
+
+		<div class="nav__actions">
+			<a class="nav__link nav__hide" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'For practitioners', 'oria' ); ?></a>
+			<a class="btn btn--dark nav__hide" href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>"><?php esc_html_e( 'List your practice', 'oria' ); ?><span class="btn__dot"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg></span></a>
+			<button class="nav__toggle" data-drawer-open aria-label="<?php esc_attr_e( 'Open menu', 'oria' ); ?>" aria-controls="drawer">
+				<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M2 4.5h12M2 11.5h12"/></svg>
+			</button>
+		</div>
+	</nav>
+</header>
+
+<div class="drawer" id="drawer" hidden>
+	<div class="drawer__top">
+		<a class="brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+			<?php echo \Oria\Theme\mark( 'small', 24 ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+			<b>Oria</b><i>&thinsp;Haven</i>
+		</a>
+		<button class="iconbtn iconbtn--light" data-drawer-close aria-label="<?php esc_attr_e( 'Close menu', 'oria' ); ?>">
+			<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg>
+		</button>
+	</div>
+	<?php
+	wp_nav_menu(
+		array(
+			'theme_location' => 'primary',
+			'container'      => 'div',
+			'container_class' => 'drawer__links',
+			'fallback_cb'    => static function (): void {
+				echo '<div class="drawer__links">';
+				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Directory', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
+				echo '</div>';
+			},
+		)
+	);
+	?>
+	<div class="drawer__foot">
+		<a class="btn btn--light btn--block" href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>"><?php esc_html_e( 'List your practice', 'oria' ); ?><span class="btn__dot"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg></span></a>
+	</div>
+</div>
+
+<?php if ( ! $oria_has_hero ) : ?>
+<div class="ambient" aria-hidden="true"></div>
+<?php endif; ?>
+
+<main id="main">

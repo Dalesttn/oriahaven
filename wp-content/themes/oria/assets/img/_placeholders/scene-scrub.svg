@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" width="1200" height="1400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Coastal scrub in the early evening">
+  <title>Coastal scrub in the early evening</title>
+  <defs>
+  <linearGradient id="sky13" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#16443F"/>
+    <stop offset="0.62" stop-color="#4E7F70"/>
+    <stop offset="1" stop-color="#B4C9BD"/>
+  </linearGradient>
+  <radialGradient id="glow13" cx="0.3" cy="0.34" r="0.44">
+    <stop offset="0" stop-color="#EADCBE" stop-opacity=".85"/>
+    <stop offset=".45" stop-color="#EADCBE" stop-opacity=".3"/>
+    <stop offset="1" stop-color="#EADCBE" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="mist13" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#E7E0D3" stop-opacity="0.3"/>
+    <stop offset="1" stop-color="#E7E0D3" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="water13" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#4E7F70"/>
+    <stop offset="1" stop-color="#16443F"/>
+  </linearGradient>
+  <filter id="g13" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="13" result="n"/>
+    <feColorMatrix type="saturate" values="0" in="n" result="d"/>
+    <feComponentTransfer in="d" result="t"><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+    <feComposite operator="in" in="t" in2="SourceGraphic"/>
+  </filter>
+  </defs>
+  <g>
+    <rect width="1200" height="1400" fill="url(#sky13)"/>
+    <circle cx="340" cy="500" r="380" fill="url(#glow13)"/>
+    <path d="M -60 1400 L -50 -40 L -27 -40 L -22 1400 Z" fill="#0E3B38" opacity="0.82"/>
+    <path d="M 149 1400 L 135 -40 L 155 -40 L 183 1400 Z" fill="#123F3A" opacity="0.61"/>
+    <path d="M 271 1400 L 252 -40 L 289 -40 L 332 1400 Z" fill="#0A2726" opacity="0.76"/>
+    <path d="M 419 1400 L 415 -40 L 439 -40 L 459 1400 Z" fill="#164A43" opacity="0.89"/>
+    <path d="M 597 1400 L 585 -40 L 601 -40 L 624 1400 Z" fill="#0E3B38" opacity="0.61"/>
+    <path d="M 797 1400 L 813 -40 L 852 -40 L 862 1400 Z" fill="#123F3A" opacity="0.88"/>
+    <path d="M 1018 1400 L 1033 -40 L 1076 -40 L 1090 1400 Z" fill="#0A2726" opacity="0.65"/>
+    <path d="M 1260 1400 L 1273 -40 L 1303 -40 L 1309 1400 Z" fill="#164A43" opacity="0.78"/>
+    <rect x="0" y="770" width="1200" height="630" fill="url(#mist13)"/>
+  </g>
+  <rect width="1200" height="1400" filter="url(#g13)" fill="#8FA79B" opacity=".5" style="mix-blend-mode:overlay"/>
+</svg>

@@ -1,0 +1,279 @@
+/* ==========================================================================
+   Oria Haven — listing edit screen
+   Loaded only on post.php / post-new.php for the listing post type.
+   Palette mirrored from the theme: ink #082220, deep #0E3B38, teal #16544E,
+   moss #3F6E60, paper #F5F4F0, sand #E7E0D3, line #DCD9D0, gold #C9A24B.
+   ========================================================================== */
+
+/* --- The Listing details group ------------------------------------------- */
+
+#acf-group_oria_listing.postbox {
+  border: 1px solid #DCD9D0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -24px rgba(8, 34, 32, 0.5);
+}
+
+#acf-group_oria_listing .postbox-header {
+  background: #0E3B38;
+  border-bottom: none;
+}
+
+#acf-group_oria_listing .postbox-header h2,
+#acf-group_oria_listing .postbox-header .hndle,
+#acf-group_oria_listing h2.hndle {
+  color: #FFFFFF !important;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+#acf-group_oria_listing .postbox-header .handle-order-higher,
+#acf-group_oria_listing .postbox-header .handle-order-lower,
+#acf-group_oria_listing .postbox-header .handlediv {
+  color: #A9C2B7;
+}
+
+#acf-group_oria_listing .inside {
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Left-hand tabs ------------------------------------------------------- */
+
+#acf-group_oria_listing .acf-tab-wrap.-left .acf-tab-group {
+  background: #F5F4F0;
+  border-right: 1px solid #DCD9D0;
+  padding-top: 10px;
+}
+
+#acf-group_oria_listing .acf-tab-wrap.-left .acf-tab-group li a {
+  background: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  border-radius: 0;
+  color: #4A5F5B;
+  font-weight: 500;
+  padding: 10px 14px;
+}
+
+#acf-group_oria_listing .acf-tab-wrap.-left .acf-tab-group li a:hover {
+  color: #0E3B38;
+  background: #EDEAE2;
+}
+
+#acf-group_oria_listing .acf-tab-wrap.-left .acf-tab-group li.active a {
+  background: #FFFFFF;
+  border-left-color: #C9A24B;
+  color: #082220;
+  font-weight: 600;
+}
+
+/* --- Fields ---------------------------------------------------------------- */
+
+#acf-group_oria_listing .acf-field {
+  border-top-color: #EFEDE6;
+}
+
+#acf-group_oria_listing .acf-label label {
+  color: #082220;
+  font-weight: 600;
+}
+
+#acf-group_oria_listing .acf-label .description {
+  color: #566762;
+}
+
+#acf-group_oria_listing .acf-input input[type="text"],
+#acf-group_oria_listing .acf-input input[type="number"],
+#acf-group_oria_listing .acf-input input[type="email"],
+#acf-group_oria_listing .acf-input input[type="url"],
+#acf-group_oria_listing .acf-input textarea,
+#acf-group_oria_listing .acf-input select {
+  border-color: #C6C2B6;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+#acf-group_oria_listing .acf-input input:focus,
+#acf-group_oria_listing .acf-input textarea:focus,
+#acf-group_oria_listing .acf-input select:focus {
+  border-color: #16544E;
+  box-shadow: 0 0 0 2px rgba(22, 84, 78, 0.16);
+}
+
+/* Greyed operator fields read as "on file", not broken */
+#acf-group_oria_listing .acf-input input[disabled],
+#acf-group_oria_listing .acf-input input[readonly] {
+  background: #F5F4F0;
+  color: #566762;
+  border-style: dashed;
+}
+
+/* Button groups (claim status, format) */
+#acf-group_oria_listing .acf-button-group label {
+  border-color: #C6C2B6;
+  color: #4A5F5B;
+}
+
+#acf-group_oria_listing .acf-button-group label.selected {
+  background: #0E3B38;
+  border-color: #0E3B38;
+  color: #FFFFFF;
+}
+
+#acf-group_oria_listing .acf-button-group label:hover {
+  color: #0E3B38;
+}
+
+#acf-group_oria_listing .acf-button-group label.selected:hover {
+  color: #FFFFFF;
+}
+
+/* Repeaters (services, timetable, hours) */
+#acf-group_oria_listing .acf-repeater .acf-table {
+  border-color: #DCD9D0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#acf-group_oria_listing .acf-repeater .acf-table > thead > tr > th {
+  background: #F5F4F0;
+  color: #4A5F5B;
+  border-color: #DCD9D0;
+}
+
+#acf-group_oria_listing .acf-repeater .acf-row-handle {
+  border-color: #EFEDE6;
+  color: #A9C2B7;
+}
+
+#acf-group_oria_listing .acf-button.button {
+  background: transparent;
+  border-color: #0E3B38;
+  color: #0E3B38;
+  border-radius: 999px;
+}
+
+#acf-group_oria_listing .acf-button.button:hover {
+  background: #0E3B38;
+  color: #FFFFFF;
+}
+
+/* --- Performance metabox --------------------------------------------------- */
+
+#oria-analytics.postbox {
+  border: 1px solid #DCD9D0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+#oria-analytics .postbox-header {
+  background: #0E3B38;
+  border-bottom: none;
+}
+
+#oria-analytics .postbox-header h2,
+#oria-analytics .postbox-header .hndle,
+#oria-analytics h2.hndle {
+  color: #FFFFFF !important;
+  font-weight: 600;
+}
+
+#oria-analytics .postbox-header .handlediv,
+#oria-analytics .postbox-header .handle-order-higher,
+#oria-analytics .postbox-header .handle-order-lower {
+  color: #A9C2B7;
+}
+
+#oria-analytics .inside {
+  margin: 0;
+  padding: 14px;
+}
+
+.oria-perf__hero {
+  background: linear-gradient(160deg, #0E3B38 0%, #16544E 100%);
+  border-radius: 10px;
+  padding: 14px 14px 10px;
+  color: #FFFFFF;
+}
+
+.oria-perf__hero-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #A9C2B7;
+}
+
+.oria-perf__hero-num {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.oria-perf__hero-sub {
+  font-size: 11px;
+  color: #C8D9CF;
+  margin-top: 1px;
+}
+
+.oria-perf__spark {
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin-top: 8px;
+}
+
+.oria-perf__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.oria-perf__cell {
+  border: 1px solid #EFEDE6;
+  background: #FAF9F6;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.oria-perf__cell-label {
+  font-size: 11px;
+  color: #566762;
+}
+
+.oria-perf__cell-num {
+  font-size: 20px;
+  font-weight: 700;
+  color: #082220;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.oria-perf__cell-sub {
+  font-size: 11px;
+  color: #8A948F;
+}
+
+.oria-perf__note {
+  margin: 10px 2px 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #8A948F;
+}
+
+/* --- Plan-locked fields ----------------------------------------------------- */
+#acf-group_oria_listing .acf-field.oria-locked .acf-input {
+  pointer-events: none;
+  opacity: 0.45;
+  filter: grayscale(0.4);
+}
+#acf-group_oria_listing .acf-field.oria-locked .acf-label label::after {
+  content: " \1F512";
+  font-size: 11px;
+}
+#acf-group_oria_listing .acf-field.oria-locked .acf-label .description {
+  color: #A87A18;
+  font-weight: 600;
+}

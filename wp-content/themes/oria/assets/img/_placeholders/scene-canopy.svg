@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" width="1200" height="1400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Light between the karri trunks">
+  <title>Light between the karri trunks</title>
+  <defs>
+  <linearGradient id="sky12" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0C302D"/>
+    <stop offset="0.62" stop-color="#2C6157"/>
+    <stop offset="1" stop-color="#7FA394"/>
+  </linearGradient>
+  <radialGradient id="glow12" cx="0.58" cy="0.3" r="0.46">
+    <stop offset="0" stop-color="#F0E3C6" stop-opacity=".85"/>
+    <stop offset=".45" stop-color="#F0E3C6" stop-opacity=".3"/>
+    <stop offset="1" stop-color="#F0E3C6" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="mist12" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#C8D9CF" stop-opacity="0.4"/>
+    <stop offset="1" stop-color="#C8D9CF" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="water12" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2C6157"/>
+    <stop offset="1" stop-color="#0C302D"/>
+  </linearGradient>
+  <filter id="g12" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="12" result="n"/>
+    <feColorMatrix type="saturate" values="0" in="n" result="d"/>
+    <feComponentTransfer in="d" result="t"><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+    <feComposite operator="in" in="t" in2="SourceGraphic"/>
+  </filter>
+  </defs>
+  <g>
+    <rect width="1200" height="1400" fill="url(#sky12)"/>
+    <circle cx="700" cy="430" r="420" fill="url(#glow12)"/>
+    <path d="M -60 1400 L -52 -40 L -23 -40 L -11 1400 Z" fill="#08211F" opacity="0.82"/>
+    <path d="M 66 1400 L 59 -40 L 75 -40 L 92 1400 Z" fill="#0D2E2B" opacity="0.66"/>
+    <path d="M 257 1400 L 262 -40 L 298 -40 L 316 1400 Z" fill="#123B36" opacity="0.77"/>
+    <path d="M 462 1400 L 458 -40 L 478 -40 L 495 1400 Z" fill="#0A2624" opacity="0.61"/>
+    <path d="M 672 1400 L 689 -40 L 706 -40 L 701 1400 Z" fill="#08211F" opacity="0.58"/>
+    <path d="M 850 1400 L 845 -40 L 870 -40 L 892 1400 Z" fill="#0D2E2B" opacity="0.89"/>
+    <path d="M 952 1400 L 974 -40 L 991 -40 L 981 1400 Z" fill="#123B36" opacity="0.75"/>
+    <path d="M 1051 1400 L 1074 -40 L 1118 -40 L 1125 1400 Z" fill="#0A2624" opacity="0.60"/>
+    <path d="M 1238 1400 L 1229 -40 L 1248 -40 L 1271 1400 Z" fill="#08211F" opacity="0.80"/>
+    <rect x="0" y="770" width="1200" height="630" fill="url(#mist12)"/>
+  </g>
+  <rect width="1200" height="1400" filter="url(#g12)" fill="#8FA79B" opacity=".5" style="mix-blend-mode:overlay"/>
+</svg>

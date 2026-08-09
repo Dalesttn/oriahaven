@@ -1,0 +1,173 @@
+/* ==========================================================================
+   Oria Haven — login screen
+   Mirrors the site's tokens: ink #082220, deep #0E3B38, teal #16544E,
+   paper #F5F4F0, sand #E7E0D3, line #DCD9D0, mist #A9C2B7.
+   ========================================================================== */
+
+body.login {
+  background: #F5F4F0;
+  background-image: radial-gradient(1100px 520px at 50% -8%, #E7E0D3 0%, rgba(231, 224, 211, 0) 62%);
+}
+
+/* --- Mark + wordmark ---------------------------------------------------- */
+
+.login h1 a {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto;
+  background: #0E3B38;
+  -webkit-mask: var(--oria-logo) center / contain no-repeat;
+          mask: var(--oria-logo) center / contain no-repeat;
+  outline-offset: 6px;
+}
+
+.login h1::after {
+  content: "Oria Haven";
+  display: block;
+  text-align: center;
+  margin-top: 14px;
+  color: #082220;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.login h1::before {
+  content: "Perth meditation & wellness directory";
+  display: block;
+  order: 3;
+}
+
+/* h1 becomes a column so the tagline can sit under the wordmark */
+.login h1 {
+  display: flex;
+  flex-direction: column;
+}
+
+.login h1::before {
+  text-align: center;
+  margin-top: 4px;
+  color: #566762;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.login h1 a { order: 1; }
+.login h1::after { order: 2; }
+
+/* --- Card ---------------------------------------------------------------- */
+
+.login form {
+  margin-top: 26px;
+  padding: 30px 28px 28px;
+  background: #FFFFFF;
+  border: 1px solid #DCD9D0;
+  border-radius: 16px;
+  box-shadow: 0 18px 40px -22px rgba(8, 34, 32, 0.28);
+}
+
+.login form .forgetmenot { margin-top: 4px; }
+
+.login label {
+  color: #082220;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.login form .input,
+.login input[type="text"],
+.login input[type="password"] {
+  border: 1px solid #C6C2B6;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 15px;
+  background: #FDFCFA;
+  color: #082220;
+  box-shadow: none;
+}
+
+.login form .input:focus,
+.login input[type="text"]:focus,
+.login input[type="password"]:focus {
+  border-color: #16544E;
+  box-shadow: 0 0 0 2px rgba(22, 84, 78, 0.18);
+  outline: none;
+}
+
+.login .button.wp-hide-pw { color: #3F6E60; }
+.login .button.wp-hide-pw:focus {
+  border-color: #16544E;
+  box-shadow: 0 0 0 2px rgba(22, 84, 78, 0.18);
+}
+
+.login input[type="checkbox"] {
+  border-color: #C6C2B6;
+  border-radius: 4px;
+}
+.login input[type="checkbox"]:checked {
+  background: #0E3B38;
+  border-color: #0E3B38;
+}
+.login input[type="checkbox"]:focus {
+  border-color: #16544E;
+  box-shadow: 0 0 0 2px rgba(22, 84, 78, 0.18);
+}
+
+/* --- Primary button ------------------------------------------------------ */
+
+.wp-core-ui .login .button-primary {
+  background: #0E3B38;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 22px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-shadow: none;
+  box-shadow: none;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.wp-core-ui .login .button-primary:hover,
+.wp-core-ui .login .button-primary:focus {
+  background: #16544E;
+}
+
+.wp-core-ui .login .button-primary:focus {
+  box-shadow: 0 0 0 2px #F5F4F0, 0 0 0 4px #16544E;
+}
+
+/* --- Links + messages ---------------------------------------------------- */
+
+.login #nav,
+.login #backtoblog {
+  text-align: center;
+}
+
+.login #nav a,
+.login #backtoblog a {
+  color: #4A5F5B;
+}
+
+.login #nav a:hover,
+.login #backtoblog a:hover {
+  color: #0E3B38;
+}
+
+.login .message,
+.login .success {
+  border-left-color: #20604C;
+  border-radius: 10px;
+}
+
+.login #login_error {
+  border-left-color: #A87A18;
+  border-radius: 10px;
+}
+
+.login .privacy-policy-page-link a { color: #566762; }
+
+/* The language switcher looks stock — tuck it in quietly. */
+.login .language-switcher {
+  opacity: 0.7;
+}

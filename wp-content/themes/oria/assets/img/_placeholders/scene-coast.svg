@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" width="1200" height="1400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="The Indian Ocean from the dunes">
+  <title>The Indian Ocean from the dunes</title>
+  <defs>
+  <linearGradient id="sky6" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#1A4E48"/>
+    <stop offset="0.5" stop-color="#6E9A8C"/>
+    <stop offset="1" stop-color="#D6E2DA"/>
+  </linearGradient>
+  <radialGradient id="glow6" cx="0.63" cy="0.33" r="0.44">
+    <stop offset="0" stop-color="#FBF1DC" stop-opacity=".85"/>
+    <stop offset=".45" stop-color="#FBF1DC" stop-opacity=".3"/>
+    <stop offset="1" stop-color="#FBF1DC" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="mist6" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#E7E0D3" stop-opacity="0.22"/>
+    <stop offset="1" stop-color="#E7E0D3" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="water6" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2A6A61"/>
+    <stop offset="1" stop-color="#0E3B38"/>
+  </linearGradient>
+  <filter id="g6" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="6" result="n"/>
+    <feColorMatrix type="saturate" values="0" in="n" result="d"/>
+    <feComponentTransfer in="d" result="t"><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+    <feComposite operator="in" in="t" in2="SourceGraphic"/>
+  </filter>
+  </defs>
+  <g>
+    <rect width="1200" height="1400" fill="url(#sky6)"/>
+    <circle cx="760" cy="470" r="400" fill="url(#glow6)"/>
+    <circle cx="760" cy="470" r="120" fill="#FBF1DC" opacity=".9"/>
+    <path d="M -40 1440 L -40 603 C 86 603 86 624 171 624 C 257 624 257 628 343 628 C 429 628 429 620 514 620 C 600 620 600 609 686 609 C 771 609 771 596 857 596 C 943 596 943 595 1029 595 C 1114 595 1114 607 1200 607 L 1240 1440 Z" fill="#12433E" opacity=".95"/>
+    <rect x="0" y="620" width="1200" height="780" fill="url(#water6)"/>
+    <rect x="660" y="646" width="406" height="3.5" rx="2" fill="#FBF1DC" opacity="0.34"/>
+    <rect x="752" y="674" width="120" height="3.4" rx="2" fill="#FBF1DC" opacity="0.33"/>
+    <rect x="719" y="712" width="254" height="2.8" rx="2" fill="#FBF1DC" opacity="0.32"/>
+    <rect x="541" y="752" width="383" height="3.6" rx="2" fill="#FBF1DC" opacity="0.30"/>
+    <rect x="682" y="789" width="189" height="4.4" rx="2" fill="#FBF1DC" opacity="0.29"/>
+    <rect x="615" y="817" width="409" height="4.5" rx="2" fill="#FBF1DC" opacity="0.28"/>
+    <rect x="779" y="846" width="154" height="4.4" rx="2" fill="#FBF1DC" opacity="0.27"/>
+    <rect x="586" y="878" width="154" height="3.9" rx="2" fill="#FBF1DC" opacity="0.26"/>
+    <rect x="557" y="907" width="462" height="2.6" rx="2" fill="#FBF1DC" opacity="0.24"/>
+    <rect x="774" y="943" width="250" height="4.7" rx="2" fill="#FBF1DC" opacity="0.23"/>
+    <rect x="647" y="976" width="352" height="4.4" rx="2" fill="#FBF1DC" opacity="0.22"/>
+    <rect x="651" y="1020" width="130" height="3.8" rx="2" fill="#FBF1DC" opacity="0.21"/>
+    <rect x="463" y="1048" width="332" height="4.6" rx="2" fill="#FBF1DC" opacity="0.20"/>
+    <rect x="731" y="1082" width="162" height="2.9" rx="2" fill="#FBF1DC" opacity="0.18"/>
+    <rect x="497" y="1108" width="294" height="2.6" rx="2" fill="#FBF1DC" opacity="0.17"/>
+    <rect x="418" y="1149" width="371" height="4.3" rx="2" fill="#FBF1DC" opacity="0.16"/>
+    <rect x="769" y="1172" width="240" height="3.9" rx="2" fill="#FBF1DC" opacity="0.15"/>
+    <rect x="597" y="1200" width="256" height="2.4" rx="2" fill="#FBF1DC" opacity="0.14"/>
+    <rect x="666" y="1244" width="139" height="4.2" rx="2" fill="#FBF1DC" opacity="0.12"/>
+    <rect x="442" y="1275" width="473" height="4.9" rx="2" fill="#FBF1DC" opacity="0.11"/>
+    <rect x="704" y="1317" width="361" height="3.3" rx="2" fill="#FBF1DC" opacity="0.10"/>
+    <rect x="562" y="1357" width="407" height="3.4" rx="2" fill="#FBF1DC" opacity="0.09"/>
+    <rect x="494" y="1395" width="267" height="4.2" rx="2" fill="#FBF1DC" opacity="0.08"/>
+  </g>
+  <rect width="1200" height="1400" filter="url(#g6)" fill="#8FA79B" opacity=".5" style="mix-blend-mode:overlay"/>
+</svg>

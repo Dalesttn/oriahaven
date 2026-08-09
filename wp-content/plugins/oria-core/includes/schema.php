@@ -1,0 +1,184 @@
+<?php
+/**
+ * Structured data: LocalBusiness JSON-LD on listing pages and Event
+ * JSON-LD on event pages — the markup that earns rich results (event
+ * cards with dates, business knowledge panels) in search.
+ *
+ * Deliberate omissions: aggregateRating (our ratings come from Google
+ * Places and must never be re-published as structured data), geo (no
+ * stored coordinates), openingHoursSpecification (hours are free text).
+ */
+
+declare(strict_types=1);
+
+namespace Oria\Core\Schema;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+function bootstrap(): void {
+	add_action( 'wp_head', __NAMESPACE__ . '\output', 5 );
+}
+
+function output(): void {
+	$graph = null;
+	if ( is_singular( 'listing' ) ) {
+		$graph = listing_schema( get_the_ID() );
+	} elseif ( is_singular( 'event' ) ) {
+		$graph = event_schema( get_the_ID() );
+	}
+	if ( $graph ) {
+		echo '<script type="application/ld+json">'
+			. wp_json_encode( $graph, JSON_UNESCAPED_SLASHES )
+			. '</script>' . "\n";
+	}
+}
+
+/** @return array<string, mixed>|null */
+function listing_schema( int $id ): ?array {
+	$name = get_post_field( 'post_title', $id, 'raw' );
+	if ( '' === $name ) {
+		return null;
+	}
+
+	$suburb = '';
+	foreach ( wp_get_post_terms( $id, 'area' ) as $term ) {
+		if ( $term->parent ) {
+			$suburb = wp_specialchars_decode( $term->name );
+			break;
+		}
+	}
+
+	$out = array(
+		'@context' => 'https://schema.org',
+		'@type'    => 'LocalBusiness',
+		'@id'      => get_permalink( $id ) . '#business',
+		'name'     => wp_specialchars_decode( $name ),
+		'url'      => get_permalink( $id ),
+	);
+
+	$desc = \Oria\Core\Seo\entity_description( $id );
+	if ( '' !== $desc ) {
+		$out['description'] = $desc;
+	}
+
+	$address = (string) get_field( 'address', $id );
+	if ( '' !== $address || '' !== $suburb ) {
+		$out['address'] = array_filter(
+			array(
+				'@type'           => 'PostalAddress',
+				'streetAddress'   => $address,
+				'addressLocality' => $suburb,
+				'addressRegion'   => 'WA',
+				'addressCountry'  => 'AU',
+			)
+		);
+	}
+
+	$phone = (string) get_field( 'phone', $id );
+	if ( '' !== $phone ) {
+		$out['telephone'] = $phone;
+	}
+	$band = (string) get_field( 'price_band', $id );
+	if ( '' !== $band ) {
+		$out['priceRange'] = $band;
+	}
+	$site = (string) get_field( 'website', $id );
+	if ( '' !== $site ) {
+		$out['sameAs'] = array( $site );
+	}
+
+	$gallery = array_values( array_filter( array_map( 'intval', (array) ( get_field( 'gallery', $id ) ?: array() ) ) ) );
+	if ( $gallery ) {
+		$img = wp_get_attachment_image_url( $gallery[0], 'large' );
+		if ( $img ) {
+			$out['image'] = $img;
+		}
+	}
+	return $out;
+}
+
+/** @return array<string, mixed>|null */
+function event_schema( int $id ): ?array {
+	$start = (string) get_field( 'event_start', $id );
+	$name  = get_post_field( 'post_title', $id, 'raw' );
+	if ( '' === $start || '' === $name ) {
+		return null;
+	}
+
+	// Naive local datetimes are Perth times; say so explicitly.
+	$iso = static fn( string $dt ): string => str_replace( ' ', 'T', $dt ) . '+08:00';
+
+	$suburb = '';
+	foreach ( wp_get_post_terms( $id, 'area' ) as $term ) {
+		$suburb = wp_specialchars_decode( $term->name );
+		if ( $term->parent ) {
+			break;
+		}
+	}
+
+	$out = array(
+		'@context'            => 'https://schema.org',
+		'@type'               => 'Event',
+		'name'                => wp_specialchars_decode( $name ),
+		'url'                 => get_permalink( $id ),
+		'startDate'           => $iso( $start ),
+		'eventStatus'         => 'https://schema.org/EventScheduled',
+		'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
+		'location'            => array_filter(
+			array(
+				'@type'   => 'Place',
+				'name'    => (string) get_field( 'venue', $id ) ?: $suburb,
+				'address' => array_filter(
+					array(
+						'@type'           => 'PostalAddress',
+						'addressLocality' => $suburb,
+						'addressRegion'   => 'WA',
+						'addressCountry'  => 'AU',
+					)
+				),
+			)
+		),
+	);
+
+	$end = (string) get_field( 'event_end', $id );
+	if ( '' !== $end ) {
+		$out['endDate'] = $iso( $end );
+	}
+
+	$desc = wp_trim_words( wp_strip_all_tags( (string) get_field( 'event_description', $id ) ), 40, '…' );
+	if ( '' !== $desc ) {
+		$out['description'] = $desc;
+	}
+
+	if ( has_post_thumbnail( $id ) ) {
+		$out['image'] = get_the_post_thumbnail_url( $id, 'large' );
+	}
+
+	$price = (string) get_field( 'price', $id );
+	if ( preg_match( '/(\d+(?:\.\d+)?)/', $price, $m ) ) {
+		$out['offers'] = array(
+			'@type'         => 'Offer',
+			'price'         => $m[1],
+			'priceCurrency' => 'AUD',
+			'url'           => (string) get_field( 'booking_url', $id ) ?: get_permalink( $id ),
+			'availability'  => 'https://schema.org/InStock',
+		);
+	} elseif ( preg_match( '/free|donation/i', $price ) ) {
+		$out['isAccessibleForFree'] = true;
+	}
+
+	$listing = (int) get_field( 'listing', $id );
+	$org     = $listing ? get_post_field( 'post_title', $listing, 'raw' ) : (string) get_post_meta( $id, '_oria_organiser', true );
+	if ( '' !== $org ) {
+		$out['organizer'] = array_filter(
+			array(
+				'@type' => 'Organization',
+				'name'  => wp_specialchars_decode( $org ),
+				'url'   => $listing ? get_permalink( $listing ) : '',
+			)
+		);
+	}
+	return $out;
+}

@@ -1,0 +1,58 @@
+# Oria Haven — only our own code is tracked.
+#
+# The repo root maps 1:1 onto the WordPress root, so a pull on the server
+# drops our theme and plugins exactly where they belong. WordPress core,
+# third-party plugins, uploads and anything holding secrets stay out.
+
+# --- WordPress core ---------------------------------------------------
+/wp-admin/
+/wp-includes/
+/wp-*.php
+/index.php
+/xmlrpc.php
+/license.txt
+/readme.html
+/.htaccess
+/web.config
+
+# --- Secrets and environment -----------------------------------------
+wp-config.php
+wp-config-local.php
+.env
+*.pem
+*.key
+
+# --- Uploads and generated content -----------------------------------
+/wp-content/uploads/
+/wp-content/languages/
+/wp-content/upgrade/
+/wp-content/upgrade-temp-backup/
+/wp-content/cache/
+/wp-content/backups/
+/wp-content/ai1wm-backups/
+/wp-content/debug.log
+/wp-content/advanced-cache.php
+/wp-content/object-cache.php
+/wp-content/db.php
+
+# --- Third-party plugins (installed on the server, not versioned) -----
+# Licensed or repo-installable; keeping them out avoids shipping paid
+# code and lets the server update them independently.
+/wp-content/plugins/*
+!/wp-content/plugins/oria-core/
+!/wp-content/plugins/oria-forms/
+!/wp-content/plugins/oria-ingest/
+!/wp-content/plugins/oria-shop/
+
+# --- Themes: ours only -------------------------------------------------
+/wp-content/themes/*
+!/wp-content/themes/oria/
+
+# --- Local dev noise ---------------------------------------------------
+/local-xdebuginfo.php
+/wp-content/index.php
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+/wp-content/mu-plugins/

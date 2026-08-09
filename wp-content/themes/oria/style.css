@@ -1,0 +1,15 @@
+/*
+Theme Name:        Oria
+Theme URI:         https://oriahaven.com.au
+Author:            Dale
+Description:       Perth meditation & wellness directory. Classic theme, no build step — the design system lives in assets/css and is enqueued in order: tokens, base, components, pages.
+Version:           0.1.0
+Requires at least: 6.9
+Requires PHP:      8.2
+Text Domain:       oria
+*/
+
+/*
+ * Intentionally empty. This file exists for the theme header only;
+ * all real styles are in assets/css/ and enqueued from functions.php.
+ */

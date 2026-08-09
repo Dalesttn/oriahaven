@@ -1,0 +1,119 @@
+/* ==========================================================================
+   Oria Haven — Design tokens
+   Perth Meditation & Wellness Directory
+   Palette derived from the deep-petrol / sage-mist wellness direction.
+   Every colour, size and easing used anywhere in the site is declared here.
+   ========================================================================== */
+
+:root {
+  /* --- Core palette -------------------------------------------------- */
+  --ink:        #082220;  /* deepest — body text on light surfaces        */
+  --deep:       #0E3B38;  /* petrol teal — primary dark surface           */
+  --deep-2:     #0A2E2C;  /* pressed / recessed dark                      */
+  --teal:       #16544E;  /* raised dark surface, dark-on-dark cards      */
+  --teal-line:  #1E6660;  /* hairlines on dark                            */
+
+  --mist:       #A9C2B7;  /* sage mist — body text on dark                */
+  --mist-2:     #C8D9CF;  /* brighter mist — subheads on dark             */
+  --moss:       #3F6E60;  /* mid green — icons, meters                    */
+
+  --sand:       #E7E0D3;  /* warm sand — alternating light band           */
+  --sand-2:     #F0EBE0;  /* softer sand — card fills on paper            */
+  --paper:      #F5F4F0;  /* page background                              */
+  --white:      #FFFFFF;
+
+  /* One gold, two tints for two backgrounds:
+     --brand-gold is the identity mark on dark surfaces,
+     --gold is the same hue pushed dark enough to sit on white (ratings). */
+  --brand-gold: #C9A24B;
+  --gold:       #A87A18;  /* ratings only. Never decorative.              */
+  --gold-soft:  #F2E4C6;
+
+  /* Semantic */
+  --text:            var(--ink);
+  --text-soft:       #4A5F5B;
+  --text-faint:      #566762;
+  --text-on-deep:    var(--white);
+  --text-on-deep-soft: var(--mist);
+
+  --line:            #DCD9D0;   /* hairline on paper */
+  --line-strong:     #C6C2B6;
+  --surface:         var(--white);
+  --surface-sunk:    var(--sand-2);
+
+  --focus:           #16544E;
+  --focus-on-deep:   #C8D9CF;
+
+  /* Status */
+  --claimed:    #20604C;
+  --unclaimed:  #655F52;
+  --featured:   #0E3B38;
+
+  /* --- Type ---------------------------------------------------------- */
+  --font-sans: "Manrope", ui-sans-serif, -apple-system, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  --font-edit: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
+
+  --fs-display: clamp(2.85rem, 6.2vw, 5.25rem);
+  --fs-h1:      clamp(2.35rem, 4.8vw, 3.9rem);
+  --fs-h2:      clamp(1.95rem, 3.5vw, 3rem);
+  --fs-h3:      clamp(1.3rem, 1.9vw, 1.65rem);
+  --fs-h4:      1.0625rem;
+  --fs-body:    1.0625rem;
+  --fs-sm:      0.9375rem;
+  --fs-xs:      0.8125rem;
+  --fs-micro:   0.6875rem;
+
+  --lh-tight:   1.03;
+  --lh-head:    1.12;
+  --lh-body:    1.62;
+
+  --tr-display: -0.035em;
+  --tr-head:    -0.022em;
+  --tr-micro:    0.14em;
+
+  /* --- Space --------------------------------------------------------- */
+  --s-1:  0.25rem;
+  --s-2:  0.5rem;
+  --s-3:  0.75rem;
+  --s-4:  1rem;
+  --s-5:  1.5rem;
+  --s-6:  2rem;
+  --s-7:  2.75rem;
+  --s-8:  4rem;
+  --s-9:  5.5rem;
+  --s-10: 7.5rem;
+
+  --head-h:     6.5rem;  /* sticky header height — sticky panels clear it */
+  --section-y:  clamp(4rem, 8vw, 7.5rem);
+  --gutter:     clamp(1.15rem, 3.5vw, 2.75rem);
+  --maxw:       1320px;
+  --maxw-text:  62ch;
+
+  /* --- Shape --------------------------------------------------------- */
+  --r-xs:   8px;
+  --r-sm:   12px;
+  --r-md:   18px;
+  --r-lg:   26px;
+  --r-xl:   34px;
+  --r-2xl:  44px;
+  --r-pill: 999px;
+
+  /* --- Depth --------------------------------------------------------- */
+  --sh-1: 0 1px 2px rgba(8, 34, 32, .05), 0 2px 8px rgba(8, 34, 32, .04);
+  --sh-2: 0 2px 6px rgba(8, 34, 32, .06), 0 12px 28px rgba(8, 34, 32, .07);
+  --sh-3: 0 4px 12px rgba(8, 34, 32, .08), 0 26px 60px rgba(8, 34, 32, .12);
+  --sh-glass: 0 8px 40px rgba(4, 20, 19, .28);
+
+  /* --- Motion -------------------------------------------------------- */
+  --ease:      cubic-bezier(.22, .61, .36, 1);
+  --ease-out:  cubic-bezier(.16, 1, .3, 1);
+  --t-fast:    .18s;
+  --t-med:     .34s;
+  --t-slow:    .7s;
+  --breath:    7.5s; /* one full inhale/exhale — used by the map */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --t-fast: .01ms; --t-med: .01ms; --t-slow: .01ms; }
+}

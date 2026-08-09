@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" width="1200" height="1400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="The last of the light over the escarpment">
+  <title>The last of the light over the escarpment</title>
+  <defs>
+  <linearGradient id="sky14" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#08211F"/>
+    <stop offset="0.62" stop-color="#123F3A"/>
+    <stop offset="1" stop-color="#3E7469"/>
+  </linearGradient>
+  <radialGradient id="glow14" cx="0.47" cy="0.43" r="0.4">
+    <stop offset="0" stop-color="#D9B87A" stop-opacity=".85"/>
+    <stop offset=".45" stop-color="#D9B87A" stop-opacity=".3"/>
+    <stop offset="1" stop-color="#D9B87A" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="mist14" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#A9C2B7" stop-opacity="0.28"/>
+    <stop offset="1" stop-color="#A9C2B7" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="water14" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#123F3A"/>
+    <stop offset="1" stop-color="#08211F"/>
+  </linearGradient>
+  <filter id="g14" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="14" result="n"/>
+    <feColorMatrix type="saturate" values="0" in="n" result="d"/>
+    <feComponentTransfer in="d" result="t"><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+    <feComposite operator="in" in="t" in2="SourceGraphic"/>
+  </filter>
+  </defs>
+  <g>
+    <rect width="1200" height="1400" fill="url(#sky14)"/>
+    <circle cx="560" cy="610" r="360" fill="url(#glow14)"/>
+    <circle cx="560" cy="610" r="122" fill="#D9B87A" opacity=".85"/>
+    <path d="M -40 1440 L -40 822 C 86 822 86 773 171 773 C 257 773 257 785 343 785 C 429 785 429 828 514 828 C 600 828 600 850 686 850 C 771 850 771 883 857 883 C 943 883 943 837 1029 837 C 1114 837 1114 802 1200 802 L 1240 1440 Z" fill="#0E3230" opacity="0.92"/>
+    <path d="M -40 1440 L -40 920 C 86 920 86 935 171 935 C 257 935 257 991 343 991 C 429 991 429 987 514 987 C 600 987 600 984 686 984 C 771 984 771 929 857 929 C 943 929 943 910 1029 910 C 1114 910 1114 921 1200 921 L 1240 1440 Z" fill="#0B2725" opacity="0.92"/>
+    <path d="M -40 1440 L -40 1103 C 86 1103 86 1121 171 1121 C 257 1121 257 1103 343 1103 C 429 1103 429 1073 514 1073 C 600 1073 600 1044 686 1044 C 771 1044 771 1056 857 1056 C 943 1056 943 1065 1029 1065 C 1114 1065 1114 1092 1200 1092 L 1240 1440 Z" fill="#081F1E" opacity="0.92"/>
+    <path d="M -40 1440 L -40 1236 C 86 1236 86 1210 171 1210 C 257 1210 257 1169 343 1169 C 429 1169 429 1170 514 1170 C 600 1170 600 1189 686 1189 C 771 1189 771 1226 857 1226 C 943 1226 943 1236 1029 1236 C 1114 1236 1114 1229 1200 1229 L 1240 1440 Z" fill="#061A19" opacity="1"/>
+    <rect x="0" y="800" width="1200" height="600" fill="url(#mist14)"/>
+  </g>
+  <rect width="1200" height="1400" filter="url(#g14)" fill="#8FA79B" opacity=".5" style="mix-blend-mode:overlay"/>
+</svg>

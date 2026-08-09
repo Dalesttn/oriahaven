@@ -1,0 +1,14 @@
+# Commit text files with LF endings whatever the machine editing them.
+# The server is Linux; CRLF sneaking into PHP or shell files causes real
+# breakage (stray ^M in headers, shebangs that don't run).
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.mo binary

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" width="1200" height="1400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A walled garden after rain">
+  <title>A walled garden after rain</title>
+  <defs>
+  <linearGradient id="sky8" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#1E5049"/>
+    <stop offset="0.62" stop-color="#5C8A7C"/>
+    <stop offset="1" stop-color="#BFD2C7"/>
+  </linearGradient>
+  <radialGradient id="glow8" cx="0.72" cy="0.27" r="0.38">
+    <stop offset="0" stop-color="#F2E8D2" stop-opacity=".85"/>
+    <stop offset=".45" stop-color="#F2E8D2" stop-opacity=".3"/>
+    <stop offset="1" stop-color="#F2E8D2" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="mist8" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#E7E0D3" stop-opacity="0.26"/>
+    <stop offset="1" stop-color="#E7E0D3" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="water8" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#5C8A7C"/>
+    <stop offset="1" stop-color="#1E5049"/>
+  </linearGradient>
+  <filter id="g8" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="8" result="n"/>
+    <feColorMatrix type="saturate" values="0" in="n" result="d"/>
+    <feComponentTransfer in="d" result="t"><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+    <feComposite operator="in" in="t" in2="SourceGraphic"/>
+  </filter>
+  </defs>
+  <g>
+    <rect width="1200" height="1400" fill="url(#sky8)"/>
+    <circle cx="880" cy="380" r="330" fill="url(#glow8)"/>
+    <circle cx="880" cy="380" r="112" fill="#F2E8D2" opacity=".85"/>
+    <path d="M -40 1440 L -40 844 C 86 844 86 891 171 891 C 257 891 257 928 343 928 C 429 928 429 936 514 936 C 600 936 600 886 686 886 C 771 886 771 852 857 852 C 943 852 943 830 1029 830 C 1114 830 1114 853 1200 853 L 1240 1440 Z" fill="#2A6155" opacity="0.92"/>
+    <path d="M -40 1440 L -40 1035 C 86 1035 86 1037 171 1037 C 257 1037 257 1015 343 1015 C 429 1015 429 974 514 974 C 600 974 600 969 686 969 C 771 969 771 962 857 962 C 943 962 943 1004 1029 1004 C 1114 1004 1114 1043 1200 1043 L 1240 1440 Z" fill="#1D4E45" opacity="0.92"/>
+    <path d="M -40 1440 L -40 1126 C 86 1126 86 1103 171 1103 C 257 1103 257 1085 343 1085 C 429 1085 429 1104 514 1104 C 600 1104 600 1129 686 1129 C 771 1129 771 1156 857 1156 C 943 1156 943 1159 1029 1159 C 1114 1159 1114 1126 1200 1126 L 1240 1440 Z" fill="#153F39" opacity="0.92"/>
+    <path d="M -40 1440 L -40 1210 C 86 1210 86 1222 171 1222 C 257 1222 257 1229 343 1229 C 429 1229 429 1260 514 1260 C 600 1260 600 1261 686 1261 C 771 1261 771 1258 857 1258 C 943 1258 943 1221 1029 1221 C 1114 1221 1114 1206 1200 1206 L 1240 1440 Z" fill="#0D2E2B" opacity="1"/>
+    <rect x="0" y="850" width="1200" height="550" fill="url(#mist8)"/>
+  </g>
+  <rect width="1200" height="1400" filter="url(#g8)" fill="#8FA79B" opacity=".5" style="mix-blend-mode:overlay"/>
+</svg>

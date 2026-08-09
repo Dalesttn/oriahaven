@@ -1,0 +1,662 @@
+<?php
+/**
+ * Oria theme bootstrap.
+ *
+ * The design system was built dependency-free (no build step), so this file
+ * only has three jobs: theme supports, enqueueing the existing CSS/JS in the
+ * right order, and a few small helpers the templates share.
+ */
+
+declare(strict_types=1);
+
+namespace Oria\Theme;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+const VERSION = '0.1.0';
+
+// Global-namespace shims (an ACF fallback) live in their own file — defining
+// them here would put them in Oria\Theme and shadow the real ACF functions.
+require_once __DIR__ . '/includes/compat.php';
+
+/* -------------------------------------------------------------------------
+ * Supports
+ * ---------------------------------------------------------------------- */
+add_action(
+	'after_setup_theme',
+	static function (): void {
+		add_theme_support( 'title-tag' );
+		add_theme_support( 'post-thumbnails' );
+		add_theme_support( 'html5', array( 'search-form', 'gallery', 'caption', 'style', 'script' ) );
+		add_theme_support( 'responsive-embeds' );
+
+		register_nav_menus(
+			array(
+				'primary' => __( 'Primary navigation', 'oria' ),
+			)
+		);
+
+		// Card ratios the prototype uses.
+		add_image_size( 'oria-card', 720, 540, true );      // 4:3 listing/journal cards
+		add_image_size( 'oria-portrait', 660, 880, true );  // 3:4 featured cards
+		add_image_size( 'oria-wide', 1920, 1080, true );    // hero / CTA slabs
+	}
+);
+
+/* -------------------------------------------------------------------------
+ * Assets — same four stylesheets, same order as the prototype
+ * ---------------------------------------------------------------------- */
+add_action(
+	'wp_enqueue_scripts',
+	static function (): void {
+		$dir = get_template_directory();
+		$uri = get_template_directory_uri();
+
+		// Warm the font CDN connection before the stylesheet asks for it.
+		add_filter(
+			'wp_resource_hints',
+			static function ( array $urls, string $relation ): array {
+				if ( 'preconnect' === $relation ) {
+					$urls[] = array( 'href' => 'https://fonts.gstatic.com', 'crossorigin' => 'anonymous' );
+					$urls[] = 'https://fonts.googleapis.com';
+				}
+				return $urls;
+			},
+			10,
+			2
+		);
+
+		// Google Fonts exactly as the prototype loads them. Self-host before launch.
+		wp_enqueue_style(
+			'oria-fonts',
+			'https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap',
+			array(),
+			null
+		);
+
+		foreach ( array( 'tokens', 'base', 'components', 'pages', 'forms' ) as $sheet ) {
+			wp_enqueue_style(
+				"oria-{$sheet}",
+				"{$uri}/assets/css/{$sheet}.css",
+				'tokens' === $sheet ? array( 'oria-fonts' ) : array( "oria-tokens" ),
+				(string) filemtime( "{$dir}/assets/css/{$sheet}.css" )
+			);
+		}
+
+		wp_enqueue_script(
+			'oria-app',
+			"{$uri}/assets/js/app.js",
+			array(),
+			(string) filemtime( "{$dir}/assets/js/app.js" ),
+			array( 'in_footer' => true )
+		);
+
+		wp_add_inline_script(
+			'oria-app',
+			'window.ORIA_TRACK = ' . wp_json_encode( array( 'url' => rest_url( 'oria/v1/track' ) ) ) . ';',
+			'before'
+		);
+
+		// The directory pages read window.ORIA_DATA; print it from live posts.
+		// Pages are included because any built page can hold the map or the
+		// search hero, both of which read this data.
+		if ( is_post_type_archive( 'listing' ) || is_tax( array( 'practice', 'area', 'specialty' ) ) || is_page() ) {
+			wp_add_inline_script( 'oria-app', 'window.ORIA_DATA = ' . wp_json_encode( listing_data() ) . ';', 'before' );
+		}
+	}
+);
+
+/** The "js" class the reveal animations key off. */
+add_filter(
+	'language_attributes',
+	static fn( string $output ): string => $output . ' class="js"'
+);
+
+/* -------------------------------------------------------------------------
+ * Data bridge: live posts -> the same shape data/listings.js had
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Every published listing in the exact structure the prototype's app.js
+ * already filters and renders. One query, cached per request.
+ */
+function listing_data(): array {
+	static $cache = null;
+	if ( null !== $cache ) {
+		return $cache;
+	}
+
+	$posts = get_posts(
+		array(
+			'post_type'      => 'listing',
+			'posts_per_page' => 500,
+			'post_status'    => 'publish',
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		)
+	);
+
+	$listings = array();
+	foreach ( $posts as $post ) {
+		$practices = wp_get_post_terms( $post->ID, 'practice' );
+		$areas     = wp_get_post_terms( $post->ID, 'area' );
+
+		$suburb = null;
+		$region = null;
+		foreach ( $areas as $term ) {
+			if ( $term->parent ) {
+				$suburb = $term;
+				$region = \Oria\Core\Taxonomies\region_for( $term );
+			} elseif ( ! $region ) {
+				$region = $term;
+			}
+		}
+
+		$primary = $practices[0] ?? null;
+		$also    = array_slice( wp_list_pluck( $practices, 'slug' ), 1 );
+
+		$specs = wp_get_post_terms( $post->ID, 'specialty' );
+		$specs = is_wp_error( $specs ) ? array() : wp_list_pluck( $specs, 'slug' );
+
+		$rated = effective_rating( $post->ID );
+
+		$listings[] = array(
+			'id'         => $post->post_name,
+			'name'       => ptitle( $post ),
+			'url'        => get_permalink( $post ),
+			'cat'        => $primary ? $primary->slug : '',
+			'also'       => $also,
+			'spec'       => $specs,
+			'suburb'     => tname( $suburb ?: $region ),
+			'region'     => $region ? $region->slug : '',
+			'blurb'      => get_the_excerpt( $post ),
+			'services'   => array_column( (array) get_field( 'services', $post->ID ), 'name' ),
+			'priceFrom'  => (float) get_field( 'price_from', $post->ID ),
+			'priceBand'  => (string) get_field( 'price_band', $post->ID ),
+			'format'     => (string) ( get_field( 'format', $post->ID ) ?: 'in-person' ),
+			'rating'     => $rated['rating'],
+			'reviews'    => $rated['count'],
+			'rating_src' => $rated['source'],
+			'status'     => display_status( $post->ID ),
+			'image'      => listing_image( $post->ID ),
+			'image_fb'   => listing_scene( $post->ID ),
+			'next'       => (string) get_field( 'next_session', $post->ID ),
+			'offer'      => null !== active_offer( $post->ID ),
+		);
+	}
+
+	$cache = array(
+		'categories' => array_map(
+			static fn( \WP_Term $t ): array => array(
+				'id'   => $t->slug,
+				'name' => tname( $t ),
+				'url'  => get_term_link( $t ),
+			),
+			get_terms( array( 'taxonomy' => 'practice', 'hide_empty' => false ) ) ?: array()
+		),
+		'regions'    => array_map(
+			static function ( \WP_Term $t ): array {
+				$children = get_terms( array( 'taxonomy' => 'area', 'parent' => $t->term_id, 'hide_empty' => false ) );
+				return array(
+					'id'      => $t->slug,
+					'name'    => tname( $t ),
+					'url'     => get_term_link( $t ),
+					'suburbs' => array_map( __NAMESPACE__ . '\tname', is_wp_error( $children ) ? array() : $children ),
+				);
+			},
+			get_terms( array( 'taxonomy' => 'area', 'parent' => 0, 'hide_empty' => false ) ) ?: array()
+		),
+		'specialties' => array_map(
+			static fn( \WP_Term $t ): array => array(
+				'id'   => $t->slug,
+				'name' => tname( $t ),
+				'url'  => get_term_link( $t ),
+			),
+			get_terms( array( 'taxonomy' => 'specialty', 'hide_empty' => true ) ) ?: array()
+		),
+		'listings'   => $listings,
+	);
+
+	return $cache;
+}
+
+/* -------------------------------------------------------------------------
+ * Template helpers
+ * ---------------------------------------------------------------------- */
+
+/** The ensō, inline. Small cut for chrome, brush cut for feature spots. */
+function mark( string $cut = 'small', int $size = 24 ): string {
+	$file = 'small' === $cut ? 'logo-mark-simple.svg' : 'logo-mark.svg';
+	$svg  = file_get_contents( get_template_directory() . '/assets/img/' . $file );
+	if ( ! $svg ) {
+		return '';
+	}
+	// Strip the XML size so CSS controls it; keep viewBox.
+	$svg = (string) preg_replace( '/\s(width|height)="\d+"/', '', $svg, 2 );
+	return str_replace(
+		'<svg ',
+		sprintf( '<svg class="brand__mark" width="%d" height="%d" aria-hidden="true" ', $size, $size ),
+		$svg
+	);
+}
+
+/** Claim status for a listing, defaulting the way the importer does. */
+function claim_status( int $post_id ): string {
+	$status = (string) get_post_meta( $post_id, 'claim_status', true );
+	return in_array( $status, array( 'claimed', 'featured' ), true ) ? $status : 'unclaimed';
+}
+
+/**
+ * What the public sees. An approved owner on the free plan is "claimed" —
+ * their claim went through, so the listing shouldn't read as ownerless —
+ * while paid surfaces (offers, socials, the verified seal) keep asking
+ * claim_status(), which only paid tiers satisfy.
+ */
+function display_status( int $post_id ): string {
+	$status = claim_status( $post_id );
+	// The admin showcase flag reads as Featured everywhere the public looks,
+	// while the real claim status keeps driving the paid machinery.
+	if ( 'featured' !== $status && '1' === (string) get_post_meta( $post_id, 'admin_featured', true ) ) {
+		return 'featured';
+	}
+	if ( 'unclaimed' === $status && (int) get_post_meta( $post_id, 'claimed_by', true ) ) {
+		return 'claimed';
+	}
+	return $status;
+}
+
+/**
+ * The listing's live special offer, or null. Offers are a paid feature:
+ * they only exist while the listing is claimed, and they expire themselves.
+ *
+ * @return array{title: string, text: string, until: string}|null
+ */
+function active_offer( int $post_id ): ?array {
+	if ( 'unclaimed' === claim_status( $post_id ) ) {
+		return null;
+	}
+	$title = trim( (string) get_field( 'offer_title', $post_id ) );
+	if ( '' === $title ) {
+		return null;
+	}
+	$until = (string) get_field( 'offer_until', $post_id );
+	if ( '' !== $until && $until < current_time( 'Y-m-d' ) ) {
+		return null;
+	}
+	return array(
+		'title' => $title,
+		'text'  => (string) get_field( 'offer_text', $post_id ),
+		'until' => $until,
+	);
+}
+
+/* -------------------------------------------------------------------------
+ * Editable-content helpers.
+ *
+ * The rule across every template: an empty ACF field falls back to the
+ * designed copy, so an untouched page renders exactly as designed and an
+ * editor can never blank a section into a broken state.
+ * ---------------------------------------------------------------------- */
+
+/** Field value or the designed fallback. */
+function f( string $name, string $fallback = '', $post_id = false ): string {
+	$value = get_field( $name, $post_id );
+	return ( is_string( $value ) && '' !== trim( $value ) ) ? $value : $fallback;
+}
+
+/** Repeater rows, or the designed fallback rows when the field is empty. */
+function rows( string $name, array $fallback = array(), $post_id = false ): array {
+	$value = get_field( $name, $post_id );
+	return ( is_array( $value ) && $value ) ? $value : $fallback;
+}
+
+/**
+ * Image field -> URL, falling back to a theme asset. Fields return
+ * attachment IDs; the fallback names a file in assets/img.
+ */
+function fimg( string $name, string $fallback_asset, string $size = 'oria-wide', $post_id = false ): string {
+	$id = get_field( $name, $post_id );
+	if ( $id ) {
+		$url = wp_get_attachment_image_url( (int) $id, $size );
+		if ( $url ) {
+			return $url;
+		}
+	}
+	return get_template_directory_uri() . '/assets/img/' . $fallback_asset;
+}
+
+/** Options-page field with fallback. */
+function opt( string $name, string $fallback = '' ): string {
+	return f( $name, $fallback, 'option' );
+}
+
+/** Featured listings for the home page. */
+function featured_listings( int $count = 3, string $practice = '' ): array {
+	$args = array(
+		'post_type'      => 'listing',
+		'posts_per_page' => $count,
+		'post_status'    => 'publish',
+		// Paying Featured subscribers plus the admin's own showcase picks —
+		// the second exists to keep these surfaces alive before anyone pays.
+		'meta_query'     => array(
+			'relation' => 'OR',
+			array(
+				'key'   => 'claim_status',
+				'value' => 'featured',
+			),
+			array(
+				'key'   => 'admin_featured',
+				'value' => '1',
+			),
+		),
+	);
+	if ( '' !== $practice ) {
+		$args['tax_query'] = array(
+			array(
+				'taxonomy' => 'practice',
+				'field'    => 'slug',
+				'terms'    => $practice,
+			),
+		);
+	}
+	return get_posts( $args );
+}
+
+/**
+ * How many listings a practice has per region slug and per suburb name —
+ * feeds the "browse by area" link mesh on practice landing pages.
+ *
+ * @return array{regions: array<string,int>, suburbs: array<string,int>}
+ */
+function combo_counts( string $cat ): array {
+	$regions = array();
+	$suburbs = array();
+	foreach ( listing_data()['listings'] as $l ) {
+		if ( $l['cat'] !== $cat && ! in_array( $cat, (array) $l['also'], true ) ) {
+			continue;
+		}
+		if ( $l['region'] ) {
+			$regions[ $l['region'] ] = ( $regions[ $l['region'] ] ?? 0 ) + 1;
+		}
+		if ( $l['suburb'] ) {
+			$suburbs[ $l['suburb'] ] = ( $suburbs[ $l['suburb'] ] ?? 0 ) + 1;
+		}
+	}
+	return array( 'regions' => $regions, 'suburbs' => $suburbs );
+}
+
+/**
+ * A post title safe to escape for output. The the_title filter chain turns
+ * "&" into the numeric entity &#038;, so escaping the filtered title double
+ * encodes it into visible text. Decode first, escape once at output.
+ *
+ * @param int|\WP_Post|null $post
+ */
+function ptitle( $post = null ): string {
+	return wp_specialchars_decode( get_the_title( $post ), ENT_QUOTES );
+}
+
+/**
+ * A term name safe to escape for output. WordPress stores term names with
+ * entities already encoded ("Rockingham &amp; Peel"), so escaping the raw
+ * name double-encodes and the visitor sees the literal "&amp;". Decode
+ * first, escape once at output.
+ *
+ * @param \WP_Term|string|null $term Term object or already-extracted name.
+ */
+function tname( $term ): string {
+	$name = $term instanceof \WP_Term ? $term->name : (string) ( $term ?? '' );
+	return wp_specialchars_decode( $name, ENT_QUOTES );
+}
+
+/**
+ * The rating a listing should display: reviews collected here first, else
+ * its cached Google rating. Cache-only by default so archives of cards never
+ * trigger API calls — the cache warms via card_photo's budget and profile
+ * views.
+ *
+ * @return array{rating: float, count: int, source: string} source: none|native|google
+ */
+function effective_rating( int $post_id, bool $may_fetch = false ): array {
+	$native = (float) get_field( 'rating', $post_id );
+	if ( $native > 0 ) {
+		return array(
+			'rating' => $native,
+			'count'  => (int) get_field( 'review_count', $post_id ),
+			'source' => 'native',
+		);
+	}
+	if ( function_exists( '\Oria\Core\Places\rating_for' ) ) {
+		$google = \Oria\Core\Places\rating_for( $post_id, $may_fetch );
+		if ( $google['rating'] > 0 ) {
+			return array(
+				'rating' => $google['rating'],
+				'count'  => $google['count'],
+				'source' => 'google',
+			);
+		}
+	}
+	return array( 'rating' => 0.0, 'count' => 0, 'source' => 'none' );
+}
+
+/** The listing's placeholder scene URL — the guaranteed-to-exist fallback. */
+function listing_scene( int $post_id ): string {
+	$scene = (string) get_post_meta( $post_id, 'placeholder_scene', true );
+	if ( ! preg_match( '/^[a-z0-9_-]+$/', $scene ) || ! file_exists( get_template_directory() . "/assets/img/{$scene}.webp" ) ) {
+		$scene = 'scene-hall';
+	}
+	return get_template_directory_uri() . "/assets/img/{$scene}.webp";
+}
+
+/**
+ * A listing's image URL: featured image, else its first Google Places photo
+ * (cache-first, budgeted), else the placeholder scene. One chain, used by
+ * cards, tiles and profiles.
+ */
+function listing_image( int $post_id, string $size = 'oria-card' ): string {
+	$url = get_the_post_thumbnail_url( $post_id, $size );
+	if ( $url ) {
+		return $url;
+	}
+	if ( function_exists( '\Oria\Core\Places\card_photo' ) ) {
+		$url = \Oria\Core\Places\card_photo( $post_id );
+		if ( '' !== $url ) {
+			return $url;
+		}
+	}
+	return listing_scene( $post_id );
+}
+
+/**
+ * Google Maps Embed API URL for an address, or '' when no key is set.
+ * Coordinates win over the address when both exist — they can't be
+ * misgeocoded. The key lives once, in Site settings.
+ */
+function map_embed_url( string $address, $lat = null, $lng = null ): string {
+	// The plugin helper honours the wp-config constant override.
+	$key = function_exists( '\Oria\Core\Places\browser_key' )
+		? \Oria\Core\Places\browser_key()
+		: opt( 'google_maps_api_key' );
+	if ( '' === $key ) {
+		return '';
+	}
+	$q = ( $lat && $lng ) ? $lat . ',' . $lng : $address;
+	if ( '' === trim( (string) $q ) ) {
+		return '';
+	}
+	return add_query_arg(
+		array(
+			'key' => rawurlencode( $key ),
+			'q'   => rawurlencode( (string) $q ),
+		),
+		'https://www.google.com/maps/embed/v1/place'
+	);
+}
+
+/** Directions link — needs no API key. */
+function map_directions_url( string $address ): string {
+	return 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode( $address );
+}
+
+/** Estimated reading time in minutes, floor 1. */
+function reading_time( int $post_id ): int {
+	$words = str_word_count( wp_strip_all_tags( (string) get_post_field( 'post_content', $post_id ) ) );
+	return max( 1, (int) ceil( $words / 200 ) );
+}
+
+/** "Category · N min read" — the article meta line from the design. */
+function article_meta( int $post_id ): string {
+	$cat  = get_the_category( $post_id )[0] ?? null;
+	$bits = array();
+	if ( $cat instanceof \WP_Term && 'Uncategorized' !== $cat->name ) {
+		$bits[] = esc_html( tname( $cat ) );
+	}
+	/* translators: %d: minutes */
+	$bits[] = sprintf( esc_html__( '%d min read', 'oria' ), reading_time( $post_id ) );
+	return implode( '<span>&middot;</span>', array_map( static fn( $b ) => "<span>{$b}</span>", $bits ) );
+}
+
+/**
+ * The practice categories a journal article is about: the editor's picks
+ * (related_practices field) when set, otherwise matched from the article's
+ * title, tags and categories against each practice's name words.
+ *
+ * @return array<int, \WP_Term>
+ */
+function journal_practices( int $post_id ): array {
+	$picked = function_exists( 'get_field' ) ? array_filter( array_map( 'intval', (array) ( get_field( 'related_practices', $post_id ) ?: array() ) ) ) : array();
+	if ( $picked ) {
+		return array_values( array_filter( array_map( static fn( $id ) => get_term( $id, 'practice' ), $picked ), static fn( $t ) => $t instanceof \WP_Term ) );
+	}
+
+	$hay  = strtolower( (string) get_post_field( 'post_title', $post_id, 'raw' ) );
+	$tags = get_the_tags( $post_id );
+	foreach ( array_merge( is_array( $tags ) ? $tags : array(), get_the_category( $post_id ) ) as $t ) {
+		if ( $t instanceof \WP_Term ) {
+			$hay .= ' ' . strtolower( $t->name );
+		}
+	}
+
+	$matches = array();
+	$terms   = get_terms( array( 'taxonomy' => 'practice', 'hide_empty' => true ) );
+	foreach ( is_wp_error( $terms ) ? array() : $terms as $term ) {
+		// "Sound & float" matches on "sound" or "float"; slugs count too.
+		$needles = array_filter(
+			array_merge( array( $term->slug ), preg_split( '/[\s&,]+/', strtolower( tname( $term ) ) ) ?: array() ),
+			static fn( $w ) => strlen( $w ) > 3 && 'and' !== $w
+		);
+		foreach ( $needles as $needle ) {
+			if ( str_contains( $hay, $needle ) ) {
+				$matches[ $term->term_id ] = $term;
+				break;
+			}
+		}
+	}
+	return array_values( $matches );
+}
+
+/**
+ * An author's face for bylines: their profile photo if set, otherwise an
+ * initials monogram. Never Gravatar — it 404s on local and leaks emails.
+ */
+function author_avatar( int $user_id, int $size = 44 ): string {
+	$photo = function_exists( 'get_field' ) ? (int) get_field( 'author_photo', 'user_' . $user_id ) : 0;
+	if ( $photo ) {
+		$img = wp_get_attachment_image(
+			$photo,
+			array( $size * 2, $size * 2 ),
+			false,
+			array(
+				'class' => 'avatar-img',
+				'alt'   => '',
+				'style' => "width:{$size}px;height:{$size}px",
+			)
+		);
+		if ( $img ) {
+			return $img;
+		}
+	}
+	$name     = (string) get_the_author_meta( 'display_name', $user_id );
+	$initials = '';
+	foreach ( array_slice( preg_split( '/\s+/', trim( $name ) ) ?: array(), 0, 2 ) as $word ) {
+		$initials .= mb_strtoupper( mb_substr( $word, 0, 1 ) );
+	}
+	return '<span class="avatar-mono" aria-hidden="true" style="width:' . $size . 'px;height:' . $size . 'px;font-size:' . round( $size * 0.36 ) . 'px">'
+		. esc_html( $initials ?: '·' ) . '</span>';
+}
+
+/** The pictorial mark for an event's type — used by art tiles and rows. */
+function event_mark( int $event_id ): string {
+	$marks = array(
+		'yoga'                 => '🧘',
+		'meditation'           => '🪷',
+		'breathwork'           => '🌬️',
+		'sound-healing'        => '🔔',
+		'mindfulness'          => '🌤️',
+		'womens-circle'        => '🌙',
+		'mens-group'           => '🔥',
+		'wellness-workshop'    => '🌿',
+		'retreat'              => '🏞️',
+		'sauna'                => '🔥',
+		'cold-plunge'          => '🧊',
+		'nutrition'            => '🥗',
+		'fitness'              => '🤸',
+		'personal-development' => '🌱',
+		'spiritual'            => '✨',
+		'relaxation'           => '🌾',
+		'community'            => '🤝',
+	);
+	$terms = wp_get_post_terms( $event_id, 'event_type' );
+	$term  = ! is_wp_error( $terms ) && $terms ? $terms[0] : null;
+	if ( ! $term ) {
+		$pr   = wp_get_post_terms( $event_id, 'practice' );
+		$term = ! is_wp_error( $pr ) && $pr ? $pr[0] : null;
+	}
+	return $term && isset( $marks[ $term->slug ] ) ? $marks[ $term->slug ] : '◦';
+}
+
+/** The arrow-in-a-dot SVG every button uses. */
+function arrow(): string {
+	return '<span class="btn__dot"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg></span>';
+}
+
+/**
+ * The first section layout on the current page, if it is a built page.
+ * The header uses this: a page that opens with a hero gets the transparent
+ * overlay nav; everything else gets the solid sticky nav.
+ */
+function page_first_layout(): string {
+	if ( ! is_page() ) {
+		return '';
+	}
+	$sections = function_exists( 'get_field' ) ? get_field( 'sections' ) : null;
+	if ( ! is_array( $sections ) || ! $sections ) {
+		return '';
+	}
+	return (string) ( $sections[0]['acf_fc_layout'] ?? '' );
+}
+
+/** Repeater rows from a section array, tolerating missing keys. */
+function srows( array $section, string $key ): array {
+	$rows = $section[ $key ] ?? null;
+	return is_array( $rows ) ? $rows : array();
+}
+
+/** Section image (attachment ID) -> URL with theme-asset fallback. */
+function simg( array $section, string $key, string $fallback_asset, string $size = 'oria-wide' ): string {
+	$id = $section[ $key ] ?? 0;
+	if ( $id ) {
+		$url = wp_get_attachment_image_url( (int) $id, $size );
+		if ( $url ) {
+			return $url;
+		}
+	}
+	return get_template_directory_uri() . '/assets/img/' . $fallback_asset;
+}
+
+/** paper|sand -> the section band class. */
+function sband( array $section ): string {
+	return ( 'sand' === ( $section['background'] ?? 'paper' ) ) ? ' band-sand' : '';
+}

@@ -1,0 +1,144 @@
+<?php
+/**
+ * The plan ladder, in one place. Everything that gates a paid feature asks
+ * this file, so "what does $29 buy" is never encoded twice.
+ *
+ *   free (unclaimed) — the listing exists, built from public information.
+ *   claimed  $29/mo  — own it: edit everything, 4 photos, offers, hours,
+ *                      socials, analytics, Verified badge.
+ *   featured $79/mo  — grow it: everything above plus events, unlimited
+ *                      photos, the gold badge, and priority placement on
+ *                      the home page, category pages, events page and
+ *                      directory sorting.
+ */
+
+declare(strict_types=1);
+
+namespace Oria\Core\Tiers;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+const CLAIMED  = 'claimed';
+const FEATURED = 'featured';
+
+const PRICES = array(
+	CLAIMED  => 29,
+	FEATURED => 79,
+);
+
+/** How many gallery photos each tier may hold. 0 = unlimited. */
+const GALLERY_LIMITS = array(
+	CLAIMED  => 4,
+	FEATURED => 0,
+);
+
+/**
+ * feature => the minimum tier that unlocks it.
+ * Anything not listed here is not a paid surface.
+ */
+const FEATURES = array(
+	'manage'    => CLAIMED,  // edit the listing, gallery, hours, socials
+	'offers'    => CLAIMED,
+	'analytics' => CLAIMED,
+	'events'    => FEATURED,
+	'priority'  => FEATURED, // badge + featured placements
+);
+
+/**
+ * Field-level gating for the listing edit screen. An approved owner on the
+ * free plan may keep their location and contact details current; every
+ * paid field is visible but locked until they subscribe.
+ *
+ * field name => minimum tier ('free' means any approved owner).
+ */
+const FIELD_TIERS = array(
+	'address'       => 'free',
+	'phone'         => 'free',
+	'email'         => 'free',
+	'website'       => 'free',
+	'booking_url'   => CLAIMED,
+	'services'      => CLAIMED,
+	'price_from'    => 'free',
+	'price_band'    => 'free',
+	'format'        => 'free',
+	'timetable'     => CLAIMED,
+	'instagram_url' => CLAIMED,
+	'facebook_url'  => CLAIMED,
+	'offer_title'   => CLAIMED,
+	'offer_text'    => CLAIMED,
+	'offer_until'   => CLAIMED,
+	'gallery'       => CLAIMED,
+	'next_session'  => CLAIMED,
+	'good_for'      => CLAIMED,
+	'opening_hours' => CLAIMED,
+	'transit'       => CLAIMED,
+	'parking'       => CLAIMED,
+);
+
+/** Whether this listing's plan lets its owner edit a given field. */
+function field_editable( int $listing_id, string $field_name ): bool {
+	$needs = FIELD_TIERS[ $field_name ] ?? null;
+	if ( null === $needs ) {
+		return true; // Not a gated field; other rules may still apply.
+	}
+	if ( 'free' === $needs ) {
+		return true;
+	}
+	return in_array( tier( $listing_id ), array( CLAIMED, FEATURED ), true );
+}
+
+/** The listing's current tier: 'unclaimed', 'claimed' or 'featured'. */
+function tier( int $listing_id ): string {
+	$status = (string) get_post_meta( $listing_id, 'claim_status', true );
+	return in_array( $status, array( CLAIMED, FEATURED ), true ) ? $status : 'unclaimed';
+}
+
+/** Whether this listing's plan includes a feature. */
+function allows( int $listing_id, string $feature ): bool {
+	$needs = FEATURES[ $feature ] ?? null;
+	if ( null === $needs ) {
+		return false;
+	}
+	$tier = tier( $listing_id );
+	if ( FEATURED === $needs ) {
+		return FEATURED === $tier;
+	}
+	return in_array( $tier, array( CLAIMED, FEATURED ), true );
+}
+
+/** Gallery photo cap for this listing; 0 means unlimited. */
+function gallery_limit( int $listing_id ): int {
+	return GALLERY_LIMITS[ tier( $listing_id ) ] ?? 0;
+}
+
+/** Human summaries for emails, notices and the pricing page. */
+function summary( string $tier ): array {
+	if ( FEATURED === $tier ) {
+		return array(
+			'label'    => __( 'Featured', 'oria' ),
+			'price'    => '$' . PRICES[ FEATURED ],
+			'features' => array(
+				__( 'Everything in Claimed', 'oria' ),
+				__( 'Run workshops & events — photos, booking links, home-page slots', 'oria' ),
+				__( 'Unlimited gallery photos', 'oria' ),
+				__( 'Gold Featured badge', 'oria' ),
+				__( 'Priority placement in the directory and category pages', 'oria' ),
+				__( 'Featured spots on the home and workshops pages', 'oria' ),
+			),
+		);
+	}
+	return array(
+		'label'    => __( 'Claimed', 'oria' ),
+		'price'    => '$' . PRICES[ CLAIMED ],
+		'features' => array(
+			__( 'Edit every detail of your listing', 'oria' ),
+			__( 'Verified badge and date', 'oria' ),
+			__( 'Up to 4 gallery photos', 'oria' ),
+			__( 'Special offers on your profile and cards', 'oria' ),
+			__( 'Opening hours and social links', 'oria' ),
+			__( 'Performance analytics', 'oria' ),
+		),
+	);
+}
