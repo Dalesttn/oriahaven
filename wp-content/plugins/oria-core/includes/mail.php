@@ -31,10 +31,22 @@ function bootstrap(): void {
 	add_filter( 'wp_mail_from_name', __NAMESPACE__ . '\from_name' );
 }
 
-/** The site's own domain, without www — where sending should originate. */
+/**
+ * The site's own domain, without www — where sending should originate.
+ *
+ * A bare hostname with no dot ("localhost") makes an address PHPMailer
+ * rejects outright, and because the rejection happens on the From header
+ * it kills the whole send: every signup and approval email on a local
+ * install silently returned false. RFC 2606 reserves .test for exactly
+ * this, so a dotless host gets one rather than poisoning the sender.
+ */
 function domain(): string {
 	$host = (string) wp_parse_url( home_url(), PHP_URL_HOST );
-	return preg_replace( '/^www\./', '', $host ) ?: 'example.com';
+	$host = preg_replace( '/^www\./', '', $host ) ?: '';
+	if ( '' === $host ) {
+		return 'example.com';
+	}
+	return str_contains( $host, '.' ) ? $host : $host . '.test';
 }
 
 function from_address( string $default = '' ): string {
@@ -43,7 +55,11 @@ function from_address( string $default = '' ): string {
 		return $set;
 	}
 	// Better than wordpress@ even before anything is configured.
-	return 'hello@' . domain();
+	$fallback = 'hello@' . domain();
+
+	// Never hand back something PHPMailer will refuse; a bad sender fails
+	// the message rather than just mislabelling it.
+	return is_email( $fallback ) ? $fallback : $default;
 }
 
 function from_name( string $default = '' ): string {

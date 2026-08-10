@@ -4,9 +4,14 @@
  *
  * A visitor fills in the same details a free listing carries; one submit
  * creates the listing (PENDING — an admin approves within 24 hours), a
- * practitioner account that owns it, and two emails: a branded welcome
- * with a set-password link for them, a review nudge for the admin. When
- * the admin publishes the pending listing, a "you're live" email follows.
+ * practitioner account that owns it, and two emails: a "we've got it,
+ * 24 hours" confirmation with a set-password link, and a review nudge for
+ * the admin. Publishing the pending listing sends the owner a "you're
+ * live" email carrying both upgrade options.
+ *
+ * Someone already signed in can submit too — the listing attaches to
+ * their existing account and the account half of the form is skipped,
+ * which is how a person running two studios lists the second one.
  *
  * Hard rules enforced server-side, whatever the form sends:
  *   - photos must be real images (jpeg/png/webp, magic bytes checked),
@@ -31,18 +36,17 @@ const MAX_BYTES    = 5 * 1024 * 1024;
 const MIMES        = array( 'image/jpeg', 'image/png', 'image/webp' );
 
 function bootstrap(): void {
+	// Signed in or not, the submission is processed. It used to bounce
+	// logged-in users straight to wp-admin, which silently binned a
+	// completed form — and blocked the ordinary case of someone who runs
+	// two studios listing the second one.
 	add_action( 'admin_post_nopriv_oria_signup', __NAMESPACE__ . '\handle' );
-	add_action( 'admin_post_oria_signup', __NAMESPACE__ . '\already_logged_in' );
+	add_action( 'admin_post_oria_signup', __NAMESPACE__ . '\handle' );
 	add_action( 'transition_post_status', __NAMESPACE__ . '\live_email', 10, 3 );
 }
 
 function page_url(): string {
 	return home_url( '/list-your-practice/' );
-}
-
-function already_logged_in(): void {
-	wp_safe_redirect( admin_url( 'edit.php?post_type=listing' ) );
-	exit;
 }
 
 function handle(): void {
@@ -81,7 +85,11 @@ function handle(): void {
 		}
 	}
 
-	$errors = validate( $in );
+	// An existing account owns anything it submits; only a visitor needs
+	// one built for them.
+	$existing = get_current_user_id();
+
+	$errors = validate( $in, $existing > 0 );
 
 	$files = photos();
 	if ( is_string( $files ) ) {
@@ -164,36 +172,46 @@ function handle(): void {
 	}
 
 	// --- The account. -----------------------------------------------------
-	$username = sanitize_user( (string) strstr( $in['account_email'], '@', true ), true );
-	if ( '' === $username || username_exists( $username ) ) {
-		$username = sanitize_user( $username . wp_rand( 100, 999 ), true );
-	}
-	$user_id = wp_insert_user(
-		array(
-			'user_login'   => $username,
-			'user_email'   => $in['account_email'],
-			'display_name' => $in['account_name'],
-			'user_pass'    => wp_generate_password( 24 ),
-			'role'         => Ownership\ROLE,
-		)
-	);
-	if ( is_wp_error( $user_id ) ) {
-		wp_delete_post( $listing, true );
-		bounce( array( 'server' ), $in );
+	if ( $existing > 0 ) {
+		$user_id  = $existing;
+		$is_new   = false;
+	} else {
+		$username = sanitize_user( (string) strstr( $in['account_email'], '@', true ), true );
+		if ( '' === $username || username_exists( $username ) ) {
+			$username = sanitize_user( $username . wp_rand( 100, 999 ), true );
+		}
+		$user_id = wp_insert_user(
+			array(
+				'user_login'   => $username,
+				'user_email'   => $in['account_email'],
+				'display_name' => $in['account_name'],
+				'user_pass'    => wp_generate_password( 24 ),
+				'role'         => Ownership\ROLE,
+			)
+		);
+		if ( is_wp_error( $user_id ) ) {
+			wp_delete_post( $listing, true );
+			bounce( array( 'server' ), $in );
+		}
+		$is_new = true;
 	}
 
 	update_post_meta( $listing, 'claimed_by', (int) $user_id );
 	update_post_meta( $listing, '_oria_signup', time() );
 
-	welcome_email( (int) $user_id, $listing, $in );
-	admin_email( $listing, $in );
+	received_email( (int) $user_id, $listing, $in, $is_new );
+	admin_email( (int) $user_id, $listing, $in );
 
 	wp_safe_redirect( add_query_arg( 'signup', 'done', page_url() ) );
 	exit;
 }
 
-/** @return array<string> error codes */
-function validate( array $in ): array {
+/**
+ * @param bool $has_account Submitter is already signed in, so the account
+ *                          half of the form was never shown to them.
+ * @return array<string> error codes
+ */
+function validate( array $in, bool $has_account = false ): array {
 	$errors = array();
 	if ( '' === $in['practice_name'] ) {
 		$errors[] = 'name';
@@ -217,13 +235,15 @@ function validate( array $in ): array {
 	if ( ! in_array( $in['format'], array( 'in-person', 'online', 'both' ), true ) ) {
 		$errors[] = 'format';
 	}
-	if ( '' === $in['account_name'] ) {
-		$errors[] = 'account_name';
-	}
-	if ( ! is_email( $in['account_email'] ) ) {
-		$errors[] = 'account_email';
-	} elseif ( email_exists( $in['account_email'] ) ) {
-		$errors[] = 'account_exists';
+	if ( ! $has_account ) {
+		if ( '' === $in['account_name'] ) {
+			$errors[] = 'account_name';
+		}
+		if ( ! is_email( $in['account_email'] ) ) {
+			$errors[] = 'account_email';
+		} elseif ( email_exists( $in['account_email'] ) ) {
+			$errors[] = 'account_exists';
+		}
 	}
 	if ( ! $in['authorised'] ) {
 		$errors[] = 'authorised';
@@ -294,56 +314,103 @@ function bounce( array $errors, array $in = array() ): void {
 	exit;
 }
 
-function welcome_email( int $user_id, int $listing, array $in ): void {
+/**
+ * "We've got it, we'll review it within 24 hours."
+ *
+ * Always sent, whoever submitted. The set-password link only appears when
+ * we actually built them an account — someone who was already signed in
+ * has no password to set, and a reset link would just read as a phishing
+ * attempt.
+ */
+function received_email( int $user_id, int $listing, array $in, bool $is_new ): void {
 	$user = get_userdata( $user_id );
-	$key  = get_password_reset_key( $user );
-	$link = is_wp_error( $key ) ? wp_login_url() : network_site_url(
-		'wp-login.php?action=rp&key=' . $key . '&login=' . rawurlencode( $user->user_login ),
-		'login'
-	);
-
-	$subject = __( "You're registered with Oria Haven", 'oria' );
-	$body    = sprintf(
-		/* translators: 1: person name, 2: practice name, 3: set-password URL */
-		__(
-			"G'day %1\$s,\n\nThanks for listing %2\$s on Oria Haven. We check every new listing by hand — yours will be reviewed and approved within 24 hours, and we'll only be in touch if something needs clarifying.\n\nYour practitioner account is ready now. Set your password here:\n%3\$s\n\nOnce you're in, you can edit your details any time — and if you'd like more room (unlimited services, photo gallery, timetable, special offers, workshops and featured placement), you can upgrade from your dashboard whenever it suits.\n\nThe Oria Haven team",
-			'oria'
-		),
-		$in['account_name'],
-		$in['practice_name'],
-		$link
-	);
-
-	if ( function_exists( '\Oria\Forms\Emails\shell' ) ) {
-		$html = \Oria\Forms\Emails\shell(
-			__( "You're registered", 'oria' ),
-			'<p>' . nl2br( esc_html( $body ) ) . '</p>'
-		);
-		wp_mail( $user->user_email, $subject, $html, array( 'Content-Type: text/html; charset=UTF-8' ) );
+	if ( ! $user || ! is_email( $user->user_email ) ) {
 		return;
 	}
-	wp_mail( $user->user_email, $subject, $body );
+	$name = $user->display_name ?: ( $in['account_name'] ?: $user->user_login );
+
+	$body = sprintf(
+		/* translators: 1: person name, 2: practice name */
+		__(
+			"G'day %1\$s,\n\nThanks for listing %2\$s on Oria Haven. We've got your details and they're with us now.\n\nWe check every new listing by hand, so yours will be reviewed and approved within 24 hours. You'll get another email the moment it goes live, and we'll only be in touch before then if something needs clarifying.\n\nNothing to do in the meantime.",
+			'oria'
+		),
+		$name,
+		$in['practice_name']
+	);
+
+	if ( $is_new ) {
+		$key  = get_password_reset_key( $user );
+		$link = is_wp_error( $key ) ? wp_login_url() : network_site_url(
+			'wp-login.php?action=rp&key=' . $key . '&login=' . rawurlencode( $user->user_login ),
+			'login'
+		);
+		$body .= sprintf(
+			/* translators: %s: set-password URL */
+			__( "\n\nOne thing you can do now: your practitioner account is ready, so set your password here and you'll be able to edit your details any time.\n%s", 'oria' ),
+			$link
+		);
+	} else {
+		$body .= sprintf(
+			/* translators: %s: dashboard URL */
+			__( "\n\nIt's attached to your existing account, so it'll appear alongside your other listings here:\n%s", 'oria' ),
+			admin_url( 'edit.php?post_type=listing' )
+		);
+	}
+
+	$body .= __( "\n\nThe Oria Haven team", 'oria' );
+
+	send( $user->user_email, __( "We've got your listing — Oria Haven", 'oria' ), __( 'Listing received', 'oria' ), $body );
 }
 
-function admin_email( int $listing, array $in ): void {
+function admin_email( int $user_id, int $listing, array $in ): void {
+	$user    = get_userdata( $user_id );
+	$contact = $user
+		? sprintf( '%s <%s>', $user->display_name ?: $user->user_login, $user->user_email )
+		: sprintf( '%s <%s>', $in['account_name'], $in['account_email'] );
+
 	wp_mail(
 		(string) get_option( 'admin_email' ),
 		sprintf( '[Oria Haven] New practice signup: %s', $in['practice_name'] ),
 		sprintf(
-			"A new practice registered itself and is waiting for review (24-hour promise!).\n\n%s\nCategory: %s · Suburb: %s\nContact: %s <%s>\n\nReview and publish:\n%s",
+			"A new practice registered itself and is waiting for review (24-hour promise!).\n\n%s\nCategory: %s · Suburb: %s\nContact: %s\n\nReview and publish:\n%s\n\nPublishing it sends the owner their approval email, including the two upgrade options.",
 			$in['practice_name'],
 			$in['practice_cat'],
 			$in['suburb'],
-			$in['account_name'],
-			$in['account_email'],
+			$contact,
 			admin_url( 'post.php?post=' . $listing . '&action=edit' )
 		)
 	);
 }
 
-/** Pending → publish on a signup listing: tell the owner they're live. */
+/** One place that knows whether the branded HTML shell is available. */
+function send( string $to, string $subject, string $heading, string $body ): void {
+	if ( function_exists( '\Oria\Forms\Emails\shell' ) ) {
+		wp_mail(
+			$to,
+			$subject,
+			\Oria\Forms\Emails\shell( $heading, '<p style="margin:0 0 14px;">' . nl2br( esc_html( $body ) ) . '</p>' ),
+			array( 'Content-Type: text/html; charset=UTF-8' )
+		);
+		return;
+	}
+	wp_mail( $to, $subject, $body );
+}
+
+/**
+ * Approved and published: tell the owner they're live, and lay out the two
+ * paid plans.
+ *
+ * This is the one email a new practitioner is guaranteed to open, so it is
+ * where the upgrade is offered — with both tiers priced, their features
+ * spelled out, and a Stripe link tagged to this listing so payment
+ * activates it automatically. The free plan is stated plainly as a real
+ * option; nobody upgrades because they felt cornered.
+ */
 function live_email( string $new, string $old, \WP_Post $post ): void {
-	if ( 'listing' !== $post->post_type || 'publish' !== $new || 'pending' !== $old ) {
+	// Any unpublished state counts: an admin who saves as draft first and
+	// publishes later should still trigger the approval email.
+	if ( 'listing' !== $post->post_type || 'publish' !== $new || 'publish' === $old ) {
 		return;
 	}
 	if ( ! get_post_meta( $post->ID, '_oria_signup', true ) ) {
@@ -352,23 +419,62 @@ function live_email( string $new, string $old, \WP_Post $post ): void {
 	delete_post_meta( $post->ID, '_oria_signup' ); // once only.
 
 	$owner = get_userdata( (int) get_post_meta( $post->ID, 'claimed_by', true ) );
-	if ( ! $owner ) {
+	if ( ! $owner || ! is_email( $owner->user_email ) ) {
 		return;
 	}
-	$subject = __( 'Your listing is live on Oria Haven', 'oria' );
-	$body    = sprintf(
-		/* translators: 1: display name, 2: listing URL */
-		__( "G'day %1\$s,\n\nYour listing has been approved and is now live:\n%2\$s\n\nKeep it fresh from your dashboard — and when you're ready for more reach, the upgrade options are right there too.\n\nThe Oria Haven team", 'oria' ),
-		$owner->display_name,
+
+	$body = sprintf(
+		/* translators: 1: display name, 2: practice name, 3: listing URL */
+		__( "G'day %1\$s,\n\nGood news — %2\$s has been approved and is now live on Oria Haven:\n%3\$s\n\nIt's listed free, and it stays that way for as long as you like. Enquiries go straight to you and we never take a cut of a booking.", 'oria' ),
+		$owner->display_name ?: $owner->user_login,
+		\get_post_field( 'post_title', $post->ID, 'raw' ),
 		get_permalink( $post )
 	);
-	if ( function_exists( '\Oria\Forms\Emails\shell' ) ) {
-		$html = \Oria\Forms\Emails\shell(
-			__( "You're live", 'oria' ),
-			'<p>' . nl2br( esc_html( $body ) ) . '</p>'
-		);
-		wp_mail( $owner->user_email, $subject, $html, array( 'Content-Type: text/html; charset=UTF-8' ) );
-		return;
+
+	$body .= upgrade_block( $post->ID, $owner->user_email );
+	$body .= __( "\n\nThe Oria Haven team", 'oria' );
+
+	send( $owner->user_email, __( 'Your listing is live on Oria Haven', 'oria' ), __( "You're live", 'oria' ), $body );
+}
+
+/**
+ * The two paid plans as plain text, with activation links when Stripe is
+ * configured. Without billing set up the prices and features still show —
+ * a dev environment shouldn't silently drop the pitch — but the email
+ * points at a conversation instead of a dead link.
+ */
+function upgrade_block( int $listing_id, string $email ): string {
+	$claimed  = \Oria\Core\Tiers\summary( 'claimed' );
+	$featured = \Oria\Core\Tiers\summary( 'featured' );
+	$bullets  = static fn( array $t ): string => '• ' . implode( "\n• ", $t['features'] );
+
+	$out = "\n\n" . __( "WANT MORE FROM IT?\nTwo optional plans, cancel any time — the listing simply returns to its free form and everything you've added is kept.", 'oria' );
+
+	$out .= sprintf(
+		"\n\n%s — %s/month\n%s",
+		strtoupper( $claimed['label'] ),
+		$claimed['price'],
+		$bullets( $claimed )
+	);
+	$claimed_url = \Oria\Core\Billing\pay_url( 'claimed', $listing_id, $email );
+	if ( '' !== $claimed_url ) {
+		$out .= sprintf( "\n%s %s", __( 'Activate:', 'oria' ), $claimed_url );
 	}
-	wp_mail( $owner->user_email, $subject, $body );
+
+	$out .= sprintf(
+		"\n\n%s — %s/month\n%s",
+		strtoupper( $featured['label'] ),
+		$featured['price'],
+		$bullets( $featured )
+	);
+	$featured_url = \Oria\Core\Billing\pay_url( 'featured', $listing_id, $email );
+	if ( '' !== $featured_url ) {
+		$out .= sprintf( "\n%s %s", __( 'Activate:', 'oria' ), $featured_url );
+	}
+
+	if ( '' === $claimed_url && '' === $featured_url ) {
+		$out .= "\n\n" . __( 'Reply to this email if either sounds useful and we\'ll set it up.', 'oria' );
+	}
+
+	return $out;
 }

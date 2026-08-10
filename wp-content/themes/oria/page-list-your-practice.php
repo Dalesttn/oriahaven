@@ -159,14 +159,37 @@ $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 				<span class="oform-hint"><?php esc_html_e( 'Image files only (JPEG, PNG or WebP), under 5MB each. Photos you own the rights to.', 'oria' ); ?></span></label>
 
 			<h2 class="h3" style="margin-top:1rem"><?php esc_html_e( 'Your account', 'oria' ); ?></h2>
-			<p class="muted" style="font-size:.875rem;margin-top:-.4rem"><?php esc_html_e( "This is how you'll log in to manage the listing. We'll email you a link to set your password.", 'oria' ); ?></p>
+			<?php
+			/*
+			 * Someone already signed in doesn't need a second account, and
+			 * asking for one only to reject it as a duplicate is a dead end.
+			 * The listing attaches to the account they're already using.
+			 */
+			if ( is_user_logged_in() ) :
+				$oria_me = wp_get_current_user();
+				?>
+				<div class="notice" style="background:var(--sand-2);margin-top:.4rem">
+					<span>
+						<?php
+						printf(
+							/* translators: 1: display name, 2: email address */
+							esc_html__( 'Signed in as %1$s (%2$s) — this listing will be added to that account, so there\'s nothing to fill in here.', 'oria' ),
+							esc_html( $oria_me->display_name ?: $oria_me->user_login ),
+							esc_html( $oria_me->user_email )
+						);
+						?>
+					</span>
+				</div>
+			<?php else : ?>
+				<p class="muted" style="font-size:.875rem;margin-top:-.4rem"><?php esc_html_e( "This is how you'll log in to manage the listing. We'll email you a link to set your password.", 'oria' ); ?></p>
 
-			<div class="grid" style="grid-template-columns:1fr 1fr;gap:1rem">
-				<label class="field"><span class="field__label"><?php esc_html_e( 'Your name', 'oria' ); ?></span>
-					<input class="input" type="text" name="account_name" required value="<?php echo $oria_v( 'account_name' ); ?>"></label>
-				<label class="field"><span class="field__label"><?php esc_html_e( 'Your email', 'oria' ); ?></span>
-					<input class="input" type="email" name="account_email" required value="<?php echo $oria_v( 'account_email' ); ?>"></label>
-			</div>
+				<div class="grid" style="grid-template-columns:1fr 1fr;gap:1rem">
+					<label class="field"><span class="field__label"><?php esc_html_e( 'Your name', 'oria' ); ?></span>
+						<input class="input" type="text" name="account_name" required value="<?php echo $oria_v( 'account_name' ); ?>"></label>
+					<label class="field"><span class="field__label"><?php esc_html_e( 'Your email', 'oria' ); ?></span>
+						<input class="input" type="email" name="account_email" required value="<?php echo $oria_v( 'account_email' ); ?>"></label>
+				</div>
+			<?php endif; ?>
 
 			<label class="check" style="align-items:flex-start"><input type="checkbox" name="authorised" value="1" required>
 				<span style="font-size:.875rem"><?php esc_html_e( "I'm authorised to manage this practice's information.", 'oria' ); ?></span></label>
