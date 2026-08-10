@@ -39,9 +39,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const CPT       = 'oria_lead';
 const MATCH_CAP = 3;
+const OPTION_SCOPE = 'oria_leads_scope'; // 'all' | 'paid'
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\register_cpt' );
+	add_action( 'admin_init', __NAMESPACE__ . '\settings' );
 	add_action( 'admin_post_oria_enquiry', __NAMESPACE__ . '\handle_enquiry' );
 	add_action( 'admin_post_nopriv_oria_enquiry', __NAMESPACE__ . '\handle_enquiry' );
 	add_action( 'admin_post_oria_match', __NAMESPACE__ . '\handle_match' );
@@ -66,6 +68,80 @@ function register_cpt(): void {
 			'capabilities' => array( 'create_posts' => 'do_not_allow' ),
 			'map_meta_cap' => true,
 		)
+	);
+}
+
+/* ---------------------------------------------------------------- scoping */
+
+/**
+ * Which listings may receive leads: everyone, or paid tiers only.
+ *
+ * 'all' is the launch setting — free leads are the strongest upgrade
+ * pitch a directory has ("you got 4 enquiries last month; imagine paid
+ * placement"). 'paid' turns lead delivery into a subscriber benefit,
+ * and doubles as a test switch: flip it and only claimed/featured
+ * listings show forms or receive matches.
+ */
+function scope(): string {
+	return 'paid' === get_option( OPTION_SCOPE, 'all' ) ? 'paid' : 'all';
+}
+
+/** May this listing receive leads under the current scope? */
+function eligible( int $listing ): bool {
+	if ( 'listing' !== get_post_type( $listing ) || 'publish' !== get_post_status( $listing ) ) {
+		return false;
+	}
+	if ( 'all' === scope() ) {
+		return true;
+	}
+	$status = function_exists( '\Oria\Theme\display_status' )
+		? \Oria\Theme\display_status( $listing )
+		: (string) get_post_meta( $listing, 'claim_status', true );
+	return in_array( $status, array( 'claimed', 'featured' ), true );
+}
+
+function settings(): void {
+	// Shares the Oria section on Settings → General with the analytics
+	// and mail settings; re-registering the section id is harmless.
+	add_settings_section(
+		'oria_settings',
+		__( 'Oria Haven', 'oria' ),
+		static function (): void {
+			echo '<p>' . esc_html__( 'Settings for the directory itself.', 'oria' ) . '</p>';
+		},
+		'general'
+	);
+	register_setting(
+		'general',
+		OPTION_SCOPE,
+		array(
+			'type'              => 'string',
+			'sanitize_callback' => static fn( $v ): string => 'paid' === $v ? 'paid' : 'all',
+			'default'           => 'all',
+		)
+	);
+	add_settings_field(
+		OPTION_SCOPE,
+		__( 'Lead delivery', 'oria' ),
+		static function (): void {
+			$current = scope();
+			printf(
+				'<fieldset>
+					<label style="display:block;margin-bottom:6px;"><input type="radio" name="%1$s" value="all"%2$s> %3$s</label>
+					<label style="display:block;"><input type="radio" name="%1$s" value="paid"%4$s> %5$s</label>
+					<p class="description">%6$s</p>
+				</fieldset>',
+				esc_attr( OPTION_SCOPE ),
+				checked( 'all', $current, false ),
+				esc_html__( 'All listings — every practice with an email can receive enquiries and matches', 'oria' ),
+				checked( 'paid', $current, false ),
+				esc_html__( 'Paid listings only — enquiry forms and matching are limited to Claimed and Featured practices', 'oria' ),
+				esc_html__( 'Applies to the enquiry form on listing pages and to the "get matched" service. Switching to paid-only hides the form on free listings immediately (once caches clear).', 'oria' )
+			);
+		},
+		'general',
+		'oria_settings',
+		array( 'label_for' => OPTION_SCOPE )
 	);
 }
 
@@ -133,7 +209,7 @@ function handle_enquiry(): void {
 
 	guard( 'oria_enquiry_' . $listing, $back );
 
-	if ( 'listing' !== get_post_type( $listing ) || 'publish' !== get_post_status( $listing ) ) {
+	if ( ! eligible( $listing ) ) {
 		bounce( home_url( '/' ), 'error' );
 	}
 	$to = practice_email( $listing );
@@ -221,7 +297,7 @@ function find_matches( string $service, string $area ): array {
 			)
 		);
 		foreach ( rank( $q ) as $id ) {
-			if ( ! in_array( $id, $found, true ) && '' !== practice_email( $id ) ) {
+			if ( ! in_array( $id, $found, true ) && eligible( $id ) && '' !== practice_email( $id ) ) {
 				$found[] = $id;
 				if ( count( $found ) >= MATCH_CAP ) {
 					return $found;

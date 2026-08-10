@@ -130,7 +130,35 @@ $oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
 			</div>
 			<?php endforeach; ?>
 
-			<?php if ( $oria_show_trust && $oria_avg > 0 ) : ?>
+			<?php
+			/*
+			 * The match card: the trust card's slot now sells the matching
+			 * service instead — the 4.8-average line moves into the card's
+			 * body copy so the social proof isn't lost, just demoted. Only
+			 * offered when the leads module is live to receive the request.
+			 * The button opens the desktop dialog; on mobile (or without
+			 * JS) it falls through to the in-page band at #enquire.
+			 */
+			?>
+			<?php if ( $oria_show_trust && function_exists( '\Oria\Core\Leads\bootstrap' ) ) : ?>
+			<div class="glass trustcard hero__trust matchcard">
+				<div class="trustcard__top">
+					<span class="micro"><?php esc_html_e( 'Free matching service', 'oria' ); ?></span>
+					<span class="pill pill--glass"><?php esc_html_e( 'Checked by hand', 'oria' ); ?></span>
+				</div>
+				<p class="matchcard__title"><?php esc_html_e( "Tell us what you're after. We'll introduce you.", 'oria' ); ?></p>
+				<p>
+					<?php
+					echo esc_html(
+						$oria_avg > 0
+							? sprintf( __( 'We introduce you to up to three practices that fit — rated %s on average, every one checked by hand.', 'oria' ), number_format_i18n( $oria_avg, 1 ) )
+							: __( 'We introduce you to up to three practices that fit — every one checked by hand.', 'oria' )
+					);
+					?>
+				</p>
+				<a class="btn btn--light btn--block" href="#enquire" data-match-open><?php esc_html_e( 'Find my match', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
+			</div>
+			<?php elseif ( $oria_show_trust && $oria_avg > 0 ) : ?>
 			<div class="glass trustcard hero__trust">
 				<div class="trustcard__top">
 					<div class="faces" aria-hidden="true">

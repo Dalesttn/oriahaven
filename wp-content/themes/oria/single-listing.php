@@ -477,7 +477,7 @@ while ( have_posts() ) :
 					 * and forwarded with Reply-To set to the visitor
 					 * (Oria\Core\Leads).
 					 */
-					if ( $oria_email && function_exists( '\Oria\Core\Leads\bootstrap' ) ) :
+					if ( $oria_email && function_exists( '\Oria\Core\Leads\eligible' ) && \Oria\Core\Leads\eligible( $oria_id ) ) :
 						// phpcs:disable WordPress.Security.NonceVerification.Recommended -- display state only.
 						$oria_lead_state = isset( $_GET['olead'] ) ? (string) $_GET['olead'] : '';
 						// phpcs:enable

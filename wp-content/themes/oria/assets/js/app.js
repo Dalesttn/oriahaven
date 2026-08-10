@@ -1014,6 +1014,36 @@
     }
   }
 
+  /* --- Get-matched dialog ---------------------------------------------- */
+  /* Desktop gets the form as a modal (opened from the hero card); mobile
+     keeps the in-page band, so triggers fall through to their #enquire
+     anchor there. After a submission the server redirects back with
+     ?olead=sent — reopen the dialog so the confirmation isn't sealed
+     inside a closed modal. */
+  function initMatchDialog() {
+    var dialog = document.getElementById("matchDialog");
+    if (!dialog || typeof dialog.showModal !== "function") return;
+    var isDesktop = function () { return window.matchMedia("(min-width: 901px)").matches; };
+
+    document.addEventListener("click", function (e) {
+      var open = e.target.closest && e.target.closest("[data-match-open]");
+      if (open && isDesktop()) {
+        e.preventDefault();
+        dialog.showModal();
+        return;
+      }
+      if (e.target.closest && e.target.closest("[data-match-close]")) {
+        dialog.close();
+        return;
+      }
+      /* A click on the backdrop lands on the <dialog> itself. */
+      if (e.target === dialog) dialog.close();
+    });
+
+    var params = new URLSearchParams(window.location.search);
+    if (params.get("olead") && isDesktop()) dialog.showModal();
+  }
+
   /* --- Featured rotation ---------------------------------------------- */
   /* Every featured listing takes a turn on the home section: groups of
      three, next group every 30s. Paused while hovered (no yanking a card
@@ -1258,6 +1288,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     initTracking();
+    initMatchDialog();
     initNav();
     initAccordions();
     initPullquote();

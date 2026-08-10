@@ -1,11 +1,16 @@
 <?php
 /**
- * "Get matched" — the request form that fans one enquiry out to up to
- * three practices (Oria\Core\Leads). Renders on the front page between
- * sections, and can be reused anywhere with get_template_part.
+ * "Get matched" on the front page, two presentations of one form
+ * (template-parts/match-form.php):
  *
- * The form asks what service and when — deliberately never "what's
- * wrong". See the privacy note in leads.php.
+ *   mobile  — the full band, form inline on the page
+ *   desktop — a <dialog>, opened from the hero card or any
+ *             [data-match-open] trigger; the band hides via CSS
+ *
+ * The dialog lives here rather than in the footer so everything about
+ * the feature stays in one template. After a submission the server
+ * redirects back with ?olead=sent — app.js reopens the dialog on
+ * desktop so the confirmation isn't hidden inside a closed modal.
  */
 
 declare(strict_types=1);
@@ -13,21 +18,9 @@ declare(strict_types=1);
 if ( ! function_exists( '\Oria\Core\Leads\bootstrap' ) ) {
 	return;
 }
-
-// phpcs:disable WordPress.Security.NonceVerification.Recommended -- display state only.
-$oria_state   = isset( $_GET['olead'] ) ? (string) $_GET['olead'] : '';
-$oria_matched = isset( $_GET['omatched'] ) ? (int) $_GET['omatched'] : -1;
-// phpcs:enable
-
-$oria_practices = get_terms( array( 'taxonomy' => 'practice', 'hide_empty' => true ) );
-$oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
-$oria_specs     = get_terms( array( 'taxonomy' => 'specialty', 'hide_empty' => true, 'orderby' => 'count', 'order' => 'DESC', 'number' => 30 ) );
-$oria_specs     = is_wp_error( $oria_specs ) ? array() : $oria_specs;
-$oria_regions   = get_terms( array( 'taxonomy' => 'area', 'parent' => 0, 'hide_empty' => false ) );
-$oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 ?>
 
-<section class="wrap section" id="enquire">
+<section class="wrap section matchband-section" id="enquire">
 	<div class="matchband on-deep">
 		<div class="matchband__copy">
 			<span class="micro"><?php esc_html_e( 'New — free to use', 'oria' ); ?></span>
@@ -43,88 +36,20 @@ $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 		</div>
 
 		<div class="matchband__form">
-			<?php if ( 'sent' === $oria_state ) : ?>
-				<div class="notice" style="background:rgba(255,255,255,.95)">
-					<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;flex:none"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.2l2.4 2.4 4.6-5"/></svg>
-					<span>
-						<?php if ( $oria_matched > 0 ) : ?>
-							<b><?php echo esc_html( sprintf( _n( 'Sent to %d matching practice.', 'Sent to %d matching practices.', $oria_matched, 'oria' ), $oria_matched ) ); ?></b>
-							<?php esc_html_e( 'Check your email — we\'ve listed exactly who received it, and they\'ll reply to you directly.', 'oria' ); ?>
-						<?php else : ?>
-							<b><?php esc_html_e( 'Request received.', 'oria' ); ?></b>
-							<?php esc_html_e( "We're finding you options by hand and will email you within a day.", 'oria' ); ?>
-						<?php endif; ?>
-					</span>
-				</div>
-			<?php else : ?>
-			<form class="stack" style="gap:.8rem" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" data-oria-event="match_started">
-				<input type="hidden" name="action" value="oria_match">
-				<input type="hidden" name="oform_ts" value="<?php echo esc_attr( (string) time() ); ?>">
-				<?php wp_nonce_field( 'oria_match', 'oform_nonce' ); ?>
-				<input type="text" name="oform_website" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-
-				<?php if ( 'error' === $oria_state ) : ?>
-					<p style="font-size:.8125rem;color:#ffb4a2"><?php esc_html_e( 'That didn\'t send — check your name and email and try again.', 'oria' ); ?></p>
-				<?php endif; ?>
-
-				<div class="grid matchband__pair">
-					<label class="field"><span class="field__label"><?php esc_html_e( 'What would you like to try?', 'oria' ); ?></span>
-						<select class="select" name="match_service" required>
-							<option value=""><?php esc_html_e( 'Choose…', 'oria' ); ?></option>
-							<optgroup label="<?php esc_attr_e( 'Practices', 'oria' ); ?>">
-								<?php foreach ( $oria_practices as $oria_t ) : ?>
-									<option value="<?php echo esc_attr( $oria_t->slug ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_t ) ); ?></option>
-								<?php endforeach; ?>
-							</optgroup>
-							<optgroup label="<?php esc_attr_e( 'Specific services', 'oria' ); ?>">
-								<?php foreach ( $oria_specs as $oria_t ) : ?>
-									<option value="<?php echo esc_attr( $oria_t->slug ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_t ) ); ?></option>
-								<?php endforeach; ?>
-							</optgroup>
-						</select></label>
-					<label class="field"><span class="field__label"><?php esc_html_e( 'Where suits you?', 'oria' ); ?></span>
-						<select class="select" name="match_area">
-							<option value=""><?php esc_html_e( 'Anywhere in Perth', 'oria' ); ?></option>
-							<?php foreach ( $oria_regions as $oria_r ) : ?>
-								<?php
-								$oria_subs = get_terms( array( 'taxonomy' => 'area', 'parent' => $oria_r->term_id, 'hide_empty' => true, 'orderby' => 'name' ) );
-								$oria_subs = is_wp_error( $oria_subs ) ? array() : $oria_subs;
-								?>
-								<optgroup label="<?php echo esc_attr( \Oria\Theme\tname( $oria_r ) ); ?>">
-									<option value="<?php echo esc_attr( $oria_r->slug ); ?>"><?php echo esc_html( sprintf( __( 'All of %s', 'oria' ), \Oria\Theme\tname( $oria_r ) ) ); ?></option>
-									<?php foreach ( $oria_subs as $oria_s ) : ?>
-										<option value="<?php echo esc_attr( $oria_s->slug ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_s ) ); ?></option>
-									<?php endforeach; ?>
-								</optgroup>
-							<?php endforeach; ?>
-						</select></label>
-				</div>
-
-				<label class="field"><span class="field__label"><?php esc_html_e( 'When suits you?', 'oria' ); ?></span>
-					<select class="select" name="match_timing">
-						<option value="Flexible"><?php esc_html_e( "I'm flexible", 'oria' ); ?></option>
-						<option value="Weekday daytime"><?php esc_html_e( 'Weekday daytime', 'oria' ); ?></option>
-						<option value="Weekday evenings"><?php esc_html_e( 'Weekday evenings', 'oria' ); ?></option>
-						<option value="Weekends"><?php esc_html_e( 'Weekends', 'oria' ); ?></option>
-					</select></label>
-
-				<div class="grid matchband__pair">
-					<label class="field"><span class="field__label"><?php esc_html_e( 'Your name', 'oria' ); ?></span>
-						<input class="input" type="text" name="lead_name" required></label>
-					<label class="field"><span class="field__label"><?php esc_html_e( 'Email', 'oria' ); ?></span>
-						<input class="input" type="email" name="lead_email" required></label>
-				</div>
-				<label class="field"><span class="field__label"><?php esc_html_e( 'Phone', 'oria' ); ?> <span style="color:var(--mist);font-weight:400">· <?php esc_html_e( 'optional', 'oria' ); ?></span></span>
-					<input class="input" type="tel" name="lead_phone"></label>
-				<label class="field"><span class="field__label"><?php esc_html_e( 'Anything practical?', 'oria' ); ?> <span style="color:var(--mist);font-weight:400">· <?php esc_html_e( 'optional', 'oria' ); ?></span></span>
-					<textarea class="textarea" name="lead_notes" style="min-height:64px" maxlength="600" placeholder="<?php esc_attr_e( 'e.g. beginner, mornings only, near the train line — please don\'t include medical details', 'oria' ); ?>"></textarea></label>
-
-				<button class="btn btn--light btn--block" type="submit"><?php esc_html_e( 'Match me with practices', 'oria' ); ?></button>
-				<p class="hint" style="color:var(--mist)">
-					<?php esc_html_e( 'We share only these details, only with the matched practices, so they can reply to you. Your receipt lists exactly who received them.', 'oria' ); ?>
-				</p>
-			</form>
-			<?php endif; ?>
+			<?php get_template_part( 'template-parts/match-form' ); ?>
 		</div>
 	</div>
 </section>
+
+<dialog class="matchdialog" id="matchDialog" aria-labelledby="matchDialogTitle">
+	<div class="matchdialog__inner on-deep">
+		<div class="matchdialog__head">
+			<div>
+				<span class="micro"><?php esc_html_e( 'Free matching service', 'oria' ); ?></span>
+				<h2 class="h3" id="matchDialogTitle" style="color:#fff;margin-top:.5rem"><?php esc_html_e( "Tell us what you're after. We'll introduce you.", 'oria' ); ?></h2>
+			</div>
+			<button class="matchdialog__close" type="button" data-match-close aria-label="<?php esc_attr_e( 'Close', 'oria' ); ?>">&#10005;</button>
+		</div>
+		<?php get_template_part( 'template-parts/match-form' ); ?>
+	</div>
+</dialog>
