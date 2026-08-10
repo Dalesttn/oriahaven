@@ -42,6 +42,57 @@ function bootstrap(): void {
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\seo_robots' );
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title' );
 	add_filter( 'wpseo_opengraph_image', __NAMESPACE__ . '\og_image' );
+	// Last, so it sees Yoast's block: where Yoast already advertises its
+	// sitemap this does nothing, and a second line never gets added.
+	add_filter( 'robots_txt', __NAMESPACE__ . '\robots_txt', 9999, 2 );
+}
+
+/**
+ * Point crawlers at the sitemap that actually lists the directory.
+ *
+ * Core advertises /wp-sitemap.xml in robots.txt. Yoast builds a richer
+ * index at /sitemap_index.xml — the one carrying the practice, area and
+ * specialty archives — but core's line was the one being served, so
+ * robots.txt was naming the weaker of two live sitemaps.
+ *
+ * Only rewrites when Yoast's sitemaps are switched on; if they are not,
+ * core's line is the best available and is left alone. Note this filter
+ * cannot run at all if a physical robots.txt file exists in the web root
+ * — WordPress serves that file directly and never builds the dynamic one.
+ */
+function robots_txt( $output, $public ) {
+	if ( ! $public ) {
+		return $output; // A site set to discourage indexing stays that way.
+	}
+	$sitemap = yoast_sitemap_url();
+	if ( '' === $sitemap ) {
+		return $output;
+	}
+
+	$lines = preg_split( '/\R/', (string) $output ) ?: array();
+	$kept  = array();
+	foreach ( $lines as $line ) {
+		if ( preg_match( '#^\s*Sitemap:\s*\S*wp-sitemap\.xml\s*$#i', $line ) ) {
+			continue;
+		}
+		$kept[] = $line;
+	}
+	$output = implode( "\n", $kept );
+
+	if ( false === stripos( $output, $sitemap ) ) {
+		$output = rtrim( $output ) . "\n\nSitemap: " . $sitemap . "\n";
+	}
+	return $output;
+}
+
+/** Yoast's sitemap index, or '' when Yoast isn't building sitemaps. */
+function yoast_sitemap_url(): string {
+	if ( ! class_exists( 'WPSEO_Options' ) || ! method_exists( 'WPSEO_Options', 'get' ) ) {
+		return '';
+	}
+	return \WPSEO_Options::get( 'enable_xml_sitemap', false )
+		? home_url( '/sitemap_index.xml' )
+		: '';
 }
 
 function add_routes(): void {
@@ -136,6 +187,30 @@ function decoded( \WP_Term $term ): string {
 
 /* ----------------------------------------------------------------- titles */
 
+/**
+ * Has an editor written their own Yoast title/description for this term?
+ *
+ * Yoast keeps per-term SEO settings in one option rather than term meta.
+ * Anything hand-written there outranks what we generate — the same rule
+ * the listing title below already follows.
+ */
+function term_override( \WP_Term $term, string $key ): string {
+	$meta = get_option( 'wpseo_taxonomy_meta', array() );
+	return trim( (string) ( $meta[ $term->taxonomy ][ $term->term_id ][ $key ] ?? '' ) );
+}
+
+/** The queried term when this is a plain practice or area archive, else null. */
+function plain_term(): ?\WP_Term {
+	if ( combo_area() ) {
+		return null; // The combo branch owns this page.
+	}
+	if ( ! is_tax( Taxonomies\PRACTICE ) && ! is_tax( Taxonomies\AREA ) ) {
+		return null;
+	}
+	$term = get_queried_object();
+	return $term instanceof \WP_Term ? $term : null;
+}
+
 function seo_title( $title ) {
 	$area = combo_area();
 	if ( $area ) {
@@ -144,6 +219,17 @@ function seo_title( $title ) {
 	}
 	if ( is_tax( Taxonomies\SPECIALTY ) ) {
 		return sprintf( '%s in Perth | %s', decoded( get_queried_object() ), get_bloginfo( 'name' ) );
+	}
+
+	/*
+	 * Category and area archives. Without this they fall through to Yoast's
+	 * default and ship as "Yoga & movement Archives" — the word "Archives"
+	 * sitting in the title of the most commercially useful pages on the
+	 * site, and no mention of Perth in any of them.
+	 */
+	$term = plain_term();
+	if ( $term && '' === term_override( $term, 'wpseo_title' ) ) {
+		return sprintf( '%s | %s', archive_heading( $term ), get_bloginfo( 'name' ) );
 	}
 	// The event archive title now lives in Yoast's own settings, so it stays
 	// editable in the admin rather than being overridden from here.
@@ -154,6 +240,20 @@ function seo_title( $title ) {
 		}
 	}
 	return $title;
+}
+
+/**
+ * The phrase a category or area archive should lead with — and the same
+ * phrase its <h1> already uses, so the title tag and the page agree.
+ *
+ * A practice is "{Practice} in Perth". An area is "Wellness practices in
+ * {Area}", because the page is every modality in one suburb rather than
+ * one modality across the metro.
+ */
+function archive_heading( \WP_Term $term ): string {
+	return Taxonomies\AREA === $term->taxonomy
+		? sprintf( 'Wellness practices in %s', decoded( $term ) )
+		: sprintf( '%s in Perth', decoded( $term ) );
 }
 
 /** "Bodywork & Massage in Fremantle" for a listing, or ''. */
@@ -209,6 +309,23 @@ function seo_description( $desc ) {
 			? wp_specialchars_decode( $term->description, ENT_QUOTES )
 			: sprintf( 'Find %s across the Perth metro — timetables, prices and verified contact details.', strtolower( decoded( $term ) ) );
 	}
+	// Category and area archives, same gap as the title above.
+	$term = plain_term();
+	if ( $term && '' === term_override( $term, 'wpseo_desc' ) ) {
+		if ( '' !== trim( (string) $term->description ) ) {
+			return wp_specialchars_decode( $term->description, ENT_QUOTES );
+		}
+		return Taxonomies\AREA === $term->taxonomy
+			? sprintf(
+				'Wellness practices in %s: verified studios, clinics and practitioners with real prices, timetables and contact details. No booking fees.',
+				decoded( $term )
+			)
+			: sprintf(
+				'Compare %s across the Perth metro — verified practices with real prices, timetables and contact details. No booking fees.',
+				strtolower( decoded( $term ) )
+			);
+	}
+
 	if ( ( is_singular( 'listing' ) || is_singular( 'event' ) ) && ! $desc ) {
 		$auto = entity_description( (int) get_the_ID() );
 		if ( '' !== $auto ) {
@@ -262,6 +379,8 @@ function core_title( array $parts ): array {
 		$parts['title'] = sprintf( '%s in %s', decoded( get_queried_object() ), decoded( $area ) );
 	} elseif ( is_tax( Taxonomies\SPECIALTY ) ) {
 		$parts['title'] = sprintf( '%s in Perth', decoded( get_queried_object() ) );
+	} elseif ( plain_term() ) {
+		$parts['title'] = archive_heading( plain_term() );
 	} elseif ( is_post_type_archive( 'event' ) ) {
 		$parts['title'] = __( "What's on in Perth — wellness workshops & events", 'oria' );
 	} elseif ( is_singular( 'listing' ) ) {
