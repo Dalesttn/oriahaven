@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const QUERY_VAR  = 'oria_area';
-const REWRITE_V  = '2'; // 2: event archive moved to /whats-on-perth/.
+const REWRITE_V  = '3'; // 3: /perth/ hub route added.
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\add_routes', 10 );

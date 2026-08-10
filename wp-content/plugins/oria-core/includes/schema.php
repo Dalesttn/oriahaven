@@ -27,12 +27,64 @@ function output(): void {
 		$graph = listing_schema( get_the_ID() );
 	} elseif ( is_singular( 'event' ) ) {
 		$graph = event_schema( get_the_ID() );
+	} elseif ( is_tax( array( 'practice', 'specialty', 'area' ) ) || is_post_type_archive( 'listing' ) ) {
+		$graph = item_list_schema();
 	}
 	if ( $graph ) {
 		echo '<script type="application/ld+json">'
 			. wp_json_encode( $graph, JSON_UNESCAPED_SLASHES )
 			. '</script>' . "\n";
 	}
+}
+
+/**
+ * The listings on a directory archive, as an ordered ItemList.
+ *
+ * URL-only ListItems, which is the form Google documents for summary
+ * pages: it says "this page is a list, and here is what it points at"
+ * without restating each business inline. The full LocalBusiness record
+ * lives on the profile the item links to, which is the page we want
+ * ranking for the business name anyway.
+ *
+ * Skipped on thin or empty archives — a one-item list is noise, and on a
+ * noindexed combo it is markup nobody will ever read.
+ *
+ * @return array<string, mixed>|null
+ */
+function item_list_schema(): ?array {
+	$posts = $GLOBALS['wp_query']->posts ?? array();
+	if ( count( $posts ) < 2 ) {
+		return null;
+	}
+
+	$items = array();
+	foreach ( $posts as $i => $post ) {
+		$url = get_permalink( $post );
+		if ( ! $url ) {
+			continue;
+		}
+		$items[] = array(
+			'@type'    => 'ListItem',
+			'position' => $i + 1,
+			'url'      => $url,
+			'name'     => wp_specialchars_decode( get_post_field( 'post_title', $post, 'raw' ) ),
+		);
+	}
+	if ( ! $items ) {
+		return null;
+	}
+
+	$term = get_queried_object();
+	$self = $term instanceof \WP_Term ? get_term_link( $term ) : get_post_type_archive_link( 'listing' );
+
+	return array(
+		'@context'        => 'https://schema.org',
+		'@type'           => 'ItemList',
+		'@id'             => ( is_string( $self ) ? $self : home_url( '/' ) ) . '#listings',
+		'itemListOrder'   => 'https://schema.org/ItemListOrderAscending',
+		'numberOfItems'   => count( $items ),
+		'itemListElement' => $items,
+	);
 }
 
 /** @return array<string, mixed>|null */

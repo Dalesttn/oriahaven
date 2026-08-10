@@ -105,4 +105,15 @@ if ( $oria_term instanceof WP_Term && $oria_region ) :
 <?php endif; ?>
 
 <?php
+if ( $oria_term instanceof WP_Term ) {
+	get_template_part(
+		'template-parts/faq',
+		null,
+		array(
+			'term'    => $oria_term,
+			'heading' => sprintf( __( 'Wellness in %s — common questions', 'oria' ), \Oria\Theme\tname( $oria_term ) ),
+		)
+	);
+}
+
 get_footer();

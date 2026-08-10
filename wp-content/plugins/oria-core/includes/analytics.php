@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const META_STATS = '_oria_stats';
 const KEEP_DAYS  = 90;
-const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book' );
+const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq' );
 
 function bootstrap(): void {
 	add_action( 'wp', __NAMESPACE__ . '\count_view' );
@@ -30,10 +30,29 @@ function bootstrap(): void {
 
 /* ---------------------------------------------------------------- record */
 
+/**
+ * All of a listing's counters live in one serialised meta row, so a bare
+ * read-modify-write loses increments whenever two of them overlap — and
+ * they do overlap, because a visitor who taps "directions" and then
+ * "call" fires two beacons that race each other to the same row. Under
+ * five simultaneous beacons roughly two were being dropped.
+ *
+ * A named MySQL lock serialises the writers. If the lock can't be had in
+ * time we still write: an occasional lost count beats a dropped one, and
+ * these numbers are what a paying practitioner judges us by.
+ */
 function record( int $post_id, string $type ): void {
 	if ( ! in_array( $type, TYPES, true ) ) {
 		return;
 	}
+
+	global $wpdb;
+	$lock = substr( 'oria_stats_' . $post_id . '_' . DB_NAME, 0, 64 );
+	$held = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 3)', $lock ) );
+
+	// Another request may have written since this one started; read inside
+	// the lock, not before it.
+	wp_cache_delete( $post_id, 'post_meta' );
 
 	$stats = get_post_meta( $post_id, META_STATS, true );
 	$stats = is_array( $stats ) ? $stats : array();
@@ -50,6 +69,10 @@ function record( int $post_id, string $type ): void {
 	}
 
 	update_post_meta( $post_id, META_STATS, $stats );
+
+	if ( 1 === $held ) {
+		$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) );
+	}
 }
 
 /** One metric as a day-by-day series over the last N days, oldest first. */
@@ -109,7 +132,7 @@ function routes(): void {
 			'permission_callback' => '__return_true',
 			'args'                => array(
 				'id'   => array( 'type' => 'integer', 'required' => true ),
-				'type' => array( 'type' => 'string', 'required' => true, 'enum' => array( 'web', 'tel', 'mail', 'book' ) ),
+				'type' => array( 'type' => 'string', 'required' => true, 'enum' => array( 'web', 'tel', 'mail', 'book', 'dir', 'enq' ) ),
 			),
 			'callback'            => __NAMESPACE__ . '\track_endpoint',
 		)
@@ -190,6 +213,8 @@ function render_metabox( \WP_Post $post ): void {
 		'tel'  => __( 'Phone taps', 'oria' ),
 		'mail' => __( 'Email clicks', 'oria' ),
 		'book' => __( 'Booking clicks', 'oria' ),
+		'enq'  => __( 'Enquiries started', 'oria' ),
+		'dir'  => __( 'Directions', 'oria' ),
 	);
 	echo '<div class="oria-perf__grid">';
 	foreach ( $cells as $type => $label ) {

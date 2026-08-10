@@ -926,23 +926,79 @@
     });
   }
 
-  /* --- Analytics beacon ------------------------------------------------ */
-  /* Contact taps on listing profiles report to the site's own counter —
-     one POST, no cookies, nothing personal. */
+  /* --- Analytics ------------------------------------------------------- */
+  /* Two destinations, one click. The site's own counter is what a paying
+     practitioner sees on their listing ("is this sending me people?");
+     the dataLayer push is what turns the same tap into a GA4 conversion.
+     Neither is allowed to break the tap, and neither sets a cookie of
+     ours or sends anything about who clicked. */
+
+  /* GA4 names for our short internal codes. The internal ones stay short
+     because they're stored per listing per day, forever. */
+  var LEAD_EVENTS = {
+    tel: "contact_phone",
+    mail: "contact_email",
+    web: "outbound_website",
+    book: "booking_click",
+    dir: "directions_click",
+    enq: "enquiry_started"
+  };
+
+  function pushEvent(name, params) {
+    if (!name) return;
+    window.dataLayer = window.dataLayer || [];
+    var payload = { event: name };
+    var ctx = window.ORIA_PROFILE;
+    if (ctx) {
+      payload.listing_id = ctx.id;
+      payload.listing_category = ctx.category;
+      payload.listing_suburb = ctx.suburb;
+      payload.listing_plan = ctx.plan;
+    }
+    if (params) {
+      for (var k in params) if (Object.prototype.hasOwnProperty.call(params, k)) payload[k] = params[k];
+    }
+    try { window.dataLayer.push(payload); } catch (err) { /* never block */ }
+  }
+
   function initTracking() {
-    if (!window.ORIA_TRACK || !navigator.sendBeacon) return;
     document.addEventListener("click", function (e) {
       var el = e.target.closest && e.target.closest("[data-oria-track]");
       if (!el) return;
       var id = parseInt(el.getAttribute("data-oria-id"), 10);
       var type = el.getAttribute("data-oria-track");
       if (!id || !type) return;
+
+      pushEvent(LEAD_EVENTS[type] || type);
+
+      if (!window.ORIA_TRACK || !navigator.sendBeacon) return;
       try {
         navigator.sendBeacon(
           ORIA_TRACK.url,
           new Blob([JSON.stringify({ id: id, type: type })], { type: "application/json" })
         );
       } catch (err) { /* counting must never break a tap */ }
+    });
+
+    /* Profile views: one event per page, carrying the category, suburb
+       and plan so GA4 can answer "which categories convert?" */
+    if (window.ORIA_PROFILE) pushEvent("practice_view");
+
+    /* Claim funnel. Started fires on the first real interaction with the
+       form rather than on render, so a listing that merely displays the
+       form doesn't report an intent nobody had. */
+    $$("[data-oria-event]").forEach(function (el) {
+      var name = el.getAttribute("data-oria-event");
+      if (el.tagName === "FORM") {
+        var fired = false;
+        el.addEventListener("input", function () {
+          if (fired) return;
+          fired = true;
+          pushEvent(name);
+        });
+      } else {
+        pushEvent(name);
+      }
     });
   }
 

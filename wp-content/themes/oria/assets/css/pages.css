@@ -1112,3 +1112,117 @@ a.livesession:hover { background: var(--sand-2); }
   backdrop-filter: blur(24px) saturate(130%);
   -webkit-backdrop-filter: blur(24px) saturate(130%);
 }
+
+/* -------------------------------------------------------------------------
+ * FAQ blocks (landing pages)
+ *
+ * Native <details>, so the answers are in the DOM and readable with
+ * JavaScript off — which matters here, because the whole point of these
+ * blocks is to be the unique text on an otherwise templated page.
+ * ---------------------------------------------------------------------- */
+.faq__title { margin-bottom: var(--s-5); }
+
+.faq {
+  border-top: 1px solid var(--line);
+  max-width: 68ch;
+}
+
+.faq__item { border-bottom: 1px solid var(--line); }
+
+.faq__q {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-4);
+  padding: var(--s-4) 0;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: var(--fs-h4);
+  line-height: 1.45;
+  cursor: pointer;
+  list-style: none;
+}
+.faq__q::-webkit-details-marker { display: none; }
+
+/* The marker is drawn rather than typed so it can rotate on open. */
+.faq__q::after {
+  content: "";
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin-top: 0.42em;
+  margin-left: auto;
+  border-right: 1.6px solid var(--text-faint);
+  border-bottom: 1.6px solid var(--text-faint);
+  transform: rotate(45deg);
+  transition: transform 0.18s ease;
+}
+.faq__item[open] .faq__q::after { transform: rotate(-135deg); }
+
+.faq__q:hover { color: var(--teal); }
+.faq__q:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+.faq__a {
+  padding: 0 0 var(--s-5);
+  max-width: 62ch;
+}
+.faq__a p { color: var(--text-soft, var(--ink)); line-height: 1.65; margin: 0; }
+
+/* -------------------------------------------------------------------------
+ * /perth/ hub — the directory index
+ * ---------------------------------------------------------------------- */
+.hubgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: var(--s-3);
+}
+
+.hubcard {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  background: var(--sand-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+.hubcard:hover {
+  background: var(--white);
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+}
+.hubcard__name { font-weight: 500; }
+.hubcard__n { font-size: var(--fs-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+/* Columns rather than grid: regions have wildly different suburb counts,
+   and a grid leaves a row as tall as its tallest cell, so Perth Hills
+   with two suburbs would sit beside a hole the height of Perth Central. */
+.hubareas {
+  columns: 240px 4;
+  column-gap: var(--s-5);
+}
+
+.hubarea {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: var(--s-6);
+}
+
+.hubarea__h { font-size: var(--fs-h4); margin: 0 0 var(--s-3); }
+.hubarea__h a { text-decoration: none; color: var(--ink); border-bottom: 2px solid var(--gold-soft); }
+.hubarea__h a:hover { border-bottom-color: var(--teal); }
+
+.hubarea__list { list-style: none; margin: 0; padding: 0; }
+.hubarea__list li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: 0.3rem 0;
+  font-size: var(--fs-sm);
+}
+.hubarea__list a { text-decoration: none; color: var(--text-soft, var(--ink)); }
+.hubarea__list a:hover { color: var(--teal); text-decoration: underline; }
+.hubarea__n { color: var(--text-faint); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; }

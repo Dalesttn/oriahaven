@@ -432,7 +432,7 @@ while ( have_posts() ) :
 										<div class="keyfact__v" style="font-weight:500"><?php echo esc_html( $oria_address ); ?></div>
 									</div>
 									<div style="align-self:center;justify-self:start">
-										<a class="btn btn--ghost btn--sm btn--plain" href="<?php echo esc_url( \Oria\Theme\map_directions_url( $oria_address ) ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'Get directions', 'oria' ); ?></a>
+										<a class="btn btn--ghost btn--sm btn--plain" href="<?php echo esc_url( \Oria\Theme\map_directions_url( $oria_address ) ); ?>" rel="noopener" target="_blank" data-oria-track="dir" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Get directions', 'oria' ); ?></a>
 									</div>
 								<?php endif; ?>
 								<?php if ( $oria_transit ) : ?>
@@ -467,7 +467,7 @@ while ( have_posts() ) :
 					<?php if ( $oria_booking ) : ?>
 						<a class="btn btn--light btn--block" href="<?php echo esc_url( $oria_booking ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="book" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Book on their site', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
 					<?php elseif ( $oria_email ) : ?>
-						<a class="btn btn--light btn--block" href="mailto:<?php echo esc_attr( $oria_email ); ?>?subject=<?php echo rawurlencode( 'Enquiry via Oria Haven — ' . \Oria\Theme\ptitle() ); ?>"><?php esc_html_e( 'Send an enquiry', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
+						<a class="btn btn--light btn--block" href="mailto:<?php echo esc_attr( $oria_email ); ?>?subject=<?php echo rawurlencode( 'Enquiry via Oria Haven — ' . \Oria\Theme\ptitle() ); ?>" data-oria-track="enq" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Send an enquiry', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
 					<?php endif; ?>
 					<p class="hint" style="color:var(--mist)"><?php esc_html_e( 'Enquiries go straight to the practice. We never take a cut of bookings.', 'oria' ); ?></p>
 				</div>
@@ -519,7 +519,7 @@ while ( have_posts() ) :
 				<div class="claimprompt" id="claim">
 					<b style="display:block;margin-bottom:.4rem"><?php esc_html_e( 'Is this your practice?', 'oria' ); ?></b>
 					<?php if ( isset( $_GET['oria_claim'] ) && 'received' === $_GET['oria_claim'] ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-						<div class="notice" style="background:var(--white)">
+						<div class="notice" style="background:var(--white)" data-oria-event="claim_completed">
 							<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.2l2.4 2.4 4.6-5"/></svg>
 							<span><b><?php esc_html_e( 'Request received.', 'oria' ); ?></b> <?php esc_html_e( 'We check every claim by hand — you\'ll get an email with your log-in once it\'s approved.', 'oria' ); ?></span>
 						</div>
@@ -530,7 +530,7 @@ while ( have_posts() ) :
 						<?php if ( isset( $_GET['oria_claim'] ) && 'error' === $_GET['oria_claim'] ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 							<p style="font-size:.8125rem;color:#9b2c2c;margin-bottom:.75rem"><?php esc_html_e( 'That didn\'t send — check the name and email and try again.', 'oria' ); ?></p>
 						<?php endif; ?>
-						<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" class="stack" style="gap:.75rem">
+						<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" class="stack" style="gap:.75rem" data-oria-event="claim_started">
 							<input type="hidden" name="action" value="oria_claim">
 							<input type="hidden" name="listing_id" value="<?php echo (int) $oria_id; ?>">
 							<?php wp_nonce_field( 'oria_claim', 'oria_claim_nonce' ); ?>

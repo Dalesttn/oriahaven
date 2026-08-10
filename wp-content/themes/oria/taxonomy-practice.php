@@ -170,6 +170,24 @@ if ( $oria_term instanceof WP_Term ) :
 	<?php endif; ?>
 <?php endif; ?>
 
+<?php
+/*
+ * Combos are deliberately skipped: the generated questions are answered
+ * across the whole metro ("how many in Perth"), which would read as a
+ * lie on a page that has already narrowed to one suburb.
+ */
+if ( ! $oria_is_combo && $oria_term instanceof WP_Term ) {
+	get_template_part(
+		'template-parts/faq',
+		null,
+		array(
+			'term'    => $oria_term,
+			'heading' => sprintf( __( '%s in Perth — common questions', 'oria' ), $oria_pname ),
+		)
+	);
+}
+?>
+
 <?php $oria_shop = function_exists( '\Oria\Shop\Render\auto_band' ) ? \Oria\Shop\Render\auto_band() : ''; ?>
 <?php if ( $oria_shop ) : ?>
 <section class="wrap section section--top-flush"><?php echo $oria_shop; // phpcs:ignore WordPress.Security.EscapeOutput ?></section>

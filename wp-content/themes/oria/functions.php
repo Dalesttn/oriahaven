@@ -99,6 +99,14 @@ add_action(
 			'before'
 		);
 
+		// Listing profiles describe themselves to the analytics layer, so a
+		// lead event in GA4 arrives already labelled with the category,
+		// suburb and plan it came from. Without this a conversion is just a
+		// count; with it we can tell a practitioner what their tier earns.
+		if ( is_singular( 'listing' ) ) {
+			wp_add_inline_script( 'oria-app', 'window.ORIA_PROFILE = ' . wp_json_encode( profile_context() ) . ';', 'before' );
+		}
+
 		// The directory pages read window.ORIA_DATA; print it from live posts.
 		// Pages are included because any built page can hold the map or the
 		// search hero, both of which read this data.
@@ -123,6 +131,34 @@ add_filter(
 /* -------------------------------------------------------------------------
  * Data bridge: live posts -> the same shape data/listings.js had
  * ---------------------------------------------------------------------- */
+
+/**
+ * The dimensions every lead event from a listing profile should carry.
+ * Deliberately not the business name — GA4 reports read better grouped by
+ * category and plan, and the page path already identifies the listing.
+ *
+ * @return array<string, mixed>
+ */
+function profile_context(): array {
+	$id        = get_queried_object_id();
+	$practices = wp_get_post_terms( $id, 'practice' );
+	$areas     = wp_get_post_terms( $id, 'area' );
+
+	$suburb = '';
+	foreach ( is_wp_error( $areas ) ? array() : $areas as $term ) {
+		if ( $term->parent ) {
+			$suburb = tname( $term );
+			break;
+		}
+	}
+
+	return array(
+		'id'       => $id,
+		'category' => ! is_wp_error( $practices ) && $practices ? $practices[0]->slug : '',
+		'suburb'   => $suburb,
+		'plan'     => display_status( $id ),
+	);
+}
 
 /**
  * Every published listing in the exact structure the prototype's app.js
