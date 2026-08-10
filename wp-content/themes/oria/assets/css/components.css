@@ -322,6 +322,20 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
   text-transform: lowercase; flex: none;
 }
 
+/* On a phone the searchbar stacks, and the desktop's -2.6rem offset
+   hangs the panel off the left edge of the screen. Pin it to the field
+   instead and let it use the full width it has. */
+@media (max-width: 720px) {
+  .osearch {
+    left: 0; right: 0; top: calc(100% + 10px);
+    min-width: 0; width: auto;
+    max-height: min(52vh, 340px);
+    max-height: min(52dvh, 340px);
+  }
+  .osearch__opt { white-space: normal; }
+  .osearch__opt b { overflow-wrap: anywhere; }
+}
+
 /* The header's own compact search. */
 .navsearch { position: relative; display: flex; align-items: center; gap: var(--s-2); }
 .navsearch__icon { width: 15px; height: 15px; color: var(--text-faint); flex: none; }

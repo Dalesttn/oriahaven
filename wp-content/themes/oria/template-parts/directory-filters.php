@@ -30,6 +30,13 @@ $oria_prices = array(
 );
 ?>
 <div class="filters" id="dirFilters">
+	<?php // Sheet furniture: hidden on desktop, the way out on a phone. ?>
+	<div class="filters__head">
+		<span class="filters__title"><?php esc_html_e( 'Filters', 'oria' ); ?></span>
+		<button class="filters__close" type="button" data-sheet-close aria-label="<?php esc_attr_e( 'Close filters', 'oria' ); ?>">
+			<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+		</button>
+	</div>
 	<?php if ( ! is_wp_error( $oria_practices ) && $oria_practices ) : ?>
 	<div class="filterbox">
 		<h3><?php esc_html_e( 'Practice', 'oria' ); ?></h3>

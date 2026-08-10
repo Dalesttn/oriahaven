@@ -330,6 +330,9 @@ a.livesession:hover { background: var(--sand-2); }
 .dirsheet__scrim,
 .dirsheet__done { display: none; }
 
+/* Sheet furniture is meaningless while the filters are a sidebar. */
+.filters__head { display: none; }
+
 /* --- Filters as a sheet, once the sidebar can't sit beside the results --
    Stacked inline, the filter groups run to ~2,300px — nearly three
    screens before the first result. The breakpoint matches the one where
@@ -342,9 +345,18 @@ a.livesession:hover { background: var(--sand-2); }
 @media (max-width: 1000px) {
   .js .filters {
     position: fixed; inset: auto 0 0 0; z-index: 120;
-    max-height: 86vh; overflow-y: auto;
+    /* dvh, not vh: on iOS vh is measured against the viewport with the
+       browser chrome hidden, so a vh-sized sheet runs underneath Safari's
+       toolbar. vh first as the fallback for anything without dvh. */
+    max-height: 86vh;
+    max-height: 86dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     display: block;
-    margin: 0; padding: var(--s-5) var(--gutter) 6.5rem;
+    margin: 0;
+    padding: 0 var(--gutter);
+    /* Room for the fixed action button, clear of the home indicator. */
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
     background: var(--paper);
     border-radius: var(--r-lg) var(--r-lg) 0 0;
     box-shadow: 0 -18px 50px rgba(6, 26, 25, 0.28);
@@ -356,16 +368,37 @@ a.livesession:hover { background: var(--sand-2); }
   .js .filters.is-collapsed { display: block; }
   .js .filters > .filterbox + .filterbox { margin-top: var(--s-4); }
 
-  /* Grab handle, so it reads as a sheet you can dismiss. */
-  .js .filters::before {
-    content: ""; display: block; width: 44px; height: 4px; margin: 0 auto var(--s-5);
-    border-radius: 999px; background: var(--line-strong);
+  /* Title and close, stuck to the top of the sheet so there is always a
+     way out no matter how far down the filters you have scrolled. The
+     old grab handle only looked tappable — this one is a real button. */
+  .js .filters .filters__head {
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 2;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: var(--s-4) var(--gutter);
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
   }
+  .js .filters .filters__head::before {
+    content: ""; position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+    width: 44px; height: 4px; border-radius: 999px; background: var(--line-strong);
+  }
+  .filters__title { font-weight: 700; font-size: var(--fs-sm); }
+  .js .filters .filters__close {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; margin-right: calc(var(--s-2) * -1);
+    border: 0; border-radius: 50%; background: var(--sand-2); color: var(--ink);
+    cursor: pointer;
+  }
+  .js .filters .filters__close svg { width: 16px; height: 16px; }
 
   /* Still hidden until the sheet is actually open — .is-on is added with
      the sheet, so neither can steal a grid cell while closed. */
+  /* Clear of the home indicator and Safari's bottom toolbar, which
+     overlay the viewport and swallowed this button entirely on iOS. */
   .js .dirsheet__done.is-on {
-    position: fixed; left: var(--gutter); right: var(--gutter); bottom: var(--s-5);
+    position: fixed; left: var(--gutter); right: var(--gutter);
+    bottom: calc(var(--s-5) + env(safe-area-inset-bottom, 0px));
     z-index: 121; display: flex;
   }
   .js .dirsheet__scrim.is-on {

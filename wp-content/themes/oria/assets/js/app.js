@@ -822,6 +822,20 @@
       // Stop the page behind the sheet scrolling with it.
       document.body.style.overflow = open ? "hidden" : "";
       filterToggle.setAttribute("aria-expanded", open ? "true" : "false");
+
+      // As a sheet it is a modal dialog; as a sidebar it is just a panel,
+      // so the role is only true while it is open over the page.
+      if (open) {
+        panel.setAttribute("role", "dialog");
+        panel.setAttribute("aria-modal", "true");
+        panel.scrollTop = 0;
+        var close = panel.querySelector("[data-sheet-close]");
+        if (close) close.focus();
+      } else {
+        panel.removeAttribute("role");
+        panel.removeAttribute("aria-modal");
+        filterToggle.focus();
+      }
     }
 
     if (filterToggle) {
@@ -836,6 +850,9 @@
     }
     if (scrim) scrim.addEventListener("click", function () { openSheet(false); });
     if (done) done.addEventListener("click", function () { openSheet(false); });
+    $$("[data-sheet-close]").forEach(function (b) {
+      b.addEventListener("click", function () { openSheet(false); });
+    });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && panel.classList.contains("is-open")) openSheet(false);
     });
