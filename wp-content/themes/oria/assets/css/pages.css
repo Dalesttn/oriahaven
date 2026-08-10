@@ -323,6 +323,89 @@ a.livesession:hover { background: var(--sand-2); }
   .filters.is-collapsed { display: none; }
 }
 
+/* The scrim and the sheet's own button belong to the phone layout only.
+   Hidden by default and not merely unstyled — .dir is a grid, so an
+   unhidden empty element takes a cell and knocks the results column onto
+   a new row. */
+.dirsheet__scrim,
+.dirsheet__done { display: none; }
+
+/* --- Filters as a sheet, once the sidebar can't sit beside the results --
+   Stacked inline, the filter groups run to ~2,300px — nearly three
+   screens before the first result. The breakpoint matches the one where
+   .dir drops to a single column, so the sheet takes over exactly when
+   the sidebar stops being a sidebar; a tablet in portrait would
+   otherwise inherit the same wall of checkboxes as a phone.
+
+   Gated on .js because without JavaScript nothing could open the sheet;
+   no-JS visitors keep the plain stacked list, which works, just long. */
+@media (max-width: 1000px) {
+  .js .filters {
+    position: fixed; inset: auto 0 0 0; z-index: 120;
+    max-height: 86vh; overflow-y: auto;
+    display: block;
+    margin: 0; padding: var(--s-5) var(--gutter) 6.5rem;
+    background: var(--paper);
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    box-shadow: 0 -18px 50px rgba(6, 26, 25, 0.28);
+    transform: translateY(100%);
+    transition: transform var(--t-med) var(--ease-out);
+    /* Out of flow, so the results move up to meet the toolbar. */
+  }
+  .js .filters.is-open { transform: none; }
+  .js .filters.is-collapsed { display: block; }
+  .js .filters > .filterbox + .filterbox { margin-top: var(--s-4); }
+
+  /* Grab handle, so it reads as a sheet you can dismiss. */
+  .js .filters::before {
+    content: ""; display: block; width: 44px; height: 4px; margin: 0 auto var(--s-5);
+    border-radius: 999px; background: var(--line-strong);
+  }
+
+  /* Still hidden until the sheet is actually open — .is-on is added with
+     the sheet, so neither can steal a grid cell while closed. */
+  .js .dirsheet__done.is-on {
+    position: fixed; left: var(--gutter); right: var(--gutter); bottom: var(--s-5);
+    z-index: 121; display: flex;
+  }
+  .js .dirsheet__scrim.is-on {
+    position: fixed; inset: 0; z-index: 119; display: block;
+    background: rgba(6, 26, 25, 0.45);
+    animation: dirScrimIn var(--t-med) var(--ease) both;
+  }
+  @keyframes dirScrimIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* The toolbar becomes the thing you reach first, and stays reachable. */
+  .js .dir__bar {
+    position: sticky; top: var(--head-h); z-index: 60;
+    background: var(--paper);
+    padding-block: var(--s-3);
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    box-shadow: 0 1px 0 var(--line);
+  }
+  /* The long intro costs a screen before anything useful. */
+  .dir__lede { display: none; }
+}
+
+/* Active-filter count on the Filters button. */
+.filtercount {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 1.15rem; height: 1.15rem; margin-left: 0.4rem; padding: 0 0.3rem;
+  border-radius: 999px; background: var(--deep); color: var(--white);
+  font-size: 10px; font-weight: 700;
+}
+.filtercount:empty { display: none; }
+
+/* "Show all" for the long specialty list, on every screen. */
+.filterbox .check.is-extra { display: none; }
+.filterbox.is-expanded .check.is-extra { display: flex; }
+.filtermore {
+  margin-top: var(--s-3); padding: 0; border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: var(--fs-xs); font-weight: 600; color: var(--teal);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+
 /* Frosted, same family as the navigation pill */
 .filterbox {
   background: rgba(255,255,255,.42);

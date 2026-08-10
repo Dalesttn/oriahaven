@@ -22,13 +22,16 @@ get_header();
 			<span class="micro"><?php esc_html_e( 'The directory', 'oria' ); ?></span>
 			<h1 class="h1 pagehead__title"><?php esc_html_e( "Every practice we've found in Perth.", 'oria' ); ?></h1>
 		</div>
-		<p class="lede" style="max-width:34ch"><?php esc_html_e( "Filter by practice, area, price and format. Unclaimed listings are marked — they're built from public information and waiting for their owner.", 'oria' ); ?></p>
+		<p class="lede dir__lede" style="max-width:34ch"><?php esc_html_e( "Filter by practice, area, price and format. Unclaimed listings are marked — they're built from public information and waiting for their owner.", 'oria' ); ?></p>
 	</div>
 </section>
 
 <section class="wrap section section--top-flush">
 	<div class="dir">
 		<?php get_template_part( 'template-parts/directory', 'filters' ); ?>
+		<?php // Both only come into play once the filters become a sheet on phones. ?>
+		<div class="dirsheet__scrim" id="dirScrim"></div>
+		<button class="btn btn--dark btn--block dirsheet__done" id="dirSheetDone" type="button"><?php esc_html_e( 'Show results', 'oria' ); ?></button>
 
 		<div>
 			<div class="dir__bar">
@@ -37,7 +40,7 @@ get_header();
 					<input class="input" id="dirQ" type="search" placeholder="<?php esc_attr_e( 'Search a name, suburb or practice', 'oria' ); ?>">
 				</div>
 				<div class="dir__tools">
-					<button class="btn btn--ghost btn--sm btn--plain" id="filterToggle" aria-expanded="true" aria-controls="dirFilters"><?php esc_html_e( 'Filters', 'oria' ); ?></button>
+					<button class="btn btn--ghost btn--sm btn--plain" id="filterToggle" aria-expanded="true" aria-controls="dirFilters"><?php esc_html_e( 'Filters', 'oria' ); ?><span class="filtercount" id="filterCount" aria-hidden="true"></span></button>
 					<label class="sr-only" for="dirSort"><?php esc_html_e( 'Sort by', 'oria' ); ?></label>
 					<select class="select" id="dirSort" style="width:auto">
 						<option value="relevance"><?php esc_html_e( 'Featured first', 'oria' ); ?></option>

@@ -746,6 +746,22 @@
           : "<b>" + found.length + "</b> of " + DATA.listings.length + " listings") +
           (state.regions.length === 1 ? " in " + esc(regionNames[state.regions[0]]) : "");
       }
+
+      /* With the filters hidden in a sheet, the button has to say how many
+         are on — otherwise it's the only control whose state you can't see.
+         The sheet's own button reports what you'd be going back to. */
+      var badge = $("#filterCount");
+      if (badge) {
+        var on = state.cats.length + state.regions.length + state.spec.length +
+                 state.price.length + state.format.length + (state.rating ? 1 : 0);
+        badge.textContent = on ? String(on) : "";
+      }
+      if (done) {
+        done.textContent = found.length === 1
+          ? "Show 1 practice"
+          : "Show " + found.length + " practices";
+      }
+
       chips();
       pager(pages);
 
@@ -789,14 +805,54 @@
       });
     }
 
+    /* Filters: a collapsible sidebar on desktop, a slide-up sheet on
+       phones. Same button, same panel — only the presentation differs,
+       so the filter logic below never has to know which it is. */
     var filterToggle = $("#filterToggle");
+    var panel = $("#dirFilters");
+    var scrim = $("#dirScrim");
+    var done = $("#dirSheetDone");
+    // Must track the CSS breakpoint above, where .dir loses its sidebar.
+    var isSheet = function () { return window.matchMedia("(max-width: 1000px)").matches; };
+
+    function openSheet(open) {
+      panel.classList.toggle("is-open", open);
+      if (scrim) scrim.classList.toggle("is-on", open);
+      if (done) done.classList.toggle("is-on", open);
+      // Stop the page behind the sheet scrolling with it.
+      document.body.style.overflow = open ? "hidden" : "";
+      filterToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+
     if (filterToggle) {
       filterToggle.addEventListener("click", function () {
-        var panel = $("#dirFilters");
-        var open = panel.classList.toggle("is-collapsed");
-        filterToggle.setAttribute("aria-expanded", open ? "false" : "true");
+        if (isSheet()) {
+          openSheet(!panel.classList.contains("is-open"));
+        } else {
+          var collapsed = panel.classList.toggle("is-collapsed");
+          filterToggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        }
       });
     }
+    if (scrim) scrim.addEventListener("click", function () { openSheet(false); });
+    if (done) done.addEventListener("click", function () { openSheet(false); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && panel.classList.contains("is-open")) openSheet(false);
+    });
+    // Rotating to landscape shouldn't strand an open sheet or a locked page.
+    window.addEventListener("resize", function () {
+      if (!isSheet() && panel.classList.contains("is-open")) openSheet(false);
+    });
+
+    /* Long filter groups (Specialty runs past seventy) show a dozen until
+       asked for the rest. */
+    $$("[data-filter-more]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var box = btn.closest(".filterbox");
+        var open = box.classList.toggle("is-expanded");
+        btn.textContent = open ? btn.dataset.less : btn.dataset.more;
+      });
+    });
 
     // Region shortcuts on the directory mini-map
     $$("#dirMap .region").forEach(function (g) {

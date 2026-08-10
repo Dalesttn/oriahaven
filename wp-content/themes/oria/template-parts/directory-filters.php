@@ -8,15 +8,18 @@ declare(strict_types=1);
 
 $oria_practices   = get_terms( array( 'taxonomy' => 'practice', 'hide_empty' => false ) );
 $oria_regions     = get_terms( array( 'taxonomy' => 'area', 'parent' => 0, 'hide_empty' => false ) );
+// All of them, commonest first. The list runs past seventy terms, so only
+// the first dozen show until "Show all" is tapped — the rest are in the
+// markup so the filter still works without JavaScript.
 $oria_specialties = get_terms(
 	array(
 		'taxonomy'   => 'specialty',
 		'hide_empty' => true,
 		'orderby'    => 'count',
 		'order'      => 'DESC',
-		'number'     => 16,
 	)
 );
+const ORIA_SPEC_SHOWN = 12;
 
 $oria_prices = array(
 	'Free' => __( 'Free or by donation', 'oria' ),
@@ -46,11 +49,16 @@ $oria_prices = array(
 	<?php endif; ?>
 
 	<?php if ( ! is_wp_error( $oria_specialties ) && $oria_specialties && ! is_tax( 'specialty' ) ) : ?>
-	<div class="filterbox">
+	<div class="filterbox" data-collapsible>
 		<h3><?php esc_html_e( 'Specialty', 'oria' ); ?></h3>
-		<?php foreach ( $oria_specialties as $oria_term ) : ?>
-			<label class="check"><input type="checkbox" data-filter="spec" value="<?php echo esc_attr( $oria_term->slug ); ?>"><span><?php echo esc_html( \Oria\Theme\tname( $oria_term ) ); ?></span></label>
+		<?php foreach ( array_values( $oria_specialties ) as $oria_i => $oria_term ) : ?>
+			<label class="check<?php echo $oria_i >= ORIA_SPEC_SHOWN ? ' is-extra' : ''; ?>"><input type="checkbox" data-filter="spec" value="<?php echo esc_attr( $oria_term->slug ); ?>"><span><?php echo esc_html( \Oria\Theme\tname( $oria_term ) ); ?></span></label>
 		<?php endforeach; ?>
+		<?php if ( count( $oria_specialties ) > ORIA_SPEC_SHOWN ) : ?>
+			<button class="filtermore" type="button" data-filter-more
+				data-more="<?php echo esc_attr( sprintf( __( 'Show all %d', 'oria' ), count( $oria_specialties ) ) ); ?>"
+				data-less="<?php esc_attr_e( 'Show fewer', 'oria' ); ?>"><?php echo esc_html( sprintf( __( 'Show all %d', 'oria' ), count( $oria_specialties ) ) ); ?></button>
+		<?php endif; ?>
 	</div>
 	<?php endif; ?>
 
