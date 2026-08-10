@@ -322,7 +322,9 @@
      wording that isn't in any of those names ("ice bath", "reformer")
      is mapped onto specialties by ORIA_SEARCH.synonyms. */
   function searchIndex() {
-    var D = window.ORIA_DATA;
+    // Directory-ish pages carry the full set; everywhere else gets the
+    // slim index, which holds the same fields search actually reads.
+    var D = window.ORIA_DATA || window.ORIA_SEARCH_DATA;
     if (!D) return null;
     var counts = {};
     (D.listings || []).forEach(function (l) {

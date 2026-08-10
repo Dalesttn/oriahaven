@@ -104,6 +104,12 @@ add_action(
 		// search hero, both of which read this data.
 		if ( is_post_type_archive( 'listing' ) || is_tax( array( 'practice', 'area', 'specialty' ) ) || is_page() ) {
 			wp_add_inline_script( 'oria-app', 'window.ORIA_DATA = ' . wp_json_encode( listing_data() ) . ';', 'before' );
+		} else {
+			// Everywhere else — a listing, an event, a journal article — the
+			// header search still needs something to search. The full set is
+			// ~148KB; this cut of it is ~35KB and holds only what suggestions
+			// are drawn from.
+			wp_add_inline_script( 'oria-app', 'window.ORIA_SEARCH_DATA = ' . wp_json_encode( search_index() ) . ';', 'before' );
 		}
 	}
 );
@@ -517,6 +523,50 @@ function article_meta( int $post_id ): string {
 	$bits[] = sprintf( esc_html__( '%d min read', 'oria' ), reading_time( $post_id ) );
 	return implode( '<span>&middot;</span>', array_map( static fn( $b ) => "<span>{$b}</span>", $bits ) );
 }
+
+/**
+ * The slim index behind the header search: just enough to build a
+ * suggestion list — no blurbs, images, prices or ratings.
+ *
+ * Kept in a transient because assembling it walks every listing and its
+ * terms, which is far too much work to repeat on each request for a
+ * search box most visitors never touch. Cleared whenever a listing or a
+ * term changes, so it cannot go stale behind the editor's back.
+ */
+function search_index(): array {
+	$cached = get_transient( 'oria_search_index' );
+	if ( is_array( $cached ) ) {
+		return $cached;
+	}
+
+	$full  = listing_data();
+	$index = array(
+		'categories'  => $full['categories'],
+		'specialties' => $full['specialties'],
+		'regions'     => array_map(
+			static fn( array $r ): array => array( 'id' => $r['id'], 'name' => $r['name'], 'suburbs' => $r['suburbs'] ),
+			$full['regions']
+		),
+		'listings'    => array_map(
+			static fn( array $l ): array => array(
+				'name'   => $l['name'],
+				'url'    => $l['url'],
+				'cat'    => $l['cat'],
+				'spec'   => $l['spec'],
+				'suburb' => $l['suburb'],
+			),
+			$full['listings']
+		),
+	);
+
+	set_transient( 'oria_search_index', $index, 12 * HOUR_IN_SECONDS );
+	return $index;
+}
+
+add_action( 'save_post_listing', static fn() => delete_transient( 'oria_search_index' ) );
+add_action( 'deleted_post', static fn() => delete_transient( 'oria_search_index' ) );
+add_action( 'edited_term', static fn() => delete_transient( 'oria_search_index' ) );
+add_action( 'created_term', static fn() => delete_transient( 'oria_search_index' ) );
 
 /**
  * The practice categories a journal article is about: the editor's picks
