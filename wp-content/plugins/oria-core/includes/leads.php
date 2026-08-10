@@ -51,6 +51,7 @@ function bootstrap(): void {
 
 	add_filter( 'manage_' . CPT . '_posts_columns', __NAMESPACE__ . '\columns' );
 	add_action( 'manage_' . CPT . '_posts_custom_column', __NAMESPACE__ . '\column_content', 10, 2 );
+	add_action( 'add_meta_boxes_' . CPT, __NAMESPACE__ . '\metabox' );
 }
 
 function register_cpt(): void {
@@ -565,36 +566,41 @@ function unmatched_admin_email( string $service, string $area, string $timing, a
 
 function columns( array $cols ): array {
 	return array(
-		'cb'           => $cols['cb'] ?? '<input type="checkbox" />',
-		'title'        => __( 'Lead', 'oria' ),
-		'oria_contact' => __( 'Contact', 'oria' ),
-		'oria_want'    => __( 'Asked for', 'oria' ),
-		'oria_source'  => __( 'Source', 'oria' ),
-		'date'         => __( 'Date', 'oria' ),
+		'cb'          => $cols['cb'] ?? '<input type="checkbox" />',
+		'title'       => __( 'Lead', 'oria' ),
+		'oria_email'  => __( 'Email', 'oria' ),
+		'oria_phone'  => __( 'Phone', 'oria' ),
+		'oria_want'   => __( 'Asked for', 'oria' ),
+		'oria_notes'  => __( 'Their message', 'oria' ),
+		'oria_source' => __( 'Source', 'oria' ),
+		'date'        => __( 'Date', 'oria' ),
 	);
 }
 
 function column_content( string $col, int $post_id ): void {
 	switch ( $col ) {
-		case 'oria_contact':
+		case 'oria_email':
 			$email = (string) get_post_meta( $post_id, '_email', true );
+			echo '' !== $email
+				? '<a href="mailto:' . esc_attr( $email ) . '">' . esc_html( $email ) . '</a>'
+				: '—';
+			break;
+		case 'oria_phone':
 			$phone = (string) get_post_meta( $post_id, '_phone', true );
-			echo esc_html( $email );
-			if ( '' !== $phone ) {
-				echo '<br>' . esc_html( $phone );
-			}
+			echo '' !== $phone
+				? '<a href="tel:' . esc_attr( preg_replace( '/[^0-9+]/', '', $phone ) ) . '">' . esc_html( $phone ) . '</a>'
+				: '—';
 			break;
 		case 'oria_want':
 			$service = (string) get_post_meta( $post_id, '_service', true );
 			$area    = (string) get_post_meta( $post_id, '_area', true );
-			$notes   = (string) get_post_meta( $post_id, '_notes', true );
-			if ( '' !== $service || '' !== $area ) {
-				echo esc_html( trim( $service . ( $area ? ' · ' . $area : '' ) ) );
-			} elseif ( '' !== $notes ) {
-				echo esc_html( wp_trim_words( $notes, 12, '…' ) );
-			} else {
-				echo '—';
-			}
+			$timing  = (string) get_post_meta( $post_id, '_timing', true );
+			$bits    = array_filter( array( $service, $area, $timing ) );
+			echo $bits ? esc_html( implode( ' · ', $bits ) ) : '—';
+			break;
+		case 'oria_notes':
+			$notes = (string) get_post_meta( $post_id, '_notes', true );
+			echo '' !== $notes ? esc_html( wp_trim_words( $notes, 14, '…' ) ) : '—';
 			break;
 		case 'oria_source':
 			echo 'match' === get_post_meta( $post_id, '_source', true )
@@ -602,4 +608,49 @@ function column_content( string $col, int $post_id ): void {
 				: esc_html__( 'Listing page', 'oria' );
 			break;
 	}
+}
+
+/** The full lead, read-only, on its edit screen. */
+function metabox( \WP_Post $post ): void {
+	add_meta_box(
+		'oria-lead-details',
+		__( 'Lead details', 'oria' ),
+		__NAMESPACE__ . '\render_metabox',
+		CPT,
+		'normal',
+		'high'
+	);
+}
+
+function render_metabox( \WP_Post $post ): void {
+	$listing_id = (int) get_post_meta( $post->ID, '_listing_id', true );
+	$email      = (string) get_post_meta( $post->ID, '_email', true );
+	$phone      = (string) get_post_meta( $post->ID, '_phone', true );
+
+	$rows = array(
+		__( 'Name', 'oria' )     => esc_html( (string) get_post_meta( $post->ID, '_name', true ) ),
+		__( 'Email', 'oria' )    => '' !== $email ? '<a href="mailto:' . esc_attr( $email ) . '">' . esc_html( $email ) . '</a>' : '—',
+		__( 'Phone', 'oria' )    => '' !== $phone ? '<a href="tel:' . esc_attr( preg_replace( '/[^0-9+]/', '', $phone ) ) . '">' . esc_html( $phone ) . '</a>' : '—',
+		__( 'Asked for', 'oria' ) => esc_html( implode( ' · ', array_filter( array(
+			(string) get_post_meta( $post->ID, '_service', true ),
+			(string) get_post_meta( $post->ID, '_area', true ),
+			(string) get_post_meta( $post->ID, '_timing', true ),
+		) ) ) ?: '—' ),
+		__( 'Their message', 'oria' ) => '' !== (string) get_post_meta( $post->ID, '_notes', true )
+			? nl2br( esc_html( (string) get_post_meta( $post->ID, '_notes', true ) ) )
+			: '—',
+		__( 'Delivered to', 'oria' ) => $listing_id
+			? '<a href="' . esc_url( (string) get_edit_post_link( $listing_id ) ) . '">' . esc_html( wp_specialchars_decode( (string) get_post_field( 'post_title', $listing_id, 'raw' ) ) ) . '</a>'
+			: esc_html__( 'No match found — handled by hand', 'oria' ),
+		__( 'Source', 'oria' ) => 'match' === get_post_meta( $post->ID, '_source', true )
+			? esc_html__( 'Get matched request', 'oria' )
+			: esc_html__( 'Enquiry form on the listing page', 'oria' ),
+	);
+
+	echo '<table class="widefat striped" style="border:none">';
+	foreach ( $rows as $label => $html ) {
+		echo '<tr><th style="width:140px;text-align:left;padding:10px 12px;">' . esc_html( $label ) . '</th>'
+			. '<td style="padding:10px 12px;">' . $html . '</td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above per row.
+	}
+	echo '</table>';
 }
