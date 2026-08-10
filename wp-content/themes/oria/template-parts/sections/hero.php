@@ -29,12 +29,11 @@ $oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
 				<svg class="searchbar__icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="5.5"/><path d="M12.2 12.2 16 16"/></svg>
 				<span class="searchbar__field">
 					<label for="heroCat"><?php esc_html_e( "What you're after", 'oria' ); ?></label>
-					<select id="heroCat" data-nice>
-						<option value=""><?php esc_html_e( 'Any practice', 'oria' ); ?></option>
-						<?php foreach ( $oria_practices as $oria_p ) : ?>
-							<option value="<?php echo esc_attr( $oria_p->slug ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_p ) ); ?></option>
-						<?php endforeach; ?>
-					</select>
+					<input id="heroCat" type="text" autocomplete="off"
+						placeholder="<?php esc_attr_e( 'Cryotherapy, pilates, reiki…', 'oria' ); ?>"
+						data-oria-search role="combobox" aria-autocomplete="list" aria-expanded="false"
+						aria-controls="heroCatList">
+					<span class="osearch" id="heroCatList" data-oria-search-panel hidden></span>
 				</span>
 			</div>
 			<div class="searchbar__cell">

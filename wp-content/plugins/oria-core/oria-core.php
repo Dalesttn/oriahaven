@@ -43,6 +43,7 @@ require_once ORIA_CORE_DIR . 'includes/listing-search.php';
 require_once ORIA_CORE_DIR . 'includes/signup.php';
 require_once ORIA_CORE_DIR . 'includes/ga.php';
 require_once ORIA_CORE_DIR . 'includes/mail.php';
+require_once ORIA_CORE_DIR . 'includes/search.php';
 require_once ORIA_CORE_DIR . 'includes/admin-import.php';
 require_once ORIA_CORE_DIR . 'includes/billing.php';
 require_once ORIA_CORE_DIR . 'includes/import.php';
@@ -68,6 +69,7 @@ ListingSearch\bootstrap();
 Signup\bootstrap();
 Ga\bootstrap();
 Mail\bootstrap();
+Search\bootstrap();
 AdminImport\bootstrap();
 Billing\bootstrap();
 

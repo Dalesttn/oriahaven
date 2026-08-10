@@ -311,18 +311,186 @@
     });
   }
 
+  /* --- Site search ----------------------------------------------------- */
+  /* One search box, everything behind it. ORIA_DATA is already on the page
+     for the map and the directory, so suggestions are built locally and
+     appear as fast as you can type — no request per keystroke.
+
+     What a query is matched against, in the order results are grouped:
+     specialties (the precise modality — "Cryotherapy"), practice
+     categories, individual practices by name, and suburbs. Everyday
+     wording that isn't in any of those names ("ice bath", "reformer")
+     is mapped onto specialties by ORIA_SEARCH.synonyms. */
+  function searchIndex() {
+    var D = window.ORIA_DATA;
+    if (!D) return null;
+    var counts = {};
+    (D.listings || []).forEach(function (l) {
+      (l.spec || []).forEach(function (s) { counts[s] = (counts[s] || 0) + 1; });
+      counts["cat:" + l.cat] = (counts["cat:" + l.cat] || 0) + 1;
+      counts["sub:" + (l.suburb || "").toLowerCase()] =
+        (counts["sub:" + (l.suburb || "").toLowerCase()] || 0) + 1;
+    });
+    return { D: D, counts: counts };
+  }
+
+  /* Specialty slugs an everyday phrase should also look for. */
+  function synonymSlugs(q) {
+    var map = (window.ORIA_SEARCH || {}).synonyms || {};
+    var hits = [];
+    Object.keys(map).forEach(function (alias) {
+      // Very short aliases ("pt", "aa") only on an exact query, or they
+      // would fire inside unrelated words.
+      var match = alias.length <= 3 ? q === alias : q.indexOf(alias) > -1 || alias.indexOf(q) === 0;
+      if (match) hits = hits.concat(map[alias]);
+    });
+    return hits;
+  }
+
+  function searchSuggest(raw) {
+    var idx = searchIndex();
+    var q = raw.trim().toLowerCase();
+    if (!idx || q.length < 2) return [];
+    var D = idx.D, counts = idx.counts, syn = synonymSlugs(q), out = [];
+
+    (D.specialties || []).forEach(function (s) {
+      var hit = s.name.toLowerCase().indexOf(q) > -1 || syn.indexOf(s.id) > -1;
+      if (hit && counts[s.id]) {
+        out.push({ kind: "Specialty", label: s.name, sub: counts[s.id] + " places", url: s.url,
+                   rank: s.name.toLowerCase().indexOf(q) === 0 ? 0 : 1 });
+      }
+    });
+    (D.categories || []).forEach(function (c) {
+      if (c.name.toLowerCase().indexOf(q) > -1) {
+        out.push({ kind: "Category", label: c.name, sub: (counts["cat:" + c.id] || 0) + " places",
+                   url: c.url, rank: 2 });
+      }
+    });
+    (D.listings || []).forEach(function (l) {
+      if (l.name.toLowerCase().indexOf(q) > -1) {
+        out.push({ kind: "Practice", label: l.name, sub: l.suburb, url: l.url, rank: 3 });
+      }
+    });
+    (D.regions || []).forEach(function (r) {
+      (r.suburbs || []).forEach(function (name) {
+        if (name.toLowerCase().indexOf(q) === 0) {
+          out.push({ kind: "Suburb", label: name,
+                     sub: (counts["sub:" + name.toLowerCase()] || 0) + " places",
+                     url: (window.ORIA_SEARCH || {}).directory + "?q=" + encodeURIComponent(name),
+                     rank: 4 });
+        }
+      });
+    });
+
+    out.sort(function (a, b) { return a.rank - b.rank || a.label.localeCompare(b.label); });
+    return out.slice(0, 8);
+  }
+
+  /* Tell the site owner what someone looked for and didn't find. */
+  function reportMiss(q) {
+    var cfg = window.ORIA_SEARCH;
+    if (!cfg || !cfg.miss || q.length < 2) return;
+    var headers = { "Content-Type": "application/json" };
+    if (cfg.nonce) headers["X-WP-Nonce"] = cfg.nonce;
+    fetch(cfg.miss, {
+      method: "POST", headers: headers, credentials: "same-origin",
+      body: JSON.stringify({ q: q })
+    }).catch(function () { /* never let analytics break a search */ });
+  }
+
+  function initSiteSearch() {
+    $$("[data-oria-search]").forEach(function (input) {
+      var panel = input.parentNode.querySelector("[data-oria-search-panel]");
+      if (!panel) return;
+      var items = [], active = -1;
+
+      function close() {
+        panel.hidden = true;
+        panel.innerHTML = "";
+        items = [];
+        if (active > -1) active = -1;
+        input.setAttribute("aria-expanded", "false");
+      }
+
+      function go(i) {
+        if (items[i] && items[i].url) window.location.href = items[i].url;
+      }
+
+      function paint() {
+        items = searchSuggest(input.value);
+        if (!items.length) { close(); return; }
+        panel.innerHTML = items.map(function (r, i) {
+          return '<span class="osearch__opt" role="option" id="' + input.id + '-o' + i +
+            '" data-i="' + i + '" aria-selected="false">' +
+            '<b>' + esc(r.label) + "</b>" +
+            '<em>' + esc(r.kind) + (r.sub ? " · " + esc(r.sub) : "") + "</em></span>";
+        }).join("");
+        panel.hidden = false;
+        panel.setAttribute("role", "listbox");
+        input.setAttribute("aria-expanded", "true");
+        active = -1;
+      }
+
+      function highlight(next) {
+        var opts = panel.querySelectorAll(".osearch__opt");
+        if (!opts.length) return;
+        if (active > -1 && opts[active]) {
+          opts[active].classList.remove("is-active");
+          opts[active].setAttribute("aria-selected", "false");
+        }
+        active = (next + opts.length) % opts.length;
+        opts[active].classList.add("is-active");
+        opts[active].setAttribute("aria-selected", "true");
+        input.setAttribute("aria-activedescendant", opts[active].id);
+        opts[active].scrollIntoView({ block: "nearest" });
+      }
+
+      input.addEventListener("input", paint);
+      input.addEventListener("focus", function () { if (input.value.trim().length > 1) paint(); });
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown" && panel.hidden) { paint(); return; }
+        if (panel.hidden) return;
+        if (e.key === "ArrowDown") { e.preventDefault(); highlight(active + 1); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); highlight(active - 1); }
+        else if (e.key === "Enter" && active > -1) { e.preventDefault(); go(active); }
+        else if (e.key === "Escape") { close(); }
+      });
+      panel.addEventListener("mousedown", function (e) {
+        var el = e.target.closest(".osearch__opt");
+        if (!el) return;
+        e.preventDefault();
+        go(Number(el.dataset.i));
+      });
+      document.addEventListener("click", function (e) {
+        if (!panel.hidden && !input.parentNode.contains(e.target)) close();
+      });
+    });
+  }
+
   /* --- Home search --------------------------------------------------- */
   function initHomeSearch() {
     var form = $("#heroSearch");
     if (!form) return;
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      var cat = $("#heroCat").value;
+      var term = $("#heroCat").value.trim();
       var where = $("#heroWhere").value.trim();
-      var q = [];
-      if (cat) q.push("cat=" + encodeURIComponent(cat));
-      if (where) q.push("q=" + encodeURIComponent(where));
-      window.location.href = "/directory/" + (q.length ? "?" + q.join("&") : "");
+
+      // A typed term that exactly matches a suggestion goes straight to
+      // that page; anything else becomes a directory text search.
+      var hits = searchSuggest(term);
+      if (term && hits.length && hits[0].label.toLowerCase() === term.toLowerCase() && !where) {
+        window.location.href = hits[0].url;
+        return;
+      }
+      if (term && !hits.length) reportMiss(term.toLowerCase());
+
+      // Both boxes fold into one query; the directory matches every word
+      // separately, so "cryotherapy" + "Cottesloe" narrows rather than
+      // looking for that phrase verbatim.
+      var q = [term, where].filter(Boolean).join(" ");
+      var base = (window.ORIA_SEARCH || {}).directory || "/directory/";
+      window.location.href = base + (q ? "?q=" + encodeURIComponent(q) : "");
     });
   }
 
@@ -376,10 +544,25 @@
       }
       if (state.rating && l.rating < state.rating) return false;
       if (state.q) {
-        var q = state.q.toLowerCase();
-        var hay = [l.name, l.suburb, l.blurb, catNames[l.cat], (l.services || []).join(" "), regionNames[l.region]]
-          .join(" ").toLowerCase();
-        if (hay.indexOf(q) === -1) return false;
+        // Specialty names are in the haystack too, so "cryotherapy" finds
+        // the places tagged with it rather than only those that happen to
+        // say the word in their blurb. Everyday wording is expanded via
+        // the synonym map ("ice bath" also looks for cold-plunge).
+        var hay = [
+          l.name, l.suburb, l.blurb, catNames[l.cat], regionNames[l.region],
+          (l.services || []).join(" "),
+          (l.spec || []).map(function (s) { return specNames[s] || s; }).join(" "),
+          (l.spec || []).join(" ")
+        ].join(" ").toLowerCase();
+
+        // Every word must appear somewhere, so extra words narrow the list
+        // instead of demanding one exact phrase.
+        var words = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+        var ok = words.every(function (w) {
+          if (hay.indexOf(w) > -1) return true;
+          return synonymSlugs(w).some(function (slug) { return (l.spec || []).indexOf(slug) > -1; });
+        });
+        if (!ok) return false;
       }
       return true;
     }
@@ -938,6 +1121,7 @@
     initReveal();
     initMap();
     initNiceSelects();
+    initSiteSearch();
     initHomeSearch();
     initDirectory();
     initForms();

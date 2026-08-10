@@ -303,6 +303,43 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
 .searchbar__field input::placeholder { color: var(--text-faint); font-weight: 500; }
 .searchbar__go { flex: none; }
 
+/* --- Site search suggestions ------------------------------------------ */
+.osearch {
+  position: absolute; top: calc(100% + 16px); left: -2.6rem;
+  min-width: calc(100% + 3.1rem); max-height: 340px; overflow: auto; z-index: 80;
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: var(--r-md); box-shadow: var(--sh-3); padding: 6px;
+  animation: nselIn 0.16s var(--ease-out);
+}
+.osearch__opt {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4);
+  padding: 0.55rem 0.85rem; border-radius: 10px; cursor: pointer; white-space: nowrap;
+}
+.osearch__opt:hover, .osearch__opt.is-active { background: var(--sand-2); }
+.osearch__opt b { font-weight: 600; font-size: var(--fs-sm); color: var(--ink); }
+.osearch__opt em {
+  font-style: normal; font-size: var(--fs-xs); color: var(--text-faint);
+  text-transform: lowercase; flex: none;
+}
+
+/* The header's own compact search. */
+.navsearch { position: relative; display: flex; align-items: center; gap: var(--s-2); }
+.navsearch__icon { width: 15px; height: 15px; color: var(--text-faint); flex: none; }
+.navsearch input {
+  width: 8.5rem; border: 0; background: none; padding: 0.4rem 0;
+  font: inherit; font-size: var(--fs-sm); color: inherit;
+  border-bottom: 1px solid transparent;
+  transition: width var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
+}
+.navsearch input::placeholder { color: var(--text-faint); }
+.navsearch input:focus { outline: none; width: 12rem; border-bottom-color: var(--line-strong); }
+.osearch--nav { left: auto; right: 0; min-width: 20rem; }
+/* On the transparent hero nav the type is white; the panel is not. */
+.site-head:not(.site-head--solid) .navsearch input { color: var(--white); }
+.site-head:not(.site-head--solid) .navsearch input::placeholder,
+.site-head:not(.site-head--solid) .navsearch__icon { color: rgba(255, 255, 255, 0.7); }
+@media (max-width: 1100px) { .navsearch { display: none; } }
+
 /* --- Modern select (data-nice) --------------------------------------- */
 .nsel { position: relative; display: block; min-width: 0; }
 .nsel__native {

@@ -47,6 +47,16 @@ declare(strict_types=1);
 		?>
 
 		<div class="nav__actions">
+			<?php // Search anywhere, not just the home hero. ?>
+			<span class="navsearch nav__hide">
+				<label class="screen-reader-text" for="navSearch"><?php esc_html_e( 'Search practices', 'oria' ); ?></label>
+				<svg class="navsearch__icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M12.2 12.2 16 16"/></svg>
+				<input id="navSearch" type="text" autocomplete="off"
+					placeholder="<?php esc_attr_e( 'Search…', 'oria' ); ?>"
+					data-oria-search role="combobox" aria-autocomplete="list" aria-expanded="false"
+					aria-controls="navSearchList">
+				<span class="osearch osearch--nav" id="navSearchList" data-oria-search-panel hidden></span>
+			</span>
 			<a class="nav__link nav__hide" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'For practitioners', 'oria' ); ?></a>
 			<a class="btn btn--dark nav__hide" href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>"><?php esc_html_e( 'List your practice', 'oria' ); ?><span class="btn__dot"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg></span></a>
 			<button class="nav__toggle" data-drawer-open aria-label="<?php esc_attr_e( 'Open menu', 'oria' ); ?>" aria-controls="drawer">
