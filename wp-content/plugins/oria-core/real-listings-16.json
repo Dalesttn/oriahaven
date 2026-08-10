@@ -1,0 +1,351 @@
+{
+  "_note": "Batch 16: ten REAL Perth mind & meditation providers researched from public information on 10 Aug 2026, per the requested subtypes (meditation, mindfulness, breathwork, yoga teachers/studios, sound healing, gong baths, yoga nidra, qi gong, tai chi, consciousness coaching). Deliberately NOT a new 'Mind & Meditation' category: meditation, mindfulness, breathwork, yoga and sound already exist as home-page categories, and an umbrella would put the same practices behind two doors — these ten deepen the existing categories, with the subtypes carried as specialties (yoga-nidra and consciousness-coaching added to the specialty map in this same commit; tai chi/qigong and gong baths were already mapped). Tai chi schools sit under Fitness & Movement, whose tile copy names martial arts for wellness, with meditation as their secondary door. Original blurbs, all unclaimed, no copied ratings, no health-benefit claims — the tai chi schools' healing/outcome marketing language is deliberately not repeated. Honest gaps: no verifiable consciousness-coaching practice survived checking (the one candidate's site was unreachable and directory-only entries are not good enough), and no new standalone gong-bath provider exists that the directory doesn't already list — both subtypes await real candidates. YOGALAB is search-level verified only and flagged in its _source. New suburbs: Balcatta (north), Rossmoyne (southeast), Mosman Park (west).",
+  "categories": [
+    {
+      "id": "meditation",
+      "name": "Meditation classes",
+      "plural": "meditation classes",
+      "icon": "cushion",
+      "blurb": "Drop-in sittings, guided courses and beginner-friendly evening classes."
+    },
+    {
+      "id": "yoga",
+      "name": "Yoga & movement",
+      "plural": "yoga studios",
+      "icon": "yoga",
+      "blurb": "Yin, hatha, restorative and slow-flow studios with a mindfulness focus."
+    },
+    {
+      "id": "sound",
+      "name": "Sound & float",
+      "plural": "sound and float spaces",
+      "icon": "sound",
+      "blurb": "Sound baths, gong journeys, float tanks and sensory recovery rooms."
+    },
+    {
+      "id": "fitness",
+      "name": "Fitness & Movement",
+      "plural": "fitness and movement practices",
+      "icon": "fitness",
+      "blurb": "Personal trainers, pilates studios, dance and martial arts for wellbeing."
+    },
+    {
+      "id": "natural",
+      "name": "Natural & Alternative Therapies",
+      "plural": "natural and alternative therapy clinics",
+      "icon": "natural",
+      "blurb": "Naturopaths, herbalists, homeopaths, Chinese medicine, Ayurveda and acupuncture."
+    }
+  ],
+  "regions": [
+    {
+      "id": "north",
+      "name": "Northern Suburbs",
+      "suburbs": ["Joondalup", "Hillarys", "Kallaroo", "Ocean Reef", "Scarborough", "Innaloo", "Balcatta", "Butler"]
+    },
+    {
+      "id": "central",
+      "name": "Perth Central",
+      "suburbs": ["Perth", "West Perth", "Subiaco", "Leederville", "South Perth", "East Victoria Park", "Inglewood", "Maylands"]
+    },
+    {
+      "id": "west",
+      "name": "Western Suburbs",
+      "suburbs": ["Cottesloe", "Claremont", "Nedlands", "City Beach", "Wembley", "Mosman Park"]
+    },
+    {
+      "id": "freo",
+      "name": "Fremantle & South",
+      "suburbs": ["Fremantle", "North Fremantle", "East Fremantle", "South Fremantle", "Beaconsfield", "Bicton", "Attadale", "Applecross"]
+    },
+    {
+      "id": "southeast",
+      "name": "South East",
+      "suburbs": ["Canning Vale", "Willetton", "Rossmoyne", "Kelmscott", "Cannington"]
+    }
+  ],
+  "listings": [
+    {
+      "id": "chen-tai-chi-academy",
+      "name": "Chen Tai Chi Academy",
+      "cat": "fitness",
+      "also": ["meditation"],
+      "suburb": "Attadale",
+      "region": "freo",
+      "address": "Troy Park, 51 Burke Drive, Attadale WA 6156",
+      "blurb": "Authentic Chen-village-lineage taijiquan taught outdoors at Troy Park in Attadale, with a second class at Safety Bay. Sien runs Saturday-morning beginners' sessions on a donation basis, ten-week community programs aligned to WA school terms, and $30 intermediate classes — a $40 annual membership covers the club side. Slow, precise, and as much moving meditation as martial art.",
+      "services": [
+        "Chen tai chi beginners (Saturdays)",
+        "10-week term programs",
+        "Intermediate classes",
+        "Safety Bay classes"
+      ],
+      "priceFrom": 30,
+      "priceBand": "$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-scrub",
+      "phone": "",
+      "email": "",
+      "web": "https://chen-taiji.com",
+      "next": "Beginners · Saturdays 9:00am, Troy Park",
+      "_source": "chen-taiji.com — instructor, both venues with addresses, Saturday schedule, donation/[$30] pricing and $40 membership all published; contact is WhatsApp only"
+    },
+    {
+      "id": "chinese-kungfu-tai-chi-academy",
+      "name": "Chinese Kung Fu & Tai Chi Academy",
+      "cat": "fitness",
+      "also": ["meditation"],
+      "suburb": "Balcatta",
+      "region": "north",
+      "address": "U7/14 Cressall Road, Balcatta WA 6021",
+      "blurb": "A dedicated Balcatta academy teaching Chen tai chi and qigong for all levels alongside its kung fu programs, with training links to International Chen Tai Chi Master Wong Seng Choong. Workplace classes and group workshops run beside the regular timetable, and a $25 introductory pass covers your first two classes.",
+      "services": [
+        "Chen tai chi classes",
+        "Qigong",
+        "Workplace tai chi",
+        "Workshops"
+      ],
+      "priceFrom": 25,
+      "priceBand": "$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-hall",
+      "phone": "0428 547 301",
+      "email": "",
+      "web": "https://chinesekungfu.com.au",
+      "next": "",
+      "_source": "chinesekungfu.com.au — Cressall Road address, Chen lineage, class types, $25 two-class intro, phone published. Their healing-benefit marketing claims deliberately not repeated"
+    },
+    {
+      "id": "perth-tai-chi",
+      "name": "Perth Tai Chi",
+      "cat": "fitness",
+      "also": ["meditation"],
+      "suburb": "Rossmoyne",
+      "region": "southeast",
+      "address": "Rossmoyne Scout Hall, 71 Central Road, Rossmoyne WA 6148",
+      "blurb": "Four instructors, four styles — Sun with Rod Hardwick, Wu with Shirley Owen, Chen with Zhou Lee and Yang with Mark O'Shea — teaching from Rossmoyne's scout hall and primary school. The gentle Balance program on Friday mornings is built for over-50s, while the structured Pathway levels run Saturday mornings and Monday evenings from beginner through advanced. Corporate classes and online videos round it out.",
+      "services": [
+        "Balance tai chi (50+)",
+        "Pathway levels 1–4",
+        "Four tai chi styles",
+        "Corporate classes"
+      ],
+      "priceFrom": null,
+      "priceBand": "$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-garden",
+      "phone": "0436 521 110",
+      "email": "info@perthtaichi.com.au",
+      "web": "https://www.perthtaichi.com.au",
+      "next": "Balance tai chi · Fridays 10:15am",
+      "_source": "perthtaichi.com.au — all four instructors and styles, both Rossmoyne venues, full weekly schedule, phone and email published; prices not listed"
+    },
+    {
+      "id": "yab-yum-yoga",
+      "name": "Yab Yum Yoga",
+      "cat": "yoga",
+      "also": ["sound"],
+      "suburb": "Mosman Park",
+      "region": "west",
+      "address": "50 Harvey Street, Mosman Park WA 6012",
+      "blurb": "A neighbourhood studio above the Mosman Park post office running vinyasa, yin and sound healing classes, with a South Perth second room on the way. First-timers get thirty days unlimited for $69 across both locations — one of the more generous intro windows in Perth.",
+      "services": [
+        "Vinyasa classes",
+        "Yin yoga",
+        "Sound healing",
+        "30-day intro pass"
+      ],
+      "priceFrom": 69,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-studio",
+      "phone": "",
+      "email": "info@yabyumyoga.com",
+      "web": "https://www.yabyumyoga.com",
+      "next": "",
+      "_source": "yabyumyoga.com — Harvey Street address, class styles, $69/30-day intro, South Perth expansion, email published"
+    },
+    {
+      "id": "the-yoga-garage",
+      "name": "The Yoga Garage",
+      "cat": "yoga",
+      "also": ["fitness"],
+      "suburb": "Scarborough",
+      "region": "north",
+      "address": "19 Scarborough Beach Road, Scarborough WA 6019",
+      "blurb": "Scarborough's hot-room specialist: Bikram hot yoga, Sumit's hot vinyasa flow, hot core Pilates and a yin class to balance the heat, fifteen minutes up the coast from the city. Fourteen days unlimited for $39 lets newcomers try the lot before committing.",
+      "services": [
+        "Bikram hot yoga",
+        "Hot vinyasa flow",
+        "Hot core Pilates",
+        "Yin yoga"
+      ],
+      "priceFrom": 39,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "08 6143 7900",
+      "email": "info@bysb.com.au",
+      "web": "https://theyogagarageperth.com.au",
+      "next": "",
+      "_source": "theyogagarageperth.com.au — Scarborough Beach Road address, class styles, $39/14-day intro, phone and email published"
+    },
+    {
+      "id": "the-studio-perth",
+      "name": "The Studio Perth",
+      "cat": "yoga",
+      "also": ["fitness", "sound"],
+      "suburb": "East Victoria Park",
+      "region": "central",
+      "address": "Unit 1, 345 Shepperton Road, East Victoria Park WA 6101",
+      "blurb": "Three rooms across the metro — East Victoria Park, Joondalup and Butler — mixing hot yoga, yin and reformer Pilates, with a yin-plus-sound-bath meditation class that ends the week slowly. The northern studios run a $89 twenty-day unlimited intro across reformer and mat classes.",
+      "services": [
+        "Hot yoga",
+        "Yin yoga",
+        "Yin + sound bath meditation",
+        "Reformer Pilates",
+        "Joondalup & Butler studios"
+      ],
+      "priceFrom": 89,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-studio",
+      "phone": "0408 464 029",
+      "email": "",
+      "web": "https://thestudioperth.com.au",
+      "next": "",
+      "_source": "thestudioperth.com.au — all three addresses and phones, class list incl. yin + sound bath, $89/20-day intro published"
+    },
+    {
+      "id": "loop-yoga-north-fremantle",
+      "name": "Loop Yoga",
+      "cat": "yoga",
+      "also": ["sound", "fitness"],
+      "suburb": "North Fremantle",
+      "region": "freo",
+      "address": "1/11 Freeman Loop, North Fremantle WA 6159",
+      "blurb": "A North Fremantle studio whose timetable runs from power yoga and sculpt Pilates down to yin, restorative, and a yoga nidra class held inside live crystal-bowl sound healing — the guided yogic-sleep practice done properly, lying down, with the room resonating. Drop-ins $32, memberships from $39 a week.",
+      "services": [
+        "Yoga nidra with sound healing",
+        "Vinyasa & slow flow",
+        "Yin & restorative",
+        "Pilates classes"
+      ],
+      "priceFrom": 32,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-still-water",
+      "phone": "0458 729 438",
+      "email": "info@loopthestudio.com.au",
+      "web": "https://loopthestudio.com.au",
+      "next": "",
+      "_source": "loopthestudio.com.au — Freeman Loop address, nidra-with-sound class, full timetable and complete price list, phone and email published"
+    },
+    {
+      "id": "yogaveda-wellness-fremantle",
+      "name": "Yogaveda Wellness Centre",
+      "cat": "yoga",
+      "also": ["natural", "meditation"],
+      "suburb": "Fremantle",
+      "region": "freo",
+      "address": "",
+      "blurb": "Fremantle's yoga and Ayurveda house, running since 2008: daily classes from gentle to dynamic, Friday-evening yoga nidra and deep-restore sessions, and an Ayurvedic clinic alongside — consultations, massage and steambox treatments. Six-week beginner courses from $126 prepaid; even Bollywood dance gets a slot in the week.",
+      "services": [
+        "Daily yoga classes",
+        "Yoga nidra / deep restore (Fridays)",
+        "Ayurvedic consultations",
+        "Ayurvedic massage & steambox",
+        "6-week beginner courses"
+      ],
+      "priceFrom": 126,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-garden",
+      "phone": "",
+      "email": "nikki@yogavedawellness.com",
+      "web": "https://www.yogavedawellness.com",
+      "next": "Yoga nidra · Fridays 5:30pm",
+      "_source": "yogavedawellness.com — operating since 2008, Friday nidra sessions, Ayurvedic clinic services, course pricing, email published; street address not shown on the page"
+    },
+    {
+      "id": "tamara-yoga-claremont",
+      "name": "Tamara Yoga",
+      "cat": "yoga",
+      "also": ["meditation", "sound"],
+      "suburb": "Claremont",
+      "region": "west",
+      "address": "",
+      "blurb": "Tamara's long-running school across Claremont and Bibra Lake studios plus online: vinyasa and yin through to meditation, soundbath classes that settle into yoga nidra, restorative work, and courses for pregnancy, children and trauma-informed practice. Unlimited membership at $49 a week, a three-week unlimited intro for newcomers, and 150- and 350-hour teacher trainings for those going deeper.",
+      "services": [
+        "Vinyasa & yin classes",
+        "Soundbath with yoga nidra",
+        "Meditation classes",
+        "Pregnancy & kids yoga",
+        "Teacher training"
+      ],
+      "priceFrom": 49,
+      "priceBand": "$$",
+      "format": "both",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "08 9385 2242",
+      "email": "",
+      "web": "https://tamarayoga.com",
+      "next": "",
+      "_source": "tamarayoga.com — Claremont and Bibra Lake studios, class list incl. soundbath/nidra, $49/week membership, teacher training hours, phone published"
+    },
+    {
+      "id": "yogalab-fremantle",
+      "name": "YOGALAB",
+      "cat": "yoga",
+      "also": ["meditation"],
+      "suburb": "Fremantle",
+      "region": "freo",
+      "address": "",
+      "blurb": "A Fremantle studio spanning the full arc from power vinyasa to a slow 'awakened yoga nidra' class, with free community classes keeping the door open to anyone. One of the few Perth studios with nidra on the regular weekly timetable rather than as an occasional event.",
+      "services": [
+        "Power vinyasa",
+        "Awakened yoga nidra",
+        "Free community classes"
+      ],
+      "priceFrom": null,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-studio",
+      "phone": "",
+      "email": "",
+      "web": "https://www.yogalab.com.au",
+      "next": "",
+      "_source": "Public directory coverage — Fremantle base, power-to-nidra class range, free community classes; SEARCH-LEVEL verification only, URL and details worth a manual check before publishing"
+    }
+  ]
+}
