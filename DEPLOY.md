@@ -158,11 +158,32 @@ git add -A && git commit -m "what changed" && git push
 On the server:
 
 ```bash
-cd domains/oriahaven.com.au/public_html && git pull
+cd domains/oriahaven.com.au/public_html && git pull && wp litespeed-purge all
 ```
 
-That's the whole loop. Only tracked files move; uploads, database and keys
-are never touched by a deploy.
+**The purge is not optional.** LiteSpeed clears its cache when you edit a
+post; it has no idea a deploy happened. Cached HTML keeps pointing at the
+previous `app.js?ver=…`, so logged-out visitors keep loading the old
+theme while you — bypassing the cache as a logged-in user — see the new
+one and assume it shipped. Every "it works for me but not for visitors"
+so far has been this.
+
+If Hostinger's CDN is caching HTML as well (check for an `x-hcdn-cache-status`
+header), purge that too in hPanel → your website → Performance/CDN. And if
+PHP changes seem not to take effect, flush OPcache in hPanel → Advanced →
+PHP Configuration.
+
+To confirm a deploy actually reached the public, compare what a logged-out
+request gets against the file on disk:
+
+```bash
+curl -sI https://oriahaven.com.au/ | grep -i litespeed     # expect: miss, once
+curl -s  https://oriahaven.com.au/ | grep -o 'app.js?ver=[0-9]*'
+stat -c %Y wp-content/themes/oria/assets/js/app.js          # should match
+```
+
+Only tracked files move; uploads, database and keys are never touched by
+a deploy.
 
 ---
 
