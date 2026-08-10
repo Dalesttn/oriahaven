@@ -1226,3 +1226,81 @@ a.livesession:hover { background: var(--sand-2); }
 .hubarea__list a { text-decoration: none; color: var(--text-soft, var(--ink)); }
 .hubarea__list a:hover { color: var(--teal); text-decoration: underline; }
 .hubarea__n { color: var(--text-faint); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; }
+
+/* -------------------------------------------------------------------------
+ * "Get matched" band (front page) + profile enquiry form
+ * ---------------------------------------------------------------------- */
+.matchband {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: var(--s-7);
+  background: var(--deep, #0E3B38);
+  border-radius: var(--r-lg);
+  padding: var(--s-8) var(--s-7);
+}
+
+.matchband__steps {
+  margin: var(--s-6) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: match;
+  display: grid;
+  gap: var(--s-3);
+}
+.matchband__steps li {
+  counter-increment: match;
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  color: var(--mist-2);
+  font-size: var(--fs-sm);
+}
+.matchband__steps li::before {
+  content: counter(match);
+  flex: none;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  transform: translateY(3px);
+}
+
+.matchband__pair { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+/* The band sits on deep green; its fields follow the contact-card idiom. */
+.matchband .field__label { color: var(--mist-2); }
+.matchband .input,
+.matchband .select,
+.matchband .textarea {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+.matchband .input::placeholder,
+.matchband .textarea::placeholder { color: rgba(255, 255, 255, 0.45); }
+.matchband .select option { color: var(--ink); }
+
+@media (max-width: 900px) {
+  .matchband { grid-template-columns: 1fr; padding: var(--s-6) var(--s-5); gap: var(--s-6); }
+  .matchband__pair { grid-template-columns: 1fr; }
+}
+
+/* Profile enquiry: a <details> so the card stays compact until asked. */
+.enqform__open { cursor: pointer; list-style: none; }
+.enqform__open::-webkit-details-marker { display: none; }
+.enqform[open] .enqform__open { opacity: 0.55; }
+.enqform .field__label { color: var(--mist-2); }
+.enqform .input,
+.enqform .textarea {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+.enqform .input::placeholder,
+.enqform .textarea::placeholder { color: rgba(255, 255, 255, 0.4); }

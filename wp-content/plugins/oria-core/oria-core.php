@@ -49,6 +49,7 @@ require_once ORIA_CORE_DIR . 'includes/billing.php';
 require_once ORIA_CORE_DIR . 'includes/import.php';
 require_once ORIA_CORE_DIR . 'includes/hub.php';
 require_once ORIA_CORE_DIR . 'includes/faq.php';
+require_once ORIA_CORE_DIR . 'includes/leads.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
@@ -76,6 +77,7 @@ AdminImport\bootstrap();
 Billing\bootstrap();
 Hub\bootstrap();
 Faq\bootstrap();
+Leads\bootstrap();
 
 /**
  * Rewrite rules are only rebuilt on activation and deactivation. Flushing on

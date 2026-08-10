@@ -1000,6 +1000,18 @@
         pushEvent(name);
       }
     });
+
+    /* Lead submissions round-trip through a redirect, so the completed
+       event fires on the state the server sends back — a real stored
+       lead, not just a button press. */
+    var params = new URLSearchParams(window.location.search);
+    if (params.get("olead") === "sent") {
+      if (params.has("omatched")) {
+        pushEvent("match_submitted", { matched_count: parseInt(params.get("omatched"), 10) || 0 });
+      } else {
+        pushEvent("enquiry_submitted");
+      }
+    }
   }
 
   /* --- Featured rotation ---------------------------------------------- */

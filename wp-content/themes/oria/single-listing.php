@@ -466,10 +466,55 @@ while ( have_posts() ) :
 					</div>
 					<?php if ( $oria_booking ) : ?>
 						<a class="btn btn--light btn--block" href="<?php echo esc_url( $oria_booking ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="book" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Book on their site', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
-					<?php elseif ( $oria_email ) : ?>
-						<a class="btn btn--light btn--block" href="mailto:<?php echo esc_attr( $oria_email ); ?>?subject=<?php echo rawurlencode( 'Enquiry via Oria Haven — ' . \Oria\Theme\ptitle() ); ?>" data-oria-track="enq" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Send an enquiry', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
 					<?php endif; ?>
-					<p class="hint" style="color:var(--mist)"><?php esc_html_e( 'Enquiries go straight to the practice. We never take a cut of bookings.', 'oria' ); ?></p>
+
+					<?php
+					/*
+					 * The enquiry form. This used to be a mailto: link — the
+					 * conversation left the site with no record it happened,
+					 * so a practitioner could never be shown what their
+					 * listing sends them. Now the enquiry is captured, stored
+					 * and forwarded with Reply-To set to the visitor
+					 * (Oria\Core\Leads).
+					 */
+					if ( $oria_email && function_exists( '\Oria\Core\Leads\bootstrap' ) ) :
+						// phpcs:disable WordPress.Security.NonceVerification.Recommended -- display state only.
+						$oria_lead_state = isset( $_GET['olead'] ) ? (string) $_GET['olead'] : '';
+						// phpcs:enable
+						?>
+						<div id="enquire">
+						<?php if ( 'sent' === $oria_lead_state ) : ?>
+							<div class="notice" style="background:rgba(255,255,255,.95);margin-top:.75rem">
+								<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;flex:none"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.2l2.4 2.4 4.6-5"/></svg>
+								<span><b><?php esc_html_e( 'Enquiry sent.', 'oria' ); ?></b> <?php esc_html_e( 'It went straight to the practice — check your email for a copy.', 'oria' ); ?></span>
+							</div>
+						<?php else : ?>
+							<details class="enqform" <?php echo 'error' === $oria_lead_state ? 'open' : ''; ?>>
+								<summary class="btn btn--light btn--block enqform__open"><?php esc_html_e( 'Send an enquiry', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></summary>
+								<form class="stack" style="gap:.7rem;margin-top:.9rem" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" data-oria-event="enquiry_started">
+									<input type="hidden" name="action" value="oria_enquiry">
+									<input type="hidden" name="listing_id" value="<?php echo (int) $oria_id; ?>">
+									<input type="hidden" name="oform_ts" value="<?php echo esc_attr( (string) time() ); ?>">
+									<?php wp_nonce_field( 'oria_enquiry_' . $oria_id, 'oform_nonce' ); ?>
+									<input type="text" name="oform_website" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+									<?php if ( 'error' === $oria_lead_state ) : ?>
+										<p style="font-size:.8125rem;color:#ffb4a2"><?php esc_html_e( 'That didn\'t send — check your name and email and try again.', 'oria' ); ?></p>
+									<?php endif; ?>
+									<label class="field"><span class="field__label enqform__label"><?php esc_html_e( 'Your name', 'oria' ); ?></span>
+										<input class="input" type="text" name="lead_name" required></label>
+									<label class="field"><span class="field__label enqform__label"><?php esc_html_e( 'Email', 'oria' ); ?></span>
+										<input class="input" type="email" name="lead_email" required></label>
+									<label class="field"><span class="field__label enqform__label"><?php esc_html_e( 'Phone', 'oria' ); ?> <span style="color:var(--mist);font-weight:400">· <?php esc_html_e( 'optional', 'oria' ); ?></span></span>
+										<input class="input" type="tel" name="lead_phone"></label>
+									<label class="field"><span class="field__label enqform__label"><?php esc_html_e( 'Message', 'oria' ); ?></span>
+										<textarea class="textarea" name="lead_notes" style="min-height:72px" maxlength="600" required placeholder="<?php esc_attr_e( 'e.g. availability, prices, what a first visit looks like — please don\'t include medical details', 'oria' ); ?>"></textarea></label>
+									<button class="btn btn--light btn--block" type="submit"><?php esc_html_e( 'Send to the practice', 'oria' ); ?></button>
+								</form>
+							</details>
+						<?php endif; ?>
+						</div>
+					<?php endif; ?>
+					<p class="hint" style="color:var(--mist)"><?php esc_html_e( 'Enquiries go straight to the practice — you\'ll get a copy by email. We never take a cut of bookings.', 'oria' ); ?></p>
 				</div>
 
 				<?php

@@ -213,7 +213,7 @@ function render_metabox( \WP_Post $post ): void {
 		'tel'  => __( 'Phone taps', 'oria' ),
 		'mail' => __( 'Email clicks', 'oria' ),
 		'book' => __( 'Booking clicks', 'oria' ),
-		'enq'  => __( 'Enquiries started', 'oria' ),
+		'enq'  => __( 'Enquiries received', 'oria' ),
 		'dir'  => __( 'Directions', 'oria' ),
 	);
 	echo '<div class="oria-perf__grid">';

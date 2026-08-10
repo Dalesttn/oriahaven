@@ -28,6 +28,17 @@ while ( have_posts() ) :
 					'i' => $oria_index,
 				)
 			);
+
+			/*
+			 * The "get matched" band rides the front page automatically,
+			 * straight after the practice tiles — the visitor has just seen
+			 * the breadth of the directory, and this is the shortcut through
+			 * it. Code-injected rather than an ACF section so it ships to
+			 * production with git pull, no page editing required.
+			 */
+			if ( is_front_page() && 'practice_tiles' === $oria_layout ) {
+				get_template_part( 'template-parts/sections/get-matched' );
+			}
 		}
 	} else {
 		?>

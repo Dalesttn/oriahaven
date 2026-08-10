@@ -53,6 +53,7 @@ $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 		<span class="micro"><?php esc_html_e( 'Free listing', 'oria' ); ?></span>
 		<h1 class="h1 pagehead__title"><?php esc_html_e( 'List your practice', 'oria' ); ?></h1>
 		<p class="lede pagehead__lede"><?php esc_html_e( 'Ten minutes now, approved within 24 hours. Your free listing includes your details, description, up to five services and four photos — and you can upgrade for more reach whenever you like.', 'oria' ); ?></p>
+		<p style="margin-top:.9rem;max-width:56ch;color:var(--text-soft)"><?php esc_html_e( 'Listed practices receive enquiries two ways: straight from your profile, and through our matching service — when a visitor tells us what they\'re after, we introduce them to up to three practices that fit. Enquiries land in your inbox with the person\'s details, ready to reply. Free, and we never take a cut of bookings.', 'oria' ); ?></p>
 	</div>
 </section>
 
