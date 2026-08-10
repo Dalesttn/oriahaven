@@ -149,6 +149,7 @@ function ensure_roles(): void {
 				'upload_files'                => true,
 				'edit_oria_listings'          => true,
 				'edit_published_oria_listings' => true,
+				'edit_others_oria_listings'   => true,
 			)
 		);
 	}
@@ -159,6 +160,23 @@ function ensure_roles(): void {
 		foreach ( PRACTITIONER_EVENT_CAPS as $cap ) {
 			$role->add_cap( $cap );
 		}
+	}
+
+	/*
+	 * edit_others_oria_listings, counter-intuitively, is required for a
+	 * practitioner to save their OWN listing. Imported listings are
+	 * authored by the admin; ownership is the claimed_by field. Core's
+	 * save path (_wp_translate_postdata) refuses any update where the
+	 * form's post_author isn't the current user unless the user holds
+	 * the type's edit_others cap — and the classic edit form always
+	 * posts the original author. Without this cap every practitioner
+	 * save died with "Sorry, you are not allowed to edit posts as this
+	 * user." Which listings they can actually touch is still walled
+	 * per-post by scope_to_own_listing below: everything they don't own
+	 * maps to do_not_allow, whatever role caps say.
+	 */
+	if ( $role && ! $role->has_cap( 'edit_others_oria_listings' ) ) {
+		$role->add_cap( 'edit_others_oria_listings' );
 	}
 
 	grant_admin_caps();
