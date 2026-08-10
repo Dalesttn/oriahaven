@@ -236,9 +236,31 @@ function handle_match(): void {
 	$back = (string) ( wp_get_referer() ?: home_url( '/' ) );
 	guard( 'oria_match', $back );
 
+	/*
+	 * Each picker posts two fields: the hidden slug (filled when a
+	 * suggestion is picked) and the visible text. The slug wins; failing
+	 * that the text is resolved by term name, so typing "Reiki" without
+	 * touching the suggestion list — or with JavaScript off — still
+	 * matches exactly.
+	 */
 	$service = sanitize_key( (string) ( $_POST['match_service'] ?? '' ) );
-	$area    = sanitize_key( (string) ( $_POST['match_area'] ?? '' ) );
-	$timing  = sanitize_text_field( wp_unslash( (string) ( $_POST['match_timing'] ?? '' ) ) );
+	if ( '' === taxonomy_for( $service ) ) {
+		$service = resolve_name(
+			sanitize_text_field( wp_unslash( (string) ( $_POST['match_service_text'] ?? '' ) ) ),
+			array( Taxonomies\PRACTICE, Taxonomies\SPECIALTY )
+		);
+	}
+	$area = sanitize_key( (string) ( $_POST['match_area'] ?? '' ) );
+	if ( '' !== $area && ! get_term_by( 'slug', $area, Taxonomies\AREA ) ) {
+		$area = '';
+	}
+	if ( '' === $area ) {
+		$area = resolve_name(
+			sanitize_text_field( wp_unslash( (string) ( $_POST['match_area_text'] ?? '' ) ) ),
+			array( Taxonomies\AREA )
+		);
+	}
+	$timing = sanitize_text_field( wp_unslash( (string) ( $_POST['match_timing'] ?? '' ) ) );
 	if ( ! in_array( $timing, array( 'Weekday daytime', 'Weekday evenings', 'Weekends', 'Flexible' ), true ) ) {
 		$timing = 'Flexible';
 	}
@@ -248,7 +270,15 @@ function handle_match(): void {
 
 	if ( ! $matches ) {
 		// No practice fits — that's a gap worth knowing about, not an
-		// error. The request lands with us and we reply by hand.
+		// error. The request lands with us and we reply by hand. Keep
+		// what was actually typed: an unresolved "cranial osteo" is the
+		// whole demand signal.
+		if ( '' === $service ) {
+			$service = mb_substr( sanitize_text_field( wp_unslash( (string) ( $_POST['match_service_text'] ?? '' ) ) ), 0, 80 );
+		}
+		if ( '' === $area ) {
+			$area = mb_substr( sanitize_text_field( wp_unslash( (string) ( $_POST['match_area_text'] ?? '' ) ) ), 0, 80 );
+		}
 		save_lead( 0, 'match', $v, compact( 'service', 'area', 'timing' ) );
 		unmatched_admin_email( $service, $area, $timing, $v );
 		visitor_receipt( $v, array() );
@@ -306,6 +336,30 @@ function find_matches( string $service, string $area ): array {
 		}
 	}
 	return $found;
+}
+
+/**
+ * A typed name back to its term slug, or ''. Exact name match first
+ * ("Reiki"), then the "All of X" phrasing the area picker suggests.
+ *
+ * @param list<string> $taxonomies
+ */
+function resolve_name( string $text, array $taxonomies ): string {
+	$text = trim( $text );
+	if ( '' === $text || mb_strlen( $text ) > 80 ) {
+		return '';
+	}
+	// The area picker offers regions as "All of Fremantle & South".
+	$bare = trim( (string) preg_replace( '/^all of\s+/i', '', $text ) );
+	foreach ( $taxonomies as $tax ) {
+		foreach ( array( $text, $bare ) as $candidate ) {
+			$term = get_term_by( 'name', $candidate, $tax );
+			if ( $term instanceof \WP_Term ) {
+				return $term->slug;
+			}
+		}
+	}
+	return '';
 }
 
 /** Which taxonomy the submitted service slug belongs to, or ''. */

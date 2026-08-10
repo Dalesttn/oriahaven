@@ -1044,6 +1044,85 @@
     if (params.get("olead") && isDesktop()) dialog.showModal();
   }
 
+  /* --- Get-matched comboboxes ------------------------------------------ */
+  /* Type-ahead for the service and area pickers: fifty services and
+     ninety suburbs make a select a wall. The visible input posts its
+     text regardless (the server resolves names too), so this is a
+     convenience layer, not a dependency — picking a suggestion just
+     fills the hidden slug so matching is exact. */
+  function initMatchCombos() {
+    var data = window.ORIA_MATCH;
+    if (!data) return;
+
+    $$("[data-matchcombo]").forEach(function (wrap) {
+      var options = data[wrap.getAttribute("data-matchcombo")] || [];
+      var input = wrap.querySelector("input[type=text]");
+      var hidden = wrap.querySelector("input[type=hidden]");
+      var panel = wrap.querySelector("[data-matchcombo-panel]");
+      if (!input || !hidden || !panel) return;
+
+      var active = -1, shown = [];
+
+      function close() {
+        panel.hidden = true;
+        panel.innerHTML = "";
+        input.setAttribute("aria-expanded", "false");
+        active = -1;
+        shown = [];
+      }
+
+      function pick(opt) {
+        input.value = opt.l;
+        hidden.value = opt.s;
+        close();
+      }
+
+      /* An exact name typed without picking still resolves. */
+      function syncExact() {
+        var q = input.value.trim().toLowerCase();
+        var hit = null;
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].l.toLowerCase() === q) { hit = options[i]; break; }
+        }
+        hidden.value = hit ? hit.s : "";
+      }
+
+      function render() {
+        var q = input.value.trim().toLowerCase();
+        if (!q) { close(); return; }
+        shown = options.filter(function (o) {
+          return o.l.toLowerCase().indexOf(q) !== -1;
+        }).slice(0, 8);
+        if (!shown.length) { close(); return; }
+        var esc = function (s) {
+          return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        };
+        panel.innerHTML = shown.map(function (o, i) {
+          return '<span class="oform-lookup__item' + (i === active ? " is-active" : "") + '" role="option" data-i="' + i + '"><b>'
+            + esc(o.l) + "</b><em>" + esc(o.g) + "</em></span>";
+        }).join("");
+        panel.hidden = false;
+        input.setAttribute("aria-expanded", "true");
+      }
+
+      input.addEventListener("input", function () { active = -1; syncExact(); render(); });
+      input.addEventListener("keydown", function (e) {
+        if (panel.hidden) return;
+        if (e.key === "ArrowDown") { e.preventDefault(); active = Math.min(active + 1, shown.length - 1); render(); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
+        else if (e.key === "Enter") {
+          if (active >= 0) { e.preventDefault(); pick(shown[active]); }
+          else if (shown.length === 1) { e.preventDefault(); pick(shown[0]); }
+        } else if (e.key === "Escape") { close(); }
+      });
+      panel.addEventListener("mousedown", function (e) {
+        var item = e.target.closest && e.target.closest("[data-i]");
+        if (item) { e.preventDefault(); pick(shown[parseInt(item.getAttribute("data-i"), 10)]); }
+      });
+      input.addEventListener("blur", function () { window.setTimeout(close, 150); });
+    });
+  }
+
   /* --- Featured rotation ---------------------------------------------- */
   /* Every featured listing takes a turn on the home section: groups of
      three, next group every 30s. Paused while hovered (no yanking a card
@@ -1289,6 +1368,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     initTracking();
     initMatchDialog();
+    initMatchCombos();
     initNav();
     initAccordions();
     initPullquote();

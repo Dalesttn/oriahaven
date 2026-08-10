@@ -50,37 +50,52 @@ if ( 'sent' === $oria_state ) : ?>
 		<p style="font-size:.8125rem;color:#ffb4a2"><?php esc_html_e( 'That didn\'t send — check your name and email and try again.', 'oria' ); ?></p>
 	<?php endif; ?>
 
+	<?php
+	/*
+	 * The service and area pickers are comboboxes: type-ahead against the
+	 * option list, because a plain select with 50 services and 90 suburbs
+	 * is a wall. The visible input posts its text (match_*_text) so a
+	 * no-JS submission still carries what was asked for — the server
+	 * resolves names as well as slugs — and script fills the hidden slug
+	 * when a suggestion is picked. Option data prints once per page even
+	 * though the form renders twice (band + dialog).
+	 */
+	if ( ! defined( 'ORIA_MATCH_DATA_PRINTED' ) ) {
+		define( 'ORIA_MATCH_DATA_PRINTED', true );
+		$oria_service_opts = array();
+		foreach ( $oria_practices as $oria_t ) {
+			$oria_service_opts[] = array( 's' => $oria_t->slug, 'l' => \Oria\Theme\tname( $oria_t ), 'g' => __( 'Practice', 'oria' ) );
+		}
+		foreach ( $oria_specs as $oria_t ) {
+			$oria_service_opts[] = array( 's' => $oria_t->slug, 'l' => \Oria\Theme\tname( $oria_t ), 'g' => __( 'Service', 'oria' ) );
+		}
+		$oria_area_opts = array();
+		foreach ( $oria_regions as $oria_r ) {
+			$oria_area_opts[] = array( 's' => $oria_r->slug, 'l' => sprintf( __( 'All of %s', 'oria' ), \Oria\Theme\tname( $oria_r ) ), 'g' => __( 'Region', 'oria' ) );
+			$oria_subs      = get_terms( array( 'taxonomy' => 'area', 'parent' => $oria_r->term_id, 'hide_empty' => true, 'orderby' => 'name' ) );
+			foreach ( is_wp_error( $oria_subs ) ? array() : $oria_subs as $oria_sub ) {
+				$oria_area_opts[] = array( 's' => $oria_sub->slug, 'l' => \Oria\Theme\tname( $oria_sub ), 'g' => \Oria\Theme\tname( $oria_r ) );
+			}
+		}
+		printf(
+			'<script>window.ORIA_MATCH = %s;</script>',
+			wp_json_encode( array( 'services' => $oria_service_opts, 'areas' => $oria_area_opts ) )
+		);
+	}
+	?>
 	<div class="grid matchband__pair">
-		<label class="field"><span class="field__label"><?php esc_html_e( 'What would you like to try?', 'oria' ); ?></span>
-			<select class="select" name="match_service" required>
-				<option value=""><?php esc_html_e( 'Choose…', 'oria' ); ?></option>
-				<optgroup label="<?php esc_attr_e( 'Practices', 'oria' ); ?>">
-					<?php foreach ( $oria_practices as $oria_t ) : ?>
-						<option value="<?php echo esc_attr( $oria_t->slug ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_t ) ); ?></option>
-					<?php endforeach; ?>
-				</optgroup>
-				<optgroup label="<?php esc_attr_e( 'Specific services', 'oria' ); ?>">
-					<?php foreach ( $oria_specs as $oria_t ) : ?>
-						<option value="<?php echo esc_attr( $oria_t->slug ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_t ) ); ?></option>
-					<?php endforeach; ?>
-				</optgroup>
-			</select></label>
-		<label class="field"><span class="field__label"><?php esc_html_e( 'Where suits you?', 'oria' ); ?></span>
-			<select class="select" name="match_area">
-				<option value=""><?php esc_html_e( 'Anywhere in Perth', 'oria' ); ?></option>
-				<?php foreach ( $oria_regions as $oria_r ) : ?>
-					<?php
-					$oria_subs = get_terms( array( 'taxonomy' => 'area', 'parent' => $oria_r->term_id, 'hide_empty' => true, 'orderby' => 'name' ) );
-					$oria_subs = is_wp_error( $oria_subs ) ? array() : $oria_subs;
-					?>
-					<optgroup label="<?php echo esc_attr( \Oria\Theme\tname( $oria_r ) ); ?>">
-						<option value="<?php echo esc_attr( $oria_r->slug ); ?>"><?php echo esc_html( sprintf( __( 'All of %s', 'oria' ), \Oria\Theme\tname( $oria_r ) ) ); ?></option>
-						<?php foreach ( $oria_subs as $oria_sub ) : ?>
-							<option value="<?php echo esc_attr( $oria_sub->slug ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_sub ) ); ?></option>
-						<?php endforeach; ?>
-					</optgroup>
-				<?php endforeach; ?>
-			</select></label>
+		<label class="field" data-matchcombo="services"><span class="field__label"><?php esc_html_e( 'What would you like to try?', 'oria' ); ?></span>
+			<input class="input" type="text" name="match_service_text" required autocomplete="off"
+				placeholder="<?php esc_attr_e( 'Start typing — yoga, reiki, massage…', 'oria' ); ?>"
+				role="combobox" aria-autocomplete="list" aria-expanded="false">
+			<input type="hidden" name="match_service" value="">
+			<span class="oform-lookup" data-matchcombo-panel hidden></span></label>
+		<label class="field" data-matchcombo="areas"><span class="field__label"><?php esc_html_e( 'Where suits you?', 'oria' ); ?></span>
+			<input class="input" type="text" name="match_area_text" autocomplete="off"
+				placeholder="<?php esc_attr_e( 'Anywhere in Perth', 'oria' ); ?>"
+				role="combobox" aria-autocomplete="list" aria-expanded="false">
+			<input type="hidden" name="match_area" value="">
+			<span class="oform-lookup" data-matchcombo-panel hidden></span></label>
 	</div>
 
 	<label class="field"><span class="field__label"><?php esc_html_e( 'When suits you?', 'oria' ); ?></span>
