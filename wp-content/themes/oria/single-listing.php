@@ -518,6 +518,16 @@ while ( have_posts() ) :
 				</div>
 
 				<?php
+				// An owner should meet their share kit before anything else in
+				// the rail; a visitor meets a quieter version further down.
+				$oria_owns_this = is_user_logged_in()
+					&& (int) get_post_meta( $oria_id, 'claimed_by', true ) === get_current_user_id();
+				?>
+				<?php if ( $oria_owns_this ) : ?>
+					<?php get_template_part( 'template-parts/share-box', null, array( 'id' => $oria_id, 'owner' => true ) ); ?>
+				<?php endif; ?>
+
+				<?php
 				// Social links are a paid feature: their own rail box, shown
 				// only while the listing is claimed AND at least one link is
 				// filled in — otherwise nothing renders at all.
@@ -558,6 +568,10 @@ while ( have_posts() ) :
 						</div>
 					</div>
 				</div>
+				<?php endif; ?>
+
+				<?php if ( ! $oria_owns_this ) : ?>
+					<?php get_template_part( 'template-parts/share-box', null, array( 'id' => $oria_id, 'owner' => false ) ); ?>
 				<?php endif; ?>
 
 				<?php if ( 'unclaimed' === $oria_status && ! (int) get_post_meta( $oria_id, 'claimed_by', true ) ) : // Free-plan listings have an owner — don't invite rival claims. ?>

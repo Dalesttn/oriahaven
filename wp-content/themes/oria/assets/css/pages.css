@@ -568,6 +568,17 @@ a.livesession:hover { background: var(--sand-2); }
 
 .claimprompt { border: 1px dashed var(--line-strong); border-radius: var(--r-md); padding: var(--s-5); background: var(--sand-2); }
 
+/* Way into the share kit. The owner's copy is the one that has to be found,
+   so it carries the icon and a solid button; a visitor's stays quiet. */
+.sharebox { display: flex; gap: var(--s-4); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--s-5); background: var(--sand-2); }
+.sharebox--owner { border-color: var(--line-strong); background: var(--white); }
+.sharebox__icon { display: none; }
+.sharebox--owner .sharebox__icon { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--sand-2); color: var(--deep); }
+.sharebox--owner .sharebox__icon svg { width: 17px; height: 17px; }
+.sharebox__body { min-width: 0; flex: 1; }
+.sharebox__title { display: block; margin-bottom: .4rem; }
+.sharebox__text { font-size: .875rem; color: var(--text-soft); margin-bottom: 1rem; }
+
 .reviewitem { padding-block: var(--s-5); border-bottom: 1px solid var(--line); }
 .reviewitem:first-child { border-top: 1px solid var(--line); }
 .reviewitem__head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); margin-bottom: var(--s-3); }
