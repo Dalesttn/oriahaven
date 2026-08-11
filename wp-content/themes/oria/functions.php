@@ -54,27 +54,15 @@ add_action(
 		$dir = get_template_directory();
 		$uri = get_template_directory_uri();
 
-		// Warm the font CDN connection before the stylesheet asks for it.
-		add_filter(
-			'wp_resource_hints',
-			static function ( array $urls, string $relation ): array {
-				if ( 'preconnect' === $relation ) {
-					$urls[] = array( 'href' => 'https://fonts.gstatic.com', 'crossorigin' => 'anonymous' );
-					$urls[] = 'https://fonts.googleapis.com';
-				}
-				return $urls;
-			},
-			10,
-			2
-		);
-
-		// Google Fonts exactly as the prototype loads them. Self-host before launch.
-		wp_enqueue_style(
-			'oria-fonts',
-			'https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap',
-			array(),
-			null
-		);
+		/*
+		 * Fonts are self-hosted (assets/fonts, declared in fonts.css).
+		 * They used to come from fonts.googleapis.com, which meant a
+		 * render-blocking stylesheet on one third-party origin and the
+		 * font files on a second — two lots of DNS and TLS before any
+		 * text could paint, which is expensive on a phone. No preconnect
+		 * hints are needed now: the fonts share our own connection.
+		 */
+		wp_enqueue_style( 'oria-fonts', "{$uri}/assets/css/fonts.css", array(), (string) filemtime( "{$dir}/assets/css/fonts.css" ) );
 
 		foreach ( array( 'tokens', 'base', 'components', 'pages', 'forms' ) as $sheet ) {
 			wp_enqueue_style(
@@ -123,6 +111,33 @@ add_action(
 			wp_add_inline_script( 'oria-app', 'window.ORIA_SEARCH_DATA = ' . wp_json_encode( search_index() ) . ';', 'before' );
 		}
 	}
+);
+
+/**
+ * Preload the two latin font files.
+ *
+ * A browser only discovers a font after it has parsed the CSS and
+ * matched a rule to text on the page, which on a slow connection is
+ * late — and both of these are needed above the fold (Manrope for
+ * everything, Newsreader for the wordmark). Priority 2 puts the hints
+ * after wp_enqueue_scripts has run but well before wp_print_styles.
+ */
+add_action(
+	'wp_head',
+	static function (): void {
+		$dir = get_template_directory();
+		$uri = get_template_directory_uri();
+		foreach ( array( 'manrope-normal-latin', 'newsreader-italic-latin' ) as $font ) {
+			$path = "{$dir}/assets/fonts/{$font}.woff2";
+			if ( file_exists( $path ) ) {
+				printf(
+					'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+					esc_url( "{$uri}/assets/fonts/{$font}.woff2?v=" . filemtime( $path ) )
+				);
+			}
+		}
+	},
+	2
 );
 
 /** The "js" class the reveal animations key off. */
