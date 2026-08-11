@@ -523,6 +523,24 @@ while ( have_posts() ) :
 				$oria_owns_this = is_user_logged_in()
 					&& (int) get_post_meta( $oria_id, 'claimed_by', true ) === get_current_user_id();
 				?>
+				<?php
+				// Straight off the one-click link in an invitation email: they
+				// are logged in and own this now, and nothing on the page would
+				// say so otherwise.
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				if ( $oria_owns_this && isset( $_GET['oria_claimed'] ) ) :
+					?>
+					<div class="claimprompt" style="background:var(--white)">
+						<b style="display:block;margin-bottom:.4rem"><?php esc_html_e( 'This listing is yours now.', 'oria' ); ?></b>
+						<p style="font-size:.875rem;color:var(--text-soft)">
+							<?php esc_html_e( 'We\'ve emailed you a link to set a password. After that you can keep your address, contact details, prices and format up to date whenever you like.', 'oria' ); ?>
+						</p>
+						<p style="margin-top:1rem">
+							<a class="btn btn--dark btn--sm" href="<?php echo esc_url( get_edit_post_link( $oria_id ) ?: admin_url() ); ?>"><?php esc_html_e( 'Edit my listing', 'oria' ); ?></a>
+						</p>
+					</div>
+				<?php endif; ?>
+
 				<?php if ( $oria_owns_this ) : ?>
 					<?php get_template_part( 'template-parts/share-box', null, array( 'id' => $oria_id, 'owner' => true ) ); ?>
 				<?php endif; ?>
