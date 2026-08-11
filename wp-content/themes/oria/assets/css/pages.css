@@ -1671,3 +1671,23 @@ a.livesession:hover { background: var(--sand-2); }
 	.finder__event { grid-template-columns: 1fr auto; }
 	.finder__event__date { grid-column: 1 / -1; }
 }
+
+/* The way out of the filters, for someone who doesn't yet know what to
+   filter for. Quiet on purpose — it sits above a hundred listings and
+   must not compete with them. */
+.dirnudge {
+	display: flex; align-items: center; gap: var(--s-4); flex-wrap: wrap;
+	margin-top: var(--s-6); padding: var(--s-4) var(--s-5);
+	border: 1px solid var(--line); border-radius: var(--r-md); background: var(--sand-2);
+	transition: border-color .18s ease, background .18s ease;
+}
+.dirnudge:hover { border-color: var(--line-strong); background: var(--white); }
+.dirnudge__icon { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--white); color: var(--deep); }
+.dirnudge__icon svg { width: 17px; height: 17px; }
+.dirnudge__text { flex: 1; min-width: 12rem; font-size: .9375rem; }
+.dirnudge__text span { display: block; color: var(--text-soft); font-size: .875rem; margin-top: .1rem; }
+.dirnudge__go { display: inline-flex; align-items: center; gap: var(--s-3); font-size: .875rem; font-weight: 600; white-space: nowrap; }
+
+@media (max-width: 560px) {
+	.dirnudge__go { width: 100%; justify-content: space-between; }
+}

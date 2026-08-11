@@ -24,6 +24,29 @@ get_header();
 		</div>
 		<p class="lede dir__lede" style="max-width:34ch"><?php esc_html_e( "Filter by practice, area, price and format. Unclaimed listings are marked — they're built from public information and waiting for their owner.", 'oria' ); ?></p>
 	</div>
+
+	<?php
+	/*
+	 * A hundred-odd listings behind five filters assumes you already know
+	 * what you're looking for. Whoever doesn't is the person most likely to
+	 * leave, so the way out sits above the filters rather than below them.
+	 */
+	if ( function_exists( 'Oria\Core\Finder\url' ) ) :
+		?>
+		<a class="dirnudge" href="<?php echo esc_url( \Oria\Core\Finder\url() ); ?>" data-oria-event="finder_from_directory">
+			<span class="dirnudge__icon" aria-hidden="true">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m16.2 16.2 4 4"/><path d="M11 8.2v.1M11 10.4v3.4"/></svg>
+			</span>
+			<span class="dirnudge__text">
+				<b><?php esc_html_e( 'Not sure where to start?', 'oria' ); ?></b>
+				<span><?php esc_html_e( 'Answer four questions and we\'ll narrow it down for you.', 'oria' ); ?></span>
+			</span>
+			<span class="dirnudge__go">
+				<?php esc_html_e( 'Try the Wellness Finder', 'oria' ); ?>
+				<?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</span>
+		</a>
+	<?php endif; ?>
 </section>
 
 <section class="wrap section section--top-flush">
