@@ -14,10 +14,53 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/** The shared shell around any email body. */
-function shell( string $preheader, string $body_html ): string {
+/**
+ * The shared shell around any email body.
+ *
+ * $header chooses the masthead. 'band' is the compact green strip the
+ * notifications use. 'masthead' is the centred lockup from the site —
+ * mark, wordmark, then the line saying what we are — for the few emails
+ * that reach someone who has never heard of us and needs telling.
+ */
+function shell( string $preheader, string $body_html, string $header = 'band' ): string {
 	$site = esc_html( wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES ) );
 	$home = esc_url( home_url( '/' ) );
+
+	// Header band: the ensō mark (a white PNG served from the theme — SVG
+	// dies in Gmail) beside the wordmark, which doubles as the alt text
+	// when a mail client blocks images.
+	$top = '<tr><td style="background:#0E3B38;border-radius:14px 14px 0 0;padding:18px 32px;">'
+		. '<a href="' . $home . '" style="text-decoration:none;">'
+		. '<img src="' . esc_url( get_theme_file_uri( 'assets/img/email-logo.png' ) ) . '" width="40" height="40" alt="' . esc_attr( $site ) . '" style="display:inline-block;vertical-align:middle;border:0;width:40px;height:40px;">'
+		. '<span style="display:inline-block;vertical-align:middle;margin-left:12px;font-family:Arial,Helvetica,sans-serif;font-size:19px;font-weight:bold;color:#FFFFFF;letter-spacing:-0.2px;">' . $site . '</span>'
+		. '</a></td></tr>';
+
+	$card_top = 'none';
+	$rounding = '0 0 14px 14px';
+
+	if ( 'masthead' === $header ) {
+		/*
+		 * The mark carries no alt text on purpose: the wordmark beneath it
+		 * is live text, so a client with images switched off still shows
+		 * the name rather than showing it twice.
+		 */
+		/*
+		 * The WordPress site title is "OriaHaven", one word, because that is
+		 * what reads well in a browser tab beside a page name. Set as a
+		 * masthead in 30px it wants the space the brand actually has.
+		 */
+		$wordmark = esc_html( (string) apply_filters( 'oria_email_wordmark', 'Oria Haven' ) );
+
+		$card_top = '1px solid #DCD9D0';
+		$rounding = '14px';
+		$top      = '<tr><td align="center" style="padding:4px 16px 30px;">'
+			. '<a href="' . $home . '" style="text-decoration:none;">'
+			. '<img src="' . esc_url( get_theme_file_uri( 'assets/img/email-mark.png' ) ) . '" width="72" height="72" alt="" style="display:block;margin:0 auto 20px;border:0;width:72px;height:72px;">'
+			. '<div style="font-family:Arial,Helvetica,sans-serif;font-size:30px;font-weight:bold;color:#082220;letter-spacing:-0.5px;">' . $wordmark . '</div>'
+			. '<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;color:#566762;letter-spacing:2.5px;text-transform:uppercase;margin-top:10px;">'
+			. esc_html__( 'Perth meditation &amp; wellness directory', 'oria' )
+			. '</div></a></td></tr>';
+	}
 
 	return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>'
 	. '<body style="margin:0;padding:0;background:#F5F4F0;">'
@@ -26,17 +69,10 @@ function shell( string $preheader, string $body_html ): string {
 	. '<tr><td align="center" style="padding:32px 16px;">'
 	. '<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">'
 
-	// Header band: the ensō mark (a white PNG served from the theme — SVG
-	// dies in Gmail) beside the wordmark, which doubles as the alt text
-	// when a mail client blocks images.
-	. '<tr><td style="background:#0E3B38;border-radius:14px 14px 0 0;padding:18px 32px;">'
-	. '<a href="' . $home . '" style="text-decoration:none;">'
-	. '<img src="' . esc_url( get_theme_file_uri( 'assets/img/email-logo.png' ) ) . '" width="40" height="40" alt="' . esc_attr( $site ) . '" style="display:inline-block;vertical-align:middle;border:0;width:40px;height:40px;">'
-	. '<span style="display:inline-block;vertical-align:middle;margin-left:12px;font-family:Arial,Helvetica,sans-serif;font-size:19px;font-weight:bold;color:#FFFFFF;letter-spacing:-0.2px;">' . $site . '</span>'
-	. '</a></td></tr>'
+	. $top
 
 	// Body card.
-	. '<tr><td style="background:#FFFFFF;border:1px solid #DCD9D0;border-top:none;border-radius:0 0 14px 14px;padding:28px 32px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#082220;">'
+	. '<tr><td style="background:#FFFFFF;border:1px solid #DCD9D0;border-top:' . $card_top . ';border-radius:' . $rounding . ';padding:28px 32px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#082220;">'
 	. $body_html
 	. '</td></tr>'
 

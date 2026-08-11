@@ -64,6 +64,7 @@ function bootstrap(): void {
 	add_filter( 'manage_listing_posts_columns', __NAMESPACE__ . '\column' );
 	add_action( 'manage_listing_posts_custom_column', __NAMESPACE__ . '\column_content', 20, 2 );
 	add_action( 'admin_post_oria_invite', __NAMESPACE__ . '\handle_send' );
+	add_action( 'phpmailer_init', __NAMESPACE__ . '\attach_alt_text' );
 	add_action( 'admin_notices', __NAMESPACE__ . '\notice' );
 	add_action( 'add_meta_boxes', __NAMESPACE__ . '\metabox' );
 }
@@ -174,12 +175,26 @@ function send( int $listing_id ): bool {
 	$to    = address( $listing_id );
 	$again = (int) get_post_meta( $listing_id, COUNT, true ) > 0;
 	$token = mint( $listing_id );
+	$name  = wp_specialchars_decode( (string) get_post_field( 'post_title', $listing_id, 'raw' ), ENT_QUOTES );
+
+	// Both parts, every time. A plain-text alternative is worth real money
+	// on cold mail: some filters weigh HTML-only messages against you, and
+	// some people simply read in plain text.
+	alt_text( $again ? follow_up_text( $listing_id, $token ) : body_text( $listing_id, $token ) );
 
 	$sent = wp_mail(
 		$to,
 		subject( $listing_id, $again ),
-		$again ? follow_up( $listing_id, $token ) : body( $listing_id, $token )
+		\Oria\Forms\Emails\shell(
+			/* translators: %s: practice name */
+			sprintf( __( '%s is listed on Oria Haven — it\'s yours to take over, free.', 'oria' ), $name ),
+			$again ? follow_up_html( $listing_id, $token ) : body_html( $listing_id, $token ),
+			'masthead'
+		),
+		\Oria\Forms\Emails\html_headers()
 	);
+
+	alt_text( '' );
 
 	if ( $sent ) {
 		update_post_meta( $listing_id, SENT, current_time( 'mysql' ) );
@@ -249,7 +264,147 @@ function signature(): string {
 	);
 }
 
-function body( int $listing_id, string $token ): string {
+/**
+ * Holds the plain-text twin of the message being sent, so phpmailer_init
+ * can attach it as the alternative part. Cleared straight after the send
+ * rather than left lying around for the next unrelated email.
+ */
+function alt_text( ?string $set = null ): string {
+	static $text = '';
+	if ( null !== $set ) {
+		$text = $set;
+	}
+	return $text;
+}
+
+function attach_alt_text( \PHPMailer\PHPMailer\PHPMailer $mailer ): void {
+	$text = alt_text();
+	if ( '' !== $text ) {
+		$mailer->AltBody = $text;
+	}
+}
+
+/* --------------------------------------------------------------- the html */
+
+function para( string $html ): string {
+	return '<p style="margin:0 0 16px;">' . $html . '</p>';
+}
+
+function heading( string $text ): string {
+	return '<p style="margin:24px 0 6px;font-size:13px;font-weight:bold;letter-spacing:1.2px;text-transform:uppercase;color:#0E3B38;">' . esc_html( $text ) . '</p>';
+}
+
+function button( string $url, string $label ): string {
+	return '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;"><tr>'
+		. '<td style="background:#0E3B38;border-radius:999px;">'
+		. '<a href="' . esc_url( $url ) . '" style="display:inline-block;padding:14px 28px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#FFFFFF;text-decoration:none;">'
+		. esc_html( $label ) . '</a></td></tr></table>';
+}
+
+function small( string $html ): string {
+	return '<p style="margin:0 0 14px;font-size:13px;color:#566762;line-height:1.6;">' . $html . '</p>';
+}
+
+function link_to( string $url, string $label = '' ): string {
+	return '<a href="' . esc_url( $url ) . '" style="color:#0E3B38;">' . esc_html( $label ?: $url ) . '</a>';
+}
+
+function body_html( int $listing_id, string $token ): string {
+	$name     = wp_specialchars_decode( (string) get_post_field( 'post_title', $listing_id, 'raw' ), ENT_QUOTES );
+	$describe = described( $listing_id );
+	$profile  = (string) get_permalink( $listing_id );
+
+	$html  = para( esc_html__( 'Hi there,', 'oria' ) );
+	$html .= para(
+		sprintf(
+			/* translators: 1: practice name, 2: link to their listing */
+			esc_html__( 'We run Oria Haven, a directory of wellness practices in Perth. %1$s is on it: %2$s', 'oria' ),
+			'<b>' . esc_html( $name ) . '</b>',
+			link_to( $profile )
+		)
+	);
+	$html .= para(
+		sprintf(
+			/* translators: %s: how we've categorised them */
+			esc_html__( 'We put the listing together from what\'s public on your website%s. Nobody from your team has checked it, which is why I\'m writing.', 'oria' ),
+			$describe ? ' — ' . esc_html( $describe ) : ''
+		)
+	);
+
+	$html .= heading( __( 'If anything\'s wrong, just reply and I\'ll fix it', 'oria' ) );
+	$html .= para( esc_html__( 'No account, no charge. An out-of-date price or a wrong opening time is worse for you than not being listed at all.', 'oria' ) );
+
+	$html .= heading( __( 'If you\'d like to look after it yourself, you can — free', 'oria' ) );
+	$html .= para( esc_html__( 'Claiming confirms you\'re the owner. You can then keep your address, phone, email, website, prices and session format current yourself, and the listing stops being marked Unclaimed. There are paid plans that add photos, opening hours, offers and visitor stats, but you never have to take one.', 'oria' ) );
+
+	$html .= button( link( $token ), __( 'Claim your listing', 'oria' ) );
+
+	$html .= small(
+		sprintf(
+			/* translators: %d: number of days */
+			esc_html__( 'That link is just for your listing and works for %d days.', 'oria' ),
+			TTL_DAYS
+		)
+	);
+
+	$html .= '<div style="border-top:1px solid #EFEDE6;margin:22px 0 18px;"></div>';
+	$html .= small(
+		sprintf(
+			/* translators: %d: number of listings */
+			esc_html__( 'About us: we list %d practices across Perth, from Fremantle to the Hills, all checked by hand. Enquiries go straight to you. We don\'t take a cut of bookings and we never will.', 'oria' ),
+			(int) wp_count_posts( PostTypes\LISTING )->publish
+		)
+	);
+	$html .= signature_html();
+	$html .= small(
+		sprintf(
+			/* translators: %s: opt-out link */
+			esc_html__( 'Would you rather not be listed? %s and we\'ll take it down.', 'oria' ),
+			link_to( link( $token, true ), __( 'Tell us here', 'oria' ) )
+		)
+	);
+
+	return $html;
+}
+
+function follow_up_html( int $listing_id, string $token ): string {
+	$name = wp_specialchars_decode( (string) get_post_field( 'post_title', $listing_id, 'raw' ), ENT_QUOTES );
+
+	$html  = para( esc_html__( 'Hi again — just once more in case that got buried.', 'oria' ) );
+	$html .= para(
+		sprintf(
+			/* translators: 1: practice name, 2: link */
+			esc_html__( '%1$s\'s listing: %2$s', 'oria' ),
+			'<b>' . esc_html( $name ) . '</b>',
+			link_to( (string) get_permalink( $listing_id ) )
+		)
+	);
+	$html .= button( link( $token ), __( 'Take it over — free', 'oria' ) );
+	$html .= small(
+		sprintf(
+			/* translators: %s: opt-out link */
+			esc_html__( 'Rather not be listed? %s.', 'oria' ),
+			link_to( link( $token, true ), __( 'Tell us here', 'oria' ) )
+		)
+	);
+	$html .= para( '<b>' . esc_html__( 'Either way, I won\'t email again.', 'oria' ) . '</b>' );
+	$html .= signature_html();
+
+	return $html;
+}
+
+function signature_html(): string {
+	$from = \Oria\Core\Mail\from_address( '' ) ?: get_option( 'admin_email' );
+	return '<p style="margin:22px 0 18px;font-size:14px;line-height:1.6;color:#082220;">'
+		. esc_html( (string) get_option( 'oria_invite_from_name', 'Dale' ) ) . '<br>'
+		. '<span style="color:#566762;">' . esc_html__( 'Oria Haven — Perth, WA', 'oria' ) . '<br>'
+		. link_to( 'mailto:' . $from, $from ) . ' &middot; ' . link_to( home_url( '/' ), (string) wp_parse_url( home_url(), PHP_URL_HOST ) )
+		. '</span></p>';
+}
+
+/* --------------------------------------------------------------- the text */
+
+function body_text( int $listing_id, string $token ): string {
 	$name     = wp_specialchars_decode( (string) get_post_field( 'post_title', $listing_id, 'raw' ), ENT_QUOTES );
 	$describe = described( $listing_id );
 
@@ -280,7 +435,7 @@ function body( int $listing_id, string $token ): string {
  * earns any trust here, so it has to be true — see blocked(), which stops
  * a third.
  */
-function follow_up( int $listing_id, string $token ): string {
+function follow_up_text( int $listing_id, string $token ): string {
 	$name = wp_specialchars_decode( (string) get_post_field( 'post_title', $listing_id, 'raw' ), ENT_QUOTES );
 
 	return sprintf(
