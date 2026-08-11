@@ -1473,3 +1473,66 @@ a.livesession:hover { background: var(--sand-2); }
     rgba(6, 26, 25, 0) 100%
   );
 }
+
+/* -------------------------------------------------------------------------
+ * Share kit (/listing/{slug}/share/)
+ * ---------------------------------------------------------------------- */
+.sharekit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: var(--s-7);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .sharekit { grid-template-columns: 1fr; }
+}
+
+.sharekit__copy .textarea {
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  background: var(--sand-2);
+}
+
+.sharekit__images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: var(--s-5);
+  align-items: start;
+}
+.sharekit__thumb {
+  display: block;
+  text-decoration: none;
+  color: var(--text-soft);
+  font-size: var(--fs-xs);
+}
+.sharekit__thumb img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  display: block;
+  margin-bottom: var(--s-2);
+  transition: transform 0.16s ease;
+}
+.sharekit__thumb:hover img { transform: translateY(-2px); }
+
+.sharekit__preview {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-md);
+  margin-top: var(--s-3);
+  display: block;
+}
+
+/* Confirmation on the copy button, so the tap has an answer. */
+.is-copied { position: relative; }
+.is-copied::after {
+  content: "Copied";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: inherit;
+  background: var(--moss, #3F6E60);
+  color: #fff;
+}

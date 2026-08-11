@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const QUERY_VAR  = 'oria_area';
-const REWRITE_V  = '3'; // 3: /perth/ hub route added.
+const REWRITE_V  = '4'; // 4: /listing/{slug}/share/ route added.
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\add_routes', 10 );
@@ -41,7 +41,8 @@ function bootstrap(): void {
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\seo_canonical' );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\seo_robots' );
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title' );
-	add_filter( 'wpseo_opengraph_image', __NAMESPACE__ . '\og_image' );
+	// Listing preview images live in Share, which has to reach Yoast a step
+	// earlier than a filter to set one at all.
 	// Last, so it sees Yoast's block: where Yoast already advertises its
 	// sitemap this does nothing, and a second line never gets added.
 	add_filter( 'robots_txt', __NAMESPACE__ . '\robots_txt', 9999, 2 );
@@ -344,16 +345,6 @@ function seo_description( $desc ) {
 	return $desc;
 }
 
-/** Listings have no featured image; their gallery's lead photo shares well. */
-function og_image( $image ) {
-	if ( is_singular( 'listing' ) && ! $image ) {
-		$gallery = array_values( array_filter( array_map( 'intval', (array) ( get_field( 'gallery', get_the_ID() ) ?: array() ) ) ) );
-		if ( $gallery ) {
-			return (string) ( wp_get_attachment_image_url( $gallery[0], 'large' ) ?: $image );
-		}
-	}
-	return $image;
-}
 
 function seo_canonical( $canonical ) {
 	$area = combo_area();

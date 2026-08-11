@@ -274,7 +274,20 @@ function handle_decision(): void {
 				$featured['price'],
 				$bullets( $featured ),
 				\Oria\Core\Billing\pay_url( 'featured', $listing_id, $email )
-			)
+			) . \Oria\Core\Share\email_block( $listing_id )
+		);
+	} else {
+		// Without billing configured the claim is simply approved, so this
+		// is the only email they get — the share kit still belongs in it.
+		\Oria\Core\Billing\owner_mail(
+			$listing_id,
+			__( 'Your claim is approved — Oria Haven', 'oria' ),
+			sprintf(
+				/* translators: 1 name, 2 listing name */
+				__( "Hi %1\$s,\n\nYour claim on \"%2\$s\" is approved. The listing is yours to edit now — sign in and you can keep every detail current.", 'oria' ),
+				$name,
+				get_post_field( 'post_title', $listing_id, 'raw' )
+			) . \Oria\Core\Share\email_block( $listing_id )
 		);
 	}
 

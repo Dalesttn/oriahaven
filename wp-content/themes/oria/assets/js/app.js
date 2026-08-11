@@ -1029,6 +1029,51 @@
     }
   }
 
+  /* --- Copy-to-clipboard ----------------------------------------------- */
+  /* Used by the share kit's suggested post. The clipboard API needs a
+     secure context and can be refused outright, so the textarea-and-
+     execCommand path stays as a fallback — the same lesson the article
+     share button taught us. */
+  function initCopy() {
+    $$("[data-copy-target]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var src = document.querySelector(btn.getAttribute("data-copy-target"));
+        if (!src) return;
+        var text = src.value !== undefined ? src.value : src.textContent;
+
+        var done = function () {
+          btn.classList.add("is-copied");
+          pushEvent("share_copy");
+          window.setTimeout(function () { btn.classList.remove("is-copied"); }, 1600);
+        };
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text).then(done, function () { legacy(); });
+        } else {
+          legacy();
+        }
+
+        function legacy() {
+          try {
+            src.removeAttribute("readonly");
+            src.select();
+            src.setSelectionRange(0, text.length);
+            document.execCommand("copy");
+            src.setAttribute("readonly", "readonly");
+            done();
+          } catch (err) { /* leave the text selected for a manual copy */ }
+        }
+      });
+    });
+
+    /* Which network a practitioner actually uses is worth knowing. */
+    $$("[data-oria-share]").forEach(function (a) {
+      a.addEventListener("click", function () {
+        pushEvent("share_click", { network: a.getAttribute("data-oria-share") });
+      });
+    });
+  }
+
   /* --- Get-matched dialog ---------------------------------------------- */
   /* Desktop gets the form as a modal (opened from the hero card); mobile
      keeps the in-page band, so triggers fall through to their #enquire
@@ -1382,6 +1427,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     initTracking();
+    initCopy();
     initMatchDialog();
     initMatchCombos();
     initNav();

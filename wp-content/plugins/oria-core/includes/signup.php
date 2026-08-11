@@ -431,6 +431,7 @@ function live_email( string $new, string $old, \WP_Post $post ): void {
 		get_permalink( $post )
 	);
 
+	$body .= \Oria\Core\Share\email_block( $post->ID );
 	$body .= upgrade_block( $post->ID, $owner->user_email );
 	$body .= __( "\n\nThe Oria Haven team", 'oria' );
 
