@@ -83,7 +83,46 @@ button { background: none; border: 0; cursor: pointer; }
 }
 .on-deep .lede { color: var(--mist); }
 
-.prose p + p { margin-top: var(--s-4); }
+/* Vertical rhythm for long-form content.
+ *
+ * Only "p + p" used to be spaced, which left every heading flush against
+ * the text above and below it, and lists and tables running straight
+ * into whatever preceded them — so editors were inserting empty
+ * paragraph blocks by hand to force a gap. Space every sibling instead.
+ *
+ * Headings take a larger gap above than below on purpose: the space
+ * belongs to the section break, and a heading should read as attached to
+ * the text it introduces rather than floating between two blocks.
+ */
+.prose > * + * { margin-top: var(--s-4); }
+
+.prose > * + h2 { margin-top: var(--s-7); }
+.prose > * + h3 { margin-top: var(--s-6); }
+.prose > * + h4 { margin-top: var(--s-5); }
+
+/* Blocks that read as set-pieces get a little more air than a paragraph. */
+.prose > * + ul,
+.prose > * + ol,
+.prose > * + figure,
+.prose > * + blockquote,
+.prose > * + table { margin-top: var(--s-5); }
+
+.prose li + li { margin-top: 0.35rem; }
+
+/* The global "ul, ol { list-style: none }" reset above is right for the
+   interface — nav, chips, filter lists — but it also strips the markers
+   from article content, where a list of five studios then reads as five
+   loose lines. Put them back inside prose only. */
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose ul,
+.prose ol { padding-left: 1.35em; }
+.prose li::marker { color: var(--text-faint); }
+
+/* Spacer paragraphs left over from before this rule existed: without
+   this they stack on top of the real margin and open a hole. */
+.prose > p:empty { display: none; }
+
 .prose { max-width: var(--maxw-text); color: var(--text-soft); }
 /* Article body that runs the full content column instead of the reading
    measure — the journal's own layout, where the text lines up with the
