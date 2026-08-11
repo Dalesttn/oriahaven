@@ -34,14 +34,22 @@ $oria_first = true;
 			if ( $oria_first ) :
 				$oria_first = false;
 				?>
-				<a class="mediacard reveal" href="<?php the_permalink(); ?>" style="--ar:21/9;margin-bottom:2.5rem;display:block">
+				<?php
+				/*
+				 * Sizing lives in .jlead (pages.css) rather than inline
+				 * here: the card has to hold its own height whether or not
+				 * the post has a featured image, and it needs a different
+				 * shape on a phone than it does across a desktop.
+				 */
+				?>
+				<a class="mediacard jlead reveal" href="<?php the_permalink(); ?>">
 					<?php if ( has_post_thumbnail() ) : ?>
 						<?php the_post_thumbnail( 'oria-wide', array( 'class' => 'mediacard__img' ) ); ?>
 					<?php endif; ?>
 					<div class="mediacard__top"><span class="badge badge--free"><?php esc_html_e( 'Latest', 'oria' ); ?></span></div>
-					<div class="mediacard__over" style="padding:clamp(1.5rem,4vw,3rem)">
-						<div class="mediacard__title" style="font-size:clamp(1.4rem,3vw,2.2rem);max-width:22ch;letter-spacing:-.03em"><?php the_title(); ?></div>
-						<div class="mediacard__meta" style="max-width:56ch;font-size:.9375rem"><?php echo esc_html( get_the_excerpt() ); ?></div>
+					<div class="mediacard__over">
+						<div class="mediacard__title"><?php the_title(); ?></div>
+						<div class="mediacard__meta"><?php echo esc_html( get_the_excerpt() ); ?></div>
 					</div>
 				</a>
 				<div class="grid grid-3">
