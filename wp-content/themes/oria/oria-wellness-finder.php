@@ -86,9 +86,10 @@ get_header();
 						<?php endforeach; ?>
 					</div>
 
+					<?php // btn--plain: no arrow dot, so no right-hand gap to reserve for one. ?>
 					<div class="finder__nav" data-finder-nav hidden>
-						<button class="btn btn--ghost btn--sm" type="button" data-finder-back><?php esc_html_e( 'Back', 'oria' ); ?></button>
-						<button class="btn btn--ghost btn--sm" type="button" data-finder-skip><?php esc_html_e( 'Skip', 'oria' ); ?></button>
+						<button class="btn btn--ghost btn--sm btn--plain" type="button" data-finder-back><?php esc_html_e( 'Back', 'oria' ); ?></button>
+						<button class="btn btn--ghost btn--sm btn--plain" type="button" data-finder-skip><?php esc_html_e( 'Skip', 'oria' ); ?></button>
 					</div>
 				</fieldset>
 			<?php endforeach; ?>
