@@ -568,6 +568,28 @@ a.livesession:hover { background: var(--sand-2); }
 
 .claimprompt { border: 1px dashed var(--line-strong); border-radius: var(--r-md); padding: var(--s-5); background: var(--sand-2); }
 
+/* Not found. The guesses are the point of the page, so they read as
+   destinations rather than as a list of links. */
+.notfound__guesses { display: grid; gap: var(--s-4); max-width: 46rem; }
+.notfound__guess {
+	display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--s-3) var(--s-4);
+	padding: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md);
+	background: var(--white); transition: border-color .18s ease, transform .18s ease;
+}
+.notfound__guess:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+.notfound__guess__name { grid-column: 1; font-weight: 600; }
+.notfound__guess__meta { grid-column: 1; grid-row: 2; font-size: .875rem; color: var(--text-soft); }
+.notfound__guess .btn__dot { grid-column: 2; grid-row: 1 / -1; }
+
+.notfound__cats { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+.notfound__cat {
+	display: inline-flex; align-items: center; gap: .5rem;
+	padding: .55rem .9rem; border: 1px solid var(--line); border-radius: 999px;
+	background: var(--white); font-size: .9375rem; transition: border-color .18s ease;
+}
+.notfound__cat:hover { border-color: var(--line-strong); }
+.notfound__cat__count { font-size: .8125rem; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+
 /* Way into the share kit. The owner's copy is the one that has to be found,
    so it carries the icon and a solid button; a visitor's stays quiet. */
 .sharebox { display: flex; gap: var(--s-4); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--s-5); background: var(--sand-2); }
