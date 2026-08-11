@@ -600,9 +600,18 @@ function article_meta( int $post_id ): string {
  * terms, which is far too much work to repeat on each request for a
  * search box most visitors never touch. Cleared whenever a listing or a
  * term changes, so it cannot go stale behind the editor's back.
+ *
+ * The key carries a version. A deploy that adds a field to these rows
+ * would otherwise keep reading the old shape from a transient with
+ * hours left on it — 'region' arrived that way, and a stale index would
+ * have left the home map reporting no places in any region until it
+ * expired. Bump SEARCH_INDEX_V whenever the shape changes.
  */
+const SEARCH_INDEX_V = 2; // 2: listing rows gained 'region' for the map.
+
 function search_index(): array {
-	$cached = get_transient( 'oria_search_index' );
+	$key    = 'oria_search_index_v' . SEARCH_INDEX_V;
+	$cached = get_transient( $key );
 	if ( is_array( $cached ) ) {
 		return $cached;
 	}
@@ -630,14 +639,19 @@ function search_index(): array {
 		),
 	);
 
-	set_transient( 'oria_search_index', $index, 12 * HOUR_IN_SECONDS );
+	set_transient( $key, $index, 12 * HOUR_IN_SECONDS );
 	return $index;
 }
 
-add_action( 'save_post_listing', static fn() => delete_transient( 'oria_search_index' ) );
-add_action( 'deleted_post', static fn() => delete_transient( 'oria_search_index' ) );
-add_action( 'edited_term', static fn() => delete_transient( 'oria_search_index' ) );
-add_action( 'created_term', static fn() => delete_transient( 'oria_search_index' ) );
+/** Any change to a listing or a term rebuilds the index on next read. */
+function flush_search_index(): void {
+	delete_transient( 'oria_search_index_v' . SEARCH_INDEX_V );
+}
+
+foreach ( array( 'save_post_listing', 'deleted_post', 'edited_term', 'created_term' ) as $oria_flush_hook ) {
+	add_action( $oria_flush_hook, __NAMESPACE__ . '\flush_search_index' );
+}
+unset( $oria_flush_hook );
 
 /**
  * The practice categories a journal article is about: the editor's picks
