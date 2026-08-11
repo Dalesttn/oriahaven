@@ -250,13 +250,19 @@ function listing_data(): array {
 			},
 			get_terms( array( 'taxonomy' => 'area', 'parent' => 0, 'hide_empty' => false ) ) ?: array()
 		),
-		'specialties' => array_map(
-			static fn( \WP_Term $t ): array => array(
-				'id'   => $t->slug,
-				'name' => tname( $t ),
-				'url'  => get_term_link( $t ),
-			),
-			get_terms( array( 'taxonomy' => 'specialty', 'hide_empty' => true ) ) ?: array()
+		// array_values, or one term filtered out upstream leaves a keyed
+		// array that wp_json_encode turns into an OBJECT — which is exactly
+		// what happened on production: {"0":…} instead of […], every
+		// .forEach in app.js threw, and the directory filters died.
+		'specialties' => array_values(
+			array_map(
+				static fn( \WP_Term $t ): array => array(
+					'id'   => $t->slug,
+					'name' => tname( $t ),
+					'url'  => get_term_link( $t ),
+				),
+				get_terms( array( 'taxonomy' => 'specialty', 'hide_empty' => true ) ) ?: array()
+			)
 		),
 		'listings'   => $listings,
 	);

@@ -349,13 +349,24 @@
     return hits;
   }
 
+  /* PHP encodes an array as a JSON object the moment its keys stop being
+     sequential — one term filtered out server-side and "specialties"
+     arrives as {"0":…,"2":…} instead of a list, and every .forEach on it
+     throws, taking the whole init chain (filters included) down with it.
+     This happened on production. Accept both shapes, always. */
+  function asList(v) {
+    if (Array.isArray(v)) return v;
+    if (v && typeof v === "object") return Object.keys(v).map(function (k) { return v[k]; });
+    return [];
+  }
+
   function searchSuggest(raw) {
     var idx = searchIndex();
     var q = raw.trim().toLowerCase();
     if (!idx || q.length < 2) return [];
     var D = idx.D, counts = idx.counts, syn = synonymSlugs(q), out = [];
 
-    (D.specialties || []).forEach(function (s) {
+    asList(D.specialties).forEach(function (s) {
       var hit = s.name.toLowerCase().indexOf(q) > -1 || syn.indexOf(s.id) > -1;
       if (hit && counts[s.id]) {
         out.push({ kind: "Specialty", label: s.name, sub: counts[s.id] + " places", url: s.url,
@@ -503,7 +514,7 @@
 
     var catNames = {}, regionNames = {}, suburbRegion = {}, specNames = {};
     DATA.categories.forEach(function (c) { catNames[c.id] = c.name; });
-    (DATA.specialties || []).forEach(function (s) { specNames[s.id] = s.name; });
+    asList(DATA.specialties).forEach(function (s) { specNames[s.id] = s.name; });
     DATA.regions.forEach(function (r) {
       regionNames[r.id] = r.name;
       r.suburbs.forEach(function (s) { suburbRegion[s.toLowerCase()] = r.id; });
