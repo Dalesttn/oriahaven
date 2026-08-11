@@ -107,10 +107,13 @@ add_action(
 			wp_add_inline_script( 'oria-app', 'window.ORIA_PROFILE = ' . wp_json_encode( profile_context() ) . ';', 'before' );
 		}
 
-		// The directory pages read window.ORIA_DATA; print it from live posts.
-		// Pages are included because any built page can hold the map or the
-		// search hero, both of which read this data.
-		if ( is_post_type_archive( 'listing' ) || is_tax( array( 'practice', 'area', 'specialty' ) ) || is_page() ) {
+		// Only the directory engine reads window.ORIA_DATA — it needs every
+		// field to filter, sort and render cards client-side. Pages used to
+		// be included here for the map and the search hero, but both are
+		// satisfied by the slim index, and shipping the full set to the home
+		// page meant 255KB of inline JSON for the main thread to parse
+		// before the page settled.
+		if ( is_post_type_archive( 'listing' ) || is_tax( array( 'practice', 'area', 'specialty' ) ) ) {
 			wp_add_inline_script( 'oria-app', 'window.ORIA_DATA = ' . wp_json_encode( listing_data() ) . ';', 'before' );
 		} else {
 			// Everywhere else — a listing, an event, a journal article — the
@@ -567,8 +570,16 @@ function article_meta( int $post_id ): string {
 }
 
 /**
- * The slim index behind the header search: just enough to build a
- * suggestion list — no blurbs, images, prices or ratings.
+ * The slim index behind the header search AND the home page's region
+ * map: just enough to build a suggestion list and count places per
+ * region — no blurbs, images, prices or ratings.
+ *
+ * The full set is ~255KB of inline JSON. It is not the download that
+ * hurts (Brotli takes it to a fraction of that) but the main thread:
+ * a quarter-megabyte object literal has to be parsed and evaluated
+ * before the page settles, which on a throttled mobile CPU is exactly
+ * the blocking time a PageSpeed score punishes. Only the directory
+ * engine genuinely needs every field.
  *
  * Kept in a transient because assembling it walks every listing and its
  * terms, which is far too much work to repeat on each request for a
@@ -590,12 +601,15 @@ function search_index(): array {
 			$full['regions']
 		),
 		'listings'    => array_map(
+			// 'region' is here for the home page's map, which counts places
+			// per region — the one field search itself never reads.
 			static fn( array $l ): array => array(
 				'name'   => $l['name'],
 				'url'    => $l['url'],
 				'cat'    => $l['cat'],
 				'spec'   => $l['spec'],
 				'suburb' => $l['suburb'],
+				'region' => $l['region'],
 			),
 			$full['listings']
 		),

@@ -6,7 +6,11 @@
 (function () {
   "use strict";
 
-  var DATA = window.ORIA_DATA || { listings: [], categories: [], regions: [] };
+  /* The directory engine gets the full set; everywhere else carries the
+     slim index, which now holds the region field the map needs. Falling
+     back keeps the map and search working on both. */
+  var DATA = window.ORIA_DATA || window.ORIA_SEARCH_DATA ||
+    { listings: [], categories: [], regions: [], specialties: [] };
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   var ICON = {
