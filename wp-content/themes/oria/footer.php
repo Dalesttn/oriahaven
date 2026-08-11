@@ -39,6 +39,7 @@ $oria_suburbs   = function_exists( '\Oria\Core\Taxonomies\suburbs' ) ? \Oria\Cor
 					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Full directory', 'oria' ); ?></a></li>
 					<?php // Sitewide, so every practice, modality and suburb page sits two clicks from anywhere on the site. ?>
 					<li><a href="<?php echo esc_url( home_url( '/perth/' ) ); ?>"><?php esc_html_e( 'Browse all of Perth', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/wellness-finder/' ) ); ?>"><?php esc_html_e( 'Wellness Finder', 'oria' ); ?></a></li>
 					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ); ?>"><?php esc_html_e( 'Workshops/Events', 'oria' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/this-weekend/' ) ); ?>"><?php esc_html_e( 'This weekend', 'oria' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/journal/' ) ); ?>"><?php esc_html_e( 'The Journal', 'oria' ); ?></a></li>

@@ -51,6 +51,7 @@ require_once ORIA_CORE_DIR . 'includes/hub.php';
 require_once ORIA_CORE_DIR . 'includes/faq.php';
 require_once ORIA_CORE_DIR . 'includes/leads.php';
 require_once ORIA_CORE_DIR . 'includes/share.php';
+require_once ORIA_CORE_DIR . 'includes/finder.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
@@ -80,6 +81,7 @@ Hub\bootstrap();
 Faq\bootstrap();
 Leads\bootstrap();
 Share\bootstrap();
+Finder\bootstrap();
 
 /**
  * Rewrite rules are only rebuilt on activation and deactivation. Flushing on

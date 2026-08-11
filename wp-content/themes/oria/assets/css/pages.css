@@ -1306,18 +1306,27 @@ a.livesession:hover { background: var(--sand-2); }
 
 .matchband__pair { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
 
-/* The band sits on deep green; its fields follow the contact-card idiom. */
-.matchband .field__label { color: var(--mist-2); }
+/* The band sits on deep green; its fields follow the contact-card idiom.
+   The Wellness Finder's hand-off panel is the same form on the same green,
+   so it shares these rules rather than keeping a second copy of them. */
+.matchband .field__label,
+.finder__handoff .field__label { color: var(--mist-2); }
 .matchband .input,
 .matchband .select,
-.matchband .textarea {
+.matchband .textarea,
+.finder__handoff .input,
+.finder__handoff .select,
+.finder__handoff .textarea {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.22);
   color: #fff;
 }
 .matchband .input::placeholder,
-.matchband .textarea::placeholder { color: rgba(255, 255, 255, 0.45); }
-.matchband .select option { color: var(--ink); }
+.matchband .textarea::placeholder,
+.finder__handoff .input::placeholder,
+.finder__handoff .textarea::placeholder { color: rgba(255, 255, 255, 0.45); }
+.matchband .select option,
+.finder__handoff .select option { color: var(--ink); }
 
 @media (max-width: 900px) {
   .matchband { grid-template-columns: 1fr; padding: var(--s-6) var(--s-5); gap: var(--s-6); }
@@ -1568,4 +1577,97 @@ a.livesession:hover { background: var(--sand-2); }
   border-radius: inherit;
   background: var(--moss, #3F6E60);
   color: #fff;
+}
+
+/* ============================================================ Wellness Finder
+
+   The questionnaire is one form containing every question. Script folds it
+   into a wizard by hiding all but the current step; without script all four
+   are simply on the page and the form submits normally. So the default state
+   here is "everything visible", and .is-wizard is the enhancement. */
+
+.finder { max-width: 44rem; }
+
+.finder__progress { display: flex; align-items: center; gap: var(--s-4); margin-bottom: var(--s-7); }
+.finder__progress__bar { flex: 1; height: 4px; border-radius: 999px; background: var(--sand); overflow: hidden; }
+.finder__progress__bar span { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--deep); transition: width .45s cubic-bezier(.4, 0, .2, 1); }
+.finder__progress__label { font-size: .8125rem; color: var(--text-soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.finder__step { border: 0; padding: 0; margin: 0 0 var(--s-8); }
+.finder__q { display: flex; gap: var(--s-4); padding: 0; margin-bottom: var(--s-5); }
+.finder__q__num { font-size: .8125rem; font-weight: 700; color: var(--mist); padding-top: .3rem; font-variant-numeric: tabular-nums; }
+.finder__q__label { display: block; font-family: var(--font-display, inherit); font-size: clamp(1.35rem, 3vw, 1.75rem); line-height: 1.2; letter-spacing: -.01em; }
+.finder__q__hint { display: block; margin-top: .4rem; font-size: .9375rem; color: var(--text-soft); }
+
+.finder__options { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+.finder__opt { position: relative; }
+.finder__opt input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.finder__opt__face {
+	display: block; padding: .7rem 1.1rem; border: 1px solid var(--line-strong); border-radius: 999px;
+	background: var(--white); font-size: .9375rem; cursor: pointer;
+	transition: transform .16s cubic-bezier(.4, 0, .2, 1), border-color .16s ease, background .16s ease, color .16s ease;
+}
+.finder__opt input:hover + .finder__opt__face { border-color: var(--deep); transform: translateY(-1px); }
+.finder__opt input:focus-visible + .finder__opt__face { outline: 2px solid var(--focus); outline-offset: 2px; }
+.finder__opt input:checked + .finder__opt__face { background: var(--deep); border-color: var(--deep); color: var(--white); }
+
+.finder__nav { display: flex; gap: var(--s-3); margin-top: var(--s-6); }
+.finder__submit { margin-top: var(--s-6); }
+.finder__submit .hint { margin-top: var(--s-3); color: var(--text-soft); }
+
+/* Wizard mode. Steps are stacked in one grid cell so the height animates
+   from the content rather than jumping, and only the live one is reachable. */
+.finder.is-wizard .finder__step { display: none; margin-bottom: 0; }
+.finder.is-wizard .finder__step.is-live { display: block; animation: finder-in .38s cubic-bezier(.2, .7, .3, 1) both; }
+.finder.is-wizard .finder__step.is-back { animation-name: finder-in-back; }
+.finder.is-wizard .finder__submit { display: none; }
+.finder.is-wizard .finder__submit.is-live { display: block; animation: finder-in .38s cubic-bezier(.2, .7, .3, 1) both; }
+
+@keyframes finder-in {
+	from { opacity: 0; transform: translate3d(14px, 0, 0); }
+	to   { opacity: 1; transform: none; }
+}
+@keyframes finder-in-back {
+	from { opacity: 0; transform: translate3d(-14px, 0, 0); }
+	to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.finder.is-wizard .finder__step.is-live,
+	.finder.is-wizard .finder__submit.is-live { animation: none; }
+	.finder__progress__bar span { transition: none; }
+	.finder__opt__face { transition: none; }
+	.finder__opt input:hover + .finder__opt__face { transform: none; }
+}
+
+/* ------------------------------------------------------------ results */
+
+.finder__recap { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
+.finder__recap__redo { font-size: .875rem; text-decoration: underline; text-underline-offset: 3px; color: var(--text-soft); }
+
+.finder__practices { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); margin-top: 1.75rem; }
+.finder__practice { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-3); padding: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--white); }
+.finder__practice__name { font-size: 1.15rem; }
+.finder__practice__blurb { font-size: .9375rem; color: var(--text-soft); }
+.finder__practice__list { display: flex; flex-wrap: wrap; gap: .35rem .5rem; margin: 0; padding: 0; list-style: none; }
+.finder__practice__list li { font-size: .8125rem; color: var(--text-soft); padding: .2rem .55rem; border: 1px solid var(--line); border-radius: 999px; }
+.finder__practice__count { font-size: .8125rem; color: var(--mist); margin-top: auto; }
+
+.finder__further { grid-column: 1 / -1; margin: var(--s-4) 0 0; font-size: .875rem; color: var(--text-soft); }
+
+.finder__event { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: var(--s-4); padding: var(--s-4) var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--white); transition: border-color .18s ease; }
+.finder__event:hover { border-color: var(--line-strong); }
+.finder__event__date { font-size: .8125rem; font-weight: 700; color: var(--deep); white-space: nowrap; }
+.finder__event__body { min-width: 0; }
+.finder__event__meta { display: block; font-size: .8125rem; color: var(--text-soft); }
+
+.finder__handoff { padding: var(--s-6); border-radius: var(--r-lg); background: var(--deep); color: var(--white); }
+.finder__handoff h2 { color: var(--white); }
+.finder__handoff > p { margin: var(--s-3) 0 var(--s-5); color: var(--mist-2); max-width: 52ch; }
+
+.finder__disclaimer { margin-top: var(--s-7); margin-bottom: var(--s-8); font-size: .8125rem; color: var(--text-soft); max-width: 62ch; }
+
+@media (max-width: 600px) {
+	.finder__event { grid-template-columns: 1fr auto; }
+	.finder__event__date { grid-column: 1 / -1; }
 }

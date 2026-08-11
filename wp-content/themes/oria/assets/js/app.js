@@ -1074,6 +1074,83 @@
     });
   }
 
+  /* --- Wellness Finder wizard ------------------------------------------ */
+  /* The form arrives with every question on the page and works that way if
+     this never runs. Here we fold it into one question at a time: choosing
+     an option advances, and the last step reveals the submit. Answers live
+     in the radios throughout, so a normal submit carries them however far
+     the visitor got. */
+  function initFinder() {
+    var form = document.querySelector("[data-finder]");
+    if (!form) return;
+
+    var steps = $$("[data-finder-step]", form);
+    var submit = form.querySelector(".finder__submit");
+    if (steps.length < 2 || !submit) return;
+
+    var progress = form.querySelector("[data-finder-progress]");
+    var fill = form.querySelector("[data-finder-fill]");
+    var count = form.querySelector("[data-finder-count]");
+    var at = 0;
+    var back = false;
+
+    form.classList.add("is-wizard");
+    if (progress) progress.hidden = false;
+    $$("[data-finder-nav]", form).forEach(function (nav) { nav.hidden = false; });
+
+    /* A hidden step has to leave the tab order too, or a keyboard user tabs
+       into questions they cannot see. */
+    function show(i) {
+      at = Math.max(0, Math.min(i, steps.length));
+      steps.forEach(function (step, n) {
+        var live = n === at;
+        step.classList.toggle("is-live", live);
+        step.classList.toggle("is-back", live && back);
+        step.hidden = !live;
+        $$("input", step).forEach(function (input) { input.tabIndex = live ? 0 : -1; });
+      });
+
+      var done = at >= steps.length;
+      submit.classList.toggle("is-live", done);
+
+      if (fill) fill.style.width = ((done ? steps.length : at) / steps.length) * 100 + "%";
+      if (count) {
+        count.textContent = done
+          ? "Ready"
+          : "Question " + (at + 1) + " of " + steps.length;
+      }
+
+      /* Move focus to the new question so it's announced, but don't yank
+         the page around on first paint. */
+      var target = done ? submit.querySelector("button") : steps[at].querySelector("legend");
+      if (target && at > 0) {
+        target.setAttribute("tabindex", "-1");
+        target.focus({ preventScroll: true });
+      }
+      back = false;
+    }
+
+    form.addEventListener("change", function (e) {
+      if (!e.target || e.target.type !== "radio") return;
+      pushEvent("finder_answer", { step: e.target.name, answer: e.target.value });
+      /* A beat, so the option is visibly chosen before the step moves on. */
+      window.setTimeout(function () { show(at + 1); }, 180);
+    });
+
+    $$("[data-finder-back]", form).forEach(function (btn) {
+      btn.addEventListener("click", function () { back = true; show(at - 1); });
+    });
+    $$("[data-finder-skip]", form).forEach(function (btn) {
+      btn.addEventListener("click", function () { show(at + 1); });
+    });
+
+    form.addEventListener("submit", function () {
+      pushEvent("finder_complete", { answered: $$("input:checked", form).length });
+    });
+
+    show(0);
+  }
+
   /* --- Get-matched dialog ---------------------------------------------- */
   /* Desktop gets the form as a modal (opened from the hero card); mobile
      keeps the in-page band, so triggers fall through to their #enquire
@@ -1428,6 +1505,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     initTracking();
     initCopy();
+    initFinder();
     initMatchDialog();
     initMatchCombos();
     initNav();

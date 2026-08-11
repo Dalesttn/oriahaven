@@ -4,6 +4,11 @@
  * the mobile band (sections/get-matched.php) and inside the desktop
  * dialog. One source so the two can never drift apart. No element IDs
  * in here, because both copies are in the DOM at once.
+ *
+ * Optional $args prefill the two pickers: 'service', 'service_slug',
+ * 'area', 'area_slug'. The Wellness Finder passes what the visitor has
+ * just told it, because asking someone the same question twice in one
+ * page is the fastest way to lose them.
  */
 
 declare(strict_types=1);
@@ -11,6 +16,11 @@ declare(strict_types=1);
 if ( ! function_exists( '\Oria\Core\Leads\bootstrap' ) ) {
 	return;
 }
+
+$oria_pre_service      = (string) ( $args['service'] ?? '' );
+$oria_pre_service_slug = (string) ( $args['service_slug'] ?? '' );
+$oria_pre_area         = (string) ( $args['area'] ?? '' );
+$oria_pre_area_slug    = (string) ( $args['area_slug'] ?? '' );
 
 // phpcs:disable WordPress.Security.NonceVerification.Recommended -- display state only.
 $oria_state   = isset( $_GET['olead'] ) ? (string) $_GET['olead'] : '';
@@ -86,15 +96,17 @@ if ( 'sent' === $oria_state ) : ?>
 	<div class="grid matchband__pair">
 		<label class="field" data-matchcombo="services"><span class="field__label"><?php esc_html_e( 'What would you like to try?', 'oria' ); ?></span>
 			<input class="input" type="text" name="match_service_text" required autocomplete="off"
+				value="<?php echo esc_attr( $oria_pre_service ); ?>"
 				placeholder="<?php esc_attr_e( 'Start typing — yoga, reiki, massage…', 'oria' ); ?>"
 				role="combobox" aria-autocomplete="list" aria-expanded="false">
-			<input type="hidden" name="match_service" value="">
+			<input type="hidden" name="match_service" value="<?php echo esc_attr( $oria_pre_service_slug ); ?>">
 			<span class="oform-lookup" data-matchcombo-panel hidden></span></label>
 		<label class="field" data-matchcombo="areas"><span class="field__label"><?php esc_html_e( 'Where suits you?', 'oria' ); ?></span>
 			<input class="input" type="text" name="match_area_text" autocomplete="off"
+				value="<?php echo esc_attr( $oria_pre_area ); ?>"
 				placeholder="<?php esc_attr_e( 'Anywhere in Perth', 'oria' ); ?>"
 				role="combobox" aria-autocomplete="list" aria-expanded="false">
-			<input type="hidden" name="match_area" value="">
+			<input type="hidden" name="match_area" value="<?php echo esc_attr( $oria_pre_area_slug ); ?>">
 			<span class="oform-lookup" data-matchcombo-panel hidden></span></label>
 	</div>
 

@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const QUERY_VAR  = 'oria_area';
-const REWRITE_V  = '4'; // 4: /listing/{slug}/share/ route added.
+const REWRITE_V  = '5'; // 5: /wellness-finder/ route added.
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\add_routes', 10 );
