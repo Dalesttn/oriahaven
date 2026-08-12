@@ -712,7 +712,7 @@ function accept( int $listing_id ): void {
 			$reset,
 			get_permalink( $listing_id ),
 			signature()
-		)
+		) . \Oria\Core\Websites\email_line()
 	);
 
 	wp_set_current_user( $user->ID );
