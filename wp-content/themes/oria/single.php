@@ -83,35 +83,74 @@ while ( have_posts() ) :
 	 * view so every listing gets a turn.
 	 */
 	$oria_practices = \Oria\Theme\journal_practices( get_the_ID() );
+	$oria_areas     = \Oria\Theme\journal_areas( get_the_ID() );
 	$oria_side      = array();
+
 	if ( $oria_practices ) {
 		$oria_slugs = wp_list_pluck( array_slice( $oria_practices, 0, 2 ), 'slug' );
-		foreach ( $oria_slugs as $oria_slug ) {
-			foreach ( \Oria\Theme\featured_listings( 2, $oria_slug ) as $oria_f ) {
-				$oria_side[ $oria_f->ID ] = array( $oria_f, true );
+		$oria_where = wp_list_pluck( $oria_areas, 'slug' );
+
+		/**
+		 * The sidebar for one set of area slugs; empty means anywhere.
+		 *
+		 * @param list<string> $areas
+		 * @return array<int, array{0: \WP_Post, 1: bool}>
+		 */
+		$oria_pick = static function ( array $areas ) use ( $oria_slugs ): array {
+			$out = array();
+			foreach ( $oria_slugs as $oria_slug ) {
+				foreach ( \Oria\Theme\featured_listings( 2, $oria_slug, $areas ) as $oria_f ) {
+					$out[ $oria_f->ID ] = array( $oria_f, true );
+				}
 			}
-		}
-		$oria_side = array_slice( $oria_side, 0, 2, true );
-		$oria_fill = get_posts(
-			array(
-				'post_type'      => 'listing',
-				'posts_per_page' => 3,
-				'orderby'        => 'rand',
-				'post__not_in'   => array_keys( $oria_side ),
-				'tax_query'      => array(
-					array(
-						'taxonomy' => 'practice',
-						'field'    => 'slug',
-						'terms'    => $oria_slugs,
-					),
+			$out = array_slice( $out, 0, 2, true );
+
+			$tax = array(
+				array(
+					'taxonomy' => 'practice',
+					'field'    => 'slug',
+					'terms'    => $oria_slugs,
 				),
-			)
-		);
-		foreach ( $oria_fill as $oria_f ) {
-			if ( count( $oria_side ) >= 3 ) {
-				break;
+			);
+			if ( $areas ) {
+				$tax[] = array(
+					'taxonomy'         => 'area',
+					'field'            => 'slug',
+					'terms'            => $areas,
+					'include_children' => true,
+				);
 			}
-			$oria_side[ $oria_f->ID ] = array( $oria_f, false );
+
+			$fill = get_posts(
+				array(
+					'post_type'      => 'listing',
+					'posts_per_page' => 3,
+					'orderby'        => 'rand',
+					'post__not_in'   => array_keys( $out ),
+					'tax_query'      => $tax, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+				)
+			);
+			foreach ( $fill as $oria_f ) {
+				if ( count( $out ) >= 3 ) {
+					break;
+				}
+				$out[ $oria_f->ID ] = array( $oria_f, false );
+			}
+			return $out;
+		};
+
+		$oria_side = $oria_pick( $oria_where );
+
+		/*
+		 * Nothing of that kind in that area is ordinary while the directory
+		 * fills out — a category with three listings and a region with none
+		 * of them. Widening beats an empty box, but the heading has to stop
+		 * claiming the area at the same moment, which is what clearing
+		 * $oria_areas here does.
+		 */
+		if ( ! $oria_side && $oria_where ) {
+			$oria_side  = $oria_pick( array() );
+			$oria_areas = array();
 		}
 	}
 	?>
@@ -126,7 +165,23 @@ while ( have_posts() ) :
 				<div class="card">
 					<div class="card__body">
 						<span class="micro" style="display:block;margin-bottom:.35rem"><?php esc_html_e( 'Try it in person', 'oria' ); ?></span>
-						<h2 class="h3" style="font-size:1.05rem;margin-bottom:1rem"><?php echo esc_html( \Oria\Theme\tname( $oria_practices[0] ) ); ?> <?php esc_html_e( 'in Perth', 'oria' ); ?></h2>
+						<?php
+						// "Retreats & day escapes in the Perth Hills" beats
+						// "…in Perth" when we know the article is local.
+						$oria_place = count( $oria_areas ) === 1
+							? \Oria\Theme\tname( $oria_areas[0] )
+							: __( 'Perth', 'oria' );
+						?>
+						<h2 class="h3" style="font-size:1.05rem;margin-bottom:1rem">
+							<?php
+							printf(
+								/* translators: 1: practice name, 2: place name */
+								esc_html__( '%1$s in %2$s', 'oria' ),
+								esc_html( \Oria\Theme\tname( $oria_practices[0] ) ),
+								esc_html( $oria_place )
+							);
+							?>
+						</h2>
 						<div class="stack" style="font-size:.9375rem">
 							<?php $oria_k = 0; foreach ( $oria_side as $oria_pair ) : list( $oria_l, $oria_is_feat ) = $oria_pair; ?>
 								<?php if ( $oria_k++ > 0 ) : ?><hr class="hr"><?php endif; ?>
@@ -139,7 +194,19 @@ while ( have_posts() ) :
 								</a>
 							<?php endforeach; ?>
 						</div>
-						<a class="btn btn--ghost btn--sm btn--plain" style="margin-top:1.1rem" href="<?php echo esc_url( (string) get_term_link( $oria_practices[0] ) ); ?>"><?php esc_html_e( 'See all', 'oria' ); ?> <?php echo \Oria\Theme\arrow(); // phpcs:ignore ?></a>
+						<?php
+						/*
+						 * With an area in play, /practice/{practice}/{area}/
+						 * is a real page and a far better destination than the
+						 * whole-metro category — it is the page this article
+						 * is effectively an essay about.
+						 */
+						$oria_seeall = (string) get_term_link( $oria_practices[0] );
+						if ( count( $oria_areas ) === 1 ) {
+							$oria_seeall = home_url( '/practice/' . $oria_practices[0]->slug . '/' . $oria_areas[0]->slug . '/' );
+						}
+						?>
+						<a class="btn btn--ghost btn--sm btn--plain" style="margin-top:1.1rem" href="<?php echo esc_url( $oria_seeall ); ?>"><?php esc_html_e( 'See all', 'oria' ); ?> <?php echo \Oria\Theme\arrow(); // phpcs:ignore ?></a>
 					</div>
 				</div>
 			</aside>

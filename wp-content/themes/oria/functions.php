@@ -399,7 +399,11 @@ function opt( string $name, string $fallback = '' ): string {
 }
 
 /** Featured listings for the home page. */
-function featured_listings( int $count = 3, string $practice = '' ): array {
+/**
+ * @param list<string> $areas Area slugs to stay within; regions include
+ *                            their suburbs. Empty means the whole metro.
+ */
+function featured_listings( int $count = 3, string $practice = '', array $areas = array() ): array {
 	$args = array(
 		'post_type'      => 'listing',
 		'posts_per_page' => $count,
@@ -418,14 +422,27 @@ function featured_listings( int $count = 3, string $practice = '' ): array {
 			),
 		),
 	);
+	$tax = array();
 	if ( '' !== $practice ) {
-		$args['tax_query'] = array(
-			array(
-				'taxonomy' => 'practice',
-				'field'    => 'slug',
-				'terms'    => $practice,
-			),
+		$tax[] = array(
+			'taxonomy' => 'practice',
+			'field'    => 'slug',
+			'terms'    => $practice,
 		);
+	}
+	// A region includes its suburbs, so an article about the Hills reaches
+	// Kalamunda and Mundaring without having to name them.
+	if ( $areas ) {
+		$tax[] = array(
+			'taxonomy'         => 'area',
+			'field'            => 'slug',
+			'terms'            => $areas,
+			'include_children' => true,
+		);
+	}
+	if ( $tax ) {
+		$tax['relation']   = 'AND';
+		$args['tax_query'] = $tax; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 	}
 	return get_posts( $args );
 }
@@ -689,6 +706,66 @@ function journal_practices( int $post_id ): array {
 			}
 		}
 	}
+	return array_values( $matches );
+}
+
+/**
+ * The areas an article is about, so its sidebar can stay local.
+ *
+ * An article about retreats in the Perth Hills that offers a retreat in
+ * Fremantle is worse than one that offers nothing: it reads as though
+ * nobody is paying attention. The editor's picks win; failing that we
+ * match the title, which is usually where an article says where it is.
+ *
+ * The matching is deliberately timid. Region names are mostly compass
+ * points and the word Perth — "Perth Central", "Northern Suburbs",
+ * "South East" — and matching on those would tie half the journal to an
+ * area it never mentioned. Only the distinctive part of a name counts, so
+ * "Perth Hills" matches on "hills" while "Northern Suburbs" never
+ * auto-matches at all and waits to be picked by hand.
+ *
+ * @return array<int, \WP_Term>
+ */
+function journal_areas( int $post_id ): array {
+	$picked = function_exists( 'get_field' ) ? array_filter( array_map( 'intval', (array) ( get_field( 'related_areas', $post_id ) ?: array() ) ) ) : array();
+	if ( $picked ) {
+		return array_values( array_filter( array_map( static fn( $id ) => get_term( $id, 'area' ), $picked ), static fn( $t ) => $t instanceof \WP_Term ) );
+	}
+
+	$hay  = strtolower( (string) get_post_field( 'post_title', $post_id, 'raw' ) );
+	$tags = get_the_tags( $post_id );
+	foreach ( is_array( $tags ) ? $tags : array() as $t ) {
+		if ( $t instanceof \WP_Term ) {
+			$hay .= ' ' . strtolower( $t->name );
+		}
+	}
+
+	// Words that describe where everything in this directory is, and so
+	// distinguish nothing.
+	$generic = array( 'perth', 'north', 'northern', 'south', 'southern', 'east', 'eastern', 'west', 'western', 'central', 'suburbs', 'suburb', 'metro', 'valley' );
+
+	$matches = array();
+	$terms   = get_terms( array( 'taxonomy' => 'area', 'hide_empty' => true ) );
+	foreach ( is_wp_error( $terms ) ? array() : $terms as $term ) {
+		$words = array_filter(
+			preg_split( '/[\s&,]+/', strtolower( tname( $term ) ) ) ?: array(),
+			static fn( $w ) => strlen( $w ) > 3 && ! in_array( $w, $generic, true )
+		);
+		foreach ( $words as $word ) {
+			if ( preg_match( '/\b' . preg_quote( $word, '/' ) . '\b/', $hay ) ) {
+				$matches[ $term->term_id ] = $term;
+				break;
+			}
+		}
+	}
+
+	// A region and one of its own suburbs both matching is one area, not two.
+	foreach ( $matches as $id => $term ) {
+		if ( $term->parent && isset( $matches[ $term->parent ] ) ) {
+			unset( $matches[ $id ] );
+		}
+	}
+
 	return array_values( $matches );
 }
 

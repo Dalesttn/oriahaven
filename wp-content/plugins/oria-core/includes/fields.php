@@ -533,6 +533,19 @@ function register_journal_fields(): void {
 					'load_terms'    => false,
 					'instructions'  => 'Directory categories shown in the article\'s sidebar ("Try it in person"). Leave empty to auto-match from the article\'s topic.',
 				),
+				array(
+					'key'           => 'field_oria_journal_areas',
+					'name'          => 'related_areas',
+					'label'         => 'Related areas',
+					'type'          => 'taxonomy',
+					'taxonomy'      => 'area',
+					'field_type'    => 'multi_select',
+					'return_format' => 'id',
+					'add_term'      => false,
+					'save_terms'    => false,
+					'load_terms'    => false,
+					'instructions'  => 'Keeps the sidebar local: an article about retreats in the Perth Hills should not offer one in Fremantle. Choosing a region covers its suburbs too. Leave empty to auto-match from the title, or to draw on the whole metro.',
+				),
 			),
 		)
 	);
