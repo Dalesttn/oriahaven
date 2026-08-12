@@ -792,18 +792,23 @@ a.livesession:hover { background: var(--sand-2); }
   .pullquote__text .pq-w { transition: none; opacity: 1; transform: none; }
 }
 
-/* A short green brushstroke under the first few letters of each heading.
-   Sized in em so it scales with the heading level; the SVG is baked in as
-   a data URI because pseudo-elements can't load theme images by variable. */
+/* A short, solid green rule under each heading. Sized in em so it scales
+   with the heading level and keeps the same proportion at h2 and h3, and
+   given a small radius so the ends don't read as a cut-off border. */
 .prose--article h2::after,
 .prose--article h3::after {
   content: "";
   display: block;
-  width: 3.4em;
-  height: 0.38em;
-  margin-top: 0.02em;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 14'%3E%3Cpath fill='%233F6E60' opacity='.9' d='M3 9C22 4 48 2.6 72 4c24 1.4 46 .8 65-2-6 4.6-24 8-46 9.4-26 1.6-56 1.4-77-.4C9 10.4 4 9.8 3 9Z'/%3E%3C/svg%3E") no-repeat left center / contain;
+  width: 2.4em;
+  height: 0.18em;
+  margin-top: 0.42em;
+  border-radius: 999px;
+  /* Moss, not deep: the heading itself is near-black, and a rule in the
+     same value reads as a divider rather than as the green accent it is
+     replacing. */
+  background: var(--moss);
 }
+.prose--article h3::after { width: 2em; height: 0.15em; }
 
 /* Article body + "Try it in person" sidebar. */
 .jlayout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: var(--s-7); align-items: start; }
