@@ -272,13 +272,22 @@ function owner_mail( int $listing_id, string $subject, string $body ): void {
 		return;
 	}
 
+	/*
+	 * Every email a practice gets about its own listing goes through here,
+	 * which makes this the one place the website-services line belongs —
+	 * appended in whichever form matches the email, rather than pasted
+	 * into a dozen message bodies that each guess wrong. It is off unless
+	 * switched on in Settings → General.
+	 */
+
 	// Ride on the Oria Forms email shell when the plugin is active.
 	if ( function_exists( '\Oria\Forms\Emails\shell' ) ) {
-		$html = '<p style="margin:0 0 14px;">' . nl2br( esc_html( $body ) ) . '</p>';
+		$html = '<p style="margin:0 0 14px;">' . nl2br( esc_html( $body ) ) . '</p>'
+			. \Oria\Core\Websites\email_line_html();
 		wp_mail( $user->user_email, $subject, \Oria\Forms\Emails\shell( $subject, $html ), array( 'Content-Type: text/html; charset=UTF-8' ) );
 		return;
 	}
-	wp_mail( $user->user_email, $subject, $body );
+	wp_mail( $user->user_email, $subject, $body . \Oria\Core\Websites\email_line() );
 }
 
 /**

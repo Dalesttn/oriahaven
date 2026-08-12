@@ -118,7 +118,7 @@ function service_name(): string {
 }
 
 function cta_enabled(): bool {
-	return (bool) get_option( OPT_ENABLED, false );
+	return (bool) get_option( OPT_ENABLED, true );
 }
 
 function url(): string {
@@ -136,15 +136,18 @@ function settings(): void {
 	);
 
 	register_setting( 'general', OPT_NAME, array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field', 'default' => 'Oria Digital' ) );
-	register_setting( 'general', OPT_ENABLED, array( 'type' => 'boolean', 'sanitize_callback' => static fn( $v ): bool => (bool) $v, 'default' => false ) );
+	register_setting( 'general', OPT_ENABLED, array( 'type' => 'boolean', 'sanitize_callback' => static fn( $v ): bool => (bool) $v, 'default' => true ) );
 
 	add_settings_field(
 		OPT_NAME,
 		__( 'Website services', 'oria' ),
 		static function (): void {
+			// The hidden 0 matters: an unticked checkbox posts nothing, so
+			// without it the box could never be switched back off.
 			printf(
 				'<input type="text" class="regular-text" name="%1$s" id="%1$s" value="%2$s">
 				<p class="description">%3$s</p>
+				<input type="hidden" name="%4$s" value="0">
 				<label style="display:block;margin-top:10px;"><input type="checkbox" name="%4$s" value="1"%5$s> %6$s</label>
 				<p class="description">%7$s</p>',
 				esc_attr( OPT_NAME ),
@@ -153,7 +156,7 @@ function settings(): void {
 				esc_attr( OPT_ENABLED ),
 				checked( true, cta_enabled(), false ),
 				esc_html__( 'Add a small website-services line to practitioner emails', 'oria' ),
-				esc_html__( 'Off by default. It never appears in enquiry receipts or anything sent to a member of the public — only in emails to a practice about their own listing.', 'oria' )
+				esc_html__( 'Small grey print at the foot of emails to a practice about their own listing. It never appears in enquiry receipts, match confirmations, or anything else sent to a member of the public — and never in a first claim invitation, where they have not asked us for anything yet.', 'oria' )
 			);
 		},
 		'general',
@@ -536,16 +539,44 @@ function handle_request(): void {
 /* -------------------------------------------------------- the email line */
 
 /**
- * The one-line footer for practitioner emails. Off unless switched on, and
- * never added automatically to anything sent to the public.
+ * The footer line for practitioner emails, in both flavours.
+ *
+ * Two forms because our practitioner mail goes out both ways: the claim
+ * and plan emails ride the HTML shell, the account emails are plain text.
+ * Appending the plain version to an HTML email would render it at body
+ * size with a dead URL in the middle of it, which is the opposite of
+ * small print.
+ *
+ * Never added to anything sent to a member of the public — no enquiry
+ * receipts, no match confirmations — and never to a cold claim invitation,
+ * where a practice has not asked us for anything yet.
  */
 function email_line(): string {
 	if ( ! cta_enabled() ) {
 		return '';
 	}
 	return sprintf(
-		"\n\n---\nNeed a website refresh? %s builds websites for wellness practices in Perth.\n%s\n",
+		"\n\n—\nLooking for a new website? We can help. %s builds them for wellness practices in Perth.\n%s\n",
 		service_name(),
 		url()
+	);
+}
+
+/** The same thing as quiet grey print under an HTML email's body. */
+function email_line_html(): string {
+	if ( ! cta_enabled() ) {
+		return '';
+	}
+	return sprintf(
+		'<p style="margin:22px 0 0;padding-top:14px;border-top:1px solid #EFEDE6;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#8A948F;">%s <a href="%s" style="color:#3F6E60;">%s</a></p>',
+		esc_html(
+			sprintf(
+				/* translators: %s: the web service's name */
+				__( 'Looking for a new website? We can help — %s builds them for wellness practices in Perth.', 'oria' ),
+				service_name()
+			)
+		),
+		esc_url( url() ),
+		esc_html__( 'Have a look', 'oria' )
 	);
 }

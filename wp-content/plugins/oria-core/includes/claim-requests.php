@@ -274,7 +274,7 @@ function handle_decision(): void {
 				$featured['price'],
 				$bullets( $featured ),
 				\Oria\Core\Billing\pay_url( 'featured', $listing_id, $email )
-			) . \Oria\Core\Share\email_block( $listing_id ) . \Oria\Core\Websites\email_line()
+			) . \Oria\Core\Share\email_block( $listing_id )
 		);
 	} else {
 		// Without billing configured the claim is simply approved, so this
@@ -287,7 +287,7 @@ function handle_decision(): void {
 				__( "Hi %1\$s,\n\nYour claim on \"%2\$s\" is approved. The listing is yours to edit now — sign in and you can keep every detail current.", 'oria' ),
 				$name,
 				get_post_field( 'post_title', $listing_id, 'raw' )
-			) . \Oria\Core\Share\email_block( $listing_id ) . \Oria\Core\Websites\email_line()
+			) . \Oria\Core\Share\email_block( $listing_id )
 		);
 	}
 
