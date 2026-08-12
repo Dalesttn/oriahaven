@@ -119,6 +119,25 @@ button { background: none; border: 0; cursor: pointer; }
 .prose ol { padding-left: 1.35em; }
 .prose li::marker { color: var(--text-faint); }
 
+/* The global "a { color: inherit; text-decoration: none }" reset is right
+   for the interface, where a link is already a button, a card or a nav
+   item and an underline would be noise. Inside article copy it made links
+   invisible — the same colour as the sentence around them, with nothing
+   to say they could be clicked. Every internal link we had written was
+   reaching Google and no reader at all. Prose links look like links. */
+.prose a {
+  color: var(--deep);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(14, 59, 56, 0.35);
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.prose a:hover { color: var(--ink); text-decoration-color: currentColor; }
+.prose a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+/* A button that happens to sit inside prose is already obvious. */
+.prose a.btn { color: inherit; text-decoration: none; }
+
 /* Spacer paragraphs left over from before this rule existed: without
    this they stack on top of the real margin and open a hole. */
 .prose > p:empty { display: none; }
