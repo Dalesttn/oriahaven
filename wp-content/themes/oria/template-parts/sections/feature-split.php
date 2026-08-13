@@ -35,7 +35,7 @@ $t = static fn( string $k ): string => (string) ( $s[ $k ] ?? '' );
 		</div>
 
 		<div class="split__media reveal" style="--d:100ms">
-			<img src="<?php echo esc_url( simg( $s, 'image', 'scene-studio.webp', 'oria-card' ) ); ?>" alt="" loading="lazy">
+			<img src="<?php echo esc_url( simg( $s, 'image', 'scene-studio.webp', 'oria-card' ) ); ?>" alt="" aria-hidden="true" loading="lazy">
 		</div>
 	</div>
 </section>

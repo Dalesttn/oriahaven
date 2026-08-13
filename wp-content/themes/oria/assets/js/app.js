@@ -604,7 +604,10 @@
 
       return '<article class="listing' + (l.status === "featured" ? " listing--featured" : "") + '">' +
         '<div class="listing__media">' +
-          (l.image ? '<img src="' + esc(l.image) + '" alt="" loading="lazy"' +
+          /* Same shape as listing_alt() in functions.php. The category is
+             a slug here rather than a display name, so this says the
+             practice and the suburb and leaves the category out. */
+          (l.image ? '<img src="' + esc(l.image) + '" alt="' + esc(l.name + (l.suburb ? " in " + l.suburb : "")) + '" loading="lazy"' +
             (l.image_fb && l.image_fb !== l.image
               ? " onerror=\"this.onerror=null;this.src='" + esc(l.image_fb) + "'\""
               : "") + '>' : "") +

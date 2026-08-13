@@ -19,7 +19,7 @@ $oria_img   = ! empty( $s['image'] ) ? simg( $s, 'image', '', 'oria-card' ) : ''
 <section class="section<?php echo esc_attr( sband( $s ) ); ?>">
 	<div class="wrap<?php echo $oria_img ? ' split' : ''; ?>">
 		<?php if ( $oria_img ) : ?>
-		<div class="split__media reveal"><img src="<?php echo esc_url( $oria_img ); ?>" alt="" loading="lazy"></div>
+		<div class="split__media reveal" aria-hidden="true"><img src="<?php echo esc_url( $oria_img ); ?>" alt="" loading="lazy"></div>
 		<?php endif; ?>
 
 		<div class="reveal" <?php echo $oria_img ? 'style="--d:100ms"' : 'style="max-width:56rem;margin-inline:auto"'; ?>>

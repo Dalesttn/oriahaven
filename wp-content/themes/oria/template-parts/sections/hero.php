@@ -17,7 +17,8 @@ $oria_practices = get_terms( array( 'taxonomy' => 'practice', 'hide_empty' => fa
 $oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
 ?>
 <section class="hero">
-	<div class="hero__bg"><img src="<?php echo esc_url( simg( $s, 'image', 'hero-meditation.webp' ) ); ?>" alt="" fetchpriority="high"></div>
+	<?php // Backdrop behind the headline: decorative, so an empty alt is correct — a screen reader should not announce it. ?>
+	<div class="hero__bg" aria-hidden="true"><img src="<?php echo esc_url( simg( $s, 'image', 'hero-meditation.webp' ) ); ?>" alt="" fetchpriority="high" decoding="async"></div>
 	<div class="hero__inner on-deep">
 		<?php if ( $t('eyebrow') ) : ?><span class="hero__eyebrow pill pill--glass"><?php echo esc_html( $t('eyebrow') ); ?></span><?php endif; ?>
 		<h1 class="display hero__title"><?php echo esc_html( $t('heading') ?: \Oria\Theme\ptitle() ); ?></h1>
@@ -117,7 +118,7 @@ $oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
 					<?php foreach ( array_slice( $oria_g['posts'], 0, 2 ) as $oria_fp ) : ?>
 						<?php $oria_fpr = wp_get_post_terms( $oria_fp->ID, 'practice' ); ?>
 						<a class="herofeat__row" href="<?php echo esc_url( get_permalink( $oria_fp ) ); ?>">
-							<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_fp->ID ) ); ?>" alt="" loading="lazy" onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_fp->ID ) ); ?>'">
+							<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_fp->ID ) ); ?>" alt="<?php echo esc_attr( \Oria\Theme\listing_alt( $oria_fp->ID ) ); ?>" loading="lazy" onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_fp->ID ) ); ?>'">
 							<span>
 								<b><?php echo esc_html( \Oria\Theme\ptitle( $oria_fp ) ); ?></b>
 								<em><?php echo esc_html( ! is_wp_error( $oria_fpr ) && $oria_fpr ? \Oria\Theme\tname( $oria_fpr[0] ) : '' ); ?></em>

@@ -99,8 +99,10 @@ function description( $desc ) {
 	if ( ! is_hub() ) {
 		return $desc;
 	}
+	// Under 160 characters: Google truncates past roughly that, and this one
+	// was running to 180. The counts grow, so the sentence needs slack too.
 	return sprintf(
-		'Browse every wellness practice in Perth by type, modality or suburb — %d listings across %d categories, checked by hand. Prices, timetables and contact details, no booking fees.',
+		'Browse every wellness practice in Perth by type, modality or suburb — %d listings across %d categories, checked by hand. Real prices and timetables.',
 		count_listings(),
 		count( practices() )
 	);

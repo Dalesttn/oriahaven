@@ -67,7 +67,7 @@ $oria_dir    = get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/
 					$oria_img    = \Oria\Theme\listing_image( $oria_post->ID, 'oria-portrait' );
 					?>
 					<a class="mediacard reveal" href="<?php echo esc_url( get_permalink( $oria_post ) ); ?>" style="--ar:3/4">
-						<img class="mediacard__img" src="<?php echo esc_url( $oria_img ); ?>" alt="" loading="lazy"
+						<img class="mediacard__img" src="<?php echo esc_url( $oria_img ); ?>" alt="<?php echo esc_attr( \Oria\Theme\listing_alt( $oria_post->ID ) ); ?>" loading="lazy"
 							onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_post->ID ) ); ?>'">
 						<div class="mediacard__top">
 							<span class="badge badge--featured"><span class="badge-dot"></span><?php esc_html_e( 'Featured', 'oria' ); ?></span>

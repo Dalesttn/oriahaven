@@ -45,7 +45,7 @@ $oria_fallbacks = array(
 				$oria_blurb = (string) ( get_field( 'tile_blurb', 'practice_' . $oria_p->term_id ) ?: $oria_p->description );
 				?>
 				<a class="cat reveal" href="<?php echo esc_url( (string) get_term_link( $oria_p ) ); ?>"<?php echo $oria_i >= $oria_visible ? ' hidden' : ''; ?>>
-					<img class="cat__img" src="<?php echo esc_url( $oria_url ); ?>" alt="" loading="lazy">
+					<img class="cat__img" src="<?php echo esc_url( $oria_url ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: practice category */ __( '%s in Perth', 'oria' ), \Oria\Theme\tname( $oria_p ) ) ); ?>" loading="lazy">
 					<div class="cat__text">
 						<div class="cat__name"><?php echo esc_html( \Oria\Theme\tname( $oria_p ) ); ?></div>
 						<?php if ( $oria_blurb ) : ?><div class="cat__count"><?php echo esc_html( $oria_blurb ); ?></div><?php endif; ?>

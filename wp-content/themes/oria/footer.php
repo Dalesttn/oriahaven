@@ -20,6 +20,26 @@ $oria_suburbs   = function_exists( '\Oria\Core\Taxonomies\suburbs' ) ? \Oria\Cor
 					<b>Oria</b><i>&thinsp;Haven</i>
 				</a>
 				<p style="margin-top:1rem;font-size:.9375rem;max-width:30ch"><?php echo esc_html( \Oria\Theme\opt( 'footer_tagline', "Perth's meditation and wellness directory. Built in Fremantle, one listing at a time." ) ); ?></p>
+
+				<?php
+				/*
+				 * Name, address and contact, in the same words as the
+				 * Organization schema — they are drawn from one constant so
+				 * they cannot drift, which is the entire point of a NAP.
+				 * A service-area business, so the locality is the metro and
+				 * there is no street line.
+				 */
+				$oria_nap   = \Oria\Core\Schema\NAP;
+				$oria_tel   = $oria_nap['phone'];
+				$oria_digits = preg_replace( '/[^0-9+]/', '', (string) $oria_tel );
+				?>
+				<address class="foot__nap">
+					<span><?php echo esc_html( $oria_nap['locality'] . ', ' . $oria_nap['region'] ); ?></span>
+					<?php if ( $oria_tel ) : ?>
+						<a href="tel:<?php echo esc_attr( $oria_digits ); ?>"><?php echo esc_html( $oria_tel ); ?></a>
+					<?php endif; ?>
+					<a href="mailto:<?php echo esc_attr( $oria_nap['email'] ); ?>"><?php echo esc_html( $oria_nap['email'] ); ?></a>
+				</address>
 			</div>
 
 			<div>

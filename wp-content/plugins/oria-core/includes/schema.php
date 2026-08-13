@@ -17,8 +17,76 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * The business's own identity, in one place so the footer and the schema
+ * cannot drift apart — they have to byte-match to be worth anything.
+ */
+const NAP = array(
+	'name'     => 'Oria Haven',
+	'email'    => 'hello@oriahaven.com.au',
+	// TODO[NEEDS INPUT]: a real number from Dale. Deliberately empty. An
+	// invented phone number in schema is worse than no phone number, and
+	// it would be copied onward into citation sites we do not control.
+	'phone'    => '',
+	// A service-area business: the Perth metro, no street address published.
+	'locality' => 'Perth',
+	'region'   => 'WA',
+	'area'     => 'Perth, Western Australia',
+);
+
+/** Where the business exists elsewhere online. Feeds sameAs. */
+function profiles(): array {
+	// TODO[NEEDS INPUT]: Facebook / Instagram / LinkedIn URLs once created.
+	return array_values( array_filter( (array) apply_filters( 'oria_social_profiles', array() ) ) );
+}
+
 function bootstrap(): void {
 	add_action( 'wp_head', __NAMESPACE__ . '\output', 5 );
+	add_action( 'wp_head', __NAMESPACE__ . '\organization', 6 );
+}
+
+/**
+ * Who this site belongs to, on every page.
+ *
+ * There was no machine-readable identity for the business anywhere, which
+ * blocks the knowledge panel and every local signal downstream of it.
+ *
+ * Organization rather than LocalBusiness on purpose: a directory serving a
+ * whole metro is not a shopfront, and claiming LocalBusiness without a real
+ * street address invites exactly the mismatch that gets rich results
+ * dropped. telephone and address are omitted rather than guessed — an empty
+ * string in structured data is not neutral, it is a wrong answer.
+ */
+function organization(): void {
+	$schema = array(
+		'@context'    => 'https://schema.org',
+		'@type'       => 'Organization',
+		'@id'         => home_url( '/#organization' ),
+		'name'        => NAP['name'],
+		'url'         => home_url( '/' ),
+		'email'       => NAP['email'],
+		'description' => __( "Perth's independent, hand-checked wellness directory.", 'oria' ),
+		'areaServed'  => array(
+			'@type' => 'AdministrativeArea',
+			'name'  => NAP['area'],
+		),
+	);
+
+	$logo = get_theme_file_uri( 'assets/img/email-mark.png' );
+	if ( $logo ) {
+		$schema['logo'] = array( '@type' => 'ImageObject', 'url' => $logo );
+	}
+	if ( '' !== NAP['phone'] ) {
+		$schema['telephone'] = NAP['phone'];
+	}
+	$profiles = profiles();
+	if ( $profiles ) {
+		$schema['sameAs'] = $profiles;
+	}
+
+	echo '<script type="application/ld+json">'
+		. wp_json_encode( $schema, JSON_UNESCAPED_SLASHES )
+		. '</script>' . "\n";
 }
 
 function output(): void {

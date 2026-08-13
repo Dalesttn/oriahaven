@@ -34,7 +34,7 @@ $oria_badges = array(
 ?>
 <article class="listing<?php echo 'featured' === $oria_status ? ' listing--featured' : ''; ?>">
 	<div class="listing__media">
-		<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_id ) ); ?>" alt="" loading="lazy"
+		<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_id ) ); ?>" alt="<?php echo esc_attr( \Oria\Theme\listing_alt( $oria_id ) ); ?>" loading="lazy"
 			onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_id ) ); ?>'">
 		<div class="listing__flag"><?php echo $oria_badges[ $oria_status ]; // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 	</div>

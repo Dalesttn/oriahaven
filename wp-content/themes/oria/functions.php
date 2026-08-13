@@ -710,6 +710,40 @@ function journal_practices( int $post_id ): array {
 }
 
 /**
+ * Alt text for a listing's photo: what the picture is of, in the words
+ * somebody would use out loud.
+ *
+ * "Karrinyup Wellness Centre — Bodywork & Massage in Karrinyup" rather
+ * than a keyword list. Screen readers read this aloud, so it has to be a
+ * sentence fragment a person would say; the fact that it also happens to
+ * contain the practice type and the suburb is a by-product of describing
+ * the thing accurately, which is the only kind of alt text worth having.
+ */
+function listing_alt( int $post_id ): string {
+	$name = ptitle( get_post( $post_id ) );
+
+	$practice = wp_get_post_terms( $post_id, 'practice' );
+	$practice = ( ! is_wp_error( $practice ) && $practice ) ? tname( $practice[0] ) : '';
+
+	$suburb = '';
+	$areas  = wp_get_post_terms( $post_id, 'area' );
+	foreach ( is_wp_error( $areas ) ? array() : $areas as $term ) {
+		if ( $term->parent ) {
+			$suburb = tname( $term );
+			break;
+		}
+	}
+
+	$where = $suburb ?: __( 'Perth', 'oria' );
+	if ( ! $practice ) {
+		/* translators: 1: practice name, 2: suburb */
+		return trim( sprintf( __( '%1$s in %2$s', 'oria' ), $name, $where ) );
+	}
+	/* translators: 1: practice name, 2: category, 3: suburb */
+	return trim( sprintf( __( '%1$s — %2$s in %3$s', 'oria' ), $name, $practice, $where ) );
+}
+
+/**
  * The areas an article is about, so its sidebar can stay local.
  *
  * An article about retreats in the Perth Hills that offers a retreat in

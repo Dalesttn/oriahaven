@@ -136,8 +136,8 @@ while ( have_posts() ) :
 			<div class="gallery">
 				<img class="gallery__main" src="<?php echo esc_url( $oria_gallery[0] ); ?>" alt="<?php echo esc_attr( \Oria\Theme\ptitle() ); ?>" onerror="<?php echo esc_attr( $oria_fb ); ?>">
 				<div class="gallery__side">
-					<img src="<?php echo esc_url( $oria_gallery[1] ); ?>" alt="" onerror="<?php echo esc_attr( $oria_fb ); ?>">
-					<img src="<?php echo esc_url( $oria_gallery[2] ); ?>" alt="" onerror="<?php echo esc_attr( $oria_fb ); ?>">
+					<img src="<?php echo esc_url( $oria_gallery[1] ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: practice name */ __( '%s, second photo', 'oria' ), \Oria\Theme\ptitle() ) ); ?>" onerror="<?php echo esc_attr( $oria_fb ); ?>">
+					<img src="<?php echo esc_url( $oria_gallery[2] ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: practice name */ __( '%s, third photo', 'oria' ), \Oria\Theme\ptitle() ) ); ?>" onerror="<?php echo esc_attr( $oria_fb ); ?>">
 				</div>
 			</div>
 		<?php else : ?>
@@ -383,7 +383,7 @@ while ( have_posts() ) :
 							<div class="reviewitem__head">
 								<div class="row" style="gap:.75rem">
 									<?php if ( ! empty( $oria_rv['avatar'] ) ) : ?>
-										<img src="<?php echo esc_url( $oria_rv['avatar'] ); ?>" alt="" width="36" height="36" loading="lazy"
+										<img src="<?php echo esc_url( $oria_rv['avatar'] ); ?>" alt="" aria-hidden="true" width="36" height="36" loading="lazy"
 											style="border-radius:50%;flex:none" onerror="this.style.display='none'">
 									<?php endif; ?>
 									<div>

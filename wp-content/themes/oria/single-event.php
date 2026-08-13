@@ -109,7 +109,7 @@ while ( have_posts() ) :
 					?>
 					<a class="hostcard" href="<?php echo esc_url( get_permalink( $oria_host_id ) ); ?>">
 						<?php if ( $oria_host_img ) : ?>
-							<img class="hostcard__img" src="<?php echo esc_url( $oria_host_img ); ?>" alt="" loading="lazy" onerror="this.style.display='none'">
+							<img class="hostcard__img" src="<?php echo esc_url( $oria_host_img ); ?>" alt="<?php echo esc_attr( \Oria\Theme\ptitle( get_post( $oria_host_id ) ) ); ?>" loading="lazy" onerror="this.style.display='none'">
 						<?php endif; ?>
 						<span class="hostcard__body">
 							<span class="micro"><?php esc_html_e( 'Run by', 'oria' ); ?></span>

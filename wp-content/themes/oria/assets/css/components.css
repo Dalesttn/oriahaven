@@ -612,3 +612,9 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
 }
 .notice svg { width: 20px; height: 20px; flex: none; color: var(--moss); margin-top: 1px; }
 .notice b { color: var(--ink); }
+
+/* Footer NAP. Deliberately plain — it exists to be identical everywhere it
+   appears, not to be designed. */
+.foot__nap { display: flex; flex-direction: column; gap: .3rem; margin-top: var(--s-4); font-size: .875rem; font-style: normal; color: var(--mist); }
+.foot__nap a { color: var(--mist); }
+.foot__nap a:hover { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
