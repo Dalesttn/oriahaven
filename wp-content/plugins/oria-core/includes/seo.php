@@ -492,9 +492,12 @@ function seo_description( $desc ) {
 		 * meta description; a long one is page copy, and the meta falls back
 		 * to the generated line rather than shipping a truncated paragraph.
 		 */
-		if ( '' !== $own && mb_strlen( $own ) <= 160 ) {
+		$len = mb_strlen( $own );
+		if ( $len >= 80 && $len <= 160 ) {
 			return $own;
 		}
+		// Under 80 characters is a stub, over 160 is page copy. Either way
+		// the generated line is the better meta description.
 		return sprintf( 'Find %s across the Perth metro — timetables, prices and verified contact details.', strtolower( decoded( $term ) ) );
 	}
 	// Category and area archives, same gap as the title above.
