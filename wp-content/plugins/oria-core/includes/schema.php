@@ -84,6 +84,18 @@ function organization(): void {
 			'@type' => 'AdministrativeArea',
 			'name'  => NAP['area'],
 		),
+		/*
+		 * Locality level only. A service-area business has no street to
+		 * publish, but leaving address off entirely means Google has no
+		 * geography for the organisation at all — city, state and country
+		 * are true, verifiable, and enough to place us.
+		 */
+		'address'     => array(
+			'@type'           => 'PostalAddress',
+			'addressLocality' => NAP['locality'],
+			'addressRegion'   => NAP['region'],
+			'addressCountry'  => 'AU',
+		),
 	);
 
 	$logo = get_theme_file_uri( 'assets/img/email-mark.png' );

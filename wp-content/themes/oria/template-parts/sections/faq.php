@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 use function Oria\Theme\srows;
 use function Oria\Theme\simg;
+use function Oria\Theme\simg_alt;
 use function Oria\Theme\sband;
 use function Oria\Theme\arrow;
 
@@ -19,7 +20,8 @@ $oria_img   = ! empty( $s['image'] ) ? simg( $s, 'image', '', 'oria-card' ) : ''
 <section class="section<?php echo esc_attr( sband( $s ) ); ?>">
 	<div class="wrap<?php echo $oria_img ? ' split' : ''; ?>">
 		<?php if ( $oria_img ) : ?>
-		<div class="split__media reveal" aria-hidden="true"><img src="<?php echo esc_url( $oria_img ); ?>" alt="" loading="lazy"></div>
+		<?php $oria_img_alt = simg_alt( $s, 'image' ); ?>
+			<div class="split__media reveal"<?php echo $oria_img_alt ? '' : ' aria-hidden="true"'; ?>><img src="<?php echo esc_url( $oria_img ); ?>" alt="<?php echo esc_attr( $oria_img_alt ); ?>" loading="lazy"></div>
 		<?php endif; ?>
 
 		<div class="reveal" <?php echo $oria_img ? 'style="--d:100ms"' : 'style="max-width:56rem;margin-inline:auto"'; ?>>

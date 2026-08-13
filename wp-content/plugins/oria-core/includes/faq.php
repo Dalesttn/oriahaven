@@ -240,6 +240,77 @@ function area_faqs( \WP_Term $term, array $rows ): array {
 	return $faqs;
 }
 
+/**
+ * The FAQ for pages that cover the whole directory rather than one term.
+ *
+ * for_term() needs a term, which the /perth/ hub and the directory archive
+ * do not have — they are the two widest pages on the site and carried no
+ * unique prose at all. Same rules as everywhere else: geography,
+ * availability, price, and how the directory works. Never outcomes.
+ *
+ * @return list<array{q: string, a: string}>
+ */
+function site_faq(): array {
+	$listings = (int) ( wp_count_posts( 'listing' )->publish ?? 0 );
+	if ( $listings < MIN_SAMPLE ) {
+		return array();
+	}
+
+	$categories = (int) wp_count_terms( array( 'taxonomy' => Taxonomies\PRACTICE, 'hide_empty' => true ) );
+
+	$regions = get_terms(
+		array(
+			'taxonomy'   => Taxonomies\AREA,
+			'parent'     => 0,
+			'hide_empty' => false,
+			'orderby'    => 'name',
+		)
+	);
+	$names = array();
+	foreach ( is_wp_error( $regions ) ? array() : $regions as $region ) {
+		$names[] = decoded( $region->name );
+	}
+
+	$faqs = array(
+		array(
+			'q' => 'How many wellness practices are listed in Perth?',
+			'a' => sprintf(
+				'Oria Haven lists %d practices across %d categories, from meditation and yoga to remedial massage, breathwork, sound and float, allied health and outdoor wellness. Every one is checked by hand before it goes up, and the number keeps moving as we work through the city.',
+				$listings,
+				$categories
+			),
+		),
+	);
+
+	if ( $names ) {
+		$faqs[] = array(
+			'q' => 'Which parts of Perth does Oria Haven cover?',
+			'a' => sprintf(
+				'The whole metropolitan area, grouped into %d regions: %s. Each has its own page, and so does every suburb we list a practice in.',
+				count( $names ),
+				oxford( $names )
+			),
+		);
+	}
+
+	$faqs[] = array(
+		'q' => 'Is it free for a practice to be listed?',
+		'a' => 'Yes. Listing costs nothing and claiming a listing costs nothing — an owner can take over their profile and keep their address, contact details, prices and format current for free. Paid plans add photos, opening hours, offers and visitor stats, and no plan changes where a practice appears or how it is described.',
+	);
+
+	$faqs[] = array(
+		'q' => 'How are listings verified?',
+		'a' => 'Most were built from what a practice already publishes about itself, then checked by hand. A listing stays marked Unclaimed until somebody from the business confirms it is theirs. We correct anything that is wrong whether or not a listing has been claimed, and we take listings down on request.',
+	);
+
+	$faqs[] = array(
+		'q' => 'Do you charge a booking fee?',
+		'a' => 'No. Enquiries go straight to the practice and they reply to you directly. We never take a commission on a booking, and we never charge you for an introduction.',
+	);
+
+	return $faqs;
+}
+
 /** The same answer everywhere: how the directory is actually built. */
 function editorial_faq(): array {
 	return array(

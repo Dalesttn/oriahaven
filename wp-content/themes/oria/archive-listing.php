@@ -121,4 +121,17 @@ if ( ! is_wp_error( $oria_spec_terms ) && $oria_spec_terms ) :
 <?php endif; ?>
 
 <?php
+// Below the results: a filter interface is not text, and this page had
+// none of its own.
+if ( function_exists( '\Oria\Core\Faq\site_faq' ) ) {
+	get_template_part(
+		'template-parts/faq',
+		null,
+		array(
+			'faqs'    => \Oria\Core\Faq\site_faq(),
+			'heading' => __( 'Common questions', 'oria' ),
+		)
+	);
+}
+
 get_footer();

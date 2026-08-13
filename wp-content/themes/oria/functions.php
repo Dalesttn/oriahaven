@@ -710,6 +710,56 @@ function journal_practices( int $post_id ): array {
 }
 
 /**
+ * A section image's alt text, from the media library.
+ *
+ * Editor-chosen images are the one case where we cannot write the alt in
+ * code: only the person who picked the picture knows what is in it. So we
+ * use whatever they typed in the media library, and where they typed
+ * nothing we leave it empty rather than inventing a description of a photo
+ * nobody has described. An empty alt is a smaller error than a wrong one.
+ */
+function simg_alt( array $section, string $key ): string {
+	$id = (int) ( $section[ $key ] ?? 0 );
+	return $id ? trim( (string) get_post_meta( $id, '_wp_attachment_image_alt', true ) ) : '';
+}
+
+/**
+ * Featured images stand in for the thing they illustrate.
+ *
+ * Journal cards render the post thumbnail, and WordPress takes its alt
+ * from the media library — which is empty across the board here, so every
+ * article card on the site shipped alt="". The article's own title is an
+ * accurate description of an image chosen to represent that article, and
+ * it is always right, which is more than can be said for anything we could
+ * invent. A real alt in the media library still wins.
+ */
+add_filter(
+	'wp_get_attachment_image_attributes',
+	static function ( array $attr, $attachment, $size ) {
+		unset( $size );
+		if ( '' !== trim( (string) ( $attr['alt'] ?? '' ) ) ) {
+			return $attr;
+		}
+		$parent = (int) get_post_field( 'post_parent', $attachment );
+		$owner  = 0;
+		// The post this image is the thumbnail of, which is not necessarily
+		// the post it was uploaded to.
+		global $post;
+		if ( $post instanceof \WP_Post && (int) get_post_thumbnail_id( $post ) === (int) $attachment->ID ) {
+			$owner = $post->ID;
+		} elseif ( $parent && (int) get_post_thumbnail_id( $parent ) === (int) $attachment->ID ) {
+			$owner = $parent;
+		}
+		if ( $owner ) {
+			$attr['alt'] = ptitle( get_post( $owner ) );
+		}
+		return $attr;
+	},
+	10,
+	3
+);
+
+/**
  * A social profile URL turned into a label and an icon.
  *
  * The footer draws its links from the same list that feeds the sameAs in

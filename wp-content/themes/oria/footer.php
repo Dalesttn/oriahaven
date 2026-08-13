@@ -33,6 +33,10 @@ $oria_suburbs   = function_exists( '\Oria\Core\Taxonomies\suburbs' ) ? \Oria\Cor
 				?>
 				<address class="foot__nap">
 					<span><?php echo esc_html( $oria_nap['locality'] . ', ' . $oria_nap['region'] ); ?></span>
+					<?php if ( $oria_nap['founded'] ) : ?>
+						<?php // Says how long we have been at it, in the same breath as who we are. ?>
+						<span><?php printf( /* translators: %s: year */ esc_html__( 'Independent and hand-checked since %s', 'oria' ), esc_html( $oria_nap['founded'] ) ); ?></span>
+					<?php endif; ?>
 					<?php if ( $oria_nap['phone'] ) : ?>
 						<?php // Reads as a human wrote it, dials as E.164. ?>
 						<a href="tel:<?php echo esc_attr( $oria_nap['phone_e164'] ); ?>"><?php echo esc_html( $oria_nap['phone'] ); ?></a>

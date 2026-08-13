@@ -130,4 +130,17 @@ $oria_ld = array(
 <script type="application/ld+json"><?php echo wp_json_encode( $oria_ld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
 
 <?php
+// The widest page on the site, and until now the one carrying the least of
+// its own prose.
+if ( function_exists( '\Oria\Core\Faq\site_faq' ) ) {
+	get_template_part(
+		'template-parts/faq',
+		null,
+		array(
+			'faqs'    => \Oria\Core\Faq\site_faq(),
+			'heading' => __( 'Common questions about the directory', 'oria' ),
+		)
+	);
+}
+
 get_footer();

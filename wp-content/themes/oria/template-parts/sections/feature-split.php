@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 use function Oria\Theme\srows;
 use function Oria\Theme\simg;
+use function Oria\Theme\simg_alt;
 use function Oria\Theme\sband;
 use function Oria\Theme\arrow;
 
@@ -35,7 +36,8 @@ $t = static fn( string $k ): string => (string) ( $s[ $k ] ?? '' );
 		</div>
 
 		<div class="split__media reveal" style="--d:100ms">
-			<img src="<?php echo esc_url( simg( $s, 'image', 'scene-studio.webp', 'oria-card' ) ); ?>" alt="" aria-hidden="true" loading="lazy">
+			<?php $oria_fs_alt = simg_alt( $s, 'image' ); ?>
+			<img src="<?php echo esc_url( simg( $s, 'image', 'scene-studio.webp', 'oria-card' ) ); ?>" alt="<?php echo esc_attr( $oria_fs_alt ); ?>"<?php echo $oria_fs_alt ? '' : ' aria-hidden="true"'; ?> loading="lazy">
 		</div>
 	</div>
 </section>

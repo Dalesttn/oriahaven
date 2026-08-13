@@ -8,6 +8,8 @@
  *
  * @var array $args {
  *     @type WP_Term $term    Term to build questions for.
+ *     @type array   $faqs    Ready-made pairs, for the pages that have no
+ *                            term behind them — the hub and the directory.
  *     @type string  $heading Optional heading override.
  * }
  */
@@ -19,11 +21,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $oria_term = $args['term'] ?? null;
-if ( ! $oria_term instanceof WP_Term || ! function_exists( '\Oria\Core\Faq\for_term' ) ) {
-	return;
-}
+$oria_faqs = isset( $args['faqs'] ) && is_array( $args['faqs'] ) ? $args['faqs'] : null;
 
-$oria_faqs = \Oria\Core\Faq\for_term( $oria_term );
+if ( null === $oria_faqs ) {
+	if ( ! $oria_term instanceof WP_Term || ! function_exists( '\Oria\Core\Faq\for_term' ) ) {
+		return;
+	}
+	$oria_faqs = \Oria\Core\Faq\for_term( $oria_term );
+}
 if ( ! $oria_faqs ) {
 	return;
 }
