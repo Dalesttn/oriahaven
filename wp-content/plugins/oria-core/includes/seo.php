@@ -259,6 +259,52 @@ function page_defaults(): array {
 }
 
 /**
+ * Real editorial copy for the modality pages worth writing for.
+ *
+ * A specialty page is otherwise the directory engine with one facet locked
+ * — accurate, and thin. The terms where that matters are the ones with
+ * volume behind them, so those get written properly. Everything else keeps
+ * the generated version, which is honest about being a list.
+ *
+ * Kept in code rather than in term descriptions so it deploys with a pull
+ * instead of being retyped in the admin of every environment. A term
+ * description typed in WordPress still wins — see specialty_intro().
+ *
+ * Same rule as everywhere: what a session involves, what it costs, where.
+ * Never what it does to a body.
+ *
+ * @return array<string, list<string>>
+ */
+function specialty_intros(): array {
+	return apply_filters(
+		'oria_specialty_intros',
+		array(
+			'red-light-therapy' => array(
+				'Red light therapy is one of the quicker things on a Perth recovery menu: you sit or lie in front of a panel of red and near-infrared LEDs, usually with the skin you want exposed uncovered, for somewhere between ten and twenty minutes. The panels are bright enough that most studios hand you goggles. There is no heat to speak of and nothing is touching you, which makes it the least demanding session in any recovery room.',
+				'In Perth it is almost never sold on its own. It turns up as an add-on at recovery studios alongside sauna, ice baths and compression — a few minutes in front of the panel while you are already there for something else — and that is usually the cheapest way to try it. A handful of clinics run it as a standalone booking.',
+				'Expect roughly $50 to $70 for a standalone session, less as an add-on, and most studios sell packs that bring the per-session price down if you decide it is something you want regularly. Sessions are short enough to fit either side of work.',
+			),
+		)
+	);
+}
+
+/**
+ * The intro for the specialty page being viewed.
+ *
+ * A description typed against the term in WordPress always wins; this only
+ * fills the gap where nobody has written one.
+ *
+ * @return list<string>
+ */
+function specialty_intro( \WP_Term $term ): array {
+	$own = trim( wp_specialchars_decode( (string) $term->description, ENT_QUOTES ) );
+	if ( '' !== $own ) {
+		return array( $own );
+	}
+	return specialty_intros()[ $term->slug ] ?? array();
+}
+
+/**
  * The default for the page being viewed, or '' — empty whenever the page
  * has its own Yoast value, so a hand-written one is never overwritten.
  */
@@ -424,9 +470,23 @@ function seo_description( $desc ) {
 	}
 	if ( is_tax( Taxonomies\SPECIALTY ) ) {
 		$term = get_queried_object();
-		return $term->description
-			? wp_specialchars_decode( $term->description, ENT_QUOTES )
-			: sprintf( 'Find %s across the Perth metro — timetables, prices and verified contact details.', strtolower( decoded( $term ) ) );
+		$own  = trim( wp_specialchars_decode( (string) $term->description, ENT_QUOTES ) );
+
+		/*
+		 * The term description used to serve as both the page intro and the
+		 * meta description, which capped it at about 160 characters and so
+		 * capped how much these pages could ever say. Red light therapy —
+		 * the highest-volume, lowest-difficulty term we have — was carrying
+		 * a forty-character intro because of it.
+		 *
+		 * They are separate jobs now. A short description is still a fine
+		 * meta description; a long one is page copy, and the meta falls back
+		 * to the generated line rather than shipping a truncated paragraph.
+		 */
+		if ( '' !== $own && mb_strlen( $own ) <= 160 ) {
+			return $own;
+		}
+		return sprintf( 'Find %s across the Perth metro — timetables, prices and verified contact details.', strtolower( decoded( $term ) ) );
 	}
 	// Category and area archives, same gap as the title above.
 	$term = plain_term();
