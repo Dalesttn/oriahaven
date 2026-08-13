@@ -297,11 +297,20 @@ function specialty_intros(): array {
  * @return list<string>
  */
 function specialty_intro( \WP_Term $term ): array {
-	$own = trim( wp_specialchars_decode( (string) $term->description, ENT_QUOTES ) );
-	if ( '' !== $own ) {
-		return array( $own );
+	$own     = trim( wp_specialchars_decode( (string) $term->description, ENT_QUOTES ) );
+	$written = specialty_intros()[ $term->slug ] ?? array();
+
+	/*
+	 * Most term descriptions here are one-line stubs left over from the
+	 * import — "Red light therapy sessions around Perth." is the whole of
+	 * the one on our highest-volume page. A stub is a placeholder, not
+	 * editorial copy, so written copy beats it. Anything long enough to be
+	 * somebody's actual writing wins, as it should.
+	 */
+	if ( $written && mb_strlen( $own ) < 120 ) {
+		return $written;
 	}
-	return specialty_intros()[ $term->slug ] ?? array();
+	return '' !== $own ? array( $own ) : $written;
 }
 
 /**
