@@ -263,6 +263,41 @@ while ( have_posts() ) :
 				</div>
 				<?php endif; ?>
 
+				<?php
+				/*
+				 * The modalities this practice is tagged with, linked to their
+				 * own pages.
+				 *
+				 * Those 78 pages are the most commercially useful long-tail
+				 * pages on the site — "remedial massage in Perth" is a real
+				 * search, "the directory" is not — and every one of them had
+				 * exactly one link pointing at it, from the hub. A practice
+				 * offering remedial massage is the most relevant page on the
+				 * internet to link that phrase from, so it does now, and the
+				 * reader gets a way to see who else offers the same thing.
+				 */
+				$oria_specs = wp_get_post_terms( $oria_id, 'specialty' );
+				$oria_specs = is_wp_error( $oria_specs ) ? array() : $oria_specs;
+				?>
+				<?php if ( $oria_specs ) : ?>
+				<div>
+					<h2 class="h3" style="margin-bottom:.85rem"><?php esc_html_e( 'Find more like this', 'oria' ); ?></h2>
+					<div class="listing__tags">
+						<?php foreach ( $oria_specs as $oria_spec ) : ?>
+							<a class="pill" href="<?php echo esc_url( (string) get_term_link( $oria_spec ) ); ?>">
+								<?php
+								printf(
+									/* translators: %s: modality name */
+									esc_html__( '%s in Perth', 'oria' ),
+									esc_html( \Oria\Theme\tname( $oria_spec ) )
+								);
+								?>
+							</a>
+						<?php endforeach; ?>
+					</div>
+				</div>
+				<?php endif; ?>
+
 				<!-- Timetable -->
 				<?php if ( $oria_timetable ) : ?>
 				<div>

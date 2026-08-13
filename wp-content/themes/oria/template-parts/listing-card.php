@@ -44,7 +44,23 @@ $oria_badges = array(
 				<h3 class="listing__name"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
 				<p class="listing__where">
 					<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14.5s5-4.2 5-8a5 5 0 1 0-10 0c0 3.8 5 8 5 8Z"/><circle cx="8" cy="6.4" r="1.9"/></svg>
-					<?php echo esc_html( trim( \Oria\Theme\tname( $oria_suburb ) . ( $oria_region ? ' · ' . \Oria\Theme\tname( $oria_region ) : '' ), ' ·' ) ); ?>
+					<?php
+					/*
+					 * The suburb was plain text on every card on the site, which left
+					 * suburb pages with almost nothing pointing at them. It is also the
+					 * most natural link on a card: somebody reading "Kalamunda" often
+					 * wants everything in Kalamunda. Safe to nest here — the card links
+					 * from its title, not from its whole body.
+					 */
+					$oria_where = array();
+					if ( $oria_suburb instanceof WP_Term ) {
+						$oria_where[] = '<a href="' . esc_url( (string) get_term_link( $oria_suburb ) ) . '">' . esc_html( \Oria\Theme\tname( $oria_suburb ) ) . '</a>';
+					}
+					if ( $oria_region instanceof WP_Term ) {
+						$oria_where[] = '<a href="' . esc_url( (string) get_term_link( $oria_region ) ) . '">' . esc_html( \Oria\Theme\tname( $oria_region ) ) . '</a>';
+					}
+					echo implode( ' &middot; ', $oria_where ); // phpcs:ignore WordPress.Security.EscapeOutput
+					?>
 				</p>
 			</div>
 			<?php if ( $oria_rated['rating'] > 0 ) : ?>
