@@ -618,3 +618,5 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
 .foot__nap { display: flex; flex-direction: column; gap: .3rem; margin-top: var(--s-4); font-size: .875rem; font-style: normal; color: var(--mist); }
 .foot__nap a { color: var(--mist); }
 .foot__nap a:hover { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
+.foot__legal { display: block; margin-top: .5rem; }
+.foot__legal a { text-decoration: underline; text-underline-offset: 3px; }

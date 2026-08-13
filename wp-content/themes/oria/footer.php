@@ -29,14 +29,13 @@ $oria_suburbs   = function_exists( '\Oria\Core\Taxonomies\suburbs' ) ? \Oria\Cor
 				 * A service-area business, so the locality is the metro and
 				 * there is no street line.
 				 */
-				$oria_nap   = \Oria\Core\Schema\NAP;
-				$oria_tel   = $oria_nap['phone'];
-				$oria_digits = preg_replace( '/[^0-9+]/', '', (string) $oria_tel );
+				$oria_nap = \Oria\Core\Schema\NAP;
 				?>
 				<address class="foot__nap">
 					<span><?php echo esc_html( $oria_nap['locality'] . ', ' . $oria_nap['region'] ); ?></span>
-					<?php if ( $oria_tel ) : ?>
-						<a href="tel:<?php echo esc_attr( $oria_digits ); ?>"><?php echo esc_html( $oria_tel ); ?></a>
+					<?php if ( $oria_nap['phone'] ) : ?>
+						<?php // Reads as a human wrote it, dials as E.164. ?>
+						<a href="tel:<?php echo esc_attr( $oria_nap['phone_e164'] ); ?>"><?php echo esc_html( $oria_nap['phone'] ); ?></a>
 					<?php endif; ?>
 					<a href="mailto:<?php echo esc_attr( $oria_nap['email'] ); ?>"><?php echo esc_html( $oria_nap['email'] ); ?></a>
 				</address>
@@ -91,6 +90,27 @@ $oria_suburbs   = function_exists( '\Oria\Core\Taxonomies\suburbs' ) ? \Oria\Cor
 
 		<div class="foot__bottom">
 			<span>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> Oria Haven. Perth, Western Australia. <?php echo esc_html( \Oria\Theme\opt( 'acknowledgement', 'We acknowledge the Whadjuk Noongar people as the traditional custodians of the land this site is made on.' ) ); ?></span>
+			<?php
+			/*
+			 * Legal links appear once the pages exist, so the footer can
+			 * never advertise a 404 — the drafts are in /legal/ waiting to
+			 * be pasted in, and these light up by themselves when they are.
+			 */
+			$oria_legal = array(
+				'privacy-policy' => __( 'Privacy', 'oria' ),
+				'terms'          => __( 'Terms', 'oria' ),
+			);
+			$oria_links = array();
+			foreach ( $oria_legal as $oria_slug => $oria_label ) {
+				$oria_page = get_page_by_path( $oria_slug );
+				if ( $oria_page instanceof WP_Post && 'publish' === $oria_page->post_status ) {
+					$oria_links[] = '<a href="' . esc_url( (string) get_permalink( $oria_page ) ) . '">' . esc_html( $oria_label ) . '</a>';
+				}
+			}
+			?>
+			<?php if ( $oria_links ) : ?>
+				<span class="foot__legal"><?php echo implode( ' · ', $oria_links ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+			<?php endif; ?>
 		</div>
 	</div>
 </footer>

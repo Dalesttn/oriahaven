@@ -24,20 +24,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 const NAP = array(
 	'name'     => 'Oria Haven',
 	'email'    => 'hello@oriahaven.com.au',
-	// TODO[NEEDS INPUT]: a real number from Dale. Deliberately empty. An
-	// invented phone number in schema is worse than no phone number, and
-	// it would be copied onward into citation sites we do not control.
-	'phone'    => '',
+	// Two forms of the one number. The spaced version is what a human
+	// reads and what every citation site must be given, byte for byte;
+	// the E.164 version is what schema and tel: links want.
+	'phone'    => '0431 630 244',
+	'phone_e164' => '+61431630244',
 	// A service-area business: the Perth metro, no street address published.
 	'locality' => 'Perth',
 	'region'   => 'WA',
 	'area'     => 'Perth, Western Australia',
+	'founded'  => '2026',
 );
 
 /** Where the business exists elsewhere online. Feeds sameAs. */
 function profiles(): array {
-	// TODO[NEEDS INPUT]: Facebook / Instagram / LinkedIn URLs once created.
-	return array_values( array_filter( (array) apply_filters( 'oria_social_profiles', array() ) ) );
+	return array_values(
+		array_filter(
+			(array) apply_filters(
+				'oria_social_profiles',
+				array(
+					'https://www.instagram.com/oriahavenwellness/',
+					'https://www.linkedin.com/company/oria-haven',
+				)
+			)
+		)
+	);
 }
 
 function bootstrap(): void {
@@ -76,8 +87,11 @@ function organization(): void {
 	if ( $logo ) {
 		$schema['logo'] = array( '@type' => 'ImageObject', 'url' => $logo );
 	}
-	if ( '' !== NAP['phone'] ) {
-		$schema['telephone'] = NAP['phone'];
+	if ( '' !== NAP['phone_e164'] ) {
+		$schema['telephone'] = NAP['phone_e164'];
+	}
+	if ( '' !== NAP['founded'] ) {
+		$schema['foundingDate'] = NAP['founded'];
 	}
 	$profiles = profiles();
 	if ( $profiles ) {
