@@ -308,6 +308,19 @@ function seo_title( $title ) {
 	}
 	// The event archive title now lives in Yoast's own settings, so it stays
 	// editable in the admin rather than being overridden from here.
+	/*
+	 * Events are named by whoever runs them, and those names are the search
+	 * term — "Sound Healing & Guided Meditation with Tibetan & Crystal Singing
+	 * Bowls" is 69 characters before we append anything. Cutting the name would
+	 * cost us the words people type, so drop our own suffix instead and let the
+	 * name have the whole title. Short event names keep the brand.
+	 */
+	if ( is_singular( 'event' ) && '' === (string) get_post_meta( get_the_ID(), '_yoast_wpseo_title', true ) ) {
+		$name = decoded_title( (int) get_the_ID() );
+		if ( mb_strlen( (string) $title ) > 70 && '' !== $name && mb_strlen( $name ) < mb_strlen( (string) $title ) ) {
+			return $name;
+		}
+	}
 	if ( is_singular( 'listing' ) && '' === (string) get_post_meta( get_the_ID(), '_yoast_wpseo_title', true ) ) {
 		$context = listing_context( get_the_ID() );
 		if ( '' !== $context ) {
