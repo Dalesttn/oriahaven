@@ -238,6 +238,22 @@ function page_defaults(): array {
 				'title' => 'List Your Wellness Practice in Perth | ' . get_bloginfo( 'name' ),
 				'desc'  => "Run a wellness practice in Perth? List it free on Oria Haven's hand-checked directory — no pay-to-win rankings, no booking fees, real client enquiries.",
 			),
+			// The two legal pages have no hand-written excerpt, so the generic
+			// fallback below would serve WordPress's auto-truncated one.
+			'terms'                => array(
+				'desc' => 'How Oria Haven works for the people searching it and the practices listed on it: what we check, what we do not, and what to expect. Plain English.',
+			),
+			'privacy-policy'       => array(
+				'desc' => 'What Oria Haven collects, why, and who else sees it — written to be read. Run from Western Australia; email hello@oriahaven.com.au if anything is unclear.',
+			),
+			// Guides whose standfirst runs past the 158-character ceiling; these
+			// say the same thing in the space a snippet actually gets.
+			'sauna-ice-bath-or-float' => array(
+				'desc' => 'Sauna, ice bath and float are three very different hours sold as one category. What each asks of you, what they cost across Perth, and which to book first.',
+			),
+			'perth-hills-wellness-destination' => array(
+				'desc' => 'Retreats in jarrah forest, reformer studios with cold plunges, and practitioners who left the city. Nineteen Hills and Swan Valley practices, and a day plan.',
+			),
 		)
 	);
 }
@@ -352,6 +368,32 @@ function entity_description( int $id ): string {
 	return mb_strlen( $text ) > 158 ? mb_substr( $text, 0, 157 ) . '…' : $text;
 }
 
+/**
+ * A post or page's hand-written standfirst, cut to a snippet on a word
+ * boundary. Only the typed excerpt: WordPress fabricates one from the opening
+ * of the body when the field is empty, and that reads like a truncated article
+ * rather than a description.
+ */
+function excerpt_description( int $id ): string {
+	$post = get_post( $id );
+	if ( ! $post instanceof \WP_Post ) {
+		return '';
+	}
+	$text = trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( $post->post_excerpt ) ) ?? '' );
+	if ( '' === $text ) {
+		return '';
+	}
+	if ( mb_strlen( $text ) <= 158 ) {
+		return wp_specialchars_decode( $text, ENT_QUOTES );
+	}
+	$cut   = mb_substr( $text, 0, 157 );
+	$space = mb_strrpos( $cut, ' ' );
+	if ( false !== $space && $space > 100 ) {
+		$cut = mb_substr( $cut, 0, $space );
+	}
+	return wp_specialchars_decode( rtrim( $cut, " ,;:—-" ) . '…', ENT_QUOTES );
+}
+
 function seo_description( $desc ) {
 	$own = page_default( 'desc' );
 	if ( '' !== $own ) {
@@ -392,6 +434,14 @@ function seo_description( $desc ) {
 
 	if ( ( is_singular( 'listing' ) || is_singular( 'event' ) ) && ! $desc ) {
 		$auto = entity_description( (int) get_the_ID() );
+		if ( '' !== $auto ) {
+			return $auto;
+		}
+	}
+	// Yoast leaves the description empty unless one is typed, so a guide with a
+	// standfirst and no Yoast value shipped without a description at all.
+	if ( is_singular( array( 'post', 'page' ) ) && ! $desc ) {
+		$auto = excerpt_description( (int) get_the_ID() );
 		if ( '' !== $auto ) {
 			return $auto;
 		}
