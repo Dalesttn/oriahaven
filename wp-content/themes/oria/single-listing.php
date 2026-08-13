@@ -81,32 +81,9 @@ while ( have_posts() ) :
 		$oria_gallery = array( listing_image( $oria_id, 'oria-wide' ) );
 	}
 
-	// --- LocalBusiness schema ---------------------------------------------
-	$oria_schema = array(
-		'@context'    => 'https://schema.org',
-		'@type'       => 'LocalBusiness',
-		'name'        => \Oria\Theme\ptitle(),
-		'description' => get_the_excerpt(),
-		'url'         => get_permalink(),
-	);
-	if ( $oria_address ) {
-		$oria_schema['address'] = array(
-			'@type'           => 'PostalAddress',
-			'streetAddress'   => $oria_address,
-			'addressLocality' => \Oria\Theme\tname( $oria_suburb ),
-			'addressRegion'   => 'WA',
-			'addressCountry'  => 'AU',
-		);
-	}
-	if ( $oria_phone ) {
-		$oria_schema['telephone'] = $oria_phone;
-	}
-	if ( $oria_rating > 0 && $oria_rcount > 0 ) {
-		$oria_schema['aggregateRating'] = array( '@type' => 'AggregateRating', 'ratingValue' => $oria_rating, 'reviewCount' => $oria_rcount );
-	}
+	// LocalBusiness schema is emitted once by Oria\Core\Schema\listing_schema(),
+	// which carries the @id, price band, website and rating this used to duplicate.
 	?>
-	<script type="application/ld+json"><?php echo wp_json_encode( $oria_schema, JSON_UNESCAPED_SLASHES ); ?></script>
-
 	<section class="wrap" style="padding-top:1.75rem">
 		<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
