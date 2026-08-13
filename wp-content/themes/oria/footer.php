@@ -38,6 +38,9 @@ $oria_suburbs   = function_exists( '\Oria\Core\Taxonomies\suburbs' ) ? \Oria\Cor
 						<a href="tel:<?php echo esc_attr( $oria_nap['phone_e164'] ); ?>"><?php echo esc_html( $oria_nap['phone'] ); ?></a>
 					<?php endif; ?>
 					<a href="mailto:<?php echo esc_attr( $oria_nap['email'] ); ?>"><?php echo esc_html( $oria_nap['email'] ); ?></a>
+					<?php if ( $oria_nap['abn'] ) : ?>
+						<span><?php printf( /* translators: %s: ABN */ esc_html__( 'ABN %s', 'oria' ), esc_html( $oria_nap['abn'] ) ); ?></span>
+					<?php endif; ?>
 				</address>
 			</div>
 

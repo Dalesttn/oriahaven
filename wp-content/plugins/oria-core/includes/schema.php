@@ -34,6 +34,9 @@ const NAP = array(
 	'region'   => 'WA',
 	'area'     => 'Perth, Western Australia',
 	'founded'  => '2026',
+	// Spaced the way the ATO writes it, because this string also has to
+	// match the invoices and the ABN Lookup entry. Checksum verified.
+	'abn'      => '46 243 774 311',
 );
 
 /** Where the business exists elsewhere online. Feeds sameAs. */
@@ -92,6 +95,16 @@ function organization(): void {
 	}
 	if ( '' !== NAP['founded'] ) {
 		$schema['foundingDate'] = NAP['founded'];
+	}
+	if ( '' !== NAP['abn'] ) {
+		// schema.org has no Australian business number, so this goes in the
+		// generic identifier slot with the scheme named. Digits only here:
+		// an identifier is for machines, and the spaced form is for people.
+		$schema['identifier'] = array(
+			'@type'      => 'PropertyValue',
+			'propertyID' => 'ABN',
+			'value'      => preg_replace( '/\D/', '', NAP['abn'] ),
+		);
 	}
 	$profiles = profiles();
 	if ( $profiles ) {
