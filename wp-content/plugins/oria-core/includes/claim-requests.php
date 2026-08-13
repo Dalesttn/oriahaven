@@ -202,17 +202,7 @@ function handle_decision(): void {
 	if ( $user instanceof \WP_User ) {
 		$user->add_role( Ownership\ROLE );
 		$user_id = (int) $user->ID;
-		wp_mail(
-			$email,
-			__( 'Your listing on Oria Haven is ready to manage', 'oria' ),
-			sprintf(
-				/* translators: 1 name, 2 listing, 3 login url */
-				__( "Hi %1\$s,\n\nYour claim on \"%2\$s\" has been approved. Log in with your existing account to edit your listing:\n%3\$s\n\n— Oria Haven", 'oria' ),
-				$name,
-				get_post_field( 'post_title', $listing_id, 'raw' ),
-				wp_login_url()
-			)
-		);
+		send_approved( $email, $listing_id, $name );
 	} else {
 		$username = sanitize_user( (string) strstr( $email, '@', true ), true );
 		if ( '' === $username || username_exists( $username ) ) {
@@ -296,6 +286,35 @@ function handle_decision(): void {
 
 	wp_safe_redirect( add_query_arg( 'oria_decided', 'approved', $back ) );
 	exit;
+}
+
+/**
+ * "Your claim is approved" — the words only, no sending.
+ *
+ * Split out from the approval handler for two reasons. It was the last
+ * email in the system still hand-signed "— Oria Haven" in plain text,
+ * skipping the branded shell and the contact details every other email
+ * now carries; sending it through Signup\send() fixes that in one place.
+ * And a body builder with nothing else attached can be rendered on the
+ * email preview screen without approving anybody's claim to look at it.
+ */
+function approved_body( int $listing_id, string $name ): string {
+	return sprintf(
+		/* translators: 1 name, 2 listing, 3 login url */
+		__( "Hi %1\$s,\n\nYour claim on \"%2\$s\" has been approved — the listing is yours to manage.\n\nLog in with your existing account to edit it:\n%3\$s\n\nYou can change your description, hours, photos and contact details whenever you like. If anything looks wrong, reply to this email and I'll sort it out.", 'oria' ),
+		$name,
+		wp_specialchars_decode( (string) get_post_field( 'post_title', $listing_id, 'raw' ) ),
+		wp_login_url()
+	);
+}
+
+function send_approved( string $email, int $listing_id, string $name ): void {
+	\Oria\Core\Signup\send(
+		$email,
+		__( 'Your listing on Oria Haven is ready to manage', 'oria' ),
+		__( 'Your claim is approved', 'oria' ),
+		approved_body( $listing_id, $name )
+	);
 }
 
 /* ------------------------------------------------------------- admin ui */

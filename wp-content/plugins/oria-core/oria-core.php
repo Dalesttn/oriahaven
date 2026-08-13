@@ -55,6 +55,7 @@ require_once ORIA_CORE_DIR . 'includes/finder.php';
 require_once ORIA_CORE_DIR . 'includes/invites.php';
 require_once ORIA_CORE_DIR . 'includes/websites.php';
 require_once ORIA_CORE_DIR . 'includes/llms.php';
+require_once ORIA_CORE_DIR . 'includes/email-preview.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
@@ -88,6 +89,7 @@ Finder\bootstrap();
 Invites\bootstrap();
 Websites\bootstrap();
 Llms\bootstrap();
+EmailPreview\bootstrap();
 
 /**
  * Rewrite rules are only rebuilt on activation and deactivation. Flushing on

@@ -423,6 +423,18 @@ function live_email( string $new, string $old, \WP_Post $post ): void {
 		return;
 	}
 
+	send( $owner->user_email, __( 'Your listing is live on Oria Haven', 'oria' ), __( "You're live", 'oria' ), live_body( $post, $owner ) );
+}
+
+/**
+ * The words of the "you're live" email, with no sending and no state.
+ *
+ * live_email() has to clear the _oria_signup flag so the email fires once,
+ * which makes it the wrong thing to call merely to look at the wording.
+ * The body lives here so the preview screen renders the genuine copy —
+ * share block, upgrade block and all — without spending anybody's email.
+ */
+function live_body( \WP_Post $post, \WP_User $owner ): string {
 	$body = sprintf(
 		/* translators: 1: display name, 2: practice name, 3: listing URL */
 		__( "G'day %1\$s,\n\nGood news — %2\$s has been approved and is now live on Oria Haven:\n%3\$s\n\nIt's listed free, and it stays that way for as long as you like. Enquiries go straight to you and we never take a cut of a booking.", 'oria' ),
@@ -433,9 +445,7 @@ function live_email( string $new, string $old, \WP_Post $post ): void {
 
 	$body .= \Oria\Core\Share\email_block( $post->ID );
 	$body .= upgrade_block( $post->ID, $owner->user_email );
-	$body .= __( "\n\nThe Oria Haven team", 'oria' );
-
-	send( $owner->user_email, __( 'Your listing is live on Oria Haven', 'oria' ), __( "You're live", 'oria' ), $body );
+	return $body . __( "\n\nThe Oria Haven team", 'oria' );
 }
 
 /**
