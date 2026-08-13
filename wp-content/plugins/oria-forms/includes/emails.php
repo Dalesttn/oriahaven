@@ -76,13 +76,83 @@ function shell( string $preheader, string $body_html, string $header = 'band' ):
 	. $body_html
 	. '</td></tr>'
 
-	// Footer.
-	. '<tr><td style="padding:18px 8px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#8A948F;" align="center">'
-	. $site . ' &middot; ' . esc_html__( 'Perth meditation & wellness directory', 'oria' )
-	. '<br><a href="' . $home . '" style="color:#3F6E60;">' . esc_html( (string) wp_parse_url( home_url(), PHP_URL_HOST ) ) . '</a>'
+	// Footer. Signed by a person, with a number that reaches them — a
+	// directory email that answers "who is this and how do I reply to a
+	// human" in its last three lines is worth more than one that doesn't.
+	. '<tr><td style="padding:18px 8px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.7;color:#8A948F;" align="center">'
+	. signature_html()
 	. '</td></tr>'
 
 	. '</table></td></tr></table></body></html>';
+}
+
+/**
+ * Who sent this, in both flavours.
+ *
+ * One definition so the plain-text and HTML mail cannot end up signed
+ * differently, and so the day the number changes it changes once. The
+ * business details come from Schema\NAP, which is also what the footer of
+ * the website and the Organization schema read — three places that have to
+ * agree, reading one source.
+ *
+ * @return array{name: string, phone: string, tel: string, email: string, abn: string, place: string}
+ */
+function signer(): array {
+	$nap = class_exists( '\Oria\Core\Schema\Bootstrap' ) || defined( 'ORIA_CORE_DIR' )
+		? \Oria\Core\Schema\NAP
+		: array();
+
+	return array(
+		'name'  => (string) get_option( 'oria_invite_from_name', 'Dale' ),
+		'phone' => (string) ( $nap['phone'] ?? '' ),
+		'tel'   => (string) ( $nap['phone_e164'] ?? '' ),
+		'email' => (string) ( $nap['email'] ?? get_option( 'admin_email' ) ),
+		'abn'   => (string) ( $nap['abn'] ?? '' ),
+		'place' => trim( (string) ( $nap['locality'] ?? '' ) . ', ' . (string) ( $nap['region'] ?? '' ), ', ' ),
+	);
+}
+
+/** The sign-off for an HTML email's footer. */
+function signature_html(): string {
+	$s    = signer();
+	// The spaced brand, as the masthead uses — the site title is one word.
+	$site = esc_html( (string) apply_filters( 'oria_email_wordmark', 'Oria Haven' ) );
+	$out  = '<strong style="color:#566762;">' . esc_html( $s['name'] ) . '</strong><br>'
+		. $site . ' &middot; ' . esc_html__( 'Perth meditation &amp; wellness directory', 'oria' ) . '<br>';
+
+	$bits = array();
+	if ( $s['phone'] ) {
+		$bits[] = '<a href="tel:' . esc_attr( $s['tel'] ) . '" style="color:#3F6E60;">' . esc_html( $s['phone'] ) . '</a>';
+	}
+	if ( $s['email'] ) {
+		$bits[] = '<a href="mailto:' . esc_attr( $s['email'] ) . '" style="color:#3F6E60;">' . esc_html( $s['email'] ) . '</a>';
+	}
+	$bits[] = '<a href="' . esc_url( home_url( '/' ) ) . '" style="color:#3F6E60;">' . esc_html( (string) wp_parse_url( home_url(), PHP_URL_HOST ) ) . '</a>';
+	$out   .= implode( ' &middot; ', $bits );
+
+	$tail = array_filter( array( $s['place'], $s['abn'] ? 'ABN ' . $s['abn'] : '' ) );
+	if ( $tail ) {
+		$out .= '<br>' . esc_html( implode( ' · ', $tail ) );
+	}
+	return $out;
+}
+
+/** The same sign-off for a plain-text email. */
+function signature_text(): string {
+	$s    = signer();
+	$site = (string) apply_filters( 'oria_email_wordmark', 'Oria Haven' );
+
+	$lines = array( '', '—', $s['name'], $site . ' — Perth meditation & wellness directory' );
+	$contact = array_filter( array( $s['phone'], $s['email'] ) );
+	if ( $contact ) {
+		$lines[] = implode( ' · ', $contact );
+	}
+	$lines[] = untrailingslashit( home_url( '/' ) );
+	$tail = array_filter( array( $s['place'], $s['abn'] ? 'ABN ' . $s['abn'] : '' ) );
+	if ( $tail ) {
+		$lines[] = implode( ' · ', $tail );
+	}
+	return "\n" . implode( "\n", $lines ) . "\n";
 }
 
 /** The submitted values as a tidy two-column table. */

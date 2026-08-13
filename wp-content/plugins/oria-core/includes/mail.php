@@ -157,3 +157,16 @@ function sanitize_from( $value ): string {
 	}
 	return $value;
 }
+
+/**
+ * The plain-text sign-off for emails that don't ride the HTML shell.
+ *
+ * Defined in oria-forms so the HTML and plain versions cannot drift; this
+ * is just the safe accessor for core, which must keep working if the forms
+ * plugin is ever switched off.
+ */
+function signoff(): string {
+	return function_exists( '\Oria\Forms\Emails\signature_text' )
+		? \Oria\Forms\Emails\signature_text()
+		: '';
+}

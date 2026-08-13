@@ -255,13 +255,17 @@ function tname( \WP_Term $term ): string {
 	return function_exists( 'Oria\Theme\tname' ) ? \Oria\Theme\tname( $term ) : $term->name;
 }
 
+/**
+ * Defined once, in oria-forms, and shared with every other email we send —
+ * so a phone number can never be current in one message and stale in
+ * another. This wrapper stays because the invite bodies read better with
+ * the sign-off inline than appended.
+ */
 function signature(): string {
-	return sprintf(
-		"%s\nOria Haven — Perth, WA\n%s · %s",
-		get_option( 'oria_invite_from_name', 'Dale' ),
-		\Oria\Core\Mail\from_address( '' ) ?: get_option( 'admin_email' ),
-		home_url( '/' )
-	);
+	if ( function_exists( '\Oria\Forms\Emails\signature_text' ) ) {
+		return trim( \Oria\Forms\Emails\signature_text(), "\n" );
+	}
+	return (string) get_option( 'oria_invite_from_name', 'Dale' );
 }
 
 /**
@@ -393,13 +397,18 @@ function follow_up_html( int $listing_id, string $token ): string {
 	return $html;
 }
 
+/**
+ * The sign-off inside an invite's body. Same details as the shell footer
+ * below it, because an invitation is a letter from a person and should
+ * read like one — the footer is the letterhead, this is the signature.
+ */
 function signature_html(): string {
-	$from = \Oria\Core\Mail\from_address( '' ) ?: get_option( 'admin_email' );
-	return '<p style="margin:22px 0 18px;font-size:14px;line-height:1.6;color:#082220;">'
-		. esc_html( (string) get_option( 'oria_invite_from_name', 'Dale' ) ) . '<br>'
-		. '<span style="color:#566762;">' . esc_html__( 'Oria Haven — Perth, WA', 'oria' ) . '<br>'
-		. link_to( 'mailto:' . $from, $from ) . ' &middot; ' . link_to( home_url( '/' ), (string) wp_parse_url( home_url(), PHP_URL_HOST ) )
-		. '</span></p>';
+	if ( ! function_exists( '\Oria\Forms\Emails\signature_html' ) ) {
+		return '';
+	}
+	return '<p style="margin:22px 0 18px;font-size:13px;line-height:1.7;color:#566762;">'
+		. \Oria\Forms\Emails\signature_html()
+		. '</p>';
 }
 
 /* --------------------------------------------------------------- the text */

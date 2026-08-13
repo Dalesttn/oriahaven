@@ -394,7 +394,7 @@ function send( string $to, string $subject, string $heading, string $body ): voi
 		);
 		return;
 	}
-	wp_mail( $to, $subject, $body );
+	wp_mail( $to, $subject, $body . \Oria\Core\Mail\signoff() );
 }
 
 /**

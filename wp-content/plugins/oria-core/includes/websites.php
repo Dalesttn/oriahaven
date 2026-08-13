@@ -529,7 +529,7 @@ function handle_request(): void {
 			$site,
 			service_name(),
 			home_url( '/' )
-		)
+		) . \Oria\Core\Mail\signoff()
 	);
 
 	wp_safe_redirect( add_query_arg( 'owr', 'sent', $back ) );
