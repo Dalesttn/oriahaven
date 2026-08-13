@@ -42,6 +42,24 @@ $oria_suburbs   = function_exists( '\Oria\Core\Taxonomies\suburbs' ) ? \Oria\Cor
 						<span><?php printf( /* translators: %s: ABN */ esc_html__( 'ABN %s', 'oria' ), esc_html( $oria_nap['abn'] ) ); ?></span>
 					<?php endif; ?>
 				</address>
+
+				<?php
+				// The same list that feeds sameAs in the Organization schema,
+				// so a new profile is added once and appears in both.
+				$oria_profiles = \Oria\Core\Schema\profiles();
+				?>
+				<?php if ( $oria_profiles ) : ?>
+					<div class="foot__social">
+						<?php foreach ( $oria_profiles as $oria_profile ) : ?>
+							<?php $oria_meta = \Oria\Theme\social_link( $oria_profile ); ?>
+							<?php if ( $oria_meta ) : ?>
+								<a href="<?php echo esc_url( $oria_profile ); ?>" rel="me noopener" target="_blank" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: network name */ __( 'Oria Haven on %s', 'oria' ), $oria_meta['label'] ) ); ?>">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><?php echo $oria_meta['icon']; // phpcs:ignore WordPress.Security.EscapeOutput ?></svg>
+								</a>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
 			</div>
 
 			<div>

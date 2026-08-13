@@ -710,6 +710,43 @@ function journal_practices( int $post_id ): array {
 }
 
 /**
+ * A social profile URL turned into a label and an icon.
+ *
+ * The footer draws its links from the same list that feeds the sameAs in
+ * the Organization schema, so a new profile is added in one place and
+ * appears in both. A URL we have no icon for is skipped rather than
+ * rendered as a mystery square.
+ *
+ * @return array{label: string, icon: string}|null
+ */
+function social_link( string $url ): ?array {
+	$host = strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) );
+
+	// Stroke-drawn to sit with the rest of the theme's iconography.
+	$icons = array(
+		'instagram.com' => array(
+			'label' => 'Instagram',
+			'icon'  => '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1" fill="currentColor" stroke="none"/>',
+		),
+		'linkedin.com'  => array(
+			'label' => 'LinkedIn',
+			'icon'  => '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.8V17M8 7.6v.01M12 17v-3.4a2.1 2.1 0 0 1 4.2 0V17"/>',
+		),
+		'facebook.com'  => array(
+			'label' => 'Facebook',
+			'icon'  => '<path d="M15 8h2.5V5H15c-2 0-3.5 1.5-3.5 3.5V11H9v3h2.5v7h3v-7H17l.5-3h-3V8.7c0-.4.3-.7.5-.7Z"/>',
+		),
+	);
+
+	foreach ( $icons as $needle => $meta ) {
+		if ( false !== strpos( $host, $needle ) ) {
+			return $meta;
+		}
+	}
+	return null;
+}
+
+/**
  * Alt text for a listing's photo: what the picture is of, in the words
  * somebody would use out loud.
  *

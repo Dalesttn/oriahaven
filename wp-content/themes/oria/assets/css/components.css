@@ -542,7 +542,7 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
   display: flex; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap;
   font-size: var(--fs-xs);
 }
-.foot__social { display: flex; gap: var(--s-2); }
+.foot__social { display: flex; gap: var(--s-2); margin-top: var(--s-4); }
 .foot__social a {
   width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
   border: 1px solid var(--teal-line); color: var(--mist);
