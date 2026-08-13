@@ -460,7 +460,8 @@ a.livesession:hover { background: var(--sand-2); }
   .filterbox:hover, .filterbox:focus-within { background: var(--white); }
   .nav, .site-head--solid .nav { background: rgba(255,255,255,.97); }
 }
-.filterbox h3 { font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--text-faint); margin-bottom: var(--s-4); }
+.filterbox h3, .filterbox__label { display: block; }
+.filterbox h3, .filterbox__label { font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--text-faint); margin-bottom: var(--s-4); }
 .filterbox .check + .check { margin-top: var(--s-3); }
 .filterbox .check span { flex: 1; }
 .filterbox .check em { font-style: normal; color: var(--text-faint); font-size: var(--fs-xs); }
@@ -1034,7 +1035,9 @@ a.livesession:hover { background: var(--sand-2); }
   display: flex;
   align-items: center;
   gap: .5rem;
-  margin-bottom: 1rem;
+  margin: 0 0 1rem;
+  font-size: inherit;
+  font-weight: inherit;
   color: var(--gold);
 }
 .featband__label .badge-dot { background: var(--brand-gold); }

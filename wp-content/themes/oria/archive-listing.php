@@ -75,6 +75,9 @@ get_header();
 				</div>
 			</div>
 
+			<?php // The results are the page's main section; without a heading
+			// here the listing names (h3) jump straight from the h1. ?>
+			<h2 class="sr-only"><?php esc_html_e( 'Practices in Perth', 'oria' ); ?></h2>
 			<p class="dir__count" id="dirCount"></p>
 			<div class="chips" id="dirChips" style="margin-top:1rem"></div>
 

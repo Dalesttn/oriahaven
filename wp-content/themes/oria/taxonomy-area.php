@@ -54,6 +54,8 @@ $oria_region = $oria_term instanceof WP_Term ? \Oria\Core\Taxonomies\region_for(
 					</select>
 				</div>
 			</div>
+			<?php // Gives the listing h3s below a parent heading. ?>
+			<h2 class="sr-only"><?php printf( esc_html__( 'Practices in %s', 'oria' ), esc_html( \Oria\Theme\tname( $oria_term ) ) ); ?></h2>
 			<p class="dir__count" id="dirCount"></p>
 			<div class="chips" id="dirChips" style="margin-top:1rem"></div>
 			<div class="dir__results" id="dirResults" data-region="<?php echo esc_attr( $oria_region ? $oria_region->slug : '' ); ?>">

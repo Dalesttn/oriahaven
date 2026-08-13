@@ -16,7 +16,10 @@ if ( ! $oria_band_posts ) {
 $oria_band_heading = (string) ( $args['heading'] ?? __( 'Featured practices', 'oria' ) );
 ?>
 <div class="featband">
-	<p class="featband__label"><span class="badge-dot" aria-hidden="true"></span><span class="micro"><?php echo esc_html( $oria_band_heading ); ?></span></p>
+	<?php // A heading, not a paragraph: the cards under it are h3, and without
+	// one the outline jumped from the h1 straight to a practice name. The
+	// .micro span keeps it looking exactly as it did. ?>
+	<h2 class="featband__label"><span class="badge-dot" aria-hidden="true"></span><span class="micro"><?php echo esc_html( $oria_band_heading ); ?></span></h2>
 	<div class="featband__grid">
 		<?php
 		global $post;

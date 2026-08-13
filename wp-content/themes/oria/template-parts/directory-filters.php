@@ -38,8 +38,8 @@ $oria_prices = array(
 		</button>
 	</div>
 	<?php if ( ! is_wp_error( $oria_practices ) && $oria_practices ) : ?>
-	<div class="filterbox">
-		<h3><?php esc_html_e( 'Practice', 'oria' ); ?></h3>
+	<div class="filterbox" role="group" aria-labelledby="filt-practice">
+		<span class="filterbox__label" id="filt-practice"><?php esc_html_e( 'Practice', 'oria' ); ?></span>
 		<?php foreach ( $oria_practices as $oria_term ) : ?>
 			<label class="check"><input type="checkbox" data-filter="cat" value="<?php echo esc_attr( $oria_term->slug ); ?>"><span><?php echo esc_html( \Oria\Theme\tname( $oria_term ) ); ?></span></label>
 		<?php endforeach; ?>
@@ -47,8 +47,8 @@ $oria_prices = array(
 	<?php endif; ?>
 
 	<?php if ( ! is_wp_error( $oria_regions ) && $oria_regions ) : ?>
-	<div class="filterbox">
-		<h3><?php esc_html_e( 'Area', 'oria' ); ?></h3>
+	<div class="filterbox" role="group" aria-labelledby="filt-area">
+		<span class="filterbox__label" id="filt-area"><?php esc_html_e( 'Area', 'oria' ); ?></span>
 		<?php foreach ( $oria_regions as $oria_term ) : ?>
 			<label class="check"><input type="checkbox" data-filter="region" value="<?php echo esc_attr( $oria_term->slug ); ?>"><span><?php echo esc_html( \Oria\Theme\tname( $oria_term ) ); ?></span></label>
 		<?php endforeach; ?>
@@ -56,8 +56,8 @@ $oria_prices = array(
 	<?php endif; ?>
 
 	<?php if ( ! is_wp_error( $oria_specialties ) && $oria_specialties && ! is_tax( 'specialty' ) ) : ?>
-	<div class="filterbox" data-collapsible>
-		<h3><?php esc_html_e( 'Specialty', 'oria' ); ?></h3>
+	<div class="filterbox" role="group" aria-labelledby="filt-specialty" data-collapsible>
+		<span class="filterbox__label" id="filt-specialty"><?php esc_html_e( 'Specialty', 'oria' ); ?></span>
 		<?php foreach ( array_values( $oria_specialties ) as $oria_i => $oria_term ) : ?>
 			<label class="check<?php echo $oria_i >= ORIA_SPEC_SHOWN ? ' is-extra' : ''; ?>"><input type="checkbox" data-filter="spec" value="<?php echo esc_attr( $oria_term->slug ); ?>"><span><?php echo esc_html( \Oria\Theme\tname( $oria_term ) ); ?></span></label>
 		<?php endforeach; ?>
@@ -69,21 +69,21 @@ $oria_prices = array(
 	</div>
 	<?php endif; ?>
 
-	<div class="filterbox">
-		<h3><?php esc_html_e( 'Price per session', 'oria' ); ?></h3>
+	<div class="filterbox" role="group" aria-labelledby="filt-price-per-session">
+		<span class="filterbox__label" id="filt-price-per-session"><?php esc_html_e( 'Price per session', 'oria' ); ?></span>
 		<?php foreach ( $oria_prices as $oria_value => $oria_label ) : ?>
 			<label class="check"><input type="checkbox" data-filter="price" value="<?php echo esc_attr( $oria_value ); ?>"><span><?php echo esc_html( $oria_label ); ?></span></label>
 		<?php endforeach; ?>
 	</div>
 
-	<div class="filterbox">
-		<h3><?php esc_html_e( 'Format', 'oria' ); ?></h3>
+	<div class="filterbox" role="group" aria-labelledby="filt-format">
+		<span class="filterbox__label" id="filt-format"><?php esc_html_e( 'Format', 'oria' ); ?></span>
 		<label class="check"><input type="checkbox" data-filter="format" value="in-person"><span><?php esc_html_e( 'In person', 'oria' ); ?></span></label>
 		<label class="check"><input type="checkbox" data-filter="format" value="online"><span><?php esc_html_e( 'Online available', 'oria' ); ?></span></label>
 	</div>
 
-	<div class="filterbox">
-		<h3><?php esc_html_e( 'Rating', 'oria' ); ?></h3>
+	<div class="filterbox" role="group" aria-labelledby="filt-rating">
+		<span class="filterbox__label" id="filt-rating"><?php esc_html_e( 'Rating', 'oria' ); ?></span>
 		<label class="check"><input type="checkbox" data-filter="rating" value="4.5"><span><?php esc_html_e( '4.5 and above', 'oria' ); ?></span></label>
 		<label class="check"><input type="checkbox" data-filter="rating" value="4.8"><span><?php esc_html_e( '4.8 and above', 'oria' ); ?></span></label>
 	</div>

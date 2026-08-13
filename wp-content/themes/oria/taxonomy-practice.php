@@ -100,6 +100,8 @@ if ( $oria_feat ) :
 					</select>
 				</div>
 			</div>
+			<?php // See archive-listing.php: gives the listing h3s a parent. ?>
+			<h2 class="sr-only"><?php printf( /* translators: %s: practice name */ esc_html__( '%s in Perth', 'oria' ), esc_html( $oria_pname ) ); ?></h2>
 			<p class="dir__count" id="dirCount"></p>
 			<div class="chips" id="dirChips" style="margin-top:1rem"></div>
 			<div
