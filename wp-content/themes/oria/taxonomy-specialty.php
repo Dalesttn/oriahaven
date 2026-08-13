@@ -24,10 +24,28 @@ $oria_term = get_queried_object();
 			<span class="micro"><?php esc_html_e( 'Specialty', 'oria' ); ?></span>
 			<h1 class="h1 pagehead__title"><?php printf( esc_html__( '%s in Perth', 'oria' ), esc_html( \Oria\Theme\tname( $oria_term ) ) ); ?></h1>
 		</div>
-		<?php if ( $oria_term instanceof WP_Term && $oria_term->description ) : ?>
-			<p class="lede" style="max-width:36ch"><?php echo esc_html( wp_specialchars_decode( $oria_term->description, ENT_QUOTES ) ); ?></p>
+		<?php
+		/*
+		 * The intro is no longer tied to the meta description's length, so
+		 * it can run past one line where the topic earns it. First paragraph
+		 * is the lede beside the title; the rest reads as prose underneath.
+		 */
+		$oria_intro = ( $oria_term instanceof WP_Term && function_exists( 'Oria\Core\Seo\specialty_intro' ) )
+			? \Oria\Core\Seo\specialty_intro( $oria_term )
+			: array();
+		?>
+		<?php if ( $oria_intro ) : ?>
+			<p class="lede" style="max-width:<?php echo count( $oria_intro ) > 1 ? '48ch' : '36ch'; ?>"><?php echo esc_html( (string) array_shift( $oria_intro ) ); ?></p>
 		<?php endif; ?>
 	</div>
+
+	<?php if ( $oria_intro ) : ?>
+		<div class="prose" style="max-width:62ch;margin-top:var(--s-5)">
+			<?php foreach ( $oria_intro as $oria_para ) : ?>
+				<p><?php echo esc_html( $oria_para ); ?></p>
+			<?php endforeach; ?>
+		</div>
+	<?php endif; ?>
 </section>
 
 <section class="wrap section section--top-flush">
