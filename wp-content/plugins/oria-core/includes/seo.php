@@ -212,7 +212,65 @@ function plain_term(): ?\WP_Term {
 	return $term instanceof \WP_Term ? $term : null;
 }
 
+/**
+ * Titles and descriptions for individual pages that need better ones than
+ * WordPress generates, keyed by slug.
+ *
+ * These are defaults, not overrides — see page_default(). Anything typed
+ * into Yoast for the page wins, so this fills gaps on production without
+ * taking the dashboard away from whoever wants to tune the wording later.
+ *
+ * The title here is the search-result title only. It does not touch the
+ * headline on the page, which is why an 88-character article heading can
+ * keep its full sense while the SERP gets 56 characters that fit.
+ *
+ * @return array<string, array{title?: string, desc?: string}>
+ */
+function page_defaults(): array {
+	return apply_filters(
+		'oria_page_seo_defaults',
+		array(
+			'acupuncture-in-perth' => array(
+				'title' => 'Acupuncture in Perth: Costs & What to Expect | ' . get_bloginfo( 'name' ),
+				'desc'  => 'Thinking about acupuncture in Perth? Registration, typical costs, what a first session involves, and verified Perth clinics — no booking fees.',
+			),
+			'list-your-practice'   => array(
+				'title' => 'List Your Wellness Practice in Perth | ' . get_bloginfo( 'name' ),
+				'desc'  => "Run a wellness practice in Perth? List it free on Oria Haven's hand-checked directory — no pay-to-win rankings, no booking fees, real client enquiries.",
+			),
+		)
+	);
+}
+
+/**
+ * The default for the page being viewed, or '' — empty whenever the page
+ * has its own Yoast value, so a hand-written one is never overwritten.
+ */
+function page_default( string $key ): string {
+	if ( ! is_singular( array( 'post', 'page' ) ) ) {
+		return '';
+	}
+	$post = get_post();
+	if ( ! $post instanceof \WP_Post ) {
+		return '';
+	}
+	$defaults = page_defaults();
+	if ( ! isset( $defaults[ $post->post_name ][ $key ] ) ) {
+		return '';
+	}
+	$written = 'title' === $key ? '_yoast_wpseo_title' : '_yoast_wpseo_metadesc';
+	if ( '' !== trim( (string) get_post_meta( $post->ID, $written, true ) ) ) {
+		return '';
+	}
+	return (string) $defaults[ $post->post_name ][ $key ];
+}
+
 function seo_title( $title ) {
+	$own = page_default( 'title' );
+	if ( '' !== $own ) {
+		return $own;
+	}
+
 	$area = combo_area();
 	if ( $area ) {
 		$practice = get_queried_object();
@@ -295,6 +353,11 @@ function entity_description( int $id ): string {
 }
 
 function seo_description( $desc ) {
+	$own = page_default( 'desc' );
+	if ( '' !== $own ) {
+		return $own;
+	}
+
 	$area = combo_area();
 	if ( $area ) {
 		$practice = get_queried_object();
@@ -365,6 +428,13 @@ function seo_robots( $robots ) {
 
 /** Core <title> fallback for the same pages when Yoast is inactive. */
 function core_title( array $parts ): array {
+	$own = page_default( 'title' );
+	if ( '' !== $own ) {
+		// Core appends the site name itself, so hand back just the page part.
+		$parts['title'] = trim( (string) preg_replace( '/\s*\|\s*' . preg_quote( get_bloginfo( 'name' ), '/' ) . '$/', '', $own ) );
+		return $parts;
+	}
+
 	$area = combo_area();
 	if ( $area ) {
 		$parts['title'] = sprintf( '%s in %s', decoded( get_queried_object() ), decoded( $area ) );

@@ -84,13 +84,15 @@ function template( string $template ): string {
 
 /* -------------------------------------------------------------------- seo */
 
+// Was 67 characters and truncating in the SERP; "modality" was the word
+// carrying the least weight, so it went.
 function title( $title ) {
-	return is_hub() ? sprintf( 'Wellness in Perth — every practice, area and modality | %s', get_bloginfo( 'name' ) ) : $title;
+	return is_hub() ? sprintf( 'Wellness in Perth — every practice and suburb | %s', get_bloginfo( 'name' ) ) : $title;
 }
 
 function core_title( array $parts ): array {
 	if ( is_hub() ) {
-		$parts['title'] = __( 'Wellness in Perth — every practice, area and modality', 'oria' );
+		$parts['title'] = __( 'Wellness in Perth — every practice and suburb', 'oria' );
 	}
 	return $parts;
 }
