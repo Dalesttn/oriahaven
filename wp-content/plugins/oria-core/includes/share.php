@@ -163,6 +163,30 @@ function card_url( int $listing_id, string $format = 'card' ): string {
 	return generate( $listing_id, $format, $path ) ? $dirs['url'] . '/' . $file : '';
 }
 
+/**
+ * URL for a card that belongs to a page rather than a listing — the
+ * practice, suburb and site-level URLs that otherwise share as bare
+ * links. Cached by its own text: when a count moves or a term is
+ * renamed the hash changes and a fresh file is drawn on next request.
+ * The "site-" prefix keeps these clear of clear_cards()'s id glob.
+ *
+ * @param array{name: string, meta: string} $text
+ */
+function generic_card_url( string $key, array $text, string $eyebrow = 'Perth wellness directory' ): string {
+	$dirs = cache_dir();
+	$file = sprintf(
+		'site-%s-%s.png',
+		sanitize_key( $key ),
+		substr( md5( $text['name'] . '|' . $text['meta'] . '|' . $eyebrow . '|v1' ), 0, 8 )
+	);
+	$path = $dirs['path'] . '/' . $file;
+
+	if ( file_exists( $path ) ) {
+		return $dirs['url'] . '/' . $file;
+	}
+	return draw( $text, $eyebrow, 'card', $path ) ? $dirs['url'] . '/' . $file : '';
+}
+
 /** Drop a listing's cached cards when it is saved. */
 function clear_cards( int $listing_id ): void {
 	$dirs = cache_dir();
@@ -277,8 +301,18 @@ function watermark( $im, int $w, int $h, string $format ): void {
 	imagedestroy( $tmp );
 }
 
-/** Draw and save one card. */
+/** Draw and save one card for a listing. */
 function generate( int $listing_id, string $format, string $path ): bool {
+	return draw( card_text( $listing_id ), 'Listed on Oria Haven', $format, $path );
+}
+
+/**
+ * Draw and save one card from bare text, so the same brush serves
+ * listings and the site-level cards in Oria\Core\OgDefault alike.
+ *
+ * @param array{name: string, meta: string} $t
+ */
+function draw( array $t, string $eyebrow, string $format, string $path ): bool {
 	if ( ! function_exists( 'imagettftext' ) || ! file_exists( font() ) ) {
 		return false;
 	}
@@ -288,7 +322,6 @@ function generate( int $listing_id, string $format, string $path ): bool {
 	}
 
 	list( $w, $h ) = FORMATS[ $format ];
-	$t             = card_text( $listing_id );
 
 	$im = imagecreatetruecolor( $w, $h );
 	imagealphablending( $im, true );
@@ -319,10 +352,11 @@ function generate( int $listing_id, string $format, string $path ): bool {
 	$lines   = wrap( $t['name'], $name_pt, $col, 3 );
 
 	// Eyebrow.
-	$eyebrow = strtoupper( 'Listed on Oria Haven' );
+	$eyebrow = strtoupper( $eyebrow );
 	$eb_pt   = 'card' === $format ? 17.0 : 19.0;
-	// Letter-spaced by hand: GD has no tracking control.
-	$spaced = implode( ' ', str_split( $eyebrow ) );
+	// Letter-spaced by hand: GD has no tracking control. Split per
+	// character, not per byte, or any non-ASCII glyph shatters.
+	$spaced = implode( ' ', preg_split( '//u', $eyebrow, -1, PREG_SPLIT_NO_EMPTY ) ?: array() );
 	$spaced = str_replace( '    ', '   ', $spaced );
 
 	$baseline = 'story' === $format ? (int) round( $h * 0.52 ) : (int) round( $h * 0.42 );

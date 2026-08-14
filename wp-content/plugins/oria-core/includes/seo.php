@@ -46,6 +46,28 @@ function bootstrap(): void {
 	// Last, so it sees Yoast's block: where Yoast already advertises its
 	// sitemap this does nothing, and a second line never gets added.
 	add_filter( 'robots_txt', __NAMESPACE__ . '\robots_txt', 9999, 2 );
+
+	// Tag and author archives out of the index, stated in Yoast's own
+	// options so its sitemap builder reads the same answer. A runtime
+	// wpseo_robots filter would noindex the page while the sitemap
+	// carried on advertising it.
+	add_filter( 'option_wpseo_titles', __NAMESPACE__ . '\thin_archive_noindex' );
+}
+
+/**
+ * Journal tags and the author archive duplicate stronger pages — the
+ * practice and specialty landings do a tag's job with real content, and
+ * a one-author site's author page is the About page with a worse URL.
+ *
+ * @param mixed $value
+ * @return mixed
+ */
+function thin_archive_noindex( $value ) {
+	if ( is_array( $value ) ) {
+		$value['noindex-tax-post_tag'] = true;
+		$value['noindex-author-wpseo'] = true;
+	}
+	return $value;
 }
 
 /**
