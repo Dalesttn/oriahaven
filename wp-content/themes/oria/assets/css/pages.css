@@ -466,6 +466,47 @@ a.livesession:hover { background: var(--sand-2); }
 .filterbox .check span { flex: 1; }
 .filterbox .check em { font-style: normal; color: var(--text-faint); font-size: var(--fs-xs); }
 
+/* Practice categories are links to their landing pages rather than
+   filters, so they should read as somewhere to go. Spaced on the same
+   rhythm as the checkbox rows in the panels around them, and indented by
+   the width a checkbox would have taken so the column edge holds. */
+.filterlink {
+  display: block;
+  font-size: var(--fs-sm);
+  color: inherit;
+  text-decoration: none;
+  padding-left: calc(16px + var(--s-3));
+  position: relative;
+  transition: color var(--t-fast) var(--ease);
+}
+.filterlink + .filterlink { margin-top: var(--s-3); }
+.filterlink:hover,
+.filterlink:focus-visible { color: var(--deep); text-decoration: underline; text-underline-offset: 2px; }
+
+/* On a touch screen these are the main way into a category, so give them
+   a target a thumb can hit rather than the line-height a checkbox label
+   inherited. Pointer-based, not width-based: a small laptop keeps the
+   tighter rhythm, a large tablet still gets the bigger target. */
+@media (pointer: coarse) {
+  .filterlink { padding-top: 0.4rem; padding-bottom: 0.4rem; }
+  .filterlink + .filterlink { margin-top: var(--s-2); }
+  .filterlink.is-here::before { top: 0.9em; }
+}
+
+/* The category already being viewed: marked rather than dressed as a
+   place to click. */
+.filterlink.is-here { font-weight: 600; color: var(--deep); }
+.filterlink.is-here::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.5em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--deep);
+}
+
 .dir__bar {
   display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
   flex-wrap: wrap; margin-bottom: var(--s-5);

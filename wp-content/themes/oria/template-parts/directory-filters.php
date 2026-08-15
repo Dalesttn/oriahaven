@@ -37,13 +37,39 @@ $oria_prices = array(
 			<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
 		</button>
 	</div>
+	<?php
+	/*
+	 * Practice is navigation, not a filter.
+	 *
+	 * These seventeen categories are the only facet with a landing page of
+	 * its own — an introduction, FAQs and internal links that a filtered
+	 * view of the same listings does not have. As checkboxes they sent
+	 * people to /directory/?cat=breathwork and left /practice/breathwork/
+	 * reachable only from the hub, which wasted the better page and made
+	 * parameter URLs the ones getting shared. As links they carry every
+	 * reader to the page written for them, and give each landing page an
+	 * internal link from every directory view on the site.
+	 *
+	 * The cost is multi-select on this one facet. Specialty is the fine
+	 * grained axis and keeps it, as do area, price, format and rating.
+	 * An old ?cat= link still filters correctly — the JS reads it from the
+	 * URL, and its chip labels come from the data payload rather than
+	 * from these inputs.
+	 */
+	$oria_current = is_tax( 'practice' ) ? (string) ( get_queried_object()->slug ?? '' ) : '';
+	?>
 	<?php if ( ! is_wp_error( $oria_practices ) && $oria_practices ) : ?>
-	<div class="filterbox" role="group" aria-labelledby="filt-practice">
+	<nav class="filterbox" aria-labelledby="filt-practice">
 		<span class="filterbox__label" id="filt-practice"><?php esc_html_e( 'Practice', 'oria' ); ?></span>
-		<?php foreach ( $oria_practices as $oria_term ) : ?>
-			<label class="check"><input type="checkbox" data-filter="cat" value="<?php echo esc_attr( $oria_term->slug ); ?>"><span><?php echo esc_html( \Oria\Theme\tname( $oria_term ) ); ?></span></label>
+		<?php
+		foreach ( $oria_practices as $oria_term ) :
+			$oria_is_here = $oria_current === $oria_term->slug;
+			?>
+			<a class="filterlink<?php echo $oria_is_here ? ' is-here' : ''; ?>"
+				href="<?php echo esc_url( (string) get_term_link( $oria_term ) ); ?>"
+				<?php echo $oria_is_here ? 'aria-current="page"' : ''; ?>><?php echo esc_html( \Oria\Theme\tname( $oria_term ) ); ?></a>
 		<?php endforeach; ?>
-	</div>
+	</nav>
 	<?php endif; ?>
 
 	<?php if ( ! is_wp_error( $oria_regions ) && $oria_regions ) : ?>
