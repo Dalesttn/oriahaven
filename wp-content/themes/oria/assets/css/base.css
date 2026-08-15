@@ -148,6 +148,23 @@ button { background: none; border: 0; cursor: pointer; }
    page header and the lead image above it. */
 .prose--wide { max-width: none; }
 
+/* A landing page introduction, which sits alone under the H1 with nothing
+   beside it. Two columns so it uses the width of the page rather than
+   trailing down one side, while each line stays inside a readable measure
+   — the full content column as a single run of text would put more than
+   150 characters on a line. Below 60rem there is no spare width to
+   divide, so it collapses back to one column. Source order is untouched,
+   which keeps it identical for a crawler or a screen reader. */
+.prose--intro { max-width: none; }
+
+@media (min-width: 60rem) {
+  .prose--intro { columns: 2; column-gap: var(--s-7); }
+  /* Keep a paragraph whole rather than breaking it across the gutter, and
+     drop the leading margin that would otherwise indent a column top. */
+  .prose--intro > * { break-inside: avoid; }
+  .prose--intro > * + * { margin-top: var(--s-4); }
+}
+
 .micro {
   font-size: var(--fs-micro);
   font-weight: 700;

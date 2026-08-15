@@ -36,28 +36,32 @@ $oria_aname = $oria_area ? \Oria\Theme\tname( $oria_area ) : '';
 			<span><?php echo esc_html( $oria_pname ); ?></span>
 		<?php endif; ?>
 	</nav>
-	<div class="row-between" style="align-items:flex-end;margin-top:1rem">
-		<div>
-			<span class="micro"><?php esc_html_e( 'Practice', 'oria' ); ?></span>
-			<h1 class="h1 pagehead__title">
-				<?php
-				if ( $oria_is_combo ) {
-					printf( esc_html__( '%1$s in %2$s', 'oria' ), esc_html( $oria_pname ), esc_html( $oria_aname ) );
-				} else {
-					printf( esc_html__( '%s in Perth', 'oria' ), esc_html( $oria_pname ) );
-				}
-				?>
-			</h1>
-		</div>
-		<?php if ( ! $oria_is_combo && $oria_term instanceof WP_Term && $oria_term->description ) : ?>
-			<p class="lede" style="max-width:36ch"><?php echo esc_html( $oria_term->description ); ?></p>
-		<?php endif; ?>
+	<div style="margin-top:1rem">
+		<span class="micro"><?php esc_html_e( 'Practice', 'oria' ); ?></span>
+		<h1 class="h1 pagehead__title">
+			<?php
+			if ( $oria_is_combo ) {
+				printf( esc_html__( '%1$s in %2$s', 'oria' ), esc_html( $oria_pname ), esc_html( $oria_aname ) );
+			} else {
+				printf( esc_html__( '%s in Perth', 'oria' ), esc_html( $oria_pname ) );
+			}
+			?>
+		</h1>
 	</div>
+	<?php
+	/*
+	 * The term description is not printed here any more. It still earns its
+	 * keep as the page's meta description (see Oria\Core\Seo), but on the
+	 * page it only restated the first line of the introduction below while
+	 * forcing the header into two columns — which left the introduction
+	 * stranded in a narrow left-hand column with the right half empty.
+	 */
+	?>
 </section>
 
 <?php if ( ! $oria_is_combo && is_string( $oria_intro ) && '' !== trim( $oria_intro ) ) : ?>
 <section class="wrap section section--top-flush">
-	<div class="prose"><?php echo wp_kses_post( $oria_intro ); ?></div>
+	<div class="prose prose--intro"><?php echo wp_kses_post( $oria_intro ); ?></div>
 </section>
 <?php endif; ?>
 
