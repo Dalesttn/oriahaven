@@ -47,25 +47,55 @@ function bootstrap(): void {
 	// sitemap this does nothing, and a second line never gets added.
 	add_filter( 'robots_txt', __NAMESPACE__ . '\robots_txt', 9999, 2 );
 
-	// Tag and author archives out of the index, stated in Yoast's own
-	// options so its sitemap builder reads the same answer. A runtime
-	// wpseo_robots filter would noindex the page while the sitemap
-	// carried on advertising it.
-	add_filter( 'option_wpseo_titles', __NAMESPACE__ . '\thin_archive_noindex' );
+	// Tag and author archives out of the index, and archive title templates
+	// that match what seo_title() actually ships. Both stated in Yoast's own
+	// options so its sitemap builder and its snippet preview read the same
+	// answer the front end gives. A runtime wpseo_robots filter would
+	// noindex the page while the sitemap carried on advertising it.
+	add_filter( 'option_wpseo_titles', __NAMESPACE__ . '\yoast_title_defaults' );
 }
 
 /**
- * Journal tags and the author archive duplicate stronger pages — the
- * practice and specialty landings do a tag's job with real content, and
- * a one-author site's author page is the About page with a worse URL.
+ * Keep Yoast's stored settings in step with what this file already does.
+ *
+ * Two jobs. Journal tags and the author archive duplicate stronger pages —
+ * the practice and specialty landings do a tag's job with real content, and
+ * a one-author site's author page is the About page with a worse URL — so
+ * both leave the index.
+ *
+ * The rest is about the admin telling the truth. seo_title() rewrites
+ * taxonomy titles on the front end through the wpseo_title filter, but
+ * Yoast's snippet preview in the term editor renders its stored template
+ * instead and never sees that filter — so an editor looking at Allied
+ * Health saw "Allied Health Archives - OriaHaven" while Google was being
+ * served "Allied Health in Perth | OriaHaven". Storing templates that
+ * mirror archive_heading() makes the preview match the page, and leaves a
+ * sane fallback if the filter ever stops running.
  *
  * @param mixed $value
  * @return mixed
  */
-function thin_archive_noindex( $value ) {
-	if ( is_array( $value ) ) {
-		$value['noindex-tax-post_tag'] = true;
-		$value['noindex-author-wpseo'] = true;
+function yoast_title_defaults( $value ) {
+	if ( ! is_array( $value ) ) {
+		return $value;
+	}
+	$value['noindex-tax-post_tag'] = true;
+	$value['noindex-author-wpseo'] = true;
+
+	// Mirrors archive_heading(): areas read "Wellness practices in X",
+	// everything else "X in Perth".
+	$titles = array(
+		'title-tax-' . Taxonomies\PRACTICE  => '%%term_title%% in Perth %%sep%% %%sitename%%',
+		'title-tax-' . Taxonomies\SPECIALTY => '%%term_title%% in Perth %%sep%% %%sitename%%',
+		'title-tax-' . Taxonomies\AREA      => 'Wellness practices in %%term_title%% %%sep%% %%sitename%%',
+	);
+	foreach ( $titles as $key => $template ) {
+		// Only fill the default. A title typed into Yoast's own settings is
+		// a deliberate choice and has to keep winning.
+		if ( ! isset( $value[ $key ] ) || '' === trim( (string) $value[ $key ] )
+			|| false !== strpos( (string) $value[ $key ], 'Archives' ) ) {
+			$value[ $key ] = $template;
+		}
 	}
 	return $value;
 }

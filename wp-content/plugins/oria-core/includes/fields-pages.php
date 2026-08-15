@@ -287,7 +287,10 @@ function register_practice_term(): void {
 			'fields'   => array(
 				array( 'key' => 'field_oria_tile_image', 'name' => 'tile_image', 'label' => 'Tile image', 'type' => 'image', 'return_format' => 'id', 'preview_size' => 'medium' ),
 				array( 'key' => 'field_oria_tile_blurb', 'name' => 'tile_blurb', 'label' => 'Tile blurb', 'type' => 'textarea', 'rows' => 2 ),
-				array( 'key' => 'field_oria_practice_intro', 'name' => 'landing_intro', 'label' => 'Landing page introduction', 'type' => 'wysiwyg', 'tabs' => 'visual', 'media_upload' => 0, 'toolbar' => 'basic' ),
+				// Both tabs, not just Visual: these intros are written and
+				// reviewed as HTML elsewhere, and pasting markup into a
+				// Visual-only editor escapes it into literal text on the page.
+				array( 'key' => 'field_oria_practice_intro', 'name' => 'landing_intro', 'label' => 'Landing page introduction', 'type' => 'wysiwyg', 'tabs' => 'all', 'media_upload' => 0, 'toolbar' => 'basic' ),
 			),
 		)
 	);
