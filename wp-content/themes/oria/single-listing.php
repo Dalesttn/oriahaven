@@ -469,7 +469,17 @@ while ( have_posts() ) :
 						<?php if ( $oria_phone ) : ?>
 						<div class="contactcard__row"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 4.5c0 5 3.5 8.5 8.5 8.5l1.5-2-2.6-1.4-1.4 1.2A9.5 9.5 0 0 1 5.7 7l1.2-1.4L5.5 3 3.5 3Z"/></svg><a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $oria_phone ) ); ?>" data-oria-track="tel" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo esc_html( $oria_phone ); ?></a></div>
 						<?php endif; ?>
-						<?php if ( $oria_email ) : ?>
+						<?php
+						/*
+						 * Only a paid listing publishes its address. Everything
+						 * else keeps $oria_email — the enquiry form below needs
+						 * it to know there is somewhere to send to, and the
+						 * delivery reads it again server-side — but never
+						 * prints it. Blanking the variable here would take the
+						 * form down with it and leave the practice unreachable.
+						 */
+						if ( $oria_email && ( ! function_exists( '\Oria\Core\Tiers\shows_email' ) || \Oria\Core\Tiers\shows_email( $oria_id ) ) ) :
+							?>
 						<div class="contactcard__row"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3.5" width="12" height="9" rx="2"/><path d="m2.6 4.5 5.4 3.6 5.4-3.6"/></svg><a href="mailto:<?php echo esc_attr( $oria_email ); ?>" data-oria-track="mail" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo esc_html( $oria_email ); ?></a></div>
 						<?php endif; ?>
 						<?php if ( $oria_website ) : ?>

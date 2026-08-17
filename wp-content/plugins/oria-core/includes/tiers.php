@@ -95,6 +95,27 @@ function tier( int $listing_id ): string {
 	return in_array( $status, array( CLAIMED, FEATURED ), true ) ? $status : 'unclaimed';
 }
 
+/**
+ * Whether a visitor may see this listing's email address on the page.
+ *
+ * A paid listing publishes its address; everything else takes enquiries
+ * through the form instead, which does three things a mailto: cannot. The
+ * practice learns where the enquiry came from, because the email arrives
+ * branded rather than as an anonymous message from a stranger. The
+ * enquiry is counted, so a practice can be shown what the listing earned
+ * them rather than asked to take it on faith. And an address we collected
+ * from a public source stops being republished by us — for the several
+ * hundred listings nobody has claimed, that is the more defensible
+ * position regardless of what it does for subscriptions.
+ *
+ * Deliberately reads tier() and not display_status(): the latter reports
+ * 'claimed' for free-plan owners so their badge looks right, which is the
+ * opposite of the distinction being drawn here.
+ */
+function shows_email( int $listing_id ): bool {
+	return in_array( tier( $listing_id ), array( CLAIMED, FEATURED ), true );
+}
+
 /** Whether this listing's plan includes a feature. */
 function allows( int $listing_id, string $feature ): bool {
 	$needs = FEATURES[ $feature ] ?? null;
@@ -134,6 +155,10 @@ function summary( string $tier ): array {
 		'price'    => '$' . PRICES[ CLAIMED ],
 		'features' => array(
 			__( 'Edit every detail of your listing', 'oria' ),
+			// Free listings take enquiries through the form instead, so this
+			// is a real difference rather than a line on a chart. Selling it
+			// only works if it is written down somewhere they read.
+			__( 'Your email address published on your profile', 'oria' ),
 			__( 'Verified badge and date', 'oria' ),
 			__( 'Up to 4 gallery photos', 'oria' ),
 			__( 'Special offers on your profile and cards', 'oria' ),

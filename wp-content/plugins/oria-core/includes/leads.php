@@ -502,7 +502,22 @@ function deliver( int $listing, string $to, array $v, bool $matched, string $tim
 	if ( $matched ) {
 		$body .= '<p style="margin:14px 0 0;color:#566762;font-size:13px;">' . esc_html( sprintf( __( 'This person asked Oria Haven to match them with a practice. Up to %d matching practices received this enquiry.', 'oria' ), MATCH_CAP ) ) . '</p>';
 	}
-	$body .= '<p style="margin:14px 0 0;color:#566762;font-size:13px;">' . esc_html__( "You're receiving this because your practice is listed on Oria Haven. Enquiries are free — we never take a cut of bookings.", 'oria' ) . '</p>';
+	/*
+	 * Say where this came from, with the domain spelled out and a link to
+	 * the listing itself. Most of the directory is practices who have never
+	 * heard of us, and for them this email is the introduction: an enquiry
+	 * from a stranger, unexplained, reads like spam and gets deleted. The
+	 * profile link is the answer to the question they will actually have,
+	 * which is "what is this and what does it say about me".
+	 */
+	$body .= '<p style="margin:14px 0 0;color:#566762;font-size:13px;">'
+		. sprintf(
+			/* translators: 1: host, e.g. oriahaven.com.au, 2: link to their listing */
+			esc_html__( 'This enquiry came through %1$s, the Perth wellness directory, where your practice is listed — %2$s. Enquiries are free and we never take a cut of bookings.', 'oria' ),
+			'<strong>' . esc_html( (string) wp_parse_url( home_url(), PHP_URL_HOST ) ) . '</strong>',
+			'<a href="' . esc_url( (string) get_permalink( $listing ) ) . '" style="color:#3F6E60;">' . esc_html__( 'see your listing', 'oria' ) . '</a>'
+		)
+		. '</p>';
 
 	send(
 		$to,
