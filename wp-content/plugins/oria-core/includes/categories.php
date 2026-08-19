@@ -317,6 +317,91 @@ function services_for( \WP_Term $category ): array {
 	return $out;
 }
 
+/* ------------------------------------------------------- cards and colour */
+
+/**
+ * The top-level categories a listing belongs to, in plan order.
+ *
+ * The card used to print whichever practice term came back first, which
+ * was fine while the taxonomy was flat and is not now: a meditation studio
+ * would have shown "Meditation classes" where the sidebar, the filters and
+ * the URL all say "Mind & Mental Wellbeing". This walks each term up to its
+ * top level and de-duplicates, so a practice in two children of one parent
+ * shows that parent once rather than twice.
+ *
+ * @return array<int, array{term: \WP_Term, emoji: string}>
+ */
+function top_for( int $listing_id, int $limit = 2 ): array {
+	$terms = wp_get_post_terms( $listing_id, Taxonomies\PRACTICE );
+	if ( is_wp_error( $terms ) || ! $terms ) {
+		return array();
+	}
+
+	$tops = array();
+	foreach ( $terms as $term ) {
+		$current = $term;
+		$hops    = 0;
+		while ( $current instanceof \WP_Term && $current->parent && $hops < 20 ) {
+			$parent  = get_term( (int) $current->parent, Taxonomies\PRACTICE );
+			$current = $parent instanceof \WP_Term ? $parent : $current;
+			$hops++;
+		}
+		if ( $current instanceof \WP_Term ) {
+			$tops[ $current->slug ] = $current;
+		}
+	}
+
+	// Plan order, so cards agree with the sidebar rather than with whatever
+	// order the database happened to return.
+	$out = array();
+	foreach ( plan()['categories'] as $row ) {
+		$slug = (string) ( $row['slug'] ?? '' );
+		if ( isset( $tops[ $slug ] ) ) {
+			$out[] = array(
+				'term'  => $tops[ $slug ],
+				'emoji' => (string) ( $row['emoji'] ?? '' ),
+			);
+		}
+	}
+
+	return array_slice( $out, 0, max( 1, $limit ) );
+}
+
+/** Map of category slug => tint, for the front end and the card script. */
+function tints(): array {
+	$out = array();
+	foreach ( plan()['categories'] as $row ) {
+		$slug = (string) ( $row['slug'] ?? '' );
+		$tint = (array) ( $row['tint'] ?? array() );
+		if ( '' !== $slug && ! empty( $tint['bg'] ) ) {
+			$out[ $slug ] = array(
+				'bg' => (string) $tint['bg'],
+				'fg' => (string) ( $tint['fg'] ?? '#26332F' ),
+			);
+		}
+	}
+	return $out;
+}
+
+/**
+ * One rule per category, printed once.
+ *
+ * Generated from the same file the categories come from, so a new category
+ * cannot arrive with no colour and fall back to looking like a mistake.
+ */
+function tint_css(): string {
+	$css = '';
+	foreach ( tints() as $slug => $tint ) {
+		$css .= sprintf(
+			'.pill--cat-%1$s{background:%2$s;border-color:transparent;color:%3$s;font-weight:600}',
+			preg_replace( '/[^a-z0-9_-]/', '', $slug ),
+			$tint['bg'],
+			$tint['fg']
+		);
+	}
+	return $css;
+}
+
 /* ------------------------------------------------------------------ admin */
 
 function menu(): void {

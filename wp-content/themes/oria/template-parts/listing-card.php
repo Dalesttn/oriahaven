@@ -39,6 +39,31 @@ $oria_badges = array(
 		<div class="listing__flag"><?php echo $oria_badges[ $oria_status ]; // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 	</div>
 	<div class="listing__body">
+		<?php
+		/*
+		 * Category first. It answers "what kind of place is this" before the
+		 * name does, which is what somebody scanning a long list is actually
+		 * asking. Attribute pills — online, offer, next session — stay under
+		 * the description: they say what is available rather than what this
+		 * is, and moving all of them up here made a row nobody could scan.
+		 *
+		 * top_for() walks to the top level rather than printing whichever
+		 * practice term came back first. That mattered the moment categories
+		 * gained parents: a meditation studio would have shown "Meditation
+		 * classes" where the sidebar and the URL both say "Mind & Mental
+		 * Wellbeing".
+		 */
+		$oria_cats = function_exists( '\Oria\Core\Categories\top_for' )
+			? \Oria\Core\Categories\top_for( $oria_id )
+			: array();
+		?>
+		<?php if ( $oria_cats ) : ?>
+			<div class="listing__cats">
+				<?php foreach ( $oria_cats as $oria_cat ) : ?>
+					<a class="pill pill--cat pill--cat-<?php echo esc_attr( $oria_cat['term']->slug ); ?>" href="<?php echo esc_url( (string) get_term_link( $oria_cat['term'] ) ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_cat['term'] ) ); ?></a>
+				<?php endforeach; ?>
+			</div>
+		<?php endif; ?>
 		<div class="listing__head">
 			<div>
 				<h3 class="listing__name"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
@@ -77,9 +102,6 @@ $oria_badges = array(
 		<p class="listing__desc"><?php echo esc_html( get_the_excerpt() ); ?></p>
 
 		<div class="listing__tags">
-			<?php if ( $oria_practice ) : ?>
-				<span class="pill pill--sand"><?php echo esc_html( \Oria\Theme\tname( $oria_practice ) ); ?></span>
-			<?php endif; ?>
 			<?php if ( 'in-person' !== $oria_format ) : ?>
 				<span class="pill"><?php esc_html_e( 'Online available', 'oria' ); ?></span>
 			<?php endif; ?>

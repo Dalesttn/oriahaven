@@ -614,6 +614,19 @@
           '<div class="listing__flag">' + statusBadge + "</div>" +
         "</div>" +
         '<div class="listing__body">' +
+          /* Category chips lead the card — see the same block in
+             template-parts/listing-card.php. catTop is the top-level
+             category so this agrees with the sidebar, rather than the
+             first practice term, which after categories gained parents
+             could be a child like "Meditation classes". */
+          ((l.catTop || []).length
+            ? '<div class="listing__cats">' +
+              (l.catTop || []).map(function (c) {
+                return '<span class="pill pill--cat pill--cat-' + esc(c) + '">' +
+                  esc(catNames[c] || c) + "</span>";
+              }).join("") +
+              "</div>"
+            : "") +
           '<div class="listing__head">' +
             "<div>" +
               '<h3 class="listing__name"><a href="' + esc(l.url || '#') + '">' + esc(l.name) + "</a></h3>" +
@@ -629,7 +642,6 @@
           "</div>" +
           '<p class="listing__desc">' + esc(l.blurb) + "</p>" +
           '<div class="listing__tags">' +
-            '<span class="pill pill--sand">' + esc(catNames[l.cat] || l.cat) + "</span>" +
             (l.format !== "in-person" ? '<span class="pill">Online available</span>' : "") +
             (l.offer ? '<span class="pill" style="background:var(--gold-soft);border-color:transparent;color:#7A5A12;font-weight:700">Special offer</span>' : "") +
             (l.next ? '<span class="pill">Next: ' + esc(l.next) + "</span>" : "") +

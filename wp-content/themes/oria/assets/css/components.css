@@ -589,6 +589,12 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
 .listing__where { font-size: var(--fs-xs); color: var(--text-faint); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
 .listing__where svg { width: 12px; height: 12px; flex: none; }
 .listing__desc { font-size: var(--fs-sm); color: var(--text-soft); }
+/* Category chips lead the card; attribute pills sit under the blurb. */
+.listing__cats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--s-3); }
+.pill--cat { border-color: transparent; text-decoration: none; }
+a.pill--cat:hover { filter: brightness(0.96); color: inherit; border-color: transparent; }
+/* Per-category tints are generated from data/categories.json and printed
+   inline, so a new category can never arrive without a colour. */
 .listing__tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .listing__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; margin-top: auto; padding-top: var(--s-3); border-top: 1px solid var(--line); }
 .listing__price { font-size: var(--fs-sm); font-weight: 700; }

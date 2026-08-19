@@ -73,6 +73,15 @@ add_action(
 			);
 		}
 
+		/*
+		 * One tint rule per category, generated from the same file the
+		 * categories themselves come from. Inline rather than a checked-in
+		 * stylesheet so adding a category cannot leave its chip unstyled.
+		 */
+		if ( function_exists( '\Oria\Core\Categories\tint_css' ) ) {
+			wp_add_inline_style( 'oria-components', \Oria\Core\Categories\tint_css() );
+		}
+
 		wp_enqueue_script(
 			'oria-app',
 			"{$uri}/assets/js/app.js",
@@ -217,6 +226,36 @@ function listing_data(): array {
 		$primary = $practices[0] ?? null;
 		$also    = array_slice( wp_list_pluck( $practices, 'slug' ), 1 );
 
+		/*
+		 * Ancestors count as membership. Categories gained parents, so a
+		 * meditation studio is tagged "meditation" while the sidebar offers
+		 * "Mind & Mental Wellbeing" — without this, clicking the new top
+		 * level would match nothing and look broken. The server gets this
+		 * free from tax_query's include_children; the client index has to
+		 * be told.
+		 */
+		foreach ( $practices as $oria_pterm ) {
+			foreach ( (array) get_ancestors( (int) $oria_pterm->term_id, 'practice', 'taxonomy' ) as $oria_anc ) {
+				$oria_anc_term = get_term( (int) $oria_anc, 'practice' );
+				// Leading backslash: this file is namespaced Oria\Theme, so an
+				// unqualified WP_Term resolves to Oria\Theme\WP_Term, which
+				// does not exist — instanceof then answers false in silence
+				// and every ancestor is dropped without an error anywhere.
+				if ( $oria_anc_term instanceof \WP_Term ) {
+					$also[] = $oria_anc_term->slug;
+				}
+			}
+		}
+		$also = array_values( array_unique( array_diff( $also, array( $primary ? $primary->slug : '' ) ) ) );
+
+		// What the card shows: top-level categories, matching the sidebar.
+		$cat_top = function_exists( '\Oria\Core\Categories\top_for' )
+			? array_map(
+				static fn( array $c ): string => $c['term']->slug,
+				\Oria\Core\Categories\top_for( (int) $post->ID, 2 )
+			)
+			: array();
+
 		$specs = wp_get_post_terms( $post->ID, 'specialty' );
 		$specs = is_wp_error( $specs ) ? array() : wp_list_pluck( $specs, 'slug' );
 
@@ -227,6 +266,7 @@ function listing_data(): array {
 			'name'       => ptitle( $post ),
 			'url'        => get_permalink( $post ),
 			'cat'        => $primary ? $primary->slug : '',
+			'catTop'     => $cat_top,
 			'also'       => $also,
 			'spec'       => $specs,
 			'suburb'     => tname( $suburb ?: $region ),
