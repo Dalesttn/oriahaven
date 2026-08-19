@@ -1,0 +1,308 @@
+{
+  "_note": "Batch 21 — Senior Wellness. Nine. Revolv Health in Bull Creek was written and then dropped — it is already in the directory, matching on website domain and phone, and it runs Strength for Life, so it wants the seniors category added to the listing that exists rather than a second listing. Researched from each business's own website; empty fields are details that were not published, never guesses.\n\nThis category overlaps Fitness, Allied Health and Community on purpose. It is an audience rather than a service type, in the same way Women's, Men's & Family Wellness is, and the audience changes the room more than the activity does: a falls prevention class of six run by a physiotherapist is not the same product as a gym class, even where the movements match.\n\nFour of the ten are WA Health Group clinics. They are separate rooms with their own street addresses and their own phone numbers, so they are listed separately, the same way Perth Dexa Scan's rooms were.\n\nOn wording: WA Health Group also runs exercise classes named for cancer, diabetes and osteoporosis. Those are real clinical services but naming a condition is the directory making a health claim, so the listings carry falls prevention, balance and strength work and stop there. Memory cafés are described as social gatherings for people living with dementia and the people who care for them, which is how Dementia Australia and Alzheimer's WA describe them — a description of who is welcome, not of any effect.",
+  "categories": [
+    {
+      "id": "seniors",
+      "name": "Senior Wellness",
+      "plural": "senior wellness programs",
+      "icon": "seniors",
+      "blurb": "Strength and balance programs, falls prevention, chair yoga and social centres for older adults across Perth."
+    }
+  ],
+  "regions": [
+    {
+      "id": "freo",
+      "name": "Fremantle & South",
+      "suburbs": [
+        "Applecross",
+        "Bicton",
+        "Murdoch"
+      ]
+    },
+    {
+      "id": "central",
+      "name": "Perth Central",
+      "suburbs": [
+        "Perth",
+        "South Perth",
+        "Burswood"
+      ]
+    },
+    {
+      "id": "southeast",
+      "name": "South East",
+      "suburbs": [
+        "Canning Vale"
+      ]
+    }
+  ],
+  "listings": [
+    {
+      "id": "everstrong-applecross",
+      "name": "EverStrong",
+      "cat": "seniors",
+      "also": [
+        "fitness",
+        "allied"
+      ],
+      "suburb": "Applecross",
+      "region": "freo",
+      "address": "Shop 2/791 Canning Highway, Applecross WA 6153",
+      "blurb": "A Canning Highway gym for people over 50 and nobody else, with classes capped at eight and led by physiotherapists. There is a six-week starting programme, one-to-one sessions, and physiotherapy in the same room.",
+      "services": [
+        "Senior fitness",
+        "Mobility training",
+        "Physiotherapy",
+        "Personal training"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-studio",
+      "phone": "0438 714 726",
+      "email": "info@everstrong.au",
+      "web": "https://everstrong.au/",
+      "next": "Mon–Sat mornings and 4.45pm",
+      "_source": "everstrong.au — Canning Highway address, mobile, email, the over-50s-only policy, the eight-person cap, physiotherapist-led classes and the six-week programme all confirmed on its own site. A second mobile is listed as text-only and is not recorded here."
+    },
+    {
+      "id": "wa-health-group-bicton",
+      "name": "WA Health Group — Bicton",
+      "cat": "seniors",
+      "also": [
+        "allied"
+      ],
+      "suburb": "Bicton",
+      "region": "freo",
+      "address": "99/103 Harris Street, Bicton WA 6157",
+      "blurb": "Falls prevention and balance classes on Harris Street, run in groups of three to eight with a clinician supervising. Clinical pilates and home care sit alongside.",
+      "services": [
+        "Falls prevention",
+        "Senior fitness",
+        "Clinical pilates",
+        "Mobility training"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "(08) 9319 3632",
+      "email": "",
+      "web": "https://wahealthgroup.com.au/falls-prevention-classes-for-seniors-in-perth",
+      "next": "Morning and afternoon sessions",
+      "_source": "wahealthgroup.com.au — Bicton address, direct phone, the 3–8 group size and morning/afternoon sessions confirmed on its own site. Trades as Apex Physiotherapy at this address. No public email. The site's condition-named exercise classes are deliberately not listed as services."
+    },
+    {
+      "id": "wa-health-group-burswood",
+      "name": "WA Health Group — Burswood",
+      "cat": "seniors",
+      "also": [
+        "allied"
+      ],
+      "suburb": "Burswood",
+      "region": "central",
+      "address": "21 Harvey Street, Burswood WA 6100",
+      "blurb": "The Burswood clinic of the same group, running falls prevention and balance classes in small supervised groups, with clinical pilates alongside.",
+      "services": [
+        "Falls prevention",
+        "Senior fitness",
+        "Clinical pilates",
+        "Mobility training"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "(08) 9361 2628",
+      "email": "",
+      "web": "https://wahealthgroup.com.au/falls-prevention-classes-for-seniors-in-perth",
+      "next": "Morning and afternoon sessions",
+      "_source": "wahealthgroup.com.au — Harvey Street address and direct phone confirmed on the site's clinic list. No public email."
+    },
+    {
+      "id": "wa-health-group-canning-vale",
+      "name": "WA Health Group — Canning Vale",
+      "cat": "seniors",
+      "also": [
+        "allied"
+      ],
+      "suburb": "Canning Vale",
+      "region": "southeast",
+      "address": "Suite 7, Level 1, 2 Queensgate Drive, Canning Vale WA 6155",
+      "blurb": "Falls prevention and balance work on Queensgate Drive, in groups small enough for the clinician to watch everyone. Clinical pilates runs from the same rooms.",
+      "services": [
+        "Falls prevention",
+        "Senior fitness",
+        "Clinical pilates",
+        "Mobility training"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "(08) 6162 2616",
+      "email": "",
+      "web": "https://wahealthgroup.com.au/falls-prevention-classes-for-seniors-in-perth",
+      "next": "Morning and afternoon sessions",
+      "_source": "wahealthgroup.com.au — Queensgate Drive address and direct phone confirmed on the site's clinic list. No public email."
+    },
+    {
+      "id": "wa-health-group-murdoch",
+      "name": "WA Health Group — Murdoch",
+      "cat": "seniors",
+      "also": [
+        "allied"
+      ],
+      "suburb": "Murdoch",
+      "region": "freo",
+      "address": "8/170 Murdoch Drive, Murdoch WA 6150",
+      "blurb": "The Murdoch Drive clinic, running the same small-group falls prevention and balance classes with a clinician present throughout.",
+      "services": [
+        "Falls prevention",
+        "Senior fitness",
+        "Clinical pilates",
+        "Mobility training"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "(08) 6162 2870",
+      "email": "",
+      "web": "https://wahealthgroup.com.au/falls-prevention-classes-for-seniors-in-perth",
+      "next": "Morning and afternoon sessions",
+      "_source": "wahealthgroup.com.au — Murdoch Drive address and direct phone confirmed on the site's clinic list. No public email."
+    },
+    {
+      "id": "extension-fitness-perth",
+      "name": "Extension Fitness",
+      "cat": "seniors",
+      "also": [
+        "fitness"
+      ],
+      "suburb": "Perth",
+      "region": "central",
+      "address": "",
+      "blurb": "Strength coaching aimed squarely at middle-aged and older adults, one to one or online, taking people from those finding daily tasks hard to those training around an old injury. Running coaching and gait assessment are offered alongside.",
+      "services": [
+        "Senior fitness",
+        "Personal training",
+        "Mobility training"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "both",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-studio",
+      "phone": "0421 552 691",
+      "email": "hello@extensionfitness.com.au",
+      "web": "https://www.extensionfitness.com.au/seniors-strength-and-fitness-perth",
+      "next": "",
+      "_source": "extensionfitness.com.au — mobile, email and the older-adult strength coaching, running coaching and online offer confirmed on its own site. No street address is published on the pages reached; suburb recorded as Perth pending a manual check. Format is both because online programming is offered."
+    },
+    {
+      "id": "bethanie-social-centres-perth",
+      "name": "Bethanie Social Centres",
+      "cat": "seniors",
+      "also": [
+        "community"
+      ],
+      "suburb": "Perth",
+      "region": "central",
+      "address": "",
+      "blurb": "Day centres for people over 55 running gardening, cooking, music, arts and crafts, outings and seated sport, with programmes for people living with dementia and support for complex needs. Four centres across the metro and South West.",
+      "services": [
+        "Social groups",
+        "Aged care wellness",
+        "Music therapy",
+        "Art therapy"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-hall",
+      "phone": "131 151",
+      "email": "",
+      "web": "https://www.bethanie.com.au/home-care/social-centres",
+      "next": "",
+      "_source": "bethanie.com.au — the four centres, the over-55 age range, the activity list and the dementia support are confirmed on its own site, but individual centre street addresses are not published there. One listing created rather than four, with the address left empty; worth a call to 131 151 to split them properly before publishing."
+    },
+    {
+      "id": "forget-me-not-memory-cafe-wa",
+      "name": "Forget-Me-Not Memory Café",
+      "cat": "seniors",
+      "also": [
+        "community"
+      ],
+      "suburb": "Perth",
+      "region": "central",
+      "address": "",
+      "blurb": "Monthly get-togethers in ordinary cafés for people living with dementia or memory loss and the people who care for them, with table games, puzzles and company. Around two dozen locations across WA, each meeting once a month.",
+      "services": [
+        "Social groups"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-hall",
+      "phone": "",
+      "email": "",
+      "web": "https://forgetmenotmemorycafe.com/",
+      "next": "Monthly, varies by location",
+      "_source": "forgetmenotmemorycafe.com — the monthly format, the roughly 24 WA locations and the activities confirmed. This is a roving programme rather than a venue, so no address is recorded and the suburb is nominal; the site's own location list is the useful thing and is linked. No phone or email published on the pages reached."
+    },
+    {
+      "id": "south-perth-senior-citizens-centres",
+      "name": "City of South Perth Senior Citizens Centres",
+      "cat": "seniors",
+      "also": [
+        "community"
+      ],
+      "suburb": "South Perth",
+      "region": "central",
+      "address": "",
+      "blurb": "Council-run centres for residents over 55, with keep-fit classes, yoga, tai chi, chess, bridge and bingo, plus visiting podiatry and hairdressing and shopping excursions. Term-based rather than casual.",
+      "services": [
+        "Social groups",
+        "Senior fitness",
+        "Gentle yoga",
+        "Aged care wellness"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-hall",
+      "phone": "",
+      "email": "",
+      "web": "https://southperth.wa.gov.au/community/facilities/senior-citizens-centres",
+      "next": "",
+      "_source": "southperth.wa.gov.au — the over-55 age range and the activity list including yoga, tai chi, podiatry and hairdressing confirmed on the council's own page. Individual centre addresses and the council's contact number are not captured here; worth one manual check before publishing."
+    }
+  ]
+}

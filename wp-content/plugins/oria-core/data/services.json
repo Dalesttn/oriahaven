@@ -1461,6 +1461,97 @@
         "hbot",
         "hyperbaric chamber"
       ]
+    },
+    {
+      "slug": "senior-fitness",
+      "name": "Senior fitness",
+      "categories": [
+        "seniors",
+        "fitness"
+      ],
+      "aliases": [
+        "strength for life",
+        "living longer living stronger",
+        "over 50s fitness",
+        "over 55s fitness",
+        "seniors exercise",
+        "senior strength"
+      ]
+    },
+    {
+      "slug": "chair-yoga",
+      "name": "Chair yoga",
+      "categories": [
+        "seniors",
+        "yoga"
+      ],
+      "aliases": [
+        "seated yoga"
+      ]
+    },
+    {
+      "slug": "gentle-yoga",
+      "name": "Gentle yoga",
+      "categories": [
+        "seniors",
+        "yoga"
+      ],
+      "aliases": [
+        "gentle flow"
+      ]
+    },
+    {
+      "slug": "falls-prevention",
+      "name": "Falls prevention",
+      "categories": [
+        "seniors",
+        "allied"
+      ],
+      "aliases": [
+        "balance training",
+        "balance classes",
+        "stay on your feet"
+      ]
+    },
+    {
+      "slug": "mobility-training",
+      "name": "Mobility training",
+      "categories": [
+        "seniors",
+        "fitness"
+      ],
+      "aliases": [
+        "mobility",
+        "functional capacity training"
+      ]
+    },
+    {
+      "slug": "social-groups",
+      "name": "Social groups",
+      "categories": [
+        "seniors",
+        "community"
+      ],
+      "aliases": [
+        "social centre",
+        "seniors social group",
+        "memory cafe",
+        "memory cafes",
+        "mens shed",
+        "community activities"
+      ]
+    },
+    {
+      "slug": "aged-care-wellness",
+      "name": "Aged care wellness",
+      "categories": [
+        "seniors"
+      ],
+      "aliases": [
+        "home care",
+        "residential care wellbeing",
+        "aged care activities"
+      ]
     }
   ]
 }

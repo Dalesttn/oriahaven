@@ -20,6 +20,7 @@
     { "slug": "community",  "name": "Community & Support",              "emoji": "🤝", "tint": { "bg": "#F0EBE0", "fg": "#6E5628" }, "note": "Restored: 11 listings. AA, SMART Recovery, grief and peer support groups. Keeps the sand the cards already use." },
 
     { "slug": "beauty",     "name": "Beauty & Self-Care",               "emoji": "✨", "tint": { "bg": "#F9E9EE", "fg": "#82405A" }, "reserved": true, "note": "1 listing. Vocabulary is ready — facials, skin treatments, lashes & brows, nails, waxing — so the category arrives complete on the first salon import." },
+    { "slug": "seniors",    "name": "Senior Wellness",                  "emoji": "🪑", "tint": { "bg": "#EDEBE3", "fg": "#5C5340" }, "reserved": true, "note": "An audience rather than a service type, like Women's, Men's & Family Wellness. It overlaps Fitness, Allied Health and Community by design: a 74-year-old looking for chair yoga is not served by a Fitness shelf full of HIIT. Reserved until it has listings of its own." },
     { "slug": "longevity",  "name": "Biohacking & Human Optimisation",          "emoji": "🚀", "tint": { "bg": "#E9ECEF", "fg": "#414D57" }, "reserved": true, "note": "Slug stays longevity so /practice/longevity/ never moves; the name is the one people search for. Held back until it had listings of its own rather than re-listing the recovery studios already under Spa & Recovery." }
   ]
 }
