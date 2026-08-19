@@ -12,7 +12,21 @@ declare(strict_types=1);
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/img/favicon.svg" type="image/svg+xml">
+<?php
+/*
+ * Favicons. Browsers take the SVG. Google Search does not — it wants a
+ * raster square whose side is a multiple of 48, and it renders that in the
+ * results page, which is why the 96 and 48 are here rather than relying on
+ * the vector alone. apple-touch-icon covers an iOS home screen, where the
+ * tile is drawn full-bleed and iOS applies its own rounding.
+ */
+$oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
+?>
+<link rel="icon" href="<?php echo $oria_img; ?>/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="<?php echo $oria_img; ?>/favicon-96.png" sizes="96x96" type="image/png">
+<link rel="icon" href="<?php echo $oria_img; ?>/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="apple-touch-icon" href="<?php echo $oria_img; ?>/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#0E3B38">
 <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>

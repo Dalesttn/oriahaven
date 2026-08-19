@@ -1,4 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <rect width="32" height="32" rx="8" fill="#0E3B38"/>
-  <g transform="translate(1.5 1.5) scale(0.145)" fill="#C9A24B"><path d="M136.62 31.13A78 78 0 1 0 172.32 70.78" fill="none" stroke="currentColor" stroke-width="17" stroke-linecap="round"/><circle cx="151.01" cy="54.07" r="11.66" fill="currentColor"/></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Oria Haven">
+  <title>Oria Haven</title>
+  <!--
+    White tile, green ensO - the reverse of the previous version, which put a
+    gold mark on a deep green tile and vanished against a dark search result.
+    At sixteen pixels the tile carries the contrast, so it has to be the
+    light half.
+
+    Stroke is 26 rather than the wordmark's 17, and the ring fills more of the
+    square. A hairline that looks elegant at 200px is a grey smudge at 16,
+    and 16 is the only size that matters here.
+  -->
+  <rect width="200" height="200" rx="40" fill="#FFFFFF"/>
+  <path d="M136.62 31.13A78 78 0 1 0 172.32 70.78"
+        fill="none" stroke="#0E3B38" stroke-width="26" stroke-linecap="round"/>
+  <circle cx="151.01" cy="54.07" r="15" fill="#0E3B38"/>
 </svg>
