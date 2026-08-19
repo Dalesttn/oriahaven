@@ -37,7 +37,7 @@ $oria_aname = $oria_area ? \Oria\Theme\tname( $oria_area ) : '';
 		<?php endif; ?>
 	</nav>
 	<div style="margin-top:1rem">
-		<span class="micro"><?php esc_html_e( 'Practice', 'oria' ); ?></span>
+		<span class="micro"><?php esc_html_e( 'Category', 'oria' ); ?></span>
 		<h1 class="h1 pagehead__title">
 			<?php
 			if ( $oria_is_combo ) {

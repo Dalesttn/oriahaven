@@ -183,10 +183,10 @@ function depth( int $term_id ): int {
  * from the file may still be attached to listings, which is a decision for
  * a person rather than a sync.
  *
- * @return array{renamed: int, created: int, reparented: int, unchanged: int, notes: array<int, string>}
+ * @return array{renamed: int, created: int, reparented: int, unchanged: int, intros: int, notes: array<int, string>}
  */
 function sync(): array {
-	$out = array( 'renamed' => 0, 'created' => 0, 'reparented' => 0, 'unchanged' => 0, 'notes' => array() );
+	$out = array( 'renamed' => 0, 'created' => 0, 'reparented' => 0, 'unchanged' => 0, 'intros' => 0, 'notes' => array() );
 
 	foreach ( plan()['categories'] as $row ) {
 		$slug = (string) ( $row['slug'] ?? '' );
@@ -220,6 +220,19 @@ function sync(): array {
 		update_term_meta( $term_id, META_EMOJI, (string) ( $row['emoji'] ?? '' ) );
 		update_term_meta( $term_id, META_TOP, 1 );
 		update_term_meta( $term_id, 'oria_reserved', ! empty( $row['reserved'] ) ? 1 : 0 );
+
+		/*
+		 * Landing copy, but never over the top of copy that already exists.
+		 * Ten categories were written before this file did, in wp-admin,
+		 * and a sync that flattened somebody's editing to ship a default
+		 * would be the last time anyone trusted the button. Seeds the
+		 * empty ones — which is the new categories — and leaves the rest.
+		 */
+		$intro = intro_for( $slug );
+		if ( '' !== $intro && '' === trim( (string) get_term_meta( $term_id, 'landing_intro', true ) ) ) {
+			update_term_meta( $term_id, 'landing_intro', $intro );
+			$out['intros']++;
+		}
 
 		foreach ( (array) ( $row['children'] ?? array() ) as $child_slug ) {
 			$child = get_term_by( 'slug', (string) $child_slug, Taxonomies\PRACTICE );
@@ -315,6 +328,28 @@ function services_for( \WP_Term $category ): array {
 
 	usort( $out, static fn( \WP_Term $a, \WP_Term $b ): int => $b->count <=> $a->count );
 	return $out;
+}
+
+/**
+ * Landing copy for a category, from data/category-intros.json.
+ *
+ * A separate file from the categories themselves: this one is prose and
+ * runs to a couple of thousand characters a category, and mixing it into
+ * the config would make the config unreadable for the sake of one import.
+ */
+function intro_for( string $slug ): string {
+	static $intros = null;
+	if ( null === $intros ) {
+		$intros = array();
+		$path   = ORIA_CORE_DIR . 'data/category-intros.json';
+		if ( is_readable( $path ) ) {
+			$json = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			if ( is_array( $json ) ) {
+				$intros = (array) ( $json['intros'] ?? array() );
+			}
+		}
+	}
+	return trim( (string) ( $intros[ $slug ] ?? '' ) );
 }
 
 /* ------------------------------------------------------- cards and colour */
