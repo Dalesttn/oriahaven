@@ -367,6 +367,39 @@ function top_for( int $listing_id, int $limit = 2 ): array {
 	return array_slice( $out, 0, max( 1, $limit ) );
 }
 
+/**
+ * A line glyph per category, as inline SVG.
+ *
+ * Inline and single-colour on purpose. The icon inherits the category's
+ * own tint through currentColor, costs no request, and stays crisp at any
+ * size — none of which a generated raster image manages at 15 pixels.
+ * Drawn to one grid at one stroke weight so the fourteen read as a set.
+ */
+function icon( string $slug ): string {
+	static $paths = array(
+		'yoga'        => '<circle cx="12" cy="5.5" r="2.4"/><path d="M12 9v5m0 0-4.5 4.5M12 14l4.5 4.5M6 12h12"/>',
+		'fitness'     => '<path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/>',
+		'bodywork'    => '<path d="M8 13V6.5a1.5 1.5 0 0 1 3 0V12m0-1.5a1.5 1.5 0 0 1 3 0V12m0-1a1.5 1.5 0 0 1 3 0v4a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5v-1a1.6 1.6 0 0 1 2.7-1.2L8 13"/>',
+		'mind'        => '<path d="M15.5 20v-2.2a5.5 5.5 0 0 0 3-4.9c0-3.4-2.9-6.1-6.4-5.8A6 6 0 0 0 7 16.3V20"/><path d="M12 13.5a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z"/>',
+		'natural'     => '<path d="M5 19c0-7 4.5-12 14-12 0 8-4.5 12-11 12H5Z"/><path d="M8 17c2-3.5 4.5-6 8-7.5"/>',
+		'nutrition'   => '<path d="M3.5 11h17a8.5 8.5 0 0 1-17 0Z"/><path d="M9 7.5c0-1.5 1.2-2 1.2-3.5M13.5 7.5c0-1.5 1.2-2 1.2-3.5"/>',
+		'spa'         => '<path d="M12 3.5c3 3.6 4.5 6.2 4.5 8.4a4.5 4.5 0 1 1-9 0c0-2.2 1.5-4.8 4.5-8.4Z"/><path d="M4 20c1.6-1.2 2.9-1.2 4.5 0s2.9 1.2 4.5 0 2.9-1.2 4.5 0"/>',
+		'family'      => '<path d="M12 20s-7-4.4-7-9a3.9 3.9 0 0 1 7-2.4A3.9 3.9 0 0 1 19 11c0 4.6-7 9-7 9Z"/>',
+		'energy'      => '<path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.6 5.6l2.5 2.5M15.9 15.9l2.5 2.5M18.4 5.6l-2.5 2.5M8.1 15.9l-2.5 2.5"/><circle cx="12" cy="12" r="2.6"/>',
+		'experiences' => '<path d="M3 18l5.5-8 4 5.5 2.5-3.5L21 18H3Z"/><circle cx="7.5" cy="6.5" r="2"/>',
+		'allied'      => '<path d="M6 3v5a4.5 4.5 0 0 0 9 0V3"/><path d="M6 3H4.5M15 3h1.5M10.5 12.5v2a4.5 4.5 0 0 0 9 0v-1"/><circle cx="19.5" cy="11.5" r="2"/>',
+		'creative'    => '<path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.4 0 2-.9 2-1.8 0-1.5-1.4-1.7-1.4-3 0-.9.8-1.7 1.8-1.7h1.8a4.3 4.3 0 0 0 4.3-4.3c0-3.4-3.8-6.2-8.5-6.2Z"/><circle cx="8" cy="9" r="1.1"/><circle cx="12.5" cy="7" r="1.1"/><circle cx="16.5" cy="9.5" r="1.1"/>',
+		'community'   => '<circle cx="9" cy="8.5" r="2.6"/><circle cx="16.5" cy="10" r="2.1"/><path d="M4 19a5 5 0 0 1 10 0M14.5 19a4 4 0 0 1 5.5-3.7"/>',
+		'beauty'      => '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"/><path d="M18 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7.7-1.8Z"/>',
+		'longevity'   => '<path d="M12 20.5s-3-6.5-3-10a3 3 0 0 1 6 0c0 3.5-3 10-3 10Z"/><path d="M9 13.5 5.5 15l1 4M15 13.5 18.5 15l-1 4"/><circle cx="12" cy="8" r="1.2"/>',
+	);
+
+	$d = $paths[ $slug ] ?? '<circle cx="12" cy="12" r="7"/>';
+
+	return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" '
+		. 'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . $d . '</svg>';
+}
+
 /** Map of category slug => tint, for the front end and the card script. */
 function tints(): array {
 	$out = array();
@@ -392,9 +425,24 @@ function tints(): array {
 function tint_css(): string {
 	$css = '';
 	foreach ( tints() as $slug => $tint ) {
+		$safe = preg_replace( '/[^a-z0-9_-]/', '', $slug );
+
+		// The filled chip on a listing card.
 		$css .= sprintf(
 			'.pill--cat-%1$s{background:%2$s;border-color:transparent;color:%3$s;font-weight:600}',
-			preg_replace( '/[^a-z0-9_-]/', '', $slug ),
+			$safe,
+			$tint['bg'],
+			$tint['fg']
+		);
+
+		/*
+		 * And the pair as custom properties, for anything that wants the
+		 * colour without the filled background — the sidebar rail paints
+		 * nothing at rest and washes in the tint on hover.
+		 */
+		$css .= sprintf(
+			'.cat-%1$s{--cat-bg:%2$s;--cat-fg:%3$s}',
+			$safe,
 			$tint['bg'],
 			$tint['fg']
 		);

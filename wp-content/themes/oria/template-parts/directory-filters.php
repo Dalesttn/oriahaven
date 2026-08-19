@@ -58,16 +58,37 @@ $oria_prices = array(
 	 */
 	$oria_current = is_tax( 'practice' ) ? (string) ( get_queried_object()->slug ?? '' ) : '';
 	?>
-	<?php if ( ! is_wp_error( $oria_practices ) && $oria_practices ) : ?>
-	<nav class="filterbox" aria-labelledby="filt-practice">
-		<span class="filterbox__label" id="filt-practice"><?php esc_html_e( 'Practice', 'oria' ); ?></span>
+	<?php
+	/*
+	 * Top-level categories only, deepest first, from the plan rather than
+	 * from a flat get_terms(). The flat list put "Mind & Mental Wellbeing"
+	 * in the same alphabetical run as Breathwork, Meditation classes and
+	 * Mindfulness coaching — its own children — and showed categories being
+	 * held back for want of listings. navigation() answers the question the
+	 * sidebar is actually asking.
+	 *
+	 * Labelled "Categories" because that is what a visitor calls them. The
+	 * taxonomy is still `practice` and /practice/{slug}/ is untouched.
+	 */
+	$oria_cats = function_exists( '\Oria\Core\Categories\navigation' )
+		? \Oria\Core\Categories\navigation()
+		: array();
+	?>
+	<?php if ( $oria_cats ) : ?>
+	<nav class="filterbox catrail" aria-labelledby="filt-cat">
+		<span class="filterbox__label" id="filt-cat"><?php esc_html_e( 'Categories', 'oria' ); ?></span>
 		<?php
-		foreach ( $oria_practices as $oria_term ) :
-			$oria_is_here = $oria_current === $oria_term->slug;
+		foreach ( $oria_cats as $oria_cat ) :
+			$oria_t       = $oria_cat['term'];
+			$oria_is_here = $oria_current === $oria_t->slug;
 			?>
-			<a class="filterlink<?php echo $oria_is_here ? ' is-here' : ''; ?>"
-				href="<?php echo esc_url( (string) get_term_link( $oria_term ) ); ?>"
-				<?php echo $oria_is_here ? 'aria-current="page"' : ''; ?>><?php echo esc_html( \Oria\Theme\tname( $oria_term ) ); ?></a>
+			<a class="catrail__row cat-<?php echo esc_attr( $oria_t->slug ); ?><?php echo $oria_is_here ? ' is-here' : ''; ?>"
+				href="<?php echo esc_url( (string) get_term_link( $oria_t ) ); ?>"
+				<?php echo $oria_is_here ? 'aria-current="page"' : ''; ?>>
+				<span class="catrail__dot"><?php echo \Oria\Core\Categories\icon( $oria_t->slug ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+				<span class="catrail__name"><?php echo esc_html( \Oria\Theme\tname( $oria_t ) ); ?></span>
+				<span class="catrail__n"><?php echo esc_html( (string) $oria_cat['count'] ); ?></span>
+			</a>
 		<?php endforeach; ?>
 	</nav>
 	<?php endif; ?>

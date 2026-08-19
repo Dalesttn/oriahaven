@@ -589,6 +589,51 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
 .listing__where { font-size: var(--fs-xs); color: var(--text-faint); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
 .listing__where svg { width: 12px; height: 12px; flex: none; }
 .listing__desc { font-size: var(--fs-sm); color: var(--text-soft); }
+/* --- Category rail (directory sidebar) ------------------------------- */
+/* Nothing is painted at rest so the listings stay the loudest thing on the
+   page. Hover washes the row in the category's own tint, grows the glyph
+   and nudges the name across — the colour is a cue, not decoration. */
+.catrail__row {
+  position: relative; display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.5rem 0.55rem; border-radius: 9px; text-decoration: none;
+  overflow: hidden;
+  transition: background var(--t-fast) var(--ease);
+}
+.catrail__row::before {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: 3px;
+  border-radius: 3px; background: var(--cat-fg, var(--ink));
+  transform: scaleY(0); transform-origin: center;
+  transition: transform var(--t-fast) var(--ease);
+}
+.catrail__dot {
+  flex: none; width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--cat-bg, var(--sand-2)); color: var(--cat-fg, var(--ink));
+  transition: transform var(--t-fast) var(--ease);
+}
+.catrail__dot svg { width: 15px; height: 15px; }
+.catrail__name {
+  flex: 1; font-size: var(--fs-sm); font-weight: 600; color: var(--ink);
+  line-height: 1.3;
+  transition: transform var(--t-fast) var(--ease);
+}
+.catrail__n {
+  font-size: var(--fs-xs); color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--t-fast) var(--ease);
+}
+.catrail__row:hover { background: var(--cat-bg, var(--sand-2)); }
+.catrail__row:hover::before { transform: scaleY(0.55); }
+.catrail__row:hover .catrail__dot { transform: scale(1.12); }
+.catrail__row:hover .catrail__name { transform: translateX(3px); }
+.catrail__row:hover .catrail__n { color: var(--cat-fg, var(--ink)); }
+.catrail__row.is-here { background: var(--cat-bg, var(--sand-2)); }
+.catrail__row.is-here::before { transform: scaleY(0.75); }
+.catrail__row.is-here .catrail__name { font-weight: 700; }
+@media (prefers-reduced-motion: reduce) {
+  .catrail__row, .catrail__row::before, .catrail__dot, .catrail__name, .catrail__n { transition: none; }
+}
+
 /* Category chips lead the card; attribute pills sit under the blurb. */
 .listing__cats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--s-3); }
 .pill--cat { border-color: transparent; text-decoration: none; }
