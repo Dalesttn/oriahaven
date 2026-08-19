@@ -48,6 +48,14 @@ function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\register', 7 );
 	add_action( 'admin_menu', __NAMESPACE__ . '\menu' );
 	add_action( 'admin_post_oria_services_sync', __NAMESPACE__ . '\handle_sync' );
+	add_action( 'admin_post_oria_service_promote', __NAMESPACE__ . '\handle_promote' );
+
+	// Aliases and categories on the term editor, so a service added by hand
+	// is as capable as one that came from the file.
+	add_action( TAXONOMY . '_add_form_fields', __NAMESPACE__ . '\add_fields' );
+	add_action( TAXONOMY . '_edit_form_fields', __NAMESPACE__ . '\edit_fields' );
+	add_action( 'created_' . TAXONOMY, __NAMESPACE__ . '\save_fields' );
+	add_action( 'edited_' . TAXONOMY, __NAMESPACE__ . '\save_fields' );
 }
 
 function register(): void {
@@ -135,6 +143,12 @@ function fold( string $s ): string {
 /**
  * Every folded phrase that should resolve to a canonical slug.
  *
+ * Reads the file and the terms, because a service added by hand in the
+ * admin is a first-class service: its aliases have to match free text and
+ * search queries exactly as the file's do. Canonical names are laid down
+ * before any alias, so a term is never displaced by somebody else's
+ * synonym, and the file wins ties because it is the reviewed source.
+ *
  * @return array<string, string> folded phrase => service slug
  */
 function lookup(): array {
@@ -142,19 +156,39 @@ function lookup(): array {
 	if ( null !== $map ) {
 		return $map;
 	}
-	$map = array();
+	$map     = array();
+	$aliases = array();
+
 	foreach ( vocabulary() as $service ) {
 		$map[ fold( $service['name'] ) ] = $service['slug'];
 		foreach ( $service['aliases'] as $alias ) {
-			$key = fold( $alias );
-			// First writer wins, so a canonical name is never displaced by
-			// somebody else's alias.
-			if ( '' !== $key && ! isset( $map[ $key ] ) ) {
-				$map[ $key ] = $service['slug'];
-			}
+			$aliases[] = array( fold( $alias ), $service['slug'] );
 		}
 	}
+
+	$terms = get_terms( array( 'taxonomy' => TAXONOMY, 'hide_empty' => false ) );
+	foreach ( is_wp_error( $terms ) ? array() : $terms as $term ) {
+		$key = fold( $term->name );
+		if ( ! isset( $map[ $key ] ) ) {
+			$map[ $key ] = $term->slug;
+		}
+		foreach ( (array) get_term_meta( (int) $term->term_id, META_ALIAS, true ) as $alias ) {
+			$aliases[] = array( fold( (string) $alias ), $term->slug );
+		}
+	}
+
+	foreach ( $aliases as list( $key, $slug ) ) {
+		if ( '' !== $key && ! isset( $map[ $key ] ) ) {
+			$map[ $key ] = $slug;
+		}
+	}
+
 	return $map;
+}
+
+/** Slugs the JSON manages, so the admin can say which are file-managed. */
+function file_slugs(): array {
+	return array_column( vocabulary(), 'slug' );
 }
 
 /** The canonical slug for a free-text phrase, or '' if we don't know it. */
@@ -190,7 +224,14 @@ function sync_terms(): array {
 			$out['created']++;
 		} else {
 			$term_id = (int) $term->term_id;
-			if ( $term->name !== $service['name'] ) {
+			/*
+			 * Compare decoded. WordPress stores "Lashes & brows" as
+			 * "Lashes &amp; brows", so a raw comparison never matches and
+			 * every sync would rewrite the term and report an update that
+			 * changed nothing — a report nobody can trust is worse than no
+			 * report.
+			 */
+			if ( wp_specialchars_decode( $term->name, ENT_QUOTES ) !== $service['name'] ) {
 				wp_update_term( $term_id, TAXONOMY, array( 'name' => $service['name'] ) );
 				$out['updated']++;
 			} else {
@@ -252,6 +293,82 @@ function map_listings(): array {
 	return array( 'listings' => count( $ids ), 'attached' => $attached, 'unmatched' => $unmatched );
 }
 
+/* ------------------------------------------------- term editor extensions */
+
+/** The practice categories a service can belong to, for the checkboxes. */
+function category_choices(): array {
+	$terms = get_terms( array( 'taxonomy' => \Oria\Core\Taxonomies\PRACTICE, 'hide_empty' => false ) );
+	$out   = array();
+	foreach ( is_wp_error( $terms ) ? array() : $terms as $term ) {
+		$out[ $term->slug ] = wp_specialchars_decode( $term->name, ENT_QUOTES );
+	}
+	asort( $out );
+	return $out;
+}
+
+function fields_markup( array $aliases, array $categories ): void {
+	printf(
+		'<p class="description" style="margin-bottom:.6em">%s</p><textarea name="oria_aliases" rows="3" class="large-text" placeholder="%s">%s</textarea>',
+		esc_html__( 'Other ways people write this service, one per line. These match a practice\'s own wording and, later, what visitors type into search — "yin" finding Yin yoga is an alias doing its job.', 'oria' ),
+		esc_attr__( "sound bath\ngong bath\nsinging bowls", 'oria' ),
+		esc_textarea( implode( "\n", $aliases ) )
+	);
+
+	echo '<fieldset style="margin-top:1em"><legend class="description" style="margin-bottom:.5em">'
+		. esc_html__( 'Categories this service belongs to. A service can sit in several — these decide which category shows it as a filter.', 'oria' )
+		. '</legend><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));gap:.3em">';
+	foreach ( category_choices() as $slug => $label ) {
+		printf(
+			'<label><input type="checkbox" name="oria_categories[]" value="%s"%s> %s</label>',
+			esc_attr( $slug ),
+			checked( in_array( $slug, $categories, true ), true, false ),
+			esc_html( $label )
+		);
+	}
+	echo '</div></fieldset>';
+}
+
+function add_fields(): void {
+	echo '<div class="form-field"><label>' . esc_html__( 'Also matches', 'oria' ) . '</label>';
+	wp_nonce_field( 'oria_service_fields', 'oria_service_nonce' );
+	fields_markup( array(), array() );
+	echo '</div>';
+}
+
+function edit_fields( \WP_Term $term ): void {
+	$aliases    = (array) get_term_meta( (int) $term->term_id, META_ALIAS, true );
+	$categories = (array) get_term_meta( (int) $term->term_id, 'oria_categories', true );
+
+	echo '<tr class="form-field"><th scope="row"><label>' . esc_html__( 'Also matches', 'oria' ) . '</label></th><td>';
+	wp_nonce_field( 'oria_service_fields', 'oria_service_nonce' );
+
+	if ( in_array( $term->slug, file_slugs(), true ) ) {
+		printf(
+			'<div class="notice notice-info inline" style="margin:0 0 1em"><p>%s</p></div>',
+			esc_html__( 'This service is defined in data/services.json, so the next sync will overwrite anything changed here. Edit the file to make it stick — or add a new service instead, which syncing never touches.', 'oria' )
+		);
+	}
+
+	fields_markup( array_map( 'strval', $aliases ), array_map( 'strval', $categories ) );
+	echo '</td></tr>';
+}
+
+function save_fields( int $term_id ): void {
+	if ( ! isset( $_POST['oria_service_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( (string) $_POST['oria_service_nonce'] ) ), 'oria_service_fields' ) ) {
+		return;
+	}
+	if ( ! current_user_can( 'manage_categories' ) ) {
+		return;
+	}
+
+	$raw     = isset( $_POST['oria_aliases'] ) ? sanitize_textarea_field( wp_unslash( (string) $_POST['oria_aliases'] ) ) : '';
+	$aliases = array_values( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $raw ) ?: array() ) ) );
+	update_term_meta( $term_id, META_ALIAS, $aliases );
+
+	$cats = isset( $_POST['oria_categories'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['oria_categories'] ) ) : array();
+	update_term_meta( $term_id, 'oria_categories', $cats );
+}
+
 /* ------------------------------------------------------------------ admin */
 
 function menu(): void {
@@ -276,6 +393,52 @@ function handle_sync(): void {
 	set_transient( 'oria_services_report', array( 'terms' => $terms, 'map' => $map ), HOUR_IN_SECONDS );
 
 	wp_safe_redirect( admin_url( 'edit.php?post_type=' . PostTypes\LISTING . '&page=oria-services&synced=1' ) );
+	exit;
+}
+
+/**
+ * Turn an unrecognised phrase into a service, in one press.
+ *
+ * The unmatched list is already ranked by how many practices wrote the
+ * phrase, which makes it the most honest shortlist there is: the
+ * vocabulary grows from what businesses actually offer rather than from
+ * anybody's idea of what a wellness directory ought to contain. The
+ * phrase becomes both the name and the first alias, so the listings that
+ * prompted it attach on the next scan.
+ */
+function handle_promote(): void {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'You cannot do that.', 'oria' ) );
+	}
+	check_admin_referer( 'oria_service_promote' );
+
+	$phrase = isset( $_POST['phrase'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['phrase'] ) ) : '';
+	$made   = '';
+
+	if ( '' !== $phrase && '' === resolve( $phrase ) ) {
+		$term = wp_insert_term( $phrase, TAXONOMY );
+		if ( ! is_wp_error( $term ) ) {
+			update_term_meta( (int) $term['term_id'], META_ALIAS, array( $phrase ) );
+			update_term_meta( (int) $term['term_id'], 'oria_categories', array() );
+			$made = $phrase;
+			// Re-scan so the listings that prompted it attach immediately;
+			// a term nobody can see attached to anything looks broken.
+			$report = get_transient( 'oria_services_report' );
+			$map    = map_listings();
+			set_transient(
+				'oria_services_report',
+				array( 'terms' => is_array( $report ) ? $report['terms'] : array( 'created' => 0, 'updated' => 0, 'unchanged' => 0 ), 'map' => $map ),
+				HOUR_IN_SECONDS
+			);
+		}
+	}
+
+	wp_safe_redirect(
+		add_query_arg(
+			array( 'promoted' => rawurlencode( $made ) ),
+			admin_url( 'edit.php?post_type=' . PostTypes\LISTING . '&page=oria-services' )
+		)
+	);
 	exit;
 }
 
@@ -307,6 +470,21 @@ function render(): void {
 		)
 	);
 
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$promoted = isset( $_GET['promoted'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['promoted'] ) ) : '';
+	if ( '' !== $promoted ) {
+		printf(
+			'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+			esc_html(
+				sprintf(
+					/* translators: %s: the phrase that became a service */
+					__( '"%s" is now a service, and the listings that used the phrase are attached. Open it under Services to add other spellings or put it in a category.', 'oria' ),
+					$promoted
+				)
+			)
+		);
+	}
+
 	$report = get_transient( 'oria_services_report' );
 	if ( is_array( $report ) ) {
 		printf(
@@ -328,13 +506,24 @@ function render(): void {
 		if ( $un ) {
 			echo '<h2>' . esc_html__( 'Phrases we did not recognise', 'oria' ) . '</h2>';
 			echo '<p class="description" style="max-width:74ch">' . esc_html__( 'Not errors. Most are session lengths, programme names or a practice\'s own wording, and belong nowhere but the listing. Anything here that is a real service worth a page is a candidate for the vocabulary — the counts say which are worth adding.', 'oria' ) . '</p>';
-			echo '<table class="widefat striped" style="max-width:60ch"><thead><tr><th>' . esc_html__( 'Phrase', 'oria' ) . '</th><th style="width:8em">' . esc_html__( 'Listings', 'oria' ) . '</th></tr></thead><tbody>';
+			echo '<table class="widefat striped" style="max-width:66ch"><thead><tr><th>' . esc_html__( 'Phrase', 'oria' ) . '</th><th style="width:8em">' . esc_html__( 'Listings', 'oria' ) . '</th><th style="width:11em"></th></tr></thead><tbody>';
 			$shown = 0;
 			foreach ( $un as $phrase => $n ) {
 				if ( $shown++ >= 60 ) {
 					break;
 				}
-				printf( '<tr><td>%s</td><td>%d</td></tr>', esc_html( $phrase ), (int) $n );
+				printf(
+					'<tr><td>%s</td><td>%d</td><td><form method="post" action="%s" style="margin:0">%s'
+					. '<input type="hidden" name="action" value="oria_service_promote">'
+					. '<input type="hidden" name="phrase" value="%s">'
+					. '<button class="button button-small">%s</button></form></td></tr>',
+					esc_html( $phrase ),
+					(int) $n,
+					esc_url( admin_url( 'admin-post.php' ) ),
+					wp_nonce_field( 'oria_service_promote', '_wpnonce', true, false ),
+					esc_attr( $phrase ),
+					esc_html__( 'Add as service', 'oria' )
+				);
 			}
 			echo '</tbody></table>';
 			printf( '<p class="description">%s</p>', esc_html( sprintf( __( '%d distinct unrecognised phrases in total.', 'oria' ), count( $un ) ) ) );

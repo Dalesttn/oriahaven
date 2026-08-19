@@ -117,6 +117,33 @@
     { "slug": "private-midwifery", "name": "Private midwifery", "categories": ["family"], "aliases": ["homebirth care", "midwifery"] },
 
     { "slug": "day-retreats", "name": "Day retreats", "categories": ["retreats"], "aliases": ["one day retreats", "weekend retreats"] },
-    { "slug": "workshops", "name": "Workshops", "categories": ["community", "retreats"], "aliases": ["weekend workshops", "wellness workshops"] }
+    { "slug": "workshops", "name": "Workshops", "categories": ["community", "retreats"], "aliases": ["weekend workshops", "wellness workshops"] },
+
+    { "slug": "gut-health", "name": "Gut health", "categories": ["nutrition", "natural"], "aliases": ["digestive health", "gut healing", "microbiome"] },
+    { "slug": "meal-planning", "name": "Meal planning", "categories": ["nutrition"], "aliases": ["personalised meal plans", "meal prep", "meal preparation"] },
+    { "slug": "weight-neutral-nutrition", "name": "Weight-neutral nutrition", "categories": ["nutrition"], "aliases": ["non diet nutrition counselling", "haes", "health at every size", "intuitive eating", "non diet approach"] },
+    { "slug": "pregnancy-nutrition", "name": "Pregnancy nutrition", "categories": ["nutrition", "family"], "aliases": ["prenatal nutrition"] },
+    { "slug": "childrens-nutrition", "name": "Children's nutrition", "categories": ["nutrition", "family"], "aliases": ["paediatric nutrition", "adolescent nutrition"] },
+    { "slug": "plant-based-nutrition", "name": "Plant-based nutrition", "categories": ["nutrition"], "aliases": ["vegan nutrition", "vegetarian nutrition"] },
+
+    { "slug": "yoga-retreats", "name": "Yoga retreats", "categories": ["retreats", "yoga"], "aliases": [] },
+    { "slug": "meditation-retreats", "name": "Meditation retreats", "categories": ["retreats", "meditation"], "aliases": ["silent retreats"] },
+    { "slug": "wellness-retreats", "name": "Wellness retreats", "categories": ["retreats"], "aliases": ["health retreats"] },
+    { "slug": "womens-retreats", "name": "Women's retreats", "categories": ["retreats", "family"], "aliases": ["womens retreat"] },
+    { "slug": "mens-retreats", "name": "Men's retreats", "categories": ["retreats", "community"], "aliases": ["mens retreat"] },
+
+    { "slug": "stress-management", "name": "Stress management", "categories": ["mindfulness", "breathwork"], "aliases": ["stress reduction", "burnout support"] },
+    { "slug": "sleep-support", "name": "Sleep support", "categories": ["mindfulness", "recovery"], "aliases": ["sleep coaching", "sleep hygiene", "sleep optimisation"] },
+    { "slug": "grief-support", "name": "Grief support", "categories": ["community", "mindfulness"], "aliases": ["bereavement support"] },
+    { "slug": "yarning-circles", "name": "Yarning circles", "categories": ["community"], "aliases": [] },
+
+    { "slug": "day-spa", "name": "Day spa", "categories": ["recovery"], "aliases": ["spa treatments", "spa"] },
+    { "slug": "bathhouse", "name": "Bathhouse", "categories": ["recovery"], "aliases": ["hammam", "communal bathing"] },
+
+    { "slug": "facials", "name": "Facials", "categories": ["beauty"], "aliases": ["organic facials", "facial treatments"] },
+    { "slug": "skin-treatments", "name": "Skin treatments", "categories": ["beauty"], "aliases": ["skin clinic", "dermal therapy", "skin consultations"] },
+    { "slug": "lashes-and-brows", "name": "Lashes & brows", "categories": ["beauty"], "aliases": ["lash extensions", "lash lift", "brow lamination", "eyebrows", "eyelashes"] },
+    { "slug": "nails", "name": "Nails", "categories": ["beauty"], "aliases": ["manicure", "pedicure", "nail salon"] },
+    { "slug": "waxing", "name": "Waxing", "categories": ["beauty"], "aliases": ["sugaring", "hair removal"] }
   ]
 }
