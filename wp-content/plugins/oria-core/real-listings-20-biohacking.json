@@ -1,0 +1,187 @@
+{
+  "_note": "Batch 20 — Biohacking & Human Optimisation. Five, not the ten asked for, and three were dropped after checking rather than guessing: Element Health Centres (both rooms) and Hyper O2 are already in the directory under Sleep & Recovery, matching on website domain and phone. That is the finding — Perth's biohacking market is small and most of it is already listed. Researched from each business's own website; empty fields are details that were not published, never guesses.\n\nThese are new to the directory. The recovery studios already live under Spa & Recovery were deliberately not re-listed — the point of this category is the rooms built around chambers, light and measurement rather than a sauna and an ice bath.\n\nOn wording, and this category needs it more than any other: several Perth HBOT clinics advertise support for named conditions — one lists cancer treatment support, neurological conditions and chronic fatigue on its own front page. None of that is reproduced here. Every listing says what equipment the room has and how long a session runs, and stops. Hyperbaric oxygen outside its approved indications has been an ACCC and TGA enforcement target, so a directory repeating a clinic's condition claims would be adopting them.\n\nThe Theta Chamber is named because Element lists it as equipment, without any account of what it is said to do.",
+  "categories": [
+    {
+      "id": "longevity",
+      "name": "Biohacking & Human Optimisation",
+      "plural": "biohacking and human optimisation studios",
+      "icon": "longevity",
+      "blurb": "Hyperbaric chambers, red light, cryotherapy and body composition testing across Perth — rooms built around equipment and measurement."
+    }
+  ],
+  "regions": [
+    {
+      "id": "west",
+      "name": "Western Suburbs",
+      "suburbs": [
+        "Claremont",
+        "Cottesloe"
+      ]
+    },
+    {
+      "id": "freo",
+      "name": "Fremantle & South",
+      "suburbs": [
+        "Applecross"
+      ]
+    },
+    {
+      "id": "southeast",
+      "name": "South East",
+      "suburbs": [
+        "Harrisdale"
+      ]
+    },
+    {
+      "id": "central",
+      "name": "Perth Central",
+      "suburbs": [
+        "East Victoria Park"
+      ]
+    }
+  ],
+  "listings": [
+    {
+      "id": "studio2-hbot-applecross",
+      "name": "Studio2 HBOT — Applecross",
+      "cat": "longevity",
+      "also": [],
+      "suburb": "Applecross",
+      "region": "freo",
+      "address": "Shop 5/30 Ardross Street, Applecross WA 6153",
+      "blurb": "Hard-shell hyperbaric chambers on Ardross Street, running 60 to 90 minute sessions between 1.3 and 2.0 atmospheres, with red light therapy alongside.",
+      "services": [
+        "Hyperbaric oxygen",
+        "Red light therapy"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "0488 901 128",
+      "email": "hello@studio2hbot.com.au",
+      "web": "https://www.studio2hbot.com.au/",
+      "next": "",
+      "_source": "studio2hbot.com.au — Applecross address, mobile, email, chamber type, session length and pressure range confirmed. The site lists support for cancer treatment, neurological conditions and chronic fatigue; those claims are the clinic's own and are not repeated here."
+    },
+    {
+      "id": "studio2-hbot-cottesloe",
+      "name": "Studio2 HBOT — Cottesloe",
+      "cat": "longevity",
+      "also": [],
+      "suburb": "Cottesloe",
+      "region": "west",
+      "address": "1/1-3 Brixton Street, Cottesloe WA 6011",
+      "blurb": "The Cottesloe room of the same business, on Brixton Street, with hard-shell chambers and red light therapy.",
+      "services": [
+        "Hyperbaric oxygen",
+        "Red light therapy"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "0488 901 128",
+      "email": "hello@studio2hbot.com.au",
+      "web": "https://www.studio2hbot.com.au/",
+      "next": "",
+      "_source": "studio2hbot.com.au — Cottesloe address confirmed on the same locations list; shares the mobile and email with Applecross."
+    },
+    {
+      "id": "my-recovery-club-harrisdale",
+      "name": "My Recovery Club",
+      "cat": "longevity",
+      "also": [
+        "recovery"
+      ],
+      "suburb": "Harrisdale",
+      "region": "southeast",
+      "address": "3/41 Wright Road, Harrisdale WA 6112",
+      "blurb": "A Harrisdale recovery room with ice baths, a traditional sauna, compression boots, red light and massage guns, plus body composition scanning for anyone tracking the numbers. Stretching classes run alongside.",
+      "services": [
+        "Ice bath",
+        "Traditional sauna",
+        "Compression therapy",
+        "Red light therapy",
+        "Body composition scan",
+        "Assisted stretching"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-studio",
+      "phone": "0429 084 972",
+      "email": "hello@myrecoveryclub.com.au",
+      "web": "https://myrecoveryclub.com.au/red-light-therapy-perth/",
+      "next": "",
+      "_source": "myrecoveryclub.com.au — Wright Road address, mobile, email and the full equipment list including the InBody scanner confirmed on its own site. Also filed under Sleep & Recovery, which is what most of the room is."
+    },
+    {
+      "id": "reda-and-co-claremont",
+      "name": "REDA & CO",
+      "cat": "longevity",
+      "also": [
+        "beauty"
+      ],
+      "suburb": "Claremont",
+      "region": "west",
+      "address": "",
+      "blurb": "A self-guided Claremont studio with 24-hour access: you book a private room and run a twenty-minute Dermalux LED session yourself. Spray tanning and teeth whitening are on the same model. Casual sessions are $50, memberships from $35 a month.",
+      "services": [
+        "Red light therapy",
+        "Spray tanning",
+        "Teeth whitening"
+      ],
+      "priceFrom": 50,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-studio",
+      "phone": "",
+      "email": "",
+      "web": "https://reda-andco.com/pages/light-therapy",
+      "next": "24/7 access",
+      "_source": "reda-andco.com — Claremont location, 24/7 self-guided access, Dermalux LED, session length and the casual, membership and pack pricing all confirmed on its own site. Street address, phone and email are not published on the pages reached; worth one manual check before publishing."
+    },
+    {
+      "id": "active-wellness-spa-east-victoria-park",
+      "name": "Active Wellness Spa",
+      "cat": "longevity",
+      "also": [
+        "recovery"
+      ],
+      "suburb": "East Victoria Park",
+      "region": "central",
+      "address": "",
+      "blurb": "An automated wellness studio open around the clock, where sessions are booked and accessed through an app rather than a front desk.",
+      "services": [
+        "Infrared sauna",
+        "Red light therapy",
+        "Ice bath"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-studio",
+      "phone": "",
+      "email": "",
+      "web": "https://www.activewellnessspa.com/",
+      "next": "24/7 access",
+      "_source": "activewellnessspa.com — the 24/7 automated, app-access model is confirmed on its own site, but that site publishes no address, phone or email on the pages reached. East Victoria Park and a second Nedlands room are named on its Kartra landing page rather than its own domain, so only the one listing is created and the address is left empty. Needs a manual check before publishing; the service list is the least certain part of this batch."
+    }
+  ]
+}

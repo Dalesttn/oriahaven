@@ -2,148 +2,1465 @@
   "version": 1,
   "note": "Canonical service vocabulary. A term belongs here only if Oria Haven would publish a page for it. Session logistics ('50-minute sessions'), business programme names ('Mummy MOT'), funding categories ('NDIS') and conditions ('PCOS & endometriosis') are deliberately absent: a practice may describe its own work however it likes in the free-text services field, but a term in this file is Oria Haven speaking, and naming a condition here would make a health claim the directory cannot stand behind. 'categories' are practice term slugs, many-to-many. 'aliases' are matched case- and punctuation-insensitively against the free-text field, and later against search queries.",
   "services": [
-    { "slug": "massage", "name": "Massage", "categories": ["bodywork"], "aliases": ["massage therapy", "therapeutic massage"] },
-    { "slug": "remedial-massage", "name": "Remedial massage", "categories": ["bodywork", "allied"], "aliases": ["remedial", "remedial massage therapy"] },
-    { "slug": "relaxation-massage", "name": "Relaxation massage", "categories": ["bodywork"], "aliases": ["relaxation"] },
-    { "slug": "deep-tissue-massage", "name": "Deep tissue massage", "categories": ["bodywork"], "aliases": ["deep tissue"] },
-    { "slug": "sports-massage", "name": "Sports massage", "categories": ["bodywork"], "aliases": ["sports injury massage"] },
-    { "slug": "pregnancy-massage", "name": "Pregnancy massage", "categories": ["bodywork", "family"], "aliases": ["prenatal massage"] },
-    { "slug": "swedish-massage", "name": "Swedish massage", "categories": ["bodywork"], "aliases": [] },
-    { "slug": "thai-massage", "name": "Thai massage", "categories": ["bodywork"], "aliases": ["taiwanese massage"] },
-    { "slug": "lymphatic-drainage", "name": "Lymphatic drainage", "categories": ["bodywork"], "aliases": ["lymphatic massage", "manual lymphatic drainage"] },
-    { "slug": "myofascial-release", "name": "Myofascial release", "categories": ["bodywork"], "aliases": ["myofascial cupping", "fascial therapy", "soft tissue therapy", "soft tissue work"] },
-    { "slug": "trigger-point-therapy", "name": "Trigger point therapy", "categories": ["bodywork"], "aliases": [] },
-    { "slug": "cupping", "name": "Cupping", "categories": ["bodywork", "natural"], "aliases": ["cupping therapy"] },
-    { "slug": "dry-needling", "name": "Dry needling", "categories": ["allied", "bodywork"], "aliases": [] },
-    { "slug": "baby-massage", "name": "Baby massage", "categories": ["family", "bodywork"], "aliases": [] },
-
-    { "slug": "physiotherapy", "name": "Physiotherapy", "categories": ["allied"], "aliases": ["physio"] },
-    { "slug": "womens-health-physiotherapy", "name": "Women's health physiotherapy", "categories": ["allied", "family"], "aliases": ["pelvic floor physio", "womens health physio", "pelvic floor physiotherapy"] },
-    { "slug": "occupational-therapy", "name": "Occupational therapy", "categories": ["allied"], "aliases": ["paediatric occupational therapy", "ot"] },
-    { "slug": "speech-pathology", "name": "Speech pathology", "categories": ["allied"], "aliases": ["speech therapy"] },
-    { "slug": "podiatry", "name": "Podiatry", "categories": ["allied"], "aliases": ["sports podiatry", "paediatric podiatry"] },
-    { "slug": "exercise-physiology", "name": "Exercise physiology", "categories": ["allied", "fitness"], "aliases": ["exercise physiologist", "exercise therapy"] },
-    { "slug": "chiropractic", "name": "Chiropractic", "categories": ["allied", "bodywork"], "aliases": ["chiro", "chiropractic adjustments"] },
-    { "slug": "osteopathy", "name": "Osteopathy", "categories": ["allied", "bodywork"], "aliases": ["osteo"] },
-    { "slug": "myotherapy", "name": "Myotherapy", "categories": ["allied", "bodywork"], "aliases": [] },
-    { "slug": "dietetics", "name": "Dietetics", "categories": ["nutrition", "allied"], "aliases": ["dietitian", "sports dietitian", "dietitian consultation"] },
-    { "slug": "hydrotherapy", "name": "Hydrotherapy", "categories": ["allied", "recovery"], "aliases": [] },
-    { "slug": "clinical-pilates", "name": "Clinical pilates", "categories": ["allied", "fitness"], "aliases": [] },
-    { "slug": "orthotics", "name": "Orthotics", "categories": ["allied"], "aliases": ["orthotic therapy"] },
-    { "slug": "shockwave-therapy", "name": "Shockwave therapy", "categories": ["allied"], "aliases": [] },
-    { "slug": "gait-analysis", "name": "Gait analysis", "categories": ["allied"], "aliases": [] },
-
-    { "slug": "naturopathy", "name": "Naturopathy", "categories": ["natural"], "aliases": ["naturopath"] },
-    { "slug": "acupuncture", "name": "Acupuncture", "categories": ["natural", "allied"], "aliases": [] },
-    { "slug": "chinese-medicine", "name": "Traditional Chinese medicine", "categories": ["natural"], "aliases": ["chinese medicine", "tcm", "tcm health assessment"] },
-    { "slug": "herbal-medicine", "name": "Herbal medicine", "categories": ["natural"], "aliases": ["herbal preparations", "herbal dispensary", "traditional herbalism"] },
-    { "slug": "homeopathy", "name": "Homeopathy", "categories": ["natural"], "aliases": ["homeopathic medicine"] },
-    { "slug": "ayurveda", "name": "Ayurveda", "categories": ["natural"], "aliases": ["abhyanga massage", "panchakarma", "rasayana therapy"] },
-    { "slug": "kinesiology", "name": "Kinesiology", "categories": ["natural", "bodywork"], "aliases": [] },
-    { "slug": "reflexology", "name": "Reflexology", "categories": ["natural", "bodywork"], "aliases": ["foot massage"] },
-    { "slug": "hypnotherapy", "name": "Hypnotherapy", "categories": ["natural", "mindfulness"], "aliases": ["clinical hypnotherapy"] },
-    { "slug": "aromatherapy", "name": "Aromatherapy", "categories": ["natural"], "aliases": ["essential oils"] },
-
-    { "slug": "reiki", "name": "Reiki", "categories": ["energy"], "aliases": ["reiki sessions", "intuitive reiki", "karuna reiki", "crystal reiki", "remote reiki", "reiki stone massage"] },
-    { "slug": "energy-healing", "name": "Energy healing", "categories": ["energy"], "aliases": ["healing sessions", "energy clearing", "pranic healing", "quantum healing"] },
-    { "slug": "chakra-balancing", "name": "Chakra balancing", "categories": ["energy"], "aliases": ["chakra healing"] },
-    { "slug": "crystal-healing", "name": "Crystal healing", "categories": ["energy"], "aliases": [] },
-    { "slug": "shamanic-healing", "name": "Shamanic healing", "categories": ["energy"], "aliases": ["shamanic practices"] },
-
-    { "slug": "sound-healing", "name": "Sound healing", "categories": ["sound", "energy"], "aliases": ["sound bath", "sound baths", "sound therapy", "sound meditation", "gong bath", "singing bowls"] },
-    { "slug": "float-therapy", "name": "Float therapy", "categories": ["sound", "recovery"], "aliases": ["float tanks", "floatation", "dry float tanks", "sensory deprivation"] },
-    { "slug": "infrared-sauna", "name": "Infrared sauna", "categories": ["recovery", "sound"], "aliases": ["infrared sauna suites", "infrared therapy"] },
-    { "slug": "traditional-sauna", "name": "Traditional sauna", "categories": ["recovery"], "aliases": ["sauna", "finnish sauna", "sauna therapy"] },
-    { "slug": "steam-room", "name": "Steam room", "categories": ["recovery"], "aliases": [] },
-    { "slug": "ice-bath", "name": "Ice bath", "categories": ["recovery"], "aliases": ["ice baths", "cold plunge", "cold immersion", "cold exposure"] },
-    { "slug": "contrast-therapy", "name": "Contrast therapy", "categories": ["recovery"], "aliases": ["hot and cold therapy", "hot plunge"] },
-    { "slug": "red-light-therapy", "name": "Red light therapy", "categories": ["recovery", "natural"], "aliases": ["led therapy", "photobiomodulation", "cold laser therapy"] },
-    { "slug": "compression-therapy", "name": "Compression therapy", "categories": ["recovery"], "aliases": ["compression boots"] },
-    { "slug": "cryotherapy", "name": "Cryotherapy", "categories": ["recovery"], "aliases": ["spot cryotherapy"] },
-    { "slug": "hyperbaric-oxygen-therapy", "name": "Hyperbaric oxygen therapy", "categories": ["recovery"], "aliases": ["hyperbaric oxygen"] },
-
-    { "slug": "yoga", "name": "Yoga", "categories": ["yoga"], "aliases": ["yoga classes"] },
-    { "slug": "yin-yoga", "name": "Yin yoga", "categories": ["yoga"], "aliases": ["yin"] },
-    { "slug": "vinyasa-yoga", "name": "Vinyasa yoga", "categories": ["yoga"], "aliases": ["vinyasa"] },
-    { "slug": "hatha-yoga", "name": "Hatha yoga", "categories": ["yoga"], "aliases": ["hatha"] },
-    { "slug": "restorative-yoga", "name": "Restorative yoga", "categories": ["yoga"], "aliases": [] },
-    { "slug": "pregnancy-yoga", "name": "Pregnancy yoga", "categories": ["yoga", "family"], "aliases": ["prenatal yoga", "pregnancy yoga courses", "mum and baby yoga"] },
-    { "slug": "aerial-yoga", "name": "Aerial yoga", "categories": ["yoga"], "aliases": [] },
-    { "slug": "yoga-teacher-training", "name": "Yoga teacher training", "categories": ["yoga"], "aliases": ["teacher training"] },
-
-    { "slug": "pilates", "name": "Pilates", "categories": ["fitness"], "aliases": [] },
-    { "slug": "reformer-pilates", "name": "Reformer pilates", "categories": ["fitness"], "aliases": ["reformer"] },
-    { "slug": "mat-pilates", "name": "Mat pilates", "categories": ["fitness"], "aliases": [] },
-    { "slug": "barre", "name": "Barre", "categories": ["fitness"], "aliases": ["arc classes"] },
-    { "slug": "personal-training", "name": "Personal training", "categories": ["fitness"], "aliases": ["personal trainer", "womens personal training"] },
-    { "slug": "strength-training", "name": "Strength training", "categories": ["fitness"], "aliases": ["strength and conditioning", "strength coaching", "functional strength training", "powerlifting coaching", "small group strength"] },
-    { "slug": "group-fitness", "name": "Group fitness", "categories": ["fitness"], "aliases": ["outdoor group fitness"] },
-    { "slug": "tai-chi", "name": "Tai chi", "categories": ["fitness", "mindfulness"], "aliases": ["tai chi classes", "taijiquan"] },
-    { "slug": "qigong", "name": "Qigong", "categories": ["fitness", "mindfulness"], "aliases": [] },
-    { "slug": "boxing", "name": "Boxing", "categories": ["fitness"], "aliases": ["boxfit"] },
-    { "slug": "aqua-fitness", "name": "Aqua fitness", "categories": ["fitness"], "aliases": ["aqua aerobics", "aqua hiit", "aqua zumba", "deep water classes"] },
-    { "slug": "assisted-stretching", "name": "Assisted stretching", "categories": ["fitness", "bodywork"], "aliases": ["assisted fascial stretching", "stretch and flex"] },
-    { "slug": "dance", "name": "Dance", "categories": ["fitness", "creative"], "aliases": ["ecstatic dance", "conscious dance", "open floor conscious dance"] },
-    { "slug": "martial-arts", "name": "Martial arts", "categories": ["fitness"], "aliases": ["kung fu"] },
-
-    { "slug": "meditation", "name": "Meditation", "categories": ["meditation"], "aliases": ["guided meditation", "online meditation"] },
-    { "slug": "mindfulness", "name": "Mindfulness", "categories": ["mindfulness"], "aliases": [] },
-    { "slug": "breathwork", "name": "Breathwork", "categories": ["breathwork"], "aliases": ["breath training"] },
-
-    { "slug": "nutrition", "name": "Nutrition", "categories": ["nutrition"], "aliases": ["nutritional therapy", "nutritional coaching", "dietary guidance", "nutrition coaching"] },
-    { "slug": "sports-nutrition", "name": "Sports nutrition", "categories": ["nutrition", "fitness"], "aliases": [] },
-
-    { "slug": "art-therapy", "name": "Art therapy", "categories": ["creative"], "aliases": ["art psychotherapy", "expressive therapy"] },
-    { "slug": "music-therapy", "name": "Music therapy", "categories": ["creative"], "aliases": ["therapeutic music"] },
-
-    { "slug": "counselling", "name": "Counselling", "categories": ["mindfulness", "community"], "aliases": ["group counselling"] },
-    { "slug": "psychotherapy", "name": "Psychotherapy", "categories": ["mindfulness"], "aliases": [] },
-    { "slug": "life-coaching", "name": "Life coaching", "categories": ["mindfulness"], "aliases": ["coaching", "mindset coaching"] },
-    { "slug": "support-groups", "name": "Support groups", "categories": ["community"], "aliases": ["peer support groups", "weekly peer support groups"] },
-    { "slug": "womens-circles", "name": "Women's circles", "categories": ["community", "family"], "aliases": ["womens circle", "monthly womens circle"] },
-    { "slug": "mens-circles", "name": "Men's circles", "categories": ["community"], "aliases": ["mens circle", "mens group"] },
-
-    { "slug": "forest-bathing", "name": "Forest bathing", "categories": ["nature"], "aliases": ["forest bathing walks", "nature therapy", "shinrin yoku"] },
-    { "slug": "bushwalking", "name": "Bushwalking", "categories": ["nature"], "aliases": ["hiking", "day bushwalks", "multi day hikes", "group hikes"] },
-    { "slug": "walking-groups", "name": "Walking groups", "categories": ["nature", "community"], "aliases": ["weekly walking groups", "weekend group walks"] },
-    { "slug": "surf-lessons", "name": "Surf lessons", "categories": ["nature"], "aliases": ["private surf lessons", "surf therapy"] },
-    { "slug": "equine-assisted-therapy", "name": "Equine assisted therapy", "categories": ["nature", "creative"], "aliases": ["equine assisted learning", "therapeutic horseback riding", "hippotherapy"] },
-
-    { "slug": "lactation-consulting", "name": "Lactation consulting", "categories": ["family"], "aliases": ["lactation consultant"] },
-    { "slug": "postnatal-care", "name": "Postnatal care", "categories": ["family"], "aliases": ["postpartum support", "postnatal"] },
-    { "slug": "doula-support", "name": "Doula support", "categories": ["family"], "aliases": ["birth doula", "postpartum doula", "doula"] },
-    { "slug": "hypnobirthing", "name": "Hypnobirthing", "categories": ["family"], "aliases": ["hypnobirthing classes"] },
-    { "slug": "antenatal-classes", "name": "Antenatal classes", "categories": ["family"], "aliases": ["birth preparation classes", "antenatal care"] },
-    { "slug": "private-midwifery", "name": "Private midwifery", "categories": ["family"], "aliases": ["homebirth care", "midwifery"] },
-
-    { "slug": "day-retreats", "name": "Day retreats", "categories": ["retreats"], "aliases": ["one day retreats", "weekend retreats"] },
-    { "slug": "workshops", "name": "Workshops", "categories": ["community", "retreats"], "aliases": ["weekend workshops", "wellness workshops"] },
-
-    { "slug": "gut-health", "name": "Gut health", "categories": ["nutrition", "natural"], "aliases": ["digestive health", "gut healing", "microbiome"] },
-    { "slug": "meal-planning", "name": "Meal planning", "categories": ["nutrition"], "aliases": ["personalised meal plans", "meal prep", "meal preparation"] },
-    { "slug": "weight-neutral-nutrition", "name": "Weight-neutral nutrition", "categories": ["nutrition"], "aliases": ["non diet nutrition counselling", "haes", "health at every size", "intuitive eating", "non diet approach"] },
-    { "slug": "pregnancy-nutrition", "name": "Pregnancy nutrition", "categories": ["nutrition", "family"], "aliases": ["prenatal nutrition"] },
-    { "slug": "childrens-nutrition", "name": "Children's nutrition", "categories": ["nutrition", "family"], "aliases": ["paediatric nutrition", "adolescent nutrition"] },
-    { "slug": "plant-based-nutrition", "name": "Plant-based nutrition", "categories": ["nutrition"], "aliases": ["vegan nutrition", "vegetarian nutrition"] },
-
-    { "slug": "yoga-retreats", "name": "Yoga retreats", "categories": ["retreats", "yoga"], "aliases": [] },
-    { "slug": "meditation-retreats", "name": "Meditation retreats", "categories": ["retreats", "meditation"], "aliases": ["silent retreats"] },
-    { "slug": "wellness-retreats", "name": "Wellness retreats", "categories": ["retreats"], "aliases": ["health retreats"] },
-    { "slug": "womens-retreats", "name": "Women's retreats", "categories": ["retreats", "family"], "aliases": ["womens retreat"] },
-    { "slug": "mens-retreats", "name": "Men's retreats", "categories": ["retreats", "community"], "aliases": ["mens retreat"] },
-
-    { "slug": "stress-management", "name": "Stress management", "categories": ["mindfulness", "breathwork"], "aliases": ["stress reduction", "burnout support"] },
-    { "slug": "sleep-support", "name": "Sleep support", "categories": ["mindfulness", "recovery"], "aliases": ["sleep coaching", "sleep hygiene", "sleep optimisation"] },
-    { "slug": "grief-support", "name": "Grief support", "categories": ["community", "mindfulness"], "aliases": ["bereavement support"] },
-    { "slug": "yarning-circles", "name": "Yarning circles", "categories": ["community"], "aliases": [] },
-
-    { "slug": "day-spa", "name": "Day spa", "categories": ["recovery"], "aliases": ["spa treatments", "spa"] },
-    { "slug": "bathhouse", "name": "Bathhouse", "categories": ["recovery"], "aliases": ["hammam", "communal bathing"] },
-
-    { "slug": "facials", "name": "Facials", "categories": ["beauty"], "aliases": ["organic facials", "facial treatments"] },
-    { "slug": "skin-treatments", "name": "Skin treatments", "categories": ["beauty"], "aliases": ["skin clinic", "dermal therapy", "skin consultations"] },
-    { "slug": "lashes-and-brows", "name": "Lashes & brows", "categories": ["beauty"], "aliases": ["lash extensions", "lash lift", "brow lamination", "eyebrows", "eyelashes"] },
-    { "slug": "nails", "name": "Nails", "categories": ["beauty"], "aliases": ["manicure", "pedicure", "nail salon"] },
-    { "slug": "waxing", "name": "Waxing", "categories": ["beauty"], "aliases": ["sugaring", "hair removal"] }
+    {
+      "slug": "massage",
+      "name": "Massage",
+      "categories": [
+        "bodywork"
+      ],
+      "aliases": [
+        "massage therapy",
+        "therapeutic massage"
+      ]
+    },
+    {
+      "slug": "remedial-massage",
+      "name": "Remedial massage",
+      "categories": [
+        "bodywork",
+        "allied"
+      ],
+      "aliases": [
+        "remedial",
+        "remedial massage therapy"
+      ]
+    },
+    {
+      "slug": "relaxation-massage",
+      "name": "Relaxation massage",
+      "categories": [
+        "bodywork"
+      ],
+      "aliases": [
+        "relaxation"
+      ]
+    },
+    {
+      "slug": "deep-tissue-massage",
+      "name": "Deep tissue massage",
+      "categories": [
+        "bodywork"
+      ],
+      "aliases": [
+        "deep tissue"
+      ]
+    },
+    {
+      "slug": "sports-massage",
+      "name": "Sports massage",
+      "categories": [
+        "bodywork"
+      ],
+      "aliases": [
+        "sports injury massage"
+      ]
+    },
+    {
+      "slug": "pregnancy-massage",
+      "name": "Pregnancy massage",
+      "categories": [
+        "bodywork",
+        "family"
+      ],
+      "aliases": [
+        "prenatal massage"
+      ]
+    },
+    {
+      "slug": "swedish-massage",
+      "name": "Swedish massage",
+      "categories": [
+        "bodywork"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "thai-massage",
+      "name": "Thai massage",
+      "categories": [
+        "bodywork"
+      ],
+      "aliases": [
+        "taiwanese massage"
+      ]
+    },
+    {
+      "slug": "lymphatic-drainage",
+      "name": "Lymphatic drainage",
+      "categories": [
+        "bodywork"
+      ],
+      "aliases": [
+        "lymphatic massage",
+        "manual lymphatic drainage"
+      ]
+    },
+    {
+      "slug": "myofascial-release",
+      "name": "Myofascial release",
+      "categories": [
+        "bodywork"
+      ],
+      "aliases": [
+        "myofascial cupping",
+        "fascial therapy",
+        "soft tissue therapy",
+        "soft tissue work"
+      ]
+    },
+    {
+      "slug": "trigger-point-therapy",
+      "name": "Trigger point therapy",
+      "categories": [
+        "bodywork"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "cupping",
+      "name": "Cupping",
+      "categories": [
+        "bodywork",
+        "natural"
+      ],
+      "aliases": [
+        "cupping therapy"
+      ]
+    },
+    {
+      "slug": "dry-needling",
+      "name": "Dry needling",
+      "categories": [
+        "allied",
+        "bodywork"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "baby-massage",
+      "name": "Baby massage",
+      "categories": [
+        "family",
+        "bodywork"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "physiotherapy",
+      "name": "Physiotherapy",
+      "categories": [
+        "allied"
+      ],
+      "aliases": [
+        "physio"
+      ]
+    },
+    {
+      "slug": "womens-health-physiotherapy",
+      "name": "Women's health physiotherapy",
+      "categories": [
+        "allied",
+        "family"
+      ],
+      "aliases": [
+        "pelvic floor physio",
+        "womens health physio",
+        "pelvic floor physiotherapy"
+      ]
+    },
+    {
+      "slug": "occupational-therapy",
+      "name": "Occupational therapy",
+      "categories": [
+        "allied"
+      ],
+      "aliases": [
+        "paediatric occupational therapy",
+        "ot"
+      ]
+    },
+    {
+      "slug": "speech-pathology",
+      "name": "Speech pathology",
+      "categories": [
+        "allied"
+      ],
+      "aliases": [
+        "speech therapy"
+      ]
+    },
+    {
+      "slug": "podiatry",
+      "name": "Podiatry",
+      "categories": [
+        "allied"
+      ],
+      "aliases": [
+        "sports podiatry",
+        "paediatric podiatry"
+      ]
+    },
+    {
+      "slug": "exercise-physiology",
+      "name": "Exercise physiology",
+      "categories": [
+        "allied",
+        "fitness"
+      ],
+      "aliases": [
+        "exercise physiologist",
+        "exercise therapy"
+      ]
+    },
+    {
+      "slug": "chiropractic",
+      "name": "Chiropractic",
+      "categories": [
+        "allied",
+        "bodywork"
+      ],
+      "aliases": [
+        "chiro",
+        "chiropractic adjustments"
+      ]
+    },
+    {
+      "slug": "osteopathy",
+      "name": "Osteopathy",
+      "categories": [
+        "allied",
+        "bodywork"
+      ],
+      "aliases": [
+        "osteo"
+      ]
+    },
+    {
+      "slug": "myotherapy",
+      "name": "Myotherapy",
+      "categories": [
+        "allied",
+        "bodywork"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "dietetics",
+      "name": "Dietetics",
+      "categories": [
+        "nutrition",
+        "allied"
+      ],
+      "aliases": [
+        "dietitian",
+        "sports dietitian",
+        "dietitian consultation"
+      ]
+    },
+    {
+      "slug": "hydrotherapy",
+      "name": "Hydrotherapy",
+      "categories": [
+        "allied",
+        "recovery"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "clinical-pilates",
+      "name": "Clinical pilates",
+      "categories": [
+        "allied",
+        "fitness"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "orthotics",
+      "name": "Orthotics",
+      "categories": [
+        "allied"
+      ],
+      "aliases": [
+        "orthotic therapy"
+      ]
+    },
+    {
+      "slug": "shockwave-therapy",
+      "name": "Shockwave therapy",
+      "categories": [
+        "allied"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "gait-analysis",
+      "name": "Gait analysis",
+      "categories": [
+        "allied"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "naturopathy",
+      "name": "Naturopathy",
+      "categories": [
+        "natural"
+      ],
+      "aliases": [
+        "naturopath"
+      ]
+    },
+    {
+      "slug": "acupuncture",
+      "name": "Acupuncture",
+      "categories": [
+        "natural",
+        "allied"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "chinese-medicine",
+      "name": "Traditional Chinese medicine",
+      "categories": [
+        "natural"
+      ],
+      "aliases": [
+        "chinese medicine",
+        "tcm",
+        "tcm health assessment"
+      ]
+    },
+    {
+      "slug": "herbal-medicine",
+      "name": "Herbal medicine",
+      "categories": [
+        "natural"
+      ],
+      "aliases": [
+        "herbal preparations",
+        "herbal dispensary",
+        "traditional herbalism"
+      ]
+    },
+    {
+      "slug": "homeopathy",
+      "name": "Homeopathy",
+      "categories": [
+        "natural"
+      ],
+      "aliases": [
+        "homeopathic medicine"
+      ]
+    },
+    {
+      "slug": "ayurveda",
+      "name": "Ayurveda",
+      "categories": [
+        "natural"
+      ],
+      "aliases": [
+        "abhyanga massage",
+        "panchakarma",
+        "rasayana therapy"
+      ]
+    },
+    {
+      "slug": "kinesiology",
+      "name": "Kinesiology",
+      "categories": [
+        "natural",
+        "bodywork"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "reflexology",
+      "name": "Reflexology",
+      "categories": [
+        "natural",
+        "bodywork"
+      ],
+      "aliases": [
+        "foot massage"
+      ]
+    },
+    {
+      "slug": "hypnotherapy",
+      "name": "Hypnotherapy",
+      "categories": [
+        "natural",
+        "mindfulness"
+      ],
+      "aliases": [
+        "clinical hypnotherapy"
+      ]
+    },
+    {
+      "slug": "aromatherapy",
+      "name": "Aromatherapy",
+      "categories": [
+        "natural"
+      ],
+      "aliases": [
+        "essential oils"
+      ]
+    },
+    {
+      "slug": "reiki",
+      "name": "Reiki",
+      "categories": [
+        "energy"
+      ],
+      "aliases": [
+        "reiki sessions",
+        "intuitive reiki",
+        "karuna reiki",
+        "crystal reiki",
+        "remote reiki",
+        "reiki stone massage"
+      ]
+    },
+    {
+      "slug": "energy-healing",
+      "name": "Energy healing",
+      "categories": [
+        "energy"
+      ],
+      "aliases": [
+        "healing sessions",
+        "energy clearing",
+        "pranic healing",
+        "quantum healing"
+      ]
+    },
+    {
+      "slug": "chakra-balancing",
+      "name": "Chakra balancing",
+      "categories": [
+        "energy"
+      ],
+      "aliases": [
+        "chakra healing"
+      ]
+    },
+    {
+      "slug": "crystal-healing",
+      "name": "Crystal healing",
+      "categories": [
+        "energy"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "shamanic-healing",
+      "name": "Shamanic healing",
+      "categories": [
+        "energy"
+      ],
+      "aliases": [
+        "shamanic practices"
+      ]
+    },
+    {
+      "slug": "sound-healing",
+      "name": "Sound healing",
+      "categories": [
+        "sound",
+        "energy"
+      ],
+      "aliases": [
+        "sound bath",
+        "sound baths",
+        "sound therapy",
+        "sound meditation",
+        "gong bath",
+        "singing bowls"
+      ]
+    },
+    {
+      "slug": "float-therapy",
+      "name": "Float therapy",
+      "categories": [
+        "sound",
+        "recovery"
+      ],
+      "aliases": [
+        "float tanks",
+        "floatation",
+        "dry float tanks",
+        "sensory deprivation"
+      ]
+    },
+    {
+      "slug": "infrared-sauna",
+      "name": "Infrared sauna",
+      "categories": [
+        "recovery",
+        "sound"
+      ],
+      "aliases": [
+        "infrared sauna suites",
+        "infrared therapy"
+      ]
+    },
+    {
+      "slug": "traditional-sauna",
+      "name": "Traditional sauna",
+      "categories": [
+        "recovery"
+      ],
+      "aliases": [
+        "sauna",
+        "finnish sauna",
+        "sauna therapy"
+      ]
+    },
+    {
+      "slug": "steam-room",
+      "name": "Steam room",
+      "categories": [
+        "recovery"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "ice-bath",
+      "name": "Ice bath",
+      "categories": [
+        "recovery"
+      ],
+      "aliases": [
+        "ice baths",
+        "cold plunge",
+        "cold immersion",
+        "cold exposure"
+      ]
+    },
+    {
+      "slug": "contrast-therapy",
+      "name": "Contrast therapy",
+      "categories": [
+        "recovery"
+      ],
+      "aliases": [
+        "hot and cold therapy",
+        "hot plunge"
+      ]
+    },
+    {
+      "slug": "red-light-therapy",
+      "name": "Red light therapy",
+      "categories": [
+        "recovery",
+        "natural"
+      ],
+      "aliases": [
+        "led therapy",
+        "photobiomodulation",
+        "cold laser therapy"
+      ]
+    },
+    {
+      "slug": "compression-therapy",
+      "name": "Compression therapy",
+      "categories": [
+        "recovery"
+      ],
+      "aliases": [
+        "compression boots"
+      ]
+    },
+    {
+      "slug": "cryotherapy",
+      "name": "Cryotherapy",
+      "categories": [
+        "recovery"
+      ],
+      "aliases": [
+        "spot cryotherapy"
+      ]
+    },
+    {
+      "slug": "hyperbaric-oxygen-therapy",
+      "name": "Hyperbaric oxygen therapy",
+      "categories": [
+        "recovery"
+      ],
+      "aliases": [
+        "hyperbaric oxygen"
+      ]
+    },
+    {
+      "slug": "yoga",
+      "name": "Yoga",
+      "categories": [
+        "yoga"
+      ],
+      "aliases": [
+        "yoga classes"
+      ]
+    },
+    {
+      "slug": "yin-yoga",
+      "name": "Yin yoga",
+      "categories": [
+        "yoga"
+      ],
+      "aliases": [
+        "yin"
+      ]
+    },
+    {
+      "slug": "vinyasa-yoga",
+      "name": "Vinyasa yoga",
+      "categories": [
+        "yoga"
+      ],
+      "aliases": [
+        "vinyasa"
+      ]
+    },
+    {
+      "slug": "hatha-yoga",
+      "name": "Hatha yoga",
+      "categories": [
+        "yoga"
+      ],
+      "aliases": [
+        "hatha"
+      ]
+    },
+    {
+      "slug": "restorative-yoga",
+      "name": "Restorative yoga",
+      "categories": [
+        "yoga"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "pregnancy-yoga",
+      "name": "Pregnancy yoga",
+      "categories": [
+        "yoga",
+        "family"
+      ],
+      "aliases": [
+        "prenatal yoga",
+        "pregnancy yoga courses",
+        "mum and baby yoga"
+      ]
+    },
+    {
+      "slug": "aerial-yoga",
+      "name": "Aerial yoga",
+      "categories": [
+        "yoga"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "yoga-teacher-training",
+      "name": "Yoga teacher training",
+      "categories": [
+        "yoga"
+      ],
+      "aliases": [
+        "teacher training"
+      ]
+    },
+    {
+      "slug": "pilates",
+      "name": "Pilates",
+      "categories": [
+        "fitness"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "reformer-pilates",
+      "name": "Reformer pilates",
+      "categories": [
+        "fitness"
+      ],
+      "aliases": [
+        "reformer"
+      ]
+    },
+    {
+      "slug": "mat-pilates",
+      "name": "Mat pilates",
+      "categories": [
+        "fitness"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "barre",
+      "name": "Barre",
+      "categories": [
+        "fitness"
+      ],
+      "aliases": [
+        "arc classes"
+      ]
+    },
+    {
+      "slug": "personal-training",
+      "name": "Personal training",
+      "categories": [
+        "fitness"
+      ],
+      "aliases": [
+        "personal trainer",
+        "womens personal training"
+      ]
+    },
+    {
+      "slug": "strength-training",
+      "name": "Strength training",
+      "categories": [
+        "fitness"
+      ],
+      "aliases": [
+        "strength and conditioning",
+        "strength coaching",
+        "functional strength training",
+        "powerlifting coaching",
+        "small group strength"
+      ]
+    },
+    {
+      "slug": "group-fitness",
+      "name": "Group fitness",
+      "categories": [
+        "fitness"
+      ],
+      "aliases": [
+        "outdoor group fitness"
+      ]
+    },
+    {
+      "slug": "tai-chi",
+      "name": "Tai chi",
+      "categories": [
+        "fitness",
+        "mindfulness"
+      ],
+      "aliases": [
+        "tai chi classes",
+        "taijiquan"
+      ]
+    },
+    {
+      "slug": "qigong",
+      "name": "Qigong",
+      "categories": [
+        "fitness",
+        "mindfulness"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "boxing",
+      "name": "Boxing",
+      "categories": [
+        "fitness"
+      ],
+      "aliases": [
+        "boxfit"
+      ]
+    },
+    {
+      "slug": "aqua-fitness",
+      "name": "Aqua fitness",
+      "categories": [
+        "fitness"
+      ],
+      "aliases": [
+        "aqua aerobics",
+        "aqua hiit",
+        "aqua zumba",
+        "deep water classes"
+      ]
+    },
+    {
+      "slug": "assisted-stretching",
+      "name": "Assisted stretching",
+      "categories": [
+        "fitness",
+        "bodywork"
+      ],
+      "aliases": [
+        "assisted fascial stretching",
+        "stretch and flex"
+      ]
+    },
+    {
+      "slug": "dance",
+      "name": "Dance",
+      "categories": [
+        "fitness",
+        "creative"
+      ],
+      "aliases": [
+        "ecstatic dance",
+        "conscious dance",
+        "open floor conscious dance"
+      ]
+    },
+    {
+      "slug": "martial-arts",
+      "name": "Martial arts",
+      "categories": [
+        "fitness"
+      ],
+      "aliases": [
+        "kung fu"
+      ]
+    },
+    {
+      "slug": "meditation",
+      "name": "Meditation",
+      "categories": [
+        "meditation"
+      ],
+      "aliases": [
+        "guided meditation",
+        "online meditation"
+      ]
+    },
+    {
+      "slug": "mindfulness",
+      "name": "Mindfulness",
+      "categories": [
+        "mindfulness"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "breathwork",
+      "name": "Breathwork",
+      "categories": [
+        "breathwork"
+      ],
+      "aliases": [
+        "breath training"
+      ]
+    },
+    {
+      "slug": "nutrition",
+      "name": "Nutrition",
+      "categories": [
+        "nutrition"
+      ],
+      "aliases": [
+        "nutritional therapy",
+        "nutritional coaching",
+        "dietary guidance",
+        "nutrition coaching"
+      ]
+    },
+    {
+      "slug": "sports-nutrition",
+      "name": "Sports nutrition",
+      "categories": [
+        "nutrition",
+        "fitness"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "art-therapy",
+      "name": "Art therapy",
+      "categories": [
+        "creative"
+      ],
+      "aliases": [
+        "art psychotherapy",
+        "expressive therapy"
+      ]
+    },
+    {
+      "slug": "music-therapy",
+      "name": "Music therapy",
+      "categories": [
+        "creative"
+      ],
+      "aliases": [
+        "therapeutic music"
+      ]
+    },
+    {
+      "slug": "counselling",
+      "name": "Counselling",
+      "categories": [
+        "mindfulness",
+        "community"
+      ],
+      "aliases": [
+        "group counselling"
+      ]
+    },
+    {
+      "slug": "psychotherapy",
+      "name": "Psychotherapy",
+      "categories": [
+        "mindfulness"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "life-coaching",
+      "name": "Life coaching",
+      "categories": [
+        "mindfulness"
+      ],
+      "aliases": [
+        "coaching",
+        "mindset coaching"
+      ]
+    },
+    {
+      "slug": "support-groups",
+      "name": "Support groups",
+      "categories": [
+        "community"
+      ],
+      "aliases": [
+        "peer support groups",
+        "weekly peer support groups"
+      ]
+    },
+    {
+      "slug": "womens-circles",
+      "name": "Women's circles",
+      "categories": [
+        "community",
+        "family"
+      ],
+      "aliases": [
+        "womens circle",
+        "monthly womens circle"
+      ]
+    },
+    {
+      "slug": "mens-circles",
+      "name": "Men's circles",
+      "categories": [
+        "community"
+      ],
+      "aliases": [
+        "mens circle",
+        "mens group"
+      ]
+    },
+    {
+      "slug": "forest-bathing",
+      "name": "Forest bathing",
+      "categories": [
+        "nature"
+      ],
+      "aliases": [
+        "forest bathing walks",
+        "nature therapy",
+        "shinrin yoku"
+      ]
+    },
+    {
+      "slug": "bushwalking",
+      "name": "Bushwalking",
+      "categories": [
+        "nature"
+      ],
+      "aliases": [
+        "hiking",
+        "day bushwalks",
+        "multi day hikes",
+        "group hikes"
+      ]
+    },
+    {
+      "slug": "walking-groups",
+      "name": "Walking groups",
+      "categories": [
+        "nature",
+        "community"
+      ],
+      "aliases": [
+        "weekly walking groups",
+        "weekend group walks"
+      ]
+    },
+    {
+      "slug": "surf-lessons",
+      "name": "Surf lessons",
+      "categories": [
+        "nature"
+      ],
+      "aliases": [
+        "private surf lessons",
+        "surf therapy"
+      ]
+    },
+    {
+      "slug": "equine-assisted-therapy",
+      "name": "Equine assisted therapy",
+      "categories": [
+        "nature",
+        "creative"
+      ],
+      "aliases": [
+        "equine assisted learning",
+        "therapeutic horseback riding",
+        "hippotherapy"
+      ]
+    },
+    {
+      "slug": "lactation-consulting",
+      "name": "Lactation consulting",
+      "categories": [
+        "family"
+      ],
+      "aliases": [
+        "lactation consultant"
+      ]
+    },
+    {
+      "slug": "postnatal-care",
+      "name": "Postnatal care",
+      "categories": [
+        "family"
+      ],
+      "aliases": [
+        "postpartum support",
+        "postnatal"
+      ]
+    },
+    {
+      "slug": "doula-support",
+      "name": "Doula support",
+      "categories": [
+        "family"
+      ],
+      "aliases": [
+        "birth doula",
+        "postpartum doula",
+        "doula"
+      ]
+    },
+    {
+      "slug": "hypnobirthing",
+      "name": "Hypnobirthing",
+      "categories": [
+        "family"
+      ],
+      "aliases": [
+        "hypnobirthing classes"
+      ]
+    },
+    {
+      "slug": "antenatal-classes",
+      "name": "Antenatal classes",
+      "categories": [
+        "family"
+      ],
+      "aliases": [
+        "birth preparation classes",
+        "antenatal care"
+      ]
+    },
+    {
+      "slug": "private-midwifery",
+      "name": "Private midwifery",
+      "categories": [
+        "family"
+      ],
+      "aliases": [
+        "homebirth care",
+        "midwifery"
+      ]
+    },
+    {
+      "slug": "day-retreats",
+      "name": "Day retreats",
+      "categories": [
+        "retreats"
+      ],
+      "aliases": [
+        "one day retreats",
+        "weekend retreats"
+      ]
+    },
+    {
+      "slug": "workshops",
+      "name": "Workshops",
+      "categories": [
+        "community",
+        "retreats"
+      ],
+      "aliases": [
+        "weekend workshops",
+        "wellness workshops"
+      ]
+    },
+    {
+      "slug": "gut-health",
+      "name": "Gut health",
+      "categories": [
+        "nutrition",
+        "natural"
+      ],
+      "aliases": [
+        "digestive health",
+        "gut healing",
+        "microbiome"
+      ]
+    },
+    {
+      "slug": "meal-planning",
+      "name": "Meal planning",
+      "categories": [
+        "nutrition"
+      ],
+      "aliases": [
+        "personalised meal plans",
+        "meal prep",
+        "meal preparation"
+      ]
+    },
+    {
+      "slug": "weight-neutral-nutrition",
+      "name": "Weight-neutral nutrition",
+      "categories": [
+        "nutrition"
+      ],
+      "aliases": [
+        "non diet nutrition counselling",
+        "haes",
+        "health at every size",
+        "intuitive eating",
+        "non diet approach"
+      ]
+    },
+    {
+      "slug": "pregnancy-nutrition",
+      "name": "Pregnancy nutrition",
+      "categories": [
+        "nutrition",
+        "family"
+      ],
+      "aliases": [
+        "prenatal nutrition"
+      ]
+    },
+    {
+      "slug": "childrens-nutrition",
+      "name": "Children's nutrition",
+      "categories": [
+        "nutrition",
+        "family"
+      ],
+      "aliases": [
+        "paediatric nutrition",
+        "adolescent nutrition"
+      ]
+    },
+    {
+      "slug": "plant-based-nutrition",
+      "name": "Plant-based nutrition",
+      "categories": [
+        "nutrition"
+      ],
+      "aliases": [
+        "vegan nutrition",
+        "vegetarian nutrition"
+      ]
+    },
+    {
+      "slug": "yoga-retreats",
+      "name": "Yoga retreats",
+      "categories": [
+        "retreats",
+        "yoga"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "meditation-retreats",
+      "name": "Meditation retreats",
+      "categories": [
+        "retreats",
+        "meditation"
+      ],
+      "aliases": [
+        "silent retreats"
+      ]
+    },
+    {
+      "slug": "wellness-retreats",
+      "name": "Wellness retreats",
+      "categories": [
+        "retreats"
+      ],
+      "aliases": [
+        "health retreats"
+      ]
+    },
+    {
+      "slug": "womens-retreats",
+      "name": "Women's retreats",
+      "categories": [
+        "retreats",
+        "family"
+      ],
+      "aliases": [
+        "womens retreat"
+      ]
+    },
+    {
+      "slug": "mens-retreats",
+      "name": "Men's retreats",
+      "categories": [
+        "retreats",
+        "community"
+      ],
+      "aliases": [
+        "mens retreat"
+      ]
+    },
+    {
+      "slug": "stress-management",
+      "name": "Stress management",
+      "categories": [
+        "mindfulness",
+        "breathwork"
+      ],
+      "aliases": [
+        "stress reduction",
+        "burnout support"
+      ]
+    },
+    {
+      "slug": "sleep-support",
+      "name": "Sleep support",
+      "categories": [
+        "mindfulness",
+        "recovery"
+      ],
+      "aliases": [
+        "sleep coaching",
+        "sleep hygiene",
+        "sleep optimisation"
+      ]
+    },
+    {
+      "slug": "grief-support",
+      "name": "Grief support",
+      "categories": [
+        "community",
+        "mindfulness"
+      ],
+      "aliases": [
+        "bereavement support"
+      ]
+    },
+    {
+      "slug": "yarning-circles",
+      "name": "Yarning circles",
+      "categories": [
+        "community"
+      ],
+      "aliases": []
+    },
+    {
+      "slug": "day-spa",
+      "name": "Day spa",
+      "categories": [
+        "recovery"
+      ],
+      "aliases": [
+        "spa treatments",
+        "spa"
+      ]
+    },
+    {
+      "slug": "bathhouse",
+      "name": "Bathhouse",
+      "categories": [
+        "recovery"
+      ],
+      "aliases": [
+        "hammam",
+        "communal bathing"
+      ]
+    },
+    {
+      "slug": "facials",
+      "name": "Facials",
+      "categories": [
+        "beauty"
+      ],
+      "aliases": [
+        "organic facials",
+        "facial treatments"
+      ]
+    },
+    {
+      "slug": "skin-treatments",
+      "name": "Skin treatments",
+      "categories": [
+        "beauty"
+      ],
+      "aliases": [
+        "skin clinic",
+        "dermal therapy",
+        "skin consultations"
+      ]
+    },
+    {
+      "slug": "lashes-and-brows",
+      "name": "Lashes & brows",
+      "categories": [
+        "beauty"
+      ],
+      "aliases": [
+        "lash extensions",
+        "lash lift",
+        "brow lamination",
+        "eyebrows",
+        "eyelashes"
+      ]
+    },
+    {
+      "slug": "nails",
+      "name": "Nails",
+      "categories": [
+        "beauty"
+      ],
+      "aliases": [
+        "manicure",
+        "pedicure",
+        "nail salon"
+      ]
+    },
+    {
+      "slug": "waxing",
+      "name": "Waxing",
+      "categories": [
+        "beauty"
+      ],
+      "aliases": [
+        "sugaring",
+        "hair removal"
+      ]
+    },
+    {
+      "slug": "body-composition-scan",
+      "name": "Body composition scan",
+      "categories": [
+        "longevity",
+        "fitness"
+      ],
+      "aliases": [
+        "dexa",
+        "dexa scan",
+        "dxa scan",
+        "body composition testing",
+        "body scan",
+        "inbody",
+        "inbody scan",
+        "bioimpedance"
+      ]
+    },
+    {
+      "slug": "vo2-max-testing",
+      "name": "VO2 max testing",
+      "categories": [
+        "longevity",
+        "fitness"
+      ],
+      "aliases": [
+        "vo2max",
+        "vo2 max",
+        "aerobic capacity testing",
+        "cardio fitness testing"
+      ]
+    },
+    {
+      "slug": "functional-testing",
+      "name": "Functional testing",
+      "categories": [
+        "longevity",
+        "natural"
+      ],
+      "aliases": [
+        "biomarker testing",
+        "biomarker analysis",
+        "blood biomarker panel",
+        "biological age testing",
+        "dna testing",
+        "gut microbiome testing",
+        "functional pathology"
+      ]
+    },
+    {
+      "slug": "performance-testing",
+      "name": "Performance testing",
+      "categories": [
+        "longevity",
+        "fitness",
+        "allied"
+      ],
+      "aliases": [
+        "athlete testing",
+        "force plate testing",
+        "strength and power testing",
+        "blood lactate testing",
+        "athlete screening",
+        "functional screening"
+      ]
+    },
+    {
+      "slug": "biohacking",
+      "name": "Biohacking",
+      "categories": [
+        "longevity"
+      ],
+      "aliases": [
+        "human optimisation",
+        "human optimization",
+        "performance optimisation",
+        "health optimisation"
+      ]
+    },
+    {
+      "slug": "health-tracking",
+      "name": "Health tracking",
+      "categories": [
+        "longevity"
+      ],
+      "aliases": [
+        "hrv testing",
+        "heart rate variability",
+        "wearables",
+        "health monitoring",
+        "resting metabolic rate testing"
+      ]
+    },
+    {
+      "slug": "hyperbaric-oxygen",
+      "name": "Hyperbaric oxygen",
+      "categories": [
+        "longevity",
+        "recovery"
+      ],
+      "aliases": [
+        "hbot",
+        "hyperbaric chamber"
+      ]
+    }
   ]
 }
