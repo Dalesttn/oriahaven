@@ -66,6 +66,39 @@ $oria_region = $oria_term instanceof WP_Term ? \Oria\Core\Taxonomies\region_for(
 				endwhile;
 				?>
 			</div>
+			<?php
+			/*
+			 * A suburb with nothing in it is noindexed (Oria\Core\AreaDepth),
+			 * but the URL stays live and people still arrive from bookmarks
+			 * and old links. Saying so plainly and pointing at the suburbs
+			 * that do have practices beats an empty results list, which
+			 * reads as a broken page rather than an honest one.
+			 */
+			if ( ! have_posts() && $oria_term instanceof WP_Term && function_exists( '\Oria\Core\AreaDepth\siblings_with_listings' ) ) :
+				$oria_nearby = \Oria\Core\AreaDepth\siblings_with_listings( $oria_term );
+				?>
+				<div class="notice" style="margin-top:.5rem">
+					<p style="margin:0">
+						<b><?php printf( esc_html__( 'No practices listed in %s yet.', 'oria' ), esc_html( \Oria\Theme\tname( $oria_term ) ) ); ?></b>
+						<?php esc_html_e( 'The directory is still growing across Perth — this suburb will fill in as practices join.', 'oria' ); ?>
+					</p>
+				</div>
+				<?php if ( $oria_nearby ) : ?>
+					<h3 class="h4" style="margin-top:var(--s-5)"><?php esc_html_e( 'Nearby suburbs', 'oria' ); ?></h3>
+					<ul class="chips" style="margin-top:.75rem">
+						<?php foreach ( $oria_nearby as $oria_near ) : ?>
+							<li><a class="chip" href="<?php echo esc_url( (string) get_term_link( $oria_near ) ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_near ) ); ?></a></li>
+						<?php endforeach; ?>
+					</ul>
+				<?php endif; ?>
+				<?php if ( $oria_region && $oria_region->term_id !== $oria_term->term_id ) : ?>
+					<p style="margin-top:var(--s-4)">
+						<a class="btn btn--ghost btn--sm" href="<?php echo esc_url( (string) get_term_link( $oria_region ) ); ?>">
+							<?php printf( esc_html__( 'Browse all of %s', 'oria' ), esc_html( \Oria\Theme\tname( $oria_region ) ) ); ?>
+						</a>
+					</p>
+				<?php endif; ?>
+			<?php endif; ?>
 		</div>
 	</div>
 </section>
