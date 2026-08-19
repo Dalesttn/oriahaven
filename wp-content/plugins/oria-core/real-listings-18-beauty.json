@@ -1,7 +1,20 @@
 {
   "_note": "Batch 18 — Beauty & Self-Care. Researched from each business's own website and public listings, not scraped from Google: Google's terms don't permit it and the Places integration exists for that job. Every listing is a real Perth business; details left empty are details I could not verify, never guesses. Blurbs are written for Oria Haven, not copied. rating 0 / reviews 0 / status unclaimed, as with every seeded batch.\n\nDeliberately absent: cosmetic injectables, anti-wrinkle injections and dermal fillers. Botulinum toxin is a Schedule 4 prescription-only medicine in Australia and advertising prescription-only medicines to the public is prohibited under the Therapeutic Goods Act — which is why Perth clinics say 'anti-wrinkle injections' rather than the brand name. Santé Skin does offer injectables; its listing describes the rest of what it does. Nothing here names a skin condition or promises a result.",
-  "categories": [],
-  "regions": [],
+  "categories": [
+    {
+      "id": "beauty",
+      "name": "Beauty & Self-Care",
+      "plural": "beauty and self-care studios",
+      "icon": "beauty",
+      "blurb": "Facials and skin treatments, brows and lashes, nails and waxing, across Perth salons and small studios."
+    }
+  ],
+  "regions": [
+    { "id": "central", "name": "Perth Central", "suburbs": ["Leederville", "Mount Lawley", "North Perth", "Subiaco"] },
+    { "id": "west",    "name": "Western Suburbs", "suburbs": ["Claremont", "Cottesloe"] },
+    { "id": "freo",    "name": "Fremantle & South", "suburbs": ["Fremantle", "East Fremantle", "South Fremantle"] },
+    { "id": "north",   "name": "Northern Suburbs", "suburbs": ["Trigg"] }
+  ],
   "listings": [
     {
       "id": "oxford-beauty-clinic-leederville",

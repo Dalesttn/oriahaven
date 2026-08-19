@@ -98,6 +98,10 @@ class Command {
 
 		$this->ensure_terms( $data, $dry );
 
+		// After ensure_terms, so categories the file declares have been
+		// created and only genuinely absent ones are reported.
+		$this->check_terms( (array) $data['listings'], $dry );
+
 		$created   = 0;
 		$updated   = 0;
 		$skipped   = 0;
@@ -1219,11 +1223,20 @@ class Command {
 			array( (string) ( $row['cat'] ?? '' ) ),
 			(array) ( $row['also'] ?? array() )
 		);
+		/*
+		 * An unknown slug used to be skipped in silence. That is how twelve
+		 * beauty listings reached production with no category at all: the
+		 * seed said "beauty", production had no such term because the
+		 * categories had not shipped yet, and the import reported twelve
+		 * successes. Now it says so.
+		 */
 		$practice_ids = array();
 		foreach ( array_filter( $practices ) as $slug ) {
 			$term = get_term_by( 'slug', $slug, Taxonomies\PRACTICE );
 			if ( $term instanceof \WP_Term ) {
 				$practice_ids[] = $term->term_id;
+			} else {
+				\WP_CLI::warning( sprintf( '%s: no "%s" category on this site, so it has none.', (string) ( $row['name'] ?? $post_id ), $slug ) );
 			}
 		}
 		if ( $practice_ids ) {
@@ -1238,9 +1251,62 @@ class Command {
 			$region = get_term_by( 'slug', (string) $row['region'], Taxonomies\AREA );
 			if ( $region instanceof \WP_Term ) {
 				wp_set_object_terms( $post_id, array( $region->term_id ), Taxonomies\AREA );
+			} else {
+				\WP_CLI::warning( sprintf( '%s: neither suburb "%s" nor region "%s" exists here.', (string) ( $row['name'] ?? $post_id ), (string) ( $row['suburb'] ?? '' ), (string) $row['region'] ) );
 			}
 		}
 
+	}
+
+	/**
+	 * Refuse a file that names categories this site does not have.
+	 *
+	 * Checked up front against the site being written to, so the answer
+	 * cannot depend on which machine the dry run happened to be run on —
+	 * which is exactly how the beauty batch passed here and failed there.
+	 *
+	 * @param array<int, array<string, mixed>> $listings
+	 */
+	private function check_terms( array $listings, bool $dry ): void {
+		$missing_cats  = array();
+		$missing_areas = array();
+
+		foreach ( $listings as $row ) {
+			$slugs = array_filter(
+				array_merge( array( (string) ( $row['cat'] ?? '' ) ), (array) ( $row['also'] ?? array() ) )
+			);
+			foreach ( $slugs as $slug ) {
+				if ( ! get_term_by( 'slug', $slug, Taxonomies\PRACTICE ) ) {
+					$missing_cats[ $slug ] = ( $missing_cats[ $slug ] ?? 0 ) + 1;
+				}
+			}
+
+			$suburb = sanitize_title( (string) ( $row['suburb'] ?? '' ) );
+			$region = (string) ( $row['region'] ?? '' );
+			if ( '' !== $suburb
+				&& ! get_term_by( 'slug', $suburb, Taxonomies\AREA )
+				&& ( '' === $region || ! get_term_by( 'slug', $region, Taxonomies\AREA ) ) ) {
+				$key                   = (string) ( $row['suburb'] ?? '' );
+				$missing_areas[ $key ] = ( $missing_areas[ $key ] ?? 0 ) + 1;
+			}
+		}
+
+		foreach ( $missing_areas as $name => $count ) {
+			\WP_CLI::warning( sprintf( '%d listing(s) name the area "%s", which does not exist here.', $count, $name ) );
+		}
+
+		foreach ( $missing_cats as $slug => $count ) {
+			\WP_CLI::warning( sprintf( '%d listing(s) name the category "%s", which does not exist here.', $count, $slug ) );
+		}
+
+		/*
+		 * A dry run reports and returns — refusing to finish the report is
+		 * the opposite of what it is for. A real run stops, because the
+		 * alternative is listings on a live site filed under nothing.
+		 */
+		if ( $missing_cats && ! $dry ) {
+			\WP_CLI::error( 'Declare those categories in the file\'s "categories" list, or create them first. Nothing has been written.' );
+		}
 	}
 
 	private function write_meta( int $post_id, array $row ): void {
