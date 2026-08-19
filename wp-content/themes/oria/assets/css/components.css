@@ -270,8 +270,61 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
   background-size: 11px;
   padding-right: 2.4rem;
 }
-.check { display: flex; gap: var(--s-3); align-items: flex-start; font-size: var(--fs-sm); cursor: pointer; }
-.check input { margin-top: 4px; accent-color: var(--deep); width: 16px; height: 16px; flex: none; }
+/* Filter rows, same shape as the category rail so the sidebar reads as one
+   thing. No icon here: a tick box says "toggle" where the rail's round
+   glyph says "go somewhere", and that difference is worth keeping. The
+   wash is a low-alpha brand tint rather than a solid, because .filterbox
+   is frosted glass and a solid fill sits on top of it rather than in it. */
+.check {
+  position: relative;
+  display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.4rem 0.55rem; border-radius: 9px;
+  font-size: var(--fs-sm); cursor: pointer;
+  transition: background var(--t-fast) var(--ease);
+}
+.check::before {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: 3px;
+  border-radius: 3px; background: var(--deep);
+  transform: scaleY(0); transform-origin: center;
+  transition: transform var(--t-fast) var(--ease);
+}
+.check input {
+  appearance: none; -webkit-appearance: none;
+  flex: none; width: 18px; height: 18px; margin: 0;
+  border: 1.5px solid var(--line); border-radius: 5px;
+  background-color: var(--white); cursor: pointer;
+  transition: background var(--t-fast) var(--ease),
+              border-color var(--t-fast) var(--ease);
+}
+.check span {
+  flex: 1; line-height: 1.35; color: var(--text-soft);
+  transition: transform var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.check:hover { background-color: rgba(14, 59, 56, 0.055); }
+.check:hover::before { transform: scaleY(0.55); }
+.check:hover input { border-color: var(--deep); }
+.check:hover span { transform: translateX(2px); color: var(--ink); }
+/* Longhands, not the background shorthand. With var() in a shorthand the
+   whole declaration defers to computed-value time, and the colour was
+   being dropped while the image survived — a white box with a white tick
+   in it. Longhands cascade predictably. */
+.check input:checked {
+  background-color: var(--deep);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23fff' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.6 6.2 4.9 8.5 9.4 3.7'/%3E%3C/svg%3E");
+  background-position: center;
+  background-size: 11px 11px;
+  background-repeat: no-repeat;
+  border-color: var(--deep);
+}
+.check:has(input:checked) { background-color: rgba(14, 59, 56, 0.055); }
+.check:has(input:checked)::before { transform: scaleY(0.75); }
+/* The label is a sibling of the input, so this works everywhere; only the
+   row wash above leans on :has(), and without it the tick still reads. */
+.check input:checked + span { color: var(--ink); font-weight: 600; }
+.check input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .check, .check::before, .check input, .check span { transition: none; }
+}
 .hint { font-size: var(--fs-xs); color: var(--text-faint); margin-top: var(--s-2); }
 
 /* Inline search bar — the primary action of the whole site */
