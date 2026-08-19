@@ -759,10 +759,16 @@
 
       var count = $("#dirCount");
       if (count) {
+        /* Name the narrowest place that's locked. A suburb page locks both
+           its suburb and its region, and naming the region there produced
+           "4 of 130 listings in Perth Central" under a Mount Lawley
+           heading — which read as though the suburb held 130 practices. */
+        var place = locked.suburb ||
+          (state.regions.length === 1 ? regionNames[state.regions[0]] : "");
         count.innerHTML = (found.length > PER_PAGE
           ? "<b>" + (start + 1) + "&ndash;" + (start + shown.length) + "</b> of " + found.length + " listings"
-          : "<b>" + found.length + "</b> of " + DATA.listings.length + " listings") +
-          (state.regions.length === 1 ? " in " + esc(regionNames[state.regions[0]]) : "");
+          : "<b>" + found.length + "</b> " + (found.length === 1 ? "listing" : "listings")) +
+          (place ? " in " + esc(place) : "");
       }
 
       /* With the filters hidden in a sheet, the button has to say how many

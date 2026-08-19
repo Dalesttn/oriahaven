@@ -58,7 +58,28 @@ $oria_region = $oria_term instanceof WP_Term ? \Oria\Core\Taxonomies\region_for(
 			<h2 class="sr-only"><?php printf( esc_html__( 'Practices in %s', 'oria' ), esc_html( \Oria\Theme\tname( $oria_term ) ) ); ?></h2>
 			<p class="dir__count" id="dirCount"></p>
 			<div class="chips" id="dirChips" style="margin-top:1rem"></div>
-			<div class="dir__results" id="dirResults" data-region="<?php echo esc_attr( $oria_region ? $oria_region->slug : '' ); ?>">
+			<?php
+			/*
+			 * Both facets, not just the region.
+			 *
+			 * The directory script locks whichever facets it is given and
+			 * re-renders the results from the index. Handing it only the
+			 * region meant every suburb in Perth Central rendered the same
+			 * 107 practices: /area/central/leederville/ was headed
+			 * "Leederville" and listed Beyond Rest East Perth. Twenty suburb
+			 * pages were exact duplicates of each other and of their region,
+			 * which is a far better reason for Google to leave them out of
+			 * the index than the thin ones ever were.
+			 *
+			 * The script already supported this — locked.suburb and its
+			 * filter were both there. Only the attribute was missing. The
+			 * value is the display name because that is what the index
+			 * stores (tname( $suburb ?: $region )), and it is the form
+			 * taxonomy-practice.php already passes.
+			 */
+			$oria_is_suburb = $oria_term instanceof WP_Term && $oria_term->parent;
+			?>
+			<div class="dir__results" id="dirResults" data-region="<?php echo esc_attr( $oria_region ? $oria_region->slug : '' ); ?>"<?php echo $oria_is_suburb ? ' data-suburb="' . esc_attr( \Oria\Theme\tname( $oria_term ) ) . '"' : ''; ?>>
 				<?php
 				while ( have_posts() ) :
 					the_post();
