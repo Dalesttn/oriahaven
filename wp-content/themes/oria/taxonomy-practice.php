@@ -107,6 +107,34 @@ if ( $oria_feat ) :
 			<?php // See archive-listing.php: gives the listing h3s a parent. ?>
 			<h2 class="sr-only"><?php printf( /* translators: %s: practice name */ esc_html__( '%s in Perth', 'oria' ), esc_html( $oria_pname ) ); ?></h2>
 			<p class="dir__count" id="dirCount"></p>
+			<?php
+			/*
+			 * The second level: what actually narrows this category. Counted
+			 * from the listings in it rather than listed from the taxonomy,
+			 * so no tag here can empty the page.
+			 *
+			 * Rendered as checkboxes wearing pills, sharing data-filter="spec"
+			 * with the sidebar. That means no new JavaScript, and — because
+			 * the script writes every [data-filter] input back from state —
+			 * a tag and its sidebar checkbox can never disagree.
+			 *
+			 * Combos are excluded: /practice/massage/fremantle/ has already
+			 * narrowed once, and a second row of narrowing reads as clutter.
+			 */
+			$oria_specs = ( ! $oria_is_combo && $oria_term instanceof WP_Term && function_exists( '\Oria\Core\Categories\specialties_for' ) )
+				? \Oria\Core\Categories\specialties_for( $oria_term )
+				: array();
+			?>
+			<?php if ( count( $oria_specs ) > 1 ) : ?>
+				<div class="spectags" role="group" aria-label="<?php esc_attr_e( 'Narrow by specialty', 'oria' ); ?>">
+					<?php foreach ( $oria_specs as $oria_spec ) : ?>
+						<label class="spectag">
+							<input type="checkbox" data-filter="spec" value="<?php echo esc_attr( $oria_spec['term']->slug ); ?>">
+							<span><?php echo esc_html( \Oria\Theme\tname( $oria_spec['term'] ) ); ?><b><?php echo esc_html( (string) $oria_spec['count'] ); ?></b></span>
+						</label>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
 			<div class="chips" id="dirChips" style="margin-top:1rem"></div>
 			<div
 				class="dir__results"

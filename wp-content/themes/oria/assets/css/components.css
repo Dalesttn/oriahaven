@@ -589,6 +589,36 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
 .listing__where { font-size: var(--fs-xs); color: var(--text-faint); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
 .listing__where svg { width: 12px; height: 12px; flex: none; }
 .listing__desc { font-size: var(--fs-sm); color: var(--text-soft); }
+/* --- Specialty tags (second level, under the result count) ------------ */
+/* Checkboxes wearing pills. The input stays in the DOM and focusable so
+   the keyboard and the sidebar both keep working; only its box is hidden. */
+.spectags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--s-3); }
+.spectag { position: relative; display: inline-flex; cursor: pointer; }
+.spectag input {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  margin: 0; opacity: 0; cursor: pointer;
+}
+.spectag span {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.32rem 0.8rem; border-radius: var(--r-pill);
+  font-size: var(--fs-xs); font-weight: 600; line-height: 1.25;
+  border: 1px solid var(--line); background: var(--white); color: var(--text-soft);
+  transition: border-color var(--t-fast) var(--ease),
+              background var(--t-fast) var(--ease),
+              color var(--t-fast) var(--ease);
+}
+.spectag b {
+  font-weight: 600; font-size: 0.72em; color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+.spectag:hover span { border-color: var(--ink); color: var(--ink); }
+.spectag input:checked + span {
+  background: var(--deep); border-color: var(--deep); color: var(--white);
+}
+.spectag input:checked + span b { color: rgba(255,255,255,.7); }
+.spectag input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .spectag span { transition: none; } }
+
 /* --- Category rail (directory sidebar) ------------------------------- */
 /* Nothing is painted at rest so the listings stay the loudest thing on the
    page. Hover washes the row in the category's own tint, grows the glyph

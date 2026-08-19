@@ -40,6 +40,7 @@ const DATA_FILE = 'data/categories.json';
 const META_EMOJI = 'oria_emoji';
 const META_TOP   = 'oria_top_level';
 const CACHE_KEY  = 'oria_category_counts_v1';
+const SPEC_CACHE = 'oria_category_specs_v1';
 
 function bootstrap(): void {
 	add_action( 'admin_menu', __NAMESPACE__ . '\menu' );
@@ -52,6 +53,7 @@ function bootstrap(): void {
 
 function flush(): void {
 	delete_transient( CACHE_KEY );
+	delete_transient( SPEC_CACHE );
 }
 
 /**
@@ -291,6 +293,79 @@ function navigation(): array {
 
 	usort( $out, static fn( array $a, array $b ): int => $b['count'] <=> $a['count'] );
 	return $out;
+}
+
+/**
+ * The specialties actually present in a category, commonest first.
+ *
+ * Counted from the listings rather than taken from the taxonomy, because
+ * the question a visitor is asking on a category page is "what is in
+ * here", not "what exists somewhere". A specialty nobody in this category
+ * offers would be a filter that empties the page.
+ *
+ * @return array<int, array{term: \WP_Term, count: int}>
+ */
+function specialties_for( \WP_Term $category, int $limit = 14 ): array {
+	/*
+	 * One cache for the whole taxonomy rather than one per category, so
+	 * the existing flush() clears it along with everything else. Per-term
+	 * transients would survive a flush and quietly go stale.
+	 */
+	$all = get_transient( SPEC_CACHE );
+	$all = is_array( $all ) ? $all : array();
+	$tid = (int) $category->term_id;
+
+	if ( isset( $all[ $tid ] ) ) {
+		return hydrate( (array) $all[ $tid ], $limit );
+	}
+
+	// A parent answers for its children too, the same way its count does.
+	$terms = array( (int) $category->term_id );
+	foreach ( (array) get_term_children( (int) $category->term_id, \Oria\Core\Taxonomies\PRACTICE ) as $child ) {
+		$terms[] = (int) $child;
+	}
+
+	$ids = get_posts(
+		array(
+			'post_type'      => 'listing',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'tax_query'      => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+				array( 'taxonomy' => \Oria\Core\Taxonomies\PRACTICE, 'field' => 'term_id', 'terms' => $terms ),
+			),
+		)
+	);
+
+	$tally = array();
+	foreach ( $ids as $id ) {
+		foreach ( (array) wp_get_post_terms( (int) $id, \Oria\Core\Taxonomies\SPECIALTY ) as $spec ) {
+			$tally[ (int) $spec->term_id ] = ( $tally[ (int) $spec->term_id ] ?? 0 ) + 1;
+		}
+	}
+	arsort( $tally );
+
+	$all[ $tid ] = $tally;
+	set_transient( SPEC_CACHE, $all, 12 * HOUR_IN_SECONDS );
+
+	return hydrate( $tally, $limit );
+}
+
+/**
+ * Turn a term_id => count tally into terms, dropping any since deleted.
+ *
+ * @param array<int, int> $tally
+ * @return array<int, array{term: \WP_Term, count: int}>
+ */
+function hydrate( array $tally, int $limit ): array {
+	$out = array();
+	foreach ( $tally as $id => $n ) {
+		$term = get_term( (int) $id, \Oria\Core\Taxonomies\SPECIALTY );
+		if ( $term instanceof \WP_Term ) {
+			$out[] = array( 'term' => $term, 'count' => (int) $n );
+		}
+	}
+	return array_slice( $out, 0, $limit );
 }
 
 /**

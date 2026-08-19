@@ -824,6 +824,12 @@
           else { state[key] = state[key].filter(function (x) { return x !== val; }); }
         }
         state.page = 1;
+        /* Two controls can now drive the same filter — a specialty tag under
+           the count and its checkbox in the sidebar — so every input has to
+           be written back from state, or the two disagree about what is on.
+           Setting .checked in script fires no change event, so this cannot
+           loop. */
+        syncInputs();
         render();
       });
     });
