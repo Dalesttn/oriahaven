@@ -60,6 +60,7 @@ require_once ORIA_CORE_DIR . 'includes/llms.php';
 require_once ORIA_CORE_DIR . 'includes/email-preview.php';
 require_once ORIA_CORE_DIR . 'includes/area-depth.php';
 require_once ORIA_CORE_DIR . 'includes/area-coverage.php';
+require_once ORIA_CORE_DIR . 'includes/services.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
@@ -98,6 +99,7 @@ Llms\bootstrap();
 EmailPreview\bootstrap();
 AreaDepth\bootstrap();
 AreaCoverage\bootstrap();
+Services\bootstrap();
 
 /**
  * Rewrite rules are only rebuilt on activation and deactivation. Flushing on
