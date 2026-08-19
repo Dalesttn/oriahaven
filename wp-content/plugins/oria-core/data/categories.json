@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "note": "Top-level directory categories. 'slug' matches an existing practice term wherever one exists, because /practice/{slug}/ is live and Google is crawling it — renaming a display name is free, changing a slug is not. 'parent' groups existing terms under a new one; practice rewrites are flat, so a child's URL never changes when it gains a parent. 'reserved' defines a category without showing it: it appears on its own once it has min_listings, which keeps empty shelves out of the primary navigation.",
+  "min_listings": 3,
+  "categories": [
+    { "slug": "yoga",       "name": "Yoga & Pilates",                   "emoji": "🧘", "note": "was 'Yoga & movement'" },
+    { "slug": "fitness",    "name": "Fitness & Movement",               "emoji": "💪" },
+    { "slug": "bodywork",   "name": "Massage & Bodywork",               "emoji": "💆", "note": "was 'Bodywork & Massage'" },
+    { "slug": "mind",       "name": "Mind & Mental Wellbeing",          "emoji": "🧠", "children": ["meditation", "mindfulness", "breathwork"] },
+    { "slug": "natural",    "name": "Holistic & Natural Therapies",     "emoji": "🌿", "note": "was 'Natural & Alternative Therapies'" },
+    { "slug": "nutrition",  "name": "Nutrition & Healthy Living",       "emoji": "🥗", "note": "was 'Dietitians & nutrition'" },
+    { "slug": "spa",        "name": "Spa & Recovery",                   "emoji": "🛁", "children": ["recovery", "sound"] },
+    { "slug": "family",     "name": "Women's, Men's & Family Wellness", "emoji": "❤️", "note": "was 'Family & Women's Health'" },
+    { "slug": "energy",     "name": "Spirituality & Consciousness",     "emoji": "🔮", "note": "was 'Energy Healing'" },
+    { "slug": "experiences","name": "Retreats, Nature & Experiences",   "emoji": "🌊", "children": ["nature", "retreats"] },
+
+    { "slug": "allied",     "name": "Health & Allied Health",           "emoji": "🩺", "note": "Restored: 22 listings, the largest category. Physiotherapists, occupational therapists, podiatrists and speech pathologists have no honest home under Massage & Bodywork." },
+    { "slug": "creative",   "name": "Creative Therapies",               "emoji": "🎨", "note": "Restored: 10 listings. Named without 'Sound' because sound healing sits under Spirituality and Spa, and two categories claiming it would confuse both." },
+    { "slug": "community",  "name": "Community & Support",              "emoji": "🤝", "note": "Restored: 11 listings. AA, SMART Recovery, grief and peer support groups." },
+
+    { "slug": "beauty",     "name": "Beauty & Self-Care",               "emoji": "✨", "reserved": true, "note": "1 listing. Vocabulary is ready — facials, skin treatments, lashes & brows, nails, waxing — so the category arrives complete on the first salon import." },
+    { "slug": "longevity",  "name": "Longevity & Performance",          "emoji": "🚀", "reserved": true, "note": "No listings of its own yet. Every practice it would show already appears under Spa & Recovery or Allied Health, and two categories listing the same businesses teaches visitors the categories mean nothing. It opens when practices exist that belong here and nowhere else." }
+  ]
+}
