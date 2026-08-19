@@ -368,14 +368,45 @@ function top_for( int $listing_id, int $limit = 2 ): array {
 }
 
 /**
- * A line glyph per category, as inline SVG.
+ * The icon for a category, as inline SVG.
  *
- * Inline and single-colour on purpose. The icon inherits the category's
- * own tint through currentColor, costs no request, and stays crisp at any
- * size — none of which a generated raster image manages at 15 pixels.
- * Drawn to one grid at one stroke weight so the fourteen read as a set.
+ * Drawn artwork first, from assets/icons/{slug}.svg — flat two-tone in the
+ * brand's green and gold. These carry their own colour, so unlike the line
+ * glyphs below they do not take the category tint; the rail sits them on a
+ * neutral dot and leaves the tint to the hover wash.
+ *
+ * Inlined rather than linked: fifteen files is fifteen requests, each one
+ * about 2KB, and inline means no flash of nothing while they load. Read
+ * once per request and held, because the sidebar asks for all of them.
+ *
+ * The single-colour glyphs remain as the fallback. A category added
+ * tomorrow has no artwork yet and should still draw something rather than
+ * leave a hole.
  */
 function icon( string $slug ): string {
+	static $art = array();
+
+	$safe = preg_replace( '/[^a-z0-9_-]/', '', $slug );
+	if ( ! array_key_exists( $safe, $art ) ) {
+		$file        = ORIA_CORE_DIR . 'assets/icons/' . $safe . '.svg';
+		$art[ $safe ] = is_readable( $file )
+			? trim( (string) file_get_contents( $file ) ) // phpcs:ignore WordPress.WP.AlternativeFunctions
+			: '';
+	}
+	if ( '' !== $art[ $safe ] ) {
+		return $art[ $safe ];
+	}
+
+	return glyph( $safe );
+}
+
+/**
+ * The fallback: one line glyph per category, single-colour.
+ *
+ * Inherits the surrounding colour through currentColor, which the drawn
+ * artwork cannot. Kept for any category without artwork of its own.
+ */
+function glyph( string $slug ): string {
 	static $paths = array(
 		'yoga'        => '<circle cx="12" cy="5.5" r="2.4"/><path d="M12 9v5m0 0-4.5 4.5M12 14l4.5 4.5M6 12h12"/>',
 		'fitness'     => '<path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/>',
