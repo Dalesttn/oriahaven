@@ -1087,6 +1087,16 @@ class Command {
 	 * The CBD is now "Perth CBD" / perth-cbd, and a file still saying "Perth"
 	 * would otherwise create a second term and split twenty-seven listings
 	 * between them without erroring. data/area-aliases.json is the map.
+	 *
+	 * THE ALIAS ONLY APPLIES IF ITS TARGET ALREADY EXISTS. The first version
+	 * returned the alias unconditionally, which caused the precise accident it
+	 * was written to prevent. Run against a site where the rename had not
+	 * happened yet, it sent the importer looking for a perth-cbd term, found
+	 * none, created an empty one, and left the CBD split between a populated
+	 * "perth" and a new "perth-cbd" holding four listings.
+	 *
+	 * An alias is a statement about a term that exists. It is never an
+	 * instruction to create one.
 	 */
 	private function area_slug( string $name ): string {
 		static $aliases = null;
@@ -1101,7 +1111,16 @@ class Command {
 		}
 
 		$slug = sanitize_title( $name );
-		return isset( $aliases[ $slug ] ) ? (string) $aliases[ $slug ] : $slug;
+
+		if ( ! isset( $aliases[ $slug ] ) ) {
+			return $slug;
+		}
+
+		$target = (string) $aliases[ $slug ];
+
+		// Target present: use it. Absent: this site has not been renamed yet,
+		// so the seed file's own slug is still the right answer.
+		return get_term_by( 'slug', $target, Taxonomies\AREA ) instanceof \WP_Term ? $target : $slug;
 	}
 
 	private function ensure_term( string $name, string $slug, string $taxonomy, int $parent, bool $dry ): int {

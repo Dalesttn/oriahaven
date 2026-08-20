@@ -289,4 +289,113 @@ if ( defined( 'WP_CLI' ) && \WP_CLI ) {
 			}
 		}
 	);
+
+	\WP_CLI::add_command(
+		'oria merge-area',
+		/**
+		 * Move every listing out of one area term into another, then delete
+		 * the emptied one and record the 301.
+		 *
+		 * Written after an alias bug split the Perth CBD across two terms on
+		 * production: a populated "perth" and a "perth-cbd" the importer had
+		 * created because the alias pointed at a term that did not exist yet.
+		 * Renaming cannot fix that — the target slug is taken — so the two
+		 * have to be merged.
+		 *
+		 * Listings are appended to the target before the source is deleted,
+		 * so nothing is ever briefly area-less.
+		 */
+		new class() {
+			/**
+			 * ## OPTIONS
+			 *
+			 * <from>
+			 * : Slug of the area term to empty and delete.
+			 *
+			 * --into=<slug>
+			 * : Slug of the area term that survives.
+			 *
+			 * [--to-name=<name>]
+			 * : Rename the surviving term while we are here.
+			 *
+			 * [--dry-run]
+			 * : Report what would change without writing anything.
+			 *
+			 * ## EXAMPLES
+			 *
+			 *     wp oria merge-area perth --into=perth-cbd --to-name="Perth CBD" --dry-run
+			 *     wp oria merge-area perth --into=perth-cbd --to-name="Perth CBD"
+			 */
+			public function __invoke( array $args, array $assoc ): void {
+				list( $from_slug ) = $args;
+				$into_slug = (string) ( $assoc['into'] ?? '' );
+				$dry       = isset( $assoc['dry-run'] );
+
+				if ( '' === $into_slug ) {
+					\WP_CLI::error( '--into=<slug> is required.' );
+				}
+
+				$from = get_term_by( 'slug', $from_slug, Taxonomies\AREA );
+				$into = get_term_by( 'slug', $into_slug, Taxonomies\AREA );
+
+				if ( ! $from instanceof \WP_Term ) {
+					\WP_CLI::error( sprintf( 'No area term with slug "%s".', $from_slug ) );
+				}
+				if ( ! $into instanceof \WP_Term ) {
+					\WP_CLI::error( sprintf( 'No area term with slug "%s".', $into_slug ) );
+				}
+				if ( (int) $from->term_id === (int) $into->term_id ) {
+					\WP_CLI::error( 'Those are the same term.' );
+				}
+				if ( (int) $from->parent !== (int) $into->parent ) {
+					\WP_CLI::warning( sprintf(
+						'Different parents: "%s" sits under #%d, "%s" under #%d. Check that is intended.',
+						$from->slug, $from->parent, $into->slug, $into->parent
+					) );
+				}
+
+				$ids = get_posts(
+					array(
+						'post_type'      => PostTypes\LISTING,
+						'post_status'    => 'any',
+						'posts_per_page' => -1,
+						'fields'         => 'ids',
+						'tax_query'      => array( array( 'taxonomy' => Taxonomies\AREA, 'field' => 'term_id', 'terms' => $from->term_id ) ),
+					)
+				);
+
+				$old_url  = (string) get_term_link( $from );
+				$new_name = (string) ( $assoc['to-name'] ?? wp_specialchars_decode( $into->name, ENT_QUOTES ) );
+
+				\WP_CLI::log( sprintf( 'from : %s  (%s)  #%d  %d listings', $from->slug, wp_specialchars_decode( $from->name, ENT_QUOTES ), $from->term_id, count( $ids ) ) );
+				\WP_CLI::log( sprintf( 'into : %s  (%s)  #%d', $into->slug, wp_specialchars_decode( $into->name, ENT_QUOTES ), $into->term_id ) );
+				if ( $new_name !== wp_specialchars_decode( $into->name, ENT_QUOTES ) ) {
+					\WP_CLI::log( sprintf( 'rename survivor to: %s', $new_name ) );
+				}
+				\WP_CLI::log( sprintf( 'redirect: %s  ->  %s', $old_url, (string) get_term_link( $into ) ) );
+
+				foreach ( $ids as $id ) {
+					\WP_CLI::log( sprintf( '    %s', wp_specialchars_decode( (string) get_the_title( $id ), ENT_QUOTES ) ) );
+				}
+
+				if ( $dry ) {
+					\WP_CLI::log( '- DRY RUN: nothing written -' );
+					return;
+				}
+
+				foreach ( $ids as $id ) {
+					wp_set_object_terms( (int) $id, array( (int) $into->term_id ), Taxonomies\AREA, true );
+				}
+
+				if ( $new_name !== wp_specialchars_decode( $into->name, ENT_QUOTES ) ) {
+					wp_update_term( (int) $into->term_id, Taxonomies\AREA, array( 'name' => $new_name ) );
+				}
+
+				Redirects\add( $old_url, (string) get_term_link( $into ) );
+				wp_delete_term( (int) $from->term_id, Taxonomies\AREA );
+
+				\WP_CLI::success( sprintf( '%d listings moved. "%s" deleted, 301 recorded.', count( $ids ), $from_slug ) );
+			}
+		}
+	);
 }
