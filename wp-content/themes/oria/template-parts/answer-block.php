@@ -69,17 +69,53 @@ $oria_guides = ( ! $oria_area instanceof WP_Term && function_exists( '\Oria\Core
 			<aside class="guides" aria-labelledby="guidesTitle">
 				<h2 class="guides__title" id="guidesTitle"><?php esc_html_e( 'Guides on this', 'oria' ); ?></h2>
 				<ul class="guides__list">
-					<?php foreach ( $oria_guides as $oria_post ) : ?>
+					<?php
+					foreach ( $oria_guides as $oria_post ) :
+						$oria_excerpt = trim( wp_strip_all_tags( (string) get_the_excerpt( $oria_post ) ) );
+						?>
 						<li class="guides__item">
-							<a href="<?php echo esc_url( (string) get_permalink( $oria_post ) ); ?>">
-								<?php echo esc_html( wp_specialchars_decode( (string) get_the_title( $oria_post ), ENT_QUOTES ) ); ?>
-							</a>
 							<?php
-							$oria_excerpt = trim( wp_strip_all_tags( (string) get_the_excerpt( $oria_post ) ) );
-							if ( '' !== $oria_excerpt ) :
+							/*
+							 * The whole row is one link, so hovering anywhere in the
+							 * block highlights it and the thumbnail is not a second
+							 * tab stop to the same place.
+							 */
+							?>
+							<a class="guides__link" href="<?php echo esc_url( (string) get_permalink( $oria_post ) ); ?>">
+								<?php
+								/*
+								 * aria-hidden on the wrapper, not alt="" on the image.
+								 * WordPress fills an empty alt from the attachment's own
+								 * alt text, so a screen reader heard the article title
+								 * twice — once from the thumbnail, once from the link.
+								 */
 								?>
-								<span class="guides__blurb"><?php echo esc_html( wp_trim_words( $oria_excerpt, 18 ) ); ?></span>
-							<?php endif; ?>
+								<span class="guides__thumb" aria-hidden="true">
+									<?php
+									if ( has_post_thumbnail( $oria_post ) ) {
+										echo get_the_post_thumbnail(
+											$oria_post,
+											'thumbnail',
+											array( 'loading' => 'lazy', 'alt' => '', 'decoding' => 'async' )
+										);
+									} else {
+										// Not every article has art. The placeholder scene is
+										// the same guaranteed-to-exist fallback the listing
+										// cards use, so the column never goes ragged.
+										printf(
+											'<img src="%s" alt="" loading="lazy" decoding="async" width="150" height="150">',
+											esc_url( get_template_directory_uri() . '/assets/img/scene-hall.webp' )
+										);
+									}
+									?>
+								</span>
+								<span class="guides__text">
+									<span class="guides__name"><?php echo esc_html( wp_specialchars_decode( (string) get_the_title( $oria_post ), ENT_QUOTES ) ); ?></span>
+									<?php if ( '' !== $oria_excerpt ) : ?>
+										<span class="guides__blurb"><?php echo esc_html( wp_trim_words( $oria_excerpt, 14 ) ); ?></span>
+									<?php endif; ?>
+								</span>
+							</a>
 						</li>
 					<?php endforeach; ?>
 				</ul>

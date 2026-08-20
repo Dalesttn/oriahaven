@@ -1925,9 +1925,12 @@ a.livesession:hover { background: var(--sand-2); }
   }
 }
 
+/* A sand panel rather than a hairline rule: the column has to read as a
+ * distinct thing beside the answer, not as more of the same page. */
 .guides {
-  border-top: 1px solid var(--line);
-  padding-top: var(--s-4);
+  background: var(--sand-2);
+  border-radius: 14px;
+  padding: var(--s-4);
 }
 
 .guides__title {
@@ -1937,40 +1940,64 @@ a.livesession:hover { background: var(--sand-2); }
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-faint);
-  margin-bottom: var(--s-4);
+  margin: 0 0 var(--s-3) 0.6rem;
 }
 
 .guides__list { list-style: none; margin: 0; padding: 0; }
 
-.guides__item + .guides__item {
-  margin-top: var(--s-4);
-  padding-top: var(--s-4);
-  border-top: 1px solid var(--line);
+/* The whole row is the link, so the hover target is the block. */
+.guides__link {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  padding: 0.6rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.15s ease;
+}
+.guides__link:hover,
+.guides__link:focus-visible { background: var(--sand-3); }
+
+.guides__thumb {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--sand-3);
+}
+.guides__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.guides__item a {
+.guides__text { min-width: 0; }
+
+.guides__name {
   display: block;
   font-size: var(--fs-sm);
   font-weight: 500;
-  line-height: 1.4;
-  color: var(--text);
-  text-decoration: none;
+  line-height: 1.35;
   text-wrap: pretty;
 }
-.guides__item a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.guides__link:hover .guides__name { text-decoration: underline; text-underline-offset: 3px; }
 
 .guides__blurb {
   display: block;
-  margin-top: 0.35rem;
+  margin-top: 0.25rem;
   font-size: var(--fs-xs);
-  line-height: 1.5;
+  line-height: 1.45;
   color: var(--text-faint);
 }
 
 .guides__all {
   display: inline-block;
-  margin-top: var(--s-4);
+  margin: var(--s-3) 0 0 0.6rem;
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
   color: var(--text-soft);
 }
+
