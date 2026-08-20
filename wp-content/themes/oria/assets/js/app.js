@@ -671,11 +671,17 @@
 
     /* The "showing" marker on the intent rows. Server-rendered from the
        query string on first paint; kept honest here as filters change. */
+    var landed = false;
+
     function syncActiveRow() {
       $$(".intents__table tbody tr").forEach(function (tr) {
         var a = tr.querySelector("th a");
         if (!a) return;
-        var q = new URLSearchParams((a.getAttribute("href") || "").split("?")[1] || "");
+        // Strip the fragment first. Row links end in #dirResults, and
+        // without this the parsed value is "meditation#dirResults" and the
+        // row never matches the filter it just applied.
+        var qs = ((a.getAttribute("href") || "").split("?")[1] || "").split("#")[0];
+        var q = new URLSearchParams(qs);
         var on = false;
         ["svc", "aud", "price", "format"].forEach(function (k) {
           var want = q.get(k);
@@ -842,6 +848,23 @@
       // Mark the intent row the current filter corresponds to, so the
       // table keeps saying where you are as filters change.
       syncActiveRow();
+
+      /* Arrived from an intent row? The href carries #dirResults, so the
+         browser has already jumped — but the chips render above the results
+         after that jump and push them down, leaving the first card under the
+         header. Re-anchor once, after the first paint, and never again: a
+         second scroll while somebody is reading would be its own bug. */
+      if (!landed) {
+        landed = true;
+        var cameFrom = new URLSearchParams(window.location.search);
+        var viaIntent = ["svc", "aud", "price", "format"].some(function (k) { return cameFrom.has(k); });
+        if (viaIntent && window.location.hash === "#dirResults") {
+          requestAnimationFrame(function () {
+            var box = $("#dirResults");
+            if (box) box.scrollIntoView({ block: "start" });
+          });
+        }
+      }
 
       // Keep the URL shareable and indexable-looking as filters change.
       //

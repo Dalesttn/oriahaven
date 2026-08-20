@@ -48,6 +48,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const MIN = 3;
 
+/**
+ * The fragment every row link ends with.
+ *
+ * Without it, clicking a row reloads the page at the top and leaves the
+ * visitor seventeen hundred pixels above the practices they just filtered
+ * for — the filter applied, the result invisible. The fragment makes the
+ * browser land on the results with no script involved.
+ */
+const ANCHOR = '#dirResults';
+
+/** A filtered URL for one row, pointed at the results. */
+function row_url( string $base, string $key, string $value ): string {
+	return add_query_arg( $key, $value, $base ) . ANCHOR;
+}
+
 /** Published listings in a practice term and its children. */
 function listings_in( \WP_Term $practice ): array {
 	return get_posts(
@@ -97,7 +112,7 @@ function for_practice( \WP_Term $practice ): array {
 		$rows[] = array(
 			'label' => $row['name'],
 			'count' => (int) $c['yes'],
-			'url'   => add_query_arg( 'aud', $slug, $base ),
+			'url'   => row_url( $base, 'aud', $slug ),
 			'kind'  => 'audience',
 		);
 	}
@@ -174,7 +189,7 @@ function for_practice( \WP_Term $practice ): array {
 		$rows[] = array(
 			'label' => $row['name'],
 			'count' => (int) $row['count'],
-			'url'   => add_query_arg( 'svc', $slug, $base ),
+			'url'   => row_url( $base, 'svc', $slug ),
 			'kind'  => 'service',
 		);
 	}
@@ -197,7 +212,7 @@ function for_practice( \WP_Term $practice ): array {
 		$rows[] = array(
 			'label' => __( 'Online or hybrid', 'oria' ),
 			'count' => $online,
-			'url'   => add_query_arg( 'format', 'online', $base ),
+			'url'   => row_url( $base, 'format', 'online' ),
 			'kind'  => 'format',
 		);
 	}
@@ -206,7 +221,7 @@ function for_practice( \WP_Term $practice ): array {
 		$rows[] = array(
 			'label' => __( 'Free or by donation', 'oria' ),
 			'count' => $free,
-			'url'   => add_query_arg( 'price', 'Free', $base ),
+			'url'   => row_url( $base, 'price', 'Free' ),
 			'kind'  => 'price',
 		);
 	}
