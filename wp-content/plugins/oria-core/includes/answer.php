@@ -288,6 +288,40 @@ function shared_sentences( array $rows ): array {
 			);
 	}
 
+	/*
+	 * The band, not just the floor.
+	 *
+	 * price_from is filled on 16% of listings and price_band on 68% — four
+	 * times the evidence for the same question. The floor is the more
+	 * precise figure where it exists, so it keeps its sentence; this adds
+	 * the one that can actually speak for most of the page.
+	 *
+	 * Free is excluded because it has its own sentence below, and a modal
+	 * band of "free or by donation" would say it twice.
+	 */
+	$bands = Faq\tally( $rows, 'priceBand' );
+	unset( $bands['Free'] );
+	$banded = array_sum( $bands );
+
+	if ( $banded >= MIN_SAMPLE ) {
+		$top   = (string) array_key_first( $bands );
+		$label = band_label( $top );
+
+		if ( '' !== $label ) {
+			// Where every banded listing sits in the same band there is no
+			// "most common" to report — "the most common is $60–200 (20 of
+			// them)" out of twenty is a comparison against nothing.
+			$out[] = $bands[ $top ] === $banded
+				? sprintf( '%1$s publish a price band, and all of them are %2$s.', spell( $banded, true ), $label )
+				: sprintf(
+					'%1$s publish a price band, and the most common is %2$s (%3$d of them).',
+					spell( $banded, true ),
+					$label,
+					$bands[ $top ]
+				);
+		}
+	}
+
 	$free = Faq\free_count( $rows );
 	if ( $free >= 2 ) {
 		$out[] = sprintf( '%1$s of the %2$d run sessions that are free or by donation.', spell( $free, true ), $total );
@@ -319,6 +353,23 @@ function shared_sentences( array $rows ): array {
  * figures, which is both the usual convention and the point at which a
  * spelled number is harder to scan than the digits.
  */
+/**
+ * A price band as a range somebody can read.
+ *
+ * The stored values are the dollar signs the admin select uses. "$$$" is
+ * not a price, and it is certainly not a price to anything reading the page
+ * rather than looking at it, so the block spells the range out. Unknown
+ * values return empty and the sentence is dropped rather than guessed at.
+ */
+function band_label( string $band ): string {
+	return array(
+		'$'    => 'under $25',
+		'$$'   => '$25–60',
+		'$$$'  => '$60–200',
+		'$$$$' => '$200 and above',
+	)[ $band ] ?? '';
+}
+
 function spell( int $n, bool $sentence_start = false ): string {
 	$words = array( 1 => 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine' );
 
