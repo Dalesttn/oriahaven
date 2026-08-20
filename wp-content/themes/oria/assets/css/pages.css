@@ -1815,6 +1815,16 @@ a.livesession:hover { background: var(--sand-2); }
 }
 
 .intents { max-width: 46rem; }
+.intents--split { max-width: 62rem; }
+
+/* Two tables side by side once a category runs long; stacked on narrow
+ * screens, where two columns of two-word labels would be unreadable. */
+.intents__cols { display: grid; gap: 0 var(--s-6, 2rem); }
+.intents--split .intents__cols { grid-template-columns: 1fr; }
+
+@media (min-width: 780px) {
+  .intents--split .intents__cols { grid-template-columns: 1fr 1fr; }
+}
 
 /* Wide content scrolls inside its own box rather than pushing the page. */
 .intents__table {
@@ -1864,6 +1874,27 @@ a.livesession:hover { background: var(--sand-2); }
 .intents__go a { color: var(--text-faint); display: inline-flex; }
 .intents__go a:hover { color: var(--text); }
 .intents__go svg { width: 13px; height: 13px; }
+
+/* The row the visitor arrived on. A left marker rather than a background
+ * fill, so it reads as "you are here" instead of as a recommendation —
+ * these rows are deliberately not ranked. */
+.intents__table tbody tr.is-active > * { background: var(--surface-sunk); }
+.intents__table tbody tr.is-active th[scope="row"] {
+  box-shadow: inset 2px 0 0 var(--ink);
+  padding-left: 0.6rem;
+}
+.intents__table tbody tr.is-active th[scope="row"] a { text-decoration: none; }
+
+.intents__now {
+  margin-left: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
 
 .intents__note {
   margin-top: var(--s-4);

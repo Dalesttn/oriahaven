@@ -340,6 +340,27 @@ function listing_data(): array {
 				get_terms( array( 'taxonomy' => 'specialty', 'hide_empty' => true ) ) ?: array()
 			)
 		),
+		/*
+		 * Labels for the two private taxonomies. The intent rows on a
+		 * category page link to ?svc= and ?aud=, and without a name map the
+		 * resulting filter chip would read "remedial-massage" — or, worse,
+		 * not appear at all, leaving a filtered list with nothing on screen
+		 * saying why or any way to undo it.
+		 *
+		 * Slug and name only. These mint no URLs and never will.
+		 */
+		'services'   => array_values(
+			array_map(
+				static fn( \WP_Term $t ): array => array( 'id' => $t->slug, 'name' => tname( $t ) ),
+				get_terms( array( 'taxonomy' => 'service', 'hide_empty' => true ) ) ?: array()
+			)
+		),
+		'audiences'  => array_values(
+			array_map(
+				static fn( \WP_Term $t ): array => array( 'id' => $t->slug, 'name' => tname( $t ) ),
+				get_terms( array( 'taxonomy' => 'audience', 'hide_empty' => true ) ) ?: array()
+			)
+		),
 		'listings'   => $listings,
 	);
 

@@ -516,9 +516,12 @@
     var root = $("#dirResults");
     if (!root) return;
 
-    var catNames = {}, regionNames = {}, suburbRegion = {}, specNames = {};
+    var catNames = {}, regionNames = {}, suburbRegion = {}, specNames = {},
+        svcNames = {}, audNames = {};
     DATA.categories.forEach(function (c) { catNames[c.id] = c.name; });
     asList(DATA.specialties).forEach(function (s) { specNames[s.id] = s.name; });
+    asList(DATA.services).forEach(function (s) { svcNames[s.id] = s.name; });
+    asList(DATA.audiences).forEach(function (a) { audNames[a.id] = a.name; });
     DATA.regions.forEach(function (r) {
       regionNames[r.id] = r.name;
       r.suburbs.forEach(function (s) { suburbRegion[s.toLowerCase()] = r.id; });
@@ -666,6 +669,25 @@
       "</article>";
     }
 
+    /* The "showing" marker on the intent rows. Server-rendered from the
+       query string on first paint; kept honest here as filters change. */
+    function syncActiveRow() {
+      $$(".intents__table tbody tr").forEach(function (tr) {
+        var a = tr.querySelector("th a");
+        if (!a) return;
+        var q = new URLSearchParams((a.getAttribute("href") || "").split("?")[1] || "");
+        var on = false;
+        ["svc", "aud", "price", "format"].forEach(function (k) {
+          var want = q.get(k);
+          if (want && (state[k] || []).indexOf(want) > -1) on = true;
+        });
+        tr.classList.toggle("is-active", on);
+        if (on) { tr.setAttribute("aria-current", "true"); } else { tr.removeAttribute("aria-current"); }
+        var tag = tr.querySelector(".intents__now");
+        if (tag) tag.hidden = !on;
+      });
+    }
+
     function chips() {
       var box = $("#dirChips");
       if (!box) return;
@@ -673,6 +695,10 @@
       state.cats.forEach(function (c) { if (c !== locked.cat) out.push(["cat", c, catNames[c] || c]); });
       state.regions.forEach(function (r) { if (r !== locked.region) out.push(["region", r, regionNames[r] || r]); });
       state.spec.forEach(function (s) { if (s !== locked.spec) out.push(["spec", s, specNames[s] || s]); });
+      // Arrived from an intent row. Without these the list is filtered with
+      // nothing on screen saying why and no way to undo it.
+      state.svc.forEach(function (s) { out.push(["svc", s, svcNames[s] || s]); });
+      state.aud.forEach(function (a) { out.push(["aud", a, audNames[a] || a]); });
       state.price.forEach(function (p) { out.push(["price", p, p === "Free" ? "Free" : p]); });
       state.format.forEach(function (f) { out.push(["format", f, f === "online" ? "Online" : "In person"]); });
       if (state.rating) out.push(["rating", String(state.rating), state.rating + "+ rating"]);
@@ -704,6 +730,7 @@
         state.cats = locked.cat ? [locked.cat] : [];
         state.regions = locked.region ? [locked.region] : [];
         state.spec = locked.spec ? [locked.spec] : [];
+        state.svc = []; state.aud = [];
         state.price = []; state.format = []; state.rating = 0; state.q = "";
         var si = $("#dirQ"); if (si) si.value = "";
         syncInputs();
@@ -799,6 +826,7 @@
       var badge = $("#filterCount");
       if (badge) {
         var on = state.cats.length + state.regions.length + state.spec.length +
+                 state.svc.length + state.aud.length +
                  state.price.length + state.format.length + (state.rating ? 1 : 0);
         badge.textContent = on ? String(on) : "";
       }
@@ -811,12 +839,39 @@
       chips();
       pager(pages);
 
+      // Mark the intent row the current filter corresponds to, so the
+      // table keeps saying where you are as filters change.
+      syncActiveRow();
+
       // Keep the URL shareable and indexable-looking as filters change.
-      if (locked.cat || locked.region || locked.spec || locked.suburb) return;
+      //
+      // A locked page keeps its clean URL — the page IS the category — but a
+      // filter that arrived from an intent row still has to be reflected.
+      // Without this, clearing the chip left ?svc= in the address bar and
+      // the row still saying "showing" for a filter no longer applied.
+      if (locked.cat || locked.region || locked.spec || locked.suburb) {
+        var lp = new URLSearchParams(window.location.search);
+        var moved = false;
+        ["svc", "aud", "price", "format"].forEach(function (k) {
+          var cur = (state[k] || []).join(",");
+          if (cur) {
+            if (lp.get(k) !== cur) { lp.set(k, cur); moved = true; }
+          } else if (lp.has(k)) {
+            lp.delete(k); moved = true;
+          }
+        });
+        if (moved) {
+          var lqs = lp.toString();
+          history.replaceState(null, "", lqs ? "?" + lqs : window.location.pathname);
+        }
+        return;
+      }
       var p = new URLSearchParams();
       if (state.cats.length) p.set("cat", state.cats.join(","));
       if (state.regions.length) p.set("region", state.regions.join(","));
       if (state.spec.length) p.set("spec", state.spec.join(","));
+      if (state.svc.length) p.set("svc", state.svc.join(","));
+      if (state.aud.length) p.set("aud", state.aud.join(","));
       if (state.q) p.set("q", state.q);
       if (state.page > 1) p.set("pg", String(state.page));
       var qs = p.toString();
