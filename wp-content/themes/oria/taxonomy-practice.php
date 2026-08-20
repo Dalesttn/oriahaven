@@ -80,6 +80,18 @@ get_template_part(
 	)
 );
 ?>
+<?php
+/*
+ * Intent rows, under the answer block and above the editorial intro.
+ *
+ * Combos are skipped: the counts are category-wide and would be wrong the
+ * moment the page narrows to one suburb, which is the same reason the FAQ
+ * block sits out combo pages.
+ */
+if ( ! $oria_is_combo ) {
+	get_template_part( 'template-parts/intent', 'rows', array( 'term' => $oria_term ) );
+}
+?>
 <?php if ( ! $oria_is_combo && is_string( $oria_intro ) && '' !== trim( $oria_intro ) ) : ?>
 <section class="wrap section section--top-flush">
 	<div class="prose prose--intro"><?php echo wp_kses_post( $oria_intro ); ?></div>

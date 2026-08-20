@@ -1798,3 +1798,77 @@ a.livesession:hover { background: var(--sand-2); }
   }
   .answer__body { font-size: var(--fs-body); }
 }
+
+/* -------------------------------------------------------------------------
+ * Intent rows (category pages)
+ *
+ * A table, not a card grid. Cards look better and extract worse: anything
+ * lifting a grid of tiles gets a column of orphaned numbers, where a table
+ * keeps every count attached to the thing it counts.
+ * ---------------------------------------------------------------------- */
+.intents__title { margin-bottom: var(--s-3); }
+
+.intents__lede {
+  max-width: 62ch;
+  color: var(--text-soft);
+  margin-bottom: var(--s-5);
+}
+
+.intents { max-width: 46rem; }
+
+/* Wide content scrolls inside its own box rather than pushing the page. */
+.intents__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-body);
+}
+
+.intents__table thead th {
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding-bottom: var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.intents__table tbody th,
+.intents__table tbody td {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: baseline;
+}
+
+.intents__table tbody th {
+  text-align: left;
+  font-weight: 500;
+}
+
+.intents__table tbody th a {
+  color: var(--text);
+  text-decoration: none;
+}
+.intents__table tbody th a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* The count column: narrow, tabular, so the numbers line up. */
+.intents__table tbody td {
+  width: 5.5rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-soft);
+}
+
+.intents__go { width: 2.5rem; text-align: right; }
+.intents__go a { color: var(--text-faint); display: inline-flex; }
+.intents__go a:hover { color: var(--text); }
+.intents__go svg { width: 13px; height: 13px; }
+
+.intents__note {
+  margin-top: var(--s-4);
+  max-width: 62ch;
+  font-size: var(--fs-xs);
+  line-height: 1.55;
+  color: var(--text-faint);
+}

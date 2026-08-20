@@ -525,7 +525,7 @@
     });
 
     var PER_PAGE = 10;
-    var state = { cats: [], regions: [], spec: [], price: [], format: [], rating: 0, q: "", sort: "relevance", page: 1 };
+    var state = { cats: [], regions: [], spec: [], svc: [], aud: [], price: [], format: [], rating: 0, q: "", sort: "relevance", page: 1 };
 
     // Read the URL so category tiles, map regions and footer links all land
     // on a pre-filtered view — the same URLs the WordPress build will use.
@@ -534,6 +534,14 @@
     if (params.get("region")) state.regions = params.get("region").split(",");
     if (params.get("q")) state.q = params.get("q");
     if (params.get("spec")) state.spec = params.get("spec").split(",");
+    // Intent rows on a category page link here. svc and aud are canonical
+    // taxonomy slugs, so the filtered view holds exactly the listings the row
+    // counted server-side. A fuzzy q= search would show a different number
+    // from the one printed beside the link, which is worse than no link.
+    if (params.get("svc")) state.svc = params.get("svc").split(",");
+    if (params.get("aud")) state.aud = params.get("aud").split(",");
+    if (params.get("price")) state.price = params.get("price").split(",");
+    if (params.get("format")) state.format = params.get("format").split(",");
     if (params.get("pg")) state.page = Math.max(1, parseInt(params.get("pg"), 10) || 1);
 
     // Category and suburb landing pages lock one facet: the page IS the
@@ -554,6 +562,8 @@
       if (state.regions.length && state.regions.indexOf(l.region) === -1) return false;
       if (locked.suburb && l.suburb !== locked.suburb) return false;
       if (state.spec.length && !(l.spec || []).some(function (s) { return state.spec.indexOf(s) > -1; })) return false;
+      if (state.svc.length && !(l.svc || []).some(function (s) { return state.svc.indexOf(s) > -1; })) return false;
+      if (state.aud.length && !(l.aud || []).some(function (a) { return state.aud.indexOf(a) > -1; })) return false;
       if (state.price.length && state.price.indexOf(l.priceBand) === -1) return false;
       if (state.format.length) {
         var ok = state.format.some(function (f) { return l.format === f || l.format === "both"; });

@@ -259,6 +259,22 @@ function listing_data(): array {
 		$specs = wp_get_post_terms( $post->ID, 'specialty' );
 		$specs = is_wp_error( $specs ) ? array() : wp_list_pluck( $specs, 'slug' );
 
+		/*
+		 * Canonical services and audiences, so the intent rows on a category
+		 * page can link to a filtered view that contains exactly the listings
+		 * the row counted. Without these the row would have to fall back to a
+		 * free-text search, and a fuzzy match returning a different number
+		 * from the one printed beside it is worse than no link at all.
+		 *
+		 * Both taxonomies are private and mint no URLs; this is filter state,
+		 * not navigation.
+		 */
+		$svcs = wp_get_post_terms( $post->ID, 'service' );
+		$svcs = is_wp_error( $svcs ) ? array() : wp_list_pluck( $svcs, 'slug' );
+
+		$auds = wp_get_post_terms( $post->ID, 'audience' );
+		$auds = is_wp_error( $auds ) ? array() : wp_list_pluck( $auds, 'slug' );
+
 		$rated = effective_rating( $post->ID );
 
 		$listings[] = array(
@@ -269,6 +285,8 @@ function listing_data(): array {
 			'catTop'     => $cat_top,
 			'also'       => $also,
 			'spec'       => $specs,
+			'svc'        => $svcs,
+			'aud'        => $auds,
 			'suburb'     => tname( $suburb ?: $region ),
 			'region'     => $region ? $region->slug : '',
 			'blurb'      => get_the_excerpt( $post ),

@@ -1,0 +1,21 @@
+{
+  "_comment": [
+    "The four listings that joined Yoga & Pilates when the yoga specialty was",
+    "merged into it, checked for `beginners` on 20 August 2026.",
+    "",
+    "They were never checked because they were not in the category when the",
+    "first pass ran. Coverage fell from 9/9 to 9/13 the moment they arrived,",
+    "which is the gate behaving correctly: a set is only as checked as its",
+    "newest member.",
+    "",
+    "Unearth Remedy matched a third time inside a customer testimonial. Not",
+    "used — a customer saying a session suited them is not the practice",
+    "saying who its sessions are for."
+  ],
+  "answers": [
+    { "listing": "brahma-kumaris-perth", "audience": "beginners", "source": "https://brahmakumaris.org.au/new/perth-meditation/", "quote": "the Introductory Course in Raja Yoga" },
+    { "listing": "unearth-remedy-fremantle", "audience": "beginners", "source": "https://unearthremedy.org/breathwork", "quote": "No experience needed. No belief system required. — and an FAQ: 'I've never done breathwork before. Is that okay? Completely.'" },
+    { "listing": "lionheart-womens-circle", "audience": "beginners", "source": "https://lionheartcircle.com", "absent": true },
+    { "listing": "pranic-healing-perth", "audience": "beginners", "source": "https://pranichealingperth.com", "absent": true }
+  ]
+}
