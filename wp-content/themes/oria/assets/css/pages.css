@@ -1903,3 +1903,74 @@ a.livesession:hover { background: var(--sand-2); }
   line-height: 1.55;
   color: var(--text-faint);
 }
+
+/* -------------------------------------------------------------------------
+ * Answer row: the facts on the left, related guides on the right.
+ *
+ * The answer block is a 68ch column against a very wide page, and the empty
+ * half was doing nothing. Guides are the right thing to put there — somebody
+ * reading how many retreats are listed is the person who wants the piece
+ * about day retreats.
+ *
+ * Source order is answer first, so the extractable prose still leads the
+ * document regardless of where the columns sit.
+ * ---------------------------------------------------------------------- */
+.answerrow { display: grid; gap: var(--s-6); }
+
+@media (min-width: 900px) {
+  .answerrow--split {
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 20rem);
+    align-items: start;
+    gap: var(--s-7, 3rem);
+  }
+}
+
+.guides {
+  border-top: 1px solid var(--line);
+  padding-top: var(--s-4);
+}
+
+.guides__title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: var(--s-4);
+}
+
+.guides__list { list-style: none; margin: 0; padding: 0; }
+
+.guides__item + .guides__item {
+  margin-top: var(--s-4);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--line);
+}
+
+.guides__item a {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text);
+  text-decoration: none;
+  text-wrap: pretty;
+}
+.guides__item a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.guides__blurb {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--text-faint);
+}
+
+.guides__all {
+  display: inline-block;
+  margin-top: var(--s-4);
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  color: var(--text-soft);
+}

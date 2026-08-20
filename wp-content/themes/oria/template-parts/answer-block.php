@@ -33,25 +33,58 @@ $oria_answer = \Oria\Core\Answer\for_term(
 if ( ! $oria_answer['sentences'] ) {
 	return;
 }
+
+/*
+ * Guides sit in the empty half of this row. Only on the term's own page —
+ * a combo has narrowed to a suburb and an article about the whole category
+ * is no longer the obvious next thing to read.
+ */
+$oria_guides = ( ! $oria_area instanceof WP_Term && function_exists( '\Oria\Core\Guides\for_term' ) )
+	? \Oria\Core\Guides\for_term( $oria_term )
+	: array();
 ?>
 
 <section class="wrap section section--top-flush">
-	<div class="answer">
-		<p class="answer__body"><?php echo esc_html( implode( ' ', $oria_answer['sentences'] ) ); ?></p>
-		<p class="answer__meta">
-			<?php
-			printf(
-				/* translators: %s: date the directory data last changed. */
-				esc_html__( 'Figures are taken from the Oria Haven directory, last updated %s.', 'oria' ),
-				esc_html( $oria_answer['updated'] )
-			);
+	<div class="answerrow<?php echo $oria_guides ? ' answerrow--split' : ''; ?>">
+		<div class="answer">
+			<p class="answer__body"><?php echo esc_html( implode( ' ', $oria_answer['sentences'] ) ); ?></p>
+			<p class="answer__meta">
+				<?php
+				printf(
+					/* translators: %s: date the directory data last changed. */
+					esc_html__( 'Figures are taken from the Oria Haven directory, last updated %s.', 'oria' ),
+					esc_html( $oria_answer['updated'] )
+				);
 
-			// Only where a price was actually quoted. On a page with no price
-			// data the caveat is boilerplate attached to nothing.
-			if ( ! empty( $oria_answer['has_prices'] ) ) {
-				echo ' ' . esc_html__( 'Prices are set by each practice and change without notice.', 'oria' );
-			}
-			?>
-		</p>
+				// Only where a price was actually quoted. On a page with no price
+				// data the caveat is boilerplate attached to nothing.
+				if ( ! empty( $oria_answer['has_prices'] ) ) {
+					echo ' ' . esc_html__( 'Prices are set by each practice and change without notice.', 'oria' );
+				}
+				?>
+			</p>
+		</div>
+
+		<?php if ( $oria_guides ) : ?>
+			<aside class="guides" aria-labelledby="guidesTitle">
+				<h2 class="guides__title" id="guidesTitle"><?php esc_html_e( 'Guides on this', 'oria' ); ?></h2>
+				<ul class="guides__list">
+					<?php foreach ( $oria_guides as $oria_post ) : ?>
+						<li class="guides__item">
+							<a href="<?php echo esc_url( (string) get_permalink( $oria_post ) ); ?>">
+								<?php echo esc_html( wp_specialchars_decode( (string) get_the_title( $oria_post ), ENT_QUOTES ) ); ?>
+							</a>
+							<?php
+							$oria_excerpt = trim( wp_strip_all_tags( (string) get_the_excerpt( $oria_post ) ) );
+							if ( '' !== $oria_excerpt ) :
+								?>
+								<span class="guides__blurb"><?php echo esc_html( wp_trim_words( $oria_excerpt, 18 ) ); ?></span>
+							<?php endif; ?>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+				<a class="guides__all" href="<?php echo esc_url( home_url( '/journal/' ) ); ?>"><?php esc_html_e( 'All guides', 'oria' ); ?></a>
+			</aside>
+		<?php endif; ?>
 	</div>
 </section>

@@ -70,6 +70,7 @@ require_once ORIA_CORE_DIR . 'includes/redirects.php';
 require_once ORIA_CORE_DIR . 'includes/merge-terms.php';
 require_once ORIA_CORE_DIR . 'includes/migrate-city.php';
 require_once ORIA_CORE_DIR . 'includes/intents.php';
+require_once ORIA_CORE_DIR . 'includes/guides.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
