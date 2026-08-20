@@ -94,9 +94,18 @@ function register_area(): void {
 /**
  * The exact modality on offer: acupuncture, remedial massage, homeopathy.
  * A third browse dimension — practices are the dozen broad doors, specialties
- * are the precise thing someone searched for. Rewrites to /perth/{slug}/ so
- * each term is a "{Specialty} in Perth" landing page. Hierarchical only for
- * the checkbox UI; the tree is kept flat.
+ * are the precise thing someone searched for. Hierarchical only for the
+ * checkbox UI; the tree is kept flat.
+ *
+ * URLs are /{city}/{slug}/ — "/perth/acupuncture/". They used to come from
+ * registering the taxonomy with rewrite slug 'perth', which baked the city
+ * into the permalink structure as a constant: a second city would have meant
+ * Sydney clinics living under /perth/, or a duplicate taxonomy.
+ *
+ * The rewrite is off here and handled in Cities\route() instead, which
+ * matches any registered city slug and sets oria_city alongside the term.
+ * Perth is the first city, so every existing URL is byte-identical — a
+ * structural fix that costs no redirects.
  */
 function register_specialty(): void {
 	register_taxonomy(
@@ -117,10 +126,9 @@ function register_specialty(): void {
 			'hierarchical'      => true,
 			'show_admin_column' => true,
 			'show_in_rest'      => true,
-			'rewrite'           => array(
-				'slug'       => 'perth',
-				'with_front' => false,
-			),
+			// See Cities\route(). A rewrite here would re-introduce the very
+			// constant this change exists to remove.
+			'rewrite'           => false,
 		)
 	);
 }

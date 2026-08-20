@@ -1017,9 +1017,33 @@ class Command {
 		foreach ( (array) ( $data['regions'] ?? array() ) as $region ) {
 			$parent_id = $this->ensure_term( (string) $region['name'], (string) $region['id'], Taxonomies\AREA, 0, $dry );
 			foreach ( (array) ( $region['suburbs'] ?? array() ) as $suburb ) {
-				$this->ensure_term( (string) $suburb, sanitize_title( (string) $suburb ), Taxonomies\AREA, $parent_id, $dry );
+				$this->ensure_term( (string) $suburb, $this->area_slug( (string) $suburb ), Taxonomies\AREA, $parent_id, $dry );
 			}
 		}
+	}
+
+	/**
+	 * The canonical slug for a suburb named in a seed file.
+	 *
+	 * sanitize_title() alone was enough while no term had ever been renamed.
+	 * The CBD is now "Perth CBD" / perth-cbd, and a file still saying "Perth"
+	 * would otherwise create a second term and split twenty-seven listings
+	 * between them without erroring. data/area-aliases.json is the map.
+	 */
+	private function area_slug( string $name ): string {
+		static $aliases = null;
+
+		if ( null === $aliases ) {
+			$aliases = array();
+			$path    = ORIA_CORE_DIR . 'data/area-aliases.json';
+			if ( is_readable( $path ) ) {
+				$json    = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+				$aliases = (array) ( $json['aliases'] ?? array() );
+			}
+		}
+
+		$slug = sanitize_title( $name );
+		return isset( $aliases[ $slug ] ) ? (string) $aliases[ $slug ] : $slug;
 	}
 
 	private function ensure_term( string $name, string $slug, string $taxonomy, int $parent, bool $dry ): int {

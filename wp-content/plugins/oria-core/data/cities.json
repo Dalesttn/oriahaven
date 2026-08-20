@@ -1,0 +1,36 @@
+{
+  "_comment": [
+    "The cities Oria Haven covers.",
+    "",
+    "This file exists so that 'Perth' stops being a string literal. It was",
+    "the rewrite slug of the specialty taxonomy, the path of the hub, the",
+    "fallback in the answer block, the AdministrativeArea in the schema, and",
+    "a hard-coded word in roughly twenty files. None of that is wrong for a",
+    "one-city directory. All of it is a migration for a two-city one.",
+    "",
+    "`default` is the city assumed when nothing else identifies one. Exactly",
+    "one city may hold it. It is what keeps every existing Perth URL working",
+    "byte-for-byte while the code underneath stops being about Perth.",
+    "",
+    "Adding a city is a change to this file plus its area terms and its",
+    "listings. It should never again be a change to the code.",
+    "",
+    "`region` is the schema.org AdministrativeArea. `centre` is used for",
+    "distance and map defaults, not for anything a page asserts."
+  ],
+  "cities": [
+    {
+      "slug": "perth",
+      "name": "Perth",
+      "adjective": "Perth",
+      "metro": "the Perth metro",
+      "state": "Western Australia",
+      "state_code": "WA",
+      "country": "AU",
+      "timezone": "Australia/Perth",
+      "region": "Perth, Western Australia",
+      "centre": { "lat": -31.9523, "lng": 115.8613 },
+      "default": true
+    }
+  ]
+}

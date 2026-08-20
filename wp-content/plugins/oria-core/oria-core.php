@@ -65,6 +65,9 @@ require_once ORIA_CORE_DIR . 'includes/services.php';
 require_once ORIA_CORE_DIR . 'includes/categories.php';
 require_once ORIA_CORE_DIR . 'includes/answer.php';
 require_once ORIA_CORE_DIR . 'includes/audience.php';
+require_once ORIA_CORE_DIR . 'includes/cities.php';
+require_once ORIA_CORE_DIR . 'includes/redirects.php';
+require_once ORIA_CORE_DIR . 'includes/merge-terms.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
@@ -107,6 +110,8 @@ Services\bootstrap();
 Categories\bootstrap();
 Answer\bootstrap();
 Audience\bootstrap();
+Cities\bootstrap();
+Redirects\bootstrap();
 
 /**
  * Rewrite rules are only rebuilt on activation and deactivation. Flushing on

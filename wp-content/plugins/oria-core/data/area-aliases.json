@@ -1,0 +1,24 @@
+{
+  "_comment": [
+    "Suburb names as they appear in seed files, mapped to the canonical term",
+    "slug on the site.",
+    "",
+    "Why this has to exist. The importer derives a suburb's slug from its",
+    "name — sanitize_title('Perth') is 'perth' — so renaming a term on the",
+    "site silently breaks the next import: it finds no 'perth' term, creates",
+    "one, and the suburb is now split across two terms with the listings",
+    "divided between them. Nothing errors. You notice weeks later.",
+    "",
+    "Keys are sanitize_title() of whatever the seed file says. Values are the",
+    "slug the term actually has.",
+    "",
+    "This will earn its keep again when a second city lands: Sydney has a",
+    "Central, a North and a West too, and every one of them collides with a",
+    "Perth region slug."
+  ],
+  "aliases": {
+    "perth": "perth-cbd",
+    "perth-cbd": "perth-cbd",
+    "perth-city": "perth-cbd"
+  }
+}
