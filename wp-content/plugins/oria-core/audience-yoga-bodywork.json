@@ -1,0 +1,81 @@
+{
+  "_comment": [
+    "Audience answers for the yoga and massage/bodywork sets, checked on",
+    "20 August 2026 against each practice's own published material.",
+    "",
+    "Method. Every row was read on the page named in `source`. Positives are",
+    "things the practice says about itself. Rows with \"absent\": true were",
+    "checked and found to publish no such offering — that is a real answer,",
+    "not a gap, and it is what lets a set reach coverage.",
+    "",
+    "Rejected as evidence, deliberately:",
+    "  - anything inside a customer testimonial (Bloom, Lakshmi, Back to",
+    "    Basics all matched on reviews rather than their own copy)",
+    "  - 'Senior Yoga Teacher' — a teaching qualification, not an audience",
+    "  - 'Youth and Diversity scholarships' — teacher-training funding",
+    "  - a blog post title ('Yoga and Family Life', 'Pregnancy Back Pain')",
+    "  - ClassPass site chrome ('Corporate wellness' is their nav, not the",
+    "    studio's offering)",
+    "  - 'New patient' pages at clinics — that is intake paperwork, not a",
+    "    statement about suiting people new to the practice",
+    "",
+    "`beginners` is not applied to clinical practices at all. It is a",
+    "question about classes, and a physiotherapist does not have beginners.",
+    "",
+    "Quotes are internal evidence, not display copy. Several sources frame",
+    "their audience alongside claims about what they treat; the audience is",
+    "recorded, the claim is not repeated."
+  ],
+  "answers": [
+    { "listing": "kookaburra-yoga", "audience": "beginners", "source": "https://www.kookaburrayoga.com", "quote": "classes and courses ranging from absolute beginners to yoga teacher training" },
+    { "listing": "kookaburra-yoga", "audience": "womens", "source": "https://www.kookaburrayoga.com", "quote": "Shakti Womens Circle" },
+    { "listing": "kookaburra-yoga", "audience": "corporate", "source": "https://www.kookaburrayoga.com", "quote": "Corporate & Private Groups" },
+    { "listing": "kookaburra-yoga", "audience": "drop-in", "source": "https://www.kookaburrayoga.com", "quote": "Casual classes $20-$25 on a sliding scale" },
+
+    { "listing": "fremantle-yoga-centre", "audience": "beginners", "source": "https://fremantleyoga.com", "quote": "NEW? START HERE — and a Beginners Yoga class style: 'The basics are timeless.'" },
+    { "listing": "fremantle-yoga-centre", "audience": "corporate", "source": "https://fremantleyoga.com", "quote": "WORKPLACE YOGA" },
+
+    { "listing": "the-yoga-space-west-perth", "audience": "beginners", "source": "https://www.yogaspace.com.au", "quote": "Our Perth and online yoga classes are designed for beginners and experienced practitioners. Join an Ashtanga Yoga beginners course" },
+    { "listing": "the-yoga-space-west-perth", "audience": "children", "source": "https://www.yogaspace.com.au", "quote": "Kids and Teens Yoga" },
+    { "listing": "the-yoga-space-west-perth", "audience": "corporate", "source": "https://www.yogaspace.com.au", "quote": "Corporate Yoga" },
+
+    { "listing": "yogahub-perth", "audience": "beginners", "source": "https://yogahubperth.com.au", "quote": "New To Yoga? Get started with a beginner class" },
+
+    { "listing": "bloom-yoga-studio", "audience": "beginners", "source": "https://www.bloomyoga.com.au", "quote": "INFO FOR NEW STUDENTS" },
+    { "listing": "bloom-yoga-studio", "audience": "pregnancy", "source": "https://www.bloomyoga.com.au", "quote": "Vinyasa, Restorative & Prenatal Yoga" },
+
+    { "listing": "restful-waters-bedfordale", "audience": "beginners", "source": "https://restfulwaters.org", "quote": "What type of yoga is best for beginners? Every style of yoga we offer is thoughtfully designed to be gentle" },
+    { "listing": "restful-waters-bedfordale", "audience": "couples", "source": "https://restfulwaters.org", "quote": "couples counselling sessions" },
+
+    { "listing": "add-goodness-mount-lawley", "audience": "beginners", "source": "https://www.addgoodness.org", "absent": true },
+    { "listing": "lakshmi-ayurveda", "audience": "beginners", "source": "https://www.lakshmiayurveda.com.au", "absent": true },
+    { "listing": "subiaco-sports-massage-physio", "audience": "beginners", "source": "https://www.subisportsmassage.com", "absent": true },
+
+    { "listing": "subiaco-sports-massage-physio", "audience": "pregnancy", "source": "https://www.subisportsmassage.com", "quote": "Pregnancy Massage" },
+    { "listing": "subiaco-sports-massage-physio", "audience": "corporate", "source": "https://www.subisportsmassage.com", "quote": "Corporate Massage / Corporate Services" },
+
+    { "listing": "wellbeing-physiotherapy-west-leederville", "audience": "pregnancy", "source": "https://www.wellbeingphysiotherapy.com.au", "quote": "Pregnancy & Postnatal Physio" },
+    { "listing": "wellbeing-physiotherapy-west-leederville", "audience": "children", "source": "https://www.wellbeingphysiotherapy.com.au", "quote": "Kids Sport Physiotherapy" },
+    { "listing": "wellbeing-physiotherapy-west-leederville", "audience": "womens", "source": "https://www.wellbeingphysiotherapy.com.au", "quote": "Women's Health" },
+
+    { "listing": "karrinyup-wellness-centre", "audience": "pregnancy", "source": "https://wellness-centre.com.au", "quote": "Chiro for Pregnancies" },
+    { "listing": "karrinyup-wellness-centre", "audience": "children", "source": "https://wellness-centre.com.au", "quote": "Chiro for Babies" },
+    { "listing": "karrinyup-wellness-centre", "audience": "seniors", "source": "https://wellness-centre.com.au", "quote": "Chiro for Seniors" },
+
+    { "listing": "west-perth-osteopathy", "audience": "children", "source": "https://westperthosteo.com.au", "quote": "Children and babies" },
+    { "listing": "west-perth-osteopathy", "audience": "seniors", "source": "https://westperthosteo.com.au", "quote": "Seniors" },
+
+    { "listing": "mandurah-spine-sport", "audience": "pregnancy", "source": "https://mandurahspineandsport.com.au", "quote": "Pregnancy and paediatric chiropractic care" },
+    { "listing": "mandurah-spine-sport", "audience": "children", "source": "https://mandurahspineandsport.com.au", "quote": "Pregnancy and paediatric chiropractic care" },
+
+    { "listing": "pure-health-wellness-clinic", "audience": "children", "source": "https://www.purehealthandwellness.com.au", "quote": "women's and children's health" },
+    { "listing": "pure-health-wellness-clinic", "audience": "womens", "source": "https://www.purehealthandwellness.com.au", "quote": "women's and children's health" },
+
+    { "listing": "fremantle-remedial-massage-clinic", "audience": "pregnancy", "source": "https://www.fremantlemassage.com.au", "quote": "PREGNANCY MASSAGE" },
+    { "listing": "joondalup-drive-therapeutic-massage", "audience": "pregnancy", "source": "https://jdtmassage.com.au", "quote": "Pregnancy remedial" },
+    { "listing": "bodyfix-clinic-mandurah", "audience": "pregnancy", "source": "https://bodyfixclinic.com.au", "quote": "bodywork treatments that cover everything from prenatal care to post-injury rehabilitation" },
+    { "listing": "back-to-basics-birthing", "audience": "pregnancy", "source": "https://vickihobbs.com", "quote": "Hypnobirthing classes" },
+
+    { "listing": "stretched-perth", "audience": "step-free", "source": "https://classpass.com/studios/stretched-perth-applecross", "quote": "Highlights: LGBTQ-friendly, Wheelchair accessible" }
+  ]
+}

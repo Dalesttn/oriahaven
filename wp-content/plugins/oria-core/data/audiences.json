@@ -1,0 +1,87 @@
+{
+  "_comment": [
+    "Who a practice is for — the dimension the directory has never held.",
+    "",
+    "Every term carries a `test`: the specific, checkable thing that must be",
+    "true of a practice's own published material before the term may be",
+    "applied. These are deliberately narrow. An audience term is Oria Haven",
+    "asserting something about a named business, so the bar is what they say",
+    "about themselves, not what we infer from a category.",
+    "",
+    "Nothing here describes an outcome. 'Pregnancy' means the practice",
+    "publishes services for pregnant clients — never that anything is good",
+    "for pregnancy. Same rule as the listings, the FAQs and the articles.",
+    "",
+    "Absence is not a negative. A listing without `beginners` means nobody",
+    "has checked, not that beginners are unwelcome, and no page may phrase",
+    "it as the latter. See Audience\\coverage()."
+  ],
+  "audiences": [
+    {
+      "slug": "beginners",
+      "name": "Beginner friendly",
+      "question": "Do you run anything specifically for people who have never done this before?",
+      "test": "Publishes a beginners' class or course, or a 'new here, start with this' page, or states plainly that classes suit all levels or need no experience. An intro offer on its own does not count — that is a discount on the first visit, not a statement about who the class suits."
+    },
+    {
+      "slug": "seniors",
+      "name": "Seniors",
+      "question": "Do you run anything specifically for older adults?",
+      "test": "Publishes a class, session or programme named for seniors, older adults or an age band above 60."
+    },
+    {
+      "slug": "pregnancy",
+      "name": "Pregnancy and postnatal",
+      "question": "Do you offer sessions for clients who are pregnant or recently gave birth?",
+      "test": "Publishes prenatal, pregnancy, antenatal, postnatal or postpartum services. Describes who the service is for — never what it does."
+    },
+    {
+      "slug": "children",
+      "name": "Children and teens",
+      "question": "Do you see clients under 18?",
+      "test": "Publishes services for children, kids, teens or a named under-18 age range."
+    },
+    {
+      "slug": "families",
+      "name": "Families",
+      "question": "Do you run sessions a family attends together?",
+      "test": "Publishes a session or programme families attend together, rather than simply seeing people of several ages separately."
+    },
+    {
+      "slug": "couples",
+      "name": "Couples",
+      "question": "Do you offer sessions for two people together?",
+      "test": "Publishes a couples, partner or two-person session."
+    },
+    {
+      "slug": "womens",
+      "name": "Women's sessions",
+      "question": "Do you run anything for women only?",
+      "test": "Publishes a women-only class, circle, clinic or practitioner. Not simply that most clients are women."
+    },
+    {
+      "slug": "mens",
+      "name": "Men's sessions",
+      "question": "Do you run anything for men only?",
+      "test": "Publishes a men-only class, group or programme."
+    },
+    {
+      "slug": "corporate",
+      "name": "Workplaces",
+      "question": "Do you work with employers or teams?",
+      "test": "Publishes a corporate, workplace or team offering, on site or otherwise."
+    },
+    {
+      "slug": "step-free",
+      "name": "Step-free access",
+      "question": "Can someone reach your space without stairs?",
+      "test": "States step-free, ground-floor, lift or wheelchair access to the space itself. Never inferred from a photograph."
+    },
+    {
+      "slug": "drop-in",
+      "name": "Drop-in welcome",
+      "question": "Can someone come once without signing up to a term or membership?",
+      "test": "Publishes casual, drop-in or single-class attendance without a term, course or membership commitment."
+    }
+  ]
+}
