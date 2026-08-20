@@ -193,4 +193,100 @@ if ( defined( 'WP_CLI' ) && \WP_CLI ) {
 			}
 		}
 	);
+
+	\WP_CLI::add_command(
+		'oria rename-area',
+		/**
+		 * Rename an area term and record the 301 in one step.
+		 *
+		 * Written because the CBD rename was done by hand with a throwaway
+		 * script, and the city migration needs the same operation eighty-six
+		 * more times. A rename without its redirect is a silent 404, and the
+		 * old URL is unrecoverable the moment the term changes.
+		 */
+		new class() {
+			/**
+			 * ## OPTIONS
+			 *
+			 * <slug>
+			 * : Current slug of the area term.
+			 *
+			 * [--to-slug=<slug>]
+			 * : New slug. Omit to keep the current one.
+			 *
+			 * [--to-name=<name>]
+			 * : New display name. Omit to keep the current one.
+			 *
+			 * [--dry-run]
+			 * : Report what would change without writing anything.
+			 *
+			 * ## EXAMPLES
+			 *
+			 *     wp oria rename-area perth --to-slug=perth-cbd --to-name="Perth CBD" --dry-run
+			 *     wp oria rename-area perth --to-slug=perth-cbd --to-name="Perth CBD"
+			 */
+			public function __invoke( array $args, array $assoc ): void {
+				list( $slug ) = $args;
+				$dry = isset( $assoc['dry-run'] );
+
+				$term = get_term_by( 'slug', $slug, Taxonomies\AREA );
+				if ( ! $term instanceof \WP_Term ) {
+					\WP_CLI::error( sprintf( 'No area term with slug "%s".', $slug ) );
+				}
+
+				$new_slug = (string) ( $assoc['to-slug'] ?? $term->slug );
+				$new_name = (string) ( $assoc['to-name'] ?? wp_specialchars_decode( $term->name, ENT_QUOTES ) );
+
+				if ( $new_slug === $term->slug && $new_name === wp_specialchars_decode( $term->name, ENT_QUOTES ) ) {
+					\WP_CLI::success( 'Nothing to change.' );
+					return;
+				}
+
+				// A slug already in use would be silently suffixed to -2 by
+				// WordPress, which is how a suburb ends up split in half.
+				if ( $new_slug !== $term->slug ) {
+					$clash = get_term_by( 'slug', $new_slug, Taxonomies\AREA );
+					if ( $clash instanceof \WP_Term ) {
+						\WP_CLI::error( sprintf( 'An area term already uses slug "%s" (#%d). Rename or merge that one first.', $new_slug, $clash->term_id ) );
+					}
+				}
+
+				$old_url   = (string) get_term_link( $term );
+				$listings  = get_posts(
+					array(
+						'post_type'      => PostTypes\LISTING,
+						'post_status'    => 'any',
+						'posts_per_page' => -1,
+						'fields'         => 'ids',
+						'tax_query'      => array( array( 'taxonomy' => Taxonomies\AREA, 'field' => 'term_id', 'terms' => $term->term_id ) ),
+					)
+				);
+
+				\WP_CLI::log( sprintf( 'name : %s  ->  %s', wp_specialchars_decode( $term->name, ENT_QUOTES ), $new_name ) );
+				\WP_CLI::log( sprintf( 'slug : %s  ->  %s', $term->slug, $new_slug ) );
+				\WP_CLI::log( sprintf( 'url  : %s', $old_url ) );
+				\WP_CLI::log( sprintf( '%d listings sit in this area.', count( $listings ) ) );
+
+				if ( $dry ) {
+					\WP_CLI::log( '- DRY RUN: nothing written -' );
+					return;
+				}
+
+				$done = wp_update_term( (int) $term->term_id, Taxonomies\AREA, array( 'name' => $new_name, 'slug' => $new_slug ) );
+				if ( is_wp_error( $done ) ) {
+					\WP_CLI::error( $done->get_error_message() );
+				}
+
+				clean_term_cache( (int) $term->term_id, Taxonomies\AREA );
+				$fresh   = get_term( (int) $term->term_id, Taxonomies\AREA );
+				$new_url = $fresh instanceof \WP_Term ? (string) get_term_link( $fresh ) : '';
+
+				if ( '' !== $new_url ) {
+					Redirects\add( $old_url, $new_url );
+				}
+
+				\WP_CLI::success( sprintf( 'Renamed. 301 recorded: %s -> %s', $old_url, $new_url ) );
+			}
+		}
+	);
 }

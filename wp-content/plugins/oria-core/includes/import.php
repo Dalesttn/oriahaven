@@ -135,6 +135,64 @@ class Command {
 	 *
 	 *     wp oria seed_pages
 	 */
+	/**
+	 * Reconcile the JSON vocabularies with the terms on this site.
+	 *
+	 * The same three syncs as the admin screens, in the order they have to
+	 * run: categories first, because services and audiences are described in
+	 * terms of them, then the service vocabulary and its listing re-scan,
+	 * then the audience terms.
+	 *
+	 * Exists because the admin buttons are the only way to run these, and a
+	 * deploy over SSH otherwise ends with a browser trip that is easy to
+	 * forget — and forgetting it leaves imported listings sitting in
+	 * categories that have the seed file's name rather than the canonical one.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--skip-services]
+	 * : Skip the service vocabulary and its listing re-scan, which is the
+	 *   slow part on a large corpus.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp oria sync
+	 *     wp oria sync --skip-services
+	 */
+	public function sync( array $args, array $assoc ): void {
+		$c = \Oria\Core\Categories\sync();
+		\WP_CLI::log( sprintf(
+			'Categories: %d created, %d renamed, %d reparented, %d unchanged, %d intros written.',
+			$c['created'], $c['renamed'], $c['reparented'], $c['unchanged'], $c['intros']
+		) );
+		foreach ( (array) ( $c['notes'] ?? array() ) as $note ) {
+			\WP_CLI::warning( $note );
+		}
+
+		if ( ! isset( $assoc['skip-services'] ) ) {
+			$s = \Oria\Core\Services\sync_terms();
+			\WP_CLI::log( sprintf( 'Services: %d created, %d updated, %d unchanged.', $s['created'], $s['updated'], $s['unchanged'] ) );
+
+			$m = \Oria\Core\Services\map_listings();
+			\WP_CLI::log( sprintf( 'Re-scanned %d listings, attached %d service terms.', $m['listings'], $m['attached'] ) );
+
+			// The unmatched list is how the vocabulary grows. Ignoring it is how
+			// it stops growing.
+			$top = array_slice( (array) $m['unmatched'], 0, 10, true );
+			if ( $top ) {
+				\WP_CLI::log( 'Most common unmatched service strings:' );
+				foreach ( $top as $name => $count ) {
+					\WP_CLI::log( sprintf( '    %3d  %s', $count, $name ) );
+				}
+			}
+		}
+
+		$a = \Oria\Core\Audience\sync_terms();
+		\WP_CLI::log( sprintf( 'Audiences: %d created, %d updated, %d unchanged.', $a['created'], $a['renamed'], $a['unchanged'] ) );
+
+		\WP_CLI::success( 'Vocabularies reconciled.' );
+	}
+
 	public function seed_pages( array $args, array $assoc ): void {
 		if ( ! function_exists( 'update_field' ) ) {
 			\WP_CLI::error( 'ACF Pro must be active to seed pages.' );
