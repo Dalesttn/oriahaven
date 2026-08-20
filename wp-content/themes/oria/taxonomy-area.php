@@ -34,6 +34,14 @@ $oria_region = $oria_term instanceof WP_Term ? \Oria\Core\Taxonomies\region_for(
 	</div>
 </section>
 
+<?php
+/*
+ * The page's own facts, before the filter rail. Everything below this
+ * point is chrome shared with every other landing page; this is the only
+ * part of the page that is about this page.
+ */
+get_template_part( 'template-parts/answer', 'block', array( 'term' => $oria_term ) );
+?>
 <section class="wrap section section--top-flush">
 	<div class="dir">
 		<?php get_template_part( 'template-parts/directory', 'filters' ); ?>

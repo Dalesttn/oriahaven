@@ -1756,3 +1756,45 @@ a.livesession:hover { background: var(--sand-2); }
 .badgekit__preview img { display: block; max-width: 100%; height: auto; }
 .badgekit__preview--dark { background: var(--white); }
 .badgekit__preview--light { background: var(--deep); border-color: var(--deep); }
+
+/* -------------------------------------------------------------------------
+ * Answer block (landing pages)
+ *
+ * The page's own facts, set above the filter rail. Deliberately plain: no
+ * card, no tint, no icon row. It is prose because prose is what gets quoted
+ * — a grid of stat tiles reads well and extracts as a column of orphaned
+ * numbers, which is the opposite of what this block is for.
+ *
+ * The rule on the left does the work a heading would, without adding a
+ * heading level between the h1 and the results.
+ * ---------------------------------------------------------------------- */
+.answer {
+  max-width: 68ch;
+  border-left: 2px solid var(--line-strong);
+  padding-left: var(--s-5);
+}
+
+.answer__body {
+  font-size: clamp(1.0625rem, 1.35vw, 1.2rem);
+  line-height: 1.55;
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+/* The provenance line. Small, but not hidden — a figure with no date on it
+ * is worth less than no figure, and the caveat about prices belongs beside
+ * the prices rather than three screens down in the FAQ. */
+.answer__meta {
+  margin-top: var(--s-3, 0.75rem);
+  font-size: var(--fs-micro);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+}
+
+@media (max-width: 640px) {
+  .answer {
+    padding-left: var(--s-4, 1rem);
+  }
+  .answer__body { font-size: var(--fs-body); }
+}

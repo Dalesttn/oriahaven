@@ -59,6 +59,27 @@ $oria_aname = $oria_area ? \Oria\Theme\tname( $oria_area ) : '';
 	?>
 </section>
 
+<?php
+/*
+ * The page's own facts, ahead of both the editorial intro and the filter
+ * rail. The intro gives the category its context; this answers the
+ * question somebody actually typed, which is the sentence worth first.
+ *
+ * Combos get one too, unlike the FAQ block at the foot of this file. The
+ * FAQ is skipped there because its questions are answered across the whole
+ * metro and would read as a lie once the page has narrowed to a suburb.
+ * This block takes the area as a second facet and counts within it, so on
+ * /practice/yoga/freo/ the numbers describe Fremantle and nowhere else.
+ */
+get_template_part(
+	'template-parts/answer',
+	'block',
+	array(
+		'term' => $oria_term,
+		'area' => $oria_area,
+	)
+);
+?>
 <?php if ( ! $oria_is_combo && is_string( $oria_intro ) && '' !== trim( $oria_intro ) ) : ?>
 <section class="wrap section section--top-flush">
 	<div class="prose prose--intro"><?php echo wp_kses_post( $oria_intro ); ?></div>
