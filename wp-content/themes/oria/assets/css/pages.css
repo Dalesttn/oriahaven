@@ -318,6 +318,26 @@ a.livesession:hover { background: var(--sand-2); }
 @media (max-width: 1000px) { .dir { grid-template-columns: 1fr; } }
 
 .filters { position: sticky; top: calc(var(--head-h) + var(--s-4)); display: grid; gap: var(--s-4); }
+
+/* The rail is taller than the screen — 89 inputs, ~2,650px against a 900px
+   viewport — so `sticky` had nothing to stick with: it scrolled away with
+   the page and the filters were gone for the whole 3,700px of results.
+   Capping it to the viewport and letting it scroll on its own is what makes
+   the sticky positioning mean anything.
+
+   Desktop only. Below 1000px the rail is a fixed sheet and must not get a
+   second scroll container inside it. */
+@media (min-width: 1001px) {
+  .filters {
+    max-height: calc(100vh - var(--head-h) - var(--s-6));
+    overflow-y: auto;
+    /* Stop the page scrolling on behind it once the rail hits its end. */
+    overscroll-behavior: contain;
+    /* Room for the scrollbar so the checkboxes do not sit under it. */
+    padding-right: var(--s-3);
+    scrollbar-width: thin;
+  }
+}
 @media (max-width: 1000px) {
   .filters { position: static; }
   .filters.is-collapsed { display: none; }
@@ -2081,3 +2101,25 @@ a.livesession:hover { background: var(--sand-2); }
   font-size: var(--fs-xs);
   color: var(--text-faint);
 }
+
+/* The way past the preamble — see template-parts/answer-block.php. */
+.answer__jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: var(--s-4);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 2px;
+  transition: border-color 0.15s ease;
+}
+.answer__jump:hover { border-color: var(--ink); }
+.answer__jump svg { width: 13px; height: 13px; flex: none; }
+
+/* The jump lands on the results; without this the sticky header covers the
+   first card and it looks as though nothing happened. */
+#dirResults { scroll-margin-top: calc(var(--head-h) + var(--s-5)); }

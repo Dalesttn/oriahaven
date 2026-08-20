@@ -72,6 +72,34 @@ $oria_guides = ( ! $oria_area instanceof WP_Term && function_exists( '\Oria\Core
 				}
 				?>
 			</p>
+
+			<?php
+			/*
+			 * A way past the preamble.
+			 *
+			 * Measured on the live category pages, the first listing sat 2,084px
+			 * down on a desktop and 3,248px down on a phone — three and a half
+			 * screens of answer, featured, guides, intent rows and introduction
+			 * before the thing the page is named after. Somebody arriving from a
+			 * search for "meditation Perth" wants practices.
+			 *
+			 * The count is repeated here on purpose. It is the fact worth
+			 * knowing, and a link that says how much is behind it is a better
+			 * invitation than an arrow on its own.
+			 */
+			if ( $oria_answer['count'] > 0 ) :
+				?>
+				<a class="answer__jump" href="#dirResults">
+					<?php
+					printf(
+						/* translators: %s: number of listings on this page. */
+						esc_html( _n( 'See the %s practice', 'See all %s practices', (int) $oria_answer['count'], 'oria' ) ),
+						esc_html( number_format_i18n( (int) $oria_answer['count'] ) )
+					);
+					?>
+					<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3v8M3.5 7.5 7 11l3.5-3.5"/></svg>
+				</a>
+			<?php endif; ?>
 		</div>
 
 		<?php

@@ -100,12 +100,6 @@ if ( ! $oria_is_combo ) {
 	get_template_part( 'template-parts/intent', 'rows', array( 'term' => $oria_term ) );
 }
 ?>
-<?php if ( ! $oria_is_combo && is_string( $oria_intro ) && '' !== trim( $oria_intro ) ) : ?>
-<section class="wrap section section--top-flush">
-	<div class="prose prose--intro"><?php echo wp_kses_post( $oria_intro ); ?></div>
-</section>
-<?php endif; ?>
-
 <section class="wrap section section--top-flush">
 	<div class="dir">
 		<?php get_template_part( 'template-parts/directory', 'filters' ); ?>
@@ -178,6 +172,24 @@ if ( ! $oria_is_combo ) {
 		</div>
 	</div>
 </section>
+
+<?php
+/*
+ * The category introduction, below the results rather than above them.
+ *
+ * It used to sit immediately before the listings, which made a 197-word
+ * essay the last thing between somebody who searched for a category and
+ * the practices in it. It is good context and a poor gatekeeper. Below
+ * the results it is still crawlable, still in the document, and no
+ * longer standing in the way.
+ */
+?>
+<?php if ( ! $oria_is_combo && is_string( $oria_intro ) && '' !== trim( $oria_intro ) ) : ?>
+<section class="wrap section section--top-flush">
+	<div class="prose prose--intro"><?php echo wp_kses_post( $oria_intro ); ?></div>
+</section>
+<?php endif; ?>
+
 
 <?php
 /*
