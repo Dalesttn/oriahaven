@@ -1740,3 +1740,19 @@ a.livesession:hover { background: var(--sand-2); }
 @media (max-width: 560px) {
 	.dirnudge__go { width: 100%; justify-content: space-between; }
 }
+
+/* The website badge on the share kit. Each variant is previewed on the
+   kind of background it was drawn for, because a light-on-dark badge shown
+   against a white card looks broken rather than optional. */
+.badgekit { margin-bottom: var(--s-6); }
+.badgekit__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-5);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+}
+.badgekit__preview img { display: block; max-width: 100%; height: auto; }
+.badgekit__preview--dark { background: var(--white); }
+.badgekit__preview--light { background: var(--deep); border-color: var(--deep); }

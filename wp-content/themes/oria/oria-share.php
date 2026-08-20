@@ -84,6 +84,51 @@ $oria_links = Share\share_links( $oria_id );
 					</a>
 				<?php endif; ?>
 			</div>
+
+			<?php
+			/*
+			 * The only part of this page that earns a link rather than a
+			 * visit. Everything above is a share, and a search engine counts
+			 * none of those. A badge on the practice's own site is the one
+			 * thing here that says these two pages belong together.
+			 *
+			 * Never phrased as a condition of anything — see the note in
+			 * Oria\Core\Badge. It is a thank-you, not a trade.
+			 */
+			$oria_badges = array();
+			foreach ( \Oria\Core\Badge\variants() as $oria_v => $oria_vlabel ) {
+				$oria_img = \Oria\Core\Badge\image_url( $oria_v );
+				if ( '' !== $oria_img ) {
+					$oria_badges[ $oria_v ] = array( 'url' => $oria_img, 'label' => $oria_vlabel );
+				}
+			}
+			?>
+			<?php if ( $oria_badges ) : ?>
+				<h2 class="h3" style="margin-top:2.5rem"><?php esc_html_e( '4. Add it to your website', 'oria' ); ?></h2>
+				<p class="hint" style="margin-bottom:1.25rem">
+					<?php esc_html_e( 'Paste this into your footer or your about page. It links back to your profile, so anyone who finds you there can see your full listing. Optional, always — nothing about your listing depends on it.', 'oria' ); ?>
+				</p>
+
+				<?php foreach ( $oria_badges as $oria_v => $oria_b ) : ?>
+					<div class="badgekit">
+						<div class="badgekit__preview badgekit__preview--<?php echo esc_attr( $oria_v ); ?>">
+							<img src="<?php echo esc_url( $oria_b['url'] ); ?>"
+								alt="<?php echo esc_attr( sprintf( /* translators: %s: which background the badge suits */ __( 'The Oria Haven badge, %s', 'oria' ), $oria_b['label'] ) ); ?>"
+								width="<?php echo (int) \Oria\Core\Badge\W; ?>" height="<?php echo (int) \Oria\Core\Badge\H; ?>">
+						</div>
+						<span class="micro" style="display:block;margin:.8rem 0 .5rem"><?php echo esc_html( $oria_b['label'] ); ?></span>
+						<textarea id="badgeCode-<?php echo esc_attr( $oria_v ); ?>" class="textarea" rows="4" readonly><?php echo esc_textarea( \Oria\Core\Badge\snippet( $oria_id, $oria_v ) ); ?></textarea>
+						<button class="btn btn--ghost btn--block btn--sm" type="button"
+							data-copy-target="#badgeCode-<?php echo esc_attr( $oria_v ); ?>" style="margin-top:.6rem">
+							<?php esc_html_e( 'Copy the code', 'oria' ); ?>
+						</button>
+					</div>
+				<?php endforeach; ?>
+
+				<p class="hint" style="margin-top:1.25rem">
+					<?php esc_html_e( 'On Wix, Squarespace or Shopify, look for an embed or custom HTML block and paste it there.', 'oria' ); ?>
+				</p>
+			<?php endif; ?>
 		</div>
 
 		<aside class="sharekit__side">

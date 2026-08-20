@@ -52,6 +52,7 @@ require_once ORIA_CORE_DIR . 'includes/faq.php';
 require_once ORIA_CORE_DIR . 'includes/leads.php';
 require_once ORIA_CORE_DIR . 'includes/share.php';
 require_once ORIA_CORE_DIR . 'includes/og-default.php';
+require_once ORIA_CORE_DIR . 'includes/badge.php';
 require_once ORIA_CORE_DIR . 'includes/hardening.php';
 require_once ORIA_CORE_DIR . 'includes/finder.php';
 require_once ORIA_CORE_DIR . 'includes/invites.php';
