@@ -40,7 +40,7 @@ $oria_error_text = array(
 
 $oria_practices = get_terms( array( 'taxonomy' => 'practice', 'hide_empty' => false ) );
 $oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
-$oria_regions   = get_terms( array( 'taxonomy' => 'area', 'hide_empty' => false, 'parent' => 0 ) );
+$oria_regions   = \Oria\Core\Taxonomies\regions();
 $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 ?>
 

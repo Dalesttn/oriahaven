@@ -68,6 +68,7 @@ require_once ORIA_CORE_DIR . 'includes/audience.php';
 require_once ORIA_CORE_DIR . 'includes/cities.php';
 require_once ORIA_CORE_DIR . 'includes/redirects.php';
 require_once ORIA_CORE_DIR . 'includes/merge-terms.php';
+require_once ORIA_CORE_DIR . 'includes/migrate-city.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them

@@ -80,7 +80,7 @@ function rows_for( \WP_Term $term, ?\WP_Term $area = null ): array {
 	return array_values(
 		array_filter(
 			$rows,
-			static fn( array $r ): bool => $area->parent
+			static fn( array $r ): bool => Taxonomies\is_suburb( $area )
 				// The client index stores the display name, not the slug.
 				? sanitize_title( (string) ( $r['suburb'] ?? '' ) ) === $area->slug
 				: ( $r['region'] ?? '' ) === $area->slug
@@ -242,7 +242,7 @@ function area_sentences( \WP_Term $term, array $rows ): array {
 	}
 
 	// Regions carry suburbs; a suburb page has none to report.
-	if ( 0 === $term->parent ) {
+	if ( ! Taxonomies\is_suburb( $term ) ) {
 		$suburbs = Faq\tally( $rows, 'suburb' );
 		if ( count( $suburbs ) >= 2 ) {
 			$out[] = sprintf( 'They are spread across %s.', Faq\plural( count( $suburbs ), 'suburb', 'suburbs' ) );

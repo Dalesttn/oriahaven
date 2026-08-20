@@ -87,7 +87,10 @@ function matching( \WP_Term $term ): array {
 				$hit = in_array( $slug, (array) ( $row['spec'] ?? array() ), true );
 				break;
 			case Taxonomies\AREA:
-				$hit = $term->parent
+				// is_suburb(), not a parent check: regions gained a parent when the
+				// city level was inserted, and a region would otherwise be matched
+				// against suburb names and find nothing.
+				$hit = Taxonomies\is_suburb( $term )
 					? sanitize_title( (string) ( $row['suburb'] ?? '' ) ) === $slug
 					: ( $row['region'] ?? '' ) === $slug;
 				break;

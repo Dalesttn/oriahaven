@@ -186,7 +186,7 @@ if ( $oria_feat ) :
  */
 if ( $oria_term instanceof WP_Term ) :
 	$oria_counts  = \Oria\Theme\combo_counts( $oria_term->slug );
-	$oria_regions = get_terms( array( 'taxonomy' => 'area', 'parent' => 0, 'hide_empty' => false ) );
+	$oria_regions = \Oria\Core\Taxonomies\regions();
 	$oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 	$oria_links   = array();
 

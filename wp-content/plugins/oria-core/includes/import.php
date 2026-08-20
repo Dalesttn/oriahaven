@@ -1072,8 +1072,31 @@ class Command {
 			$this->ensure_term( (string) $cat['name'], (string) $cat['id'], Taxonomies\PRACTICE, 0, $dry );
 		}
 
+		/*
+		 * Regions hang off the city, not off the root.
+		 *
+		 * Before the city migration the root was the right place and this
+		 * passed 0. After it, a seed file naming a region the site does not
+		 * have yet would create it at the root — outside the city, with a
+		 * URL of /area/{region}/ while every sibling sits at
+		 * /area/perth/{region}/. One import would quietly re-break the tree
+		 * the migration just fixed.
+		 *
+		 * A file may name its own city; otherwise the default applies, which
+		 * keeps every existing Perth seed file working untouched.
+		 */
+		$city_slug = (string) ( $data['city'] ?? \Oria\Core\Cities\path( \Oria\Core\Cities\default_city() ) );
+		$city_term = get_term_by( 'slug', $city_slug, Taxonomies\AREA );
+		$city_id   = ( $city_term instanceof \WP_Term && 0 === (int) $city_term->parent ) ? (int) $city_term->term_id : 0;
+
+		if ( 0 === $city_id && isset( $data['regions'] ) ) {
+			// Not an error: this is simply a site whose area tree has not been
+			// migrated yet, and the root is still correct there.
+			\WP_CLI::log( sprintf( '  no city term "%s" — regions will sit at the root, as before', $city_slug ) );
+		}
+
 		foreach ( (array) ( $data['regions'] ?? array() ) as $region ) {
-			$parent_id = $this->ensure_term( (string) $region['name'], (string) $region['id'], Taxonomies\AREA, 0, $dry );
+			$parent_id = $this->ensure_term( (string) $region['name'], (string) $region['id'], Taxonomies\AREA, $city_id, $dry );
 			foreach ( (array) ( $region['suburbs'] ?? array() ) as $suburb ) {
 				$this->ensure_term( (string) $suburb, $this->area_slug( (string) $suburb ), Taxonomies\AREA, $parent_id, $dry );
 			}

@@ -85,7 +85,7 @@ get_template_part( 'template-parts/answer', 'block', array( 'term' => $oria_term
 			 * stores (tname( $suburb ?: $region )), and it is the form
 			 * taxonomy-practice.php already passes.
 			 */
-			$oria_is_suburb = $oria_term instanceof WP_Term && $oria_term->parent;
+			$oria_is_suburb = $oria_term instanceof WP_Term && \Oria\Core\Taxonomies\is_suburb( $oria_term );
 			?>
 			<div class="dir__results" id="dirResults" data-region="<?php echo esc_attr( $oria_region ? $oria_region->slug : '' ); ?>"<?php echo $oria_is_suburb ? ' data-suburb="' . esc_attr( \Oria\Theme\tname( $oria_term ) ) . '"' : ''; ?>>
 				<?php

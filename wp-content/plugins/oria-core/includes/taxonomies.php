@@ -134,19 +134,96 @@ function register_specialty(): void {
 }
 
 /**
- * The region a suburb term belongs to, or the term itself if it is already a
- * top-level region.
+ * Depth in the area tree, now that there is a city above the regions.
+ *
+ * Before the city migration the tree was two levels and "root" and "region"
+ * were the same thing — which is why seven call sites asked for
+ * `parent => 0` and region_for() took the topmost ancestor. Both answers
+ * became wrong the moment a city was inserted: every region gained a parent,
+ * so region pages started being treated as suburbs, and region_for() began
+ * returning "Perth" for everything.
+ *
+ * These three functions are the only place that knows the shape of the tree.
+ * Call them instead of counting parents.
+ */
+
+/** A city is a root term whose slug is a registered city. */
+function is_city( \WP_Term $term ): bool {
+	return 0 === (int) $term->parent
+		&& function_exists( '\Oria\Core\Cities\exists' )
+		&& \Oria\Core\Cities\exists( $term->slug );
+}
+
+/**
+ * A region sits directly under a city — or at the root on a site whose tree
+ * has not been migrated yet, which keeps this correct on both.
+ */
+function is_region( \WP_Term $term ): bool {
+	if ( is_city( $term ) ) {
+		return false;
+	}
+
+	if ( 0 === (int) $term->parent ) {
+		return true;
+	}
+
+	$parent = get_term( (int) $term->parent, AREA );
+	return $parent instanceof \WP_Term && is_city( $parent );
+}
+
+/** Anything below a region. */
+function is_suburb( \WP_Term $term ): bool {
+	return ! is_city( $term ) && ! is_region( $term );
+}
+
+/**
+ * Every region, whatever depth the tree happens to be.
+ *
+ * @return list<\WP_Term>
+ */
+function regions( array $args = array() ): array {
+	$query = array_merge(
+		array( 'taxonomy' => AREA, 'hide_empty' => false ),
+		$args
+	);
+
+	/*
+	 * `parent` must be absent, not null. WP_Term_Query tests it with
+	 * `'' !== $args['parent']`, so a null casts to 0 and quietly restricts
+	 * the query to root terms — which after the city migration is the city
+	 * alone, and is_region() then filters that out too. The function
+	 * returned an empty array and every region list on the site went blank.
+	 */
+	unset( $query['parent'], $query['child_of'] );
+
+	$terms = get_terms( $query );
+
+	if ( is_wp_error( $terms ) ) {
+		return array();
+	}
+
+	return array_values( array_filter( $terms, __NAMESPACE__ . '\is_region' ) );
+}
+
+/**
+ * The region a term belongs to, or the term itself if it is already one.
+ *
+ * Walks up to the first ancestor that is a region rather than to the topmost
+ * ancestor, which is now the city.
  */
 function region_for( \WP_Term $term ): \WP_Term {
-	if ( 0 === $term->parent ) {
+	if ( is_region( $term ) || is_city( $term ) ) {
 		return $term;
 	}
 
-	$ancestors = get_ancestors( $term->term_id, AREA, 'taxonomy' );
-	$top       = end( $ancestors );
-	$region    = $top ? get_term( $top, AREA ) : null;
+	foreach ( (array) get_ancestors( $term->term_id, AREA, 'taxonomy' ) as $id ) {
+		$anc = get_term( (int) $id, AREA );
+		if ( $anc instanceof \WP_Term && is_region( $anc ) ) {
+			return $anc;
+		}
+	}
 
-	return $region instanceof \WP_Term ? $region : $term;
+	return $term;
 }
 
 /** Suburb terms only — the children of any region. */

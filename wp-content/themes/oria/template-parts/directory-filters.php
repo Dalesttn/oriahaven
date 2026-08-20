@@ -7,7 +7,7 @@
 declare(strict_types=1);
 
 $oria_practices   = get_terms( array( 'taxonomy' => 'practice', 'hide_empty' => false ) );
-$oria_regions     = get_terms( array( 'taxonomy' => 'area', 'parent' => 0, 'hide_empty' => false ) );
+$oria_regions     = \Oria\Core\Taxonomies\regions();
 // All of them, commonest first. The list runs past seventy terms, so only
 // the first dozen show until "Show all" is tapped — the rest are in the
 // markup so the filter still works without JavaScript.

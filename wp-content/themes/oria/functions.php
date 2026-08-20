@@ -306,7 +306,7 @@ function listing_data(): array {
 					'suburbs' => array_map( __NAMESPACE__ . '\tname', is_wp_error( $children ) ? array() : $children ),
 				);
 			},
-			get_terms( array( 'taxonomy' => 'area', 'parent' => 0, 'hide_empty' => false ) ) ?: array()
+			\Oria\Core\Taxonomies\regions()
 		),
 		// array_values, or one term filtered out upstream leaves a keyed
 		// array that wp_json_encode turns into an OBJECT — which is exactly

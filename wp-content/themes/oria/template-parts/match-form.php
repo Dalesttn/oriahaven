@@ -31,7 +31,7 @@ $oria_practices = get_terms( array( 'taxonomy' => 'practice', 'hide_empty' => tr
 $oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
 $oria_specs     = get_terms( array( 'taxonomy' => 'specialty', 'hide_empty' => true, 'orderby' => 'count', 'order' => 'DESC', 'number' => 30 ) );
 $oria_specs     = is_wp_error( $oria_specs ) ? array() : $oria_specs;
-$oria_regions   = get_terms( array( 'taxonomy' => 'area', 'parent' => 0, 'hide_empty' => false ) );
+$oria_regions   = \Oria\Core\Taxonomies\regions();
 $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 
 if ( 'sent' === $oria_state ) : ?>

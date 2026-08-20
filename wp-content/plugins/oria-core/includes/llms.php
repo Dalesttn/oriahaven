@@ -104,7 +104,7 @@ function build(): string {
 	$listings  = (int) ( wp_count_posts( PostTypes\LISTING )->publish ?? 0 );
 	$practices = get_terms( array( 'taxonomy' => Taxonomies\PRACTICE, 'hide_empty' => true, 'orderby' => 'count', 'order' => 'DESC' ) );
 	$practices = is_wp_error( $practices ) ? array() : $practices;
-	$regions   = get_terms( array( 'taxonomy' => Taxonomies\AREA, 'parent' => 0, 'hide_empty' => false, 'orderby' => 'name' ) );
+	$regions   = Taxonomies\regions( array( 'orderby' => 'name' ) );
 	$regions   = is_wp_error( $regions ) ? array() : $regions;
 
 	$out = "# Oria Haven\n\n";

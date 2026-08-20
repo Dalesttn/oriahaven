@@ -166,7 +166,7 @@ function specialties( int $min = 1 ): array {
  * @return list<array{region: \WP_Term, suburbs: list<\WP_Term>}>
  */
 function areas(): array {
-	$regions = get_terms( array( 'taxonomy' => Taxonomies\AREA, 'parent' => 0, 'hide_empty' => false ) );
+	$regions = Taxonomies\regions();
 	if ( is_wp_error( $regions ) ) {
 		return array();
 	}
