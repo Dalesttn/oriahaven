@@ -257,3 +257,74 @@ function summary( \WP_Term $practice, array $rows ): string {
 		\Oria\Core\Faq\oxford( $parts )
 	);
 }
+
+/* ------------------------------------------------------- popular intents */
+
+/**
+ * The most-chosen intents across the whole directory.
+ *
+ * Feeds the home page's "Popular right now" pills. Ranked by what visitors
+ * actually filtered for (IntentStats), not by what somebody typed into a
+ * repeater — and pointed at the whole directory rather than a category,
+ * because on the home page nobody has picked one yet.
+ *
+ * Returns fewer than asked for, or nothing at all, when the data does not
+ * support more. A pill sitting on three clicks is not a measurement, and the
+ * caller falls back to the editorial list rather than dressing noise up as
+ * a trend.
+ *
+ * @return list<array{label: string, count: int, url: string, kind: string}>
+ */
+function popular( int $limit = 5 ): array {
+	if ( ! function_exists( '\Oria\Core\IntentStats\totals' ) ) {
+		return array();
+	}
+
+	$base = get_post_type_archive_link( PostTypes\LISTING ) ?: home_url( '/directory/' );
+	$out  = array();
+
+	foreach ( \Oria\Core\IntentStats\totals( \Oria\Core\IntentStats\KEEP_DAYS ) as $intent => $count ) {
+		if ( count( $out ) >= $limit ) {
+			break;
+		}
+		if ( $count < \Oria\Core\IntentStats\FLOOR ) {
+			// Sorted descending, so the first one under the floor ends it.
+			break;
+		}
+
+		list( $key, $value ) = array_pad( explode( ':', (string) $intent, 2 ), 2, '' );
+
+		$label = label_for( $key, $value );
+		if ( '' === $label ) {
+			// A term deleted since it was counted. Skip it rather than
+			// printing a slug at somebody.
+			continue;
+		}
+
+		$out[] = array(
+			'label' => $label,
+			'count' => (int) $count,
+			// src=hero keeps the pills out of their own ranking.
+			'url'   => add_query_arg( array( $key => $value, 'src' => 'hero' ), $base ) . ANCHOR,
+			'kind'  => $key,
+		);
+	}
+
+	return $out;
+}
+
+/** A human label for one intent key, or '' when it no longer resolves. */
+function label_for( string $key, string $value ): string {
+	if ( 'format' === $key ) {
+		return 'online' === $value ? __( 'Online or hybrid', 'oria' ) : __( 'In person', 'oria' );
+	}
+
+	if ( 'price' === $key ) {
+		return 'Free' === $value ? __( 'Free or by donation', 'oria' ) : $value;
+	}
+
+	$taxonomy = 'aud' === $key ? Audience\TAXONOMY : Services\TAXONOMY;
+	$term     = get_term_by( 'slug', $value, $taxonomy );
+
+	return $term instanceof \WP_Term ? wp_specialchars_decode( $term->name, ENT_QUOTES ) : '';
+}

@@ -53,6 +53,38 @@ $oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
 		<?php
 		$oria_tags = srows( $s, 'tags' );
 
+		/*
+		 * "Popular right now", meaning it.
+		 *
+		 * These pills were whatever an editor last typed into the repeater,
+		 * which is a claim about popularity with nothing behind it. Ranked
+		 * intents replace them once enough people have actually chosen one.
+		 * IntentStats holds a floor, so a pill on three clicks never makes
+		 * it and the editorial list stays.
+		 *
+		 * Not either/or: the ranking fills what it can and the typed rows
+		 * top up the rest, so the row is never short and never padded with
+		 * noise.
+		 */
+		if ( function_exists( '\Oria\Core\Intents\popular' ) ) {
+			$oria_ranked = \Oria\Core\Intents\popular( 5 );
+
+			if ( $oria_ranked ) {
+				$oria_topup = array_slice( $oria_tags, 0, max( 0, 5 - count( $oria_ranked ) ) );
+
+				$oria_tags = array_merge(
+					array_map(
+						static fn( array $r ): array => array(
+							'label' => $r['label'],
+							'url'   => $r['url'],
+						),
+						$oria_ranked
+					),
+					$oria_topup
+				);
+			}
+		}
+
 		// Ratings card: shown unless the editor turns it off. Pages saved
 		// before the toggle existed have no key at all — treat that as on.
 		$oria_show_trust = array_key_exists( 'show_trust', $s ) ? (bool) $s['show_trust'] : true;

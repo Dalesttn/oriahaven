@@ -69,6 +69,7 @@ require_once ORIA_CORE_DIR . 'includes/cities.php';
 require_once ORIA_CORE_DIR . 'includes/redirects.php';
 require_once ORIA_CORE_DIR . 'includes/merge-terms.php';
 require_once ORIA_CORE_DIR . 'includes/migrate-city.php';
+require_once ORIA_CORE_DIR . 'includes/intent-stats.php';
 require_once ORIA_CORE_DIR . 'includes/intents.php';
 require_once ORIA_CORE_DIR . 'includes/guides.php';
 
@@ -115,6 +116,7 @@ Answer\bootstrap();
 Audience\bootstrap();
 Cities\bootstrap();
 Redirects\bootstrap();
+IntentStats\bootstrap();
 
 /**
  * Rewrite rules are only rebuilt on activation and deactivation. Flushing on
