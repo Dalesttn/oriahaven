@@ -46,6 +46,15 @@ $oria_guides = ( ! $oria_area instanceof WP_Term && function_exists( '\Oria\Core
 
 <section class="wrap section section--top-flush">
 	<div class="answerrow<?php echo $oria_guides ? ' answerrow--split' : ''; ?>">
+		<?php
+		/*
+		 * The featured blocks are a sibling of .answer, not a child of it.
+		 * Inside, they sat within the answer's left rule, which reads as
+		 * though paid placement were part of the directory's own statement
+		 * of fact. It is not, and the markup should not suggest it is.
+		 */
+		?>
+		<div class="answercol">
 		<div class="answer">
 			<p class="answer__body"><?php echo esc_html( implode( ' ', $oria_answer['sentences'] ) ); ?></p>
 			<p class="answer__meta">
@@ -63,6 +72,20 @@ $oria_guides = ( ! $oria_area instanceof WP_Term && function_exists( '\Oria\Core
 				}
 				?>
 			</p>
+		</div>
+
+		<?php
+		if ( ! empty( $args['featured'] ) ) {
+			get_template_part(
+				'template-parts/featured',
+				'mini',
+				array(
+					'posts'   => $args['featured'],
+					'heading' => (string) ( $args['featured_heading'] ?? __( 'Featured practices', 'oria' ) ),
+				)
+			);
+		}
+		?>
 		</div>
 
 		<?php if ( $oria_guides ) : ?>

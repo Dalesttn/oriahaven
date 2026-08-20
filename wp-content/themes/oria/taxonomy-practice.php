@@ -71,12 +71,20 @@ $oria_aname = $oria_area ? \Oria\Theme\tname( $oria_area ) : '';
  * This block takes the area as a second facet and counts within it, so on
  * /practice/yoga/freo/ the numbers describe Fremantle and nowhere else.
  */
+// Paid placement, resolved here so the answer block can set it beside the
+// facts rather than in a band of its own further down the page.
+$oria_feat = ( $oria_term instanceof WP_Term && ! $oria_is_combo )
+	? \Oria\Theme\featured_listings( 3, $oria_term->slug )
+	: array();
+
 get_template_part(
 	'template-parts/answer',
 	'block',
 	array(
-		'term' => $oria_term,
-		'area' => $oria_area,
+		'term'             => $oria_term,
+		'area'             => $oria_area,
+		'featured'         => $oria_feat,
+		'featured_heading' => sprintf( __( 'Featured in %s', 'oria' ), $oria_pname ),
 	)
 );
 ?>
@@ -95,25 +103,6 @@ if ( ! $oria_is_combo ) {
 <?php if ( ! $oria_is_combo && is_string( $oria_intro ) && '' !== trim( $oria_intro ) ) : ?>
 <section class="wrap section section--top-flush">
 	<div class="prose prose--intro"><?php echo wp_kses_post( $oria_intro ); ?></div>
-</section>
-<?php endif; ?>
-
-<?php
-// Paid placement: featured listings in this practice lead the page.
-$oria_feat = $oria_term instanceof WP_Term ? \Oria\Theme\featured_listings( 3, $oria_term->slug ) : array();
-if ( $oria_feat ) :
-	?>
-<section class="wrap section section--top-flush">
-	<?php
-	get_template_part(
-		'template-parts/featured',
-		'band',
-		array(
-			'posts'   => $oria_feat,
-			'heading' => sprintf( __( 'Featured in %s', 'oria' ), $oria_pname ),
-		)
-	);
-	?>
 </section>
 <?php endif; ?>
 
