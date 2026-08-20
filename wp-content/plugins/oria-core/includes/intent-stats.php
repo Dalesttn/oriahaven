@@ -155,3 +155,102 @@ function totals( int $days = KEEP_DAYS ): array {
 
 	return $out;
 }
+
+/* ------------------------------------------------------------------- CLI */
+
+if ( defined( 'WP_CLI' ) && \WP_CLI ) {
+	\WP_CLI::add_command(
+		'oria intents',
+		/**
+		 * Show what the "Popular right now" pills are ranking on.
+		 *
+		 * Read-only by default. The floor means nothing appears on the home
+		 * page until an intent has been chosen ten times in thirty days, so
+		 * without a way to look at the raw counts the feature is impossible
+		 * to tell apart from a bug.
+		 */
+		new class() {
+			/**
+			 * ## OPTIONS
+			 *
+			 * [--seed]
+			 * : Write fake counts so the ranking can be seen working. TEST
+			 *   SITES ONLY — this puts numbers into the real counter.
+			 *
+			 * [--clear]
+			 * : Delete every recorded count and start again.
+			 *
+			 * ## EXAMPLES
+			 *
+			 *     wp oria intents
+			 *     wp oria intents --seed
+			 *     wp oria intents --clear
+			 */
+			public function __invoke( array $args, array $assoc ): void {
+				if ( isset( $assoc['clear'] ) ) {
+					delete_option( OPTION );
+					\WP_CLI::success( 'Counts cleared. The home page falls back to the typed pills.' );
+					return;
+				}
+
+				if ( isset( $assoc['seed'] ) ) {
+					$this->seed();
+				}
+
+				$totals = totals();
+
+				if ( ! $totals ) {
+					\WP_CLI::log( 'Nothing recorded yet. The home page is showing the typed pills.' );
+					\WP_CLI::log( 'Visit a filtered view to record one, e.g. /directory/?svc=reiki' );
+					return;
+				}
+
+				\WP_CLI::log( sprintf( 'Intent clicks over the last %d days (floor for a pill: %d)', KEEP_DAYS, FLOOR ) );
+				\WP_CLI::log( '' );
+
+				foreach ( $totals as $intent => $count ) {
+					\WP_CLI::log( sprintf(
+						'  %-28s %4d  %s',
+						$intent,
+						$count,
+						$count >= FLOOR ? 'above the floor' : 'below - will not show'
+					) );
+				}
+
+				\WP_CLI::log( '' );
+				\WP_CLI::log( 'What the home page will render:' );
+
+				$pills = function_exists( '\Oria\Core\Intents\popular' ) ? \Oria\Core\Intents\popular( 5 ) : array();
+
+				if ( ! $pills ) {
+					\WP_CLI::log( '  (nothing clears the floor - the typed pills stay)' );
+					return;
+				}
+
+				foreach ( $pills as $pill ) {
+					\WP_CLI::log( sprintf( '  %-24s %4d  %s', $pill['label'], $pill['count'], $pill['url'] ) );
+				}
+			}
+
+			/** Plausible test data, spread across the four intent kinds. */
+			private function seed(): void {
+				$sample = array(
+					'aud:beginners'        => 34,
+					'svc:remedial-massage' => 27,
+					'price:Free'           => 19,
+					'svc:yin-yoga'         => 14,
+					'format:online'        => 11,
+					'svc:reiki'            => 6,
+				);
+
+				foreach ( $sample as $intent => $n ) {
+					for ( $i = 0; $i < $n; $i++ ) {
+						record( array( $intent ) );
+					}
+				}
+
+				\WP_CLI::warning( 'Seeded fake counts. Run --clear before trusting these numbers.' );
+			}
+		}
+	);
+}
