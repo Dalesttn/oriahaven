@@ -328,9 +328,33 @@ function page_defaults(): array {
  * @return array<string, list<string>>
  */
 function specialty_intros(): array {
+	/*
+	 * Most of the copy lives in data/specialty-intros.json, the same
+	 * arrangement as category-intros.json: prose runs to a few hundred
+	 * words a page and would bury this file. The file's entries win over
+	 * the inline one below for the same slug; the inline entry stays as
+	 * the fallback that proves the shape if the file is ever unreadable.
+	 */
+	static $from_file = null;
+	if ( null === $from_file ) {
+		$from_file = array();
+		$path      = ORIA_CORE_DIR . 'data/specialty-intros.json';
+		if ( is_readable( $path ) ) {
+			$json = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			if ( is_array( $json ) ) {
+				foreach ( (array) ( $json['intros'] ?? array() ) as $slug => $paras ) {
+					$paras = array_values( array_filter( array_map( 'strval', (array) $paras ), 'strlen' ) );
+					if ( $paras ) {
+						$from_file[ (string) $slug ] = $paras;
+					}
+				}
+			}
+		}
+	}
+
 	return apply_filters(
 		'oria_specialty_intros',
-		array(
+		$from_file + array(
 			'red-light-therapy' => array(
 				'Red light therapy is one of the quicker things on a Perth recovery menu: you sit or lie in front of a panel of red and near-infrared LEDs, usually with the skin you want exposed uncovered, for somewhere between ten and twenty minutes. The panels are bright enough that most studios hand you goggles. There is no heat to speak of and nothing is touching you, which makes it the least demanding session in any recovery room.',
 				'In Perth it is almost never sold on its own. It turns up as an add-on at recovery studios alongside sauna, ice baths and compression — a few minutes in front of the panel while you are already there for something else — and that is usually the cheapest way to try it. A handful of clinics run it as a standalone booking.',
