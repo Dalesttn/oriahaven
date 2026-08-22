@@ -13,6 +13,7 @@ namespace Oria\Ingest\Pipeline;
 
 use Oria\Ingest\AI;
 use Oria\Ingest\Fetch;
+use Oria\Ingest\Gone;
 use Oria\Ingest\Heuristic;
 use Oria\Ingest\Taxonomy;
 
@@ -240,6 +241,9 @@ function expire_pass(): int {
 		if ( $thumb && '' !== (string) get_post_meta( $thumb, '_oria_image_source', true ) ) {
 			wp_delete_attachment( $thumb, true );
 		}
+		// Remember the slug before the post goes, so the URL can answer
+		// 410 rather than a bare 404 for anything that already crawled it.
+		Gone\remember( (string) get_post_field( 'post_name', $id ) );
 		wp_delete_post( $id, true );
 		$gone++;
 	}

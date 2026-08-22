@@ -27,9 +27,11 @@ require ORIA_INGEST_DIR . 'includes/heuristic.php';
 require ORIA_INGEST_DIR . 'includes/ai.php';
 require ORIA_INGEST_DIR . 'includes/pipeline.php';
 require ORIA_INGEST_DIR . 'includes/admin.php';
+require ORIA_INGEST_DIR . 'includes/gone.php';
 
 Taxonomy\bootstrap();
 Admin\bootstrap();
+Gone\bootstrap();
 
 // Daily run, plus a manual "Run now" in the admin.
 add_action( 'oria_ingest_daily', __NAMESPACE__ . '\Pipeline\run' );

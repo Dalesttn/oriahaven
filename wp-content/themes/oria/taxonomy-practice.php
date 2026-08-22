@@ -195,7 +195,11 @@ if ( ! $oria_is_combo ) {
 /*
  * The crawlable area mesh: every practice page links to its per-area
  * variants, which is what gets the combo pages discovered and indexed.
- * Regions always; suburbs once they hold at least two listings.
+ * Regions always; suburbs from their first listing. The threshold used
+ * to be two, which left every single-listing combo indexable but linked
+ * from exactly one page — the site audit flagged 34 of them. A combo
+ * either deserves the mesh or deserves noindex, and the directory
+ * already keeps single-listing suburb pages, so it gets the mesh.
  */
 if ( $oria_term instanceof WP_Term ) :
 	$oria_counts  = \Oria\Theme\combo_counts( $oria_term->slug );
@@ -213,9 +217,6 @@ if ( $oria_term instanceof WP_Term ) :
 		}
 	}
 	foreach ( $oria_counts['suburbs'] as $oria_sname => $oria_n ) {
-		if ( $oria_n < 2 ) {
-			continue;
-		}
 		$oria_s = get_term_by( 'slug', sanitize_title( $oria_sname ), 'area' );
 		if ( $oria_s instanceof WP_Term && 0 !== $oria_s->parent && ( ! $oria_area || $oria_s->slug !== $oria_area->slug ) ) {
 			$oria_links[] = array(

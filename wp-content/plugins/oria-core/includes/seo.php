@@ -431,7 +431,18 @@ function seo_title( $title ) {
 	if ( is_singular( 'listing' ) && '' === (string) get_post_meta( get_the_ID(), '_yoast_wpseo_title', true ) ) {
 		$context = listing_context( get_the_ID() );
 		if ( '' !== $context ) {
-			return sprintf( '%s — %s | %s', decoded_title( get_the_ID() ), $context, get_bloginfo( 'name' ) );
+			/*
+			 * Search results truncate a title at roughly 65 characters,
+			 * and a long business name plus its context blows past that
+			 * with the suffix attached — cutting off the suburb, the one
+			 * part a local searcher scans for. So the brand is the first
+			 * thing to go: the name and "{Practice} in {Suburb}" are the
+			 * search payload, the suffix is not. The same trade the event
+			 * branch above makes for long event names.
+			 */
+			$base = sprintf( '%s — %s', decoded_title( get_the_ID() ), $context );
+			$full = sprintf( '%s | %s', $base, get_bloginfo( 'name' ) );
+			return mb_strlen( $full ) <= 65 ? $full : $base;
 		}
 	}
 	return $title;
@@ -610,7 +621,46 @@ function seo_robots( $robots ) {
 	if ( combo_area() && 0 === combo_count() ) {
 		return 'noindex, follow';
 	}
+	if ( empty_term_archive() ) {
+		return 'noindex, follow';
+	}
 	return $robots;
+}
+
+/**
+ * A practice, specialty or area archive with nothing in it.
+ *
+ * Combos have been guarded since they were built, but the terms
+ * themselves were not: a category added ahead of the listings that will
+ * fill it is a live, indexable page with no content on it, and it stays
+ * that way until somebody remembers to import. Nothing is in that state
+ * today — this is the guard, not a repair.
+ *
+ * `count` rather than the main query, because the directory renders its
+ * results from a JSON payload and the loop here says nothing useful.
+ */
+function empty_term_archive(): bool {
+	if ( ! is_tax( array( Taxonomies\PRACTICE, Taxonomies\SPECIALTY, Taxonomies\AREA ) ) ) {
+		return false;
+	}
+	$term = get_queried_object();
+	if ( ! $term instanceof \WP_Term ) {
+		return false;
+	}
+	// A parent region counts its children's listings, so only a term with
+	// no descendants either is genuinely empty.
+	if ( 0 < (int) $term->count ) {
+		return false;
+	}
+	$kids = get_terms(
+		array(
+			'taxonomy'   => $term->taxonomy,
+			'parent'     => $term->term_id,
+			'hide_empty' => true,
+			'fields'     => 'ids',
+		)
+	);
+	return ! ( is_array( $kids ) && $kids );
 }
 
 /** Core <title> fallback for the same pages when Yoast is inactive. */
