@@ -49,6 +49,10 @@ function bootstrap(): void {
 
 	add_action( 'admin_post_oria_review', __NAMESPACE__ . '\handle' );
 	add_action( 'admin_post_nopriv_oria_review', __NAMESPACE__ . '\handle' );
+
+	// Say what happened even when the visitor lands somewhere without a
+	// review form to say it for us.
+	add_action( 'wp_body_open', __NAMESPACE__ . '\global_notice' );
 }
 
 function route(): void {
@@ -65,6 +69,103 @@ function maybe_flush(): void {
 function query_vars( array $vars ): array {
 	$vars[] = QUERY_VAR;
 	return $vars;
+}
+
+/* --------------------------------------------------------------- messages */
+
+/**
+ * What to tell somebody, for a given outcome.
+ *
+ * One map, used by both the form and the site-wide notice. It used to live
+ * inline in the template, which meant an outcome that sent a visitor
+ * anywhere other than a listing page — a stale sign-in link lands on the
+ * home page, because by then there is no stored return address — produced a
+ * query string and no message at all.
+ *
+ * @return array{text: string, kind: string}|null
+ */
+function message_for( string $state, string $why = '' ): ?array {
+	$says = array(
+		'sent'         => __( 'Nearly there — check your email and tap the link to confirm your review. It lasts 30 minutes.', 'oria' ),
+		'queued'       => __( 'Thank you. Your review is with us to read, and appears once it is approved.', 'oria' ),
+		'stale'        => __( 'That link had already been used, or it expired. Write your review again and we will send a fresh one.', 'oria' ),
+		'reported'     => __( 'Thank you — we will look at that review again. It stays published while we do.', 'oria' ),
+		'reply-queued' => __( 'Your reply is with us to read. It appears under the review once approved.', 'oria' ),
+	);
+
+	$errors = array(
+		'rating'      => __( 'Choose a star rating.', 'oria' ),
+		'service'     => __( 'Tell us what you tried.', 'oria' ),
+		'recommend'   => __( 'Let us know whether you would recommend it.', 'oria' ),
+		'already'     => __( 'You have already reviewed this one. One review each keeps them honest.', 'oria' ),
+		'throttled'   => __( 'That is a lot of reviews for one day. Try again tomorrow.', 'oria' ),
+		'expired'     => __( 'That form had been open a while. Have another go.', 'oria' ),
+		'timing'      => __( 'That form had been open a while. Have another go.', 'oria' ),
+		'browser'     => __( 'That sign-in did not finish safely. Please try again.', 'oria' ),
+		'state'       => __( 'That sign-in link had already been used, or it sat too long before coming back. Please try again.', 'oria' ),
+		'cancelled'   => __( 'No problem — you can still review using your email instead.', 'oria' ),
+		'unverified'  => __( 'That Google account has no confirmed email address, so we cannot use it.', 'oria' ),
+		'unavailable' => __( 'Signing in with Google is not available at the moment. Use your email instead.', 'oria' ),
+		'not_owner'   => __( 'Only the practice that owns this listing can reply to its reviews.', 'oria' ),
+		'reason'      => __( 'Choose a reason for the report.', 'oria' ),
+		'empty'       => __( 'Write something before sending the reply.', 'oria' ),
+	);
+
+	$blocks = array(
+		'oria_practitioner_email' => __( 'That email is already registered as a practice on Oria Haven. Practices cannot post reviews.', 'oria' ),
+		'oria_practitioner'       => __( 'Practices listed on Oria Haven cannot post reviews.', 'oria' ),
+		'oria_staff_email'        => __( 'That email belongs to a staff account.', 'oria' ),
+		'oria_staff'              => __( 'Staff accounts cannot post reviews.', 'oria' ),
+		'oria_member_muted'       => __( 'This account is now listed as a practice, so it can no longer post reviews.', 'oria' ),
+		'oria_member_banned'      => __( 'This account cannot post reviews.', 'oria' ),
+		'oria_bad_email'          => __( 'That email address does not look right.', 'oria' ),
+	);
+
+	if ( isset( $says[ $state ] ) ) {
+		return array( 'text' => $says[ $state ], 'kind' => in_array( $state, array( 'sent', 'queued' ), true ) ? 'done' : 'info' );
+	}
+
+	if ( 'error' === $state ) {
+		return array( 'text' => $errors[ $why ] ?? __( 'That did not go through. Have another go.', 'oria' ), 'kind' => 'error' );
+	}
+
+	if ( 'blocked' === $state ) {
+		// A failed Google round trip is a retry, not a dead end.
+		$retryable = array( 'browser', 'state', 'cancelled', 'unverified', 'code', 'nonce', 'aud', 'iss', 'expired', 'exchange', 'network', 'malformed', 'no_id_token', 'unavailable' );
+		$text      = $blocks[ $why ] ?? ( $errors[ $why ] ?? __( 'That account cannot post reviews.', 'oria' ) );
+		return array( 'text' => $text, 'kind' => in_array( $why, $retryable, true ) ? 'error' : 'done' );
+	}
+
+	return null;
+}
+
+/**
+ * The same message, shown wherever the visitor happened to land.
+ *
+ * The listing page prints it inside the review form. Everywhere else — the
+ * home page, most often, after a sign-in link went stale — this is the only
+ * thing that says what happened.
+ */
+function global_notice(): void {
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended
+	$state = isset( $_GET['review'] ) ? sanitize_key( wp_unslash( (string) $_GET['review'] ) ) : '';
+	$why   = isset( $_GET['why'] ) ? sanitize_key( wp_unslash( (string) $_GET['why'] ) ) : '';
+	// phpcs:enable
+
+	if ( '' === $state || is_singular( PostTypes\LISTING ) ) {
+		return; // the form on a listing page says it better, and in context
+	}
+
+	$message = message_for( $state, $why );
+	if ( null === $message ) {
+		return;
+	}
+
+	printf(
+		'<div class="authnotice authnotice--%s"><div class="wrap"><p>%s</p></div></div>',
+		esc_attr( $message['kind'] ),
+		esc_html( $message['text'] )
+	);
 }
 
 /* ------------------------------------------------------------ redirection */

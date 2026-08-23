@@ -42,6 +42,14 @@ const SCOPES         = 'openid email profile';
 
 const STATE_TTL   = 10 * MINUTE_IN_SECONDS;
 const BIND_COOKIE = 'oria_g_bind';
+/*
+ * Where to send somebody back to, kept beside the binding cookie.
+ * The return address normally travels in the state stash, but the one
+ * outcome that most needs it — a link already used, or left sitting too
+ * long — is exactly the one where the stash has gone. Without this the
+ * visitor is dropped on the home page with no idea what happened.
+ */
+const FROM_COOKIE = 'oria_g_from';
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\route' );
@@ -139,6 +147,20 @@ function start(): void {
 	 * another person, silently signing them into the attacker's account.
 	 * SameSite must be Lax, not Strict: the request comes back from Google.
 	 */
+	// setcookie() url-encodes the value itself; encoding it again here would
+	// come back double-escaped and fail validation.
+	setcookie(
+		FROM_COOKIE,
+		$return_to,
+		array(
+			'expires'  => time() + STATE_TTL,
+			'path'     => '/',
+			'secure'   => is_ssl(),
+			'httponly' => true,
+			'samesite' => 'Lax',
+		)
+	);
+
 	setcookie(
 		BIND_COOKIE,
 		$bind,
@@ -207,7 +229,21 @@ function callback(): void {
 	 */
 	$bind  = isset( $_COOKIE[ BIND_COOKIE ] ) ? sanitize_text_field( wp_unslash( (string) $_COOKIE[ BIND_COOKIE ] ) ) : '';
 	$stash = '' !== $state ? get_transient( 'oria_goog_' . $state ) : false;
-	$home  = is_array( $stash ) ? (string) $stash['return'] : home_url( '/' );
+
+	// Prefer the stash; fall back to the cookie when it has expired or been
+	// spent, so a stale link still returns to the listing it started from.
+	$from = isset( $_COOKIE[ FROM_COOKIE ] ) ? sanitize_text_field( wp_unslash( (string) $_COOKIE[ FROM_COOKIE ] ) ) : '';
+	$home = is_array( $stash ) ? (string) $stash['return'] : wp_validate_redirect( $from, home_url( '/' ) );
+
+	/*
+	 * Never leave this empty. wp_validate_redirect() hands back an empty
+	 * string for empty input, and an empty redirect resolves against the
+	 * current URL — which is this callback, so somebody arriving with no
+	 * cookie and no state would be sent straight back here.
+	 */
+	if ( '' === trim( $home ) ) {
+		$home = home_url( '/' );
+	}
 
 	// Spent whatever happens next: a state is good for one attempt.
 	if ( '' !== $state ) {
@@ -215,8 +251,14 @@ function callback(): void {
 	}
 	clear_bind_cookie();
 
+	/*
+	 * $home already falls back to the cookie, which is the entire reason for
+	 * keeping one: this is the branch a stale or replayed link takes, and
+	 * dropping somebody on the home page is what made it look as though
+	 * nothing had happened at all.
+	 */
 	if ( ! is_array( $stash ) ) {
-		bail( home_url( '/' ), 'state' );
+		bail( $home, 'state' );
 	}
 
 	// The person changed their mind at Google's screen.
@@ -383,9 +425,11 @@ function challenge_for( string $verifier ): string {
 }
 
 function clear_bind_cookie(): void {
-	if ( isset( $_COOKIE[ BIND_COOKIE ] ) ) {
-		setcookie( BIND_COOKIE, '', array( 'expires' => time() - 3600, 'path' => '/' ) );
-		unset( $_COOKIE[ BIND_COOKIE ] );
+	foreach ( array( BIND_COOKIE, FROM_COOKIE ) as $name ) {
+		if ( isset( $_COOKIE[ $name ] ) ) {
+			setcookie( $name, '', array( 'expires' => time() - 3600, 'path' => '/' ) );
+			unset( $_COOKIE[ $name ] );
+		}
 	}
 }
 

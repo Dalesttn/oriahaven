@@ -50,58 +50,14 @@ $oria_levels    = \Oria\Core\Reviews\experience_levels();
  * here with a state; without rendering it, a review would vanish into an
  * apparently unchanged page and be written again.
  */
-// phpcs:disable WordPress.Security.NonceVerification.Recommended
-$oria_state = isset( $_GET['review'] ) ? sanitize_key( wp_unslash( (string) $_GET['review'] ) ) : '';
-$oria_why   = isset( $_GET['why'] ) ? sanitize_key( wp_unslash( (string) $_GET['why'] ) ) : '';
-// phpcs:enable
+$oria_state = isset( $_GET['review'] ) ? sanitize_key( wp_unslash( (string) $_GET['review'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$oria_why   = isset( $_GET['why'] ) ? sanitize_key( wp_unslash( (string) $_GET['why'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-$oria_says = array(
-	'sent'   => __( 'Nearly there — check your email and tap the link to confirm your review. It lasts 30 minutes.', 'oria' ),
-	'queued' => __( 'Thank you. Your review is with us to read, and appears once it is approved.', 'oria' ),
-	'stale'  => __( 'That link had already been used, or it expired. Write your review again and we will send a fresh one.', 'oria' ),
-	'reported' => __( 'Thank you — we will look at that review again. It stays published while we do.', 'oria' ),
-	'reply-queued' => __( 'Your reply is with us to read. It appears under the review once approved.', 'oria' ),
-);
-
-$oria_errors = array(
-	'rating'    => __( 'Choose a star rating.', 'oria' ),
-	'service'   => __( 'Tell us what you tried.', 'oria' ),
-	'recommend' => __( 'Let us know whether you would recommend it.', 'oria' ),
-	'already'   => __( 'You have already reviewed this one. One review each keeps them honest.', 'oria' ),
-	'throttled' => __( 'That is a lot of reviews for one day. Try again tomorrow.', 'oria' ),
-	'expired'   => __( 'That form had been open a while. Have another go.', 'oria' ),
-	'browser'   => __( 'That sign-in did not finish safely. Please try again.', 'oria' ),
-	'not_owner' => __( 'Only the practice that owns this listing can reply to its reviews.', 'oria' ),
-	'reason'    => __( 'Choose a reason for the report.', 'oria' ),
-	'empty'     => __( 'Write something before sending the reply.', 'oria' ),
-	'state'     => __( 'That sign-in took too long. Please try again.', 'oria' ),
-	'cancelled' => __( 'No problem — you can still review using your email instead.', 'oria' ),
-	'unverified' => __( 'That Google account has no confirmed email address, so we cannot use it.', 'oria' ),
-	'timing'    => __( 'That form had been open a while. Have another go.', 'oria' ),
-);
-
-$oria_message = '';
-$oria_done    = false;
-if ( isset( $oria_says[ $oria_state ] ) ) {
-	$oria_message = $oria_says[ $oria_state ];
-	$oria_done    = in_array( $oria_state, array( 'sent', 'queued' ), true );
-} elseif ( 'error' === $oria_state ) {
-	$oria_message = $oria_errors[ $oria_why ] ?? __( 'That did not go through. Have another go.', 'oria' );
-} elseif ( 'blocked' === $oria_state ) {
-	$oria_blocks  = array(
-		'oria_practitioner_email' => __( 'That email is already registered as a practice on Oria Haven. Practices cannot post reviews.', 'oria' ),
-		'oria_practitioner'       => __( 'Practices listed on Oria Haven cannot post reviews.', 'oria' ),
-		'oria_staff_email'        => __( 'That email belongs to a staff account.', 'oria' ),
-		'oria_staff'              => __( 'Staff accounts cannot post reviews.', 'oria' ),
-		'oria_member_muted'       => __( 'This account is now listed as a practice, so it can no longer post reviews.', 'oria' ),
-		'oria_member_banned'      => __( 'This account cannot post reviews.', 'oria' ),
-		'oria_bad_email'          => __( 'That email address does not look right.', 'oria' ),
-	);
-	// A failed Google round trip is a retry, not a dead end.
-	$oria_retryable = array( 'browser', 'state', 'cancelled', 'unverified', 'code', 'nonce', 'aud', 'iss', 'expired', 'exchange', 'network', 'malformed', 'no_id_token', 'unavailable' );
-	$oria_message   = $oria_blocks[ $oria_why ] ?? ( $oria_errors[ $oria_why ] ?? __( 'That account cannot post reviews.', 'oria' ) );
-	$oria_done      = ! in_array( $oria_why, $oria_retryable, true );
-}
+// One map for every outcome, shared with the site-wide notice so a message
+// can never exist in one place and not the other.
+$oria_said    = \Oria\Core\ReviewSubmit\message_for( $oria_state, $oria_why );
+$oria_message = null !== $oria_said ? $oria_said['text'] : '';
+$oria_done    = null !== $oria_said && 'done' === $oria_said['kind'];
 ?>
 
 <div class="reviewform" id="write-review">

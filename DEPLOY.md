@@ -125,9 +125,29 @@ Then activate the four `oria-*` plugins and the **Oria** theme.
 
 ## Step 7 — Add the keys
 
-Open `public_html/wp-config.php` in hPanel's File Manager and paste in the
-block from `wp-config-additions.php`, filling in your real values. Live
-Stripe keys, not the `sk_test_` ones.
+Open `public_html/wp-config.php` in hPanel's File Manager (or over SSH) and
+add the block below **above** the `/* That's all, stop editing! */` line,
+filling in your real values. Live Stripe keys, not the `sk_test_` ones.
+
+```php
+/* --- Oria keys. Never in git. --------------------------------------- */
+define( 'ORIA_STRIPE_SECRET_KEY',     'sk_live_…' );   // billing
+define( 'ORIA_STRIPE_WEBHOOK_SECRET', 'whsec_…'   );   // billing webhook
+define( 'ORIA_GOOGLE_CLIENT_ID',      '….apps.googleusercontent.com' ); // member sign-in
+define( 'ORIA_GOOGLE_CLIENT_SECRET',  'GOCSPX-…'  );   // member sign-in
+define( 'ORIA_GOOGLE_SERVER_KEY',     '…'         );   // Places: photos, ratings
+define( 'ORIA_GOOGLE_BROWSER_KEY',    '…'         );   // Places: maps
+```
+
+Every one is optional in the sense that the site runs without it — the
+feature it powers simply stays switched off. Billing falls back to manual
+approval, "Continue with Google" is not offered, Places photos are skipped.
+
+**Save the file as UTF-8 without a BOM.** Some editors add a three-byte mark
+before `<?php`; those bytes are sent to the browser ahead of the page, and on
+a server with output buffering off that breaks every redirect and cookie on
+the site — including sign-in — with a "headers already sent" error that is
+miserable to trace. This has already happened once locally.
 
 ## Step 8 — Flush and check
 

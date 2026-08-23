@@ -2551,3 +2551,11 @@ a.livesession:hover { background: var(--sand-2); }
   .teamcard { padding: var(--s-3); gap: var(--s-3); }
   .teamcard__photo { width: 60px; height: 60px; }
 }
+
+/* A sign-in or review outcome, shown on whatever page the visitor landed on
+   when there is no review form there to say it in context. */
+.authnotice { background: var(--sand-2); border-bottom: 1px solid var(--line); }
+.authnotice p { margin: 0; padding: var(--s-3) 0; font-size: var(--fs-sm); color: var(--text-soft); }
+.authnotice--error { background: var(--sand-3, var(--sand-2)); }
+.authnotice--error p { color: var(--ink); font-weight: 600; }
+.authnotice--done p { color: var(--deep); font-weight: 600; }
