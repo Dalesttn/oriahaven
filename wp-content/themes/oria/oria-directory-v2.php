@@ -39,6 +39,9 @@ foreach ( $oria_all as $oria_id ) {
 	}
 	if ( 'unclaimed' !== \Oria\Theme\claim_status( (int) $oria_id ) ) { $oria_claimed++; }
 }
+// The site FAQ, so the spine knows whether to offer the stop.
+$oria_site_faq = function_exists( '\Oria\Core\Faq\site_faq' ) ? (array) \Oria\Core\Faq\site_faq() : array();
+
 // Floor 4 — the latest guides from the journal.
 $oria_guides = get_posts( array( 'post_type' => 'post', 'post_status' => 'publish', 'numberposts' => 3, 'orderby' => 'date', 'order' => 'DESC' ) );
 
@@ -52,6 +55,7 @@ $oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 		<a href="#browse"><b>2</b> <?php printf( esc_html__( 'Browse all %s', 'oria' ), esc_html( number_format_i18n( count( $oria_all ) ) ) ); ?></a>
 		<a href="#read"><b>3</b> <?php esc_html_e( 'Read up', 'oria' ); ?></a>
 		<?php if ( $oria_guides ) : ?><a href="#guides"><b>4</b> <?php esc_html_e( 'Guides', 'oria' ); ?></a><?php endif; ?>
+		<?php if ( $oria_site_faq ) : ?><a href="#faq"><b><?php echo $oria_guides ? 5 : 4; ?></b> <?php esc_html_e( 'FAQ', 'oria' ); ?></a><?php endif; ?>
 	</div>
 </nav>
 
@@ -156,8 +160,8 @@ get_template_part( 'template-parts/guides', 'floor', array( 'guides' => $oria_gu
 
 // The site FAQ, as the directory has always carried it — at top level so it
 // keeps its own section spacing.
-if ( function_exists( '\Oria\Core\Faq\site_faq' ) ) {
-	get_template_part( 'template-parts/faq', null, array( 'faqs' => \Oria\Core\Faq\site_faq(), 'heading' => __( 'Common questions', 'oria' ) ) );
+if ( $oria_site_faq ) {
+	get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_site_faq, 'heading' => __( 'Common questions', 'oria' ), 'id' => 'faq' ) );
 }
 
 $oria_feat = \Oria\Theme\featured_listings( 3 );

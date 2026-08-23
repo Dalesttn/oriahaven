@@ -69,6 +69,19 @@ $oria_rows   = $oria_term && function_exists( '\Oria\Core\Intents\for_practice' 
 $oria_guides = $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) ? \Oria\Core\Guides\for_term( $oria_term ) : array();
 $oria_latest = $oria_guides ? array() : get_posts( array( 'post_type' => 'post', 'post_status' => 'publish', 'numberposts' => 3, 'orderby' => 'date', 'order' => 'DESC' ) );
 
+// The FAQ for this page — the frame's on a facet page, the category's
+// otherwise — worked out here so the spine knows whether to offer a stop.
+$oria_faqs = array();
+if ( $oria_facet ) {
+	foreach ( (array) ( $oria_frame['faq'] ?? array() ) as $oria_qa ) {
+		if ( ! empty( $oria_qa['q'] ) && ! empty( $oria_qa['a'] ) ) {
+			$oria_faqs[] = array( 'q' => (string) $oria_qa['q'], 'a' => (string) $oria_qa['a'] );
+		}
+	}
+} elseif ( $oria_term && function_exists( '\Oria\Core\Faq\for_term' ) ) {
+	$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_term );
+}
+
 $oria_h1 = $oria_facet ? (string) $oria_facet['label'] : sprintf( __( '%s in Perth', 'oria' ), $oria_pname );
 if ( ! $oria_facet && $oria_term ) {
 	// A filtered view reached by URL names what it shows: "Yoga in Fremantle".
@@ -118,6 +131,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 		<a href="#browse"><b>2</b> <?php printf( esc_html__( 'Browse all %s', 'oria' ), esc_html( number_format_i18n( count( $oria_ids ) ) ) ); ?></a>
 		<a href="#read"><b>3</b> <?php esc_html_e( 'Read up', 'oria' ); ?></a>
 		<?php if ( $oria_guides || $oria_latest ) : ?><a href="#guides"><b>4</b> <?php esc_html_e( 'Guides', 'oria' ); ?></a><?php endif; ?>
+		<?php if ( $oria_faqs ) : ?><a href="#faq"><b><?php echo ( $oria_guides || $oria_latest ) ? 5 : 4; ?></b> <?php esc_html_e( 'FAQ', 'oria' ); ?></a><?php endif; ?>
 	</div>
 </nav>
 
@@ -297,17 +311,12 @@ get_template_part(
  * exists; a frameless facet page shows none rather than the category's.
  */
 if ( $oria_facet ) {
-	$oria_faqs = array();
-	foreach ( (array) ( $oria_frame['faq'] ?? array() ) as $oria_qa ) {
-		if ( ! empty( $oria_qa['q'] ) && ! empty( $oria_qa['a'] ) ) {
-			$oria_faqs[] = array( 'q' => $oria_fill( (string) $oria_qa['q'] ), 'a' => $oria_fill( (string) $oria_qa['a'] ) );
-		}
+	$oria_filled = array_map( static fn( array $qa ): array => array( 'q' => $oria_fill( $qa['q'] ), 'a' => $oria_fill( $qa['a'] ) ), $oria_faqs );
+	if ( $oria_filled ) {
+		get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_filled, 'heading' => sprintf( __( '%s — common questions', 'oria' ), $oria_h1 ), 'id' => 'faq' ) );
 	}
-	if ( $oria_faqs ) {
-		get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_faqs, 'heading' => sprintf( __( '%s — common questions', 'oria' ), $oria_h1 ) ) );
-	}
-} else {
-	get_template_part( 'template-parts/faq', null, array( 'term' => $oria_term, 'heading' => sprintf( __( 'Questions people ask about %s in Perth', 'oria' ), strtolower( $oria_pname ) ) ) );
+} elseif ( $oria_faqs ) {
+	get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_faqs, 'heading' => sprintf( __( 'Questions people ask about %s in Perth', 'oria' ), strtolower( $oria_pname ) ), 'id' => 'faq' ) );
 }
 ?>
 

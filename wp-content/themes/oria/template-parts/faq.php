@@ -34,6 +34,7 @@ if ( ! $oria_faqs ) {
 }
 
 $oria_heading = (string) ( $args['heading'] ?? __( 'Common questions', 'oria' ) );
+$oria_id      = sanitize_html_class( (string) ( $args['id'] ?? '' ) ); // an anchor, when the page's spine links here
 
 $oria_ld = array(
 	'@context'   => 'https://schema.org',
@@ -49,7 +50,7 @@ $oria_ld = array(
 );
 ?>
 
-<section class="wrap section section--top-flush">
+<section class="wrap section section--top-flush<?php echo '' !== $oria_id ? ' floor' : ''; ?>"<?php echo '' !== $oria_id ? ' id="' . esc_attr( $oria_id ) . '"' : ''; ?>>
 	<h2 class="h3 faq__title"><?php echo esc_html( $oria_heading ); ?></h2>
 	<div class="faq">
 		<?php foreach ( $oria_faqs as $oria_i => $oria_f ) : ?>
