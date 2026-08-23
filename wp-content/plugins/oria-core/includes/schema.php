@@ -4,14 +4,20 @@
  * JSON-LD on event pages — the markup that earns rich results (event
  * cards with dates, business knowledge panels) in search.
  *
- * Deliberate omissions: aggregateRating (our ratings come from Google
- * Places and must never be re-published as structured data), geo (no
- * stored coordinates), openingHoursSpecification (hours are free text).
+ * Deliberate omissions: geo (no stored coordinates) and
+ * openingHoursSpecification (hours are free text).
+ *
+ * Ratings are marked up from ONE source only — reviews collected here, by
+ * verified members, held for moderation. A listing's Google Places rating
+ * is never emitted as structured data: it is licensed data shown under
+ * their terms, not ours to republish. See reviews_schema() below.
  */
 
 declare(strict_types=1);
 
 namespace Oria\Core\Schema;
+
+use Oria\Core\Team;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -255,7 +261,101 @@ function listing_schema( int $id ): ?array {
 			$out['image'] = $img;
 		}
 	}
+
+	$out = array_merge( $out, reviews_schema( $id ) );
+
+	/*
+	 * Named practitioners, where the listing publishes any. This is the
+	 * experience-and-expertise signal a wellness listing usually cannot
+	 * offer, and only what a visitor can see on the page is marked up.
+	 */
+	if ( function_exists( 'Oria\Core\Team\schema_for' ) ) {
+		$people = Team\schema_for( $id );
+		if ( $people ) {
+			$out['employee'] = $people;
+		}
+	}
+
 	return $out;
+}
+
+/**
+ * Reviews and their aggregate — ours only, never Google's.
+ *
+ * The file header explains why the Google rating is not marked up: it is
+ * licensed data from the Places API and republishing it as our own
+ * structured data is not ours to do. First-party reviews are a different
+ * thing entirely. A directory publishing what its members said about a
+ * third-party business is the case review markup exists for, unlike a
+ * business rating itself, and it is the one thing here that can put stars
+ * in a search result.
+ *
+ * Two rules keep it honest:
+ *   - only approved reviews collected here, matching what the page shows a
+ *     visitor, because markup that disagrees with the page is a penalty
+ *     waiting to happen;
+ *   - nothing at all below HEADLINE_MIN, which is also the point at which
+ *     the page stops showing our rating as the headline.
+ *
+ * @return array<string, mixed> Merged into the LocalBusiness record.
+ */
+function reviews_schema( int $id ): array {
+	if ( ! function_exists( '\Oria\Core\Reviews\approved' ) ) {
+		return array();
+	}
+
+	$reviews = \Oria\Core\Reviews\approved( $id );
+	if ( count( $reviews ) < \Oria\Core\Reviews\HEADLINE_MIN ) {
+		return array();
+	}
+
+	$items   = array();
+	$ratings = array();
+
+	foreach ( $reviews as $review ) {
+		$rating = \Oria\Core\Reviews\rating_of( $review );
+		if ( $rating < 1 || $rating > 5 ) {
+			continue;
+		}
+		$ratings[] = $rating;
+
+		$item = array(
+			'@type'         => 'Review',
+			'reviewRating'  => array(
+				'@type'       => 'Rating',
+				'ratingValue' => $rating,
+				'bestRating'  => 5,
+				'worstRating' => 1,
+			),
+			'author'        => array(
+				'@type' => 'Person',
+				'name'  => wp_specialchars_decode( (string) $review->comment_author ),
+			),
+			'datePublished' => mysql2date( 'Y-m-d', (string) $review->comment_date_gmt ),
+		);
+
+		$body = trim( (string) $review->comment_content );
+		if ( '' !== $body ) {
+			$item['reviewBody'] = $body;
+		}
+
+		$items[] = $item;
+	}
+
+	if ( ! $ratings ) {
+		return array();
+	}
+
+	return array(
+		'aggregateRating' => array(
+			'@type'       => 'AggregateRating',
+			'ratingValue' => round( array_sum( $ratings ) / count( $ratings ), 1 ),
+			'reviewCount' => count( $ratings ),
+			'bestRating'  => 5,
+			'worstRating' => 1,
+		),
+		'review'          => $items,
+	);
 }
 
 /** @return array<string, mixed>|null */

@@ -573,6 +573,92 @@
     });
   }
 
+  /* The star rating input.
+     The <select> in the markup is the real control and works on its own.
+     This draws a star widget beside it and keeps the two in step: two
+     identical rows of five stars, grey under gold, with the gold row
+     clipped to a percentage width. A rating of 3.5 is a clip at 70%, so
+     halves need no special case and nothing has to line up by hand.
+     Pointer position decides the value, which is what makes dragging
+     across the stars feel right. */
+  function initStarRate() {
+    var STAR = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>';
+
+    $$("[data-starrate]").forEach(function (host) {
+      var select = host.querySelector("select");
+      if (!select || host.classList.contains("starrate--live")) return;
+
+      // Every value the select offers, lowest first, so a pointer position
+      // can be turned into one of them.
+      var steps = Array.prototype.slice.call(select.options)
+        .map(function (o) { return parseFloat(o.value); })
+        .filter(function (v) { return !isNaN(v); })
+        .sort(function (a, b) { return a - b; });
+      if (!steps.length) return;
+
+      var max = steps[steps.length - 1];
+      var row = '<span class="starrate__row">' + new Array(Math.round(max) + 1).join(STAR) + "</span>";
+
+      var widget = document.createElement("span");
+      widget.className = "starrate__widget";
+      widget.setAttribute("aria-hidden", "true");
+      widget.innerHTML = '<span class="starrate__base">' + row + "</span>" +
+                         '<span class="starrate__fill"><span class="starrate__row">' +
+                         new Array(Math.round(max) + 1).join(STAR) + "</span></span>";
+
+      var readout = document.createElement("span");
+      readout.className = "starrate__value";
+      readout.setAttribute("aria-hidden", "true");
+
+      select.insertAdjacentElement("afterend", widget);
+      widget.insertAdjacentElement("afterend", readout);
+      host.classList.add("starrate--live");
+
+      var fill = widget.querySelector(".starrate__fill");
+
+      var paint = function (value) {
+        fill.style.width = value > 0 ? ( value / max ) * 100 + "%" : "0";
+        readout.textContent = value > 0 ? value.toFixed(1) : "";
+      };
+
+      // Where the pointer is, snapped to the nearest offered value.
+      var valueAt = function (clientX) {
+        var box = widget.getBoundingClientRect();
+        if (!box.width) return steps[0];
+        var ratio = (clientX - box.left) / box.width;
+        var raw = ratio * max;
+        for (var i = 0; i < steps.length; i++) {
+          if (raw <= steps[i] + 0.0001) return steps[i];
+        }
+        return max;
+      };
+
+      var chosen = function () { return parseFloat(select.value) || 0; };
+
+      widget.addEventListener("mousemove", function (e) { paint(valueAt(e.clientX)); });
+      widget.addEventListener("mouseleave", function () { paint(chosen()); });
+
+      widget.addEventListener("click", function (e) {
+        select.value = String(valueAt(e.clientX));
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+        paint(chosen());
+      });
+
+      // Touch: no hover, so follow the finger and commit on release.
+      widget.addEventListener("touchmove", function (e) {
+        if (e.touches[0]) paint(valueAt(e.touches[0].clientX));
+      }, { passive: true });
+
+      // The select remains the source of truth: changing it by keyboard,
+      // or the browser restoring a value, repaints the stars.
+      select.addEventListener("change", function () { paint(chosen()); });
+      select.addEventListener("focus", function () { widget.classList.add("is-focused"); });
+      select.addEventListener("blur", function () { widget.classList.remove("is-focused"); });
+
+      paint(chosen());
+    });
+  }
+
   function initPopoverDone() {
     document.addEventListener("click", function (e) {
       var btn = e.target.closest("[data-popover-close]");
@@ -1816,6 +1902,7 @@
     initDirectory();
     scrollToFilteredResults();
     initPopoverDone();
+    initStarRate();
     initCountUp();
     initIntentGridMore();
     initForms();

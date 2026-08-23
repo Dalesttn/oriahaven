@@ -24,6 +24,7 @@ define( 'ORIA_CORE_FILE', __FILE__ );
 define( 'ORIA_CORE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ORIA_CORE_URL', plugin_dir_url( __FILE__ ) );
 
+require_once ORIA_CORE_DIR . 'includes/db.php';
 require_once ORIA_CORE_DIR . 'includes/taxonomies.php';
 require_once ORIA_CORE_DIR . 'includes/post-types.php';
 require_once ORIA_CORE_DIR . 'includes/fields.php';
@@ -74,6 +75,13 @@ require_once ORIA_CORE_DIR . 'includes/migrate-city.php';
 require_once ORIA_CORE_DIR . 'includes/intent-stats.php';
 require_once ORIA_CORE_DIR . 'includes/intents.php';
 require_once ORIA_CORE_DIR . 'includes/guides.php';
+require_once ORIA_CORE_DIR . 'includes/members.php';
+require_once ORIA_CORE_DIR . 'includes/members-admin.php';
+require_once ORIA_CORE_DIR . 'includes/review-submit.php';
+require_once ORIA_CORE_DIR . 'includes/google-auth.php';
+require_once ORIA_CORE_DIR . 'includes/review-replies.php';
+require_once ORIA_CORE_DIR . 'includes/review-reports.php';
+require_once ORIA_CORE_DIR . 'includes/team.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
@@ -82,6 +90,7 @@ require_once ORIA_CORE_DIR . 'includes/guides.php';
 add_action( 'init', __NAMESPACE__ . '\Taxonomies\register', 5 );
 add_action( 'init', __NAMESPACE__ . '\PostTypes\register', 6 );
 
+Db\bootstrap();
 Fields\bootstrap();
 FieldsPages\bootstrap();
 Claims\bootstrap();
@@ -121,6 +130,13 @@ Audience\bootstrap();
 Cities\bootstrap();
 Redirects\bootstrap();
 IntentStats\bootstrap();
+Members\bootstrap();
+MembersAdmin\bootstrap();
+ReviewSubmit\bootstrap();
+GoogleAuth\bootstrap();
+Replies\bootstrap();
+Reports\bootstrap();
+Team\bootstrap();
 
 /**
  * Rewrite rules are only rebuilt on activation and deactivation. Flushing on
@@ -131,6 +147,8 @@ register_activation_hook(
 	static function (): void {
 		Taxonomies\register();
 		PostTypes\register();
+		Db\install();
+		Members\ensure_role();
 		flush_rewrite_rules();
 	}
 );
@@ -138,6 +156,7 @@ register_activation_hook(
 register_deactivation_hook(
 	__FILE__,
 	static function (): void {
+		wp_clear_scheduled_hook( 'oria_purge_member_tokens' );
 		flush_rewrite_rules();
 	}
 );

@@ -93,7 +93,14 @@ $oria_badges = array(
 				<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>
 				<?php echo esc_html( number_format_i18n( $oria_rated['rating'], 1 ) ); ?>
 				<?php if ( $oria_rated['count'] > 0 ) : ?>
-					<span class="rating__count">(<?php echo esc_html( (string) $oria_rated['count'] ); ?><?php echo 'google' === $oria_rated['source'] ? ' · Google' : ''; ?>)</span>
+					<?php
+					// Never an unattributed star: a rating is either ours or
+					// Google's, and it always says which.
+					$oria_rating_src = 'google' === $oria_rated['source']
+						? __( 'Google', 'oria' )
+						: __( 'Oria Haven', 'oria' );
+					?>
+					<span class="rating__count">(<?php echo esc_html( (string) $oria_rated['count'] ); ?> · <?php echo esc_html( $oria_rating_src ); ?>)</span>
 				<?php endif; ?>
 			</span>
 			<?php endif; ?>

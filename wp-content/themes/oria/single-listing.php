@@ -182,7 +182,7 @@ while ( have_posts() ) :
 								<?php echo esc_html( number_format_i18n( $oria_rating, 1 ) ); ?>
 							</span>
 							<?php if ( $oria_rcount > 0 ) : ?>
-								<span class="profile__title__sub"><?php printf( esc_html( _n( '%d review', '%d reviews', $oria_rcount, 'oria' ) ), (int) $oria_rcount ); ?></span>
+								<span class="profile__title__sub"><?php printf( esc_html( _n( '%d Oria Haven review', '%d Oria Haven reviews', $oria_rcount, 'oria' ) ), (int) $oria_rcount ); ?></span>
 							<?php endif; ?>
 						</div>
 						<?php
@@ -298,6 +298,9 @@ while ( have_posts() ) :
 				</div>
 				<?php endif; ?>
 
+				<?php // The people behind the listing, before the timetable: who you see matters more than when. ?>
+				<?php get_template_part( 'template-parts/team', null, array( 'listing_id' => $oria_id ) ); ?>
+
 				<!-- Timetable -->
 				<?php if ( $oria_timetable ) : ?>
 				<div>
@@ -377,9 +380,20 @@ while ( have_posts() ) :
 				</div>
 				<?php endif; ?>
 
+				<?php
+				/*
+				 * Reviews, in two clearly separated blocks: ours first, labelled as
+				 * Oria Haven reviews, then Google's under their own heading. The
+				 * anchor lives on the wrapper so a listing with only Google reviews,
+				 * only ours, or neither still has somewhere for #reviews to land.
+				 */
+				?>
+				<div id="reviews">
+				<?php get_template_part( 'template-parts/review', 'list', array( 'listing_id' => $oria_id ) ); ?>
+
 				<!-- Reviews (Google's, attributed and linked as their terms require) -->
 				<?php if ( $oria_reviews ) : ?>
-				<div id="reviews">
+				<div>
 					<div class="row-between" style="margin-bottom:1rem">
 						<h2 class="h3" style="margin:0"><?php esc_html_e( 'Reviews', 'oria' ); ?>
 							<span class="muted" style="font-weight:400;font-size:.875rem"><?php esc_html_e( 'from Google', 'oria' ); ?></span>
@@ -418,6 +432,9 @@ while ( have_posts() ) :
 					<?php endforeach; ?>
 				</div>
 				<?php endif; ?>
+
+				<?php get_template_part( 'template-parts/review', 'form', array( 'listing_id' => $oria_id ) ); ?>
+				</div><?php // #reviews ?>
 
 				<!-- Getting there -->
 				<?php

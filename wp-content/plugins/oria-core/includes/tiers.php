@@ -35,6 +35,32 @@ const GALLERY_LIMITS = array(
 );
 
 /**
+ * How many practitioner profiles a listing may publish.
+ *
+ * One on the free plan, because a great many listings here are a single
+ * person — a breathwork facilitator, a naturopath, a yoga teacher — and for
+ * them the practitioner IS the practice. Putting their own name and face on
+ * a free listing is the most useful thing that tier does; the reason to pay
+ * is the other three.
+ *
+ * A listing that drops back to free keeps every profile it saved and simply
+ * stops publishing the extras. Deleting somebody's details because a card
+ * expired would be the wrong way round.
+ */
+const TEAM_LIMITS = array(
+	'unclaimed' => 1,
+	CLAIMED     => 4,
+	FEATURED    => 4,
+);
+
+/** The most profiles any plan can publish — the cap enforced on save. */
+const TEAM_MAX = 4;
+
+function team_limit( int $listing_id ): int {
+	return TEAM_LIMITS[ tier( $listing_id ) ] ?? 1;
+}
+
+/**
  * feature => the minimum tier that unlocks it.
  * Anything not listed here is not a paid surface.
  */
@@ -75,6 +101,9 @@ const FIELD_TIERS = array(
 	'opening_hours' => CLAIMED,
 	'transit'       => CLAIMED,
 	'parking'       => CLAIMED,
+	// Editable on any plan; how many of them publish is what the tier
+	// decides — see TEAM_LIMITS.
+	'team'          => 'free',
 );
 
 /** Whether this listing's plan lets its owner edit a given field. */
