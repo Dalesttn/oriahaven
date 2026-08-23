@@ -375,6 +375,87 @@ function rewrite_content_links( string $html, ?\WP_Term $here = null ): string {
 }
 
 /**
+ * A heading for a filtered view reached by URL — /directory/?spec=forest-
+ * bathing, /practices/yoga/?suburb=Fremantle — so the page names what it
+ * is showing: "Forest bathing in Perth", "Yoga in Fremantle". Reads the
+ * same query keys the engine reads (spec, svc, aud, suburb, region); one
+ * value each, the first if several. Empty when the URL carries none.
+ */
+function query_heading( ?\WP_Term $practice = null ): string {
+	$get = static function ( string $key ): string {
+		if ( ! isset( $_GET[ $key ] ) || ! is_string( $_GET[ $key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return '';
+		}
+		$v = sanitize_text_field( wp_unslash( (string) $_GET[ $key ] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		return trim( (string) strtok( $v, ',' ) );
+	};
+	$name = static fn( \WP_Term $t ): string => wp_specialchars_decode( $t->name, ENT_QUOTES );
+
+	// What — a specialty, a style, or the practice itself.
+	$thing = '';
+	$spec  = $get( 'spec' );
+	$svc   = $get( 'svc' );
+	if ( '' !== $spec ) {
+		$t = get_term_by( 'slug', $spec, Taxonomies\SPECIALTY );
+		if ( $t instanceof \WP_Term ) { $thing = $name( $t ); }
+	} elseif ( '' !== $svc && taxonomy_exists( 'service' ) ) {
+		$t = get_term_by( 'slug', $svc, 'service' );
+		if ( $t instanceof \WP_Term ) { $thing = $name( $t ); }
+	}
+
+	// Who — an audience, phrased as "for beginners".
+	$for = '';
+	$aud = $get( 'aud' );
+	if ( '' !== $aud && taxonomy_exists( 'audience' ) ) {
+		$t = get_term_by( 'slug', $aud, 'audience' );
+		if ( $t instanceof \WP_Term ) { $for = lcfirst( $name( $t ) ); }
+	}
+
+	// Where — a suburb (by name, as the engine carries it) or a region.
+	$where  = '';
+	$suburb = $get( 'suburb' );
+	$region = $get( 'region' );
+	if ( '' !== $suburb ) {
+		$t = get_term_by( 'name', $suburb, Taxonomies\AREA ) ?: get_term_by( 'slug', sanitize_title( $suburb ), Taxonomies\AREA );
+		if ( $t instanceof \WP_Term ) { $where = $name( $t ); }
+	} elseif ( '' !== $region ) {
+		$t = get_term_by( 'slug', $region, Taxonomies\AREA );
+		if ( $t instanceof \WP_Term ) { $where = $name( $t ); }
+	}
+
+	if ( '' === $thing && '' === $for && '' === $where ) {
+		return '';
+	}
+	// A registry page that locks this same filter already has the right
+	// words ("Beginner yoga in Perth"); use them, swapping the area in.
+	if ( $practice instanceof \WP_Term && function_exists( '\Oria\Core\IntentPages\pages_for' ) ) {
+		$want = '' !== $spec ? array( 'spec', $spec ) : ( '' !== $svc ? array( 'svc', $svc ) : ( '' !== $aud ? array( 'aud', $aud ) : null ) );
+		if ( null !== $want ) {
+			foreach ( IntentPages\pages_for( $practice->slug ) as $pg ) {
+				if ( ( $pg['filter'][ $want[0] ] ?? null ) === $want[1] && ! empty( $pg['frame']['h1'] ) ) {
+					$h1 = (string) $pg['frame']['h1'];
+					return '' !== $where ? (string) preg_replace( '/\s+in Perth$/', ' in ' . $where, $h1 ) : $h1;
+				}
+			}
+		}
+	}
+	if ( '' !== $for ) {
+		// "Beginner friendly" → "for beginners"; other names read as they are.
+		$for = preg_replace( '/\s+friendly$/i', '', $for );
+		if ( 'beginner' === strtolower( $for ) ) { $for = __( 'beginners', 'oria' ); }
+	}
+	if ( '' === $thing ) {
+		$thing = $practice instanceof \WP_Term ? $name( $practice ) : __( 'Wellness', 'oria' );
+	}
+	if ( '' !== $for ) {
+		/* translators: 1: practice or style, 2: audience ("beginners") */
+		$thing = sprintf( __( '%1$s for %2$s', 'oria' ), $thing, $for );
+	}
+	/* translators: 1: what, 2: where */
+	return sprintf( __( '%1$s in %2$s', 'oria' ), $thing, '' !== $where ? $where : __( 'Perth', 'oria' ) );
+}
+
+/**
  * Where a "browse by specialty" pill should send people: the new directory
  * with that specialty already applied in preview/live (the engine reads
  * ?spec= on load), else the specialty's own landing page.

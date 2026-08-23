@@ -62,8 +62,9 @@ $oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 		<span aria-hidden="true">/</span><span><?php esc_html_e( 'Directory', 'oria' ); ?></span>
 	</nav>
 	<div style="margin-top:1rem">
+		<?php $oria_qh = \Oria\Core\PracticesIndex\query_heading(); ?>
 		<span class="micro"><?php esc_html_e( 'The directory', 'oria' ); ?></span>
-		<h1 class="h1 pagehead__title"><?php esc_html_e( "Every practice we've found in Perth.", 'oria' ); ?></h1>
+		<h1 class="h1 pagehead__title"><?php echo '' !== $oria_qh ? esc_html( $oria_qh ) : esc_html__( "Every practice we've found in Perth.", 'oria' ); ?></h1>
 	</div>
 
 	<div class="decide">

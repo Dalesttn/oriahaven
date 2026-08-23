@@ -70,6 +70,13 @@ $oria_guides = $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) ? \
 $oria_latest = $oria_guides ? array() : get_posts( array( 'post_type' => 'post', 'post_status' => 'publish', 'numberposts' => 3, 'orderby' => 'date', 'order' => 'DESC' ) );
 
 $oria_h1 = $oria_facet ? (string) $oria_facet['label'] : sprintf( __( '%s in Perth', 'oria' ), $oria_pname );
+if ( ! $oria_facet && $oria_term ) {
+	// A filtered view reached by URL names what it shows: "Yoga in Fremantle".
+	$oria_qh = \Oria\Core\PracticesIndex\query_heading( $oria_term );
+	if ( '' !== $oria_qh ) {
+		$oria_h1 = $oria_qh;
+	}
+}
 
 /* Every intent row gets a clean address under this category — the inverse
    of the facet resolver. Rows with no clean form keep a filtered view of

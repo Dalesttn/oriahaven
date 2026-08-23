@@ -512,6 +512,27 @@
   }
 
   /* --- Directory ------------------------------------------------------ */
+  /* A filtered view reached by URL (?spec=, ?suburb=, ?region=, ?svc=,
+     ?aud=, ?price=, ?format=, ?q=) is about the listings, not the
+     introduction above them: on the redesigned pages (the ones with a
+     #browse floor) start the visitor at the listings. A hash in the URL
+     wins — the person asked for a specific section. */
+  function scrollToFilteredResults() {
+    var browse = $("#browse");
+    if (!browse || !$("#dirResults") || window.location.hash) return;
+    var params = new URLSearchParams(window.location.search);
+    var keys = ["spec", "suburb", "region", "svc", "aud", "price", "format", "q", "cat"];
+    var filtered = keys.some(function (k) { return !!params.get(k); });
+    if (!filtered) return;
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.setTimeout(function () {
+      var spine = $(".spine");
+      var offset = (spine ? spine.getBoundingClientRect().height : 0) + 12;
+      var top = browse.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
+    }, 60);
+  }
+
   function initDirectory() {
     var root = $("#dirResults");
     if (!root) return;
@@ -1728,6 +1749,7 @@
     initSiteSearch();
     initHomeSearch();
     initDirectory();
+    scrollToFilteredResults();
     initForms();
     initCarousels();
     initFeaturedRotator();
