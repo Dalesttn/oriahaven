@@ -56,6 +56,28 @@ function card_spec(): array {
 		);
 	}
 
+	// An intent page is a practice term with one more facet locked; its
+	// card should carry the page's own title, not the category's.
+	if ( function_exists( '\Oria\Core\IntentPages\current' ) ) {
+		$ip = \Oria\Core\IntentPages\current();
+		if ( null !== $ip ) {
+			$f = \Oria\Core\IntentPages\facts( $ip );
+			return array(
+				'key'  => 'intent-' . $ip['practice'] . '-' . $ip['intent'],
+				'name' => (string) ( $ip['frame']['h1'] ?? $ip['label'] ),
+				/* translators: %d: number of listed practices */
+				'meta' => sprintf( _n( '%d listed practice', '%d listed practices', (int) $f['count'], 'oria' ), (int) $f['count'] ),
+			);
+		}
+	}
+	if ( function_exists( '\Oria\Core\PracticesIndex\is_index' ) && \Oria\Core\PracticesIndex\is_index() ) {
+		return array(
+			'key'  => 'practices',
+			'name' => 'Wellness practices in Perth',
+			'meta' => 'Every category the directory lists',
+		);
+	}
+
 	$obj = get_queried_object();
 
 	if ( $obj instanceof \WP_Term ) {

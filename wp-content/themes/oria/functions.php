@@ -705,8 +705,18 @@ function article_meta( int $post_id ): string {
  */
 const SEARCH_INDEX_V = 2; // 2: listing rows gained 'region' for the map.
 
+/**
+ * The transient key. The directory-v2 mode is part of it: the category
+ * URLs inside the index change with the mode, so flipping the switch must
+ * never keep serving the other family's addresses from a warm cache.
+ */
+function search_index_key(): string {
+	$mode = function_exists( '\Oria\Core\PracticesIndex\mode' ) ? \Oria\Core\PracticesIndex\mode() : '';
+	return 'oria_search_index_v' . SEARCH_INDEX_V . ( '' !== $mode ? '_' . $mode : '' );
+}
+
 function search_index(): array {
-	$key    = 'oria_search_index_v' . SEARCH_INDEX_V;
+	$key    = search_index_key();
 	$cached = get_transient( $key );
 	if ( is_array( $cached ) ) {
 		return $cached;
@@ -741,7 +751,9 @@ function search_index(): array {
 
 /** Any change to a listing or a term rebuilds the index on next read. */
 function flush_search_index(): void {
-	delete_transient( 'oria_search_index_v' . SEARCH_INDEX_V );
+	foreach ( array( '', '_preview', '_live' ) as $suffix ) {
+		delete_transient( 'oria_search_index_v' . SEARCH_INDEX_V . $suffix );
+	}
 }
 
 foreach ( array( 'save_post_listing', 'deleted_post', 'edited_term', 'created_term' ) as $oria_flush_hook ) {

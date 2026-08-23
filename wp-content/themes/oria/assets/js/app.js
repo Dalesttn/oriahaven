@@ -528,13 +528,14 @@
     });
 
     var PER_PAGE = 10;
-    var state = { cats: [], regions: [], spec: [], svc: [], aud: [], price: [], format: [], rating: 0, q: "", sort: "relevance", page: 1 };
+    var state = { cats: [], regions: [], suburbs: [], spec: [], svc: [], aud: [], price: [], format: [], rating: 0, q: "", sort: "relevance", page: 1 };
 
     // Read the URL so category tiles, map regions and footer links all land
     // on a pre-filtered view — the same URLs the WordPress build will use.
     var params = new URLSearchParams(window.location.search);
     if (params.get("cat")) state.cats = params.get("cat").split(",");
     if (params.get("region")) state.regions = params.get("region").split(",");
+    if (params.get("suburb")) state.suburbs = params.get("suburb").split(",");
     if (params.get("q")) state.q = params.get("q");
     if (params.get("spec")) state.spec = params.get("spec").split(",");
     // Intent rows on a category page link here. svc and aud are canonical
@@ -553,17 +554,28 @@
       cat: root.dataset.cat || "",
       region: root.dataset.region || "",
       spec: root.dataset.spec || "",
-      suburb: root.dataset.suburb || ""
+      suburb: root.dataset.suburb || "",
+      // An intent page locks one more facet (svc / aud / spec / format /
+      // price) the same way. Key and value come from the registry via the
+      // template, so the server-rendered set and this view agree exactly.
+      intentKey: root.dataset.intentKey || "",
+      intentValue: root.dataset.intentValue || ""
     };
     if (locked.cat) state.cats = [locked.cat];
     if (locked.region) state.regions = [locked.region];
     if (locked.spec) state.spec = [locked.spec];
+    function isLockedIntent(k, v) { return !!locked.intentKey && k === locked.intentKey && v === locked.intentValue; }
+    if (locked.intentKey && state[locked.intentKey] !== undefined) {
+      if (locked.intentKey === "spec") { locked.spec = locked.intentValue; }
+      state[locked.intentKey] = [locked.intentValue];
+    }
 
     function matches(l) {
       if (state.cats.length && state.cats.indexOf(l.cat) === -1 &&
           !(l.also || []).some(function (a) { return state.cats.indexOf(a) > -1; })) return false;
       if (state.regions.length && state.regions.indexOf(l.region) === -1) return false;
       if (locked.suburb && l.suburb !== locked.suburb) return false;
+      if (state.suburbs.length && state.suburbs.indexOf(l.suburb) === -1) return false;
       if (state.spec.length && !(l.spec || []).some(function (s) { return state.spec.indexOf(s) > -1; })) return false;
       if (state.svc.length && !(l.svc || []).some(function (s) { return state.svc.indexOf(s) > -1; })) return false;
       if (state.aud.length && !(l.aud || []).some(function (a) { return state.aud.indexOf(a) > -1; })) return false;
@@ -683,7 +695,7 @@
         var qs = ((a.getAttribute("href") || "").split("?")[1] || "").split("#")[0];
         var q = new URLSearchParams(qs);
         var on = false;
-        ["svc", "aud", "price", "format"].forEach(function (k) {
+        ["svc", "aud", "price", "format", "suburb"].forEach(function (k) {
           var want = q.get(k);
           if (want && (state[k] || []).indexOf(want) > -1) on = true;
         });
@@ -700,13 +712,14 @@
       var out = [];
       state.cats.forEach(function (c) { if (c !== locked.cat) out.push(["cat", c, catNames[c] || c]); });
       state.regions.forEach(function (r) { if (r !== locked.region) out.push(["region", r, regionNames[r] || r]); });
+      state.suburbs.forEach(function (s) { out.push(["suburb", s, s]); });
       state.spec.forEach(function (s) { if (s !== locked.spec) out.push(["spec", s, specNames[s] || s]); });
       // Arrived from an intent row. Without these the list is filtered with
       // nothing on screen saying why and no way to undo it.
-      state.svc.forEach(function (s) { out.push(["svc", s, svcNames[s] || s]); });
-      state.aud.forEach(function (a) { out.push(["aud", a, audNames[a] || a]); });
-      state.price.forEach(function (p) { out.push(["price", p, p === "Free" ? "Free" : p]); });
-      state.format.forEach(function (f) { out.push(["format", f, f === "online" ? "Online" : "In person"]); });
+      state.svc.forEach(function (s) { if (!isLockedIntent("svc", s)) out.push(["svc", s, svcNames[s] || s]); });
+      state.aud.forEach(function (a) { if (!isLockedIntent("aud", a)) out.push(["aud", a, audNames[a] || a]); });
+      state.price.forEach(function (p) { if (!isLockedIntent("price", p)) out.push(["price", p, p === "Free" ? "Free" : p]); });
+      state.format.forEach(function (f) { if (!isLockedIntent("format", f)) out.push(["format", f, f === "online" ? "Online" : "In person"]); });
       if (state.rating) out.push(["rating", String(state.rating), state.rating + "+ rating"]);
       if (state.q) out.push(["q", state.q, '"' + state.q + '"']);
 
@@ -736,8 +749,10 @@
         state.cats = locked.cat ? [locked.cat] : [];
         state.regions = locked.region ? [locked.region] : [];
         state.spec = locked.spec ? [locked.spec] : [];
-        state.svc = []; state.aud = [];
+        state.svc = []; state.aud = []; state.suburbs = [];
         state.price = []; state.format = []; state.rating = 0; state.q = "";
+        // Clearing never unlocks the page's own facet.
+        if (locked.intentKey && state[locked.intentKey] !== undefined) state[locked.intentKey] = [locked.intentValue];
         var si = $("#dirQ"); if (si) si.value = "";
         syncInputs();
         state.page = 1;
@@ -752,7 +767,7 @@
           // rating is a single number, not a set — check it first
           input.checked = Number(val) === state.rating;
         } else if (input.type === "checkbox") {
-          var key = kind === "cat" ? "cats" : kind === "region" ? "regions" : kind;
+          var key = kind === "cat" ? "cats" : kind === "region" ? "regions" : kind === "suburb" ? "suburbs" : kind;
           input.checked = state[key].indexOf(val) > -1;
         }
       });
@@ -832,7 +847,7 @@
       var badge = $("#filterCount");
       if (badge) {
         var on = state.cats.length + state.regions.length + state.spec.length +
-                 state.svc.length + state.aud.length +
+                 state.svc.length + state.aud.length + state.suburbs.length +
                  state.price.length + state.format.length + (state.rating ? 1 : 0);
         badge.textContent = on ? String(on) : "";
       }
@@ -875,8 +890,9 @@
       if (locked.cat || locked.region || locked.spec || locked.suburb) {
         var lp = new URLSearchParams(window.location.search);
         var moved = false;
-        ["svc", "aud", "price", "format"].forEach(function (k) {
-          var cur = (state[k] || []).join(",");
+        ["svc", "aud", "price", "format", "suburb"].forEach(function (k) {
+          // The locked intent value is the page, not a parameter.
+          var cur = (state[k === "suburb" ? "suburbs" : k] || []).filter(function (v) { return !isLockedIntent(k, v); }).join(",");
           if (cur) {
             if (lp.get(k) !== cur) { lp.set(k, cur); moved = true; }
           } else if (lp.has(k)) {
@@ -895,11 +911,91 @@
       if (state.spec.length) p.set("spec", state.spec.join(","));
       if (state.svc.length) p.set("svc", state.svc.join(","));
       if (state.aud.length) p.set("aud", state.aud.join(","));
+      if (state.suburbs.length) p.set("suburb", state.suburbs.join(","));
       if (state.q) p.set("q", state.q);
       if (state.page > 1) p.set("pg", String(state.page));
       var qs = p.toString();
       history.replaceState(null, "", qs ? "?" + qs : window.location.pathname);
     }
+
+    /* Typewriter headings (data-typewrite): type the text out on every
+       load, then reveal the sibling marked .typewrite__after. The text is
+       server-rendered for crawlers and no-JS; reduced motion leaves it. */
+    $$("[data-typewrite]").forEach(function (el) {
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        var after0 = el.nextElementSibling; if (after0 && after0.classList.contains("typewrite__after")) after0.classList.add("is-shown");
+        return;
+      }
+      var full = el.textContent.trim(), after = el.nextElementSibling;
+      el.setAttribute("aria-label", full);
+      el.textContent = "";
+      var out = document.createElement("span"), caret = document.createElement("span");
+      caret.className = "typewrite__caret"; caret.setAttribute("aria-hidden", "true");
+      el.appendChild(out); el.appendChild(caret);
+      var i = 0;
+      var step = function () {
+        out.textContent = full.slice(0, ++i);
+        if (i < full.length) {
+          // a little unevenness reads as typing rather than a progress bar
+          setTimeout(step, 28 + Math.random() * 38 + (full[i - 1] === " " ? 40 : 0));
+        } else {
+          if (after && after.classList.contains("typewrite__after")) after.classList.add("is-shown");
+          setTimeout(function () { caret.remove(); }, 1400);
+        }
+      };
+      setTimeout(step, 650); // after the spine has dropped in
+    });
+
+    /* Toolbar (directory-toolbar.php): the specialty typeahead filters the
+       checkbox list as you type — the inputs are the same [data-filter]
+       checkboxes, just searchable — and opening one popover closes the rest. */
+    $$("[data-facet-search]").forEach(function (box) {
+      var list = $(box.dataset.facetSearch);
+      if (!list) return;
+      var rows = $$("[data-facet-label]", list), empty = $(".facetlist__empty", list);
+      box.addEventListener("input", function () {
+        var q = box.value.trim().toLowerCase(), shown = 0;
+        rows.forEach(function (r) {
+          var hit = !q || r.dataset.facetLabel.indexOf(q) > -1;
+          r.hidden = !hit; if (hit) shown++;
+        });
+        if (empty) empty.hidden = shown > 0;
+      });
+    });
+    /* The one-time nudge on a facet button (directory-toolbar.php). Shown
+       until the visitor opens that popover once, or for ten seconds,
+       whichever comes first; remembered per browser so it never nags. */
+    /* The nudge on a facet button (directory-toolbar.php): a pulsing ring
+       and a tooltip, shown on every page view once the toolbar is on screen,
+       and dismissed for that view the moment the popover opens or after ten
+       seconds. Nothing is remembered between views — it comes back on refresh. */
+    $$("[data-hint-key]").forEach(function (host) {
+      var det = host.querySelector("details");
+      if (!det) return;
+      var hide = function () { host.classList.remove("is-hinting"); };
+      det.addEventListener("toggle", function () { if (det.open) hide(); });
+      var started = false;
+      var inView = function () { var r = host.getBoundingClientRect(); return r.top < window.innerHeight * 0.92 && r.bottom > 0; };
+      var start = function () {
+        if (started) return;
+        started = true;
+        window.removeEventListener("scroll", tick);
+        host.classList.add("is-hinting");
+        setTimeout(hide, 10000);
+      };
+      var tick = function () { if (inView()) start(); };
+      window.addEventListener("scroll", tick, { passive: true });
+      tick();
+    });
+    $$("[data-popover]").forEach(function (d) {
+      d.addEventListener("toggle", function () {
+        if (!d.open) return;
+        $$("[data-popover]").forEach(function (o) { if (o !== d) o.open = false; });
+      });
+    });
+    document.addEventListener("click", function (e) {
+      $$("[data-popover][open]").forEach(function (d) { if (!d.contains(e.target)) d.open = false; });
+    });
 
     $$("[data-filter]").forEach(function (input) {
       input.addEventListener("change", function () {
@@ -907,7 +1003,7 @@
         if (kind === "rating") {
           state.rating = input.checked ? Number(val) : 0;
         } else {
-          var key = kind === "cat" ? "cats" : kind === "region" ? "regions" : kind;
+          var key = kind === "cat" ? "cats" : kind === "region" ? "regions" : kind === "suburb" ? "suburbs" : kind;
           if (input.checked) { if (state[key].indexOf(val) === -1) state[key].push(val); }
           else { state[key] = state[key].filter(function (x) { return x !== val; }); }
         }

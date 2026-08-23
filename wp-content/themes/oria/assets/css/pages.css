@@ -2123,3 +2123,271 @@ a.livesession:hover { background: var(--sand-2); }
 /* The jump lands on the results; without this the sticky header covers the
    first card and it looks as though nothing happened. */
 #dirResults { scroll-margin-top: calc(var(--head-h) + var(--s-5)); }
+
+
+/* Intent pages: the "this view" bar names what the page has locked. A
+   locked chip has no remove button and reads as a label, not a control. */
+.viewbar { align-items: center; margin-top: var(--s-4); margin-bottom: 0; }
+.viewbar__label { margin-right: var(--s-2); }
+.chip--locked { background: var(--deep); color: var(--white); }
+
+/* Practices index tiles. */
+.ptiles { display: grid; gap: var(--s-5); grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.ptile { display: flex; flex-direction: column; overflow: hidden; }
+.ptile__media img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.ptile__intents { list-style: none; padding: 0; margin: var(--s-4) 0 0; border-top: 1px solid var(--line); }
+.ptile__intents li { display: flex; justify-content: space-between; gap: var(--s-3); padding: .45rem 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm); }
+.ptile__intents li:last-child { border-bottom: 0; }
+.ptile__intents em { font-style: normal; color: var(--text-faint); }
+
+
+/* ---------- Redesigned category directory (/practices/{practice}/) ---------- */
+
+/* The spine: three anchors that name the page's floors. Sticky under the
+   site header; pure anchors, so it is navigation, not state. */
+.spine { position: sticky; top: 0; z-index: 30; background: rgba(247,245,240,.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+.spine__row { display: flex; align-items: center; gap: var(--s-5); padding-top: .6rem; padding-bottom: .6rem; font-size: var(--fs-sm); }
+.spine__row a { color: var(--text-soft); text-decoration: none; padding: .25rem 0; border-bottom: 2px solid transparent; }
+.spine__row a b { display: inline-grid; place-items: center; width: 1.4rem; height: 1.4rem; margin-right: .35rem; border-radius: 50%; background: var(--deep); color: var(--white); font-size: .75rem; }
+.spine__row a:hover { color: var(--deep); border-bottom-color: var(--deep); }
+.spine__note { margin-left: auto; color: var(--text-faint); font-size: var(--fs-xs); }
+@media (max-width: 50rem) { .spine__note { display: none; } }
+
+.floor { scroll-margin-top: 4rem; }
+.floor__label { margin-bottom: var(--s-4); }
+
+/* Floor 1: the answer beside the facts strip. */
+.decide { display: grid; gap: var(--s-6); grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); align-items: start; margin-top: var(--s-5); }
+@media (max-width: 60rem) { .decide { grid-template-columns: 1fr; } }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); margin: 0; }
+.facts > div { background: rgba(255,255,255,.55); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--s-4); }
+.facts dt { font-size: var(--fs-micro); letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--text-faint); font-weight: 700; }
+.facts dd { margin: .2rem 0 0; font-size: 1.6rem; font-weight: 700; color: var(--deep); letter-spacing: -.01em; }
+.facts__note { display: block; margin-top: .15rem; font-size: var(--fs-xs); color: var(--text-faint); }
+
+/* The intent grid: the primary move, as cards rather than a table. */
+.intentgrid { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.intentcard { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); padding: .9rem 1rem; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--white); color: inherit; text-decoration: none; transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease); }
+.intentcard:hover { border-color: var(--deep); box-shadow: var(--sh-2); }
+.intentcard__label { font-weight: 600; }
+.intentcard__count { color: var(--deep); font-weight: 700; white-space: nowrap; }
+
+/* Floor 2: the toolbar. Frosted like the rail it replaces; facets are
+   native <details> popovers. */
+/* The toolbar's backdrop-filter makes it a stacking context, so a popover's
+   z-index only ranks inside it. The toolbar itself has to sit above the
+   results that follow (whose hover transform makes each card a layer) and
+   below the sticky spine at 30. */
+.toolbar { position: relative; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); padding: var(--s-3); background: rgba(255,255,255,.42); border: 1px solid rgba(255,255,255,.7); border-radius: var(--r-md); backdrop-filter: blur(26px) saturate(150%); -webkit-backdrop-filter: blur(26px) saturate(150%); }
+.toolbar__search { flex: 1 1 260px; }
+.toolbar__sort { margin-left: auto; }
+.popover { position: relative; }
+.popover > summary { list-style: none; cursor: pointer; }
+.popover > summary::-webkit-details-marker { display: none; }
+.popover__panel { position: absolute; top: calc(100% + .4rem); left: 0; z-index: 40; min-width: 240px; max-height: 60vh; overflow: auto; padding: var(--s-4); background: var(--white); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--sh-2); }
+.popover__panel--wide { min-width: min(520px, 90vw); }
+.popover__panel .check + .check { margin-top: var(--s-3); }
+.facetlist { display: grid; gap: .4rem; grid-template-columns: 1fr 1fr; }
+.facetlist .check em { font-style: normal; color: var(--text-faint); font-size: var(--fs-xs); }
+.input--sm { padding: .5rem .75rem; }
+@media (max-width: 50rem) {
+  .popover__panel { position: fixed; left: var(--s-4); right: var(--s-4); top: auto; bottom: var(--s-4); max-height: 70vh; }
+  .facetlist { grid-template-columns: 1fr; }
+  .toolbar__sort { margin-left: 0; flex: 1 1 100%; }
+}
+
+/* Results get the full width now the rail is gone. */
+/* Two columns of row cards once there is room, one below. The card keeps
+   its row form (image left, text right) — the shape it was designed for —
+   with a trimmer image column, so ~570px cells still give the text the
+   width it had at 850px minus a thumbnail, not a squashed strip. */
+.dir__results--wide { display: grid; gap: var(--s-4); grid-template-columns: 1fr; margin-top: var(--s-4); }
+@media (min-width: 68rem) { .dir__results--wide { grid-template-columns: 1fr 1fr; } }
+.dir__results--wide .listing { grid-template-columns: 160px 1fr; }
+.dir__results--wide .listing__media img { aspect-ratio: auto; min-height: 100%; }
+.dir__results--wide .listing__head { flex-wrap: wrap; }
+.dir__results--wide .listing__name { font-size: 1.1rem; }
+.dir__results--wide .listing__body { padding: var(--s-4); }
+@media (max-width: 620px) {
+  .dir__results--wide .listing { grid-template-columns: 1fr; }
+  .dir__results--wide .listing__media img { aspect-ratio: 16 / 9; min-height: 0; }
+}
+
+/* Floor 3 bits. */
+.guidelist { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
+.guidelist li { padding: .7rem 0; border-bottom: 1px solid var(--line); }
+.guidelist a { font-weight: 600; }
+
+/* Small screens: the intent grid goes two-up and the toolbar compacts so
+   the first listing stays within reach of the first scroll. */
+@media (max-width: 50rem) {
+  .intentgrid { grid-template-columns: 1fr 1fr; gap: var(--s-2); }
+  .intentcard { padding: .6rem .7rem; font-size: var(--fs-sm); flex-direction: column; align-items: flex-start; gap: .2rem; }
+  .toolbar { gap: var(--s-2); padding: var(--s-2); }
+  .toolbar__search { flex: 1 1 100%; }
+  .popover > summary { padding: .4rem .6rem; font-size: var(--fs-xs); }
+  .toolbar__sort .select { width: 100%; }
+  .decide { margin-top: var(--s-4); }
+  .facts { gap: var(--s-2); }
+  .facts > div { padding: var(--s-3); }
+  .facts dd { font-size: 1.25rem; }
+}
+
+
+/* In the two-column results the text wraps to six or seven lines, the card
+   grows to 400px+ and the 160px image column becomes a thin slice of a
+   square photo — which reads as stretched. Bring the card back to the
+   proportion the original was drawn at (~0.6): a slightly wider image
+   column, and the description clamped to three lines (the full text is one
+   click away on the profile). */
+.dir__results--wide .listing { grid-template-columns: 190px 1fr; }
+.dir__results--wide .listing__desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+@media (max-width: 620px) {
+  .dir__results--wide .listing { grid-template-columns: 1fr; }
+}
+
+
+/* Category pills move onto the photo in the two-column results: they sit
+   bottom-left over a soft scrim, which gives the text column its first
+   forty pixels back. On a category page the first pill usually names the
+   page you are already on, so it had the least to say for the space it
+   took. Below 620px the card stacks and the pills return to the text. */
+@media (min-width: 621px) {
+  .dir__results--wide .listing { position: relative; }
+  .dir__results--wide .listing__cats {
+    position: absolute; left: 0; bottom: 0; width: 190px; margin: 0;
+    padding: 2.4rem var(--s-2) var(--s-2);
+    background: linear-gradient(to top, rgba(8,34,32,.78), rgba(8,34,32,.35) 55%, rgba(8,34,32,0));
+    flex-direction: column; align-items: flex-start; gap: 4px;
+    pointer-events: none;
+  }
+  .dir__results--wide .listing__cats .pill { pointer-events: auto; font-size: var(--fs-xs); padding: .28rem .55rem; box-shadow: 0 1px 2px rgba(8,34,32,.25); max-width: 100%; line-height: 1.25; text-align: left; }
+}
+
+
+/* The facet you are on, in the intent grid; and the way back to everything. */
+.intentcard.is-current { border-color: var(--deep); background: var(--deep); color: var(--white); }
+.intentcard.is-current .intentcard__count { color: var(--white); }
+.intentcard--all { border-style: dashed; }
+
+
+/* The nudge on the style facet: a pulsing ring on the button and a small
+   tooltip above it. --hint-ring is gold as requested; tokens.css reserves
+   gold for ratings, so switch this one variable to var(--deep) to keep that
+   rule intact. Both stop the moment the visitor opens the popover once, and
+   never animate for people who asked for reduced motion. */
+.hinthost { --hint-ring: var(--gold); position: relative; }
+.hinthost.is-hinting > details > summary { animation: hintpulse 1.6s ease-out infinite; border-color: var(--hint-ring); box-shadow: 0 0 0 2px var(--hint-ring); }
+@keyframes hintpulse {
+  0%   { box-shadow: 0 0 0 2px var(--hint-ring), 0 0 0 2px color-mix(in srgb, var(--hint-ring) 60%, transparent); }
+  75%  { box-shadow: 0 0 0 2px var(--hint-ring), 0 0 0 16px color-mix(in srgb, var(--hint-ring) 0%, transparent); }
+  100% { box-shadow: 0 0 0 2px var(--hint-ring), 0 0 0 16px color-mix(in srgb, var(--hint-ring) 0%, transparent); }
+}
+.hintbubble {
+  position: absolute; left: 50%; top: calc(100% + 10px); transform: translate(-50%, -6px);
+  white-space: nowrap; padding: .45rem .7rem; border-radius: var(--r-sm);
+  background: var(--deep); color: var(--white); font-size: var(--fs-xs); font-weight: 600;
+  box-shadow: var(--sh-2); opacity: 0; pointer-events: none; z-index: 45;
+  transition: opacity var(--t-med) var(--ease), transform var(--t-med) var(--ease);
+}
+.hintbubble::after {
+  content: ""; position: absolute; bottom: 100%; left: 50%; margin-left: -6px;
+  border: 6px solid transparent; border-bottom-color: var(--deep);
+}
+.hinthost.is-hinting .hintbubble { opacity: 1; transform: translate(-50%, 0); animation: hintbob 1.8s ease-in-out infinite; }
+@keyframes hintbob { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 4px); } }
+@media (prefers-reduced-motion: reduce) {
+  .hinthost.is-hinting > details > summary, .hinthost.is-hinting .hintbubble { animation: none; }
+}
+@media (max-width: 50rem) { .hintbubble { left: 0; transform: none; } .hinthost.is-hinting .hintbubble { transform: none; animation: none; } .hintbubble::after { left: 1.25rem; } }
+
+
+/* The spine's three stops drop in one after another, left to right, on
+   every load. Pure CSS, so it runs on each refresh with nothing to
+   remember; the note at the right fades in last. Off under reduced motion. */
+.spine__row a, .spine__note { opacity: 0; animation: spinedrop .55s cubic-bezier(.16, 1, .3, 1) forwards; }
+.spine__row a:nth-child(1) { animation-delay: .05s; }
+.spine__row a:nth-child(2) { animation-delay: .22s; }
+.spine__row a:nth-child(3) { animation-delay: .39s; }
+.spine__row a:nth-child(4) { animation-delay: .56s; }
+.spine__note { animation-name: spinefade; animation-delay: .75s; }
+@keyframes spinedrop {
+  0%   { opacity: 0; transform: translateY(-18px); }
+  70%  { opacity: 1; transform: translateY(3px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes spinefade { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .spine__row a, .spine__note { animation: none; opacity: 1; }
+}
+
+
+/* The intent cards drop in one after another, left to right, on every
+   load — the same move as the spine, staggered by each card's position
+   (--i from the template) so any number of cards keeps the rhythm. */
+.intentcard { opacity: 0; animation: spinedrop .5s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: calc(.35s + .07s * var(--i, 0)); }
+@media (prefers-reduced-motion: reduce) { .intentcard { animation: none; opacity: 1; } }
+
+
+/* The grid's heading types itself out on every load. The full text is in
+   the HTML for anyone not running the script; the script clears it and
+   types it back, then the line beneath fades in. Caret is a thin petrol
+   bar that blinks while typing and for a moment after. */
+.typewrite { min-height: 1.3em; }
+.typewrite__caret { display: inline-block; width: 2px; height: .95em; margin-left: 2px; vertical-align: -0.12em; background: var(--deep); animation: caretblink .9s steps(1) infinite; }
+@keyframes caretblink { 50% { opacity: 0; } }
+.typewrite__after { opacity: 0; transition: opacity .4s var(--ease); }
+.typewrite__after.is-shown { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .typewrite__after { opacity: 1; } }
+
+
+/* The directory's category grid runs to twenty-odd cards; a touch denser
+   than the style grid, and two-up on a phone so it stays a short scroll. */
+.intentgrid--cats { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.intentgrid--cats .intentcard { padding: .7rem .85rem; }
+.intentgrid--cats .intentcard__label { font-size: var(--fs-sm); line-height: 1.25; }
+@media (max-width: 50rem) { .intentgrid--cats { grid-template-columns: 1fr 1fr; } .intentgrid--cats .intentcard { padding: .6rem .7rem; font-size: var(--fs-sm); } }
+
+
+/* Category artwork on the directory's cards: the same two-tone icons the
+   rail used, on the same neutral dot, sized to the label. The label takes
+   the remaining width; the count stays pinned right. */
+.intentcard--icon { gap: var(--s-2); }
+.intentcard__icon { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(14,59,56,.06); }
+.intentcard__icon svg { width: 20px; height: 20px; display: block; }
+.intentcard--icon .intentcard__label { flex: 1 1 auto; min-width: 0; }
+@media (max-width: 50rem) { .intentcard__icon { width: 30px; height: 30px; } .intentcard__icon svg { width: 18px; height: 18px; } }
+
+
+/* Area popover: regions with their suburbs nested beneath, all counted
+   from the current set. Compact on purpose — it is a list to scan, not a
+   form to fill — with counts in brackets and room for suburb names. */
+.popover__panel--areas { min-width: min(460px, 90vw); padding: var(--s-3) var(--s-4); }
+.popover__panel--areas .hint { font-size: var(--fs-xs); margin: 0 0 .4rem; }
+.popover__panel--areas .check { align-items: center; gap: .5rem; line-height: 1.3; }
+.popover__panel--areas .check input { margin-top: 0; width: 15px; height: 15px; }
+.popover__panel--areas .check em { font-style: normal; color: var(--text-faint); font-size: var(--fs-xs); }
+.popover__panel--areas .check em::before { content: "("; }
+.popover__panel--areas .check em::after { content: ")"; }
+.areagroup + .areagroup { margin-top: .45rem; padding-top: .45rem; border-top: 1px solid var(--line); }
+.areagroup__region { padding: .25rem .4rem; margin: 0 -.4rem; border-radius: var(--r-sm); }
+.areagroup__region span { font-weight: 600; }
+.areagroup__region:hover { background: rgba(14,59,56,.05); }
+.areagroup__suburbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: .1rem .75rem; margin: .25rem 0 .1rem 1.5rem; }
+.areagroup__suburbs .check, .areagroup__suburbs .check + .check { font-size: var(--fs-xs); padding: .15rem 0; margin: 0; }
+.areagroup__suburbs .check span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 50rem) { .areagroup__suburbs { grid-template-columns: 1fr 1fr; margin-left: 1.2rem; } }
+
+
+/* Floor 4 — guides as image cards. The journal's .article card, plus an
+   excerpt line and a soft placeholder panel for a post without an image. */
+.guides__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4); margin-bottom: var(--s-4); }
+.guides__head .h3 { margin: 0; }
+.guides__all { font-size: var(--fs-sm); font-weight: 600; white-space: nowrap; }
+.guidegrid { margin-top: 0; }
+.guidecard .article__img { margin-bottom: .75rem; }
+.guidecard .article__img--empty { aspect-ratio: 3 / 2; display: grid; place-items: center; background: linear-gradient(135deg, var(--sand-2), var(--sand-3)); color: var(--deep); }
+.guidecard .article__img--empty svg { width: 3rem; height: 3rem; opacity: .7; }
+.guidecard .article__excerpt { margin: .35rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.guidecard { opacity: 0; animation: spinedrop .5s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: calc(.1s + .09s * var(--i, 0)); }
+@media (prefers-reduced-motion: reduce) { .guidecard { animation: none; opacity: 1; } }

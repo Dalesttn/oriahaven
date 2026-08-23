@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const QUERY_VAR  = 'oria_area';
-const REWRITE_V  = '8'; // 8: /llms.txt route added.
+const REWRITE_V  = '11'; // 11: /practices/{practice}/{facet}/ facet pages.
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\add_routes', 10 );

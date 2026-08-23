@@ -226,7 +226,12 @@ function for_practice( \WP_Term $practice ): array {
 		);
 	}
 
-	return $rows;
+	/*
+	 * A row whose view has a live intent page (IntentPages) points there
+	 * instead of at the filter URL, so the page with the frame and the
+	 * canonical address is the one that gets the link.
+	 */
+	return (array) apply_filters( 'oria_intent_rows', $rows, $practice );
 }
 
 /**

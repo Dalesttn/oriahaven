@@ -51,6 +51,7 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					// Sensible default until a menu is assigned in the admin.
 					echo '<ul class="nav__links">';
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Directory', 'oria' ) );
+					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/practices/' ) ), esc_html__( 'Practices', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
@@ -99,6 +100,7 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 			'fallback_cb'    => static function (): void {
 				echo '<div class="drawer__links">';
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Directory', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( home_url( '/practices/' ) ), esc_html__( 'Practices', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
