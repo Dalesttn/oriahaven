@@ -319,59 +319,69 @@ function rewrite_content_links( string $html, ?\WP_Term $here = null ): string {
 	if ( '' === mode() || '' === $html || false === stripos( $html, 'href' ) ) {
 		return $html;
 	}
-	$home = untrailingslashit( home_url( '/' ) );
 	return (string) preg_replace_callback(
 		'~href=(["\'])([^"\']+)\1~i',
-		static function ( array $m ) use ( $home, $here ): string {
-			$url  = html_entity_decode( $m[2], ENT_QUOTES );
-			$rel  = 0 === strpos( $url, $home ) ? substr( $url, strlen( $home ) ) : $url;
-			$path = (string) wp_parse_url( $rel, PHP_URL_PATH );
-			$qs   = (string) wp_parse_url( $rel, PHP_URL_QUERY );
-			if ( '' === $path || '/' !== $path[0] ) {
-				return $m[0]; // external, mailto, anchor — not ours to touch
-			}
-			$new = '';
-			if ( preg_match( '~^/practice/([^/]+)/(?:([^/]+)/)?$~', $path, $pm ) ) {
-				$practice = get_term_by( 'slug', $pm[1], Taxonomies\PRACTICE );
-				if ( $practice instanceof \WP_Term ) {
-					if ( empty( $pm[2] ) ) {
-						$new = category_url( $practice );
-					} else {
-						$area = get_term_by( 'slug', $pm[2], Taxonomies\AREA );
-						$new  = $area instanceof \WP_Term ? area_url( $practice, $area ) : category_url( $practice ) . $pm[2] . '/';
-					}
-				}
-			} elseif ( preg_match( '~^/perth/([^/]+)/$~', $path, $pm ) ) {
-				$spec = get_term_by( 'slug', $pm[1], Taxonomies\SPECIALTY );
-				if ( ! $spec instanceof \WP_Term ) {
-					// A specialty since merged into a practice (/perth/yoga/
-					// redirects to the category): send people straight there.
-					$practice = get_term_by( 'slug', $pm[1], Taxonomies\PRACTICE );
-					if ( $practice instanceof \WP_Term ) {
-						$new = category_url( $practice );
-					}
-				} else {
-					$new = specialty_url( $spec );
-					if ( $here instanceof \WP_Term ) {
-						$facet = resolve_facet( $here, $spec->slug );
-						if ( null !== $facet && in_array( $facet['key'], array( 'spec', 'svc' ), true ) && facet_ids( $here, $facet ) ) {
-							$new = category_url( $here ) . $facet['slug'] . '/';
-						}
-					}
-				}
-			} elseif ( '/directory/' === $path && '' !== $qs ) {
-				parse_str( $qs, $q );
-				if ( ! empty( $q['cat'] ) && is_string( $q['cat'] ) && 1 === count( $q ) ) {
-					$practice = get_term_by( 'slug', $q['cat'], Taxonomies\PRACTICE );
-					if ( $practice instanceof \WP_Term ) {
-						$new = category_url( $practice );
-					}
-				}
-			}
+		static function ( array $m ) use ( $here ): string {
+			$new = rewrite_url( html_entity_decode( $m[2], ENT_QUOTES ), $here );
 			return '' === $new ? $m[0] : 'href=' . $m[1] . esc_url( $new ) . $m[1];
 		},
 		$html
 	);
+}
+
+/**
+ * One URL from the original family mapped to its v2 address — the rule set
+ * rewrite_content_links() applies to a block of HTML, for a single stored
+ * link (a hero quick pill, a button). Returns '' when the URL is not one
+ * that moves: external, an area page, a listing, a journal post, or any
+ * URL at all in review mode.
+ */
+function rewrite_url( string $url, ?\WP_Term $here = null ): string {
+	if ( '' === mode() || '' === $url ) {
+		return '';
+	}
+	$home = untrailingslashit( home_url( '/' ) );
+	$rel  = 0 === strpos( $url, $home ) ? substr( $url, strlen( $home ) ) : $url;
+	$path = (string) wp_parse_url( $rel, PHP_URL_PATH );
+	$qs   = (string) wp_parse_url( $rel, PHP_URL_QUERY );
+	if ( '' === $path || '/' !== $path[0] ) {
+		return ''; // external, mailto, anchor — not ours to touch
+	}
+	if ( preg_match( '~^/practice/([^/]+)/(?:([^/]+)/)?$~', $path, $pm ) ) {
+		$practice = get_term_by( 'slug', $pm[1], Taxonomies\PRACTICE );
+		if ( ! $practice instanceof \WP_Term ) {
+			return '';
+		}
+		if ( empty( $pm[2] ) ) {
+			return category_url( $practice );
+		}
+		$area = get_term_by( 'slug', $pm[2], Taxonomies\AREA );
+		return $area instanceof \WP_Term ? area_url( $practice, $area ) : category_url( $practice ) . $pm[2] . '/';
+	}
+	if ( preg_match( '~^/perth/([^/]+)/$~', $path, $pm ) ) {
+		$spec = get_term_by( 'slug', $pm[1], Taxonomies\SPECIALTY );
+		if ( ! $spec instanceof \WP_Term ) {
+			// A specialty since merged into a practice (/perth/yoga/
+			// redirects to the category): send people straight there.
+			$practice = get_term_by( 'slug', $pm[1], Taxonomies\PRACTICE );
+			return $practice instanceof \WP_Term ? category_url( $practice ) : '';
+		}
+		if ( $here instanceof \WP_Term ) {
+			$facet = resolve_facet( $here, $spec->slug );
+			if ( null !== $facet && in_array( $facet['key'], array( 'spec', 'svc' ), true ) && facet_ids( $here, $facet ) ) {
+				return category_url( $here ) . $facet['slug'] . '/';
+			}
+		}
+		return specialty_url( $spec );
+	}
+	if ( '/directory/' === $path && '' !== $qs ) {
+		parse_str( $qs, $q );
+		if ( ! empty( $q['cat'] ) && is_string( $q['cat'] ) && 1 === count( $q ) ) {
+			$practice = get_term_by( 'slug', $q['cat'], Taxonomies\PRACTICE );
+			return $practice instanceof \WP_Term ? category_url( $practice ) : '';
+		}
+	}
+	return '';
 }
 
 /**

@@ -136,7 +136,9 @@ $oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
 				<?php if ( $oria_tags ) : ?>
 					<span class="micro" style="margin-right:.35rem"><?php esc_html_e( 'Popular right now', 'oria' ); ?></span>
 					<?php foreach ( $oria_tags as $oria_tag ) : ?>
-						<a class="pill pill--glass" href="<?php echo esc_url( (string) ( $oria_tag['url'] ?? '#' ) ); ?>"><?php echo esc_html( (string) ( $oria_tag['label'] ?? '' ) ); ?></a>
+						<?php $oria_tag_url = (string) ( $oria_tag['url'] ?? '#' ); ?>
+						<?php $oria_tag_url = function_exists( '\Oria\Core\PracticesIndex\rewrite_url' ) ? ( \Oria\Core\PracticesIndex\rewrite_url( $oria_tag_url ) ?: $oria_tag_url ) : $oria_tag_url; ?>
+						<a class="pill pill--glass" href="<?php echo esc_url( $oria_tag_url ); ?>"><?php echo esc_html( (string) ( $oria_tag['label'] ?? '' ) ); ?></a>
 					<?php endforeach; ?>
 				<?php endif; ?>
 			</div>

@@ -284,7 +284,7 @@ while ( have_posts() ) :
 					<h2 class="h3" style="margin-bottom:.85rem"><?php esc_html_e( 'Find more like this', 'oria' ); ?></h2>
 					<div class="listing__tags">
 						<?php foreach ( $oria_specs as $oria_spec ) : ?>
-							<a class="pill" href="<?php echo esc_url( (string) get_term_link( $oria_spec ) ); ?>">
+							<a class="pill" href="<?php echo esc_url( function_exists( '\Oria\Core\PracticesIndex\specialty_url' ) ? \Oria\Core\PracticesIndex\specialty_url( $oria_spec ) : (string) get_term_link( $oria_spec ) ); ?>">
 								<?php
 								printf(
 									/* translators: %s: modality name */

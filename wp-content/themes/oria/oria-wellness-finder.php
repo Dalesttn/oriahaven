@@ -194,7 +194,8 @@ get_header();
 						);
 						?>
 					</p>
-					<a class="btn btn--ghost btn--sm" href="<?php echo esc_url( (string) get_term_link( $oria_term ) ); ?>" data-oria-event="finder_practice">
+					<?php $oria_term_url = ( 'specialty' === $oria_term->taxonomy && function_exists( '\Oria\Core\PracticesIndex\specialty_url' ) ) ? \Oria\Core\PracticesIndex\specialty_url( $oria_term ) : (string) get_term_link( $oria_term ); ?>
+					<a class="btn btn--ghost btn--sm" href="<?php echo esc_url( $oria_term_url ); ?>" data-oria-event="finder_practice">
 						<?php
 						/* translators: %s: practice name */
 						printf( esc_html__( 'Explore %s', 'oria' ), esc_html( tname( $oria_term ) ) );

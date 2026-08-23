@@ -109,6 +109,9 @@ $oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 				</a>
 			<?php endforeach; ?>
 		</div>
+		<?php if ( count( $oria_cats ) > 8 ) : ?>
+			<button type="button" class="intentgrid__more" data-intentgrid-more aria-expanded="false"><?php printf( esc_html__( 'Show all %s categories', 'oria' ), esc_html( number_format_i18n( count( $oria_cats ) ) ) ); ?> <span aria-hidden="true">▾</span></button>
+		<?php endif; ?>
 	<?php endif; ?>
 </section>
 

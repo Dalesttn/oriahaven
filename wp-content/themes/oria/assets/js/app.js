@@ -517,6 +517,31 @@
      introduction above them: on the redesigned pages (the ones with a
      #browse floor) start the visitor at the listings. A hash in the URL
      wins — the person asked for a specific section. */
+  /* A "Done" button inside a filter sheet (shown on small screens) closes
+     it — the same as tapping outside, for people who never would. */
+  /* On small screens a long category grid shows its first eight; the
+     button beneath reveals the rest. Desktop shows everything (CSS). */
+  function initIntentGridMore() {
+    document.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-intentgrid-more]");
+      if (!btn) return;
+      var grid = btn.previousElementSibling;
+      if (!grid || !grid.classList.contains("intentgrid")) return;
+      grid.classList.add("is-expanded");
+      btn.setAttribute("aria-expanded", "true");
+      btn.hidden = true;
+    });
+  }
+
+  function initPopoverDone() {
+    document.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-popover-close]");
+      if (!btn) return;
+      var d = btn.closest("details");
+      if (d) { d.open = false; d.querySelector("summary") && d.querySelector("summary").focus(); }
+    });
+  }
+
   function scrollToFilteredResults() {
     var browse = $("#browse");
     if (!browse || !$("#dirResults") || window.location.hash) return;
@@ -1750,6 +1775,8 @@
     initHomeSearch();
     initDirectory();
     scrollToFilteredResults();
+    initPopoverDone();
+    initIntentGridMore();
     initForms();
     initCarousels();
     initFeaturedRotator();

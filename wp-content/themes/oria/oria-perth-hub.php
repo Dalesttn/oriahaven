@@ -83,7 +83,7 @@ $oria_ld = array(
 	<p class="hint" style="margin-bottom:1rem"><?php esc_html_e( 'The precise thing you might be searching for.', 'oria' ); ?></p>
 	<div class="chips">
 		<?php foreach ( $oria_specs as $oria_s ) : ?>
-			<a class="pill" href="<?php echo esc_url( get_term_link( $oria_s ) ); ?>">
+			<a class="pill" href="<?php echo esc_url( function_exists( '\Oria\Core\PracticesIndex\specialty_url' ) ? \Oria\Core\PracticesIndex\specialty_url( $oria_s ) : (string) get_term_link( $oria_s ) ); ?>">
 				<?php echo esc_html( \Oria\Theme\tname( $oria_s ) ); ?> (<?php echo esc_html( number_format_i18n( $oria_s->count ) ); ?>)
 			</a>
 		<?php endforeach; ?>

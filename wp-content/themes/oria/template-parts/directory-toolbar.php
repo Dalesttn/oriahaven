@@ -160,6 +160,7 @@ $oria_prices = array(
 	 * first time the popover opens (app.js remembers in localStorage).
 	 */
 	?>
+	<div class="toolbar__filters">
 	<?php if ( $oria_facets ) : ?>
 	<div class="hinthost" data-hint-key="style">
 	<span class="hintbubble" id="styleHint" role="tooltip"><?php esc_html_e( 'Find more options here', 'oria' ); ?></span>
@@ -190,6 +191,7 @@ $oria_prices = array(
 				<p class="hint facetlist__empty" hidden><?php esc_html_e( 'Nothing matches — try a shorter word.', 'oria' ); ?></p>
 			</div>
 			<?php endif; ?>
+			<button type="button" class="popover__done" data-popover-close><?php esc_html_e( 'Done', 'oria' ); ?></button>
 		</div>
 	</details>
 	</div>
@@ -212,6 +214,7 @@ $oria_prices = array(
 					<?php endif; ?>
 				</div>
 			<?php endforeach; ?>
+			<button type="button" class="popover__done" data-popover-close><?php esc_html_e( 'Done', 'oria' ); ?></button>
 		</div>
 	</details>
 	<?php endif; ?>
@@ -222,6 +225,7 @@ $oria_prices = array(
 			<?php foreach ( $oria_prices as $oria_v => $oria_l ) : ?>
 				<label class="check"><input type="checkbox" data-filter="price" value="<?php echo esc_attr( $oria_v ); ?>"><span><?php echo esc_html( $oria_l ); ?></span></label>
 			<?php endforeach; ?>
+			<button type="button" class="popover__done" data-popover-close><?php esc_html_e( 'Done', 'oria' ); ?></button>
 		</div>
 	</details>
 
@@ -233,8 +237,11 @@ $oria_prices = array(
 			<span class="micro" style="display:block;margin:.9rem 0 .4rem"><?php esc_html_e( 'Rating on Google', 'oria' ); ?></span>
 			<label class="check"><input type="checkbox" data-filter="rating" value="4.5"><span><?php esc_html_e( '4.5 and above', 'oria' ); ?></span></label>
 			<label class="check"><input type="checkbox" data-filter="rating" value="4.8"><span><?php esc_html_e( '4.8 and above', 'oria' ); ?></span></label>
+			<button type="button" class="popover__done" data-popover-close><?php esc_html_e( 'Done', 'oria' ); ?></button>
 		</div>
 	</details>
+
+	</div>
 
 	<div class="toolbar__sort">
 		<label class="sr-only" for="dirSort"><?php esc_html_e( 'Sort by', 'oria' ); ?></label>

@@ -2186,7 +2186,9 @@ a.livesession:hover { background: var(--sand-2); }
    below the sticky spine at 30. */
 .toolbar { position: relative; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); padding: var(--s-3); background: rgba(255,255,255,.42); border: 1px solid rgba(255,255,255,.7); border-radius: var(--r-md); backdrop-filter: blur(26px) saturate(150%); -webkit-backdrop-filter: blur(26px) saturate(150%); }
 .toolbar__search { flex: 1 1 260px; }
+.toolbar__filters { display: contents; }
 .toolbar__sort { margin-left: auto; }
+.popover__done { display: none; }
 .popover { position: relative; }
 .popover > summary { list-style: none; cursor: pointer; }
 .popover > summary::-webkit-details-marker { display: none; }
@@ -2196,10 +2198,28 @@ a.livesession:hover { background: var(--sand-2); }
 .facetlist { display: grid; gap: .4rem; grid-template-columns: 1fr 1fr; }
 .facetlist .check em { font-style: normal; color: var(--text-faint); font-size: var(--fs-xs); }
 .input--sm { padding: .5rem .75rem; }
+/* Phones: the toolbar is a search box, one scrolling row of filter buttons
+   (each a comfortable tap target), and the sort. Each filter opens as a
+   bottom sheet over the page with a Done button — the toolbar drops its
+   backdrop-filter here, because that property makes it the containing
+   block for position:fixed and would pin the sheet to the toolbar instead
+   of the screen. */
 @media (max-width: 50rem) {
-  .popover__panel { position: fixed; left: var(--s-4); right: var(--s-4); top: auto; bottom: var(--s-4); max-height: 70vh; }
+  .toolbar { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,.72); }
+  .toolbar__filters { display: flex; flex: 1 1 100%; gap: .45rem; overflow-x: auto; padding: 2px 2px 4px; margin: 0 -2px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .toolbar__filters::-webkit-scrollbar { display: none; }
+  .toolbar__filters > *, .toolbar__filters .popover { flex: 0 0 auto; }
+  .hinthost { position: static; }
+  .popover { position: static; }
+  .popover > summary { min-height: 40px; padding: .5rem .85rem; font-size: var(--fs-sm); white-space: nowrap; border-radius: var(--r-pill); }
+  .popover__panel { position: fixed; left: 0; right: 0; top: auto; bottom: 0; width: auto; min-width: 0; max-width: none; max-height: 78vh; padding: var(--s-4) var(--s-4) calc(var(--s-4) + env(safe-area-inset-bottom)); border-radius: var(--r-lg) var(--r-lg) 0 0; box-shadow: 0 -12px 40px rgba(8,34,32,.22); z-index: 60; }
+  .popover__panel--wide, .popover__panel--areas { min-width: 0; }
+  .popover__done { display: block; position: sticky; bottom: 0; width: 100%; margin-top: var(--s-4); padding: .8rem; border: 0; border-radius: var(--r-md); background: var(--deep); color: var(--white); font: inherit; font-weight: 600; }
   .facetlist { grid-template-columns: 1fr; }
   .toolbar__sort { margin-left: 0; flex: 1 1 100%; }
+  .toolbar__sort .select { width: 100%; min-height: 44px; }
+  .toolbar__search .input { min-height: 44px; }
+  .hintbubble { top: auto; bottom: calc(100% + .3rem); }
 }
 
 /* Results get the full width now the rail is gone. */
@@ -2214,10 +2234,7 @@ a.livesession:hover { background: var(--sand-2); }
 .dir__results--wide .listing__head { flex-wrap: wrap; }
 .dir__results--wide .listing__name { font-size: 1.1rem; }
 .dir__results--wide .listing__body { padding: var(--s-4); }
-@media (max-width: 620px) {
-  .dir__results--wide .listing { grid-template-columns: 1fr; }
-  .dir__results--wide .listing__media img { aspect-ratio: 16 / 9; min-height: 0; }
-}
+/* (small screens: the compact row card, in the 50rem block below) */
 
 /* Floor 3 bits. */
 .guidelist { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
@@ -2231,12 +2248,18 @@ a.livesession:hover { background: var(--sand-2); }
   .intentcard { padding: .6rem .7rem; font-size: var(--fs-sm); flex-direction: column; align-items: flex-start; gap: .2rem; }
   .toolbar { gap: var(--s-2); padding: var(--s-2); }
   .toolbar__search { flex: 1 1 100%; }
-  .popover > summary { padding: .4rem .6rem; font-size: var(--fs-xs); }
-  .toolbar__sort .select { width: 100%; }
   .decide { margin-top: var(--s-4); }
-  .facts { gap: var(--s-2); }
-  .facts > div { padding: var(--s-3); }
-  .facts dd { font-size: 1.25rem; }
+  /* The facts strip folds into one compact row of figures. */
+  .facts { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .facts > div { flex: 1 1 auto; display: flex; align-items: baseline; gap: .35rem; padding: .4rem .65rem; border-radius: var(--r-pill); }
+  .facts dt { order: 2; letter-spacing: .02em; }
+  .facts dd { order: 1; margin: 0; font-size: 1rem; }
+  .facts__note { display: none; }
+  /* Guides: one swipeable row rather than three tall cards stacked. */
+  .guidegrid { display: flex; overflow-x: auto; gap: var(--s-3); scroll-snap-type: x mandatory; padding-bottom: var(--s-2); margin: 0 calc(-1 * var(--gutter, 18px)); padding-left: var(--gutter, 18px); padding-right: var(--gutter, 18px); scrollbar-width: none; }
+  .guidegrid::-webkit-scrollbar { display: none; }
+  .guidecard { flex: 0 0 78%; scroll-snap-align: start; }
+  .guides__head { flex-wrap: wrap; gap: var(--s-2); }
 }
 
 
@@ -2248,9 +2271,6 @@ a.livesession:hover { background: var(--sand-2); }
    click away on the profile). */
 .dir__results--wide .listing { grid-template-columns: 190px 1fr; }
 .dir__results--wide .listing__desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-@media (max-width: 620px) {
-  .dir__results--wide .listing { grid-template-columns: 1fr; }
-}
 
 
 /* Category pills move onto the photo in the two-column results: they sit
@@ -2398,3 +2418,29 @@ a.livesession:hover { background: var(--sand-2); }
 .guidecard .article__excerpt { margin: .35rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .guidecard { opacity: 0; animation: spinedrop .5s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: calc(.1s + .09s * var(--i, 0)); }
 @media (prefers-reduced-motion: reduce) { .guidecard { animation: none; opacity: 1; } }
+
+/* Phones — the results card. Last in the file on purpose: it has to win
+   against the 190px desktop column rule above, which shares its
+   specificity. A compact row — thumbnail left, the essentials right — so
+   three or four listings fit a screen instead of one and a half. */
+@media (max-width: 50rem) {
+  .dir__results--wide { gap: var(--s-3); }
+  .dir__results--wide .listing { grid-template-columns: 104px 1fr; position: relative; }
+  .dir__results--wide .listing__media { min-height: 100%; }
+  .dir__results--wide .listing__media img { aspect-ratio: auto; height: 100%; min-height: 140px; }
+  .dir__results--wide .listing__flag { top: 6px; left: 6px; transform: scale(.82); transform-origin: top left; }
+  .dir__results--wide .listing__body { padding: var(--s-3); gap: var(--s-2); }
+  .dir__results--wide .listing__cats, .dir__results--wide .listing__tags { display: none; }
+  .dir__results--wide .listing__head { gap: var(--s-2); }
+  .dir__results--wide .listing__name { font-size: 1rem; }
+  .dir__results--wide .listing__desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: var(--fs-xs); }
+  .dir__results--wide .listing__foot { padding-top: var(--s-2); gap: var(--s-2); }
+  .dir__results--wide .listing__foot .btn { padding: .4rem .7rem; font-size: var(--fs-xs); }
+}
+
+/* Phones — a long category grid shows eight, then a button for the rest. */
+.intentgrid__more { display: none; }
+@media (max-width: 50rem) {
+  .intentgrid--cats:not(.is-expanded) .intentcard:nth-child(n+9) { display: none; }
+  .intentgrid__more { display: block; width: 100%; margin-top: var(--s-3); padding: .7rem; border: 1px dashed var(--line-strong); border-radius: var(--r-md); background: transparent; color: var(--deep); font: inherit; font-size: var(--fs-sm); font-weight: 600; }
+}
