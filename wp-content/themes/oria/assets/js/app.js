@@ -533,6 +533,46 @@
     });
   }
 
+  /* The facts strip counts up from zero on load — listings, suburbs,
+     claimed, the typical price — the numeric part only, so "from $28" and
+     "1,234" keep their dressing. Eases out over ~1.2s, starting once the
+     spine has dropped in. Off under reduced motion, and never on a
+     non-numeric value. */
+  function initCountUp() {
+    var els = $$(".facts dd");
+    if (!els.length) return;
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    els.forEach(function (el, i) {
+      var text = el.textContent;
+      var m = text.match(/(\d[\d,]*)/);
+      if (!m) return;
+      var target = parseInt(m[1].replace(/,/g, ""), 10);
+      if (!isFinite(target) || target <= 0 || reduce) return;
+      var grouped = m[1].indexOf(",") !== -1;
+      var before = text.slice(0, m.index), after = text.slice(m.index + m[1].length);
+      var fmt = function (n) { return grouped ? n.toLocaleString("en-AU") : String(n); };
+      el.setAttribute("aria-label", text.trim());
+      el.textContent = before + fmt(0) + after;
+      var dur = 1200, start = null, done = false;
+      var finish = function () { if (done) return; done = true; el.textContent = text; };
+      var step = function (ts) {
+        if (done) return;
+        if (start === null) start = ts;
+        var t = Math.min(1, (ts - start) / dur);
+        var eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = before + fmt(Math.round(target * eased)) + after;
+        if (t < 1) requestAnimationFrame(step); else finish();
+      };
+      window.setTimeout(function () {
+        // A background tab gets no animation frames: show the number and
+        // move on rather than leaving a zero on screen.
+        if (document.hidden) { finish(); return; }
+        requestAnimationFrame(step);
+        window.setTimeout(finish, dur + 400); // safety net if frames stall
+      }, 450 + i * 120);
+    });
+  }
+
   function initPopoverDone() {
     document.addEventListener("click", function (e) {
       var btn = e.target.closest("[data-popover-close]");
@@ -1776,6 +1816,7 @@
     initDirectory();
     scrollToFilteredResults();
     initPopoverDone();
+    initCountUp();
     initIntentGridMore();
     initForms();
     initCarousels();
