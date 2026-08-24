@@ -2201,7 +2201,7 @@ a.livesession:hover { background: var(--sand-2); }
 .sheetveil { display: none; position: fixed; inset: 0; z-index: 65; background: rgba(8,34,32,.42); animation: veilin .18s ease both; }
 html.has-sheet { overflow: hidden; }
 @keyframes veilin { from { opacity: 0; } to { opacity: 1; } }
-@keyframes sheetup { from { transform: translateY(14px); opacity: .4; } to { transform: none; opacity: 1; } }
+@keyframes sheetup { from { transform: translateY(14px); } to { transform: none; } }
 @media (prefers-reduced-motion: reduce) {
   .sheetveil, .popover[open] > .popover__panel { animation: none; }
 }
@@ -2216,7 +2216,12 @@ html.has-sheet { overflow: hidden; }
    block for position:fixed and would pin the sheet to the toolbar instead
    of the screen. */
 @media (max-width: 50rem) {
-  .toolbar { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,.72); }
+  /* z-index:auto matters as much as the dropped filter. With z-index:20 the
+     toolbar is a stacking context, so the sheet's z-index:70 is scoped
+     inside it and the whole subtree paints at level 20 — putting the
+     backdrop (z-index:65, a child of body) on top of the sheet it is
+     meant to sit behind, which hides the sheet completely. */
+  .toolbar { z-index: auto; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,.72); }
   .toolbar__filters { display: flex; flex: 1 1 100%; gap: .45rem; overflow-x: auto; padding: 2px 2px 4px; margin: 0 -2px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
   .toolbar__filters::-webkit-scrollbar { display: none; }
   .toolbar__filters > *, .toolbar__filters .popover { flex: 0 0 auto; }
