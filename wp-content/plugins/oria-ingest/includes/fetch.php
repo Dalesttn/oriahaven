@@ -19,7 +19,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const UA        = 'OriaHavenBot/0.1 (+https://oriahaven.com.au; wellness events directory; contact: hello@oriahaven.com.au)';
-const MAX_FOLLOW = 6; // event links followed per listing page per run.
+// Event links followed per listing page per run. A Humanitix "this week"
+// browse page returns about a dozen, and six would have quietly halved it.
+const MAX_FOLLOW = 12;
 
 /** @var array<string, array<string>> per-host robots Disallow cache for this run */
 function robots_disallows( string $host_url ): array {
@@ -172,6 +174,60 @@ function event_links( string $html, string $page_url ): array {
 }
 
 /**
+ * Event URLs out of a Next.js data island.
+ *
+ * Humanitix browse pages — /au/events/au--wa--perth/healthandwellness--thisweek
+ * and the like — draw their cards client-side. The served HTML carries the
+ * navigation and nothing else, so event_links() above finds none of them and
+ * the page looks empty. Every event is present in __NEXT_DATA__ though, each
+ * naming its own host and slug.
+ *
+ * Only the URLs are taken from it. Each event page is then fetched and read
+ * through events_from_html() like any other source, so the candidate shape,
+ * the robots check and the image handling all stay in one place. The browse
+ * page is treated as a table of contents, never as the record itself.
+ *
+ * Note the events live on events.humanitix.com while the browse page is on
+ * humanitix.com, so these deliberately cross hosts — which is why they are
+ * gathered here rather than inside event_links()'s same-host filter. get()
+ * still checks the new host's robots.txt before fetching.
+ *
+ * @return array<int, string>
+ */
+function next_data_links( string $html, string $page_url ): array {
+	if ( ! preg_match( '#<script id="__NEXT_DATA__"[^>]*>(.*?)</script>#si', $html, $m ) ) {
+		return array();
+	}
+
+	$data = json_decode( trim( $m[1] ), true );
+	$rows = $data['props']['pageProps']['events'] ?? null;
+	if ( ! is_array( $rows ) ) {
+		return array();
+	}
+
+	$links = array();
+	foreach ( $rows as $row ) {
+		if ( ! is_array( $row ) ) {
+			continue;
+		}
+		$slug = trim( (string) ( $row['slug'] ?? '' ) );
+		if ( '' === $slug ) {
+			continue;
+		}
+		$host = trim( (string) ( $row['hostname'] ?? '' ) );
+		$base = '' !== $host
+			? rtrim( $host, '/' )
+			: 'https://' . (string) wp_parse_url( $page_url, PHP_URL_HOST );
+
+		$abs = esc_url_raw( $base . '/' . ltrim( $slug, '/' ) );
+		if ( '' !== $abs ) {
+			$links[ $abs ] = true;
+		}
+	}
+	return array_slice( array_keys( $links ), 0, MAX_FOLLOW );
+}
+
+/**
  * Minimal .ics parsing: VEVENT blocks to candidate shape.
  *
  * @return array<int, array<string, string>>
@@ -229,9 +285,26 @@ function collect( string $url ): array {
 
 	$events = events_from_html( $body, $url );
 
-	// A listing page with no events of its own: follow a few event links.
+	/*
+	 * A listing page with no events of its own: follow a few event links.
+	 *
+	 * The data island is asked first because it is exact — it lists the
+	 * events themselves. Scraping hrefs is the guess, and on a Humanitix
+	 * browse page it is a bad one: the matches are the same page under
+	 * seven locale prefixes plus a handful of other cities, none of which
+	 * carry an Event between them. Twelve fetches, nothing found, and
+	 * whether the island was consulted at all came down to which variant
+	 * of the page happened to be served.
+	 *
+	 * Pages without an island fall straight through to the href scan and
+	 * behave exactly as they did before.
+	 */
 	if ( ! $events ) {
-		foreach ( event_links( $body, $url ) as $link ) {
+		$links = next_data_links( $body, $url );
+		if ( ! $links ) {
+			$links = event_links( $body, $url );
+		}
+		foreach ( $links as $link ) {
 			$page = get( $link );
 			if ( null !== $page ) {
 				$events = array_merge( $events, events_from_html( $page, $link ) );
