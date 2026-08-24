@@ -982,6 +982,135 @@ function journal_areas( int $post_id ): array {
 }
 
 /**
+ * The name to put on a byline.
+ *
+ * WordPress sets display_name to the login when an account is created and
+ * never revisits it, so every journal article published under "admin" — in
+ * the visible byline and, worse, as the author name in the Article schema.
+ * A site giving health-adjacent advice is the last place that should sign
+ * its work with a database default.
+ *
+ * The real name was there the whole time: first_name and last_name are
+ * filled in. So the rule is deliberately narrow — if display_name is still
+ * identical to the login it was never configured, and a first/last name is
+ * preferred over it. A display_name that differs from the login was somebody's
+ * choice and is always left alone.
+ *
+ * Doing this in code rather than by editing the row means it also covers the
+ * next author somebody adds and forgets to set up.
+ */
+function byline_name( int $user_id ): string {
+	$user = get_userdata( $user_id );
+	if ( ! $user instanceof \WP_User ) {
+		return '';
+	}
+
+	$shown = (string) $user->display_name;
+	if ( '' !== $shown && 0 !== strcasecmp( $shown, (string) $user->user_login ) ) {
+		return $shown; // somebody chose this
+	}
+
+	$real = trim(
+		(string) get_user_meta( $user_id, 'first_name', true ) . ' ' .
+		(string) get_user_meta( $user_id, 'last_name', true )
+	);
+	return '' !== $real ? $real : $shown;
+}
+
+/** get_the_author_meta( 'display_name' ) — used by the avatar monogram. */
+function filter_author_display_name( $name, $user_id ) {
+	$better = byline_name( (int) $user_id );
+	return '' !== $better ? $better : $name;
+}
+add_filter( 'get_the_author_display_name', __NAMESPACE__ . '\filter_author_display_name', 10, 2 );
+
+/**
+ * the_author() / get_the_author().
+ *
+ * A separate hook because these read display_name straight off the global
+ * author object and never consult the meta filter above — which is why the
+ * author card still said "admin" when only that one was in place.
+ */
+function filter_the_author( $name ) {
+	global $authordata;
+	if ( ! $authordata instanceof \WP_User ) {
+		return $name;
+	}
+	$better = byline_name( (int) $authordata->ID );
+	return '' !== $better ? $better : $name;
+}
+add_filter( 'the_author', __NAMESPACE__ . '\filter_the_author' );
+
+/**
+ * The same name inside Yoast's Person node.
+ *
+ * Yoast reads display_name straight off the user object, which never passes
+ * through the filter above — so without this the page would say one thing
+ * and its own structured data another, which is the half that matters for
+ * E-E-A-T.
+ */
+function filter_schema_person( $data ) {
+	if ( ! is_array( $data ) || empty( $data['name'] ) ) {
+		return $data;
+	}
+
+	$post = get_post();
+	$user = $post instanceof \WP_Post ? (int) $post->post_author : 0;
+	if ( ! $user ) {
+		return $data;
+	}
+
+	$owner = get_userdata( $user );
+	$better = byline_name( $user );
+	if ( $owner instanceof \WP_User && '' !== $better
+		&& 0 === strcasecmp( (string) $data['name'], (string) $owner->user_login ) ) {
+		$data['name'] = $better;
+	}
+	return $data;
+}
+add_filter( 'wpseo_schema_person', __NAMESPACE__ . '\filter_schema_person' );
+add_filter( 'wpseo_schema_author', __NAMESPACE__ . '\filter_schema_person' );
+
+/**
+ * Every remaining mention of the login inside the schema graph.
+ *
+ * Fixing the Person node alone left the Article node still carrying
+ * "author": { "name": "admin" } as a shorthand beside its @id reference —
+ * so the graph disagreed with itself. Sweeping the finished graph catches
+ * that copy and any other Yoast adds later, rather than chasing one filter
+ * per node type.
+ */
+function filter_schema_graph( $graph ) {
+	if ( ! is_array( $graph ) ) {
+		return $graph;
+	}
+
+	$post = get_post();
+	$user = $post instanceof \WP_Post ? (int) $post->post_author : 0;
+	if ( ! $user ) {
+		return $graph;
+	}
+
+	$owner = get_userdata( $user );
+	$better = byline_name( $user );
+	if ( ! $owner instanceof \WP_User || '' === $better ) {
+		return $graph;
+	}
+	$login = (string) $owner->user_login;
+
+	array_walk_recursive(
+		$graph,
+		static function ( &$value, $key ) use ( $login, $better ) {
+			if ( 'name' === $key && is_string( $value ) && 0 === strcasecmp( $value, $login ) ) {
+				$value = $better;
+			}
+		}
+	);
+	return $graph;
+}
+add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\filter_schema_graph' );
+
+/**
  * An author's face for bylines: their profile photo if set, otherwise an
  * initials monogram. Never Gravatar — it 404s on local and leaks emails.
  */
