@@ -668,6 +668,91 @@
     });
   }
 
+  /* Phones: a facet popover is a bottom sheet, and a sheet needs three
+     things a dropdown does not — something dimmed behind it, a page that
+     stays still underneath, and an escape that is not a small Done button.
+     Without them the sheet covers the toolbar it came from (it is 78vh tall
+     and the toolbar sits a screen and a half down the page), which reads as
+     the filters having vanished.
+
+     Choosing an option then closes the sheet and drops the visitor at the
+     results, because seeing what the filter did is the reason they opened
+     it. That costs ticking two boxes in one visit; the active-filter chips
+     above the count make the second tap obvious, which on a phone is the
+     better trade. Desktop keeps the popover open — there it sits beside the
+     results rather than on top of them. */
+  function initFilterSheet() {
+    var sheets = $$("[data-popover]");
+    if (!sheets.length) return;
+
+    var phone = window.matchMedia("(max-width: 50rem)");
+    var veil = null;
+
+    function anyOpen() {
+      return sheets.some(function (d) { return d.open; });
+    }
+
+    function closeAll() {
+      sheets.forEach(function (d) { d.open = false; });
+    }
+
+    function sync() {
+      if (phone.matches && anyOpen()) {
+        if (!veil) {
+          veil = document.createElement("div");
+          veil.className = "sheetveil";
+          veil.addEventListener("click", closeAll);
+        }
+        if (!veil.parentNode) document.body.appendChild(veil);
+        document.documentElement.classList.add("has-sheet");
+      } else {
+        document.documentElement.classList.remove("has-sheet");
+        if (veil && veil.parentNode) veil.parentNode.removeChild(veil);
+      }
+    }
+
+    /* One sheet closing as another opens fires two toggles in a row, so the
+       veil is decided once both have landed rather than per event. */
+    var queued = false;
+    function later() {
+      if (queued) return;
+      queued = true;
+      window.setTimeout(function () { queued = false; sync(); }, 0);
+    }
+
+    sheets.forEach(function (d) { d.addEventListener("toggle", later); });
+    if (phone.addEventListener) phone.addEventListener("change", sync);
+    else if (phone.addListener) phone.addListener(sync);
+
+    document.addEventListener("keydown", function (e) {
+      if ("Escape" === e.key && anyOpen()) closeAll();
+    });
+
+    /* Delegated, so it runs after the per-input handler that re-renders the
+       listings on the same change event. */
+    document.addEventListener("change", function (e) {
+      if (!phone.matches || !e.target.closest) return;
+      var input = e.target.closest("[data-filter]");
+      if (!input) return;
+      var d = input.closest("[data-popover]");
+      if (!d || !d.open) return;
+      d.open = false;
+      goToResults();
+    });
+  }
+
+  /* Put the count and the first listings on screen, clear of the sticky
+     spine. Used after a filter sheet closes and on arrival with a filtered
+     URL. */
+  function goToResults(instant) {
+    var target = $(".dir__count") || $("#dirResults") || $("#browse");
+    if (!target) return;
+    var spine = $(".spine");
+    var offset = (spine ? spine.getBoundingClientRect().height : 0) + 12;
+    var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({ top: Math.max(0, top), behavior: instant ? "auto" : "smooth" });
+  }
+
   function scrollToFilteredResults() {
     var browse = $("#browse");
     if (!browse || !$("#dirResults") || window.location.hash) return;
@@ -1902,6 +1987,7 @@
     initDirectory();
     scrollToFilteredResults();
     initPopoverDone();
+    initFilterSheet();
     initStarRate();
     initCountUp();
     initIntentGridMore();
