@@ -237,10 +237,12 @@ $oria_done    = null !== $oria_said && 'done' === $oria_said['kind'];
 			</button>
 			<p class="hint reviewform__note">
 				<?php
-				printf(
-					/* translators: %s: link to the reviews policy */
-					esc_html__( 'Reviews are never affected by whether a practice pays for a listing. %s', 'oria' ),
-					'<a href="' . esc_url( home_url( '/reviews-policy/' ) ) . '">' . esc_html__( 'How reviews work here', 'oria' ) . '</a>'
+				echo wp_kses_post(
+					\Oria\Core\Reviews\policy_line(
+						/* translators: %s: link to the reviews policy, dropped until that page exists */
+						esc_html__( 'Reviews are never affected by whether a practice pays for a listing. %s', 'oria' ),
+						esc_html__( 'How reviews work here', 'oria' )
+					)
 				);
 				?>
 			</p>

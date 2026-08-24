@@ -133,6 +133,8 @@ function details( int $comment_id ): array {
  * Google score — this is the only place the rule is written.
  */
 const HEADLINE_MIN = 1;
+const POLICY_SLUG  = 'reviews-policy';
+const POLICY_CACHE = 'oria_reviews_policy_url';
 
 function bootstrap(): void {
 	// Listings created before comment support existed have comment_status
@@ -145,6 +147,10 @@ function bootstrap(): void {
 	add_action( 'comment_post', __NAMESPACE__ . '\recompute_from_comment', 20 );
 	add_action( 'transition_comment_status', __NAMESPACE__ . '\on_status_change', 10, 3 );
 	add_action( 'deleted_comment', __NAMESPACE__ . '\recompute_from_comment' );
+
+	// The policy page can appear or vanish without a deploy.
+	add_action( 'save_post_page', __NAMESPACE__ . '\forget_policy' );
+	add_action( 'deleted_post', __NAMESPACE__ . '\forget_policy' );
 
 	/*
 	 * Reviews are not threaded conversations, so core's reply link is
@@ -364,6 +370,52 @@ function approved( int $post_id ): array {
 }
 
 /** The star value on a review comment, in halves. */
+/**
+ * The reviews policy page, if one has been published.
+ *
+ * Every listing page carries two links to it, so the page not existing is
+ * not one broken link but one per listing — a site audit found sixty of
+ * them pointing at a 404. Returning an empty string lets the templates
+ * print the sentence without the link, which is the honest fallback: the
+ * promise still reads, it just does not lead anywhere until there is
+ * something to lead to.
+ *
+ * Cached for a day, and cleared whenever a page is saved, so publishing the
+ * policy brings every link back without a deploy.
+ */
+function policy_url(): string {
+	$cached = get_transient( POLICY_CACHE );
+	if ( false !== $cached ) {
+		return (string) $cached;
+	}
+
+	$page = get_page_by_path( POLICY_SLUG );
+	$url  = ( $page instanceof \WP_Post && 'publish' === $page->post_status ) ? (string) get_permalink( $page ) : '';
+
+	set_transient( POLICY_CACHE, $url, DAY_IN_SECONDS );
+	return $url;
+}
+
+/**
+ * A sentence that gains a link once the policy page exists.
+ *
+ * @param string $text   Sentence with one %s where the link belongs.
+ * @param string $anchor Link text.
+ */
+function policy_line( string $text, string $anchor ): string {
+	$url = policy_url();
+	if ( '' === $url ) {
+		// Drop the placeholder, and the space that preceded it.
+		return trim( str_replace( '%s', '', $text ) );
+	}
+	return sprintf( $text, '<a href="' . esc_url( $url ) . '">' . esc_html( $anchor ) . '</a>' );
+}
+
+/** Publishing, renaming or trashing any page may change the answer. */
+function forget_policy( $post_id = 0 ): void {
+	delete_transient( POLICY_CACHE );
+}
+
 function rating_of( \WP_Comment $comment ): float {
 	return normalise_rating( get_comment_meta( (int) $comment->comment_ID, META_RATING, true ) );
 }

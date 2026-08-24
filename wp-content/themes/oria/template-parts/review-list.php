@@ -168,10 +168,12 @@ $oria_star = '<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor" 
 							<?php wp_nonce_field( 'oria_report_' . (int) $oria_review->comment_ID, 'oria_report_nonce' ); ?>
 							<p class="hint">
 								<?php
-								printf(
-									/* translators: %s: link to the reviews policy */
-									esc_html__( 'Reporting asks us to look again. It does not hide the review. %s', 'oria' ),
-									'<a href="' . esc_url( home_url( '/reviews-policy/' ) ) . '">' . esc_html__( 'What we publish', 'oria' ) . '</a>'
+								echo wp_kses_post(
+									\Oria\Core\Reviews\policy_line(
+										/* translators: %s: link to the reviews policy, dropped until that page exists */
+										esc_html__( 'Reporting asks us to look again. It does not hide the review. %s', 'oria' ),
+										esc_html__( 'What we publish', 'oria' )
+									)
 								);
 								?>
 							</p>
