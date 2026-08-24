@@ -1125,59 +1125,110 @@
       });
     }
 
-    // The pager lives directly under the results grid, created once so the
-    // three directory templates need no markup of their own.
-    var pagerBox = document.createElement("nav");
-    pagerBox.className = "pager";
-    pagerBox.id = "dirPager";
-    pagerBox.setAttribute("aria-label", "Listing pages");
-    root.parentNode.insertBefore(pagerBox, root.nextSibling);
+    /* The list grows in place instead of turning over a page at a time.
+       state.page now counts how many pages have been LOADED rather than
+       which one you are looking at, so ?pg= still restores your position
+       when you come back from a listing — with the whole run re-rendered,
+       not just the tenth page of it.
 
-    function goPage(n) {
-      state.page = n;
+       The button is the mechanism rather than a fallback: an observer
+       clicks it when it scrolls into view. That keeps the list reachable by
+       keyboard, announceable to a screen reader, and working on anything
+       without IntersectionObserver. Server-rendered pagination and rel=next
+       are untouched, so crawlers still get real paginated URLs.
+
+       Lives directly under the results grid, created once, so the three
+       directory templates need no markup of their own. */
+    var moreBox = document.createElement("div");
+    moreBox.className = "loadmore";
+    moreBox.id = "dirMore";
+    root.parentNode.insertBefore(moreBox, root.nextSibling);
+
+    var moreBtn = document.createElement("button");
+    moreBtn.type = "button";
+    moreBtn.className = "loadmore__btn";
+
+    var moreNote = document.createElement("p");
+    moreNote.className = "loadmore__note";
+    moreNote.setAttribute("role", "status");
+    moreNote.setAttribute("aria-live", "polite");
+
+    moreBox.appendChild(moreBtn);
+    moreBox.appendChild(moreNote);
+
+    moreBtn.addEventListener("click", function () {
+      state.page += 1;
       render();
-      var y = root.getBoundingClientRect().top + window.pageYOffset - 130;
-      window.scrollTo({ top: y, behavior: "smooth" });
+      /* Focus the button again after it moves down the page. Without this a
+         keyboard user is dropped at the top of the document on every load. */
+      if (!moreBtn.disabled) moreBtn.focus();
+    });
+
+    /* Auto-load when the button comes into view. rootMargin starts the
+       fetch a screen early so the join is invisible at a normal scroll. */
+    var watcher = null;
+    if (window.IntersectionObserver) {
+      /* One auto-load at a time. Cards whose images have not been measured
+         yet are short, so without the lock the button can still be inside
+         the margin when the next batch lands and fire again immediately —
+         a whole directory arriving in one frame instead of on scroll. The
+         lock clears after a beat, by which point layout has settled. */
+      var loading = false;
+      watcher = new IntersectionObserver(function (entries) {
+        if (loading || !entries[0].isIntersecting || moreBtn.hidden || moreBtn.disabled) return;
+        loading = true;
+        moreBtn.click();
+        window.setTimeout(function () { loading = false; }, 250);
+      }, { rootMargin: "600px 0px" });
+      watcher.observe(moreBtn);
     }
 
-    function pager(pages) {
-      if (pages < 2) { pagerBox.innerHTML = ""; return; }
-      var out = ['<button type="button" class="pager__btn" data-page="' + (state.page - 1) + '"' +
-        (state.page === 1 ? " disabled" : "") + ' aria-label="Previous page">&lsaquo;</button>'];
+    function more(found, pages) {
+      var loaded = Math.min(state.page * PER_PAGE, found.length);
 
-      // All numbers up to 7 pages; beyond that: first, current±1, last.
-      var nums = [];
-      for (var n = 1; n <= pages; n++) {
-        if (pages <= 7 || n === 1 || n === pages || Math.abs(n - state.page) <= 1) nums.push(n);
+      if (found.length <= PER_PAGE) {
+        moreBtn.hidden = true;
+        moreNote.textContent = "";
+        return;
       }
-      var prev = 0;
-      nums.forEach(function (n) {
-        if (n - prev > 1) out.push('<span class="pager__gap" aria-hidden="true">&hellip;</span>');
-        out.push('<button type="button" class="pager__num' + (n === state.page ? " is-current" : "") +
-          '" data-page="' + n + '"' + (n === state.page ? ' aria-current="page"' : "") + ">" + n + "</button>");
-        prev = n;
-      });
 
-      out.push('<button type="button" class="pager__btn" data-page="' + (state.page + 1) + '"' +
-        (state.page === pages ? " disabled" : "") + ' aria-label="Next page">&rsaquo;</button>');
-      pagerBox.innerHTML = out.join("");
+      if (state.page >= pages) {
+        moreBtn.hidden = true;
+        moreNote.textContent = "That's all " + found.length + " listings.";
+        return;
+      }
 
-      $$("button[data-page]", pagerBox).forEach(function (b) {
-        b.addEventListener("click", function () { goPage(Number(b.dataset.page)); });
-      });
+      moreBtn.hidden = false;
+      moreBtn.textContent = "Show more listings";
+      moreNote.textContent = "Showing " + loaded + " of " + found.length + ".";
     }
+
+    /* What the grid currently holds, so a load-more can append the new run
+       rather than rebuild three hundred cards to add ten. Any change to the
+       filters or the sort changes the signature and forces a rebuild. */
+    var drawn = { key: null, count: 0 };
 
     function render() {
       var found = DATA.listings.filter(matches).sort(sortFn);
       var pages = Math.max(1, Math.ceil(found.length / PER_PAGE));
       if (state.page > pages) state.page = pages;
-      var start = (state.page - 1) * PER_PAGE;
-      var shown = found.slice(start, start + PER_PAGE);
+      var shown = found.slice(0, state.page * PER_PAGE);
 
-      root.innerHTML = shown.length
-        ? shown.map(card).join("")
-        : '<div class="dir__empty"><h3 class="h3">Nothing matches those filters yet</h3>' +
+      var key = JSON.stringify([state.cats, state.regions, state.spec, state.svc, state.aud,
+                                state.suburbs, state.price, state.format, state.rating,
+                                state.q, state.sort]);
+
+      if (!shown.length) {
+        root.innerHTML = '<div class="dir__empty"><h3 class="h3">Nothing matches those filters yet</h3>' +
           '<p class="muted" style="margin-top:.5rem">Try widening the area, or clear a filter to see more.</p></div>';
+        drawn = { key: null, count: 0 };
+      } else if (key === drawn.key && shown.length > drawn.count) {
+        root.insertAdjacentHTML("beforeend", shown.slice(drawn.count).map(card).join(""));
+        drawn.count = shown.length;
+      } else {
+        root.innerHTML = shown.map(card).join("");
+        drawn = { key: key, count: shown.length };
+      }
 
       var count = $("#dirCount");
       if (count) {
@@ -1187,9 +1238,11 @@
            heading — which read as though the suburb held 130 practices. */
         var place = locked.suburb ||
           (state.regions.length === 1 ? regionNames[state.regions[0]] : "");
-        count.innerHTML = (found.length > PER_PAGE
-          ? "<b>" + (start + 1) + "&ndash;" + (start + shown.length) + "</b> of " + found.length + " listings"
-          : "<b>" + found.length + "</b> " + (found.length === 1 ? "listing" : "listings")) +
+        /* The total, plainly. How far down the run you are is the load-more
+           note's job now — a range like "1–10 of 314" described a page, and
+           there are no longer any pages to describe. */
+        count.innerHTML = "<b>" + found.length + "</b> " +
+          (found.length === 1 ? "listing" : "listings") +
           (place ? " in " + esc(place) : "");
       }
 
@@ -1210,7 +1263,7 @@
       }
 
       chips();
-      pager(pages);
+      more(found, pages);
 
       // Mark the intent row the current filter corresponds to, so the
       // table keeps saying where you are as filters change.
@@ -1251,6 +1304,15 @@
             lp.delete(k); moved = true;
           }
         });
+        /* How far down the run you have loaded, so returning from a listing
+           puts you back where you were. A locked page keeps its clean URL
+           otherwise, but without this the whole point of growing the list
+           is lost the moment anyone clicks through to a practice. */
+        if (state.page > 1) {
+          if (lp.get("pg") !== String(state.page)) { lp.set("pg", String(state.page)); moved = true; }
+        } else if (lp.has("pg")) {
+          lp.delete("pg"); moved = true;
+        }
         if (moved) {
           var lqs = lp.toString();
           history.replaceState(null, "", lqs ? "?" + lqs : window.location.pathname);

@@ -975,6 +975,32 @@ a.livesession:hover { background: var(--sand-2); }
 .ctaslab__title { max-width: 16ch; }
 
 /* --- Directory pagination ------------------------------------------------- */
+/* The load-more control (app.js). The button is the real mechanism — an
+   observer clicks it on scroll — so it is styled to be seen and used, not
+   hidden away as a fallback. .pager below is kept for any template still
+   rendering a server-side pager. */
+.loadmore { display: flex; flex-direction: column; align-items: center; gap: .6rem; margin-top: 2.25rem; }
+.loadmore__btn[hidden] { display: none; }
+.loadmore__btn {
+  min-height: 48px;
+  padding: .8rem 1.6rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--white);
+  color: var(--deep);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.loadmore__btn:hover { background: var(--deep); border-color: var(--deep); color: var(--white); }
+.loadmore__btn:focus-visible { outline: 2px solid var(--deep); outline-offset: 3px; }
+.loadmore__note { margin: 0; color: var(--text-faint); font-size: var(--fs-xs); }
+.loadmore__note:empty { display: none; }
+@media (max-width: 50rem) {
+  .loadmore__btn { width: 100%; }
+}
+
 .pager {
   display: flex;
   align-items: center;
