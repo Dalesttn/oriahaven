@@ -549,7 +549,14 @@ function template( string $template ): string {
 			return $found;
 		}
 	}
-	if ( is_category() ) {
+	/*
+	 * The practice x suburb combos — /practice/recovery/currambine/ — take
+	 * the same layout. They kept the v1 taxonomy template only because they
+	 * live under the old URL prefix, which was never a reason: a combo is a
+	 * category page with one more filter locked, exactly like a facet page.
+	 * The URL is untouched; only what renders at it changes.
+	 */
+	if ( is_category() || ( '' !== mode() && \Oria\Core\Seo\combo_area() ) ) {
 		$found = locate_template( array( 'oria-practice-v2.php' ) );
 		return $found ? $found : $template;
 	}

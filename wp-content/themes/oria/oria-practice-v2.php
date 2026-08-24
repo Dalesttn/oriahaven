@@ -32,6 +32,23 @@ $oria_intro = $oria_term ? get_field( 'landing_intro', 'practice_' . $oria_term-
 $oria_all = $oria_term && function_exists( '\Oria\Core\Intents\listings_in' ) ? \Oria\Core\Intents\listings_in( $oria_term ) : array();
 $oria_ids = ( $oria_facet && $oria_term ) ? \Oria\Core\PracticesIndex\facet_ids( $oria_term, $oria_facet ) : $oria_all;
 
+/*
+ * A suburb combo — /practice/recovery/currambine/ — is this same page with
+ * the area locked rather than a style. It gets the facet treatment: the
+ * subset resolved server-side so the page is whole without scripting, and
+ * the toolbar told which suburb is fixed so the client agrees with it.
+ */
+$oria_area = function_exists( '\Oria\Core\Seo\combo_area' ) ? \Oria\Core\Seo\combo_area() : null;
+$oria_area = $oria_area instanceof WP_Term ? $oria_area : null;
+if ( $oria_area ) {
+	$oria_ids = array_values(
+		array_filter(
+			$oria_ids,
+			static fn( $oria_lid ): bool => has_term( $oria_area->term_id, 'area', (int) $oria_lid )
+		)
+	);
+}
+
 // Facts for the strip, over whichever set the page is about.
 $oria_suburbs = array();
 $oria_claimed = 0;
@@ -83,7 +100,12 @@ if ( $oria_facet ) {
 }
 
 $oria_h1 = $oria_facet ? (string) $oria_facet['label'] : sprintf( __( '%s in Perth', 'oria' ), $oria_pname );
-if ( ! $oria_facet && $oria_term ) {
+if ( $oria_area ) {
+	// "Sleep & Recovery in Currambine" — the suburb is the whole point of
+	// the page, so it replaces Perth rather than sitting beside it.
+	$oria_h1 = sprintf( __( '%1$s in %2$s', 'oria' ), $oria_pname, \Oria\Theme\tname( $oria_area ) );
+}
+if ( ! $oria_facet && ! $oria_area && $oria_term ) {
 	// A filtered view reached by URL names what it shows: "Yoga in Fremantle".
 	$oria_qh = \Oria\Core\PracticesIndex\query_heading( $oria_term );
 	if ( '' !== $oria_qh ) {
@@ -232,13 +254,17 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 		class="dir__results dir__results--wide"
 		id="dirResults"
 		data-cat="<?php echo esc_attr( $oria_term->slug ); ?>"
+		<?php if ( $oria_area ) : ?>
+			<?php // app.js already honours data-suburb as a locked filter. ?>
+			data-suburb="<?php echo esc_attr( \Oria\Theme\tname( $oria_area ) ); ?>"
+		<?php endif; ?>
 		<?php if ( $oria_facet ) : ?>
 			data-intent-key="<?php echo esc_attr( (string) $oria_facet['key'] ); ?>"
 			data-intent-value="<?php echo esc_attr( (string) $oria_facet['value'] ); ?>"
 		<?php endif; ?>
 	>
 		<?php
-		if ( $oria_facet ) {
+		if ( $oria_facet || $oria_area ) {
 			/*
 			 * The matching set, server-rendered, members first then
 			 * alphabetical — the page with scripting off. The script
