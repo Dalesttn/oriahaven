@@ -1153,37 +1153,72 @@
     moreNote.setAttribute("role", "status");
     moreNote.setAttribute("aria-live", "polite");
 
+    /* Three dots while the next run is on its way. The listings are already
+       in memory, so appending them is instantaneous — which reads as the
+       page twitching rather than as more listings arriving. The pause is
+       there to be seen: it gives the dots long enough to register, and it
+       paces a fast scroll into distinct loads instead of one long blur. */
+    var moreDots = document.createElement("div");
+    moreDots.className = "loadmore__dots";
+    moreDots.hidden = true;
+    moreDots.setAttribute("aria-hidden", "true");
+    moreDots.innerHTML = "<span></span><span></span><span></span>";
+
     moreBox.appendChild(moreBtn);
+    moreBox.appendChild(moreDots);
     moreBox.appendChild(moreNote);
 
-    moreBtn.addEventListener("click", function () {
-      state.page += 1;
-      render();
-      /* Focus the button again after it moves down the page. Without this a
-         keyboard user is dropped at the top of the document on every load. */
-      if (!moreBtn.disabled) moreBtn.focus();
-    });
+    var PAUSE = 450;
+    var pending = false;
+    var timer = null;
 
-    /* Auto-load when the button comes into view. rootMargin starts the
-       fetch a screen early so the join is invisible at a normal scroll. */
+    /* @param {boolean} typed  Was this a real click, rather than the scroll? */
+    function loadNext(typed) {
+      if (pending || moreBtn.hidden) return;
+      pending = true;
+      moreBtn.hidden = true;
+      moreDots.hidden = false;
+      moreNote.textContent = "Loading more listings…";
+
+      timer = window.setTimeout(function () {
+        pending = false;
+        state.page += 1;
+        render(); // more() puts the button back and clears the dots
+        /* Focus the button again after it moves down the page, but only for
+           a real click — doing it on a scroll-triggered load would snatch
+           focus away from someone who never asked for it. */
+        if (typed && !moreBtn.hidden) moreBtn.focus();
+      }, PAUSE);
+    }
+
+    moreBtn.addEventListener("click", function () { loadNext(true); });
+
+    /* Auto-load when the button comes into view. rootMargin starts it a
+       screen early so the join is invisible at a normal scroll speed. The
+       pending flag is the whole guard: cards whose images have not been
+       measured yet are short, so without it the button can still be inside
+       the margin when the next run lands and fire again immediately — the
+       whole directory arriving in one frame instead of on scroll. */
     var watcher = null;
     if (window.IntersectionObserver) {
-      /* One auto-load at a time. Cards whose images have not been measured
-         yet are short, so without the lock the button can still be inside
-         the margin when the next batch lands and fire again immediately —
-         a whole directory arriving in one frame instead of on scroll. The
-         lock clears after a beat, by which point layout has settled. */
-      var loading = false;
       watcher = new IntersectionObserver(function (entries) {
-        if (loading || !entries[0].isIntersecting || moreBtn.hidden || moreBtn.disabled) return;
-        loading = true;
-        moreBtn.click();
-        window.setTimeout(function () { loading = false; }, 250);
+        if (entries[0].isIntersecting) loadNext(false);
       }, { rootMargin: "600px 0px" });
       watcher.observe(moreBtn);
     }
 
     function more(found, pages) {
+      /* A filter changed while a load was in flight: the list has already
+         been rebuilt back to page one, so the waiting timer would add a
+         second page to a result set that never asked for it. Cancel it.
+         When this runs from that timer's own render, pending is already
+         false and there is nothing to cancel. */
+      if (pending) {
+        window.clearTimeout(timer);
+        pending = false;
+      }
+      moreDots.hidden = true;
+
       var loaded = Math.min(state.page * PER_PAGE, found.length);
 
       if (found.length <= PER_PAGE) {

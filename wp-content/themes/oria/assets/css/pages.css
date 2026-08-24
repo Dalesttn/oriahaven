@@ -997,6 +997,28 @@ a.livesession:hover { background: var(--sand-2); }
 .loadmore__btn:focus-visible { outline: 2px solid var(--deep); outline-offset: 3px; }
 .loadmore__note { margin: 0; color: var(--text-faint); font-size: var(--fs-xs); }
 .loadmore__note:empty { display: none; }
+/* Three dots while the next run is on its way (app.js). They occupy the
+   button's place, so nothing jumps as one swaps for the other. */
+.loadmore__dots { display: flex; align-items: center; justify-content: center; gap: .4rem; min-height: 48px; }
+.loadmore__dots[hidden] { display: none; }
+.loadmore__dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--deep);
+  opacity: .25;
+  animation: loaddot 1.05s ease-in-out infinite;
+}
+.loadmore__dots span:nth-child(2) { animation-delay: .16s; }
+.loadmore__dots span:nth-child(3) { animation-delay: .32s; }
+@keyframes loaddot {
+  0%, 70%, 100% { opacity: .25; transform: translateY(0); }
+  35%           { opacity: 1;   transform: translateY(-5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Still a visible "working" state, just not a moving one. */
+  .loadmore__dots span { animation: none; opacity: .55; }
+}
 @media (max-width: 50rem) {
   .loadmore__btn { width: 100%; }
 }
