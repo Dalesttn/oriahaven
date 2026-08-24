@@ -311,5 +311,59 @@ function collect( string $url ): array {
 			}
 		}
 	}
-	return $events;
+	return next_occurrences( $events );
+}
+
+/**
+ * One candidate per event, rather than one per occurrence.
+ *
+ * A recurring event publishes an Event node for every future occurrence.
+ * A weekly class runs to thirty-odd on a single page, and eight real
+ * Humanitix events came to seventy-seven nodes between them — enough to
+ * spend the whole of MAX_CANDIDATES inside one source, so everything after
+ * it was skipped and nothing appeared to import at all. Unchecked it would
+ * also have put thirty-four copies of the same class in the directory.
+ *
+ * The soonest occurrence still to come is the one worth having; the rest
+ * are the same event again. Keyed on URL and title together: occurrences
+ * share both, while a page listing genuinely different events — a festival
+ * programme, say — gives its entries different titles even where they all
+ * fall back to the page's own URL.
+ *
+ * An event whose occurrences have all passed keeps its earliest node, so
+ * the pipeline's own past-date check still rejects it for the stated
+ * reason instead of it disappearing silently here.
+ *
+ * @param array<int, array<string, string>> $events
+ * @return array<int, array<string, string>>
+ */
+function next_occurrences( array $events ): array {
+	$now  = time();
+	$best = array();
+
+	foreach ( $events as $e ) {
+		$key = ( $e['url'] ?? '' ) . '|' . ( $e['title'] ?? '' );
+		$ts  = strtotime( (string) ( $e['start'] ?? '' ) );
+
+		// Undated nodes cannot be compared, so each is kept as its own.
+		if ( false === $ts ) {
+			$best[ $key . '|' . count( $best ) ] = $e;
+			continue;
+		}
+		if ( ! isset( $best[ $key ] ) ) {
+			$best[ $key ] = $e;
+			continue;
+		}
+
+		$cur       = (int) strtotime( (string) $best[ $key ]['start'] );
+		$is_ahead  = $ts >= $now;
+		$was_ahead = $cur >= $now;
+
+		// Anything still to come beats anything past; between two of the
+		// same kind the earlier one wins.
+		if ( ( $is_ahead && ! $was_ahead ) || ( $is_ahead === $was_ahead && $ts < $cur ) ) {
+			$best[ $key ] = $e;
+		}
+	}
+	return array_values( $best );
 }

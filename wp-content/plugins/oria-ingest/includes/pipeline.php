@@ -23,6 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const OPT_WATCHLIST = 'oria_ingest_watchlist';
 const OPT_REPORT    = 'oria_ingest_report';
+const OPT_CURSOR    = 'oria_ingest_cursor'; // where the candidate cap stopped last run.
 const MAX_CANDIDATES = 30;   // per run, keeps the daily AI spend tiny.
 const MAX_DAYS_OUT   = 120;  // ignore events further out than this.
 
@@ -47,8 +48,31 @@ function run(): array {
 
 	$report['expired'] = expire_pass();
 
-	$seen = 0;
-	foreach ( watchlist() as $url ) {
+	/*
+	 * Start where the last run stopped.
+	 *
+	 * The candidate cap says "remainder left for the next run", but the next
+	 * run began at the top of the same list and stopped in the same place,
+	 * so anything past the cap was never reached at all. A watchlist worth
+	 * more than MAX_CANDIDATES therefore had a tail that silently never
+	 * imported — which is exactly what a newly added source looks like when
+	 * it is appended to the bottom.
+	 *
+	 * Rotating the starting point costs nothing and means every source comes
+	 * round within a few days, in watchlist order, without raising the cap
+	 * and the daily AI spend with it.
+	 */
+	$list  = watchlist();
+	$count = count( $list );
+	$cursor = $count > 0 ? (int) get_option( OPT_CURSOR, 0 ) % $count : 0;
+	if ( $cursor > 0 ) {
+		$list = array_merge( array_slice( $list, $cursor ), array_slice( $list, 0, $cursor ) );
+		$report['lines'][] = sprintf( 'Resuming from source %d of %d.', $cursor + 1, $count );
+	}
+
+	$seen  = 0;
+	$index = 0;
+	foreach ( $list as $url ) {
 		$report['sources']++;
 		$candidates       = Fetch\collect( $url );
 		$report['found'] += count( $candidates );
@@ -56,7 +80,9 @@ function run(): array {
 
 		foreach ( $candidates as $c ) {
 			if ( ++$seen > MAX_CANDIDATES ) {
-				$report['lines'][] = 'Candidate cap reached — remainder left for the next run.';
+				$report['lines'][] = 'Candidate cap reached — the next run picks up from this source.';
+				// Resume on the source that was cut short, not the one after.
+				update_option( OPT_CURSOR, ( $cursor + $index ) % max( 1, $count ), false );
 				break 2;
 			}
 			$result = process( $c );
@@ -68,6 +94,12 @@ function run(): array {
 				$report['relevant']++;
 			}
 		}
+		$index++;
+	}
+
+	// Got through the whole list inside the cap, so start from the top again.
+	if ( $index >= $count ) {
+		update_option( OPT_CURSOR, 0, false );
 	}
 
 	update_option( OPT_REPORT, $report, false );
