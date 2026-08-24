@@ -186,8 +186,22 @@ $oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
 					<?php
 					echo esc_html(
 						$oria_avg > 0
-							? sprintf( __( 'We introduce you to up to three practices that fit — rated %s on average, every one checked by hand.', 'oria' ), number_format_i18n( $oria_avg, 1 ) )
-							: __( 'We introduce you to up to three practices that fit — every one checked by hand.', 'oria' )
+							/*
+							 * The rating and the hand-checking used to sit
+							 * either side of a comma, which asserted a third
+							 * thing nobody can stand behind: that we checked
+							 * the ratings. We did not. 273 of the 314
+							 * published ratings carry rating_src "google" —
+							 * they are Google's, reproduced. What IS checked
+							 * by hand is the listing itself: a person writes
+							 * the description and verifies the details.
+							 *
+							 * So the sentence now names who did the rating,
+							 * and keeps the hand-checking attached to the
+							 * thing it is actually true of.
+							 */
+							? sprintf( __( 'We introduce you to up to three practices that fit — each one written and checked by a person, and rated %s on average by their own Google reviewers.', 'oria' ), number_format_i18n( $oria_avg, 1 ) )
+							: __( 'We introduce you to up to three practices that fit — each one written and checked by a person.', 'oria' )
 					);
 					?>
 				</p>
