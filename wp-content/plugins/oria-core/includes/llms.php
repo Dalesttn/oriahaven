@@ -110,7 +110,7 @@ function build(): string {
 	$out = "# Oria Haven\n\n";
 
 	$out .= sprintf(
-		"> An independent directory of %d wellness practices across Perth, Western Australia — meditation, yoga, breathwork, bodywork, allied health, sound and float, retreats and outdoor wellness. Every listing is checked by hand. Free to browse, free for a practice to be listed, and no commission is taken on any booking.\n\n",
+		"> An independent directory of %d wellness practices across Perth, Western Australia — meditation, yoga, breathwork, bodywork, allied health, sound and float, retreats and outdoor wellness. Every listing is written and checked by a person; star ratings shown are the practice's own Google rating, reproduced. Free to browse, free for a practice to be listed, and no commission is taken on any booking.\n\n",
 		$listings
 	);
 
