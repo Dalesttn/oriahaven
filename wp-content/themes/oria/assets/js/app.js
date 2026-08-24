@@ -663,7 +663,7 @@
     document.addEventListener("click", function (e) {
       var btn = e.target.closest("[data-popover-close]");
       if (!btn) return;
-      var d = btn.closest("details");
+      var d = ownerOf(btn);
       if (d) { d.open = false; d.querySelector("summary") && d.querySelector("summary").focus(); }
     });
   }
@@ -688,6 +688,16 @@
     var phone = window.matchMedia("(max-width: 50rem)");
     var veil = null;
 
+    /* Each details keeps a handle on its own panel, because once the panel
+       has been moved to the body it can no longer be found by looking
+       inside the details. */
+    sheets.forEach(function (d) {
+      var panel = d.querySelector(".popover__panel");
+      if (!panel) return;
+      d.oriaPanel = panel;
+      panel.oriaOwner = d;
+    });
+
     function anyOpen() {
       return sheets.some(function (d) { return d.open; });
     }
@@ -696,8 +706,44 @@
       sheets.forEach(function (d) { d.open = false; });
     }
 
+    /* WebKit will not reliably paint a position:fixed element that sits
+       inside a scroll container, and .toolbar__filters is one (overflow-x
+       for the scrolling pill row). On iOS the sheet was being clipped away
+       to nothing while Chrome showed it fine.
+
+       Rather than hunt each offending ancestor property in turn — the
+       toolbar's stacking context already cost one round of this — the panel
+       is lifted out to the body for as long as it is open. Nothing above it
+       can then clip it, contain it, or out-stack it. It goes back into the
+       details on close, so the closed state stays exactly what the markup
+       says it is. */
+    function portal(d, out) {
+      var panel = d.oriaPanel;
+      if (!panel) return;
+      if (out) {
+        if (panel.parentNode !== document.body) {
+          panel.classList.add("is-sheet");
+          document.body.appendChild(panel);
+        }
+      } else if (panel.parentNode === document.body) {
+        panel.classList.remove("is-sheet");
+        d.appendChild(panel);
+      }
+    }
+
     function sync() {
-      if (phone.matches && anyOpen()) {
+      var on = phone.matches && anyOpen();
+
+      /* dress() as well as portal(): crossing the breakpoint with a filter
+         already open — rotating a phone to landscape does it — has to
+         produce a complete sheet, and dress() otherwise only runs on the
+         toggle that is now in the past. */
+      sheets.forEach(function (d) {
+        if (phone.matches && d.open) dress(d);
+        portal(d, phone.matches && d.open);
+      });
+
+      if (on) {
         if (!veil) {
           veil = document.createElement("div");
           veil.className = "sheetveil";
@@ -727,7 +773,7 @@
        rather than in the markup so the desktop dropdown, which is anchored
        under its own labelled button, keeps the shape it already had. */
     function dress(d) {
-      var panel = d.querySelector(".popover__panel");
+      var panel = d.oriaPanel;
       if (!panel || panel.querySelector(".sheet__head")) return;
       var summary = d.querySelector("summary");
       var name = "";
@@ -755,7 +801,10 @@
     }
 
     sheets.forEach(function (d) {
-      d.addEventListener("toggle", function () { if (d.open && phone.matches) dress(d); later(); });
+      d.addEventListener("toggle", function () {
+        if (d.open && phone.matches) { dress(d); portal(d, true); }
+        later();
+      });
     });
     if (phone.addEventListener) phone.addEventListener("change", sync);
     else if (phone.addListener) phone.addListener(sync);
@@ -770,11 +819,21 @@
       if (!phone.matches || !e.target.closest) return;
       var input = e.target.closest("[data-filter]");
       if (!input) return;
-      var d = input.closest("[data-popover]");
+      var d = ownerOf(input);
       if (!d || !d.open) return;
       d.open = false;
       goToResults();
     });
+  }
+
+  /* Which details a node belongs to, whether it is still inside that details
+     or has been lifted out to the body as an open sheet. */
+  function ownerOf(node) {
+    if (!node || !node.closest) return null;
+    var d = node.closest("[data-popover]");
+    if (d) return d;
+    var panel = node.closest(".popover__panel");
+    return panel && panel.oriaOwner ? panel.oriaOwner : null;
   }
 
   /* Put the count and the first listings on screen, clear of the sticky
@@ -1287,7 +1346,14 @@
       });
     });
     document.addEventListener("click", function (e) {
-      $$("[data-popover][open]").forEach(function (d) { if (!d.contains(e.target)) d.open = false; });
+      // An open sheet is moved to the body, so "inside" means inside the
+      // details or inside its panel, wherever that panel currently lives.
+      $$("[data-popover][open]").forEach(function (d) {
+        var panel = d.oriaPanel;
+        if (d.contains(e.target)) return;
+        if (panel && panel.contains(e.target)) return;
+        d.open = false;
+      });
     });
 
     $$("[data-filter]").forEach(function (input) {

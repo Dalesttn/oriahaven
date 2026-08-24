@@ -2203,7 +2203,7 @@ html.has-sheet { overflow: hidden; }
 @keyframes veilin { from { opacity: 0; } to { opacity: 1; } }
 @keyframes sheetup { from { transform: translateY(14px); } to { transform: none; } }
 @media (prefers-reduced-motion: reduce) {
-  .sheetveil, .popover[open] > .popover__panel { animation: none; }
+  .sheetveil, .popover__panel.is-sheet { animation: none; }
 }
 .popover__panel .check + .check { margin-top: var(--s-3); }
 .facetlist { display: grid; gap: .4rem; grid-template-columns: 1fr 1fr; }
@@ -2234,7 +2234,9 @@ html.has-sheet { overflow: hidden; }
   /* The sheet slides up over a dimmed page, and takes its own scrolling
      with it — without overscroll-behavior a flick past the end of the list
      scrolls the page underneath, which looks like the sheet running away. */
-  .popover[open] > .popover__panel { animation: sheetup .22s cubic-bezier(.2,.8,.25,1) both; overscroll-behavior: contain; }
+  /* .is-sheet, not .popover[open] > … — an open sheet is moved to the body
+     by app.js, so it is no longer a child of the details. */
+  .popover__panel.is-sheet { animation: sheetup .22s cubic-bezier(.2,.8,.25,1) both; overscroll-behavior: contain; }
   .popover__panel::before { content: ""; display: block; width: 36px; height: 4px; margin: -.35rem auto .85rem; border-radius: 999px; background: var(--line); }
   .sheetveil { display: block; }
   /* The sheet says what it is. The pill that opened it is a screen and a
