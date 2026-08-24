@@ -720,7 +720,43 @@
       window.setTimeout(function () { queued = false; sync(); }, 0);
     }
 
-    sheets.forEach(function (d) { d.addEventListener("toggle", later); });
+    /* A sheet opens at the bottom of the screen, a long way from the pill
+       that was tapped — on the directory the toolbar sits some 1500px down
+       the page, so the two are never on screen together. Without a title it
+       is not obvious what has appeared, or that anything has. Built here
+       rather than in the markup so the desktop dropdown, which is anchored
+       under its own labelled button, keeps the shape it already had. */
+    function dress(d) {
+      var panel = d.querySelector(".popover__panel");
+      if (!panel || panel.querySelector(".sheet__head")) return;
+      var summary = d.querySelector("summary");
+      var name = "";
+      if (summary) {
+        name = Array.prototype.filter
+          .call(summary.childNodes, function (n) { return 3 === n.nodeType; })
+          .map(function (n) { return n.textContent; })
+          .join(" ")
+          .trim();
+      }
+      var head = document.createElement("div");
+      head.className = "sheet__head";
+      var title = document.createElement("span");
+      title.className = "sheet__title";
+      title.textContent = name;
+      var shut = document.createElement("button");
+      shut.type = "button";
+      shut.className = "sheet__x";
+      shut.setAttribute("aria-label", "Close");
+      shut.innerHTML = "&times;";
+      shut.addEventListener("click", closeAll);
+      head.appendChild(title);
+      head.appendChild(shut);
+      panel.insertBefore(head, panel.firstChild);
+    }
+
+    sheets.forEach(function (d) {
+      d.addEventListener("toggle", function () { if (d.open && phone.matches) dress(d); later(); });
+    });
     if (phone.addEventListener) phone.addEventListener("change", sync);
     else if (phone.addListener) phone.addListener(sync);
 
