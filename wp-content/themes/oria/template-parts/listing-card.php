@@ -26,17 +26,32 @@ $oria_rated      = \Oria\Theme\effective_rating( $oria_id );
 $oria_price_from = get_field( 'price_from', $oria_id );
 $oria_format     = (string) get_field( 'format', $oria_id );
 
+/*
+ * Featured and Claimed only.
+ *
+ * "Unclaimed" used to sit over the photograph on nearly every card — 307 of
+ * 314 listings — and a label carried by 98% of a set tells a reader nothing.
+ * It also read as a mark against the practice, when in most cases the
+ * practice does not yet know the listing exists: unfair to them, and it made
+ * the listing look thinner than it is.
+ *
+ * The transparency it stood for is kept, and kept where it does honest work.
+ * The listing page still says the profile was built from public information
+ * and invites the practice to take it over. On a profile that is disclosure.
+ * On a card in a scan list it was noise.
+ */
 $oria_badges = array(
-	'featured'  => '<span class="badge badge--featured"><span class="badge-dot"></span>' . esc_html__( 'Featured', 'oria' ) . '</span>',
-	'claimed'   => '<span class="badge badge--claimed"><span class="badge-dot"></span>' . esc_html__( 'Claimed', 'oria' ) . '</span>',
-	'unclaimed' => '<span class="badge badge--unclaimed">' . esc_html__( 'Unclaimed', 'oria' ) . '</span>',
+	'featured' => '<span class="badge badge--featured"><span class="badge-dot"></span>' . esc_html__( 'Featured', 'oria' ) . '</span>',
+	'claimed'  => '<span class="badge badge--claimed"><span class="badge-dot"></span>' . esc_html__( 'Claimed', 'oria' ) . '</span>',
 );
 ?>
 <article class="listing<?php echo 'featured' === $oria_status ? ' listing--featured' : ''; ?>">
 	<div class="listing__media">
 		<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_id ) ); ?>" alt="<?php echo esc_attr( \Oria\Theme\listing_alt( $oria_id ) ); ?>" loading="lazy"
 			onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_id ) ); ?>'">
-		<div class="listing__flag"><?php echo $oria_badges[ $oria_status ]; // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+		<?php if ( isset( $oria_badges[ $oria_status ] ) ) : ?>
+			<div class="listing__flag"><?php echo $oria_badges[ $oria_status ]; // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+		<?php endif; ?>
 	</div>
 	<div class="listing__body">
 		<?php

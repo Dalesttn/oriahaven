@@ -2358,22 +2358,15 @@ html.has-sheet { overflow: hidden; }
 .dir__results--wide .listing__desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
 
-/* Category pills move onto the photo in the two-column results: they sit
-   bottom-left over a soft scrim, which gives the text column its first
-   forty pixels back. On a category page the first pill usually names the
-   page you are already on, so it had the least to say for the space it
-   took. Below 620px the card stacks and the pills return to the text. */
-@media (min-width: 621px) {
-  .dir__results--wide .listing { position: relative; }
-  .dir__results--wide .listing__cats {
-    position: absolute; left: 0; bottom: 0; width: 190px; margin: 0;
-    padding: 2.4rem var(--s-2) var(--s-2);
-    background: linear-gradient(to top, rgba(8,34,32,.78), rgba(8,34,32,.35) 55%, rgba(8,34,32,0));
-    flex-direction: column; align-items: flex-start; gap: 4px;
-    pointer-events: none;
-  }
-  .dir__results--wide .listing__cats .pill { pointer-events: auto; font-size: var(--fs-xs); padding: .28rem .55rem; box-shadow: 0 1px 2px rgba(8,34,32,.25); max-width: 100%; line-height: 1.25; text-align: left; }
-}
+/* Category pills sit in the text column, not on the photograph.
+   They were moved onto the image to reclaim the text column's first forty
+   pixels, but a scrim, a shadow and a pill stacked over a studio photo cost
+   more than those pixels were worth — and the picture is the one part of a
+   card doing no work the text could do instead. They stay links, because
+   they are the internal route to the category pages. */
+.dir__results--wide .listing { position: relative; }
+.dir__results--wide .listing__cats { margin-bottom: var(--s-2); }
+.dir__results--wide .listing__cats .pill { font-size: var(--fs-xs); padding: .28rem .55rem; line-height: 1.25; }
 
 
 /* The facet you are on, in the intent grid; and the way back to everything. */
@@ -2515,7 +2508,7 @@ html.has-sheet { overflow: hidden; }
   .dir__results--wide .listing__media img { aspect-ratio: auto; height: 100%; min-height: 140px; }
   .dir__results--wide .listing__flag { top: 6px; left: 6px; transform: scale(.82); transform-origin: top left; }
   .dir__results--wide .listing__body { padding: var(--s-3); gap: var(--s-2); }
-  .dir__results--wide .listing__cats, .dir__results--wide .listing__tags { display: none; }
+  .dir__results--wide .listing__tags { display: none; }
   .dir__results--wide .listing__head { gap: var(--s-2); }
   .dir__results--wide .listing__name { font-size: 1rem; }
   .dir__results--wide .listing__desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: var(--fs-xs); }
