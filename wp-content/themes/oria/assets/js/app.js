@@ -844,8 +844,70 @@
     if (!target) return;
     var spine = $(".spine");
     var offset = (spine ? spine.getBoundingClientRect().height : 0) + 12;
+    /* On phones the toolbar pins below the spine, so it will be sitting
+       over the count by the time this scroll lands there. Already stuck:
+       its height is the collapsed one, use it as is. Not stuck yet: it
+       will be by then, so use what it collapses to — the filter row plus
+       the bar's padding. */
+    var bar = $(".toolbar");
+    if (bar && window.matchMedia("(max-width: 50rem)").matches) {
+      if (bar.classList.contains("is-stuck")) {
+        offset += bar.offsetHeight;
+      } else {
+        var row = bar.querySelector(".toolbar__filters");
+        offset += ( row ? row.offsetHeight : 0 ) + 26;
+      }
+    }
     var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
     window.scrollTo({ top: Math.max(0, top), behavior: instant ? "auto" : "smooth" });
+  }
+
+  /* On phones the toolbar follows the reader down the results: once its
+     natural position scrolls past the spine it pins beneath it (the CSS
+     does the pinning; this adds .is-stuck), dropped to just the filter
+     row. The margin swap keeps the page the same length as the bar
+     collapses, so the cards do not jump 116px mid-scroll. */
+  function initStickyToolbar() {
+    var bar = $(".toolbar");
+    if (!bar) return;
+    var phone = window.matchMedia("(max-width: 50rem)");
+    var spine = $(".spine");
+
+    function stickTop() {
+      return spine ? Math.round(spine.getBoundingClientRect().height) : 0;
+    }
+    function setTop() {
+      document.documentElement.style.setProperty("--oria-stick-top", stickTop() + "px");
+    }
+    setTop();
+    window.addEventListener("resize", setTop);
+
+    /* Marks where the toolbar's top edge naturally sits. Its position does
+       not move when the bar collapses — which is what stops the collapse
+       unsticking the bar it was triggered by, growing it, and flapping. */
+    var mark = document.createElement("div");
+    mark.setAttribute("aria-hidden", "true");
+    mark.style.cssText = "height:1px;margin-bottom:-1px;";
+    bar.parentNode.insertBefore(mark, bar);
+
+    var stuck = false;
+    function tick() {
+      var want = phone.matches && mark.getBoundingClientRect().top < stickTop();
+      if (want === stuck) return;
+      stuck = want;
+      if (want) {
+        var full = bar.offsetHeight;
+        bar.classList.add("is-stuck");
+        bar.style.marginBottom = Math.max(0, full - bar.offsetHeight) + "px";
+      } else {
+        bar.classList.remove("is-stuck");
+        bar.style.marginBottom = "";
+      }
+    }
+    window.addEventListener("scroll", tick, { passive: true });
+    if (phone.addEventListener) phone.addEventListener("change", tick);
+    else if (phone.addListener) phone.addListener(tick);
+    tick();
   }
 
   function scrollToFilteredResults() {
@@ -1168,7 +1230,7 @@
     moreBox.appendChild(moreDots);
     moreBox.appendChild(moreNote);
 
-    var PAUSE = 800;
+    var PAUSE = 1200;
     var pending = false;
     var timer = null;
 
@@ -2187,6 +2249,7 @@
     scrollToFilteredResults();
     initPopoverDone();
     initFilterSheet();
+    initStickyToolbar();
     initStarRate();
     initCountUp();
     initIntentGridMore();
