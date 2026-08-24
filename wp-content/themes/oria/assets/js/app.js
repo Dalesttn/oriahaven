@@ -1168,7 +1168,7 @@
     moreBox.appendChild(moreDots);
     moreBox.appendChild(moreNote);
 
-    var PAUSE = 450;
+    var PAUSE = 800;
     var pending = false;
     var timer = null;
 
