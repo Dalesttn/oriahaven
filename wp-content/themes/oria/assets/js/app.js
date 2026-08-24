@@ -1047,11 +1047,18 @@
     }
 
     function card(l) {
+      /* Featured and Claimed only — the same rule as listing-card.php, and
+         it has to be stated in both places because this function re-renders
+         every card the server already drew. An "Unclaimed" badge sat on 307
+         of 314 listings, which is a label that tells a reader nothing and
+         reads as a mark against a practice that usually does not yet know
+         the listing exists. The disclosure it stood for stays on the listing
+         page, where somebody can act on it. */
       var statusBadge = l.status === "featured"
         ? '<span class="badge badge--featured"><span class="badge-dot"></span>Featured</span>'
         : l.status === "claimed"
           ? '<span class="badge badge--claimed"><span class="badge-dot"></span>Claimed</span>'
-          : '<span class="badge badge--unclaimed">Unclaimed</span>';
+          : '';
 
       return '<article class="listing' + (l.status === "featured" ? " listing--featured" : "") + '">' +
         '<div class="listing__media">' +
@@ -1062,7 +1069,7 @@
             (l.image_fb && l.image_fb !== l.image
               ? " onerror=\"this.onerror=null;this.src='" + esc(l.image_fb) + "'\""
               : "") + '>' : "") +
-          '<div class="listing__flag">' + statusBadge + "</div>" +
+          (statusBadge ? '<div class="listing__flag">' + statusBadge + "</div>" : "") +
         "</div>" +
         '<div class="listing__body">' +
           /* Category chips lead the card — see the same block in

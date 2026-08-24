@@ -22,7 +22,7 @@ get_header();
 			<span class="micro"><?php esc_html_e( 'The directory', 'oria' ); ?></span>
 			<h1 class="h1 pagehead__title"><?php esc_html_e( "Every practice we've found in Perth.", 'oria' ); ?></h1>
 		</div>
-		<p class="lede dir__lede" style="max-width:34ch"><?php esc_html_e( "Filter by practice, area, price and format. Unclaimed listings are marked — they're built from public information and waiting for their owner.", 'oria' ); ?></p>
+		<p class="lede dir__lede" style="max-width:34ch"><?php esc_html_e( "Filter by practice, area, price and format. Most listings were built from public information and are waiting for their owner to take them over — each one says so on its own page.", 'oria' ); ?></p>
 	</div>
 
 	<?php

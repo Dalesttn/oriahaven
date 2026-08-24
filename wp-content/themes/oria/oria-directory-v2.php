@@ -85,7 +85,7 @@ $oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 				);
 				?>
 			</p>
-			<p class="hint" style="margin-top:.6rem"><?php esc_html_e( "Unclaimed listings are marked — they're built from public information and waiting for their owner. We never take a cut of a booking.", 'oria' ); ?></p>
+			<p class="hint" style="margin-top:.6rem"><?php esc_html_e( "Most listings here were built from public information and are waiting for their owner to take them over — each one says so on its own page. We never take a cut of a booking.", 'oria' ); ?></p>
 		</div>
 		<dl class="facts">
 			<div><dt><?php esc_html_e( 'listings', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( count( $oria_all ) ) ); ?></dd></div>
