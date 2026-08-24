@@ -839,11 +839,24 @@
   /* Put the count and the first listings on screen, clear of the sticky
      spine. Used after a filter sheet closes and on arrival with a filtered
      URL. */
+  /* How much sticky chrome covers the top of the viewport. On inner pages
+     the solid site header sticks at z-60 and is TALLER than the spine, which
+     sticks at top:0 underneath it — so the header's height is the number
+     that matters, and measuring the spine put the pinned toolbar (and any
+     scroll target) partly behind the nav. */
+  function chromeTop() {
+    var head = $(".site-head--solid");
+    if (head && "sticky" === getComputedStyle(head).position) {
+      return Math.round(head.getBoundingClientRect().height);
+    }
+    var spine = $(".spine");
+    return spine ? Math.round(spine.getBoundingClientRect().height) : 0;
+  }
+
   function goToResults(instant) {
     var target = $(".dir__count") || $("#dirResults") || $("#browse");
     if (!target) return;
-    var spine = $(".spine");
-    var offset = (spine ? spine.getBoundingClientRect().height : 0) + 12;
+    var offset = chromeTop() + 12;
     /* On phones the toolbar pins below the spine, so it will be sitting
        over the count by the time this scroll lands there. Already stuck:
        its height is the collapsed one, use it as is. Not stuck yet: it
@@ -871,10 +884,9 @@
     var bar = $(".toolbar");
     if (!bar) return;
     var phone = window.matchMedia("(max-width: 50rem)");
-    var spine = $(".spine");
 
     function stickTop() {
-      return spine ? Math.round(spine.getBoundingClientRect().height) : 0;
+      return chromeTop() + 8; // a breath of space under the nav
     }
     function setTop() {
       document.documentElement.style.setProperty("--oria-stick-top", stickTop() + "px");
