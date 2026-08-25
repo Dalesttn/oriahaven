@@ -2781,6 +2781,130 @@ html.has-sheet { overflow: hidden; }
 .cmpx__whylist dt a:hover { color: var(--deep); text-decoration: underline; text-underline-offset: 3px; }
 .cmpx__whylist dd { margin: .3rem 0 0; color: var(--text-soft); }
 
+/* --- Experience comparison (the practice-vs-practice page) -------------
+   The editorial layer over the same registry scores: hero cards, a glance
+   table, the insight given room, and a preference summary. Surfaces are
+   warm neutrals from tokens.css; borders do the work, not shadows. */
+.xp__lede { max-width: 46rem; margin-top: .35rem; }
+
+.xp__heroes { display: grid; gap: var(--s-4); grid-template-columns: 1fr; }
+@media (min-width: 760px) {
+  .xp__heroes { grid-template-columns: repeat(2, 1fr); }
+  .xp__heroes[data-n="3"] { grid-template-columns: repeat(3, 1fr); }
+  .xp__heroes[data-n="4"] { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1100px) { .xp__heroes[data-n="4"] { grid-template-columns: repeat(4, 1fr); } }
+
+.xp__hero {
+  display: flex; flex-direction: column; gap: .55rem;
+  padding: 1.6rem 1.5rem 1.4rem;
+  background: var(--sand-2); border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+.xp__heroname { font-size: clamp(1.3rem, 2.4vw, 1.65rem); font-weight: 700; letter-spacing: -0.022em; line-height: 1.15; margin: 0; }
+/* The two or three words that characterise it, derived from its scores. */
+.xp__traits { margin: 0; font-size: var(--fs-sm); font-weight: 600; color: var(--moss); line-height: 1.5; }
+.xp__facts { display: flex; flex-wrap: wrap; gap: .4rem; margin: .2rem 0 0; }
+.xp__fact {
+  font-size: var(--fs-xs); font-weight: 600; color: var(--text-soft);
+  padding: .2rem .6rem; border-radius: var(--r-pill);
+  background: var(--white); border: 1px solid var(--line);
+}
+.xp__note { margin: .2rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.55; }
+.xp__explore {
+  margin-top: auto; padding-top: .9rem;
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: var(--fs-sm); font-weight: 700; color: var(--deep);
+}
+.xp__explore--sm { margin-top: .9rem; padding-top: 0; }
+.xp__arrow { transition: transform var(--t-fast) var(--ease); }
+.xp__explore:hover { text-decoration: underline; text-underline-offset: 4px; }
+.xp__explore:hover .xp__arrow { transform: translateX(3px); }
+
+/* Glance table: same chassis as the places table, tighter columns. */
+.xp__glance .cmpx__label { font-weight: 600; }
+.xp__gcol { font-size: var(--fs-md, 1.0625rem); font-weight: 700; letter-spacing: -0.015em; min-width: 150px; }
+.xp__gcol a { color: var(--ink); }
+.xp__gcol a:hover { color: var(--deep); text-decoration: underline; text-underline-offset: 3px; }
+
+/* A score, told three ways — dots, number, word — because §26 forbids
+   leaning on the visual scale alone. */
+   Direct children only: the dot scale is itself built from <b> and <i>,
+   and a descendant selector here repainted the filled dots in --ink,
+   erasing the difference between filled and empty. */
+.xp__scale { display: flex; flex-direction: column; gap: .1rem; }
+.xp__scale > b { font-size: var(--fs-sm); font-weight: 700; color: var(--ink); }
+.xp__scale > small { font-size: var(--fs-xs); color: var(--text-faint); }
+
+/* The insight, given its own surface. The one editorial voice on a page
+   of measurements, so it gets the dark band and nothing else does. */
+.xp__insight {
+  position: relative; background: var(--deep); color: var(--white);
+  border-radius: var(--r-lg); padding: 2rem 2.1rem 1.75rem; max-width: 54rem;
+}
+.xp__insmark { display: block; font-size: 1.1rem; color: var(--brand-gold); line-height: 1; }
+.xp__inshead { margin: .5rem 0 0; color: var(--white); border: 0; padding: 0; }
+.xp__inslist { list-style: none; margin: 1.1rem 0 0; padding: 0; }
+.xp__inslist li {
+  position: relative; padding: .55rem 0 .55rem 1.4rem;
+  border-bottom: 1px solid var(--teal-line);
+  font-size: var(--fs-md, 1.0625rem); line-height: 1.55; color: var(--mist-2);
+}
+.xp__inslist li:last-child { border-bottom: 0; }
+.xp__inslist li::before { content: "\2014"; position: absolute; left: 0; color: var(--brand-gold); }
+.xp__insfoot { margin: 1.1rem 0 0; font-size: var(--fs-xs); color: var(--mist); line-height: 1.6; }
+
+/* Which one sounds more like you */
+.xp__prefs { display: grid; gap: var(--s-4); grid-template-columns: 1fr; margin-top: 1.25rem; }
+@media (min-width: 760px) { .xp__prefs { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); } }
+.xp__pref {
+  display: flex; flex-direction: column;
+  padding: 1.35rem 1.4rem; background: var(--white);
+  border: 1px solid var(--line); border-radius: var(--r-md);
+}
+.xp__prefhead { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.015em; margin: 0; line-height: 1.3; }
+.xp__preflist { list-style: none; margin: .8rem 0 0; padding: 0; }
+.xp__preflist li {
+  position: relative; padding: .3rem 0 .3rem 1.1rem;
+  font-size: var(--fs-sm); color: var(--text-soft);
+}
+.xp__preflist li::before {
+  content: ""; position: absolute; left: 0; top: .78em;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--moss);
+}
+
+/* Still not sure -> the Finder */
+.xp__finder {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem;
+  padding: 1.6rem 1.75rem; background: var(--sand-2);
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+}
+.xp__finderhead { margin: 0; border: 0; padding: 0; flex-basis: 100%; }
+.xp__finder p { margin: 0; max-width: 42rem; color: var(--text-soft); flex: 1 1 20rem; }
+
+/* Ready to explore */
+.xp__explores { display: grid; gap: var(--s-3); grid-template-columns: 1fr; margin-top: 1.25rem; }
+@media (min-width: 620px) { .xp__explores { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); } }
+.xp__exptile {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 1.1rem 1.3rem; background: var(--white);
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.xp__exptile:hover { border-color: var(--moss); background: var(--sand-2); }
+.xp__exptile:hover .xp__arrow { transform: translateX(3px); }
+.xp__exptitle { font-size: var(--fs-md, 1.0625rem); font-weight: 700; letter-spacing: -0.015em; color: var(--ink); }
+.xp__exptile .xp__arrow { color: var(--moss); }
+
+@media (prefers-reduced-motion: reduce) {
+  .xp__arrow, .xp__exptile { transition: none; }
+}
+@media (max-width: 560px) {
+  .xp__hero { padding: 1.3rem 1.2rem 1.2rem; }
+  .xp__insight { padding: 1.5rem 1.35rem 1.35rem; }
+  .xp__finder { padding: 1.3rem 1.25rem; }
+}
+
 .cmp__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; margin-top: 1.5rem; }
 
 /* The submit is the point of the page, so it is bigger than a default

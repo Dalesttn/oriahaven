@@ -28,22 +28,30 @@
         "intensity": {
           "label": "Physical intensity",
           "type": "scale",
-          "hint": "How hard the body works in a typical session"
+          "hint": "How hard the body works in a typical session",
+          "high": "Physical effort",
+          "low": "Gentle"
         },
         "movement": {
           "label": "Movement",
           "type": "scale",
-          "hint": "Still and lying down (1) to constantly moving (5)"
+          "hint": "Still and lying down (1) to constantly moving (5)",
+          "high": "Movement",
+          "low": "Stillness"
         },
         "stretch": {
           "label": "Stretching & mobility work",
           "type": "scale",
-          "hint": "How much of the session is spent on it"
+          "hint": "How much of the session is spent on it",
+          "high": "Flexibility work",
+          "low": ""
         },
         "strengthwork": {
           "label": "Strength work",
           "type": "scale",
-          "hint": "Resistance, load or bodyweight effort"
+          "hint": "Resistance, load or bodyweight effort",
+          "high": "Strength work",
+          "low": ""
         }
       }
     },
@@ -53,7 +61,9 @@
         "guidance": {
           "label": "Spoken guidance",
           "type": "scale",
-          "hint": "Silent (1) to continuously instructed (5)"
+          "hint": "Silent (1) to continuously instructed (5)",
+          "high": "Guided throughout",
+          "low": "Self-directed"
         },
         "position": {
           "label": "You are mostly",
@@ -62,7 +72,9 @@
         "quiet": {
           "label": "Quietness",
           "type": "scale",
-          "hint": "Loud or music-led (1) to near silence (5)"
+          "hint": "Loud or music-led (1) to near silence (5)",
+          "high": "Quiet",
+          "low": "Sound-led"
         },
         "touch": {
           "label": "Hands-on",
@@ -80,7 +92,9 @@
         },
         "social": {
           "label": "Interaction with others",
-          "type": "scale"
+          "type": "scale",
+          "high": "Sociable",
+          "low": "Solitary"
         },
         "oneonone": {
           "label": "One-on-one available",
@@ -806,7 +820,9 @@
             "pressure": {
               "label": "Pressure",
               "type": "scale",
-              "hint": "Resting hands (1) to as firm as you can take (5)"
+              "hint": "Resting hands (1) to as firm as you can take (5)",
+              "high": "Firm pressure",
+              "low": "Light touch"
             },
             "position": {
               "label": "You are",
@@ -819,7 +835,9 @@
             "quiet": {
               "label": "Quietness",
               "type": "scale",
-              "hint": "Talking throughout (1) to near silence (5)"
+              "hint": "Talking throughout (1) to near silence (5)",
+              "high": "Quiet",
+              "low": "Sound-led"
             }
           }
         },
@@ -895,12 +913,16 @@
             "demand": {
               "label": "How hard it is to stay in",
               "type": "scale",
-              "hint": "You could sit there all day (1) to every second is a decision (5)"
+              "hint": "You could sit there all day (1) to every second is a decision (5)",
+              "high": "Takes some getting through",
+              "low": "Easy to sit through"
             },
             "quiet": {
               "label": "Quietness",
               "type": "scale",
-              "hint": "Coaching and chatter (1) to near silence (5)"
+              "hint": "Coaching and chatter (1) to near silence (5)",
+              "high": "Quiet",
+              "low": "Sound-led"
             },
             "company": {
               "label": "Alone or shared",

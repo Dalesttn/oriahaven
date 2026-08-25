@@ -367,38 +367,148 @@ $oria_dots = static function ( int $n ): string {
 
 
 <?php if ( $oria_picked ) : ?>
-	<section class="wrap section" id="result">
-		<?php foreach ( sections( \Oria\Core\Compare\group_of( $oria_picked ) ) as $oria_sec ) : ?>
-			<h2 class="h3 cmp__h cmp__sech"><?php echo esc_html( (string) $oria_sec['label'] ); ?></h2>
-			<div class="cmp__scroll">
-				<table class="cmp__table">
+	<?php
+	$oria_g     = \Oria\Core\Compare\group_of( $oria_picked );
+	$oria_glance = \Oria\Core\Compare\glance_rows( $oria_picked, $oria_g );
+	$oria_prefs  = \Oria\Core\Compare\preference_bullets( $oria_picked, $oria_g );
+	$oria_lines  = summary( $oria_picked );
+	?>
+
+	<?php /* ---------------------------------------- hero cards */ ?>
+	<section class="wrap section section--top-flush" id="result">
+		<div class="xp__heroes" data-n="<?php echo (int) count( $oria_picked ); ?>">
+			<?php foreach ( $oria_picked as $oria_e ) : ?>
+				<?php $oria_tr = \Oria\Core\Compare\traits_of( $oria_e, $oria_g ); ?>
+				<article class="xp__hero">
+					<h2 class="xp__heroname"><?php echo esc_html( (string) $oria_e['label'] ); ?></h2>
+					<?php if ( $oria_tr ) : ?>
+						<p class="xp__traits">
+							<?php foreach ( $oria_tr as $oria_i => $oria_t ) : ?>
+								<?php if ( $oria_i ) : ?><span aria-hidden="true"> · </span><?php endif; ?>
+								<span><?php echo esc_html( $oria_t ); ?></span>
+							<?php endforeach; ?>
+						</p>
+					<?php endif; ?>
+					<?php
+					$oria_dur = (string) ( $oria_e['attributes']['duration'] ?? '' );
+					$oria_prc = (string) ( $oria_e['attributes']['price'] ?? '' );
+					?>
+					<?php if ( '' !== $oria_dur || '' !== $oria_prc ) : ?>
+						<p class="xp__facts">
+							<?php if ( '' !== $oria_dur ) : ?><span class="xp__fact"><?php echo esc_html( $oria_dur ); ?></span><?php endif; ?>
+							<?php if ( '' !== $oria_prc ) : ?><span class="xp__fact"><?php echo esc_html( $oria_prc ); ?></span><?php endif; ?>
+						</p>
+					<?php endif; ?>
+					<?php $oria_note = (string) ( $oria_e['note'] ?? '' ); ?>
+					<?php if ( '' !== $oria_note ) : ?>
+						<p class="xp__note"><?php echo esc_html( $oria_note ); ?></p>
+					<?php endif; ?>
+					<a class="xp__explore" href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>">
+						<?php
+						/* translators: %s: experience name */
+						printf( esc_html__( 'Explore %s', 'oria' ), esc_html( (string) $oria_e['label'] ) );
+						?>
+						<span class="xp__arrow" aria-hidden="true">&rarr;</span>
+					</a>
+				</article>
+			<?php endforeach; ?>
+		</div>
+	</section>
+
+	<?php /* ---------------------------------------- at a glance */ ?>
+	<?php if ( $oria_glance ) : ?>
+		<section class="wrap section">
+			<h2 class="h3 cmp__h"><?php esc_html_e( 'At a glance', 'oria' ); ?></h2>
+			<p class="muted xp__lede"><?php esc_html_e( 'Where these differ most. Everything is a description of the session, never a promise about you.', 'oria' ); ?></p>
+			<div class="cmpx__scroll" tabindex="0" role="group" aria-label="<?php esc_attr_e( 'Comparison at a glance', 'oria' ); ?>">
+				<table class="cmpx__table xp__glance">
 					<thead>
 						<tr>
-							<th scope="col" class="cmp__attr"><span class="sr-only"><?php esc_html_e( 'Attribute', 'oria' ); ?></span></th>
+							<th scope="col" class="cmpx__corner"><span class="sr-only"><?php esc_html_e( 'Attribute', 'oria' ); ?></span></th>
 							<?php foreach ( $oria_picked as $oria_e ) : ?>
-								<th scope="col"><a href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>"><?php echo esc_html( (string) $oria_e['label'] ); ?></a></th>
+								<th scope="col" class="cmpx__col xp__gcol"><?php echo esc_html( (string) $oria_e['label'] ); ?></th>
 							<?php endforeach; ?>
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach ( (array) $oria_sec['items'] as $oria_key => $oria_def ) : ?>
+						<?php foreach ( $oria_glance as $oria_row ) : ?>
 							<tr>
-								<th scope="row" class="cmp__attr">
+								<th scope="row" class="cmpx__label"><?php echo esc_html( (string) $oria_row['label'] ); ?></th>
+								<?php foreach ( (array) $oria_row['values'] as $oria_v ) : ?>
+									<td class="cmpx__cell">
+										<?php if ( 'scale' === $oria_row['type'] ) : ?>
+											<span class="xp__scale">
+												<?php echo $oria_dots( (int) $oria_v ); // phpcs:ignore WordPress.Security.EscapeOutput -- built from literals. ?>
+												<b><?php printf( '%d/5', (int) $oria_v ); ?></b>
+												<small><?php echo esc_html( \Oria\Core\Compare\scale_word( (int) $oria_v ) ); ?></small>
+											</span>
+										<?php else : ?>
+											<?php echo esc_html( (string) $oria_v ); ?>
+										<?php endif; ?>
+									</td>
+								<?php endforeach; ?>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
+			<p class="cmpx__scrollhint"><?php esc_html_e( 'Scroll sideways for the rest', 'oria' ); ?></p>
+		</section>
+	<?php endif; ?>
+
+	<?php /* ------------------------------- the insight, given room */ ?>
+	<?php if ( $oria_lines ) : ?>
+		<section class="wrap section">
+			<div class="xp__insight">
+				<span class="xp__insmark" aria-hidden="true">&#10022;</span>
+				<h2 class="h3 xp__inshead"><?php esc_html_e( 'Oria Haven insight', 'oria' ); ?></h2>
+				<ul class="xp__inslist">
+					<?php foreach ( $oria_lines as $oria_line ) : ?>
+						<li><?php echo esc_html( $oria_line ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+				<p class="xp__insfoot"><?php esc_html_e( 'Scores describe a typical Perth session — what the hour is like, not what it will do for you. Individual studios vary; their listings carry the specifics.', 'oria' ); ?></p>
+			</div>
+		</section>
+	<?php endif; ?>
+
+	<?php /* -------------------------- the full tables, section by section */ ?>
+	<section class="wrap section">
+		<?php foreach ( sections( $oria_g ) as $oria_key => $oria_sec ) : ?>
+			<h2 class="h3 cmp__h cmp__sech"><?php echo esc_html( \Oria\Core\Compare\section_heading( (string) $oria_key, (string) $oria_sec['label'], $oria_g ) ); ?></h2>
+			<div class="cmpx__scroll" tabindex="0" role="group" aria-label="<?php echo esc_attr( (string) $oria_sec['label'] ); ?>">
+				<table class="cmpx__table">
+					<thead>
+						<tr>
+							<th scope="col" class="cmpx__corner"><span class="sr-only"><?php esc_html_e( 'Attribute', 'oria' ); ?></span></th>
+							<?php foreach ( $oria_picked as $oria_e ) : ?>
+								<th scope="col" class="cmpx__col xp__gcol"><a href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>"><?php echo esc_html( (string) $oria_e['label'] ); ?></a></th>
+							<?php endforeach; ?>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( (array) $oria_sec['items'] as $oria_ak => $oria_def ) : ?>
+							<tr>
+								<th scope="row" class="cmpx__label">
 									<?php echo esc_html( (string) $oria_def['label'] ); ?>
 									<?php if ( ! empty( $oria_def['hint'] ) ) : ?>
 										<small><?php echo esc_html( (string) $oria_def['hint'] ); ?></small>
 									<?php endif; ?>
 								</th>
 								<?php foreach ( $oria_picked as $oria_e ) : ?>
-									<?php $oria_v = $oria_e['attributes'][ $oria_key ] ?? ''; ?>
-									<td>
-										<?php
-										if ( 'scale' === ( $oria_def['type'] ?? '' ) ) {
-											echo $oria_dots( (int) $oria_v ); // phpcs:ignore WordPress.Security.EscapeOutput -- built above from literals.
-										} else {
-											echo esc_html( (string) $oria_v );
-										}
-										?>
+									<?php $oria_v = $oria_e['attributes'][ $oria_ak ] ?? ''; ?>
+									<td class="cmpx__cell<?php echo '' === $oria_v ? ' is-blank' : ''; ?>">
+										<?php if ( '' === $oria_v ) : ?>
+											<span aria-hidden="true">&mdash;</span><span class="sr-only"><?php echo esc_html( \Oria\Core\Compare\unknown_spoken() ); ?></span>
+										<?php elseif ( 'scale' === ( $oria_def['type'] ?? '' ) ) : ?>
+											<span class="xp__scale">
+												<?php echo $oria_dots( (int) $oria_v ); // phpcs:ignore WordPress.Security.EscapeOutput -- built from literals. ?>
+												<b><?php printf( '%d/5', (int) $oria_v ); ?></b>
+												<small><?php echo esc_html( \Oria\Core\Compare\scale_word( (int) $oria_v ) ); ?></small>
+											</span>
+										<?php else : ?>
+											<?php echo esc_html( (string) $oria_v ); ?>
+										<?php endif; ?>
 									</td>
 								<?php endforeach; ?>
 							</tr>
@@ -407,77 +517,96 @@ $oria_dots = static function ( int $n ): string {
 				</table>
 			</div>
 		<?php endforeach; ?>
+	</section>
 
-		<?php $oria_lines = summary( $oria_picked ); ?>
-		<?php if ( $oria_lines ) : ?>
-			<div class="cmp__reading">
-				<h2 class="h3 cmp__h"><?php esc_html_e( 'Reading the table', 'oria' ); ?></h2>
-				<ul>
-					<?php foreach ( $oria_lines as $oria_line ) : ?>
-						<li><?php echo esc_html( $oria_line ); ?></li>
-					<?php endforeach; ?>
-				</ul>
-				<p class="hint"><?php esc_html_e( 'Scores describe a typical Perth session — what the hour is like, not what it will do for you. Individual studios vary; their listings carry the specifics.', 'oria' ); ?></p>
+	<?php /* ------------------------- which one sounds more like you */ ?>
+	<?php if ( $oria_prefs ) : ?>
+		<section class="wrap section">
+			<h2 class="h3 cmp__h"><?php esc_html_e( 'Which one sounds more like you?', 'oria' ); ?></h2>
+			<p class="muted xp__lede"><?php esc_html_e( 'A summary of the differences above, not advice — only you know which you would rather walk into.', 'oria' ); ?></p>
+			<div class="xp__prefs">
+				<?php foreach ( $oria_prefs as $oria_pf ) : ?>
+					<?php if ( ! $oria_pf['wants'] ) { continue; } ?>
+					<div class="xp__pref">
+						<h3 class="xp__prefhead">
+							<?php
+							/* translators: %s: experience name */
+							printf( esc_html__( 'Choose %s if you want', 'oria' ), esc_html( (string) $oria_pf['label'] ) );
+							?>
+						</h3>
+						<ul class="xp__preflist">
+							<?php foreach ( $oria_pf['wants'] as $oria_w ) : ?>
+								<li><?php echo esc_html( $oria_w ); ?></li>
+							<?php endforeach; ?>
+						</ul>
+						<a class="xp__explore xp__explore--sm" href="<?php echo esc_url( home_url( (string) $oria_pf['url'] ) ); ?>">
+							<?php esc_html_e( 'Explore', 'oria' ); ?>
+							<span class="sr-only"><?php echo esc_html( (string) $oria_pf['label'] ); ?></span>
+							<span class="xp__arrow" aria-hidden="true">&rarr;</span>
+						</a>
+					</div>
+				<?php endforeach; ?>
 			</div>
-		<?php endif; ?>
+		</section>
+	<?php endif; ?>
 
-		<div class="cmp__next">
-			<h2 class="h3 cmp__h"><?php esc_html_e( 'See who runs each one', 'oria' ); ?></h2>
-			<div class="chips cmp__chips">
-				<?php foreach ( $oria_picked as $oria_e ) : ?>
-					<a class="pill" href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>">
+	<?php /* --------------------------------- still unsure -> Finder */ ?>
+	<section class="wrap section">
+		<div class="xp__finder">
+			<h2 class="h3 xp__finderhead"><?php esc_html_e( 'Still not sure?', 'oria' ); ?></h2>
+			<p><?php esc_html_e( 'Four questions, about a minute, and the Finder narrows it to what fits — drawn from practices checked by hand.', 'oria' ); ?></p>
+			<a class="btn btn--dark btn--plain" href="<?php echo esc_url( home_url( '/wellness-finder/' ) ); ?>"><?php esc_html_e( 'Take the Wellness Finder', 'oria' ); ?></a>
+		</div>
+	</section>
+
+	<?php /* ------------------------------------ ready to explore */ ?>
+	<section class="wrap section">
+		<h2 class="h3 cmp__h"><?php esc_html_e( 'Ready to explore?', 'oria' ); ?></h2>
+		<div class="xp__explores">
+			<?php foreach ( $oria_picked as $oria_e ) : ?>
+				<a class="xp__exptile" href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>">
+					<span class="xp__exptitle">
 						<?php
 						/* translators: %s: experience name */
 						printf( esc_html__( '%s in Perth', 'oria' ), esc_html( (string) $oria_e['label'] ) );
 						?>
-						<span aria-hidden="true">&rarr;</span>
-					</a>
-				<?php endforeach; ?>
-			</div>
-		</div>
-
-		<?php
-		/*
-		 * Four, not three: the cards sit two to a line, and an odd number
-		 * leaves one hanging on its own row.
-		 */
-		?>
-		<?php $oria_try = \Oria\Core\Compare\try_listings( $oria_picked, 4 ); ?>
-		<?php if ( $oria_try ) : ?>
-			<div class="cmp__trybox">
-				<h2 class="h3 cmp__h"><?php esc_html_e( 'Try them for yourself', 'oria' ); ?></h2>
-				<p class="muted cmp__trynote">
-					<?php
-					if ( '' !== \Oria\Core\Compare\group_of( $oria_picked ) ) {
-						esc_html_e( 'A few places offering what you compared — somewhere to start, not a shortlist.', 'oria' );
-					} else {
-						esc_html_e( 'A few places from the categories you compared — somewhere to start, not a shortlist.', 'oria' );
-					}
-					?>
-				</p>
-				<?php // dir__results--wide is the directory's own two-up card; the plain one is built for full page width. ?>
-				<div class="cmp__trygrid dir__results dir__results--wide">
-					<?php
-					global $post;
-					foreach ( $oria_try as $oria_tid ) :
-						$post = get_post( $oria_tid ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-						if ( ! $post instanceof WP_Post ) {
-							continue;
-						}
-						setup_postdata( $post );
-						get_template_part( 'template-parts/listing', 'card' );
-					endforeach;
-					wp_reset_postdata();
-					?>
-				</div>
-			</div>
-		<?php endif; ?>
-
-		<div class="cmp__finder">
-			<p class="muted"><?php esc_html_e( 'Still deciding? The Wellness Finder asks four questions and narrows it down for you.', 'oria' ); ?></p>
-			<a class="btn btn--dark btn--plain" href="<?php echo esc_url( home_url( '/wellness-finder/' ) ); ?>"><?php esc_html_e( 'Find my match', 'oria' ); ?></a>
+					</span>
+					<span class="xp__arrow" aria-hidden="true">&rarr;</span>
+				</a>
+			<?php endforeach; ?>
 		</div>
 	</section>
+
+	<?php /* -------------------------------- a few actual places */ ?>
+	<?php $oria_try = \Oria\Core\Compare\try_listings( $oria_picked, 4 ); ?>
+	<?php if ( $oria_try ) : ?>
+		<section class="wrap section">
+			<h2 class="h3 cmp__h"><?php esc_html_e( 'Try them for yourself', 'oria' ); ?></h2>
+			<p class="muted cmp__trynote">
+				<?php
+				if ( '' !== $oria_g ) {
+					esc_html_e( 'A few places offering what you compared — somewhere to start, not a shortlist.', 'oria' );
+				} else {
+					esc_html_e( 'A few places from the categories you compared — somewhere to start, not a shortlist.', 'oria' );
+				}
+				?>
+			</p>
+			<div class="cmp__trygrid dir__results dir__results--wide">
+				<?php
+				global $post;
+				foreach ( $oria_try as $oria_tid ) :
+					$post = get_post( $oria_tid ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+					if ( ! $post instanceof WP_Post ) {
+						continue;
+					}
+					setup_postdata( $post );
+					get_template_part( 'template-parts/listing', 'card' );
+				endforeach;
+				wp_reset_postdata();
+				?>
+			</div>
+		</section>
+	<?php endif; ?>
 <?php endif; ?>
 
 <?php

@@ -481,6 +481,216 @@ function try_listings( array $picked, int $n = 3 ): array {
 	return $out;
 }
 
+/* ------------------------------------------- experience presentation */
+
+/*
+ * Everything below reshapes the registry for reading. Not one function
+ * adds a fact: they re-cut the same 1-5 scores and text values into hero
+ * cards, a glance table and preference lists. Every one works off whatever
+ * schema is in play — the top-level set, massage types, recovery — because
+ * the page has to serve any pair, not the yoga/sound-bath example it was
+ * designed against.
+ */
+
+/** A 1-5 score in words, so a scale never depends on the dots alone. */
+function scale_word( int $n ): string {
+	$words = array(
+		1 => __( 'Very low', 'oria' ),
+		2 => __( 'Low', 'oria' ),
+		3 => __( 'Moderate', 'oria' ),
+		4 => __( 'High', 'oria' ),
+		5 => __( 'Very high', 'oria' ),
+	);
+	return $words[ max( 1, min( 5, $n ) ) ];
+}
+
+/**
+ * Every attribute definition in a schema, flattened to key => definition.
+ *
+ * @return array<string, array>
+ */
+function attribute_defs( string $group = '' ): array {
+	$out = array();
+	foreach ( sections( $group ) as $sec ) {
+		foreach ( (array) ( $sec['items'] ?? array() ) as $k => $def ) {
+			$out[ $k ] = $def;
+		}
+	}
+	return $out;
+}
+
+/**
+ * The two or three words that describe one experience, taken from
+ * whichever of its scales sit furthest from the middle.
+ *
+ * Both ends count. A sound bath's defining facts are all LOW — no
+ * movement, no effort, not quiet — so reading only the high end would
+ * describe it by its second-least-relevant attribute. Each scale carries
+ * a word for either end in the registry; the middle has nothing to say
+ * and is skipped.
+ *
+ * @return array<int, string>
+ */
+function traits_of( array $e, string $group = '', int $n = 3 ): array {
+	$defs = attribute_defs( $group );
+	$cand = array();
+	foreach ( $defs as $k => $def ) {
+		if ( 'scale' !== ( $def['type'] ?? '' ) || ! isset( $e['attributes'][ $k ] ) ) {
+			continue;
+		}
+		$v = (int) $e['attributes'][ $k ];
+		if ( $v >= 4 ) {
+			$word = (string) ( $def['high'] ?? '' );
+		} elseif ( $v <= 2 ) {
+			$word = (string) ( $def['low'] ?? '' );
+		} else {
+			continue;
+		}
+		if ( '' === $word ) {
+			continue;
+		}
+		// Furthest from the middle first — the most characteristic wins.
+		$cand[] = array( 'word' => $word, 'weight' => abs( $v - 3 ) );
+	}
+	usort( $cand, static fn( array $a, array $b ): int => $b['weight'] <=> $a['weight'] );
+
+	$out = array();
+	foreach ( $cand as $c ) {
+		if ( ! in_array( $c['word'], $out, true ) ) {
+			$out[] = $c['word'];
+		}
+		if ( count( $out ) === $n ) {
+			break;
+		}
+	}
+	return $out;
+}
+
+/**
+ * The "at a glance" rows: the attributes on which the picked experiences
+ * differ MOST, so the fastest possible read shows real differences rather
+ * than the first few rows of the schema.
+ *
+ * Scales are ranked by spread. Text attributes are included only when the
+ * values genuinely differ, and never more than a couple, because a glance
+ * table of long sentences is not a glance.
+ *
+ * @param array<int, array> $picked
+ * @return array<int, array{key: string, label: string, type: string, values: array}>
+ */
+function glance_rows( array $picked, string $group = '', int $n = 6 ): array {
+	$defs   = attribute_defs( $group );
+	$scales = array();
+	$texts  = array();
+
+	foreach ( $defs as $k => $def ) {
+		$vals = array();
+		foreach ( $picked as $e ) {
+			$vals[] = $e['attributes'][ $k ] ?? null;
+		}
+		if ( in_array( null, $vals, true ) ) {
+			continue;
+		}
+		if ( 'scale' === ( $def['type'] ?? '' ) ) {
+			$ints   = array_map( 'intval', $vals );
+			$spread = max( $ints ) - min( $ints );
+			if ( $spread > 0 ) {
+				$scales[] = array( 'key' => $k, 'label' => (string) $def['label'], 'type' => 'scale', 'values' => $ints, 'spread' => $spread );
+			}
+		} else {
+			$strs = array_map( 'strval', $vals );
+			if ( count( array_unique( $strs ) ) > 1 ) {
+				$texts[] = array( 'key' => $k, 'label' => (string) $def['label'], 'type' => 'text', 'values' => $strs );
+			}
+		}
+	}
+
+	usort( $scales, static fn( array $a, array $b ): int => $b['spread'] <=> $a['spread'] );
+
+	// Scales first — they are the ones a reader can compare at a glance.
+	$out = array_slice( $scales, 0, max( 0, $n - 2 ) );
+	foreach ( array_slice( $texts, 0, $n - count( $out ) ) as $t ) {
+		$out[] = $t;
+	}
+	return $out;
+}
+
+/**
+ * "Which one sounds more like you?" — for each experience, the scales on
+ * which it is the sole extreme of the set, phrased as a want.
+ *
+ * Direction matters and both ends are used, or the gentlest option in any
+ * pair would have nothing listed against it at all.
+ *
+ * @param array<int, array> $picked
+ * @return array<int, array{label: string, wants: array<int, string>}>
+ */
+function preference_bullets( array $picked, string $group = '' ): array {
+	$defs = attribute_defs( $group );
+	$out  = array();
+	foreach ( $picked as $e ) {
+		$out[] = array( 'label' => (string) $e['label'], 'url' => (string) $e['url'], 'wants' => array() );
+	}
+
+	foreach ( $defs as $k => $def ) {
+		if ( 'scale' !== ( $def['type'] ?? '' ) ) {
+			continue;
+		}
+		$vals = array();
+		foreach ( $picked as $i => $e ) {
+			if ( ! isset( $e['attributes'][ $k ] ) ) {
+				continue 2;
+			}
+			$vals[ $i ] = (int) $e['attributes'][ $k ];
+		}
+		if ( max( $vals ) === min( $vals ) ) {
+			continue;
+		}
+		$hi = array_keys( $vals, max( $vals ), true );
+		$lo = array_keys( $vals, min( $vals ), true );
+
+		/*
+		 * The registry's directional words where it has them — "Stillness"
+		 * rather than "Less movement". Without them the two lists come out
+		 * as mirror images of each other, every line "More x" against
+		 * "Less x", which reads like arithmetic instead of a choice.
+		 */
+		if ( 1 === count( $hi ) ) {
+			$word = trim( (string) ( $def['high'] ?? '' ) );
+			/* translators: %s: an attribute, e.g. "movement" */
+			$out[ $hi[0] ]['wants'][] = '' !== $word ? $word : sprintf( __( 'More %s', 'oria' ), strtolower( (string) $def['label'] ) );
+		}
+		if ( 1 === count( $lo ) ) {
+			$word = trim( (string) ( $def['low'] ?? '' ) );
+			/* translators: %s: an attribute, e.g. "movement" */
+			$out[ $lo[0] ]['wants'][] = '' !== $word ? $word : sprintf( __( 'Less %s', 'oria' ), strtolower( (string) $def['label'] ) );
+		}
+	}
+
+	foreach ( $out as $i => $row ) {
+		$out[ $i ]['wants'] = array_slice( $row['wants'], 0, 5 );
+	}
+	return $out;
+}
+
+/**
+ * A section's heading in the page's editorial voice. Only the top-level
+ * schema is remapped — a group names its own sections, and "In the room"
+ * is already the right words for a massage table.
+ */
+function section_heading( string $key, string $fallback, string $group = '' ): string {
+	if ( '' !== $group ) {
+		return $fallback;
+	}
+	$map = array(
+		'physical'  => __( 'What is it like?', 'oria' ),
+		'session'   => __( 'When you are actually there', 'oria' ),
+		'people'    => __( 'Who is it like being with?', 'oria' ),
+		'practical' => __( 'Before you go', 'oria' ),
+	);
+	return $map[ $key ] ?? $fallback;
+}
+
 /* --------------------------------------------------- places (real providers) */
 
 /*
