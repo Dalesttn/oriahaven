@@ -204,6 +204,31 @@ get_header();
 				</article>
 			<?php endforeach; ?>
 		</div>
+
+		<?php
+		/*
+		 * The highest-intent moment on the site: someone has just been handed
+		 * two or three practices and now has to choose between them. Pre-filled
+		 * with the ones they were actually shown, so the link explains itself.
+		 */
+		$oria_cmp = function_exists( '\Oria\Core\Compare\prompt_for_terms' )
+			? \Oria\Core\Compare\prompt_for_terms( array_column( $oria_results['practices'], 'term' ) )
+			: null;
+		?>
+		<?php if ( $oria_cmp ) : ?>
+			<p class="finder__compare">
+				<a href="<?php echo esc_url( $oria_cmp['url'] ); ?>" data-oria-event="finder_compare">
+					<?php
+					/* translators: %s: the practices shown, e.g. "Yoga, Breathwork and Meditation" */
+					printf(
+						esc_html__( 'Not sure between them? Compare %s side by side', 'oria' ),
+						esc_html( \Oria\Core\Compare\join_labels( $oria_cmp['labels'] ) )
+					);
+					?>
+					<span aria-hidden="true">&rarr;</span>
+				</a>
+			</p>
+		<?php endif; ?>
 	</section>
 	<?php endif; ?>
 

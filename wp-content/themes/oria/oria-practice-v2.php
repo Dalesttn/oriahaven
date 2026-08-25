@@ -241,6 +241,27 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 			<?php endforeach; ?>
 		</div>
 	<?php endif; ?>
+
+	<?php
+	/*
+	 * The last thing on the Decide floor, because choosing between two
+	 * practices is the question this page cannot answer on its own.
+	 * Pre-filled against the counterpart the registry names; categories with
+	 * no registry entry still get the bare link, which is the internal link
+	 * that makes /compare/ crawlable in the first place.
+	 */
+	$oria_cmp = function_exists( '\Oria\Core\Compare\prompt_for_term' )
+		? \Oria\Core\Compare\prompt_for_term( $oria_term )
+		: null;
+	?>
+	<?php if ( $oria_cmp ) : ?>
+		<p class="cmpnudge">
+			<a href="<?php echo esc_url( $oria_cmp['url'] ); ?>" data-oria-event="category_compare">
+				<?php echo esc_html( $oria_cmp['label'] ); ?>
+				<span aria-hidden="true">&rarr;</span>
+			</a>
+		</p>
+	<?php endif; ?>
 </section>
 
 <!-- Floor 2 — Browse -->

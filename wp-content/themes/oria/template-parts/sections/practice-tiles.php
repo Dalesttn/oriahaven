@@ -54,5 +54,25 @@ $oria_fallbacks = array(
 				</a>
 			<?php endforeach; ?>
 		</div>
+
+		<?php
+		/*
+		 * The close of the category tiles: the visitor has just seen the whole
+		 * breadth of the directory, which is exactly the moment it stops being
+		 * obvious which one is theirs.
+		 *
+		 * Lives in this template, not an ACF section, so it ships to production
+		 * with git pull and needs no page editing -- the same reasoning page.php
+		 * gives for code-injecting the get-matched band a few lines later.
+		 */
+		?>
+		<?php if ( function_exists( '\Oria\Core\Compare\bootstrap' ) ) : ?>
+			<p class="cats__compare reveal">
+				<a href="<?php echo esc_url( home_url( '/compare/' ) ); ?>" data-oria-event="home_compare">
+					<?php esc_html_e( 'Not sure which is yours? Put them side by side', 'oria' ); ?>
+					<span aria-hidden="true">&rarr;</span>
+				</a>
+			</p>
+		<?php endif; ?>
 	</div>
 </section>

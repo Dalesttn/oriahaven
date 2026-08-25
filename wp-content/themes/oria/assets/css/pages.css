@@ -2693,3 +2693,26 @@ html.has-sheet { overflow: hidden; }
 
 .cmp__finder { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
 .cmp__finder p { margin: 0; }
+
+/* --- Compare entry points ------------------------------------------- *
+   The same quiet link in three places — the end of the homepage tiles,
+   the end of a category's Decide floor, and under the Finder's results.
+   One visual language, because it is one offer: they are all the moment
+   someone has just seen the options and has to choose between them. */
+.cats__compare, .cmpnudge, .finder__compare { margin: 1.75rem 0 0; font-size: var(--fs-sm); }
+.cats__compare { text-align: center; margin-top: 2.25rem; }
+.cmpnudge { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.cats__compare a, .cmpnudge a, .finder__compare a {
+  display: inline-flex; align-items: center; gap: .45rem;
+  color: var(--moss); font-weight: 600; text-decoration: none;
+  border-bottom: 1px solid transparent; padding-bottom: 2px;
+}
+.cats__compare a span, .cmpnudge a span, .finder__compare a span { transition: transform var(--t-fast, .15s) var(--ease, ease); }
+.cats__compare a:hover, .cmpnudge a:hover, .finder__compare a:hover { color: var(--deep); border-bottom-color: currentColor; }
+.cats__compare a:hover span, .cmpnudge a:hover span, .finder__compare a:hover span { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) {
+  .cats__compare a span, .cmpnudge a span, .finder__compare a span { transition: none; }
+}
+/* The tiles section paints on a dark band on the front page. */
+.on-deep .cats__compare a { color: var(--mist-2); }
+.on-deep .cats__compare a:hover { color: var(--white); }

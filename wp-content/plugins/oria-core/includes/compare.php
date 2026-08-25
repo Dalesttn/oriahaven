@@ -31,6 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 const QUERY_VAR = 'oria_compare';
 const PATH      = 'compare';
 const DATA_FILE = 'data/compare.json';
+const SITEMAP   = 'compare';
 const MIN_PICK  = 2;
 const MAX_PICK  = 4;
 const REWRITE_V = '1';
@@ -47,6 +48,11 @@ function bootstrap(): void {
 	add_filter( 'wpseo_metadesc', __NAMESPACE__ . '\description' );
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\canonical' );
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title' );
+
+	// A route is not a post, so Yoast never sees it: without this the page
+	// is in no sitemap at all, the same blind spot /practices/ has.
+	add_action( 'init', __NAMESPACE__ . '\register_sitemap', 20 );
+	add_filter( 'wpseo_sitemap_index', __NAMESPACE__ . '\sitemap_index' );
 }
 
 function route(): void {
@@ -336,6 +342,197 @@ function try_listings( array $picked, int $n = 3 ): array {
 		}
 	}
 	return $out;
+}
+
+/* ----------------------------------------------------------- entry points */
+
+/**
+ * One experience by id, or null.
+ */
+function by_id( string $id ): ?array {
+	foreach ( experiences() as $e ) {
+		if ( (string) $e['id'] === $id ) {
+			return $e;
+		}
+	}
+	return null;
+}
+
+/**
+ * The /compare/ address for a set of ids, in the order given. Fewer than
+ * MIN_PICK gets the bare page rather than a state that would not survive
+ * picked(), so a caller can never build a link that lands on nothing.
+ *
+ * @param array<int, string> $ids
+ */
+function url_for( array $ids ): string {
+	$ids = array_slice( array_values( array_unique( array_filter( $ids ) ) ), 0, MAX_PICK );
+	if ( count( $ids ) < MIN_PICK ) {
+		return home_url( '/' . PATH . '/' );
+	}
+	return home_url( '/' . PATH . '/?with=' . implode( ',', array_map( 'rawurlencode', $ids ) ) );
+}
+
+/**
+ * The experience a taxonomy term stands for, matched on the registry URL
+ * so an experience is still tied to the site by exactly one field.
+ *
+ * Facet-backed experiences (pilates lives at /practices/yoga/pilates/)
+ * have no term of their own and simply return null — the caller falls
+ * back to the bare hub.
+ */
+function experience_for_term( \WP_Term $term ): ?array {
+	if ( 'practice' === $term->taxonomy ) {
+		$want = '/practices/' . $term->slug . '/';
+	} elseif ( 'specialty' === $term->taxonomy ) {
+		$want = '/perth/' . $term->slug . '/';
+	} else {
+		return null;
+	}
+	foreach ( experiences() as $e ) {
+		if ( (string) $e['url'] === $want ) {
+			return $e;
+		}
+	}
+
+	/*
+	 * Second pass, practice terms only: an experience whose URL is a
+	 * specialty or a facet still stands for a category — a sound bath is
+	 * what the Sound category is — and says so with an optional
+	 * "category" key. Only consulted when nothing matched on URL, so a
+	 * category that owns an experience outright always wins.
+	 */
+	if ( 'practice' === $term->taxonomy ) {
+		foreach ( experiences() as $e ) {
+			if ( isset( $e['category'] ) && (string) $e['category'] === $term->slug ) {
+				return $e;
+			}
+		}
+	}
+
+	return null;
+}
+
+/**
+ * The compare prompt for one category page: what this term stands for, set
+ * against the counterpart the registry names for it.
+ *
+ * Every category gets a prompt, including the fifteen with no registry
+ * entry — they fall back to the bare hub. A generic link is still worth
+ * having: it is the internal link that makes the page crawlable at all,
+ * and the visitor picks their own pair when we cannot pick it for them.
+ *
+ * @return array{url: string, label: string, filled: bool}
+ */
+function prompt_for_term( \WP_Term $term ): array {
+	$a = experience_for_term( $term );
+	$b = $a ? by_id( (string) ( $a['pair'] ?? '' ) ) : null;
+
+	if ( $a && $b ) {
+		return array(
+			'url'    => url_for( array( (string) $a['id'], (string) $b['id'] ) ),
+			/* translators: 1: this category, 2: the counterpart it is compared with */
+			'label'  => sprintf( __( 'Compare %1$s with %2$s', 'oria' ), $a['label'], $b['label'] ),
+			'filled' => true,
+		);
+	}
+
+	return array(
+		'url'    => home_url( '/' . PATH . '/' ),
+		'label'  => __( 'Compare wellness experiences side by side', 'oria' ),
+		'filled' => false,
+	);
+}
+
+/**
+ * Join labels as a list. Deliberately not wp_sprintf_l(), which serialises
+ * with an Oxford comma; the house style is Australian English, which does
+ * not use one.
+ *
+ * @param array<int, string> $labels
+ */
+function join_labels( array $labels ): string {
+	$labels = array_values( array_filter( $labels ) );
+	if ( count( $labels ) < 2 ) {
+		return (string) ( $labels[0] ?? '' );
+	}
+	$last = array_pop( $labels );
+	/* translators: 1: comma-separated list, 2: final item */
+	return sprintf( __( '%1$s and %2$s', 'oria' ), implode( ', ', $labels ), $last );
+}
+
+/**
+ * A prompt that compares the terms just shown to someone — the Finder's
+ * own results. Null when fewer than two of them are in the registry,
+ * because a comparison of one is not a comparison.
+ *
+ * @param array<int, \WP_Term> $terms
+ * @return array{url: string, labels: array<int, string>}|null
+ */
+function prompt_for_terms( array $terms ): ?array {
+	$ids = array();
+	foreach ( $terms as $t ) {
+		if ( ! $t instanceof \WP_Term ) {
+			continue;
+		}
+		$e = experience_for_term( $t );
+		if ( $e ) {
+			$ids[ (string) $e['id'] ] = (string) $e['label'];
+		}
+	}
+	$ids = array_slice( $ids, 0, MAX_PICK, true );
+	if ( count( $ids ) < MIN_PICK ) {
+		return null;
+	}
+	return array(
+		'url'    => url_for( array_keys( $ids ) ),
+		'labels' => array_values( $ids ),
+	);
+}
+
+/* ---------------------------------------------------------------- sitemap */
+
+/**
+ * @return list<array{loc: string}>
+ */
+function sitemap_entries(): array {
+	// One address today. The pair pages join this list, not the query
+	// strings — those canonical to the hub and must never be listed.
+	return array( array( 'loc' => home_url( '/' . PATH . '/' ) ) );
+}
+
+function register_sitemap(): void {
+	if ( ! isset( $GLOBALS['wpseo_sitemaps'] ) || ! method_exists( $GLOBALS['wpseo_sitemaps'], 'register_sitemap' ) ) {
+		return;
+	}
+	$GLOBALS['wpseo_sitemaps']->register_sitemap( SITEMAP, __NAMESPACE__ . '\build_sitemap' );
+}
+
+function build_sitemap(): void {
+	$sm = $GLOBALS['wpseo_sitemaps'] ?? null;
+	if ( ! $sm || ! isset( $sm->renderer ) ) {
+		return;
+	}
+	// get_sitemap() takes the links as an array and renders each itself.
+	$links = array();
+	foreach ( sitemap_entries() as $e ) {
+		$links[] = array(
+			'loc' => $e['loc'],
+			'mod' => gmdate( 'c' ),
+		);
+	}
+	$sm->set_sitemap( $sm->renderer->get_sitemap( $links, SITEMAP, 1 ) );
+}
+
+function sitemap_index( $xml ) {
+	if ( ! sitemap_entries() ) {
+		return $xml;
+	}
+	return $xml . sprintf(
+		"<sitemap><loc>%s</loc><lastmod>%s</lastmod></sitemap>\n",
+		esc_url( home_url( '/' . SITEMAP . '-sitemap.xml' ) ),
+		esc_html( gmdate( 'c' ) )
+	);
 }
 
 /* -------------------------------------------------------------------- seo */
