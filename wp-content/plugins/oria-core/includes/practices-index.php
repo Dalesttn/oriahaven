@@ -31,6 +31,10 @@ const PATH      = 'practices';
 const FACET_MIN = 3; // listings a facet page needs before it may be indexed
 const TILE_LINKS = 5; // links a Practices-index tile lists beneath its blurb
 
+/* Share of a category's listings a style must appear on to be offered
+   as a drill-down on its tile. Keeps cross-category specialties off. */
+const STYLE_SHARE = 0.25;
+
 /**
  * The redesigned category directory lives at /practices/{practice}/ — the
  * same practice taxonomy archive (so the engine, the answer block, the
@@ -679,8 +683,25 @@ function style_links( \WP_Term $practice, int $min = FACET_MIN ): array {
 	}
 	$out   = array();
 	$pname = strtolower( wp_specialchars_decode( $practice->name, ENT_QUOTES ) );
+
+	/*
+	 * A style has to be characteristic of the category, not merely present
+	 * in it. The absolute floor alone was not enough: three breathwork
+	 * studios that also run a retreat put "Wellness retreats" on the
+	 * Breathwork tile, and three day spas with a sauna put "Infrared sauna"
+	 * on Beauty. Both are true of the data and neither is a sub-category of
+	 * anything — they read as a miscategorisation to anyone scanning the
+	 * page.
+	 *
+	 * So a style must also be carried by a share of the category before it
+	 * is offered as a way in. The share scales with the category, which the
+	 * flat minimum could not: three of ten listings says something, three
+	 * of forty says almost nothing.
+	 */
+	$floor = max( $min, (int) ceil( STYLE_SHARE * count( $ids ) ) );
+
 	foreach ( $by_name as $row ) {
-		if ( $row['count'] < $min ) {
+		if ( $row['count'] < $floor ) {
 			continue;
 		}
 		// A style that is just the category's own name says nothing new.
