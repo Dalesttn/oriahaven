@@ -2703,6 +2703,20 @@ html.has-sheet { overflow: hidden; }
 .cats__compare { text-align: center; margin-top: 2.25rem; }
 .cmpnudge { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
 .cmpnudge--head { margin-top: 1.25rem; padding-top: 0; border-top: 0; }
+/* Whichever nudge comes second closes up under the first: one rule opens
+   the pair, not a divider between them. Written on the sibling rather than
+   on a specific modifier so it holds however they end up ordered. */
+.cmpnudge + .cmpnudge { margin-top: .4rem; padding-top: 0; border-top: 0; }
+
+/* Signpost between the two scales of comparison — whole categories, or
+   kinds within one. Sits under the picker, quieter than the submit. */
+.cmp__switch { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1.25rem; }
+.cmp__switch a {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--moss);
+  border-bottom: 1px solid transparent; padding-bottom: 2px;
+}
+.cmp__switch a:hover { color: var(--deep); border-bottom-color: currentColor; }
 .cats__compare a, .cmpnudge a, .finder__compare a {
   display: inline-flex; align-items: center; gap: .45rem;
   color: var(--moss); font-weight: 600; text-decoration: none;

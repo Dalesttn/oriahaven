@@ -25,36 +25,88 @@
     "physical": {
       "label": "Physical",
       "items": {
-        "intensity": { "label": "Physical intensity", "type": "scale", "hint": "How hard the body works in a typical session" },
-        "movement": { "label": "Movement", "type": "scale", "hint": "Still and lying down (1) to constantly moving (5)" },
-        "stretch": { "label": "Stretching & mobility work", "type": "scale", "hint": "How much of the session is spent on it" },
-        "strengthwork": { "label": "Strength work", "type": "scale", "hint": "Resistance, load or bodyweight effort" }
+        "intensity": {
+          "label": "Physical intensity",
+          "type": "scale",
+          "hint": "How hard the body works in a typical session"
+        },
+        "movement": {
+          "label": "Movement",
+          "type": "scale",
+          "hint": "Still and lying down (1) to constantly moving (5)"
+        },
+        "stretch": {
+          "label": "Stretching & mobility work",
+          "type": "scale",
+          "hint": "How much of the session is spent on it"
+        },
+        "strengthwork": {
+          "label": "Strength work",
+          "type": "scale",
+          "hint": "Resistance, load or bodyweight effort"
+        }
       }
     },
     "session": {
       "label": "In the room",
       "items": {
-        "guidance": { "label": "Spoken guidance", "type": "scale", "hint": "Silent (1) to continuously instructed (5)" },
-        "position": { "label": "You are mostly", "type": "text" },
-        "quiet": { "label": "Quietness", "type": "scale", "hint": "Loud or music-led (1) to near silence (5)" },
-        "touch": { "label": "Hands-on", "type": "text", "hint": "Whether a practitioner touches you" }
+        "guidance": {
+          "label": "Spoken guidance",
+          "type": "scale",
+          "hint": "Silent (1) to continuously instructed (5)"
+        },
+        "position": {
+          "label": "You are mostly",
+          "type": "text"
+        },
+        "quiet": {
+          "label": "Quietness",
+          "type": "scale",
+          "hint": "Loud or music-led (1) to near silence (5)"
+        },
+        "touch": {
+          "label": "Hands-on",
+          "type": "text",
+          "hint": "Whether a practitioner touches you"
+        }
       }
     },
     "people": {
       "label": "People",
       "items": {
-        "groupsize": { "label": "Typical group", "type": "text" },
-        "social": { "label": "Interaction with others", "type": "scale" },
-        "oneonone": { "label": "One-on-one available", "type": "text" },
-        "experience": { "label": "Experience needed", "type": "text" }
+        "groupsize": {
+          "label": "Typical group",
+          "type": "text"
+        },
+        "social": {
+          "label": "Interaction with others",
+          "type": "scale"
+        },
+        "oneonone": {
+          "label": "One-on-one available",
+          "type": "text"
+        },
+        "experience": {
+          "label": "Experience needed",
+          "type": "text"
+        }
       }
     },
     "practical": {
       "label": "Practical",
       "items": {
-        "price": { "label": "Typical price", "type": "band" },
-        "duration": { "label": "Typical session", "type": "text" },
-        "athome": { "label": "Can be practised at home", "type": "text" }
+        "price": {
+          "label": "Typical price",
+          "type": "band"
+        },
+        "duration": {
+          "label": "Typical session",
+          "type": "text"
+        },
+        "athome": {
+          "label": "Can be practised at home",
+          "type": "text"
+        }
       }
     }
   },
@@ -65,7 +117,23 @@
       "url": "/practices/yoga/",
       "pair": "pilates",
       "note": "Mat classes from slow hatha to fast vinyasa; the scores describe a general-level class.",
-      "attributes": { "intensity": 3, "movement": 4, "stretch": 5, "strengthwork": 3, "guidance": 4, "position": "Standing and on the mat", "quiet": 3, "touch": "Optional adjustments in some studios", "groupsize": "8–25", "social": 3, "oneonone": "Yes, at most studios", "experience": "None — beginner classes are common", "price": "$$", "duration": "60–75 min", "athome": "Yes" }
+      "attributes": {
+        "intensity": 3,
+        "movement": 4,
+        "stretch": 5,
+        "strengthwork": 3,
+        "guidance": 4,
+        "position": "Standing and on the mat",
+        "quiet": 3,
+        "touch": "Optional adjustments in some studios",
+        "groupsize": "8–25",
+        "social": 3,
+        "oneonone": "Yes, at most studios",
+        "experience": "None — beginner classes are common",
+        "price": "$$",
+        "duration": "60–75 min",
+        "athome": "Yes"
+      }
     },
     {
       "id": "pilates",
@@ -73,7 +141,23 @@
       "url": "/practices/yoga/pilates/",
       "pair": "yoga",
       "note": "Mat and reformer both exist; reformer runs harder and dearer.",
-      "attributes": { "intensity": 4, "movement": 4, "stretch": 4, "strengthwork": 5, "guidance": 5, "position": "On the mat or a reformer bed", "quiet": 2, "touch": "Occasional form corrections", "groupsize": "6–14", "social": 3, "oneonone": "Yes, widely", "experience": "None for mat; an intro class first for reformer", "price": "$$$", "duration": "45–60 min", "athome": "Mat yes; reformer needs the studio" }
+      "attributes": {
+        "intensity": 4,
+        "movement": 4,
+        "stretch": 4,
+        "strengthwork": 5,
+        "guidance": 5,
+        "position": "On the mat or a reformer bed",
+        "quiet": 2,
+        "touch": "Occasional form corrections",
+        "groupsize": "6–14",
+        "social": 3,
+        "oneonone": "Yes, widely",
+        "experience": "None for mat; an intro class first for reformer",
+        "price": "$$$",
+        "duration": "45–60 min",
+        "athome": "Mat yes; reformer needs the studio"
+      }
     },
     {
       "id": "breathwork",
@@ -81,14 +165,46 @@
       "url": "/practices/breathwork/",
       "pair": "meditation",
       "note": "The long conscious-connected format; the short functional style is gentler again.",
-      "attributes": { "intensity": 2, "movement": 1, "stretch": 1, "strengthwork": 1, "guidance": 5, "position": "Lying down", "quiet": 2, "touch": "None, or light consented touch from a facilitator", "groupsize": "6–30", "social": 2, "oneonone": "Yes, common", "experience": "None — facilitators screen beforehand", "price": "$$", "duration": "60–90 min", "athome": "Short practices yes; long formats are run guided" }
+      "attributes": {
+        "intensity": 2,
+        "movement": 1,
+        "stretch": 1,
+        "strengthwork": 1,
+        "guidance": 5,
+        "position": "Lying down",
+        "quiet": 2,
+        "touch": "None, or light consented touch from a facilitator",
+        "groupsize": "6–30",
+        "social": 2,
+        "oneonone": "Yes, common",
+        "experience": "None — facilitators screen beforehand",
+        "price": "$$",
+        "duration": "60–90 min",
+        "athome": "Short practices yes; long formats are run guided"
+      }
     },
     {
       "id": "meditation",
       "label": "Meditation",
       "url": "/practices/meditation/",
       "pair": "mindfulness",
-      "attributes": { "intensity": 1, "movement": 1, "stretch": 1, "strengthwork": 1, "guidance": 3, "position": "Seated", "quiet": 5, "touch": "None", "groupsize": "5–30", "social": 2, "oneonone": "Sometimes", "experience": "None", "price": "$", "duration": "30–60 min", "athome": "Yes" }
+      "attributes": {
+        "intensity": 1,
+        "movement": 1,
+        "stretch": 1,
+        "strengthwork": 1,
+        "guidance": 3,
+        "position": "Seated",
+        "quiet": 5,
+        "touch": "None",
+        "groupsize": "5–30",
+        "social": 2,
+        "oneonone": "Sometimes",
+        "experience": "None",
+        "price": "$",
+        "duration": "30–60 min",
+        "athome": "Yes"
+      }
     },
     {
       "id": "sound-healing",
@@ -96,14 +212,46 @@
       "url": "/perth/sound-healing/",
       "pair": "meditation",
       "category": "sound",
-      "attributes": { "intensity": 1, "movement": 1, "stretch": 1, "strengthwork": 1, "guidance": 2, "position": "Lying down", "quiet": 1, "touch": "None", "groupsize": "8–40", "social": 2, "oneonone": "Sometimes", "experience": "None", "price": "$$", "duration": "60–90 min", "athome": "Not really — the instruments are the event" }
+      "attributes": {
+        "intensity": 1,
+        "movement": 1,
+        "stretch": 1,
+        "strengthwork": 1,
+        "guidance": 2,
+        "position": "Lying down",
+        "quiet": 1,
+        "touch": "None",
+        "groupsize": "8–40",
+        "social": 2,
+        "oneonone": "Sometimes",
+        "experience": "None",
+        "price": "$$",
+        "duration": "60–90 min",
+        "athome": "Not really — the instruments are the event"
+      }
     },
     {
       "id": "float",
       "label": "Float therapy",
       "url": "/perth/float-therapy/",
       "pair": "infrared-sauna",
-      "attributes": { "intensity": 1, "movement": 1, "stretch": 1, "strengthwork": 1, "guidance": 1, "position": "Floating in a tank", "quiet": 5, "touch": "None", "groupsize": "Solo", "social": 1, "oneonone": "It is one-on-none — you are alone", "experience": "None", "price": "$$", "duration": "60 min", "athome": "No" }
+      "attributes": {
+        "intensity": 1,
+        "movement": 1,
+        "stretch": 1,
+        "strengthwork": 1,
+        "guidance": 1,
+        "position": "Floating in a tank",
+        "quiet": 5,
+        "touch": "None",
+        "groupsize": "Solo",
+        "social": 1,
+        "oneonone": "It is one-on-none — you are alone",
+        "experience": "None",
+        "price": "$$",
+        "duration": "60 min",
+        "athome": "No"
+      }
     },
     {
       "id": "infrared-sauna",
@@ -111,7 +259,23 @@
       "url": "/perth/infrared-sauna/",
       "pair": "ice-bath",
       "category": "recovery",
-      "attributes": { "intensity": 1, "movement": 1, "stretch": 1, "strengthwork": 1, "guidance": 1, "position": "Seated in the heat", "quiet": 4, "touch": "None", "groupsize": "1–3, usually private", "social": 1, "oneonone": "Rooms are booked privately", "experience": "None", "price": "$$", "duration": "30–45 min", "athome": "Only with your own unit" }
+      "attributes": {
+        "intensity": 1,
+        "movement": 1,
+        "stretch": 1,
+        "strengthwork": 1,
+        "guidance": 1,
+        "position": "Seated in the heat",
+        "quiet": 4,
+        "touch": "None",
+        "groupsize": "1–3, usually private",
+        "social": 1,
+        "oneonone": "Rooms are booked privately",
+        "experience": "None",
+        "price": "$$",
+        "duration": "30–45 min",
+        "athome": "Only with your own unit"
+      }
     },
     {
       "id": "ice-bath",
@@ -119,7 +283,23 @@
       "url": "/perth/cold-plunge/",
       "pair": "infrared-sauna",
       "note": "Usually sold as a hot-cold circuit with a sauna alongside.",
-      "attributes": { "intensity": 3, "movement": 1, "stretch": 1, "strengthwork": 1, "guidance": 3, "position": "In the water, then the heat", "quiet": 3, "touch": "None", "groupsize": "1–8", "social": 2, "oneonone": "Private rooms are common", "experience": "None — staff talk first-timers through it", "price": "$$", "duration": "30–60 min", "athome": "A cold shower is the budget version" }
+      "attributes": {
+        "intensity": 3,
+        "movement": 1,
+        "stretch": 1,
+        "strengthwork": 1,
+        "guidance": 3,
+        "position": "In the water, then the heat",
+        "quiet": 3,
+        "touch": "None",
+        "groupsize": "1–8",
+        "social": 2,
+        "oneonone": "Private rooms are common",
+        "experience": "None — staff talk first-timers through it",
+        "price": "$$",
+        "duration": "30–60 min",
+        "athome": "A cold shower is the budget version"
+      }
     },
     {
       "id": "massage",
@@ -127,21 +307,69 @@
       "url": "/practices/bodywork/",
       "pair": "day-spa",
       "note": "Relaxation through to remedial; remedial runs firmer and is often health-fund claimable.",
-      "attributes": { "intensity": 1, "movement": 1, "stretch": 1, "strengthwork": 1, "guidance": 1, "position": "Lying on a table", "quiet": 4, "touch": "The whole point — a practitioner works on you", "groupsize": "Solo", "social": 1, "oneonone": "Always", "experience": "None", "price": "$$$", "duration": "45–90 min", "athome": "Mobile therapists exist" }
+      "attributes": {
+        "intensity": 1,
+        "movement": 1,
+        "stretch": 1,
+        "strengthwork": 1,
+        "guidance": 1,
+        "position": "Lying on a table",
+        "quiet": 4,
+        "touch": "The whole point — a practitioner works on you",
+        "groupsize": "Solo",
+        "social": 1,
+        "oneonone": "Always",
+        "experience": "None",
+        "price": "$$$",
+        "duration": "45–90 min",
+        "athome": "Mobile therapists exist"
+      }
     },
     {
       "id": "day-spa",
       "label": "Day spa",
       "url": "/practices/spa/",
       "pair": "massage",
-      "attributes": { "intensity": 1, "movement": 1, "stretch": 1, "strengthwork": 1, "guidance": 1, "position": "Moving between rooms and treatments", "quiet": 4, "touch": "Most treatments are hands-on", "groupsize": "Solo or a pair", "social": 2, "oneonone": "Treatments are one-on-one", "experience": "None", "price": "$$$$", "duration": "Half a day", "athome": "No" }
+      "attributes": {
+        "intensity": 1,
+        "movement": 1,
+        "stretch": 1,
+        "strengthwork": 1,
+        "guidance": 1,
+        "position": "Moving between rooms and treatments",
+        "quiet": 4,
+        "touch": "Most treatments are hands-on",
+        "groupsize": "Solo or a pair",
+        "social": 2,
+        "oneonone": "Treatments are one-on-one",
+        "experience": "None",
+        "price": "$$$$",
+        "duration": "Half a day",
+        "athome": "No"
+      }
     },
     {
       "id": "tai-chi",
       "label": "Tai chi & qigong",
       "url": "/perth/tai-chi/",
       "pair": "yoga",
-      "attributes": { "intensity": 2, "movement": 3, "stretch": 3, "strengthwork": 2, "guidance": 4, "position": "Standing, moving slowly", "quiet": 4, "touch": "None", "groupsize": "8–25", "social": 3, "oneonone": "Sometimes", "experience": "None", "price": "$", "duration": "60 min", "athome": "Yes, once you know a form" }
+      "attributes": {
+        "intensity": 2,
+        "movement": 3,
+        "stretch": 3,
+        "strengthwork": 2,
+        "guidance": 4,
+        "position": "Standing, moving slowly",
+        "quiet": 4,
+        "touch": "None",
+        "groupsize": "8–25",
+        "social": 3,
+        "oneonone": "Sometimes",
+        "experience": "None",
+        "price": "$",
+        "duration": "60 min",
+        "athome": "Yes, once you know a form"
+      }
     },
     {
       "id": "personal-training",
@@ -149,7 +377,23 @@
       "url": "/practices/fitness/personal-training/",
       "pair": "pilates",
       "category": "fitness",
-      "attributes": { "intensity": 5, "movement": 5, "stretch": 2, "strengthwork": 5, "guidance": 5, "position": "On your feet, working", "quiet": 1, "touch": "Spotting and form corrections", "groupsize": "1–4", "social": 3, "oneonone": "That is the format", "experience": "None — programmes start where you are", "price": "$$$", "duration": "45–60 min", "athome": "Many trainers travel" }
+      "attributes": {
+        "intensity": 5,
+        "movement": 5,
+        "stretch": 2,
+        "strengthwork": 5,
+        "guidance": 5,
+        "position": "On your feet, working",
+        "quiet": 1,
+        "touch": "Spotting and form corrections",
+        "groupsize": "1–4",
+        "social": 3,
+        "oneonone": "That is the format",
+        "experience": "None — programmes start where you are",
+        "price": "$$$",
+        "duration": "45–60 min",
+        "athome": "Many trainers travel"
+      }
     },
     {
       "id": "reiki",
@@ -157,28 +401,295 @@
       "url": "/perth/reiki/",
       "pair": "massage",
       "category": "energy",
-      "attributes": { "intensity": 1, "movement": 1, "stretch": 1, "strengthwork": 1, "guidance": 2, "position": "Lying down, clothed", "quiet": 5, "touch": "Light placed hands, or none — ask the practitioner", "groupsize": "Solo", "social": 1, "oneonone": "Always", "experience": "None", "price": "$$", "duration": "45–60 min", "athome": "Practitioners visit" }
+      "attributes": {
+        "intensity": 1,
+        "movement": 1,
+        "stretch": 1,
+        "strengthwork": 1,
+        "guidance": 2,
+        "position": "Lying down, clothed",
+        "quiet": 5,
+        "touch": "Light placed hands, or none — ask the practitioner",
+        "groupsize": "Solo",
+        "social": 1,
+        "oneonone": "Always",
+        "experience": "None",
+        "price": "$$",
+        "duration": "45–60 min",
+        "athome": "Practitioners visit"
+      }
     },
     {
       "id": "art-therapy",
       "label": "Art & music therapy",
       "url": "/practices/creative/",
       "pair": "mindfulness",
-      "attributes": { "intensity": 1, "movement": 2, "stretch": 1, "strengthwork": 1, "guidance": 4, "position": "Seated, making something", "quiet": 3, "touch": "None", "groupsize": "1–10", "social": 3, "oneonone": "Yes, widely", "experience": "None — no artistic skill expected", "price": "$$$", "duration": "60–90 min", "athome": "Between sessions, yes" }
+      "attributes": {
+        "intensity": 1,
+        "movement": 2,
+        "stretch": 1,
+        "strengthwork": 1,
+        "guidance": 4,
+        "position": "Seated, making something",
+        "quiet": 3,
+        "touch": "None",
+        "groupsize": "1–10",
+        "social": 3,
+        "oneonone": "Yes, widely",
+        "experience": "None — no artistic skill expected",
+        "price": "$$$",
+        "duration": "60–90 min",
+        "athome": "Between sessions, yes"
+      }
     },
     {
       "id": "nature",
       "label": "Guided nature & hiking",
       "url": "/practices/nature/",
       "pair": "tai-chi",
-      "attributes": { "intensity": 3, "movement": 5, "stretch": 1, "strengthwork": 2, "guidance": 3, "position": "Walking, outdoors", "quiet": 4, "touch": "None", "groupsize": "6–20", "social": 4, "oneonone": "Rarely — it is a group thing", "experience": "None for graded walks", "price": "$", "duration": "2–4 hours", "athome": "The bush is free any day" }
+      "attributes": {
+        "intensity": 3,
+        "movement": 5,
+        "stretch": 1,
+        "strengthwork": 2,
+        "guidance": 3,
+        "position": "Walking, outdoors",
+        "quiet": 4,
+        "touch": "None",
+        "groupsize": "6–20",
+        "social": 4,
+        "oneonone": "Rarely — it is a group thing",
+        "experience": "None for graded walks",
+        "price": "$",
+        "duration": "2–4 hours",
+        "athome": "The bush is free any day"
+      }
     },
     {
       "id": "mindfulness",
       "label": "Mindfulness coaching",
       "url": "/practices/mindfulness/",
       "pair": "meditation",
-      "attributes": { "intensity": 1, "movement": 1, "stretch": 1, "strengthwork": 1, "guidance": 5, "position": "Seated, in conversation", "quiet": 3, "touch": "None", "groupsize": "1–12", "social": 3, "oneonone": "Yes — much of it is", "experience": "None", "price": "$$$", "duration": "60 min", "athome": "The practice between sessions is the point" }
+      "attributes": {
+        "intensity": 1,
+        "movement": 1,
+        "stretch": 1,
+        "strengthwork": 1,
+        "guidance": 5,
+        "position": "Seated, in conversation",
+        "quiet": 3,
+        "touch": "None",
+        "groupsize": "1–12",
+        "social": 3,
+        "oneonone": "Yes — much of it is",
+        "experience": "None",
+        "price": "$$$",
+        "duration": "60 min",
+        "athome": "The practice between sessions is the point"
+      }
+    },
+    {
+      "id": "remedial-massage",
+      "label": "Remedial massage",
+      "url": "/perth/remedial-massage/",
+      "pair": "deep-tissue",
+      "group": "massage-types",
+      "attributes": {
+        "pressure": 4,
+        "position": "Face down, then face up, on a table",
+        "clothed": "Undressed to your comfort, draped with a towel",
+        "quiet": 3,
+        "assessment": "Yes — questions, and often movement tests",
+        "focus": "Usually one or two areas",
+        "duration": "30–60 min",
+        "afterfeel": "Can be tender for a day afterwards",
+        "price": "$$$",
+        "claimable": "Often claimable with an accredited therapist — check your fund"
+      }
+    },
+    {
+      "id": "deep-tissue",
+      "label": "Deep tissue massage",
+      "url": "/perth/deep-tissue/",
+      "pair": "remedial-massage",
+      "group": "massage-types",
+      "attributes": {
+        "pressure": 5,
+        "position": "Face down, then face up, on a table",
+        "clothed": "Undressed to your comfort, draped with a towel",
+        "quiet": 3,
+        "assessment": "Brief — where it hurts, and how firm you want it",
+        "focus": "One or two areas, worked slowly",
+        "duration": "30–60 min",
+        "afterfeel": "Commonly tender for a day or two",
+        "price": "$$$",
+        "claimable": "Sometimes, where an accredited therapist bills it as remedial"
+      }
+    },
+    {
+      "id": "relaxation-massage",
+      "label": "Relaxation (Swedish)",
+      "url": "/practices/bodywork/relaxation-massage/",
+      "pair": "remedial-massage",
+      "group": "massage-types",
+      "attributes": {
+        "pressure": 2,
+        "position": "Face down, then face up, on a table",
+        "clothed": "Undressed to your comfort, draped with a towel",
+        "quiet": 5,
+        "assessment": "A short intake form, no testing",
+        "focus": "Whole body, in one flowing sequence",
+        "duration": "60–90 min",
+        "afterfeel": "Rarely any soreness",
+        "price": "$$$",
+        "claimable": "No — relaxation massage is not claimable"
+      }
+    },
+    {
+      "id": "sports-massage",
+      "label": "Sports massage",
+      "url": "/perth/sports-massage/",
+      "pair": "remedial-massage",
+      "group": "massage-types",
+      "attributes": {
+        "pressure": 4,
+        "position": "On a table, sometimes in shorts for leg work",
+        "clothed": "Draped, or shorts and a singlet",
+        "quiet": 2,
+        "assessment": "Yes — what you train and what is sore",
+        "focus": "The muscles your sport loads",
+        "duration": "30–60 min",
+        "afterfeel": "Can be tender, depending how close to an event",
+        "price": "$$$",
+        "claimable": "Often claimable with an accredited therapist"
+      }
+    },
+    {
+      "id": "pregnancy-massage",
+      "label": "Pregnancy massage",
+      "url": "/perth/pregnancy-massage/",
+      "pair": "relaxation-massage",
+      "group": "massage-types",
+      "attributes": {
+        "pressure": 2,
+        "position": "Side-lying, propped with bolsters",
+        "clothed": "Draped throughout",
+        "quiet": 4,
+        "assessment": "Yes — how far along you are, and anything your midwife or GP has said",
+        "focus": "Back, hips and legs, usually",
+        "duration": "45–60 min",
+        "afterfeel": "Rarely any soreness",
+        "price": "$$$",
+        "claimable": "Often claimable with an accredited therapist"
+      }
+    },
+    {
+      "id": "lymphatic-drainage",
+      "label": "Lymphatic drainage",
+      "url": "/perth/lymphatic-drainage/",
+      "pair": "remedial-massage",
+      "group": "massage-types",
+      "attributes": {
+        "pressure": 1,
+        "position": "Face up, then face down, on a table",
+        "clothed": "Draped; some clinics add a compression garment after",
+        "quiet": 4,
+        "assessment": "Yes — a fuller intake, including any surgery",
+        "focus": "Whole body, in a set sequence",
+        "duration": "45–90 min",
+        "afterfeel": "No soreness — the pressure is too light for it",
+        "price": "$$$$",
+        "claimable": "Sometimes, depending on the therapist's accreditation"
+      }
+    },
+    {
+      "id": "reflexology",
+      "label": "Reflexology",
+      "url": "/perth/reflexology/",
+      "pair": "relaxation-massage",
+      "group": "massage-types",
+      "attributes": {
+        "pressure": 3,
+        "position": "Reclined in a chair or on a table, shoes off",
+        "clothed": "Fully clothed — only the feet are uncovered",
+        "quiet": 4,
+        "assessment": "A short intake, then straight to the feet",
+        "focus": "Feet, sometimes hands and ears",
+        "duration": "45–60 min",
+        "afterfeel": "Rarely sore, though single points can feel tender at the time",
+        "price": "$$",
+        "claimable": "Rarely — check with your fund first"
+      }
     }
-  ]
+  ],
+  "groups": {
+    "massage-types": {
+      "label": "Types of massage",
+      "parent": "bodywork",
+      "h1": "Types of massage compared",
+      "blurb": "Remedial, deep tissue, relaxation and the rest — what actually differs once you are on the table. Pressure, what you wear, whether anyone assesses you first, and whether your fund will pay.",
+      "attributes": {
+        "room": {
+          "label": "On the table",
+          "items": {
+            "pressure": {
+              "label": "Pressure",
+              "type": "scale",
+              "hint": "Resting hands (1) to as firm as you can take (5)"
+            },
+            "position": {
+              "label": "You are",
+              "type": "text"
+            },
+            "clothed": {
+              "label": "What you wear",
+              "type": "text"
+            },
+            "quiet": {
+              "label": "Quietness",
+              "type": "scale",
+              "hint": "Talking throughout (1) to near silence (5)"
+            }
+          }
+        },
+        "session": {
+          "label": "How the session runs",
+          "items": {
+            "assessment": {
+              "label": "Assessed first",
+              "type": "text",
+              "hint": "Whether anyone asks questions or tests movement before starting"
+            },
+            "focus": {
+              "label": "What gets worked",
+              "type": "text"
+            },
+            "duration": {
+              "label": "Typical session",
+              "type": "text"
+            },
+            "afterfeel": {
+              "label": "The next day",
+              "type": "text",
+              "hint": "How the modality usually leaves people feeling, not a promise"
+            }
+          }
+        },
+        "practical": {
+          "label": "Practical",
+          "items": {
+            "price": {
+              "label": "Typical price",
+              "type": "band"
+            },
+            "claimable": {
+              "label": "Private health",
+              "type": "text",
+              "hint": "Always confirm with your own fund and therapist"
+            }
+          }
+        }
+      }
+    }
+  }
 }

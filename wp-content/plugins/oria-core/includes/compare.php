@@ -128,6 +128,7 @@ function registry(): array {
 	$json = json_decode( $raw, true );
 	$data = array(
 		'attributes'  => is_array( $json['attributes'] ?? null ) ? $json['attributes'] : array(),
+		'groups'      => is_array( $json['groups'] ?? null ) ? $json['groups'] : array(),
 		'experiences' => is_array( $json['experiences'] ?? null ) ? $json['experiences'] : array(),
 	);
 	return $data;
@@ -138,9 +139,65 @@ function experiences(): array {
 	return registry()['experiences'];
 }
 
-/** The attribute sections, in display order. */
-function sections(): array {
+/**
+ * Groups are comparisons WITHIN a category — types of massage, styles of
+ * yoga — as opposed to the top-level set, which compares one category
+ * against another.
+ *
+ * A group carries its own attribute schema because the discriminating
+ * questions change with the scale. "Movement" and "Can be practised at
+ * home" separate yoga from float therapy; they are identical for all
+ * seven kinds of massage, and a table of rows that all agree is a table
+ * that tells you nothing. Pressure, what you wear and whether your fund
+ * pays are what actually differ down there.
+ *
+ * @return array<string, array>
+ */
+function groups(): array {
+	return registry()['groups'];
+}
+
+function group( string $id ): ?array {
+	$g = groups();
+	return isset( $g[ $id ] ) && is_array( $g[ $id ] ) ? $g[ $id ] : null;
+}
+
+/**
+ * The experiences in one group, or the top-level set when $group is ''.
+ *
+ * @return array<int, array>
+ */
+function experiences_in( string $group = '' ): array {
+	$out = array();
+	foreach ( experiences() as $e ) {
+		if ( (string) ( $e['group'] ?? '' ) === $group ) {
+			$out[] = $e;
+		}
+	}
+	return $out;
+}
+
+/**
+ * The attribute sections for a group, in display order. The top-level
+ * schema is the fallback, so an unknown group degrades to a real table
+ * rather than an empty one.
+ */
+function sections( string $group = '' ): array {
+	$g = '' !== $group ? group( $group ) : null;
+	if ( $g && is_array( $g['attributes'] ?? null ) ) {
+		return $g['attributes'];
+	}
 	return registry()['attributes'];
+}
+
+/**
+ * The group a set of picks belongs to. Picks never span groups — see
+ * picked(), which enforces it — so the first one decides.
+ *
+ * @param array<int, array> $picked
+ */
+function group_of( array $picked ): string {
+	return $picked ? (string) ( $picked[0]['group'] ?? '' ) : '';
 }
 
 /**
@@ -164,14 +221,40 @@ function picked(): array {
 	}
 	$out = array();
 	foreach ( array_unique( array_filter( array_map( 'sanitize_title', explode( ',', $raw ) ) ) ) as $id ) {
-		if ( isset( $by_id[ $id ] ) ) {
-			$out[] = $by_id[ $id ];
+		if ( ! isset( $by_id[ $id ] ) ) {
+			continue;
 		}
+		/*
+		 * Picks may not span groups. Each group scores its own attributes,
+		 * so a mixed set would put remedial massage in a column asking how
+		 * much of the session is spent stretching — a blank cell that reads
+		 * as a fact about the modality rather than a gap in the data.
+		 * The first valid pick fixes the group; later strays are dropped,
+		 * the same forgiveness unknown ids already get.
+		 */
+		if ( $out && (string) ( $by_id[ $id ]['group'] ?? '' ) !== group_of( $out ) ) {
+			continue;
+		}
+		$out[] = $by_id[ $id ];
 		if ( count( $out ) === MAX_PICK ) {
 			break;
 		}
 	}
 	return count( $out ) >= MIN_PICK ? $out : array();
+}
+
+/**
+ * The group the page is showing: whichever the picks belong to, else an
+ * explicit ?group= for the empty picker, else the top-level set.
+ */
+function current_group(): string {
+	$p = picked();
+	if ( $p ) {
+		return group_of( $p );
+	}
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
+	$raw = isset( $_GET['group'] ) && is_string( $_GET['group'] ) ? sanitize_title( wp_unslash( $_GET['group'] ) ) : '';
+	return ( '' !== $raw && group( $raw ) ) ? $raw : '';
 }
 
 /**
@@ -194,8 +277,23 @@ function summary( array $picked ): array {
 		return $sorted;
 	};
 
+	/*
+	 * Groups score different attributes, so every rule below has to ask
+	 * whether its attribute is even on this table. Without the guard a
+	 * massage comparison reads a missing "intensity" as zero and reports
+	 * a difference that does not exist.
+	 */
+	$has = static function ( string $key ) use ( $picked ): bool {
+		foreach ( $picked as $e ) {
+			if ( ! isset( $e['attributes'][ $key ] ) ) {
+				return false;
+			}
+		}
+		return true;
+	};
+
 	$hard = $by( 'intensity' );
-	if ( (int) $hard[0]['attributes']['intensity'] !== (int) end( $hard )['attributes']['intensity'] ) {
+	if ( $has( 'intensity' ) && (int) $hard[0]['attributes']['intensity'] !== (int) end( $hard )['attributes']['intensity'] ) {
 		$lines[] = sprintf(
 			/* translators: 1: hardest experience, 2: gentlest experience */
 			__( '%1$s asks the most of the body here; %2$s the least.', 'oria' ),
@@ -204,8 +302,20 @@ function summary( array $picked ): array {
 		);
 	}
 
+	// The same shape one scale down: within a category, pressure is what
+	// separates one table from the next.
+	$firm = $by( 'pressure' );
+	if ( $has( 'pressure' ) && (int) $firm[0]['attributes']['pressure'] !== (int) end( $firm )['attributes']['pressure'] ) {
+		$lines[] = sprintf(
+			/* translators: 1: firmest experience, 2: lightest experience */
+			__( '%1$s works the firmest of these; %2$s is the lightest touch.', 'oria' ),
+			$firm[0]['label'],
+			end( $firm )['label']
+		);
+	}
+
 	$quiet = $by( 'quiet' );
-	if ( (int) $quiet[0]['attributes']['quiet'] !== (int) end( $quiet )['attributes']['quiet'] ) {
+	if ( $has( 'quiet' ) && (int) $quiet[0]['attributes']['quiet'] !== (int) end( $quiet )['attributes']['quiet'] ) {
 		$lines[] = sprintf(
 			/* translators: %s: quietest experience */
 			__( '%s is the quietest room of the set.', 'oria' ),
@@ -216,7 +326,7 @@ function summary( array $picked ): array {
 	$social = $by( 'social' );
 	// "Alone" is only claimed at a score of 1 — a sound bath is quiet, but
 	// a room of forty people lying down is not solitude.
-	if ( (int) $social[0]['attributes']['social'] >= 3 && 1 === (int) end( $social )['attributes']['social'] ) {
+	if ( $has( 'social' ) && (int) $social[0]['attributes']['social'] >= 3 && 1 === (int) end( $social )['attributes']['social'] ) {
 		$lines[] = sprintf(
 			/* translators: 1: most social experience, 2: most solitary experience */
 			__( '%1$s is the most social; %2$s you do essentially alone.', 'oria' ),
@@ -445,6 +555,52 @@ function prompt_for_term( \WP_Term $term ): array {
 }
 
 /**
+ * The within-category group a practice term owns, if any — Bodywork owns
+ * "Types of massage". Keyed off the group's own "parent", so the registry
+ * declares the relationship and the template never has to know it.
+ */
+function group_for_term( \WP_Term $term ): ?array {
+	if ( 'practice' !== $term->taxonomy ) {
+		return null;
+	}
+	foreach ( groups() as $id => $g ) {
+		if ( is_array( $g ) && (string) ( $g['parent'] ?? '' ) === $term->slug ) {
+			$g['id'] = (string) $id;
+			return $g;
+		}
+	}
+	return null;
+}
+
+/**
+ * The second prompt a category page can carry: not "how does massage
+ * compare to a day spa" but "which kind of massage do I book". It opens
+ * pre-filled with the first four the registry lists, which is the useful
+ * table rather than an empty picker.
+ *
+ * @return array{url: string, label: string}|null
+ */
+function group_prompt_for_term( \WP_Term $term ): ?array {
+	$g = group_for_term( $term );
+	if ( ! $g ) {
+		return null;
+	}
+	$members = experiences_in( (string) $g['id'] );
+	if ( count( $members ) < MIN_PICK ) {
+		return null;
+	}
+	$ids = array();
+	foreach ( array_slice( $members, 0, MAX_PICK ) as $e ) {
+		$ids[] = (string) $e['id'];
+	}
+	return array(
+		'url'   => url_for( $ids ),
+		/* translators: %s: group name, e.g. "types of massage" */
+		'label' => sprintf( __( 'Compare %s side by side', 'oria' ), lcfirst( (string) $g['label'] ) ),
+	);
+}
+
+/**
  * Join labels as a list. Deliberately not wp_sprintf_l(), which serialises
  * with an Oxford comma; the house style is Australian English, which does
  * not use one.
@@ -537,13 +693,27 @@ function sitemap_index( $xml ) {
 
 /* -------------------------------------------------------------------- seo */
 
+/**
+ * The page's heading, which the H1 and the title tag both take. A group
+ * view is a different page to a reader, so it says so — even though every
+ * variant still canonicals to the bare /compare/.
+ */
+function heading(): string {
+	$g = group( current_group() );
+	if ( $g ) {
+		/* translators: %s: group heading, e.g. "Types of massage compared" */
+		return sprintf( __( '%s in Perth', 'oria' ), (string) ( $g['h1'] ?? $g['label'] ) );
+	}
+	return __( 'Compare wellness experiences in Perth', 'oria' );
+}
+
 function title( $title ) {
-	return is_compare() ? sprintf( 'Compare wellness experiences in Perth | %s', get_bloginfo( 'name' ) ) : $title;
+	return is_compare() ? sprintf( '%s | %s', heading(), get_bloginfo( 'name' ) ) : $title;
 }
 
 function core_title( array $parts ): array {
 	if ( is_compare() ) {
-		$parts['title'] = __( 'Compare wellness experiences in Perth', 'oria' );
+		$parts['title'] = heading();
 	}
 	return $parts;
 }
@@ -552,10 +722,14 @@ function description( $desc ) {
 	if ( ! is_compare() ) {
 		return $desc;
 	}
+	$g = group( current_group() );
+	if ( $g && '' !== (string) ( $g['blurb'] ?? '' ) ) {
+		return (string) $g['blurb'];
+	}
 	return sprintf(
-		/* translators: %d: number of experiences in the registry */
+		/* translators: %d: number of experiences in the top-level set */
 		__( 'Put %d wellness experiences side by side — intensity, guidance, group size, price and time — then find who runs each one in Perth.', 'oria' ),
-		count( experiences() )
+		count( experiences_in( '' ) )
 	);
 }
 

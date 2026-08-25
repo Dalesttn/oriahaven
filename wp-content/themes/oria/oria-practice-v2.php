@@ -254,6 +254,24 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 		? \Oria\Core\Compare\prompt_for_term( $oria_term )
 		: null;
 	?>
+	<?php
+	/*
+	 * A category that owns a within-category group gets the second, sharper
+	 * question too: not how massage compares to a day spa, but which kind of
+	 * massage to book.
+	 */
+	$oria_gcmp = function_exists( '\Oria\Core\Compare\group_prompt_for_term' )
+		? \Oria\Core\Compare\group_prompt_for_term( $oria_term )
+		: null;
+	?>
+	<?php if ( $oria_gcmp ) : ?>
+		<p class="cmpnudge cmpnudge--group">
+			<a href="<?php echo esc_url( $oria_gcmp['url'] ); ?>" data-oria-event="category_compare_group">
+				<?php echo esc_html( $oria_gcmp['label'] ); ?>
+				<span aria-hidden="true">&rarr;</span>
+			</a>
+		</p>
+	<?php endif; ?>
 	<?php if ( $oria_cmp ) : ?>
 		<p class="cmpnudge">
 			<a href="<?php echo esc_url( $oria_cmp['url'] ); ?>" data-oria-event="category_compare">
