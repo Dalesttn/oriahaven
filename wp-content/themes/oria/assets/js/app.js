@@ -2250,6 +2250,117 @@
     });
   }
 
+  /* Nav dropdowns.
+
+     CSS already opens the panel on :hover and :focus-within, so this is
+     enhancement, not access — with scripting off the menu still works.
+     What JS adds: the caret that says a panel exists, aria-expanded so a
+     screen reader is told the same thing, a tap target for touch devices
+     that have no hover, and Escape to get out.
+
+     The caret is a sibling of the parent link, never inside it: a button
+     within an anchor is invalid, and the link must keep working on its
+     own. */
+  function initNavDropdowns() {
+    var parents = $$(".nav__links .menu-item-has-children");
+    if (!parents.length) return;
+
+    var CARET =
+      '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" ' +
+      'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ' +
+      'aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5"/></svg>';
+
+    /* Three states, not two.
+
+       "false" is an explicit dismissal — Escape or a click outside — and
+       the CSS lets it beat :hover and :focus-within. Without it, Escape
+       handing focus back to the parent link re-opens the panel through
+       :focus-within, and the key appears to do nothing.
+
+       Removing the attribute is the neutral state, where hover and focus
+       govern again. A pointer leaving must land here rather than on
+       "false", or a later keyboard user would find the panel wedged shut. */
+    function setState(li, state) {
+      if (state === null) {
+        li.removeAttribute("data-open");
+      } else {
+        li.setAttribute("data-open", state);
+      }
+      var b = li.querySelector(".nav__caret");
+      if (b) b.setAttribute("aria-expanded", state === "true" ? "true" : "false");
+    }
+
+    function closeAll(except) {
+      parents.forEach(function (li) {
+        if (li !== except) setState(li, "false");
+      });
+    }
+
+    parents.forEach(function (li, i) {
+      var link = li.querySelector("a");
+      var sub = li.querySelector(".sub-menu");
+      if (!link || !sub) return;
+
+      if (!sub.id) sub.id = "navsub" + (i + 1);
+
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "nav__caret";
+      btn.innerHTML = CARET;
+      btn.setAttribute("aria-expanded", "false");
+      btn.setAttribute("aria-controls", sub.id);
+      // Named for what it opens, so the label is never a bare "expand".
+      btn.setAttribute(
+        "aria-label",
+        "Show more under " + (link.textContent || "").trim()
+      );
+      link.insertAdjacentElement("afterend", btn);
+
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        var wasOpen = li.getAttribute("data-open") === "true";
+        closeAll(li);
+        setState(li, wasOpen ? "false" : "true");
+      });
+
+      li.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          setState(li, "false");
+          link.focus();
+          return;
+        }
+        /* Tab means focus is on the move. Whichever way it lands, neutral
+           is right: still inside and :focus-within holds the panel open,
+           gone and it closes. Clearing here matters because a dismissal
+           left standing would out-rank :hover and :focus-within for good,
+           wedging the menu shut until the page reloaded. */
+        if (e.key === "Tab") setState(li, null);
+      });
+
+      /* Three ways out of a dismissal, because leaving one in place breaks
+         the menu permanently. focusout is the precise one; mouseenter and
+         Tab are the belt and braces, and unlike focusout they fire in every
+         environment this has been tested in. */
+      li.addEventListener("focusout", function (e) {
+        if (!e.relatedTarget || !li.contains(e.relatedTarget)) setState(li, null);
+      });
+
+      li.addEventListener("mouseenter", function () {
+        if (li.getAttribute("data-open") === "false") setState(li, null);
+      });
+
+      // The CSS :hover has already closed the panel; the flag returns to
+      // neutral rather than "false", for the same reason as above.
+      li.addEventListener("mouseleave", function () {
+        if (!li.contains(document.activeElement)) setState(li, null);
+      });
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".nav__links .menu-item-has-children")) closeAll();
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initTracking();
     initCopy();
@@ -2257,6 +2368,7 @@
     initMatchDialog();
     initMatchCombos();
     initNav();
+    initNavDropdowns();
     initAccordions();
     initPullquote();
     initReveal();

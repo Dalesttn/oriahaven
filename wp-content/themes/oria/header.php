@@ -51,8 +51,20 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					// Sensible default until a menu is assigned in the admin.
 					echo '<ul class="nav__links">';
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Directory', 'oria' ) );
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/practices/' ) ), esc_html__( 'Practices', 'oria' ) );
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare', 'oria' ) );
+					/*
+					 * Practices carries a submenu. The markup matches what WordPress's
+					 * own walker emits for a nested menu item -- menu-item-has-children
+					 * on the li, ul.sub-menu inside -- so the CSS and the JS enhancement
+					 * work the same whether this fallback renders or an admin-built menu
+					 * does. The parent stays a real link to /practices/; opening the
+					 * panel is never the only way past it.
+					 */
+					echo '<li class="menu-item-has-children">';
+					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( home_url( '/practices/' ) ), esc_html__( 'Practices', 'oria' ) );
+					echo '<ul class="sub-menu">';
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/practices/' ) ), esc_html__( 'All practices', 'oria' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
+					echo '</ul></li>';
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
@@ -102,7 +114,9 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 				echo '<div class="drawer__links">';
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Directory', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/practices/' ) ), esc_html__( 'Practices', 'oria' ) );
-				printf( '<a href="%s">%s</a>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare', 'oria' ) );
+				// On a phone the child is simply shown, indented, under its parent:
+				// an accordion hiding a single item is a tap that buys nothing.
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );

@@ -23,6 +23,22 @@ $oria_terms = \Oria\Core\PracticesIndex\practices();
 		<p class="lede pagehead__lede">
 			<?php esc_html_e( 'Every category the directory lists, and the pages inside each. Pick the practice first; the suburb, the price and the style come after.', 'oria' ); ?>
 		</p>
+		<?php
+		/*
+		 * "Pick the practice first" is easy advice to give and hard to follow
+		 * when you are looking at twenty-three of them. The comparison table
+		 * is the answer to the question this page provokes, so it belongs at
+		 * the top of it, not buried at the bottom.
+		 */
+		?>
+		<?php if ( function_exists( '\Oria\Core\Compare\bootstrap' ) ) : ?>
+			<p class="cmpnudge cmpnudge--head">
+				<a href="<?php echo esc_url( home_url( '/compare/' ) ); ?>" data-oria-event="practices_compare">
+					<?php esc_html_e( 'Not sure which is yours? Compare them side by side', 'oria' ); ?>
+					<span aria-hidden="true">&rarr;</span>
+				</a>
+			</p>
+		<?php endif; ?>
 	</div>
 </section>
 

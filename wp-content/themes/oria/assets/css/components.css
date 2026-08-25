@@ -538,6 +538,75 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
 .nav__link[aria-current="page"] { color: var(--ink); }
 
 .nav__actions { display: flex; align-items: center; gap: var(--s-4); }
+
+/* --- Nav dropdown ----------------------------------------------------
+   Markup is whatever WordPress's walker emits for a nested item, so an
+   admin-built menu and the hardcoded fallback style identically.
+
+   Opening is CSS, not JS: :hover for pointers and :focus-within for
+   keyboards, which means the panel works with scripting off. JS only adds
+   the caret, aria-expanded and Escape — affordances, not access. The
+   parent stays a link to /practices/ throughout, so the dropdown is never
+   the only way through.
+
+   .nav carries a backdrop-filter, which makes it the containing block for
+   absolute descendants and its own stacking context. That is fine here —
+   nothing sets overflow, so the panel is not clipped, and the whole header
+   sits at z-index 60 above the page. */
+.nav__links .menu-item-has-children { position: relative; display: flex; align-items: center; gap: .2rem; }
+.nav__links .sub-menu {
+  position: absolute; top: calc(100% + .6rem); left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  min-width: 13rem; margin: 0; padding: .35rem; list-style: none;
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: var(--r-md); box-shadow: var(--sh-2);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), visibility var(--t-fast);
+}
+/* Bridges the gap between link and panel, so crossing it does not close. */
+.nav__links .sub-menu::before { content: ""; position: absolute; left: 0; right: 0; top: -.6rem; height: .6rem; }
+.nav__links .menu-item-has-children:hover > .sub-menu,
+.nav__links .menu-item-has-children:focus-within > .sub-menu,
+.nav__links .menu-item-has-children[data-open="true"] > .sub-menu {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+/* Explicitly dismissed — Escape, or a click outside. This has to beat
+   :hover and :focus-within, which would otherwise re-open the panel the
+   instant Escape hands focus back to the parent link. Same specificity as
+   the rule above, so it wins on source order and must stay below it.
+   JS clears the attribute once focus leaves, restoring normal behaviour. */
+.nav__links .menu-item-has-children[data-open="false"] > .sub-menu {
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translateX(-50%) translateY(-4px);
+}
+.nav__links .sub-menu a {
+  display: block; padding: .5rem .75rem; border-radius: 7px; white-space: nowrap;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--text-soft);
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.nav__links .sub-menu a:hover,
+.nav__links .sub-menu a:focus-visible { background: var(--sand-2); color: var(--ink); }
+.nav__links .sub-menu a[aria-current="page"] { color: var(--ink); }
+
+.nav__caret {
+  display: grid; place-items: center; width: 15px; height: 15px;
+  color: var(--text-soft); background: none; border: 0; padding: 0; cursor: pointer;
+}
+.nav__caret svg { width: 9px; height: 9px; transition: transform var(--t-fast) var(--ease); }
+.menu-item-has-children[data-open="true"] .nav__caret svg { transform: rotate(180deg); }
+/* Over the hero the bar is white type on a photograph. */
+.site-head:not(.site-head--solid) .nav__caret { color: rgba(255,255,255,.8); }
+.site-head:not(.site-head--solid) .nav__caret:hover { color: var(--white); }
+@media (prefers-reduced-motion: reduce) {
+  .nav__links .sub-menu, .nav__caret svg { transition: none; }
+}
+
+/* In the drawer the child is simply shown beneath its parent, indented.
+   An accordion that hides one item costs a tap and saves nothing. */
+.drawer__links .drawer__sub { font-size: 1.25rem; padding-left: var(--s-4); color: var(--mist-2); }
+.drawer__links .sub-menu { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.drawer__links .sub-menu a { font-size: 1.25rem; padding-left: var(--s-4); color: var(--mist-2); }
 .nav__toggle { display: none; }
 
 @media (max-width: 1040px) {

@@ -2702,6 +2702,7 @@ html.has-sheet { overflow: hidden; }
 .cats__compare, .cmpnudge, .finder__compare { margin: 1.75rem 0 0; font-size: var(--fs-sm); }
 .cats__compare { text-align: center; margin-top: 2.25rem; }
 .cmpnudge { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.cmpnudge--head { margin-top: 1.25rem; padding-top: 0; border-top: 0; }
 .cats__compare a, .cmpnudge a, .finder__compare a {
   display: inline-flex; align-items: center; gap: .45rem;
   color: var(--moss); font-weight: 600; text-decoration: none;
