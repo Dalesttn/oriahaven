@@ -470,15 +470,23 @@ function query_heading( ?\WP_Term $practice = null ): string {
 }
 
 /**
- * Where a "browse by specialty" pill should send people: the new directory
- * with that specialty already applied in preview/live (the engine reads
- * ?spec= on load), else the specialty's own landing page.
+ * Where a specialty link should send people: the specialty's own page,
+ * always.
+ *
+ * This used to return /directory/?spec= whenever the v2 mode was on,
+ * because /perth/{slug}/ was still the old layout and the filtered
+ * directory was the better room to arrive in. That stopped being true when
+ * the specialty template was rebuilt in the v2 design: the term page now
+ * carries the same listings PLUS the answer block, the facts strip, the
+ * written intro, the FAQ and its own schema, and it is the indexable
+ * address the long-tail work depends on.
+ *
+ * It is also what un-orphans them. Every specialty link on every listing,
+ * hub and finder result pointed at a query string, which is a large part
+ * of why the audit found 77 specialty pages with one inbound link each.
  */
 function specialty_url( \WP_Term $specialty ): string {
-	if ( '' === mode() ) {
-		return (string) get_term_link( $specialty );
-	}
-	return get_post_type_archive_link( PostTypes\LISTING ) . '?spec=' . rawurlencode( $specialty->slug );
+	return (string) get_term_link( $specialty );
 }
 
 /**

@@ -613,6 +613,111 @@ function listing_scene( int $post_id ): string {
 }
 
 /**
+ * Which practice category each specialty mostly belongs to.
+ *
+ * Specialties have no declared parent — services carry `oria_categories`
+ * term meta from services.json, but there is no specialties.json and no
+ * equivalent field — so the relationship has to be read off the listings
+ * carrying both terms. One grouped query rather than seventy-nine, cached
+ * for a day, because this only shifts when the directory does.
+ *
+ * @return array<int, int> specialty term_id => practice term_id
+ */
+function specialty_practice_map(): array {
+	$cached = get_transient( 'oria_specialty_practice' );
+	if ( is_array( $cached ) ) {
+		return $cached;
+	}
+
+	global $wpdb;
+	$rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		"SELECT s.term_id AS spec, p.term_id AS practice, COUNT(*) AS n
+		 FROM {$wpdb->term_relationships} sr
+		 INNER JOIN {$wpdb->term_taxonomy} s ON s.term_taxonomy_id = sr.term_taxonomy_id AND s.taxonomy = 'specialty'
+		 INNER JOIN {$wpdb->term_relationships} pr ON pr.object_id = sr.object_id
+		 INNER JOIN {$wpdb->term_taxonomy} p ON p.term_taxonomy_id = pr.term_taxonomy_id AND p.taxonomy = 'practice'
+		 INNER JOIN {$wpdb->posts} po ON po.ID = sr.object_id AND po.post_status = 'publish' AND po.post_type = 'listing'
+		 GROUP BY s.term_id, p.term_id
+		 ORDER BY n DESC"
+	);
+
+	// Rows arrive commonest first, so the first seen for a specialty is its
+	// dominant practice and every later row for it is ignored.
+	$map = array();
+	foreach ( (array) $rows as $row ) {
+		$spec = (int) $row->spec;
+		if ( ! isset( $map[ $spec ] ) ) {
+			$map[ $spec ] = (int) $row->practice;
+		}
+	}
+
+	set_transient( 'oria_specialty_practice', $map, DAY_IN_SECONDS );
+	return $map;
+}
+
+/**
+ * The category picture for a term: a practice's own `tile_image`, or for a
+ * specialty the tile of the practice it mostly sits under.
+ *
+ * Never a listing's photograph — those belong to the business that gave
+ * them to us, and one studio's room is not what a modality looks like.
+ * Returns '' when there is nothing honest to show; callers are built for it.
+ */
+function term_tile( $term, string $size = 'oria-card' ): string {
+	if ( ! $term instanceof \WP_Term ) {
+		return '';
+	}
+
+	$practice = null;
+	if ( 'practice' === $term->taxonomy ) {
+		$practice = $term;
+	} elseif ( 'specialty' === $term->taxonomy ) {
+		$map = specialty_practice_map();
+		if ( isset( $map[ $term->term_id ] ) ) {
+			$found    = get_term( $map[ $term->term_id ], 'practice' );
+			$practice = $found instanceof \WP_Term ? $found : null;
+		}
+	}
+	if ( ! $practice ) {
+		return '';
+	}
+
+	$id = (int) get_field( 'tile_image', 'practice_' . $practice->term_id );
+	if ( $id ) {
+		$url = (string) wp_get_attachment_image_url( $id, $size );
+		if ( '' !== $url ) {
+			return $url;
+		}
+	}
+
+	// The six the theme ships; the rest wait on their term's tile image.
+	$shipped = array(
+		'meditation'  => 'cat-meditation.webp',
+		'breathwork'  => 'cat-breathwork.webp',
+		'yoga'        => 'cat-yoga.webp',
+		'mindfulness' => 'cat-mindfulness.webp',
+		'sound'       => 'cat-sound.webp',
+		'retreats'    => 'cat-retreats.webp',
+	);
+	return isset( $shipped[ $practice->slug ] )
+		? get_template_directory_uri() . '/assets/img/' . $shipped[ $practice->slug ]
+		: '';
+}
+
+/** The practice a specialty mostly sits under, for labelling. */
+function specialty_parent( $term ): ?\WP_Term {
+	if ( ! $term instanceof \WP_Term || 'specialty' !== $term->taxonomy ) {
+		return null;
+	}
+	$map = specialty_practice_map();
+	if ( ! isset( $map[ $term->term_id ] ) ) {
+		return null;
+	}
+	$found = get_term( $map[ $term->term_id ], 'practice' );
+	return $found instanceof \WP_Term ? $found : null;
+}
+
+/**
  * A listing's image URL: featured image, else its first Google Places photo
  * (cache-first, budgeted), else the placeholder scene. One chain, used by
  * cards, tiles and profiles.

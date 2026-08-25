@@ -2983,6 +2983,30 @@ html.has-sheet { overflow: hidden; }
 .bld__hit .xp__facts { margin-top: .25rem; }
 .bld__hit .xp__fact { background: var(--sand-2); }
 
+/* --- "Find more like this" on a listing --------------------------------
+   Category cards, not tags. Two modalities from one category share a
+   picture on purpose — the eyebrow names the category and the count
+   separates them, so the repeat reads as a fact rather than a fault. */
+.speccards { display: grid; gap: var(--s-3); grid-template-columns: 1fr; }
+@media (min-width: 520px) { .speccards { grid-template-columns: repeat(2, 1fr); } }
+.speccard {
+  display: grid; grid-template-columns: 84px 1fr auto; align-items: center; gap: var(--s-3);
+  padding: 0 var(--s-4) 0 0; overflow: hidden;
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r-md);
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.speccard:hover { border-color: var(--moss); background: var(--sand-2); }
+.speccard__img { width: 84px; height: 84px; object-fit: cover; display: block; background: var(--sand-2); }
+/* No picture: the text takes the space rather than leaving a gap. */
+.speccard:not(:has(.speccard__img)) { grid-template-columns: 1fr auto; padding-left: var(--s-4); }
+.speccard__body { display: flex; flex-direction: column; gap: .1rem; min-width: 0; padding: var(--s-3) 0; }
+.speccard__eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: .09em; font-weight: 700; color: var(--moss); }
+.speccard__name { font-size: var(--fs-sm); font-weight: 700; color: var(--ink); line-height: 1.3; }
+.speccard__count { font-size: var(--fs-xs); color: var(--text-faint); }
+.speccard__go { color: var(--moss); transition: transform var(--t-fast) var(--ease); }
+.speccard:hover .speccard__go { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) { .speccard, .speccard__go { transition: none; } }
+
 .cmp__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; margin-top: 1.5rem; }
 
 /* The submit is the point of the page, so it is bigger than a default

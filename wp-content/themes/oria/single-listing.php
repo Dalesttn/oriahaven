@@ -282,16 +282,51 @@ while ( have_posts() ) :
 				<?php if ( $oria_specs ) : ?>
 				<div>
 					<h2 class="h3" style="margin-bottom:.85rem"><?php esc_html_e( 'Find more like this', 'oria' ); ?></h2>
-					<div class="listing__tags">
-						<?php foreach ( $oria_specs as $oria_spec ) : ?>
-							<a class="pill" href="<?php echo esc_url( function_exists( '\Oria\Core\PracticesIndex\specialty_url' ) ? \Oria\Core\PracticesIndex\specialty_url( $oria_spec ) : (string) get_term_link( $oria_spec ) ); ?>">
-								<?php
-								printf(
-									/* translators: %s: modality name */
-									esc_html__( '%s in Perth', 'oria' ),
-									esc_html( \Oria\Theme\tname( $oria_spec ) )
-								);
-								?>
+					<?php
+					/*
+					 * Cards rather than pills, because these are destinations
+					 * and a pill reads as a tag. The picture is the parent
+					 * category's tile — two modalities from the same category
+					 * will share one, which is honest: the eyebrow says so, and
+					 * the count is what tells them apart.
+					 */
+					?>
+					<div class="speccards">
+						<?php
+						foreach ( $oria_specs as $oria_spec ) :
+							$oria_stile   = \Oria\Theme\term_tile( $oria_spec );
+							$oria_sparent = \Oria\Theme\specialty_parent( $oria_spec );
+							?>
+							<a class="speccard" href="<?php echo esc_url( function_exists( '\Oria\Core\PracticesIndex\specialty_url' ) ? \Oria\Core\PracticesIndex\specialty_url( $oria_spec ) : (string) get_term_link( $oria_spec ) ); ?>">
+								<?php if ( '' !== $oria_stile ) : ?>
+									<?php // Decorative: the name below already says what it is. ?>
+									<img class="speccard__img" src="<?php echo esc_url( $oria_stile ); ?>" alt="" loading="lazy" width="320" height="200">
+								<?php endif; ?>
+								<span class="speccard__body">
+									<?php if ( $oria_sparent ) : ?>
+										<span class="speccard__eyebrow"><?php echo esc_html( \Oria\Theme\tname( $oria_sparent ) ); ?></span>
+									<?php endif; ?>
+									<span class="speccard__name">
+										<?php
+										printf(
+											/* translators: %s: modality name */
+											esc_html__( '%s in Perth', 'oria' ),
+											esc_html( \Oria\Theme\tname( $oria_spec ) )
+										);
+										?>
+									</span>
+									<?php if ( (int) $oria_spec->count > 0 ) : ?>
+										<span class="speccard__count">
+											<?php
+											printf(
+												esc_html( _n( '%s place', '%s places', (int) $oria_spec->count, 'oria' ) ),
+												esc_html( number_format_i18n( (int) $oria_spec->count ) )
+											);
+											?>
+										</span>
+									<?php endif; ?>
+								</span>
+								<span class="speccard__go" aria-hidden="true">&rarr;</span>
 							</a>
 						<?php endforeach; ?>
 					</div>
