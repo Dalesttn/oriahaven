@@ -2250,6 +2250,64 @@
     });
   }
 
+  /* The compare picker.
+
+     The markup carried data-max="4" and nothing ever read it, so a visitor
+     could tick six boxes and silently get four — the server keeps the first
+     four and drops the rest. This makes the ceiling visible instead.
+
+     It also gives the submit button something to say. Two picks is the
+     minimum for a comparison, so below that the button is inert and says
+     why; at two it wakes up, once, and then carries the count. The pulse
+     fires only on the transition, never on a loop: it is there to tell you
+     the thing is now available, not to keep asking for attention. */
+  function initComparePicker() {
+    var grid = document.querySelector("[data-compare-picker]");
+    if (!grid) return;
+    var form = grid.closest("form");
+    if (!form) return;
+    var go = form.querySelector("[data-compare-go]");
+    if (!go) return;
+
+    var label = go.querySelector("[data-compare-label]");
+    var hint = form.querySelector("[data-compare-hint]");
+    var boxes = $$("input[type=checkbox]", grid);
+    var MIN = 2;
+    var max = parseInt(grid.getAttribute("data-max"), 10) || 4;
+    var base = label ? label.textContent : "";
+    var wasReady = null;
+
+    function sync() {
+      var n = boxes.filter(function (b) { return b.checked; }).length;
+
+      boxes.forEach(function (b) {
+        var spent = !b.checked && n >= max;
+        b.disabled = spent;
+        var pick = b.closest(".cmp__pick");
+        if (pick) pick.classList.toggle("is-spent", spent);
+      });
+
+      var ready = n >= MIN;
+      go.disabled = !ready;
+      go.classList.toggle("is-ready", ready);
+      if (label) label.textContent = ready ? base + " " + n : base;
+      if (hint) hint.hidden = ready;
+
+      // Re-trigger the one-shot by tearing the class off and forcing a
+      // reflow; without the reflow the browser coalesces both changes and
+      // the animation never restarts.
+      if (ready && wasReady === false) {
+        go.classList.remove("is-woken");
+        void go.offsetWidth;
+        go.classList.add("is-woken");
+      }
+      wasReady = ready;
+    }
+
+    boxes.forEach(function (b) { b.addEventListener("change", sync); });
+    sync();
+  }
+
   /* Nav dropdowns.
 
      CSS already opens the panel on :hover and :focus-within, so this is
@@ -2369,6 +2427,7 @@
     initMatchCombos();
     initNav();
     initNavDropdowns();
+    initComparePicker();
     initAccordions();
     initPullquote();
     initReveal();

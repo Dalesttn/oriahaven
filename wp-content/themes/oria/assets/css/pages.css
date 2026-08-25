@@ -2641,6 +2641,33 @@ html.has-sheet { overflow: hidden; }
 /* --- Compare (/compare/, oria-compare.php) ------------------------------ */
 .cmp__grid { display: grid; gap: .4rem .9rem; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); max-width: 52rem; }
 .cmp__pick { align-items: center; }
+/* Spent: the pick ceiling is reached and this one is not among them. Dimmed
+   rather than hidden, so the list does not reflow under the cursor. */
+.cmp__pick.is-spent { opacity: .4; cursor: not-allowed; }
+
+.cmp__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; margin-top: 1.5rem; }
+
+/* The submit is the point of the page, so it is bigger than a default
+   button and sits on the site's dark fill rather than the undefined
+   btn--primary it was asking for. */
+.cmp__go { font-size: var(--fs-md, 1.0625rem); padding: .95rem 1.9rem; }
+.cmp__go.is-ready { box-shadow: 0 0 0 4px rgba(63, 110, 96, .18); }
+.cmp__go:disabled { opacity: .4; box-shadow: none; }
+.cmp__go:disabled:hover { transform: none; background: var(--ink); }
+
+/* One shot, on becoming available — not a loop. A button that pulses
+   forever reads as an advert; one that pulses once reads as an answer. */
+.cmp__go.is-woken { animation: cmpwake .5s var(--ease, ease) 1; }
+@keyframes cmpwake {
+  0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(63, 110, 96, .45); }
+  45%  { transform: scale(1.05); box-shadow: 0 0 0 9px rgba(63, 110, 96, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(63, 110, 96, .18); }
+}
+.cmp__pickhint { margin: 0; font-size: var(--fs-xs); color: var(--text-faint); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cmp__go.is-woken { animation: none; }
+}
 .cmp__scroll { overflow-x: auto; margin-top: .75rem; border: 1px solid var(--line); border-radius: var(--r-md); }
 .cmp__table { border-collapse: collapse; width: 100%; min-width: 560px; background: var(--white); font-size: var(--fs-md, 1.0625rem); }
 .cmp__table th, .cmp__table td { padding: .8rem 1rem; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }

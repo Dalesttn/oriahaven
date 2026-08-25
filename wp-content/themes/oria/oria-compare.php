@@ -67,10 +67,23 @@ $oria_dots = static function ( int $n ): string {
 				</label>
 			<?php endforeach; ?>
 		</div>
-		<button class="btn btn--primary" type="submit" style="margin-top:1rem"><?php esc_html_e( 'Compare', 'oria' ); ?></button>
-		<?php if ( $oria_picked ) : ?>
-			<a class="btn btn--ghost" style="margin-top:1rem" href="<?php echo esc_url( home_url( '/compare/' ) ); ?>"><?php esc_html_e( 'Start again', 'oria' ); ?></a>
-		<?php endif; ?>
+		<?php
+		/*
+		 * btn--plain on both: the base .btn reserves a right-hand gap for an
+		 * arrow dot, and neither of these carries one, so without it the label
+		 * sits off-centre in the pill.
+		 */
+		?>
+		<div class="cmp__actions">
+			<button class="btn btn--dark btn--plain cmp__go" type="submit" data-compare-go>
+				<span data-compare-label><?php esc_html_e( 'Compare', 'oria' ); ?></span>
+			</button>
+			<?php if ( $oria_picked ) : ?>
+				<a class="btn btn--ghost btn--plain" href="<?php echo esc_url( home_url( '/compare/' ) ); ?>"><?php esc_html_e( 'Start again', 'oria' ); ?></a>
+			<?php endif; ?>
+			<?php // Hidden until JS runs; without scripting the button is simply always live. ?>
+			<p class="cmp__pickhint" data-compare-hint hidden><?php esc_html_e( 'Pick at least two', 'oria' ); ?></p>
+		</div>
 	</form>
 
 	<?php
@@ -226,7 +239,7 @@ $oria_dots = static function ( int $n ): string {
 
 		<div class="cmp__finder">
 			<p class="muted"><?php esc_html_e( 'Still deciding? The Wellness Finder asks four questions and narrows it down for you.', 'oria' ); ?></p>
-			<a class="btn btn--primary" href="<?php echo esc_url( home_url( '/wellness-finder/' ) ); ?>"><?php esc_html_e( 'Find my match', 'oria' ); ?></a>
+			<a class="btn btn--dark btn--plain" href="<?php echo esc_url( home_url( '/wellness-finder/' ) ); ?>"><?php esc_html_e( 'Find my match', 'oria' ); ?></a>
 		</div>
 	</section>
 <?php endif; ?>
