@@ -2652,28 +2652,44 @@ html.has-sheet { overflow: hidden; }
 .cmp__dots b, .cmp__dots i { font-style: normal; font-weight: 400; letter-spacing: .12em; }
 .cmp__dots b { color: var(--deep); }
 .cmp__dots i { color: var(--line-firm, var(--line)); }
-/* Section headings share one underline treatment, so the page's chapters
-   read as chapters. Inline-block keeps the rule to the width of the words. */
-.cmp__h { display: inline-block; padding-bottom: .35rem; border-bottom: 3px solid var(--deep); }
+/* One thin rule under every heading on the page, section tables and footer
+   blocks alike, so the chapters read alike. Inline-block keeps the rule to
+   the width of the words; the margin below is the breathing room, and the
+   adjacent-sibling reset stops it stacking with whatever follows. */
+.cmp__h { display: inline-block; padding-bottom: .3rem; border-bottom: 1px solid var(--deep); margin-bottom: 1rem; }
+.cmp__h + * { margin-top: 0; }
+.cmp__sech { margin-top: 2.75rem; }
 
-/* The reading panel: the takeaways as a card, each line with a dash marker,
-   rather than floating bare on the page background. */
-.cmp__reading { margin-top: 2.5rem; max-width: 46rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1.5rem 1.75rem 1.25rem; }
-.cmp__reading ul { list-style: none; padding: 0; margin: 1rem 0 0; }
+/* The nudge after submitting: the results are below the fold on most
+   screens, so say so and point at them. Bobs gently, still if the visitor
+   asked for less motion. */
+.cmp__jump { display: inline-flex; align-items: center; gap: .7rem; margin-top: 1.75rem; color: var(--moss); font-weight: 600; font-size: var(--fs-sm); }
+.cmp__jump__ring { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--moss); color: var(--white); flex: none; animation: cmpbob 1.9s ease-in-out infinite; }
+.cmp__jump svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.cmp__jump:hover .cmp__jump__ring { background: var(--deep); }
+@keyframes cmpbob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+@media (prefers-reduced-motion: reduce) { .cmp__jump__ring { animation: none; } }
+
+/* The takeaways as a card, each line dashed and ruled, rather than bare
+   text floating on the page background. */
+.cmp__reading { margin-top: 3rem; max-width: 46rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1.5rem 1.75rem 1.25rem; }
+.cmp__reading ul { list-style: none; padding: 0; margin: 0; }
 .cmp__reading li { position: relative; padding: .6rem 0 .6rem 1.5rem; border-bottom: 1px solid var(--line); font-size: var(--fs-md, 1.0625rem); }
 .cmp__reading li:last-child { border-bottom: 0; }
-.cmp__reading li::before { content: "4"; position: absolute; left: 0; color: var(--deep); }
+.cmp__reading li::before { content: "—"; position: absolute; left: 0; color: var(--moss); }
 .cmp__reading .hint { margin-top: 1rem; }
 
-.cmp__next { margin-top: 2.5rem; }
-.cmp__chips { margin-top: 1rem; }
+.cmp__next { margin-top: 3rem; }
+.cmp__chips { margin-bottom: 0; }
 .cmp__chips .pill { font-size: var(--fs-md, 1.0625rem); padding: .55rem 1.1rem; }
 .cmp__chips .pill span { margin-left: .35rem; }
 
-.cmp__trybox { margin-top: 2.5rem; }
-.cmp__trynote { margin: .75rem 0 0; max-width: 44rem; }
-.cmp__trygrid { display: grid; gap: var(--s-4); grid-template-columns: 1fr; margin-top: 1.25rem; }
-@media (min-width: 900px) { .cmp__trygrid { grid-template-columns: repeat(3, 1fr); } }
+/* The try-cards ride the directory's own two-up variant rather than a grid
+   of their own: the plain .listing is a 210px photo beside a body, built
+   for full page width, and it buckles at a third of it. */
+.cmp__trybox { margin-top: 3rem; }
+.cmp__trynote { max-width: 44rem; }
+.cmp__trygrid { margin-top: 1.25rem; }
 
-.cmp__finder { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+.cmp__finder { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
 .cmp__finder p { margin: 0; }

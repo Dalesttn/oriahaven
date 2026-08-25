@@ -59,12 +59,28 @@ $oria_dots = static function ( int $n ): string {
 			<a class="btn btn--ghost" style="margin-top:1rem" href="<?php echo esc_url( home_url( '/compare/' ) ); ?>"><?php esc_html_e( 'Start again', 'oria' ); ?></a>
 		<?php endif; ?>
 	</form>
+
+	<?php
+	/*
+	 * Submitting reloads the page at the top, so on most screens the table
+	 * the visitor just asked for is below the fold with nothing to say it
+	 * arrived. This points at it, and clicking jumps there.
+	 */
+	?>
+	<?php if ( $oria_picked ) : ?>
+		<a class="cmp__jump" href="#result">
+			<span class="cmp__jump__ring" aria-hidden="true">
+				<svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v13M5.5 11.5 12 18l6.5-6.5"/></svg>
+			</span>
+			<span><?php esc_html_e( 'Your comparison is below', 'oria' ); ?></span>
+		</a>
+	<?php endif; ?>
 </section>
 
 <?php if ( $oria_picked ) : ?>
 	<section class="wrap section" id="result">
 		<?php foreach ( sections() as $oria_sec ) : ?>
-			<h2 class="h3" style="margin-top:2rem"><?php echo esc_html( (string) $oria_sec['label'] ); ?></h2>
+			<h2 class="h3 cmp__h cmp__sech"><?php echo esc_html( (string) $oria_sec['label'] ); ?></h2>
 			<div class="cmp__scroll">
 				<table class="cmp__table">
 					<thead>
@@ -131,14 +147,21 @@ $oria_dots = static function ( int $n ): string {
 			</div>
 		</div>
 
-		<?php $oria_try = \Oria\Core\Compare\try_listings( $oria_picked ); ?>
+		<?php
+		/*
+		 * Four, not three: the cards sit two to a line, and an odd number
+		 * leaves one hanging on its own row.
+		 */
+		?>
+		<?php $oria_try = \Oria\Core\Compare\try_listings( $oria_picked, 4 ); ?>
 		<?php if ( $oria_try ) : ?>
 			<div class="cmp__trybox">
 				<h2 class="h3 cmp__h"><?php esc_html_e( 'Try them for yourself', 'oria' ); ?></h2>
 				<p class="muted cmp__trynote">
-					<?php esc_html_e( 'Three from the categories you compared — somewhere to start, not a shortlist.', 'oria' ); ?>
+					<?php esc_html_e( 'A few places from the categories you compared — somewhere to start, not a shortlist.', 'oria' ); ?>
 				</p>
-				<div class="cmp__trygrid dir__results">
+				<?php // dir__results--wide is the directory's own two-up card; the plain one is built for full page width. ?>
+				<div class="cmp__trygrid dir__results dir__results--wide">
 					<?php
 					global $post;
 					foreach ( $oria_try as $oria_tid ) :
