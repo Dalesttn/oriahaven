@@ -106,7 +106,7 @@ $oria_dots = static function ( int $n ): string {
 		<?php $oria_lines = summary( $oria_picked ); ?>
 		<?php if ( $oria_lines ) : ?>
 			<div class="cmp__reading">
-				<h2 class="h3"><?php esc_html_e( 'Reading the table', 'oria' ); ?></h2>
+				<h2 class="h3 cmp__h"><?php esc_html_e( 'Reading the table', 'oria' ); ?></h2>
 				<ul>
 					<?php foreach ( $oria_lines as $oria_line ) : ?>
 						<li><?php echo esc_html( $oria_line ); ?></li>
@@ -117,21 +117,47 @@ $oria_dots = static function ( int $n ): string {
 		<?php endif; ?>
 
 		<div class="cmp__next">
-			<h2 class="h3"><?php esc_html_e( 'See who runs each one', 'oria' ); ?></h2>
-			<div class="chips" style="margin-top:.6rem">
+			<h2 class="h3 cmp__h"><?php esc_html_e( 'See who runs each one', 'oria' ); ?></h2>
+			<div class="chips cmp__chips">
 				<?php foreach ( $oria_picked as $oria_e ) : ?>
 					<a class="pill" href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>">
 						<?php
 						/* translators: %s: experience name */
 						printf( esc_html__( '%s in Perth', 'oria' ), esc_html( (string) $oria_e['label'] ) );
 						?>
+						<span aria-hidden="true">&rarr;</span>
 					</a>
 				<?php endforeach; ?>
 			</div>
-			<p class="hint" style="margin-top:1rem">
-				<?php esc_html_e( 'Still deciding? The Wellness Finder asks four questions and narrows it down for you.', 'oria' ); ?>
-				<a href="<?php echo esc_url( home_url( '/wellness-finder/' ) ); ?>"><?php esc_html_e( 'Find my match', 'oria' ); ?></a>
-			</p>
+		</div>
+
+		<?php $oria_try = \Oria\Core\Compare\try_listings( $oria_picked ); ?>
+		<?php if ( $oria_try ) : ?>
+			<div class="cmp__trybox">
+				<h2 class="h3 cmp__h"><?php esc_html_e( 'Try them for yourself', 'oria' ); ?></h2>
+				<p class="muted cmp__trynote">
+					<?php esc_html_e( 'Three from the categories you compared — somewhere to start, not a shortlist.', 'oria' ); ?>
+				</p>
+				<div class="cmp__trygrid dir__results">
+					<?php
+					global $post;
+					foreach ( $oria_try as $oria_tid ) :
+						$post = get_post( $oria_tid ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+						if ( ! $post instanceof WP_Post ) {
+							continue;
+						}
+						setup_postdata( $post );
+						get_template_part( 'template-parts/listing', 'card' );
+					endforeach;
+					wp_reset_postdata();
+					?>
+				</div>
+			</div>
+		<?php endif; ?>
+
+		<div class="cmp__finder">
+			<p class="muted"><?php esc_html_e( 'Still deciding? The Wellness Finder asks four questions and narrows it down for you.', 'oria' ); ?></p>
+			<a class="btn btn--primary" href="<?php echo esc_url( home_url( '/wellness-finder/' ) ); ?>"><?php esc_html_e( 'Find my match', 'oria' ); ?></a>
 		</div>
 	</section>
 <?php endif; ?>

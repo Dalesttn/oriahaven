@@ -247,6 +247,97 @@ function summary( array $picked ): array {
 	return $lines;
 }
 
+/**
+ * The listings behind one experience, resolved from its registry URL.
+ *
+ * The URL is already the experience's identity — a category, a facet or a
+ * specialty page — so it doubles as the query, and the registry needs no
+ * second field that could drift out of step with the first.
+ *
+ * @param array $e a registry experience
+ * @return array<int, int> listing post ids
+ */
+function listings_for( array $e ): array {
+	$url = (string) ( $e['url'] ?? '' );
+
+	// /practices/{practice}/{facet}/ — the facet's own subset.
+	if ( preg_match( '~^/practices/([^/]+)/([^/]+)/$~', $url, $m ) ) {
+		$t = get_term_by( 'slug', $m[1], 'practice' );
+		if ( $t instanceof \WP_Term && function_exists( '\Oria\Core\PracticesIndex\resolve_facet' ) ) {
+			$f = \Oria\Core\PracticesIndex\resolve_facet( $t, $m[2] );
+			if ( null !== $f ) {
+				return array_map( 'intval', \Oria\Core\PracticesIndex\facet_ids( $t, $f ) );
+			}
+		}
+	}
+
+	// /practices/{practice}/ — the whole category, rolled up.
+	if ( preg_match( '~^/practices/([^/]+)/$~', $url, $m ) ) {
+		$t = get_term_by( 'slug', $m[1], 'practice' );
+		if ( $t instanceof \WP_Term && function_exists( '\Oria\Core\Intents\listings_in' ) ) {
+			return array_map( 'intval', \Oria\Core\Intents\listings_in( $t ) );
+		}
+	}
+
+	// /perth/{specialty}/ — everything carrying the specialty term.
+	if ( preg_match( '~^/perth/([^/]+)/$~', $url, $m ) ) {
+		$ids = get_posts(
+			array(
+				'post_type'      => 'listing',
+				'post_status'    => 'publish',
+				'posts_per_page' => 50,
+				'fields'         => 'ids',
+				'tax_query'      => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+					array(
+						'taxonomy' => 'specialty',
+						'field'    => 'slug',
+						'terms'    => $m[1],
+					),
+				),
+			)
+		);
+		return array_map( 'intval', $ids );
+	}
+
+	return array();
+}
+
+/**
+ * A few listings to try, drawn round-robin across the compared experiences
+ * so a three-card row covers three different categories rather than three
+ * yoga studios. Shuffled, so repeat visits meet different practices —
+ * though a page cache will hold one draw for as long as it holds the page,
+ * which is fine: the sample never claims to be a ranking.
+ *
+ * @param array<int, array> $picked
+ * @return array<int, int> listing post ids
+ */
+function try_listings( array $picked, int $n = 3 ): array {
+	$pools = array();
+	foreach ( $picked as $e ) {
+		$ids = listings_for( $e );
+		if ( $ids ) {
+			shuffle( $ids );
+			$pools[] = $ids;
+		}
+	}
+	if ( ! $pools ) {
+		return array();
+	}
+	$out = array();
+	for ( $round = 0; $round < 10 && count( $out ) < $n; $round++ ) {
+		foreach ( $pools as $pool ) {
+			if ( isset( $pool[ $round ] ) && ! in_array( $pool[ $round ], $out, true ) ) {
+				$out[] = $pool[ $round ];
+				if ( count( $out ) === $n ) {
+					break;
+				}
+			}
+		}
+	}
+	return $out;
+}
+
 /* -------------------------------------------------------------------- seo */
 
 function title( $title ) {
