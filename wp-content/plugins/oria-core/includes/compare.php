@@ -314,6 +314,19 @@ function summary( array $picked ): array {
 		);
 	}
 
+	// Recovery's own axis. Not how hard the body works — you mostly sit
+	// still — but how hard it is to stay in the room, which is the thing
+	// anyone choosing between a sauna and an ice bath actually wants told.
+	$stay = $by( 'demand' );
+	if ( $has( 'demand' ) && (int) $stay[0]['attributes']['demand'] !== (int) end( $stay )['attributes']['demand'] ) {
+		$lines[] = sprintf(
+			/* translators: 1: hardest to sit through, 2: easiest to sit through */
+			__( '%1$s takes the most getting through; %2$s you could sit in all day.', 'oria' ),
+			$stay[0]['label'],
+			end( $stay )['label']
+		);
+	}
+
 	$quiet = $by( 'quiet' );
 	if ( $has( 'quiet' ) && (int) $quiet[0]['attributes']['quiet'] !== (int) end( $quiet )['attributes']['quiet'] ) {
 		$lines[] = sprintf(

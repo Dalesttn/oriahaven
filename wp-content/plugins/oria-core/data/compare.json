@@ -620,6 +620,177 @@
         "price": "$$",
         "claimable": "Rarely — check with your fund first"
       }
+    },
+    {
+      "id": "sauna-infrared",
+      "label": "Infrared sauna",
+      "url": "/perth/infrared-sauna/",
+      "pair": "sauna-traditional",
+      "group": "recovery-modalities",
+      "attributes": {
+        "temperature": "45–60 °C, dry heat",
+        "wet": "Dry",
+        "clothing": "Swimmers, or a towel",
+        "duration": "30–45 min",
+        "demand": 2,
+        "quiet": 4,
+        "company": "Usually a private room, sometimes a pair",
+        "price": "$$",
+        "athome": "Only with your own cabin",
+        "firsttime": "Staff set the temperature and show you the controls"
+      }
+    },
+    {
+      "id": "sauna-traditional",
+      "label": "Traditional sauna",
+      "url": "/practices/recovery/traditional-sauna/",
+      "pair": "sauna-infrared",
+      "group": "recovery-modalities",
+      "attributes": {
+        "temperature": "80–100 °C, hotter on the top bench",
+        "wet": "Dry, unless water goes on the rocks",
+        "clothing": "Swimmers, or a towel",
+        "duration": "8–15 min a round, two or three rounds",
+        "demand": 3,
+        "quiet": 3,
+        "company": "A shared room, usually",
+        "price": "$$",
+        "athome": "Only with your own sauna",
+        "firsttime": "Sit on a lower bench first — it is markedly cooler"
+      }
+    },
+    {
+      "id": "plunge-ice",
+      "label": "Ice bath / cold plunge",
+      "url": "/perth/cold-plunge/",
+      "pair": "contrast",
+      "group": "recovery-modalities",
+      "attributes": {
+        "temperature": "2–10 °C",
+        "wet": "Wet",
+        "clothing": "Swimmers",
+        "duration": "1–5 min",
+        "demand": 5,
+        "quiet": 2,
+        "company": "Your own tub, or a group session",
+        "price": "$$",
+        "athome": "A cold shower is the free version",
+        "firsttime": "Staff talk you through the breathing and watch the clock"
+      }
+    },
+    {
+      "id": "contrast",
+      "label": "Contrast therapy",
+      "url": "/practices/recovery/contrast-therapy/",
+      "pair": "plunge-ice",
+      "group": "recovery-modalities",
+      "attributes": {
+        "temperature": "Alternating — hot room, then 2–10 °C water",
+        "wet": "Both",
+        "clothing": "Swimmers",
+        "duration": "30–60 min for the full circuit",
+        "demand": 4,
+        "quiet": 2,
+        "company": "Often a group circuit on a timer",
+        "price": "$$",
+        "athome": "Hot shower to cold, roughly",
+        "firsttime": "The circuit is timed and called out, so you follow along"
+      }
+    },
+    {
+      "id": "float-tank",
+      "label": "Float tank",
+      "url": "/perth/float-therapy/",
+      "pair": "sauna-infrared",
+      "group": "recovery-modalities",
+      "attributes": {
+        "temperature": "Skin temperature — you stop noticing it",
+        "wet": "Wet, and very salty",
+        "clothing": "Nothing, in a private room",
+        "duration": "60 min",
+        "demand": 1,
+        "quiet": 5,
+        "company": "Alone, always",
+        "price": "$$",
+        "athome": "No",
+        "firsttime": "A shower first, earplugs, and the lid stays as open as you like"
+      }
+    },
+    {
+      "id": "red-light",
+      "label": "Red light therapy",
+      "url": "/perth/red-light-therapy/",
+      "pair": "sauna-infrared",
+      "group": "recovery-modalities",
+      "attributes": {
+        "temperature": "Room temperature — the light is not hot",
+        "wet": "Dry",
+        "clothing": "As little as you are comfortable with, for skin exposure",
+        "duration": "10–20 min",
+        "demand": 1,
+        "quiet": 4,
+        "company": "A private room or booth",
+        "price": "$$",
+        "athome": "Home panels exist",
+        "firsttime": "Goggles, and staff set the distance and the timer"
+      }
+    },
+    {
+      "id": "cryo",
+      "label": "Whole-body cryotherapy",
+      "url": "/perth/cryotherapy/",
+      "pair": "plunge-ice",
+      "group": "recovery-modalities",
+      "attributes": {
+        "temperature": "Around -110 °C, in short bursts",
+        "wet": "Dry",
+        "clothing": "Underwear, plus gloves, socks and clogs",
+        "duration": "2–3 min",
+        "demand": 4,
+        "quiet": 2,
+        "company": "One person at a time, staff watching",
+        "price": "$$$",
+        "athome": "No",
+        "firsttime": "Staff stay at the door and talk to you the whole way through"
+      }
+    },
+    {
+      "id": "compression",
+      "label": "Compression boots",
+      "url": "/perth/compression/",
+      "pair": "red-light",
+      "group": "recovery-modalities",
+      "attributes": {
+        "temperature": "Room temperature",
+        "wet": "Dry",
+        "clothing": "Fully clothed — the boots go over your legs",
+        "duration": "20–30 min",
+        "demand": 1,
+        "quiet": 3,
+        "company": "Often a row of recliners",
+        "price": "$",
+        "athome": "Home units exist",
+        "firsttime": "Staff fit the boots and set the pressure"
+      }
+    },
+    {
+      "id": "hyperbaric",
+      "label": "Hyperbaric oxygen",
+      "url": "/perth/hyperbaric-oxygen/",
+      "pair": "red-light",
+      "group": "recovery-modalities",
+      "attributes": {
+        "temperature": "Room temperature, warming as it pressurises",
+        "wet": "Dry",
+        "clothing": "Fully clothed, usually cotton",
+        "duration": "60–90 min",
+        "demand": 2,
+        "quiet": 4,
+        "company": "A single chamber, or a shared one",
+        "price": "$$$$",
+        "athome": "No",
+        "firsttime": "You equalise your ears on the way down, like a plane"
+      }
     }
   ],
   "groups": {
@@ -686,6 +857,72 @@
               "label": "Private health",
               "type": "text",
               "hint": "Always confirm with your own fund and therapist"
+            }
+          }
+        }
+      }
+    },
+    "recovery-modalities": {
+      "label": "Recovery modalities",
+      "parent": "recovery",
+      "h1": "Sauna, ice, float and the rest compared",
+      "blurb": "Hot, cold, wet, dry, and how long you actually have to stay in. What each recovery room is like to sit through, and what you need to bring.",
+      "attributes": {
+        "conditions": {
+          "label": "The conditions",
+          "items": {
+            "temperature": {
+              "label": "Temperature",
+              "type": "text"
+            },
+            "wet": {
+              "label": "Wet or dry",
+              "type": "text"
+            },
+            "clothing": {
+              "label": "What you wear",
+              "type": "text"
+            },
+            "duration": {
+              "label": "How long you are in",
+              "type": "text"
+            }
+          }
+        },
+        "through": {
+          "label": "Sitting through it",
+          "items": {
+            "demand": {
+              "label": "How hard it is to stay in",
+              "type": "scale",
+              "hint": "You could sit there all day (1) to every second is a decision (5)"
+            },
+            "quiet": {
+              "label": "Quietness",
+              "type": "scale",
+              "hint": "Coaching and chatter (1) to near silence (5)"
+            },
+            "company": {
+              "label": "Alone or shared",
+              "type": "text"
+            }
+          }
+        },
+        "practical": {
+          "label": "Practical",
+          "items": {
+            "price": {
+              "label": "Typical price",
+              "type": "band"
+            },
+            "athome": {
+              "label": "At home",
+              "type": "text"
+            },
+            "firsttime": {
+              "label": "Your first time",
+              "type": "text",
+              "hint": "What staff typically do for someone new"
             }
           }
         }
