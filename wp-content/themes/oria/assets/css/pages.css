@@ -2905,6 +2905,70 @@ html.has-sheet { overflow: hidden; }
   .xp__finder { padding: 1.3rem 1.25rem; }
 }
 
+/* --- Build your session -----------------------------------------------
+   Sliders over what a session is LIKE. Every track is labelled at both
+   ends with the registry's own words, and the current value is written
+   out beside the heading, so nothing here depends on reading a handle
+   position. */
+.bld__grid { display: grid; gap: var(--s-5) var(--s-6); grid-template-columns: 1fr; max-width: 60rem; }
+@media (min-width: 700px) { .bld__grid { grid-template-columns: repeat(2, 1fr); } }
+
+.bld__axis { display: flex; flex-direction: column; gap: .35rem; }
+.bld__axlabel {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--ink);
+}
+.bld__value { font-size: var(--fs-xs); font-weight: 700; color: var(--moss); white-space: nowrap; }
+.bld__ends {
+  display: flex; justify-content: space-between; gap: 1rem; margin: 0;
+  font-size: var(--fs-xs); color: var(--text-faint); line-height: 1.3;
+}
+
+.bld__range {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 22px; background: transparent; cursor: pointer;
+}
+.bld__range::-webkit-slider-runnable-track { height: 4px; border-radius: 999px; background: var(--line-strong); }
+.bld__range::-moz-range-track { height: 4px; border-radius: 999px; background: var(--line-strong); }
+.bld__range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 18px; height: 18px; margin-top: -7px; border-radius: 50%;
+  background: var(--deep); border: 2px solid var(--white); box-shadow: 0 0 0 1px var(--line-strong);
+}
+.bld__range::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--deep); border: 2px solid var(--white); box-shadow: 0 0 0 1px var(--line-strong);
+}
+.bld__range:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+
+.bld__budget { display: flex; align-items: center; gap: .75rem; margin-top: var(--s-5); font-size: var(--fs-sm); font-weight: 600; }
+.bld__budget select {
+  font: inherit; padding: .45rem .7rem; border-radius: var(--r-md);
+  border: 1px solid var(--line-strong); background: var(--white); color: var(--ink);
+}
+
+/* Results: an ordered list, numbered — a position, not a score. */
+.bld__hits { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: var(--s-4); max-width: 54rem; }
+.bld__hit {
+  display: flex; gap: 1.1rem; align-items: flex-start;
+  padding: 1.25rem 1.4rem; background: var(--white);
+  border: 1px solid var(--line); border-radius: var(--r-md);
+}
+.bld__rank {
+  flex: none; display: grid; place-items: center;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--sand-2); border: 1px solid var(--line);
+  font-size: var(--fs-xs); font-weight: 700; color: var(--text-soft);
+}
+.bld__hit:first-child .bld__rank { background: var(--deep); border-color: var(--deep); color: var(--white); }
+.bld__hitbody { min-width: 0; display: flex; flex-direction: column; gap: .3rem; }
+.bld__hitname { margin: 0; font-size: 1.1rem; font-weight: 700; letter-spacing: -0.018em; line-height: 1.25; }
+.bld__hitname a { color: var(--ink); }
+.bld__hitname a:hover { color: var(--deep); text-decoration: underline; text-underline-offset: 3px; }
+.bld__why { margin: 0; font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.5; }
+.bld__hit .xp__facts { margin-top: .25rem; }
+.bld__hit .xp__fact { background: var(--sand-2); }
+
 .cmp__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; margin-top: 1.5rem; }
 
 /* The submit is the point of the page, so it is bigger than a default

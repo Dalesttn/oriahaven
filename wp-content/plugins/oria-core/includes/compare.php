@@ -34,7 +34,7 @@ const DATA_FILE = 'data/compare.json';
 const SITEMAP   = 'compare';
 const MIN_PICK  = 2;
 const MAX_PICK  = 4;
-const REWRITE_V = '1';
+const REWRITE_V = '2';
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\route', 10 );
@@ -57,6 +57,9 @@ function bootstrap(): void {
 
 function route(): void {
 	add_rewrite_rule( '^' . PATH . '/?$', 'index.php?' . QUERY_VAR . '=1', 'top' );
+	// The session builder is a page of its own, not a state of /compare/:
+	// it answers a different question and gets its own indexable address.
+	add_rewrite_rule( '^' . PATH . '/build/?$', 'index.php?' . QUERY_VAR . '=1&' . BUILD_VAR . '=1', 'top' );
 }
 
 function maybe_flush(): void {
@@ -68,11 +71,16 @@ function maybe_flush(): void {
 
 function query_vars( array $vars ): array {
 	$vars[] = QUERY_VAR;
+	$vars[] = BUILD_VAR;
 	return $vars;
 }
 
 function is_compare(): bool {
 	return (bool) get_query_var( QUERY_VAR );
+}
+
+function is_build(): bool {
+	return is_compare() && (bool) get_query_var( BUILD_VAR );
 }
 
 function fix_query( \WP_Query $q ): void {
@@ -691,6 +699,155 @@ function section_heading( string $key, string $fallback, string $group = '' ): s
 	return $map[ $key ] ?? $fallback;
 }
 
+/* ------------------------------------------------------ build your session */
+
+/*
+ * Sliders over what a session is LIKE, then the registry sorted by how
+ * close each experience sits to the answers.
+ *
+ * Deliberately not "stress relief", "mental wellbeing" or "fitness". Those
+ * are outcomes — what the hour is supposed to do to you — and this file's
+ * header names two of them as the exact claims the registry refuses. Every
+ * axis below is something a visitor could verify by standing in the room.
+ *
+ * And deliberately no percentage. A weighted distance over editorial 1-5
+ * judgements is computable, but printing it as "92%" dresses a judgement
+ * as a measurement, and a number is the most quotable thing on any page.
+ * The results are ordered, and each says why it placed where it did.
+ */
+
+/** Sliders are 0 = no preference, 1-5 = the level asked for. */
+const BUILD_ANY = 0;
+
+/**
+ * The axes offered, in slider order: every scale in the schema, with the
+ * registry's own directional words as the two ends of the track.
+ *
+ * @return array<string, array{label: string, low: string, high: string}>
+ */
+function build_axes( string $group = '' ): array {
+	$out = array();
+	foreach ( attribute_defs( $group ) as $k => $def ) {
+		if ( 'scale' !== ( $def['type'] ?? '' ) ) {
+			continue;
+		}
+		$out[ $k ] = array(
+			'label' => (string) $def['label'],
+			'hint'  => (string) ( $def['hint'] ?? '' ),
+			'low'   => (string) ( $def['low'] ?? '' ),
+			'high'  => (string) ( $def['high'] ?? '' ),
+		);
+	}
+	return $out;
+}
+
+/**
+ * What the visitor asked for, read off the query string.
+ *
+ * @return array{axes: array<string, int>, budget: int}
+ */
+function build_prefs( string $group = '' ): array {
+	$axes = array();
+	foreach ( build_axes( $group ) as $k => $_ ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
+		$raw = isset( $_GET[ $k ] ) ? (int) $_GET[ $k ] : BUILD_ANY;
+		if ( $raw >= 1 && $raw <= 5 ) {
+			$axes[ $k ] = $raw;
+		}
+	}
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
+	$budget = isset( $_GET['budget'] ) ? (int) $_GET['budget'] : 0;
+	return array(
+		'axes'   => $axes,
+		'budget' => ( $budget >= 1 && $budget <= 4 ) ? $budget : 0,
+	);
+}
+
+/**
+ * The registry ordered by distance from what was asked.
+ *
+ * Budget is a ceiling, not a target — nobody means "I want to spend
+ * exactly three dollar signs" — so it filters rather than scores. Free
+ * always passes.
+ *
+ * @return array<int, array{experience: array, distance: int, reasons: array<int, string>}>
+ */
+function build_matches( array $prefs, string $group = '' ): array {
+	if ( ! $prefs['axes'] ) {
+		return array();
+	}
+	$axes = build_axes( $group );
+	$pool = experiences_in( $group );
+	$out  = array();
+
+	foreach ( $pool as $e ) {
+		if ( $prefs['budget'] > 0 ) {
+			$band = band_rank( (string) ( $e['attributes']['price'] ?? '' ) );
+			if ( null !== $band && $band > $prefs['budget'] ) {
+				continue;
+			}
+		}
+
+		$distance = 0;
+		$exact    = array();
+		$close    = 0;
+		foreach ( $prefs['axes'] as $k => $want ) {
+			if ( ! isset( $e['attributes'][ $k ] ) ) {
+				continue;
+			}
+			$has  = (int) $e['attributes'][ $k ];
+			$gap  = abs( $want - $has );
+			$distance += $gap;
+			if ( 0 === $gap ) {
+				$exact[] = (string) $axes[ $k ]['label'];
+			}
+			if ( $gap <= 1 ) {
+				$close++;
+			}
+		}
+
+		$out[] = array(
+			'experience' => $e,
+			'distance'   => $distance,
+			'exact'      => $exact,
+			'close'      => $close,
+		);
+	}
+
+	// Closest first; ties broken by registry order, which is stable and is
+	// not a ranking of quality.
+	usort(
+		$out,
+		static fn( array $a, array $b ): int => $a['distance'] <=> $b['distance']
+	);
+
+	$asked = count( $prefs['axes'] );
+	foreach ( $out as $i => $row ) {
+		$reasons = array();
+		if ( $row['exact'] ) {
+			$reasons[] = sprintf(
+				/* translators: %s: list of attributes matched exactly */
+				__( 'Matches what you asked on %s.', 'oria' ),
+				strtolower( join_labels( array_slice( $row['exact'], 0, 3 ) ) )
+			);
+		}
+		if ( ! $row['exact'] && $row['close'] > 0 ) {
+			$reasons[] = sprintf(
+				/* translators: 1: how many answers are close, 2: how many were given */
+				__( 'Close on %1$d of your %2$d answers, exact on none.', 'oria' ),
+				$row['close'],
+				$asked
+			);
+		}
+		if ( ! $reasons ) {
+			$reasons[] = __( 'Nothing here lines up with what you asked for.', 'oria' );
+		}
+		$out[ $i ]['reasons'] = $reasons;
+	}
+
+	return $out;
+}
+
 /* --------------------------------------------------- places (real providers) */
 
 /*
@@ -717,6 +874,7 @@ function section_heading( string $key, string $fallback, string $group = '' ): s
 
 const PLACES_VAR = 'places';
 const SCOPE_VAR  = 'in';
+const BUILD_VAR  = 'oria_compare_build';
 
 /**
  * The sentinel for every empty cell. Never "No".
@@ -1425,7 +1583,10 @@ function prompt_for_terms( array $terms ): ?array {
 function sitemap_entries(): array {
 	// One address today. The pair pages join this list, not the query
 	// strings — those canonical to the hub and must never be listed.
-	return array( array( 'loc' => home_url( '/' . PATH . '/' ) ) );
+	return array(
+		array( 'loc' => home_url( '/' . PATH . '/' ) ),
+		array( 'loc' => home_url( '/' . PATH . '/build/' ) ),
+	);
 }
 
 function register_sitemap(): void {
@@ -1470,6 +1631,9 @@ function sitemap_index( $xml ) {
  * variant still canonicals to the bare /compare/.
  */
 function heading(): string {
+	if ( is_build() ) {
+		return __( 'Build your session', 'oria' );
+	}
 	$places = places();
 	if ( $places ) {
 		return sprintf(
@@ -1509,6 +1673,9 @@ function description( $desc ) {
 	if ( ! is_compare() ) {
 		return $desc;
 	}
+	if ( is_build() ) {
+		return __( 'Say what you want a session to be like — how hard, how quiet, how guided, how social — and see which Perth wellness practices sit closest. Descriptions of the room, never promises about you.', 'oria' );
+	}
 	$g = group( current_group() );
 	if ( $g && '' !== (string) ( $g['blurb'] ?? '' ) ) {
 		return (string) $g['blurb'];
@@ -1526,5 +1693,12 @@ function description( $desc ) {
  * shareable states.
  */
 function canonical( $url ) {
-	return is_compare() ? home_url( '/' . PATH . '/' ) : $url;
+	if ( ! is_compare() ) {
+		return $url;
+	}
+	// The builder is its own page; only the ?with= and ?places= states of
+	// /compare/ fold back into it.
+	return is_build()
+		? home_url( '/' . PATH . '/build/' )
+		: home_url( '/' . PATH . '/' );
 }

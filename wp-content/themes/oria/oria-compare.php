@@ -18,6 +18,7 @@ use function Oria\Core\Compare\summary;
 
 get_header();
 
+$oria_build  = \Oria\Core\Compare\is_build();
 $oria_places = \Oria\Core\Compare\places();
 $oria_scope  = \Oria\Core\Compare\place_scope();
 $oria_group  = current_group();
@@ -56,7 +57,134 @@ $oria_dots = static function ( int $n ): string {
 	</div>
 </section>
 
-<?php if ( ! $oria_places && ! $oria_scope ) : ?>
+<?php /* ============================ build your session ============ */ ?>
+<?php if ( $oria_build ) : ?>
+	<?php
+	$oria_axes  = \Oria\Core\Compare\build_axes();
+	$oria_prefs = \Oria\Core\Compare\build_prefs();
+	$oria_hits  = \Oria\Core\Compare\build_matches( $oria_prefs );
+	$oria_bands = array( 1 => '$', 2 => '$$', 3 => '$$$', 4 => '$$$$' );
+	?>
+
+	<section class="wrap section section--top-flush">
+		<form class="bld" method="get" action="<?php echo esc_url( home_url( '/compare/build/' ) ); ?>">
+			<?php
+			/*
+			 * A plain GET form, so the whole thing works with scripting off and
+			 * every result set is a URL someone can send to a friend. JS only
+			 * writes the live value beside each slider.
+			 */
+			?>
+			<div class="bld__grid">
+				<?php foreach ( $oria_axes as $oria_k => $oria_ax ) : ?>
+					<?php $oria_val = (int) ( $oria_prefs['axes'][ $oria_k ] ?? 0 ); ?>
+					<div class="bld__axis">
+						<label class="bld__axlabel" for="bld-<?php echo esc_attr( $oria_k ); ?>">
+							<?php echo esc_html( (string) $oria_ax['label'] ); ?>
+							<span class="bld__value" data-bld-out="<?php echo esc_attr( $oria_k ); ?>">
+								<?php echo esc_html( 0 === $oria_val ? __( 'Any', 'oria' ) : \Oria\Core\Compare\scale_word( $oria_val ) ); ?>
+							</span>
+						</label>
+						<input class="bld__range" type="range" min="0" max="5" step="1"
+							id="bld-<?php echo esc_attr( $oria_k ); ?>"
+							name="<?php echo esc_attr( $oria_k ); ?>"
+							value="<?php echo esc_attr( (string) $oria_val ); ?>"
+							data-bld-range
+							aria-describedby="bldh-<?php echo esc_attr( $oria_k ); ?>">
+						<p class="bld__ends" id="bldh-<?php echo esc_attr( $oria_k ); ?>">
+							<span><?php echo esc_html( '' !== $oria_ax['low'] ? $oria_ax['low'] : __( 'Less', 'oria' ) ); ?></span>
+							<span><?php echo esc_html( '' !== $oria_ax['high'] ? $oria_ax['high'] : __( 'More', 'oria' ) ); ?></span>
+						</p>
+					</div>
+				<?php endforeach; ?>
+			</div>
+
+			<div class="bld__budget">
+				<label for="bld-budget"><?php esc_html_e( 'Budget, at most', 'oria' ); ?></label>
+				<select id="bld-budget" name="budget">
+					<option value="0"><?php esc_html_e( 'Any', 'oria' ); ?></option>
+					<?php foreach ( $oria_bands as $oria_bv => $oria_bl ) : ?>
+						<option value="<?php echo (int) $oria_bv; ?>" <?php selected( $oria_prefs['budget'], $oria_bv ); ?>><?php echo esc_html( $oria_bl ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+
+			<div class="cmp__actions">
+				<button class="btn btn--dark btn--plain cmp__go is-ready" type="submit"><?php esc_html_e( 'Show me what fits', 'oria' ); ?></button>
+				<?php if ( $oria_prefs['axes'] || $oria_prefs['budget'] ) : ?>
+					<a class="btn btn--ghost btn--plain" href="<?php echo esc_url( home_url( '/compare/build/' ) ); ?>"><?php esc_html_e( 'Start again', 'oria' ); ?></a>
+				<?php endif; ?>
+				<p class="cmp__pickhint"><?php esc_html_e( 'Leave a slider on Any and it is ignored.', 'oria' ); ?></p>
+			</div>
+		</form>
+	</section>
+
+	<?php if ( $oria_hits ) : ?>
+		<section class="wrap section" id="result">
+			<h2 class="h3 cmp__h"><?php esc_html_e( 'Closest to what you asked for', 'oria' ); ?></h2>
+			<p class="muted xp__lede">
+				<?php esc_html_e( 'Ordered by how near each one sits to your answers — not scored, and not a recommendation. Every practice here is worth someone\'s time; this is only which ones match the session you described.', 'oria' ); ?>
+			</p>
+			<ol class="bld__hits">
+				<?php foreach ( array_slice( $oria_hits, 0, 6 ) as $oria_i => $oria_hit ) : ?>
+					<?php $oria_e = $oria_hit['experience']; ?>
+					<li class="bld__hit">
+						<span class="bld__rank" aria-hidden="true"><?php echo (int) ( $oria_i + 1 ); ?></span>
+						<div class="bld__hitbody">
+							<h3 class="bld__hitname">
+								<a href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>"><?php echo esc_html( (string) $oria_e['label'] ); ?></a>
+							</h3>
+							<?php $oria_tr = \Oria\Core\Compare\traits_of( $oria_e ); ?>
+							<?php if ( $oria_tr ) : ?>
+								<p class="xp__traits"><?php echo esc_html( implode( ' · ', $oria_tr ) ); ?></p>
+							<?php endif; ?>
+							<?php foreach ( (array) $oria_hit['reasons'] as $oria_r ) : ?>
+								<p class="bld__why"><?php echo esc_html( $oria_r ); ?></p>
+							<?php endforeach; ?>
+							<p class="xp__facts">
+								<?php $oria_d = (string) ( $oria_e['attributes']['duration'] ?? '' ); ?>
+								<?php $oria_p = (string) ( $oria_e['attributes']['price'] ?? '' ); ?>
+								<?php if ( '' !== $oria_d ) : ?><span class="xp__fact"><?php echo esc_html( $oria_d ); ?></span><?php endif; ?>
+								<?php if ( '' !== $oria_p ) : ?><span class="xp__fact"><?php echo esc_html( $oria_p ); ?></span><?php endif; ?>
+							</p>
+						</div>
+					</li>
+				<?php endforeach; ?>
+			</ol>
+
+			<?php
+			// Send the top few straight into the side-by-side table, which is
+			// the natural next question once a shortlist exists.
+			$oria_top = array();
+			foreach ( array_slice( $oria_hits, 0, 3 ) as $oria_hit ) {
+				$oria_top[] = (string) $oria_hit['experience']['id'];
+			}
+			?>
+			<?php if ( count( $oria_top ) >= 2 ) : ?>
+				<div class="cmp__switch">
+					<a href="<?php echo esc_url( \Oria\Core\Compare\url_for( $oria_top ) ); ?>">
+						<?php esc_html_e( 'Put the top three side by side', 'oria' ); ?>
+						<span aria-hidden="true">&rarr;</span>
+					</a>
+				</div>
+			<?php endif; ?>
+		</section>
+	<?php elseif ( $oria_prefs['budget'] > 0 ) : ?>
+		<section class="wrap section">
+			<p class="muted"><?php esc_html_e( 'Move at least one slider off Any and we can sort them for you.', 'oria' ); ?></p>
+		</section>
+	<?php endif; ?>
+
+	<section class="wrap section">
+		<div class="xp__finder">
+			<h2 class="h3 xp__finderhead"><?php esc_html_e( 'Would you rather just be asked?', 'oria' ); ?></h2>
+			<p><?php esc_html_e( 'The Wellness Finder asks four plain questions instead of eight sliders, and matches real Perth practices, people and events.', 'oria' ); ?></p>
+			<a class="btn btn--dark btn--plain" href="<?php echo esc_url( home_url( '/wellness-finder/' ) ); ?>"><?php esc_html_e( 'Take the Wellness Finder', 'oria' ); ?></a>
+		</div>
+	</section>
+<?php endif; ?>
+
+<?php if ( ! $oria_build && ! $oria_places && ! $oria_scope ) : ?>
 <section class="wrap section section--top-flush">
 	<form class="cmp__picker" method="get" action="<?php echo esc_url( home_url( '/compare/' ) ); ?>" aria-label="<?php esc_attr_e( 'Choose experiences to compare', 'oria' ); ?>">
 		<?php // The ids travel as one comma list, assembled from the checkboxes on submit. ?>
@@ -148,7 +276,7 @@ $oria_dots = static function ( int $n ): string {
  * "it counts, it never ranks" on every category page.
  */
 ?>
-<?php if ( $oria_scope && ! $oria_places ) : ?>
+<?php if ( ! $oria_build && $oria_scope && ! $oria_places ) : ?>
 	<?php $oria_pool = \Oria\Core\Compare\scope_listings( $oria_scope ); ?>
 	<section class="wrap section section--top-flush">
 		<?php if ( ! $oria_pool ) : ?>
@@ -186,7 +314,7 @@ $oria_dots = static function ( int $n ): string {
 	</section>
 <?php endif; ?>
 
-<?php if ( $oria_places ) : ?>
+<?php if ( ! $oria_build && $oria_places ) : ?>
 	<?php $oria_head = \Oria\Core\Compare\place_header( $oria_places ); ?>
 	<section class="wrap section section--top-flush" id="result">
 
@@ -366,7 +494,7 @@ $oria_dots = static function ( int $n ): string {
 <?php endif; ?>
 
 
-<?php if ( $oria_picked ) : ?>
+<?php if ( ! $oria_build && $oria_picked ) : ?>
 	<?php
 	$oria_g     = \Oria\Core\Compare\group_of( $oria_picked );
 	$oria_glance = \Oria\Core\Compare\glance_rows( $oria_picked, $oria_g );

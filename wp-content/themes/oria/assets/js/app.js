@@ -2342,6 +2342,30 @@
     });
   }
 
+  /* Build-your-session sliders.
+
+     All JS does here is write the current value in words beside each
+     label. The form is a plain GET submit, so with scripting off the
+     sliders still work — you read the value after submitting rather than
+     while dragging, and every result set is still a shareable URL. */
+  function initBuildSliders() {
+    var ranges = $$("[data-bld-range]");
+    if (!ranges.length) return;
+
+    var WORDS = ["Any", "Very low", "Low", "Moderate", "High", "Very high"];
+
+    ranges.forEach(function (r) {
+      var out = $('[data-bld-out="' + r.getAttribute("name") + '"]');
+      if (!out) return;
+      var paint = function () {
+        var v = parseInt(r.value, 10) || 0;
+        out.textContent = WORDS[Math.max(0, Math.min(5, v))];
+      };
+      r.addEventListener("input", paint);
+      paint();
+    });
+  }
+
   /* The compare tray: the toggles on the cards, and the bar that collects
      them.
 
@@ -2618,6 +2642,7 @@
     initNav();
     initNavDropdowns();
     initComparePicker();
+    initBuildSliders();
     initCompareTray();
     initAccordions();
     initPullquote();
