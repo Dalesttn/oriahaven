@@ -2366,6 +2366,31 @@
     });
   }
 
+  /* After "Show me what fits", the page reloads at the top with the
+     answers a screen or so further down.
+
+     Ease down to them rather than jumping. The sliders stay in view on the
+     way past, which keeps the cause of the result visible — and a glide
+     says the page moved, where a jump just looks like a different page
+     loaded. Anyone who asked for reduced motion gets the same destination
+     without the travel. */
+  function scrollToBuildResults() {
+    var target = $("#result");
+    if (!target || !$(".bld__hits")) return;
+    // Only when the visitor actually asked for something, and never over
+    // a fragment they navigated to themselves.
+    if (!window.location.search || window.location.hash) return;
+    // Back and forward should land where the reader left off, not here.
+    var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+    if (nav && "back_forward" === nav.type) return;
+
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.setTimeout(function () {
+      var top = target.getBoundingClientRect().top + window.pageYOffset - (chromeTop() + 16);
+      window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+    }, 90);
+  }
+
   /* The compare tray: the toggles on the cards, and the bar that collects
      them.
 
@@ -2643,6 +2668,7 @@
     initNavDropdowns();
     initComparePicker();
     initBuildSliders();
+    scrollToBuildResults();
     initCompareTray();
     initAccordions();
     initPullquote();
