@@ -264,6 +264,20 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 		? \Oria\Core\Compare\group_prompt_for_term( $oria_term )
 		: null;
 	?>
+	<?php
+	/*
+	 * And the third scale: the actual businesses. Scoped to this category so
+	 * the picker is a shortlist rather than all 331 listings.
+	 */
+	?>
+	<?php if ( function_exists( '\Oria\Core\Compare\place_scope' ) && count( $oria_ids ) >= 2 ) : ?>
+		<p class="cmpnudge cmpnudge--places">
+			<a href="<?php echo esc_url( add_query_arg( 'in', $oria_term->slug, home_url( '/compare/' ) ) ); ?>" data-oria-event="category_compare_places">
+				<?php esc_html_e( 'Compare places in this category side by side', 'oria' ); ?>
+				<span aria-hidden="true">&rarr;</span>
+			</a>
+		</p>
+	<?php endif; ?>
 	<?php if ( $oria_gcmp ) : ?>
 		<p class="cmpnudge cmpnudge--group">
 			<a href="<?php echo esc_url( $oria_gcmp['url'] ); ?>" data-oria-event="category_compare_group">

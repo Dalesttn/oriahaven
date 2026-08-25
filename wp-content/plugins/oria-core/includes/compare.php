@@ -93,14 +93,26 @@ function fix_query( \WP_Query $q ): void {
  * template because by template time the headers have gone out.
  */
 function bridge(): void {
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
-	if ( ! is_compare() || ! isset( $_GET['pick'] ) || ! is_array( $_GET['pick'] ) || isset( $_GET['with'] ) ) {
+	if ( ! is_compare() ) {
 		return;
 	}
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- each id is sanitize_title()d.
-	$ids = implode( ',', array_filter( array_map( 'sanitize_title', array_slice( (array) wp_unslash( $_GET['pick'] ), 0, MAX_PICK ) ) ) );
-	wp_safe_redirect( home_url( '/' . PATH . '/' . ( '' !== $ids ? '?with=' . rawurlencode( $ids ) . '#result' : '' ) ) );
-	exit;
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
+	if ( isset( $_GET['pick'] ) && is_array( $_GET['pick'] ) && ! isset( $_GET['with'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- each id is sanitize_title()d.
+		$ids = implode( ',', array_filter( array_map( 'sanitize_title', array_slice( (array) wp_unslash( $_GET['pick'] ), 0, MAX_PICK ) ) ) );
+		wp_safe_redirect( home_url( '/' . PATH . '/' . ( '' !== $ids ? '?with=' . rawurlencode( $ids ) . '#result' : '' ) ) );
+		exit;
+	}
+
+	// The same trick for the places picker, which posts slugs not ids.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
+	if ( isset( $_GET['place'] ) && is_array( $_GET['place'] ) && ! isset( $_GET[ PLACES_VAR ] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- each slug is sanitize_title()d.
+		$slugs = implode( ',', array_filter( array_map( 'sanitize_title', array_slice( (array) wp_unslash( $_GET['place'] ), 0, MAX_PICK ) ) ) );
+		wp_safe_redirect( home_url( '/' . PATH . '/' . ( '' !== $slugs ? '?' . PLACES_VAR . '=' . rawurlencode( $slugs ) . '#result' : '' ) ) );
+		exit;
+	}
 }
 
 function template( string $template ): string {
@@ -350,9 +362,11 @@ function summary( array $picked ): array {
 
 	// Only name a cheapest when there IS one: with three of four sharing a
 	// band, crowning whichever sorted first would be an invented distinction.
-	$band_of = static fn( array $e ): int => strlen( (string) ( $e['attributes']['price'] ?? '' ) );
+	// band_rank(), not strlen() — see the note there; "Free" is four
+	// characters and used to sort level with "$$$$".
+	$band_of = static fn( array $e ): int => (int) ( band_rank( (string) ( $e['attributes']['price'] ?? '' ) ) ?? -1 );
 	$bands   = array_map( $band_of, $picked );
-	if ( count( array_unique( $bands ) ) > 1 ) {
+	if ( ! in_array( -1, $bands, true ) && count( array_unique( $bands ) ) > 1 ) {
 		$min_n = count( array_keys( $bands, min( $bands ), true ) );
 		$max_n = count( array_keys( $bands, max( $bands ), true ) );
 		$cheap = $picked;
@@ -465,6 +479,291 @@ function try_listings( array $picked, int $n = 3 ): array {
 		}
 	}
 	return $out;
+}
+
+/* --------------------------------------------------- places (real providers) */
+
+/*
+ * The third scale: not which practice, nor which kind of it, but which of
+ * these actual businesses.
+ *
+ * This one compares named third parties, so it plays by stricter rules than
+ * the registry tables above.
+ *
+ * 1. ONLY FACTS ON FILE. Every row below reads a field we actually hold.
+ *    Nothing is inferred, scored or averaged into a judgement.
+ * 2. NEVER A CROSS. A missing value renders as "Not listed", never as a
+ *    "no". 317 of 331 listings are unclaimed — their owners have never told
+ *    us anything — so an absence is a fact about our data entry, and
+ *    printing it as a fact about their business would be a lie that costs
+ *    a real local trader work. This is the audience system's existing rule:
+ *    absence is not a negative.
+ * 3. NO WINNER. The site tells people "it counts, it never ranks" on every
+ *    category page, and promises in the Finder that nobody can pay their
+ *    way up. A "best match" trophy over a named business breaks both. The
+ *    summary states where they differ and stops there; choosing is the
+ *    Wellness Finder's job, and it discloses how it breaks ties.
+ */
+
+const PLACES_VAR = 'places';
+const SCOPE_VAR  = 'in';
+
+/** The sentinel for every empty cell. Never "No". */
+function unknown(): string {
+	return __( 'Not listed', 'oria' );
+}
+
+/**
+ * A price band as a number, or null when it cannot be read.
+ *
+ * Counting characters is NOT good enough, and got this wrong: the
+ * directory's bands include "Free", whose four characters sorted level
+ * with "$$$$" and had the page reporting a free service as the dearest of
+ * the set. Ten live listings carry it. Free is zero; everything else is
+ * how many dollar signs it has; anything unrecognised is unknown and takes
+ * its row out of the comparison rather than guessing.
+ */
+function band_rank( string $band ): ?int {
+	$band = trim( $band );
+	if ( '' === $band ) {
+		return null;
+	}
+	if ( 0 === strcasecmp( $band, 'free' ) ) {
+		return 0;
+	}
+	$n = substr_count( $band, '$' );
+	return ( $n > 0 && strlen( $band ) === $n ) ? $n : null;
+}
+
+/**
+ * The listings a request has picked, by slug, in the order given.
+ *
+ * @return array<int, \WP_Post>
+ */
+function places(): array {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
+	$raw = isset( $_GET[ PLACES_VAR ] ) && is_string( $_GET[ PLACES_VAR ] ) ? sanitize_text_field( wp_unslash( $_GET[ PLACES_VAR ] ) ) : '';
+	if ( '' === $raw ) {
+		return array();
+	}
+	$slugs = array_slice( array_unique( array_filter( array_map( 'sanitize_title', explode( ',', $raw ) ) ) ), 0, MAX_PICK );
+	if ( count( $slugs ) < MIN_PICK ) {
+		return array();
+	}
+	$posts = get_posts(
+		array(
+			'post_type'      => 'listing',
+			'post_status'    => 'publish',
+			'post_name__in'  => $slugs,
+			'posts_per_page' => MAX_PICK,
+		)
+	);
+	// Restore the caller's ordering, which post_name__in does not preserve.
+	usort(
+		$posts,
+		static fn( \WP_Post $a, \WP_Post $b ): int =>
+			array_search( $a->post_name, $slugs, true ) <=> array_search( $b->post_name, $slugs, true )
+	);
+	return count( $posts ) >= MIN_PICK ? $posts : array();
+}
+
+/** The category a picker is scoped to, from ?in=. */
+function place_scope(): ?\WP_Term {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
+	$raw = isset( $_GET[ SCOPE_VAR ] ) && is_string( $_GET[ SCOPE_VAR ] ) ? sanitize_title( wp_unslash( $_GET[ SCOPE_VAR ] ) ) : '';
+	if ( '' === $raw ) {
+		return null;
+	}
+	$t = get_term_by( 'slug', $raw, 'practice' );
+	return $t instanceof \WP_Term ? $t : null;
+}
+
+/** The listings a scoped picker offers, rolled up like the category pages do. */
+function scope_listings( \WP_Term $term ): array {
+	$ids = function_exists( '\Oria\Core\Intents\listings_in' )
+		? array_map( 'intval', \Oria\Core\Intents\listings_in( $term ) )
+		: array();
+	if ( ! $ids ) {
+		return array();
+	}
+	return get_posts(
+		array(
+			'post_type'      => 'listing',
+			'post_status'    => 'publish',
+			'post__in'       => $ids,
+			'posts_per_page' => 200,
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		)
+	);
+}
+
+/** The /compare/ address for a set of listing slugs. */
+function places_url( array $slugs ): string {
+	$slugs = array_slice( array_values( array_unique( array_filter( $slugs ) ) ), 0, MAX_PICK );
+	if ( count( $slugs ) < MIN_PICK ) {
+		return home_url( '/' . PATH . '/' );
+	}
+	return home_url( '/' . PATH . '/?' . PLACES_VAR . '=' . implode( ',', array_map( 'rawurlencode', $slugs ) ) );
+}
+
+/**
+ * The comparison table for real providers. Each row reads one field we
+ * hold; anything empty becomes unknown(), never a "no".
+ *
+ * @param array<int, \WP_Post> $posts
+ * @return array<int, array{label: string, hint: string, values: array<int, string>}>
+ */
+function place_rows( array $posts ): array {
+	$terms = static function ( int $id, string $tax ): string {
+		$names = wp_get_post_terms( $id, $tax, array( 'fields' => 'names' ) );
+		return ( ! is_wp_error( $names ) && $names ) ? implode( ', ', $names ) : unknown();
+	};
+
+	$rows = array(
+		array( 'key' => 'where', 'label' => __( 'Where', 'oria' ), 'hint' => '' ),
+		array( 'key' => 'price', 'label' => __( 'Price band', 'oria' ), 'hint' => __( 'The directory\'s own bands', 'oria' ) ),
+		array( 'key' => 'rating', 'label' => __( 'Rating', 'oria' ), 'hint' => __( 'From Google, not from us', 'oria' ) ),
+		array( 'key' => 'format', 'label' => __( 'In person or online', 'oria' ), 'hint' => '' ),
+		array( 'key' => 'cats', 'label' => __( 'Listed under', 'oria' ), 'hint' => '' ),
+		array( 'key' => 'spec', 'label' => __( 'Specialties listed', 'oria' ), 'hint' => '' ),
+		array( 'key' => 'svc', 'label' => __( 'Services listed', 'oria' ), 'hint' => '' ),
+		array( 'key' => 'confirmed', 'label' => __( 'Details confirmed by the business', 'oria' ), 'hint' => __( 'Everything above comes from us until they do', 'oria' ) ),
+	);
+
+	$out = array();
+	foreach ( $rows as $row ) {
+		$values = array();
+		foreach ( $posts as $p ) {
+			$id = (int) $p->ID;
+			switch ( $row['key'] ) {
+				case 'where':
+					$areas    = wp_get_post_terms( $id, 'area', array( 'fields' => 'names' ) );
+					$values[] = ( ! is_wp_error( $areas ) && $areas ) ? implode( ', ', array_slice( $areas, 0, 2 ) ) : unknown();
+					break;
+
+				case 'price':
+					$band     = trim( (string) get_field( 'price_band', $id ) );
+					$from     = (float) get_field( 'price_from', $id );
+					$values[] = '' === $band
+						? unknown()
+						: ( $from > 0
+							/* translators: 1: price band, 2: lowest price */
+							? sprintf( __( '%1$s — from $%2$s', 'oria' ), $band, number_format_i18n( $from ) )
+							: $band );
+					break;
+
+				case 'rating':
+					$r = function_exists( '\Oria\Theme\effective_rating' ) ? \Oria\Theme\effective_rating( $id ) : array( 'rating' => 0, 'count' => 0 );
+					$values[] = ( (float) $r['rating'] > 0 )
+						/* translators: 1: rating out of five, 2: number of reviews */
+						? sprintf( __( '%1$s from %2$s reviews', 'oria' ), number_format_i18n( (float) $r['rating'], 1 ), number_format_i18n( (int) $r['count'] ) )
+						: __( 'No rating on file', 'oria' );
+					break;
+
+				case 'format':
+					$f   = (string) ( get_field( 'format', $id ) ?: 'in-person' );
+					$map = array(
+						'in-person' => __( 'In person', 'oria' ),
+						'online'    => __( 'Online', 'oria' ),
+						'both'      => __( 'Both', 'oria' ),
+					);
+					$values[] = $map[ $f ] ?? $f;
+					break;
+
+				case 'cats':
+					$values[] = $terms( $id, 'practice' );
+					break;
+				case 'spec':
+					$values[] = $terms( $id, 'specialty' );
+					break;
+				case 'svc':
+					$values[] = $terms( $id, 'service' );
+					break;
+
+				case 'confirmed':
+					$st = function_exists( '\Oria\Theme\display_status' ) ? \Oria\Theme\display_status( $id ) : '';
+					// "Not yet", never "No" — they may simply not have been asked.
+					$values[] = in_array( $st, array( 'claimed', 'featured' ), true )
+						? __( 'Yes', 'oria' )
+						: __( 'Not yet', 'oria' );
+					break;
+			}
+		}
+		$out[] = array( 'label' => $row['label'], 'hint' => $row['hint'], 'values' => $values );
+	}
+	return $out;
+}
+
+/**
+ * What differs, stated and not ranked — plus, first, how much of the table
+ * is actually known. That caveat is the most important line on the page:
+ * without it a reader takes eight rows of "Not listed" as eight findings.
+ *
+ * @param array<int, \WP_Post> $posts
+ * @return array<int, string>
+ */
+function place_summary( array $posts ): array {
+	$lines = array();
+
+	$unconfirmed = 0;
+	foreach ( $posts as $p ) {
+		$st = function_exists( '\Oria\Theme\display_status' ) ? \Oria\Theme\display_status( (int) $p->ID ) : '';
+		if ( ! in_array( $st, array( 'claimed', 'featured' ), true ) ) {
+			$unconfirmed++;
+		}
+	}
+	if ( $unconfirmed > 0 ) {
+		$lines[] = sprintf(
+			/* translators: %d: how many of the compared businesses have not confirmed their details */
+			_n(
+				'%d of these has not confirmed their own details with us, so a blank means we have not been told — not that the answer is no.',
+				'%d of these have not confirmed their own details with us, so a blank means we have not been told — not that the answer is no.',
+				$unconfirmed,
+				'oria'
+			),
+			$unconfirmed
+		);
+	}
+
+	// Price, on the same rule the registry tables use: name an extreme only
+	// where one genuinely exists.
+	$bands = array();
+	foreach ( $posts as $p ) {
+		$r = band_rank( (string) get_field( 'price_band', (int) $p->ID ) );
+		if ( null !== $r ) {
+			$bands[ $p->post_title ] = $r;
+		}
+	}
+	if ( count( $bands ) === count( $posts ) && count( array_unique( $bands ) ) > 1 ) {
+		$min = min( $bands );
+		$max = max( $bands );
+		if ( 1 === count( array_keys( $bands, $min, true ) ) && 1 === count( array_keys( $bands, $max, true ) ) ) {
+			$lines[] = sprintf(
+				/* translators: 1: cheapest band business, 2: dearest band business */
+				__( '%1$s sits in the lowest price band here and %2$s the highest, on the figures each has published.', 'oria' ),
+				(string) array_search( $min, $bands, true ),
+				(string) array_search( $max, $bands, true )
+			);
+		}
+	}
+
+	// Geography, which is the difference people most often act on.
+	$regions = array();
+	foreach ( $posts as $p ) {
+		$r = wp_get_post_terms( (int) $p->ID, 'area', array( 'fields' => 'names' ) );
+		$regions[] = ( ! is_wp_error( $r ) && $r ) ? end( $r ) : '';
+	}
+	$regions = array_filter( $regions );
+	if ( count( $regions ) === count( $posts ) && count( array_unique( $regions ) ) === 1 ) {
+		$lines[] = sprintf(
+			/* translators: %s: the area they share */
+			__( 'All of these are in %s, so travel is unlikely to separate them.', 'oria' ),
+			(string) $regions[0]
+		);
+	}
+
+	return $lines;
 }
 
 /* ----------------------------------------------------------- entry points */
@@ -712,6 +1011,22 @@ function sitemap_index( $xml ) {
  * variant still canonicals to the bare /compare/.
  */
 function heading(): string {
+	$places = places();
+	if ( $places ) {
+		return sprintf(
+			/* translators: %d: how many businesses are being compared */
+			__( 'Comparing %d places in Perth', 'oria' ),
+			count( $places )
+		);
+	}
+	$scope = place_scope();
+	if ( $scope ) {
+		return sprintf(
+			/* translators: %s: practice category, e.g. "Yoga & Pilates" */
+			__( 'Compare %s places in Perth', 'oria' ),
+			function_exists( '\Oria\Theme\tname' ) ? \Oria\Theme\tname( $scope ) : $scope->name
+		);
+	}
 	$g = group( current_group() );
 	if ( $g ) {
 		/* translators: %s: group heading, e.g. "Types of massage compared" */

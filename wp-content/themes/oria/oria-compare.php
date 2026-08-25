@@ -18,6 +18,8 @@ use function Oria\Core\Compare\summary;
 
 get_header();
 
+$oria_places = \Oria\Core\Compare\places();
+$oria_scope  = \Oria\Core\Compare\place_scope();
 $oria_group  = current_group();
 $oria_ginfo  = \Oria\Core\Compare\group( $oria_group );
 $oria_all    = experiences_in( $oria_group );
@@ -42,7 +44,9 @@ $oria_dots = static function ( int $n ): string {
 		<h1 class="h1 pagehead__title"><?php echo esc_html( \Oria\Core\Compare\heading() ); ?></h1>
 		<p class="lede">
 			<?php
-			if ( $oria_ginfo ) {
+			if ( $oria_places || $oria_scope ) {
+				esc_html_e( 'The details we hold on each, side by side. Nothing here is scored or ranked, and a blank means nobody has told us — not that the answer is no.', 'oria' );
+			} elseif ( $oria_ginfo ) {
 				echo esc_html( (string) $oria_ginfo['blurb'] );
 			} else {
 				esc_html_e( 'Pick two to four and see them side by side — how hard the body works, what happens in the room, who else is there, and what it costs. Facts about the session, not promises about you.', 'oria' );
@@ -52,6 +56,7 @@ $oria_dots = static function ( int $n ): string {
 	</div>
 </section>
 
+<?php if ( ! $oria_places && ! $oria_scope ) : ?>
 <section class="wrap section section--top-flush">
 	<form class="cmp__picker" method="get" action="<?php echo esc_url( home_url( '/compare/' ) ); ?>" aria-label="<?php esc_attr_e( 'Choose experiences to compare', 'oria' ); ?>">
 		<?php // The ids travel as one comma list, assembled from the checkboxes on submit. ?>
@@ -129,6 +134,122 @@ $oria_dots = static function ( int $n ): string {
 		</a>
 	<?php endif; ?>
 </section>
+
+<?php endif; ?>
+
+<?php
+/*
+ * The places view: real Perth businesses, side by side.
+ *
+ * Every cell is a field we hold. Nothing here is scored, and nothing is
+ * crossed out -- an empty field says "Not listed", because most of these
+ * businesses have never told us anything and an absence is our gap, not
+ * their shortcoming. There is deliberately no winner: the site promises
+ * "it counts, it never ranks" on every category page.
+ */
+?>
+<?php if ( $oria_scope && ! $oria_places ) : ?>
+	<?php $oria_pool = \Oria\Core\Compare\scope_listings( $oria_scope ); ?>
+	<section class="wrap section section--top-flush">
+		<?php if ( ! $oria_pool ) : ?>
+			<p class="muted"><?php esc_html_e( 'Nothing is listed in this category yet.', 'oria' ); ?></p>
+		<?php else : ?>
+			<form class="cmp__picker" method="get" action="<?php echo esc_url( home_url( '/compare/' ) ); ?>" aria-label="<?php esc_attr_e( 'Choose places to compare', 'oria' ); ?>">
+				<div class="cmp__grid cmp__grid--places" data-compare-picker data-max="4">
+					<?php foreach ( $oria_pool as $oria_pl ) : ?>
+						<?php $oria_ar = wp_get_post_terms( (int) $oria_pl->ID, 'area', array( 'fields' => 'names' ) ); ?>
+						<label class="check cmp__pick">
+							<input type="checkbox" name="place[]" value="<?php echo esc_attr( $oria_pl->post_name ); ?>">
+							<span>
+								<?php echo esc_html( get_the_title( $oria_pl ) ); ?>
+								<?php if ( ! is_wp_error( $oria_ar ) && $oria_ar ) : ?>
+									<em><?php echo esc_html( (string) $oria_ar[0] ); ?></em>
+								<?php endif; ?>
+							</span>
+						</label>
+					<?php endforeach; ?>
+				</div>
+				<div class="cmp__actions">
+					<button class="btn btn--dark btn--plain cmp__go" type="submit" data-compare-go>
+						<span data-compare-label><?php esc_html_e( 'Compare', 'oria' ); ?></span>
+					</button>
+					<p class="cmp__pickhint" data-compare-hint hidden><?php esc_html_e( 'Pick at least two', 'oria' ); ?></p>
+				</div>
+			</form>
+		<?php endif; ?>
+		<div class="cmp__switch">
+			<a href="<?php echo esc_url( home_url( '/compare/' ) ); ?>">
+				<span aria-hidden="true">&larr;</span>
+				<?php esc_html_e( 'Compare practices instead of places', 'oria' ); ?>
+			</a>
+		</div>
+	</section>
+<?php endif; ?>
+
+<?php if ( $oria_places ) : ?>
+	<section class="wrap section section--top-flush" id="result">
+		<div class="cmp__scroll">
+			<table class="cmp__table">
+				<thead>
+					<tr>
+						<th scope="col" class="cmp__attr"><span class="sr-only"><?php esc_html_e( 'Detail', 'oria' ); ?></span></th>
+						<?php foreach ( $oria_places as $oria_pl ) : ?>
+							<th scope="col"><a href="<?php echo esc_url( (string) get_permalink( $oria_pl ) ); ?>"><?php echo esc_html( get_the_title( $oria_pl ) ); ?></a></th>
+						<?php endforeach; ?>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( \Oria\Core\Compare\place_rows( $oria_places ) as $oria_row ) : ?>
+						<tr>
+							<th scope="row" class="cmp__attr">
+								<?php echo esc_html( (string) $oria_row['label'] ); ?>
+								<?php if ( '' !== (string) $oria_row['hint'] ) : ?>
+									<small><?php echo esc_html( (string) $oria_row['hint'] ); ?></small>
+								<?php endif; ?>
+							</th>
+							<?php foreach ( (array) $oria_row['values'] as $oria_v ) : ?>
+								<?php $oria_blank = ( (string) $oria_v === \Oria\Core\Compare\unknown() ); ?>
+								<td<?php echo $oria_blank ? ' class="cmp__blank"' : ''; ?>><?php echo esc_html( (string) $oria_v ); ?></td>
+							<?php endforeach; ?>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
+
+		<?php $oria_plines = \Oria\Core\Compare\place_summary( $oria_places ); ?>
+		<?php if ( $oria_plines ) : ?>
+			<div class="cmp__reading">
+				<h2 class="h3 cmp__h"><?php esc_html_e( 'Reading the table', 'oria' ); ?></h2>
+				<ul>
+					<?php foreach ( $oria_plines as $oria_pline ) : ?>
+						<li><?php echo esc_html( $oria_pline ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+				<p class="hint">
+					<?php esc_html_e( 'These are the details on file, not a verdict. We do not rank businesses and nobody can pay to appear here — if a row says "Not listed", ask them; it usually means nobody has told us either way.', 'oria' ); ?>
+				</p>
+			</div>
+		<?php endif; ?>
+
+		<div class="cmp__next">
+			<h2 class="h3 cmp__h"><?php esc_html_e( 'Look at them properly', 'oria' ); ?></h2>
+			<div class="chips cmp__chips">
+				<?php foreach ( $oria_places as $oria_pl ) : ?>
+					<a class="pill" href="<?php echo esc_url( (string) get_permalink( $oria_pl ) ); ?>">
+						<?php echo esc_html( get_the_title( $oria_pl ) ); ?>
+						<span aria-hidden="true">&rarr;</span>
+					</a>
+				<?php endforeach; ?>
+			</div>
+		</div>
+
+		<div class="cmp__finder">
+			<p class="muted"><?php esc_html_e( 'Run one of these? Claim the listing and fill in the blanks yourself — it is free, and it is your answer rather than ours.', 'oria' ); ?></p>
+			<a class="btn btn--dark btn--plain" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim a listing', 'oria' ); ?></a>
+		</div>
+	</section>
+<?php endif; ?>
 
 <?php if ( $oria_picked ) : ?>
 	<section class="wrap section" id="result">

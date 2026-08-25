@@ -2645,6 +2645,16 @@ html.has-sheet { overflow: hidden; }
    rather than hidden, so the list does not reflow under the cursor. */
 .cmp__pick.is-spent { opacity: .4; cursor: not-allowed; }
 
+/* The places picker can run to dozens of businesses, so it is a denser,
+   scrollable list rather than the registry's short grid. */
+.cmp__grid--places { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); max-height: 26rem; overflow-y: auto; padding-right: .5rem; }
+.cmp__grid--places .cmp__pick span { display: flex; flex-direction: column; line-height: 1.3; }
+.cmp__grid--places .cmp__pick em { font-style: normal; font-size: var(--fs-xs); color: var(--text-faint); }
+
+/* An unknown cell is set back rather than struck out. It is the absence of
+   an answer, not a negative one, and it must not read as a verdict. */
+.cmp__blank { color: var(--text-faint); font-style: italic; }
+
 .cmp__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; margin-top: 1.5rem; }
 
 /* The submit is the point of the page, so it is bigger than a default
