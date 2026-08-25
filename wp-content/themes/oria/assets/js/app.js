@@ -17,8 +17,86 @@
     pin: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14.5s5-4.2 5-8a5 5 0 1 0-10 0c0 3.8 5 8 5 8Z"/><circle cx="8" cy="6.4" r="1.9"/></svg>',
     star: '<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>',
     arrow: '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg>',
-    x: '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg>'
+    x: '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg>',
+    scales: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v12M3 5h10M4.5 5 2.5 9.5h4zM11.5 5 9.5 9.5h4z"/></svg>',
+    tick: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 6.5 12 13 4.5"/></svg>'
   };
+
+  /* ------------------------------------------------------------------ *
+     Compare selection.
+
+     A shortlist someone builds while browsing, so it cannot live in the
+     DOM: the directory re-renders every card on each filter change and
+     throws the old ones away, and people move between categories before
+     they have picked their three. It lives in localStorage, and the DOM
+     is redrawn from it.
+
+     Declared up here because card() reads it while rendering, long before
+     initCompareTray() runs.
+     ------------------------------------------------------------------ */
+  var Compare = (function () {
+    var KEY = "oria:compare";
+    var MAX = 4;
+    var MIN = 2;
+    var listeners = [];
+
+    function read() {
+      // Private browsing and full quotas both throw on access, not just on
+      // write, so every touch is guarded. A visitor with storage disabled
+      // gets a shortlist that works until the page unloads.
+      try {
+        var raw = window.localStorage.getItem(KEY);
+        var arr = raw ? JSON.parse(raw) : [];
+        return Object.prototype.toString.call(arr) === "[object Array]" ? arr.slice(0, MAX) : [];
+      } catch (e) {
+        return mem.slice(0, MAX);
+      }
+    }
+
+    var mem = [];
+
+    function write(arr) {
+      mem = arr.slice(0, MAX);
+      try {
+        window.localStorage.setItem(KEY, JSON.stringify(mem));
+      } catch (e) { /* memory-only for this page, which is enough */ }
+      listeners.forEach(function (fn) { fn(mem); });
+    }
+
+    return {
+      MAX: MAX,
+      MIN: MIN,
+      all: read,
+      has: function (slug) { return !!slug && read().indexOf(slug) > -1; },
+      /* Listing permalinks are /listing/{slug}/, so the slug is the last
+         path segment. Derived rather than added to the directory payload,
+         which already ships 331 rows to every visitor. */
+      slugOf: function (url) {
+        if (!url) return "";
+        return String(url).split("?")[0].split("#")[0].replace(/\/+$/, "").split("/").pop() || "";
+      },
+      toggle: function (slug) {
+        if (!slug) return { ok: false, full: false };
+        var arr = read();
+        var i = arr.indexOf(slug);
+        if (i > -1) {
+          arr.splice(i, 1);
+          write(arr);
+          return { ok: true, full: false, on: false };
+        }
+        if (arr.length >= MAX) return { ok: false, full: true, on: false };
+        arr.push(slug);
+        write(arr);
+        return { ok: true, full: false, on: true };
+      },
+      clear: function () { write([]); },
+      onChange: function (fn) { listeners.push(fn); },
+      url: function () {
+        var arr = read();
+        return arr.length >= MIN ? "/compare/?places=" + arr.map(encodeURIComponent).join(",") : "";
+      }
+    };
+  })();
 
   function $(s, c) { return (c || document).querySelector(s); }
   function $$(s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
@@ -1108,7 +1186,21 @@
             '<span class="listing__price">' +
               (l.priceFrom > 0 ? "$" + l.priceFrom + ' <span>/ session</span>' : "&nbsp;") +
             "</span>" +
-            '<a class="btn btn--sm btn--dark" href="' + esc(l.url || '#') + '">View profile<span class="btn__dot">' + ICON.arrow + "</span></a>" +
+            /* Compare toggle, mirroring listing-card.php. The pressed state
+               is read from the store rather than carried in the DOM, because
+               this function throws the DOM away on every filter change and a
+               selection has to survive that. */
+            '<span class="listing__acts">' +
+              (function () {
+                var slug = Compare.slugOf(l.url);
+                var on = Compare.has(slug);
+                return '<button class="cmpbtn" type="button" data-compare-toggle data-slug="' +
+                  esc(slug) + '" aria-pressed="' + (on ? "true" : "false") + '">' +
+                  ICON.scales + "<span data-compare-word>" +
+                  (on ? "Selected" : "Compare") + "</span></button>";
+              })() +
+              '<a class="btn btn--sm btn--dark" href="' + esc(l.url || '#') + '">View profile<span class="btn__dot">' + ICON.arrow + "</span></a>" +
+            "</span>" +
           "</div>" +
         "</div>" +
       "</article>";
@@ -2250,6 +2342,104 @@
     });
   }
 
+  /* The compare tray: the toggles on the cards, and the bar that collects
+     them.
+
+     Clicks are delegated from the document, so cards drawn later by the
+     directory's own renderer need no wiring. The buttons ship hidden and
+     are revealed here — without scripting there is nothing for them to do,
+     and a dead control is worse than no control. */
+  function initCompareTray() {
+    var tray, count, go, clear, note, noteTimer;
+
+    function build() {
+      tray = document.createElement("div");
+      tray.className = "cmptray";
+      tray.setAttribute("role", "region");
+      tray.setAttribute("aria-label", "Compare selection");
+      tray.hidden = true;
+      tray.innerHTML =
+        '<div class="cmptray__inner">' +
+          '<p class="cmptray__count" data-cmp-count aria-live="polite"></p>' +
+          '<p class="cmptray__note" data-cmp-note hidden></p>' +
+          '<div class="cmptray__acts">' +
+            '<button class="cmptray__clear" type="button" data-cmp-clear>Clear</button>' +
+            '<a class="btn btn--dark btn--plain cmptray__go" data-cmp-go href="/compare/"></a>' +
+          "</div>" +
+        "</div>";
+      document.body.appendChild(tray);
+      count = tray.querySelector("[data-cmp-count]");
+      note = tray.querySelector("[data-cmp-note]");
+      go = tray.querySelector("[data-cmp-go]");
+      clear = tray.querySelector("[data-cmp-clear]");
+      clear.addEventListener("click", function () { Compare.clear(); });
+    }
+
+    function say(msg) {
+      if (!note) return;
+      note.textContent = msg;
+      note.hidden = false;
+      clearTimeout(noteTimer);
+      noteTimer = setTimeout(function () { note.hidden = true; }, 4000);
+    }
+
+    // Redraw every toggle on the page from the store — the single place
+    // that decides what a button looks like, so server-rendered and
+    // JS-rendered cards can never drift apart.
+    function paint() {
+      var arr = Compare.all();
+      $$("[data-compare-toggle]").forEach(function (b) {
+        b.hidden = false;
+        var on = arr.indexOf(b.getAttribute("data-slug")) > -1;
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        var word = b.querySelector("[data-compare-word]");
+        if (word) word.textContent = on ? "Selected" : "Compare";
+      });
+
+      if (!tray) return;
+      var n = arr.length;
+      tray.hidden = n === 0;
+      if (n === 0) return;
+      count.textContent = n === 1 ? "1 place selected" : n + " places selected";
+      var ready = n >= Compare.MIN;
+      go.textContent = ready ? "Compare " + n : "Pick one more";
+      go.href = ready ? Compare.url() : "#";
+      go.setAttribute("aria-disabled", ready ? "false" : "true");
+      go.classList.toggle("is-off", !ready);
+    }
+
+    build();
+    Compare.onChange(paint);
+
+    document.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-compare-toggle]");
+      if (btn) {
+        e.preventDefault();
+        var r = Compare.toggle(btn.getAttribute("data-slug"));
+        if (r.full) say("Four is the most you can compare at once.");
+        return;
+      }
+      var g = e.target.closest("[data-cmp-go]");
+      if (g && g.getAttribute("aria-disabled") === "true") {
+        e.preventDefault();
+        say("Choose at least two to compare.");
+      }
+    });
+
+    // The directory redraws its results wholesale; repaint after it settles
+    // so restored cards show their state.
+    var results = $("#dirResults");
+    if (results && window.MutationObserver) {
+      var pending;
+      new MutationObserver(function () {
+        clearTimeout(pending);
+        pending = setTimeout(paint, 30);
+      }).observe(results, { childList: true, subtree: true });
+    }
+
+    paint();
+  }
+
   /* The compare picker.
 
      The markup carried data-max="4" and nothing ever read it, so a visitor
@@ -2428,6 +2618,7 @@
     initNav();
     initNavDropdowns();
     initComparePicker();
+    initCompareTray();
     initAccordions();
     initPullquote();
     initReveal();

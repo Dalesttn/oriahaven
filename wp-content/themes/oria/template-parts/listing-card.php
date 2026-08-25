@@ -144,7 +144,31 @@ $oria_badges = array(
 					&nbsp;
 				<?php endif; ?>
 			</span>
-			<a class="btn btn--sm btn--dark" href="<?php the_permalink(); ?>"><?php esc_html_e( 'View profile', 'oria' ); ?><span class="btn__dot"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg></span></a>
+			<?php
+			/*
+			 * The compare toggle. Drawn here AND in app.js card(), because that
+			 * function re-renders every card the server already drew -- the same
+			 * trap the status badge fell into. Pressed state lives in
+			 * localStorage, not the DOM, so a selection survives filtering,
+			 * infinite scroll and moving between categories.
+			 *
+			 * It is a button, not a link: without scripting there is nothing for
+			 * it to do, so JS reveals it and no-JS visitors never see a dead
+			 * control.
+			 */
+			?>
+			<span class="listing__acts">
+				<button class="cmpbtn" type="button" hidden
+					data-compare-toggle
+					data-slug="<?php echo esc_attr( get_post_field( 'post_name', $oria_id ) ); ?>"
+					aria-pressed="false">
+					<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="M8 2v12M3 5h10M4.5 5 2.5 9.5h4zM11.5 5 9.5 9.5h4z"/>
+					</svg>
+					<span data-compare-word><?php esc_html_e( 'Compare', 'oria' ); ?></span>
+				</button>
+				<a class="btn btn--sm btn--dark" href="<?php the_permalink(); ?>"><?php esc_html_e( 'View profile', 'oria' ); ?><span class="btn__dot"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg></span></a>
+			</span>
 		</div>
 	</div>
 </article>

@@ -800,6 +800,58 @@ a.pill--cat:hover { filter: brightness(0.96); color: inherit; border-color: tran
 .listing__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; margin-top: auto; padding-top: var(--s-3); border-top: 1px solid var(--line); }
 .listing__price { font-size: var(--fs-sm); font-weight: 700; }
 .listing__price span { font-weight: 500; color: var(--text-faint); font-size: var(--fs-xs); }
+
+/* --- Compare toggle on a card ---------------------------------------- */
+.listing__acts { display: flex; align-items: center; gap: var(--s-3); }
+.cmpbtn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .4rem .7rem; border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong); background: transparent;
+  font-size: var(--fs-xs); font-weight: 600; color: var(--text-soft);
+  cursor: pointer; white-space: nowrap;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+              border-color var(--t-fast) var(--ease);
+}
+.cmpbtn svg { width: 13px; height: 13px; flex: none; }
+.cmpbtn:hover { border-color: var(--moss); color: var(--deep); }
+.cmpbtn[aria-pressed="true"] { background: var(--moss); border-color: var(--moss); color: var(--white); }
+
+/* --- The tray ---------------------------------------------------------
+   Fixed to the bottom of the viewport, above everything the page paints.
+   It only exists while a selection does, so it costs nothing until then. */
+.cmptray {
+  position: fixed; inset-inline: 0; bottom: 0; z-index: 70;
+  background: var(--deep); color: var(--white);
+  border-top: 1px solid var(--teal-line);
+  box-shadow: 0 -8px 32px rgba(4, 20, 19, .28);
+  padding: var(--s-4) var(--gutter);
+  padding-bottom: calc(var(--s-4) + env(safe-area-inset-bottom, 0px));
+}
+.cmptray__inner {
+  max-width: var(--maxw); margin-inline: auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-4); flex-wrap: wrap;
+}
+.cmptray__count { margin: 0; font-size: var(--fs-sm); font-weight: 600; }
+.cmptray__note { margin: 0; font-size: var(--fs-xs); color: var(--mist-2); flex-basis: 100%; order: 3; }
+.cmptray__acts { display: flex; align-items: center; gap: var(--s-4); }
+.cmptray__clear {
+  background: none; border: 0; padding: .4rem 0; cursor: pointer;
+  color: var(--mist); font-size: var(--fs-sm); font-weight: 600;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.cmptray__clear:hover { color: var(--white); }
+.cmptray__go.is-off { opacity: .5; }
+
+/* The mobile filter sheet slides up from the same edge and owns the screen
+   while it is open. A fixed bar sitting over its controls would be a bug,
+   and the shortlist is not what the visitor is doing at that moment. */
+html.has-sheet .cmptray { display: none; }
+
+@media (max-width: 560px) {
+  .cmptray__inner { justify-content: space-between; }
+  .cmptray__count { font-size: var(--fs-xs); }
+}
 @media (max-width: 620px) {
   .listing { grid-template-columns: 1fr; }
   .listing__media img { aspect-ratio: 16 / 9; }
