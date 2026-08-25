@@ -58,13 +58,18 @@ $oria_terms = \Oria\Core\PracticesIndex\practices();
 				$oria_row[] = array(
 					'url'   => (string) get_term_link( $oria_k ),
 					'label' => \Oria\Theme\tname( $oria_k ),
+					// The same rolled-up figure the tile's own count uses, so a
+					// child's number here matches its number on its own tile.
+					'count' => function_exists( '\Oria\Core\Intents\listings_in' )
+						? count( \Oria\Core\Intents\listings_in( $oria_k ) )
+						: (int) $oria_k->count,
 				);
 			}
 			foreach ( $oria_links as $oria_l ) {
 				if ( count( $oria_row ) >= 5 ) {
 					break;
 				}
-				$oria_row[] = array( 'url' => $oria_l['url'], 'label' => $oria_l['label'] );
+				$oria_row[] = array( 'url' => $oria_l['url'], 'label' => $oria_l['label'], 'count' => (int) $oria_l['count'] );
 			}
 			?>
 			<article class="card ptile">
@@ -104,11 +109,11 @@ $oria_terms = \Oria\Core\PracticesIndex\practices();
 						?>
 					</p>
 					<?php if ( $oria_row ) : ?>
-						<div class="chips" style="margin-top:.6rem">
+						<ul class="ptile__intents">
 							<?php foreach ( $oria_row as $oria_l ) : ?>
-								<a class="pill" href="<?php echo esc_url( $oria_l['url'] ); ?>"><?php echo esc_html( $oria_l['label'] ); ?></a>
+								<li><a href="<?php echo esc_url( $oria_l['url'] ); ?>"><?php echo esc_html( $oria_l['label'] ); ?></a> <em><?php echo esc_html( number_format_i18n( $oria_l['count'] ) ); ?></em></li>
 							<?php endforeach; ?>
-						</div>
+						</ul>
 					<?php endif; ?>
 				</div>
 			</article>
