@@ -2637,3 +2637,21 @@ html.has-sheet { overflow: hidden; }
 .authnotice--error { background: var(--sand-3, var(--sand-2)); }
 .authnotice--error p { color: var(--ink); font-weight: 600; }
 .authnotice--done p { color: var(--deep); font-weight: 600; }
+
+/* --- Compare (/compare/, oria-compare.php) ------------------------------ */
+.cmp__grid { display: grid; gap: .4rem .9rem; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); max-width: 52rem; }
+.cmp__pick { align-items: center; }
+.cmp__scroll { overflow-x: auto; margin-top: .75rem; border: 1px solid var(--line); border-radius: var(--r-md); }
+.cmp__table { border-collapse: collapse; width: 100%; min-width: 560px; background: var(--white); font-size: var(--fs-sm); }
+.cmp__table th, .cmp__table td { padding: .6rem .9rem; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.cmp__table thead th { font-size: var(--fs-xs); text-transform: none; }
+.cmp__table tbody tr:last-child th, .cmp__table tbody tr:last-child td { border-bottom: 0; }
+.cmp__attr { width: 220px; font-weight: 600; color: var(--text-soft); }
+.cmp__attr small { display: block; font-weight: 400; color: var(--text-faint); margin-top: .15rem; }
+.cmp__dots b, .cmp__dots i { font-style: normal; font-weight: 400; letter-spacing: .1em; }
+.cmp__dots b { color: var(--deep); }
+.cmp__dots i { color: var(--line-firm, var(--line)); }
+.cmp__reading { margin-top: 2rem; max-width: 44rem; }
+.cmp__reading ul { padding-left: 1.2rem; }
+.cmp__reading li { margin-bottom: .4rem; }
+.cmp__next { margin-top: 2rem; }
