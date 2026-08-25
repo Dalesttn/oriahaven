@@ -234,13 +234,27 @@ $oria_dots = static function ( int $n ): string {
 
 		<div class="cmp__next">
 			<h2 class="h3 cmp__h"><?php esc_html_e( 'Look at them properly', 'oria' ); ?></h2>
-			<div class="chips cmp__chips">
-				<?php foreach ( $oria_places as $oria_pl ) : ?>
-					<a class="pill" href="<?php echo esc_url( (string) get_permalink( $oria_pl ) ); ?>">
-						<?php echo esc_html( get_the_title( $oria_pl ) ); ?>
-						<span aria-hidden="true">&rarr;</span>
-					</a>
-				<?php endforeach; ?>
+			<p class="muted cmp__trynote">
+				<?php esc_html_e( 'The table is only what fits in a table. The photographs, the write-ups and the contact details are on the listings.', 'oria' ); ?>
+			</p>
+			<?php
+			/*
+			 * The full cards, not pills. A row of names is a worse ending than
+			 * the thing the reader came to look at — and the cards carry their
+			 * own Compare toggles, so one can be dropped and the set rerun
+			 * without going back to the directory.
+			 */
+			?>
+			<div class="cmp__trygrid dir__results dir__results--wide">
+				<?php
+				global $post;
+				foreach ( $oria_places as $oria_pl ) :
+					$post = $oria_pl; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+					setup_postdata( $post );
+					get_template_part( 'template-parts/listing', 'card' );
+				endforeach;
+				wp_reset_postdata();
+				?>
 			</div>
 		</div>
 
