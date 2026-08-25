@@ -2651,9 +2651,135 @@ html.has-sheet { overflow: hidden; }
 .cmp__grid--places .cmp__pick span { display: flex; flex-direction: column; line-height: 1.3; }
 .cmp__grid--places .cmp__pick em { font-style: normal; font-size: var(--fs-xs); color: var(--text-faint); }
 
-/* An unknown cell is set back rather than struck out. It is the absence of
-   an answer, not a negative one, and it must not read as a verdict. */
-.cmp__blank { color: var(--text-faint); font-style: italic; }
+/* --- Premium comparison table (places) --------------------------------
+   Editorial rather than spreadsheet: borders instead of shadows, one
+   sticky label column, generous cells, and the business profile carrying
+   the column head. Tokens only — no new palette, and --gold stays
+   reserved for ratings as tokens.css requires. */
+.cmpx { margin-top: 1.25rem; }
+.cmpx__scroll {
+  overflow-x: auto; background: var(--white);
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  -webkit-overflow-scrolling: touch;
+}
+.cmpx__scroll:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.cmpx__table { border-collapse: collapse; width: 100%; min-width: 620px; }
+
+/* The label column stays put while the businesses scroll past it — that is
+   what keeps this readable on a phone without a second copy of the markup.
+   It needs its own background or rows show through beneath it. */
+.cmpx__corner, .cmpx__label {
+  position: sticky; left: 0; z-index: 2;
+  background: var(--sand-2);
+  border-right: 1px solid var(--line);
+  width: 168px; min-width: 168px;
+}
+.cmpx__corner { border-bottom: 1px solid var(--line-strong); }
+.cmpx__label {
+  padding: 1rem 1.1rem; text-align: left; vertical-align: top;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.cmpx__label small {
+  display: block; margin-top: .2rem; line-height: 1.35;
+  font-size: var(--fs-xs); font-weight: 400; color: var(--text-faint);
+}
+
+/* --- Column head: a business profile, not a string -------------------- */
+.cmpx__col {
+  padding: 1.15rem 1rem; text-align: left; vertical-align: top;
+  min-width: 200px; border-bottom: 1px solid var(--line-strong);
+}
+.cmpx__profile { display: block; }
+.cmpx__shot {
+  display: block; width: 100%; height: 104px; object-fit: cover;
+  border-radius: 10px; margin-bottom: .65rem; background: var(--sand-2);
+}
+.cmpx__name {
+  display: block; font-size: 1.05rem; font-weight: 700;
+  line-height: 1.25; letter-spacing: -0.015em; color: var(--ink);
+}
+.cmpx__profile:hover .cmpx__name { color: var(--deep); text-decoration: underline; text-underline-offset: 3px; }
+.cmpx__area { display: block; margin-top: .25rem; font-size: var(--fs-xs); color: var(--text-faint); }
+
+.cmpx__rate { display: flex; align-items: baseline; gap: .4rem; margin-top: .5rem; flex-wrap: wrap; }
+.cmpx__rate b { display: inline-flex; align-items: center; gap: .22rem; font-size: 1rem; font-weight: 700; color: var(--ink); }
+.cmpx__rate small { font-size: var(--fs-xs); color: var(--text-faint); }
+.cmpx__star { color: var(--gold); }
+.cmpx__rate--cell { margin-top: 0; }
+
+.cmpx__badges { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .65rem; }
+.cmpx__badge {
+  font-size: 10px; line-height: 1.6; text-transform: uppercase; letter-spacing: .09em;
+  font-weight: 700; padding: .1rem .45rem; border-radius: var(--r-pill);
+  background: var(--sand-2); border: 1px solid var(--line); color: var(--text-soft);
+}
+
+/* --- Cells ------------------------------------------------------------ */
+.cmpx__cell {
+  padding: 1rem; vertical-align: top; line-height: 1.5;
+  font-size: var(--fs-sm); color: var(--text);
+  border-bottom: 1px solid var(--line);
+}
+/* An absence, set back rather than struck out — never a verdict. */
+.cmpx__cell.is-blank { color: var(--line-strong); }
+
+/* One very quiet alternating tint, so four columns stay distinguishable
+   without turning every cell into its own card. nth-child counts the
+   sticky label as the first child, so this lands on businesses 2 and 4. */
+.cmpx__table tr > *:nth-child(even) { background: var(--paper); }
+.cmpx__table tr > .cmpx__label:nth-child(even) { background: var(--sand-2); }
+
+/* Row hover, not column hover: comparing means reading one attribute
+   ACROSS the places, and a row highlight follows that eye movement.
+   Column hover would need JavaScript for no better result. */
+.cmpx__table tbody tr:hover .cmpx__cell { background: var(--sand-2); }
+.cmpx__table tbody tr:hover .cmpx__label { background: var(--sand-3); }
+
+.cmpx__dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--moss); margin-right: .45rem; vertical-align: middle; }
+.cmpx__confirm { font-size: var(--fs-xs); font-weight: 600; color: var(--text-faint); }
+.cmpx__confirm.is-yes { color: var(--claimed); }
+
+.cmpx__table tfoot td { padding: 1.15rem 1rem; border-top: 1px solid var(--line-strong); }
+.cmpx__cta { display: inline-flex; align-items: center; gap: .4rem; font-size: var(--fs-sm); font-weight: 700; color: var(--deep); }
+.cmpx__ctaarrow { transition: transform var(--t-fast) var(--ease); }
+.cmpx__cta:hover { text-decoration: underline; text-underline-offset: 4px; }
+.cmpx__cta:hover .cmpx__ctaarrow { transform: translateX(3px); }
+
+.cmpx__scrollhint { margin: .6rem 0 0; font-size: var(--fs-xs); color: var(--text-faint); }
+@media (min-width: 1000px) { .cmpx__scrollhint { display: none; } }
+
+@media (max-width: 560px) {
+  .cmpx__corner, .cmpx__label { width: 132px; min-width: 132px; }
+  .cmpx__label, .cmpx__cell { padding: .8rem .75rem; }
+  .cmpx__col { padding: .9rem .75rem; min-width: 172px; }
+  .cmpx__shot { height: 84px; }
+}
+@media (prefers-reduced-motion: reduce) { .cmpx__ctaarrow { transition: none; } }
+
+/* --- Insights --------------------------------------------------------- */
+.cmpx__insights { margin-top: 3rem; }
+.cmpx__insnote { max-width: 46rem; }
+.cmpx__insgrid { display: grid; gap: var(--s-4); grid-template-columns: 1fr; margin-top: 1.25rem; }
+@media (min-width: 700px) { .cmpx__insgrid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); } }
+.cmpx__ins {
+  display: flex; flex-direction: column; gap: .3rem;
+  padding: 1.1rem 1.2rem; background: var(--sand-2);
+  border: 1px solid var(--line); border-radius: var(--r-md);
+}
+.cmpx__inslabel { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; color: var(--moss); }
+.cmpx__insname { font-size: 1rem; letter-spacing: -0.015em; line-height: 1.3; }
+.cmpx__insdetail { font-size: var(--fs-xs); color: var(--text-faint); line-height: 1.5; }
+
+/* --- Why you might choose them ---------------------------------------- */
+.cmpx__why { margin-top: 3rem; }
+.cmpx__whylist { margin: 1.25rem 0 0; max-width: 52rem; }
+.cmpx__whylist > div { padding: 1rem 0; border-bottom: 1px solid var(--line); }
+.cmpx__whylist > div:last-child { border-bottom: 0; }
+.cmpx__whylist dt { font-weight: 700; }
+.cmpx__whylist dt a { color: var(--ink); }
+.cmpx__whylist dt a:hover { color: var(--deep); text-decoration: underline; text-underline-offset: 3px; }
+.cmpx__whylist dd { margin: .3rem 0 0; color: var(--text-soft); }
 
 .cmp__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; margin-top: 1.5rem; }
 

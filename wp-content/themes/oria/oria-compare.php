@@ -187,21 +187,61 @@ $oria_dots = static function ( int $n ): string {
 <?php endif; ?>
 
 <?php if ( $oria_places ) : ?>
+	<?php $oria_head = \Oria\Core\Compare\place_header( $oria_places ); ?>
 	<section class="wrap section section--top-flush" id="result">
-		<div class="cmp__scroll">
-			<table class="cmp__table">
+
+	<?php
+	/*
+	 * One semantic table, restyled -- not a table for desktop plus a second
+	 * copy of the same facts for phones. The mobile treatment is a sticky
+	 * label column and a sideways scroll, so there is one set of markup for
+	 * crawlers and screen readers alike.
+	 */
+	?>
+	<div class="cmpx">
+		<div class="cmpx__scroll" tabindex="0" role="group" aria-label="<?php esc_attr_e( 'Comparison table, scrolls sideways', 'oria' ); ?>">
+			<table class="cmpx__table">
+				<caption class="sr-only"><?php esc_html_e( 'The details on file for each place being compared', 'oria' ); ?></caption>
 				<thead>
 					<tr>
-						<th scope="col" class="cmp__attr"><span class="sr-only"><?php esc_html_e( 'Detail', 'oria' ); ?></span></th>
-						<?php foreach ( $oria_places as $oria_pl ) : ?>
-							<th scope="col"><a href="<?php echo esc_url( (string) get_permalink( $oria_pl ) ); ?>"><?php echo esc_html( get_the_title( $oria_pl ) ); ?></a></th>
+						<th scope="col" class="cmpx__corner"><span class="sr-only"><?php esc_html_e( 'Detail', 'oria' ); ?></span></th>
+						<?php foreach ( $oria_head as $oria_h ) : ?>
+							<th scope="col" class="cmpx__col">
+								<a class="cmpx__profile" href="<?php echo esc_url( (string) $oria_h['url'] ); ?>">
+									<?php if ( '' !== (string) $oria_h['image'] ) : ?>
+										<img class="cmpx__shot" src="<?php echo esc_url( (string) $oria_h['image'] ); ?>" alt="" loading="lazy" width="320" height="200">
+									<?php endif; ?>
+									<span class="cmpx__name"><?php echo esc_html( (string) $oria_h['name'] ); ?></span>
+								</a>
+								<?php if ( '' !== (string) $oria_h['area'] ) : ?>
+									<span class="cmpx__area"><?php echo esc_html( (string) $oria_h['area'] ); ?></span>
+								<?php endif; ?>
+								<?php if ( $oria_h['rating'] > 0 ) : ?>
+									<span class="cmpx__rate">
+										<b><span class="cmpx__star" aria-hidden="true">&#9733;</span><?php echo esc_html( number_format_i18n( (float) $oria_h['rating'], 1 ) ); ?></b>
+										<small>
+											<?php
+											/* translators: %s: number of reviews */
+											printf( esc_html__( '%s Google reviews', 'oria' ), esc_html( number_format_i18n( (int) $oria_h['reviews'] ) ) );
+											?>
+										</small>
+									</span>
+								<?php endif; ?>
+								<?php if ( $oria_h['badges'] ) : ?>
+									<span class="cmpx__badges">
+										<?php foreach ( $oria_h['badges'] as $oria_b ) : ?>
+											<span class="cmpx__badge"><?php echo esc_html( (string) $oria_b ); ?></span>
+										<?php endforeach; ?>
+									</span>
+								<?php endif; ?>
+							</th>
 						<?php endforeach; ?>
 					</tr>
 				</thead>
 				<tbody>
 					<?php foreach ( \Oria\Core\Compare\place_rows( $oria_places ) as $oria_row ) : ?>
 						<tr>
-							<th scope="row" class="cmp__attr">
+							<th scope="row" class="cmpx__label">
 								<?php echo esc_html( (string) $oria_row['label'] ); ?>
 								<?php if ( '' !== (string) $oria_row['hint'] ) : ?>
 									<small><?php echo esc_html( (string) $oria_row['hint'] ); ?></small>
@@ -209,61 +249,122 @@ $oria_dots = static function ( int $n ): string {
 							</th>
 							<?php foreach ( (array) $oria_row['values'] as $oria_v ) : ?>
 								<?php $oria_blank = ( (string) $oria_v === \Oria\Core\Compare\unknown() ); ?>
-								<td<?php echo $oria_blank ? ' class="cmp__blank"' : ''; ?>><?php echo esc_html( (string) $oria_v ); ?></td>
+								<td class="cmpx__cell<?php echo $oria_blank ? ' is-blank' : ''; ?>">
+									<?php if ( $oria_blank ) : ?>
+										<?php // The dash is decoration; the words carry the accessible name. ?>
+										<span aria-hidden="true">&mdash;</span>
+										<span class="sr-only"><?php echo esc_html( \Oria\Core\Compare\unknown_spoken() ); ?></span>
+									<?php elseif ( 'rating' === $oria_row['type'] ) : ?>
+										<?php $oria_bits = explode( '|', (string) $oria_v ); ?>
+										<span class="cmpx__rate cmpx__rate--cell">
+											<b><span class="cmpx__star" aria-hidden="true">&#9733;</span><?php echo esc_html( $oria_bits[0] ); ?></b>
+											<small><?php echo esc_html( $oria_bits[1] ?? '' ); ?></small>
+										</span>
+									<?php elseif ( 'format' === $oria_row['type'] ) : ?>
+										<span class="cmpx__dot" aria-hidden="true"></span><?php echo esc_html( (string) $oria_v ); ?>
+									<?php elseif ( 'confirm' === $oria_row['type'] ) : ?>
+										<span class="cmpx__confirm<?php echo str_starts_with( (string) $oria_v, 'Confirmed' ) ? ' is-yes' : ''; ?>"><?php echo esc_html( (string) $oria_v ); ?></span>
+									<?php else : ?>
+										<?php echo esc_html( str_replace( ', ', ' · ', (string) $oria_v ) ); ?>
+									<?php endif; ?>
+								</td>
 							<?php endforeach; ?>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
+				<tfoot>
+					<tr>
+						<td class="cmpx__label"></td>
+						<?php foreach ( $oria_head as $oria_h ) : ?>
+							<td class="cmpx__cell">
+								<a class="cmpx__cta" href="<?php echo esc_url( (string) $oria_h['url'] ); ?>">
+									<?php esc_html_e( 'Explore place', 'oria' ); ?>
+									<span class="sr-only"><?php echo esc_html( (string) $oria_h['name'] ); ?></span>
+									<span class="cmpx__ctaarrow" aria-hidden="true">&rarr;</span>
+								</a>
+							</td>
+						<?php endforeach; ?>
+					</tr>
+				</tfoot>
 			</table>
 		</div>
+		<p class="cmpx__scrollhint"><?php esc_html_e( 'Scroll sideways for the rest', 'oria' ); ?></p>
+	</div>
 
-		<?php $oria_plines = \Oria\Core\Compare\place_summary( $oria_places ); ?>
-		<?php if ( $oria_plines ) : ?>
-			<div class="cmp__reading">
-				<h2 class="h3 cmp__h"><?php esc_html_e( 'Reading the table', 'oria' ); ?></h2>
-				<ul>
-					<?php foreach ( $oria_plines as $oria_pline ) : ?>
-						<li><?php echo esc_html( $oria_pline ); ?></li>
-					<?php endforeach; ?>
-				</ul>
-				<p class="hint">
-					<?php esc_html_e( 'These are the details on file, not a verdict. We do not rank businesses and nobody can pay to appear here — if a row says "Not listed", ask them; it usually means nobody has told us either way.', 'oria' ); ?>
-				</p>
-			</div>
-		<?php endif; ?>
-
-		<div class="cmp__next">
-			<h2 class="h3 cmp__h"><?php esc_html_e( 'Look at them properly', 'oria' ); ?></h2>
-			<p class="muted cmp__trynote">
-				<?php esc_html_e( 'The table is only what fits in a table. The photographs, the write-ups and the contact details are on the listings.', 'oria' ); ?>
+	<?php $oria_ins = \Oria\Core\Compare\place_insights( $oria_places ); ?>
+	<?php if ( $oria_ins ) : ?>
+		<div class="cmpx__insights">
+			<h2 class="h3 cmp__h"><?php esc_html_e( 'Oria Haven insights', 'oria' ); ?></h2>
+			<p class="muted cmpx__insnote">
+				<?php esc_html_e( 'Differences the data actually shows. Not a verdict on which is better — we do not rank the places we list.', 'oria' ); ?>
 			</p>
-			<?php
-			/*
-			 * The full cards, not pills. A row of names is a worse ending than
-			 * the thing the reader came to look at — and the cards carry their
-			 * own Compare toggles, so one can be dropped and the set rerun
-			 * without going back to the directory.
-			 */
-			?>
-			<div class="cmp__trygrid dir__results dir__results--wide">
-				<?php
-				global $post;
-				foreach ( $oria_places as $oria_pl ) :
-					$post = $oria_pl; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-					setup_postdata( $post );
-					get_template_part( 'template-parts/listing', 'card' );
-				endforeach;
-				wp_reset_postdata();
-				?>
+			<div class="cmpx__insgrid">
+				<?php foreach ( $oria_ins as $oria_in ) : ?>
+					<div class="cmpx__ins">
+						<span class="cmpx__inslabel"><?php echo esc_html( (string) $oria_in['label'] ); ?></span>
+						<strong class="cmpx__insname"><?php echo esc_html( (string) $oria_in['name'] ); ?></strong>
+						<span class="cmpx__insdetail"><?php echo esc_html( (string) $oria_in['detail'] ); ?></span>
+					</div>
+				<?php endforeach; ?>
 			</div>
 		</div>
+	<?php endif; ?>
 
-		<div class="cmp__finder">
-			<p class="muted"><?php esc_html_e( 'Run one of these? Claim the listing and fill in the blanks yourself — it is free, and it is your answer rather than ours.', 'oria' ); ?></p>
-			<a class="btn btn--dark btn--plain" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim a listing', 'oria' ); ?></a>
+	<?php $oria_why = \Oria\Core\Compare\place_reasons( $oria_places ); ?>
+	<?php if ( $oria_why ) : ?>
+		<div class="cmpx__why">
+			<h2 class="h3 cmp__h"><?php esc_html_e( 'Why you might choose them', 'oria' ); ?></h2>
+			<dl class="cmpx__whylist">
+				<?php foreach ( $oria_why as $oria_w ) : ?>
+					<div>
+						<dt><a href="<?php echo esc_url( (string) $oria_w['url'] ); ?>"><?php echo esc_html( (string) $oria_w['name'] ); ?></a></dt>
+						<dd><?php echo esc_html( (string) $oria_w['line'] ); ?></dd>
+					</div>
+				<?php endforeach; ?>
+			</dl>
 		</div>
+	<?php endif; ?>
+
+	<?php $oria_plines = \Oria\Core\Compare\place_summary( $oria_places ); ?>
+	<?php if ( $oria_plines ) : ?>
+		<div class="cmp__reading">
+			<h2 class="h3 cmp__h"><?php esc_html_e( 'Reading the table', 'oria' ); ?></h2>
+			<ul>
+				<?php foreach ( $oria_plines as $oria_pline ) : ?>
+					<li><?php echo esc_html( $oria_pline ); ?></li>
+				<?php endforeach; ?>
+			</ul>
+			<p class="hint">
+				<?php esc_html_e( 'These are the details on file, not a verdict. We do not rank businesses and nobody can pay to appear here — where a row shows a dash, ask them; it usually means nobody has told us either way.', 'oria' ); ?>
+			</p>
+		</div>
+	<?php endif; ?>
+
+	<div class="cmp__next">
+		<h2 class="h3 cmp__h"><?php esc_html_e( 'Look at them properly', 'oria' ); ?></h2>
+		<p class="muted cmp__trynote">
+			<?php esc_html_e( 'The table is only what fits in a table. The photographs, the write-ups and the contact details are on the listings.', 'oria' ); ?>
+		</p>
+		<div class="cmp__trygrid dir__results dir__results--wide">
+			<?php
+			global $post;
+			foreach ( $oria_places as $oria_pl ) :
+				$post = $oria_pl; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+				setup_postdata( $post );
+				get_template_part( 'template-parts/listing', 'card' );
+			endforeach;
+			wp_reset_postdata();
+			?>
+		</div>
+	</div>
+
+	<div class="cmp__finder">
+		<p class="muted"><?php esc_html_e( 'Run one of these? Claim the listing and fill in the blanks yourself — it is free, and it is your answer rather than ours.', 'oria' ); ?></p>
+		<a class="btn btn--dark btn--plain" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim a listing', 'oria' ); ?></a>
+	</div>
 	</section>
 <?php endif; ?>
+
 
 <?php if ( $oria_picked ) : ?>
 	<section class="wrap section" id="result">

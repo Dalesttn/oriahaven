@@ -508,9 +508,22 @@ function try_listings( array $picked, int $n = 3 ): array {
 const PLACES_VAR = 'places';
 const SCOPE_VAR  = 'in';
 
-/** The sentinel for every empty cell. Never "No". */
+/**
+ * The sentinel for every empty cell. Never "No".
+ *
+ * An em dash rather than words: "Not listed" repeated down a column made
+ * the business look deficient, when the deficiency is ours. The dash reads
+ * as "nothing here" and gets out of the way. Screen readers are given the
+ * words instead — see the template's sr-only span, because a glyph alone
+ * carries no accessible name.
+ */
 function unknown(): string {
-	return __( 'Not listed', 'oria' );
+	return '—';
+}
+
+/** The same absence, spoken. */
+function unknown_spoken(): string {
+	return __( 'Not specified', 'oria' );
 }
 
 /**
@@ -620,15 +633,18 @@ function place_rows( array $posts ): array {
 		return ( ! is_wp_error( $names ) && $names ) ? implode( ', ', $names ) : unknown();
 	};
 
+	// Editorial labels, not field names, each with a quieter line under it
+	// saying where the figure comes from. "Price band" and "Listed under"
+	// were our vocabulary, not a reader's.
 	$rows = array(
-		array( 'key' => 'where', 'label' => __( 'Where', 'oria' ), 'hint' => '' ),
-		array( 'key' => 'price', 'label' => __( 'Price band', 'oria' ), 'hint' => __( 'The directory\'s own bands', 'oria' ) ),
-		array( 'key' => 'rating', 'label' => __( 'Rating', 'oria' ), 'hint' => __( 'From Google, not from us', 'oria' ) ),
-		array( 'key' => 'format', 'label' => __( 'In person or online', 'oria' ), 'hint' => '' ),
-		array( 'key' => 'cats', 'label' => __( 'Listed under', 'oria' ), 'hint' => '' ),
-		array( 'key' => 'spec', 'label' => __( 'Specialties listed', 'oria' ), 'hint' => '' ),
-		array( 'key' => 'svc', 'label' => __( 'Services listed', 'oria' ), 'hint' => '' ),
-		array( 'key' => 'confirmed', 'label' => __( 'Details confirmed by the business', 'oria' ), 'hint' => __( 'Everything above comes from us until they do', 'oria' ) ),
+		array( 'key' => 'where', 'type' => 'text', 'label' => __( 'Location', 'oria' ), 'hint' => __( 'Where you\'ll find them', 'oria' ) ),
+		array( 'key' => 'price', 'type' => 'price', 'label' => __( 'Price', 'oria' ), 'hint' => __( 'Oria Haven price guide — relative, not official', 'oria' ) ),
+		array( 'key' => 'rating', 'type' => 'rating', 'label' => __( 'Rating', 'oria' ), 'hint' => __( 'Based on Google reviews', 'oria' ) ),
+		array( 'key' => 'format', 'type' => 'format', 'label' => __( 'Format', 'oria' ), 'hint' => '' ),
+		array( 'key' => 'cats', 'type' => 'list', 'label' => __( 'Practices', 'oria' ), 'hint' => '' ),
+		array( 'key' => 'spec', 'type' => 'list', 'label' => __( 'Specialties', 'oria' ), 'hint' => __( 'What sets each one apart', 'oria' ) ),
+		array( 'key' => 'svc', 'type' => 'list', 'label' => __( 'Classes & services', 'oria' ), 'hint' => '' ),
+		array( 'key' => 'confirmed', 'type' => 'confirm', 'label' => __( 'Business confirmation', 'oria' ), 'hint' => __( 'Whether the business has confirmed its own details', 'oria' ) ),
 	);
 
 	$out = array();
@@ -649,7 +665,7 @@ function place_rows( array $posts ): array {
 						? unknown()
 						: ( $from > 0
 							/* translators: 1: price band, 2: lowest price */
-							? sprintf( __( '%1$s — from $%2$s', 'oria' ), $band, number_format_i18n( $from ) )
+							? sprintf( __( '%1$s · from $%2$s', 'oria' ), $band, number_format_i18n( $from ) )
 							: $band );
 					break;
 
@@ -657,8 +673,8 @@ function place_rows( array $posts ): array {
 					$r = function_exists( '\Oria\Theme\effective_rating' ) ? \Oria\Theme\effective_rating( $id ) : array( 'rating' => 0, 'count' => 0 );
 					$values[] = ( (float) $r['rating'] > 0 )
 						/* translators: 1: rating out of five, 2: number of reviews */
-						? sprintf( __( '%1$s from %2$s reviews', 'oria' ), number_format_i18n( (float) $r['rating'], 1 ), number_format_i18n( (int) $r['count'] ) )
-						: __( 'No rating on file', 'oria' );
+						? sprintf( __( '%1$s|%2$s Google reviews', 'oria' ), number_format_i18n( (float) $r['rating'], 1 ), number_format_i18n( (int) $r['count'] ) )
+						: unknown();
 					break;
 
 				case 'format':
@@ -666,7 +682,7 @@ function place_rows( array $posts ): array {
 					$map = array(
 						'in-person' => __( 'In person', 'oria' ),
 						'online'    => __( 'Online', 'oria' ),
-						'both'      => __( 'Both', 'oria' ),
+						'both'      => __( 'Online + in person', 'oria' ),
 					);
 					$values[] = $map[ $f ] ?? $f;
 					break;
@@ -683,14 +699,247 @@ function place_rows( array $posts ): array {
 
 				case 'confirmed':
 					$st = function_exists( '\Oria\Theme\display_status' ) ? \Oria\Theme\display_status( $id ) : '';
-					// "Not yet", never "No" — they may simply not have been asked.
+					/*
+					 * "Pending", never "No". And never a word implying WE
+					 * checked anything: the business confirms its own
+					 * details, which is a different and much weaker claim
+					 * than independent verification.
+					 */
 					$values[] = in_array( $st, array( 'claimed', 'featured' ), true )
-						? __( 'Yes', 'oria' )
-						: __( 'Not yet', 'oria' );
+						? __( 'Confirmed by the business', 'oria' )
+						: __( 'Confirmation pending', 'oria' );
 					break;
 			}
 		}
-		$out[] = array( 'label' => $row['label'], 'hint' => $row['hint'], 'values' => $values );
+		$out[] = array(
+			'label'  => $row['label'],
+			'hint'   => $row['hint'],
+			'type'   => $row['type'],
+			'values' => $values,
+		);
+	}
+	return $out;
+}
+
+/**
+ * The profile that heads each column: photograph, name, suburb, rating and
+ * up to two category badges. Everything read, nothing invented.
+ *
+ * @param array<int, \WP_Post> $posts
+ * @return array<int, array>
+ */
+function place_header( array $posts ): array {
+	$out = array();
+	foreach ( $posts as $p ) {
+		$id    = (int) $p->ID;
+		$areas = wp_get_post_terms( $id, 'area', array( 'fields' => 'names' ) );
+		$cats  = wp_get_post_terms( $id, 'practice', array( 'fields' => 'names' ) );
+		$r     = function_exists( '\Oria\Theme\effective_rating' ) ? \Oria\Theme\effective_rating( $id ) : array( 'rating' => 0, 'count' => 0, 'source' => '' );
+		$st    = function_exists( '\Oria\Theme\display_status' ) ? \Oria\Theme\display_status( $id ) : '';
+
+		$out[] = array(
+			'id'        => $id,
+			'name'      => get_the_title( $p ),
+			'url'       => (string) get_permalink( $p ),
+			'image'     => function_exists( '\Oria\Theme\listing_image' ) ? (string) \Oria\Theme\listing_image( $id ) : '',
+			'area'      => ( ! is_wp_error( $areas ) && $areas ) ? (string) $areas[0] : '',
+			'badges'    => ( ! is_wp_error( $cats ) && $cats ) ? array_slice( $cats, 0, 2 ) : array(),
+			'rating'    => (float) $r['rating'],
+			'reviews'   => (int) $r['count'],
+			'source'    => (string) ( $r['source'] ?? '' ),
+			'confirmed' => in_array( $st, array( 'claimed', 'featured' ), true ),
+		);
+	}
+	return $out;
+}
+
+/**
+ * Oria Haven Insights: the differences worth noticing, stated as facts.
+ *
+ * The brief asked for these as verdicts — "Best for yoga variety", "Best
+ * for sound healing". They are the same findings phrased as
+ * recommendations, and this site tells people on every category page that
+ * "it counts, it never ranks". So each keeps its data and loses its
+ * verdict: "Lists the most classes", not "best for variety".
+ *
+ * That is not only a promise-keeping move, it is the more truthful one.
+ * A business with seven service terms is not better than one with two; it
+ * is better DOCUMENTED. 120 of 331 listings carry no service terms at all.
+ * Every label below therefore says "lists", and means it.
+ *
+ * Nothing is emitted unless one business is a genuine, unique extreme.
+ *
+ * @param array<int, \WP_Post> $posts
+ * @return array<int, array{label: string, name: string, detail: string}>
+ */
+function place_insights( array $posts ): array {
+	if ( count( $posts ) < MIN_PICK ) {
+		return array();
+	}
+	$out = array();
+
+	/** Sole holder of the maximum, or null. */
+	$sole_max = static function ( array $vals ): ?int {
+		if ( ! $vals ) {
+			return null;
+		}
+		$max = max( $vals );
+		if ( $max <= 0 ) {
+			return null;
+		}
+		$at = array_keys( $vals, $max, true );
+		return 1 === count( $at ) ? (int) $at[0] : null;
+	};
+
+	$names   = array();
+	$reviews = array();
+	$ratings = array();
+	$svc_n   = array();
+	$online  = array();
+	foreach ( $posts as $i => $p ) {
+		$id            = (int) $p->ID;
+		$names[ $i ]   = get_the_title( $p );
+		$r             = function_exists( '\Oria\Theme\effective_rating' ) ? \Oria\Theme\effective_rating( $id ) : array( 'rating' => 0, 'count' => 0 );
+		$reviews[ $i ] = (int) $r['count'];
+		$ratings[ $i ] = (float) $r['rating'];
+		$svc           = wp_get_post_terms( $id, 'service', array( 'fields' => 'names' ) );
+		$svc_n[ $i ]   = is_wp_error( $svc ) ? 0 : count( $svc );
+		$online[ $i ]  = in_array( (string) get_field( 'format', $id ), array( 'online', 'both' ), true ) ? 1 : 0;
+	}
+
+	$i = $sole_max( $reviews );
+	if ( null !== $i ) {
+		$out[] = array(
+			'label'  => __( 'Most reviewed', 'oria' ),
+			'name'   => $names[ $i ],
+			/* translators: %s: number of reviews */
+			'detail' => sprintf( __( '%s Google reviews — the most of these.', 'oria' ), number_format_i18n( $reviews[ $i ] ) ),
+		);
+	}
+
+	// Ratings are compared to one decimal, which is how they are shown.
+	$rounded = array_map( static fn( float $v ): int => (int) round( $v * 10 ), $ratings );
+	$i       = $sole_max( $rounded );
+	if ( null !== $i ) {
+		$out[] = array(
+			'label'  => __( 'Highest rated', 'oria' ),
+			'name'   => $names[ $i ],
+			/* translators: %s: rating out of five */
+			'detail' => sprintf( __( '%s on Google. We neither set nor checked this figure.', 'oria' ), number_format_i18n( $ratings[ $i ], 1 ) ),
+		);
+	}
+
+	$i = $sole_max( $svc_n );
+	if ( null !== $i && $svc_n[ $i ] > 1 ) {
+		$out[] = array(
+			'label'  => __( 'Lists the most classes', 'oria' ),
+			'name'   => $names[ $i ],
+			/* translators: %d: number of listed services */
+			'detail' => sprintf(
+				_n( '%d class or service on file. Others may run more without having told us.', '%d classes and services on file. Others may run more without having told us.', $svc_n[ $i ], 'oria' ),
+				$svc_n[ $i ]
+			),
+		);
+	}
+
+	if ( 1 === array_sum( $online ) ) {
+		$i     = (int) array_search( 1, $online, true );
+		$out[] = array(
+			'label'  => __( 'The only one online', 'oria' ),
+			'name'   => $names[ $i ],
+			'detail' => __( 'Runs sessions online as well as in person.', 'oria' ),
+		);
+	}
+
+	/*
+	 * A specialty exactly one of them lists. This is the brief's "best for
+	 * sound healing" without the verdict — it says who lists it, which is
+	 * all we actually know, and it is the most useful line on the page
+	 * when it fires.
+	 */
+	$by_spec = array();
+	foreach ( $posts as $i => $p ) {
+		$sp = wp_get_post_terms( (int) $p->ID, 'specialty', array( 'fields' => 'names' ) );
+		foreach ( ( is_wp_error( $sp ) ? array() : $sp ) as $name ) {
+			$by_spec[ $name ][] = $i;
+		}
+	}
+	$uniques = array();
+	foreach ( $by_spec as $name => $holders ) {
+		if ( 1 === count( $holders ) ) {
+			$uniques[ $holders[0] ][] = $name;
+		}
+	}
+	foreach ( $uniques as $idx => $list ) {
+		if ( count( $out ) >= 5 ) {
+			break;
+		}
+		$out[] = array(
+			/* translators: %s: a specialty only one of the compared places lists */
+			'label'  => sprintf( __( 'Only one lists %s', 'oria' ), strtolower( (string) $list[0] ) ),
+			'name'   => $names[ $idx ],
+			'detail' => 1 === count( $list )
+				? __( 'None of the others has this on file.', 'oria' )
+				/* translators: %s: comma-separated specialties */
+				: sprintf( __( 'Also the only one listing %s.', 'oria' ), strtolower( implode( ', ', array_slice( $list, 1, 2 ) ) ) ),
+		);
+	}
+
+	return $out;
+}
+
+/**
+ * One conditional sentence per business, built from whatever genuinely
+ * distinguishes it. Conditional on purpose — "worth a look IF this is what
+ * you want" is a fact about the listing; "the best choice" would be a
+ * judgement we have no basis for.
+ *
+ * @param array<int, \WP_Post> $posts
+ * @return array<int, array{name: string, url: string, line: string}>
+ */
+function place_reasons( array $posts ): array {
+	$spec_of = array();
+	foreach ( $posts as $i => $p ) {
+		$sp             = wp_get_post_terms( (int) $p->ID, 'specialty', array( 'fields' => 'names' ) );
+		$spec_of[ $i ]  = is_wp_error( $sp ) ? array() : $sp;
+	}
+
+	$out = array();
+	foreach ( $posts as $i => $p ) {
+		$id     = (int) $p->ID;
+		$others = array();
+		foreach ( $spec_of as $j => $list ) {
+			if ( $j !== $i ) {
+				$others = array_merge( $others, $list );
+			}
+		}
+		$only = array_values( array_diff( $spec_of[ $i ], $others ) );
+
+		$svc   = wp_get_post_terms( $id, 'service', array( 'fields' => 'names' ) );
+		$svc   = is_wp_error( $svc ) ? array() : $svc;
+		$fmt   = (string) get_field( 'format', $id );
+		$areas = wp_get_post_terms( $id, 'area', array( 'fields' => 'names' ) );
+
+		if ( $only ) {
+			/* translators: %s: specialties only this business lists */
+			$line = sprintf( __( 'The only one here listing %s.', 'oria' ), strtolower( implode( ' and ', array_slice( $only, 0, 2 ) ) ) );
+		} elseif ( count( $svc ) > 2 ) {
+			/* translators: %s: a few of the listed services */
+			$line = sprintf( __( 'Lists the widest range here, including %s.', 'oria' ), strtolower( implode( ', ', array_slice( $svc, 0, 3 ) ) ) );
+		} elseif ( in_array( $fmt, array( 'online', 'both' ), true ) ) {
+			$line = __( 'Worth a look if getting there is the hard part — it runs online too.', 'oria' );
+		} elseif ( ! is_wp_error( $areas ) && $areas ) {
+			/* translators: %s: suburb */
+			$line = sprintf( __( 'Worth a look if %s is convenient for you.', 'oria' ), (string) $areas[0] );
+		} else {
+			$line = __( 'The listing carries the detail we hold.', 'oria' );
+		}
+
+		$out[] = array(
+			'name' => get_the_title( $p ),
+			'url'  => (string) get_permalink( $p ),
+			'line' => $line,
+		);
 	}
 	return $out;
 }
