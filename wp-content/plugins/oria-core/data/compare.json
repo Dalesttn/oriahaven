@@ -265,7 +265,8 @@
         "price": "$$",
         "duration": "60 min",
         "athome": "No"
-      }
+      },
+      "image_from": "sound"
     },
     {
       "id": "infrared-sauna",
@@ -313,7 +314,8 @@
         "price": "$$",
         "duration": "30–60 min",
         "athome": "A cold shower is the budget version"
-      }
+      },
+      "image_from": "recovery"
     },
     {
       "id": "massage",
@@ -383,7 +385,8 @@
         "price": "$",
         "duration": "60 min",
         "athome": "Yes, once you know a form"
-      }
+      },
+      "image_from": "fitness"
     },
     {
       "id": "personal-training",
@@ -519,7 +522,8 @@
         "afterfeel": "Can be tender for a day afterwards",
         "price": "$$$",
         "claimable": "Often claimable with an accredited therapist — check your fund"
-      }
+      },
+      "image_from": "bodywork"
     },
     {
       "id": "deep-tissue",
@@ -538,7 +542,8 @@
         "afterfeel": "Commonly tender for a day or two",
         "price": "$$$",
         "claimable": "Sometimes, where an accredited therapist bills it as remedial"
-      }
+      },
+      "image_from": "bodywork"
     },
     {
       "id": "relaxation-massage",
@@ -576,7 +581,8 @@
         "afterfeel": "Can be tender, depending how close to an event",
         "price": "$$$",
         "claimable": "Often claimable with an accredited therapist"
-      }
+      },
+      "image_from": "bodywork"
     },
     {
       "id": "pregnancy-massage",
@@ -595,7 +601,8 @@
         "afterfeel": "Rarely any soreness",
         "price": "$$$",
         "claimable": "Often claimable with an accredited therapist"
-      }
+      },
+      "image_from": "bodywork"
     },
     {
       "id": "lymphatic-drainage",
@@ -614,7 +621,8 @@
         "afterfeel": "No soreness — the pressure is too light for it",
         "price": "$$$$",
         "claimable": "Sometimes, depending on the therapist's accreditation"
-      }
+      },
+      "image_from": "bodywork"
     },
     {
       "id": "reflexology",
@@ -633,7 +641,8 @@
         "afterfeel": "Rarely sore, though single points can feel tender at the time",
         "price": "$$",
         "claimable": "Rarely — check with your fund first"
-      }
+      },
+      "image_from": "bodywork"
     },
     {
       "id": "sauna-infrared",
@@ -652,7 +661,8 @@
         "price": "$$",
         "athome": "Only with your own cabin",
         "firsttime": "Staff set the temperature and show you the controls"
-      }
+      },
+      "image_from": "recovery"
     },
     {
       "id": "sauna-traditional",
@@ -690,7 +700,8 @@
         "price": "$$",
         "athome": "A cold shower is the free version",
         "firsttime": "Staff talk you through the breathing and watch the clock"
-      }
+      },
+      "image_from": "recovery"
     },
     {
       "id": "contrast",
@@ -728,7 +739,8 @@
         "price": "$$",
         "athome": "No",
         "firsttime": "A shower first, earplugs, and the lid stays as open as you like"
-      }
+      },
+      "image_from": "sound"
     },
     {
       "id": "red-light",
@@ -747,7 +759,8 @@
         "price": "$$",
         "athome": "Home panels exist",
         "firsttime": "Goggles, and staff set the distance and the timer"
-      }
+      },
+      "image_from": "recovery"
     },
     {
       "id": "cryo",
@@ -766,7 +779,8 @@
         "price": "$$$",
         "athome": "No",
         "firsttime": "Staff stay at the door and talk to you the whole way through"
-      }
+      },
+      "image_from": "recovery"
     },
     {
       "id": "compression",
@@ -785,7 +799,8 @@
         "price": "$",
         "athome": "Home units exist",
         "firsttime": "Staff fit the boots and set the pressure"
-      }
+      },
+      "image_from": "recovery"
     },
     {
       "id": "hyperbaric",
@@ -804,7 +819,8 @@
         "price": "$$$$",
         "athome": "No",
         "firsttime": "You equalise your ears on the way down, like a plane"
-      }
+      },
+      "image_from": "recovery"
     }
   ],
   "groups": {

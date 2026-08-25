@@ -130,6 +130,11 @@ $oria_dots = static function ( int $n ): string {
 					<?php $oria_e = $oria_hit['experience']; ?>
 					<li class="bld__hit">
 						<span class="bld__rank" aria-hidden="true"><?php echo (int) ( $oria_i + 1 ); ?></span>
+					<?php $oria_img = \Oria\Core\Compare\image_for( $oria_e ); ?>
+					<?php if ( '' !== $oria_img ) : ?>
+						<?php // Decorative: the name beside it already says what this is. ?>
+						<img class="bld__shot" src="<?php echo esc_url( $oria_img ); ?>" alt="" loading="lazy" width="112" height="112">
+					<?php endif; ?>
 						<div class="bld__hitbody">
 							<h3 class="bld__hitname">
 								<a href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>"><?php echo esc_html( (string) $oria_e['label'] ); ?></a>

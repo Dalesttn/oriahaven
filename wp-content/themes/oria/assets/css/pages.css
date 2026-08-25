@@ -2961,6 +2961,20 @@ html.has-sheet { overflow: hidden; }
   font-size: var(--fs-xs); font-weight: 700; color: var(--text-soft);
 }
 .bld__hit:first-child .bld__rank { background: var(--deep); border-color: var(--deep); color: var(--white); }
+/* The category tile, not a business photograph. Fixed square so a row of
+   results keeps its rhythm whatever shape the source image is, and sized
+   in the markup so nothing shifts as it loads. */
+.bld__shot {
+  flex: none; width: 76px; height: 76px; object-fit: cover;
+  border-radius: 10px; background: var(--sand-2);
+}
+/* On a phone the rank, the picture and two lots of padding leave the name
+   about 150px. Shrinking the tile and closing the gaps buys it back. */
+@media (max-width: 560px) {
+  .bld__hit { gap: .8rem; padding: 1.1rem 1.1rem; }
+  .bld__shot { width: 58px; height: 58px; }
+  .bld__rank { width: 26px; height: 26px; }
+}
 .bld__hitbody { min-width: 0; display: flex; flex-direction: column; gap: .3rem; }
 .bld__hitname { margin: 0; font-size: 1.1rem; font-weight: 700; letter-spacing: -0.018em; line-height: 1.25; }
 .bld__hitname a { color: var(--ink); }

@@ -500,6 +500,66 @@ function try_listings( array $picked, int $n = 3 ): array {
  * designed against.
  */
 
+/**
+ * The picture that stands for one experience.
+ *
+ * Every image is a CATEGORY tile — `tile_image` on the practice term, the
+ * same asset the homepage and /practices/ already use. Never a listing's
+ * photograph: those belong to the business that supplied them, and one
+ * studio's treatment room is not what "massage" looks like.
+ *
+ * The practice comes from the experience's own URL where it has one, and
+ * from the registry's `image_from` where the URL is a specialty page.
+ * Falls back to the theme's small set of shipped category pictures, then
+ * to an empty string — a missing image is better than a wrong one, and
+ * every layout that calls this is built to survive it.
+ */
+function image_for( array $e, string $size = 'oria-card' ): string {
+	static $cache = array();
+	$key = (string) ( $e['id'] ?? '' ) . '|' . $size;
+	if ( isset( $cache[ $key ] ) ) {
+		return $cache[ $key ];
+	}
+
+	$slug = '';
+	if ( preg_match( '~^/practices/([^/]+)/~', (string) ( $e['url'] ?? '' ), $m ) ) {
+		$slug = $m[1];
+	} elseif ( ! empty( $e['image_from'] ) ) {
+		$slug = (string) $e['image_from'];
+	} elseif ( ! empty( $e['category'] ) ) {
+		$slug = (string) $e['category'];
+	}
+
+	$url = '';
+	if ( '' !== $slug ) {
+		$term = get_term_by( 'slug', $slug, 'practice' );
+		if ( $term instanceof \WP_Term ) {
+			$id = (int) get_field( 'tile_image', 'practice_' . $term->term_id );
+			if ( $id ) {
+				$url = (string) wp_get_attachment_image_url( $id, $size );
+			}
+		}
+		if ( '' === $url ) {
+			// The theme ships pictures for six categories; the rest rely on
+			// the term's own tile image and go without until it is set.
+			$shipped = array(
+				'meditation'  => 'cat-meditation.webp',
+				'breathwork'  => 'cat-breathwork.webp',
+				'yoga'        => 'cat-yoga.webp',
+				'mindfulness' => 'cat-mindfulness.webp',
+				'sound'       => 'cat-sound.webp',
+				'retreats'    => 'cat-retreats.webp',
+			);
+			if ( isset( $shipped[ $slug ] ) ) {
+				$url = get_template_directory_uri() . '/assets/img/' . $shipped[ $slug ];
+			}
+		}
+	}
+
+	$cache[ $key ] = $url;
+	return $url;
+}
+
 /** A 1-5 score in words, so a scale never depends on the dots alone. */
 function scale_word( int $n ): string {
 	$words = array(
