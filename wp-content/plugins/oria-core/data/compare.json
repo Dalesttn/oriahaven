@@ -910,6 +910,153 @@
         "claimable": "No",
         "starting": "Any general class"
       }
+    },
+    {
+      "id": "yoga-yin",
+      "label": "Yin Yoga",
+      "url": "/practices/yoga/yin/",
+      "pair": "yoga-vinyasa",
+      "group": "yoga-styles",
+      "image_from": "yoga",
+      "attributes": {
+        "temperature": "Room temperature, sometimes gently warmed",
+        "pace": 1,
+        "props": "Bolsters, blocks and blankets, provided by the studio",
+        "effort": 2,
+        "stillness": 5,
+        "guidance": 3,
+        "sequence": "No — the teacher chooses the shapes",
+        "duration": "60–75 min",
+        "price": "$$",
+        "wear": "Layers you can pull on; you cool down holding still",
+        "starting": "Any general class — there is nothing to learn first"
+      }
+    },
+    {
+      "id": "yoga-vinyasa",
+      "label": "Vinyasa Yoga",
+      "url": "/practices/yoga/vinyasa/",
+      "pair": "yoga-yin",
+      "group": "yoga-styles",
+      "image_from": "yoga",
+      "attributes": {
+        "temperature": "Room temperature, sometimes gently warmed",
+        "pace": 4,
+        "props": "A mat, occasionally a block",
+        "effort": 4,
+        "stillness": 1,
+        "guidance": 4,
+        "sequence": "No — most teachers build a different class each week",
+        "duration": "60 min",
+        "price": "$$",
+        "wear": "Something you can move and sweat in",
+        "starting": "A slow flow or beginners class first, where the studio runs one"
+      }
+    },
+    {
+      "id": "yoga-hot",
+      "label": "Hot Yoga",
+      "url": "/practices/yoga/hot/",
+      "pair": "yoga-vinyasa",
+      "group": "yoga-styles",
+      "image_from": "yoga",
+      "attributes": {
+        "temperature": "Heated, commonly 35–40°C",
+        "pace": 3,
+        "props": "A mat and a towel; most studios hire both out",
+        "effort": 4,
+        "stillness": 2,
+        "guidance": 5,
+        "sequence": "Often — Bikram runs the same twenty-six postures every class",
+        "duration": "60–90 min",
+        "price": "$$",
+        "wear": "As little as you are comfortable in, plus a towel and water",
+        "starting": "Arrive early, drink beforehand, and expect to sit one out"
+      }
+    },
+    {
+      "id": "yoga-ashtanga",
+      "label": "Ashtanga Yoga",
+      "url": "/practices/yoga/ashtanga/",
+      "pair": "yoga-vinyasa",
+      "group": "yoga-styles",
+      "image_from": "yoga",
+      "attributes": {
+        "temperature": "Room temperature, sometimes gently warmed",
+        "pace": 4,
+        "props": "A mat, and a strap for some of the binds",
+        "effort": 5,
+        "stillness": 1,
+        "guidance": 2,
+        "sequence": "Yes — the same series in the same order every time",
+        "duration": "75–90 min",
+        "price": "$$",
+        "wear": "Something you can move and sweat in",
+        "starting": "A led class before Mysore, where you work through the series alone"
+      }
+    },
+    {
+      "id": "yoga-restorative",
+      "label": "Restorative Yoga",
+      "url": "/practices/yoga/restorative/",
+      "pair": "yoga-yin",
+      "group": "yoga-styles",
+      "image_from": "yoga",
+      "attributes": {
+        "temperature": "Room temperature, often warmed",
+        "pace": 1,
+        "props": "Bolsters, blankets, blocks and eye pillows, all provided",
+        "effort": 1,
+        "stillness": 5,
+        "guidance": 3,
+        "sequence": "No",
+        "duration": "60–75 min",
+        "price": "$$",
+        "wear": "Loose and warm — you barely move",
+        "starting": "Any general class"
+      }
+    },
+    {
+      "id": "yoga-nidra",
+      "label": "Yoga Nidra",
+      "url": "/perth/yoga-nidra/",
+      "pair": "yoga-restorative",
+      "group": "yoga-styles",
+      "image_from": "yoga",
+      "attributes": {
+        "temperature": "Room temperature",
+        "pace": 1,
+        "props": "A mat, a blanket and often an eye pillow",
+        "effort": 1,
+        "stillness": 5,
+        "guidance": 5,
+        "sequence": "No",
+        "duration": "30–60 min",
+        "price": "$$",
+        "wear": "Whatever you can lie still in",
+        "starting": "Any session — you stay lying down from start to finish"
+      }
+    },
+    {
+      "id": "yoga-pregnancy",
+      "label": "Pregnancy Yoga",
+      "url": "/practices/yoga/pregnancy/",
+      "pair": "yoga-restorative",
+      "group": "yoga-styles",
+      "image_from": "yoga",
+      "attributes": {
+        "temperature": "Room temperature — heated rooms are not used",
+        "pace": 2,
+        "props": "Bolsters, blocks and a wall, all provided",
+        "effort": 2,
+        "stillness": 3,
+        "guidance": 5,
+        "sequence": "No — the class is built around the trimester",
+        "duration": "60 min",
+        "price": "$$",
+        "wear": "Whatever is comfortable now",
+        "starting": "Most studios ask you to be past the first trimester — check when you book"
+      }
     }
   ],
   "groups": {
@@ -1131,6 +1278,85 @@
               "label": "Private health",
               "type": "text",
               "hint": "Always confirm with your own fund and practitioner"
+            },
+            "starting": {
+              "label": "Starting out",
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "yoga-styles": {
+      "label": "Types of yoga",
+      "parent": "yoga",
+      "h1": "Types of yoga compared",
+      "blurb": "Yin, vinyasa, hot, ashtanga, restorative, nidra and pregnancy yoga — what actually differs once the class starts. How fast it moves, how much of the hour you spend still, whether the sequence is the same every week, and how warm the room is. Price is the one thing that barely moves: across every Perth studio listed here the band is the same, so what changes the cost is the studio, not the style.",
+      "attributes": {
+        "room": {
+          "label": "In the room",
+          "items": {
+            "temperature": {
+              "label": "Room temperature",
+              "type": "text"
+            },
+            "pace": {
+              "label": "Pace",
+              "type": "scale",
+              "hint": "Slow and held (1) to constantly moving (5)",
+              "high": "Fast-moving",
+              "low": "Slow and held"
+            },
+            "props": {
+              "label": "Props you will use",
+              "type": "text"
+            }
+          }
+        },
+        "session": {
+          "label": "How the class runs",
+          "items": {
+            "effort": {
+              "label": "Physical effort",
+              "type": "scale",
+              "hint": "How hard the body works in a typical class",
+              "high": "Physical effort",
+              "low": "Gentle"
+            },
+            "stillness": {
+              "label": "Time spent still",
+              "type": "scale",
+              "hint": "Continuously moving (1) to lying still (5)",
+              "high": "Mostly still",
+              "low": "Continuously moving"
+            },
+            "guidance": {
+              "label": "Spoken guidance",
+              "type": "scale",
+              "hint": "Left to it (1) to talked through every moment (5)",
+              "high": "Guided throughout",
+              "low": "Self-directed"
+            },
+            "sequence": {
+              "label": "Same sequence each time",
+              "type": "text"
+            },
+            "duration": {
+              "label": "Typical class",
+              "type": "text"
+            }
+          }
+        },
+        "practical": {
+          "label": "Practical",
+          "items": {
+            "price": {
+              "label": "Typical price",
+              "type": "band"
+            },
+            "wear": {
+              "label": "What to wear",
+              "type": "text"
             },
             "starting": {
               "label": "Starting out",
