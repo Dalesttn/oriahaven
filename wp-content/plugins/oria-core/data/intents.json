@@ -327,7 +327,7 @@
     {
       "practice": "breathwork",
       "intent": "online",
-      "live": false,
+      "live": true,
       "frame": {
         "h1": "Online breathwork sessions from Perth facilitators",
         "title": "Online breathwork from Perth facilitators | OriaHaven",
