@@ -1416,8 +1416,20 @@
        filters or the sort changes the signature and forces a rebuild. */
     var drawn = { key: null, count: 0 };
 
+    /* What people look for here, and whether the directory could answer.
+
+       Search and filtering are entirely client-side, so none of this
+       reaches analytics on its own — GA4's built-in site search only reads
+       URL parameters, and this search never reloads the page.
+
+       The valuable row is the one with results_count 0: a term somebody
+       typed that the directory could not answer is demand it cannot serve
+       yet, which is a recruitment list rather than a bug report. */
+    var lastCount = 0;
+
     function render() {
       var found = DATA.listings.filter(matches).sort(sortFn);
+      lastCount = found.length;
       var pages = Math.max(1, Math.ceil(found.length / PER_PAGE));
       if (state.page > pages) state.page = pages;
       var shown = found.slice(0, state.page * PER_PAGE);
@@ -1644,6 +1656,17 @@
            loop. */
         syncInputs();
         render();
+
+        /* Only when a filter goes ON. Reporting the off-switch too would
+           double the volume to say the same thing twice, and the count
+           after the redraw already shows whether it narrowed too far. */
+        if (input.checked || (kind === "rating" && state.rating)) {
+          pushEvent("dir_filter", {
+            filter_name: kind,
+            filter_value: val,
+            results_count: lastCount
+          });
+        }
       });
     });
 
@@ -1654,9 +1677,22 @@
     if (qInput) {
       qInput.value = state.q;
       var t;
+      /* Two timers on purpose. The short one redraws as you type; the long
+         one reports, and only once you have stopped — otherwise "massage"
+         arrives as seven searches, six of which nobody made. The same term
+         is never reported twice in a row for the same reason. */
+      var reportTimer, lastReported = "";
       qInput.addEventListener("input", function () {
         clearTimeout(t);
         t = setTimeout(function () { state.q = qInput.value.trim(); state.page = 1; render(); }, 180);
+
+        clearTimeout(reportTimer);
+        reportTimer = setTimeout(function () {
+          var term = state.q.toLowerCase();
+          if (term.length < 2 || term === lastReported) return;
+          lastReported = term;
+          pushEvent("dir_search", { search_term: term, results_count: lastCount });
+        }, 1200);
       });
     }
 
