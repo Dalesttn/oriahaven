@@ -1318,3 +1318,54 @@ function simg( array $section, string $key, string $fallback_asset, string $size
 function sband( array $section ): string {
 	return ( 'sand' === ( $section['background'] ?? 'paper' ) ) ? ' band-sand' : '';
 }
+
+/**
+ * A 16px line icon for one amenity slug.
+ *
+ * Inline SVG rather than image files, for three reasons that all bite at this
+ * size: it inherits `currentColor`, so the icon follows the text into a dark
+ * section instead of a black square disappearing into it; it stays sharp at
+ * any zoom or pixel density; and it costs no extra request per listing.
+ *
+ * Presentation lives here, the vocabulary lives in data/amenities.json, and a
+ * slug with no icon falls back to a dot rather than to nothing — so adding an
+ * amenity to the registry can never leave a blank space on a live page.
+ */
+function amenity_icon( string $slug ): string {
+	$p = array(
+		// shower head with falling water
+		'showers'        => '<path d="M8 2v3M4.5 8.5a3.5 3.5 0 0 1 7 0Z"/><path d="M5.5 11v1.5M8 11.5v2M10.5 11v1.5"/>',
+		// hanging curtain / cubicle
+		'change-rooms'   => '<path d="M2.5 3.5h11M4.5 3.5v9h7v-9"/><path d="M9.5 8.2h.01"/>',
+		// locker door with vent and handle
+		'lockers'        => '<rect x="4" y="2.5" width="8" height="11" rx="1"/><path d="M6 5h4M6 6.8h4M10 10.5v1.5"/>',
+		// toilet / washroom door sign
+		'toilets'        => '<circle cx="8" cy="4" r="1.5"/><path d="M5.5 13.5v-3l-1-3a3.5 3.5 0 0 1 7 0l-1 3v3"/>',
+		// airflow lines from a vent
+		'air-con'        => '<rect x="2.5" y="3" width="11" height="4" rx="1"/><path d="M5 9.5c1.2 0 1.2 1.6 2.4 1.6M9 9.5c1.2 0 1.2 2.4 2.4 2.4"/>',
+		// tap over a glass
+		'drinking-water' => '<path d="M4 3.5h3.5v2M7.5 5.5h3"/><path d="M5.5 8.5h5l-.7 5h-3.6Z"/>',
+		// folded towel on a rail
+		'towels'         => '<path d="M3 3.5h10"/><path d="M4.5 5.5h7v7a1.5 1.5 0 0 1-1.5 1.5H6a1.5 1.5 0 0 1-1.5-1.5Z"/><path d="M4.5 8.5h7"/>',
+		// rolled mat
+		'equipment'      => '<rect x="2.5" y="4.5" width="11" height="7" rx="3.5"/><path d="M11 4.5a3.5 3.5 0 0 0 0 7"/>',
+		// cup with steam
+		'refreshments'   => '<path d="M3.5 6.5h8v4a2.5 2.5 0 0 1-2.5 2.5H6a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M11.5 7.5h1.2a1.3 1.3 0 0 1 0 2.6h-1.2"/><path d="M6 3v1.5M8.5 2.5v2"/>',
+		// bicycle
+		'bike-parking'   => '<circle cx="4" cy="11" r="2.5"/><circle cx="12" cy="11" r="2.5"/><path d="M4 11l2.5-5h3l2.5 5M6 6h3"/>',
+		// pram
+		'pram-space'     => '<path d="M3 4h1.5l1 5.5h7"/><path d="M12.5 4.5a4 4 0 0 0-6.9 3.2"/><circle cx="6.5" cy="12.5" r="1.2"/><circle cx="11.5" cy="12.5" r="1.2"/>',
+		// card with stripe
+		'card-payments'  => '<rect x="2" y="4" width="12" height="8" rx="1.2"/><path d="M2 7h12M4.5 10h2.5"/>',
+		// terminal with a tick
+		'hicaps'         => '<rect x="3.5" y="2.5" width="9" height="11" rx="1.2"/><path d="M6 5.5h4"/><path d="M6 9.5l1.4 1.4L10.5 8"/>',
+	);
+
+	if ( ! isset( $p[ $slug ] ) ) {
+		return '<span class="amenity__dot" aria-hidden="true"></span>';
+	}
+
+	return '<svg class="amenity__icon" viewBox="0 0 16 16" width="16" height="16" fill="none" '
+		. 'stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" '
+		. 'aria-hidden="true" focusable="false">' . $p[ $slug ] . '</svg>';
+}

@@ -3145,8 +3145,9 @@ html.has-sheet { overflow: hidden; }
 .amenity { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1.1rem 1.6rem; }
 .amenity__label { color: var(--moss); margin: 0 0 .4rem; }
 .amenity__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .3rem; }
-.amenity__list li { position: relative; padding-left: 1.25rem; font-size: var(--fs-sm); }
-.amenity__list li::before {
-  content: ""; position: absolute; left: 0; top: .45em;
-  width: .5rem; height: .5rem; border-radius: 50%; background: var(--moss);
-}
+.amenity__list li { display: flex; align-items: flex-start; gap: .5rem; font-size: var(--fs-sm); }
+/* currentColor, so the icon follows the text into a dark band instead of a
+   black glyph vanishing into it. Nudged down to sit on the text baseline. */
+.amenity__icon { flex: none; width: 16px; height: 16px; margin-top: .12em; color: var(--ink); }
+/* Fallback for a registry slug with no icon yet — a page never renders a gap. */
+.amenity__dot { flex: none; width: .5rem; height: .5rem; margin-top: .45em; border-radius: 50%; background: var(--moss); }

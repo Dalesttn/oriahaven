@@ -90,8 +90,13 @@ function vocabulary(): array {
  * vocabulary — so a slug retired from the JSON stops rendering rather than
  * appearing as a bare key.
  *
- * @return list<array{label: string, items: list<string>}> Empty when nothing
- *         has been declared, which is the normal state for a seeded listing.
+ * Items carry their slug as well as their label, because the template keys
+ * its icons off the slug — presentation stays in the theme, the vocabulary
+ * stays here, and neither has to know the other's business.
+ *
+ * @return list<array{label: string, items: list<array{slug: string, label: string}>}>
+ *         Empty when nothing has been declared, which is the normal state for
+ *         a seeded listing.
  */
 function for_listing( int $post_id ): array {
 	if ( ! function_exists( 'get_field' ) ) {
@@ -109,7 +114,7 @@ function for_listing( int $post_id ): array {
 		$items = array();
 		foreach ( $group['amenities'] as $row ) {
 			if ( isset( $saved[ $row['slug'] ] ) ) {
-				$items[] = $row['label'];
+				$items[] = array( 'slug' => $row['slug'], 'label' => $row['label'] );
 			}
 		}
 		if ( $items ) {
