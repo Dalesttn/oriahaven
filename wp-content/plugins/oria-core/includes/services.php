@@ -222,6 +222,45 @@ function resolve_trimmed( string $folded ): string {
 }
 
 /**
+ * A folded phrase with leading words that only qualify the modality removed.
+ *
+ * "Fertility acupuncture" is acupuncture, "Chinese herbal medicine" is
+ * herbal medicine, "Hot stone massage" is massage. The listing said which
+ * kind, and the free-text field still says so; the canonical layer only has
+ * to know which modality it was. 131 of the 702 strings that resolve to
+ * nothing today are this shape.
+ *
+ * Words come off the front one at a time and the first hit wins, so
+ * "Sports dietitian consultation" reaches "dietitian consultation" rather
+ * than falling through to nothing.
+ *
+ * Some heads do not survive the trip, and they are the ones that name an
+ * activity rather than a modality — there, the modifier was the meaning.
+ * A swimming coach is not a life coach, a head spa is not a day spa,
+ * NuCalm relaxation is not a relaxation massage. Those stay unresolved,
+ * which is exactly where they are now; if any of them genuinely is the
+ * registered service, it earns an explicit alias like every other term.
+ */
+function resolve_head( string $folded ): string {
+	static $vague = array( 'coaching', 'counselling', 'spa', 'relaxation', 'training', 'therapy', 'healing' );
+
+	$map   = lookup();
+	$words = '' === $folded ? array() : explode( ' ', $folded );
+	$count = count( $words );
+
+	for ( $i = 1; $i < $count; $i++ ) {
+		$key = implode( ' ', array_slice( $words, $i ) );
+		if ( in_array( $key, $vague, true ) ) {
+			return '';
+		}
+		if ( isset( $map[ $key ] ) ) {
+			return (string) $map[ $key ];
+		}
+	}
+	return '';
+}
+
+/**
  * Every service a phrase names, not just the one it matches whole.
  *
  * resolve() matches the entire folded phrase, which is right for "Pre &
@@ -268,12 +307,20 @@ function resolve_all( string $phrase ): array {
 		if ( '' === $slug ) {
 			$slug = resolve_trimmed( fold( (string) $part ) );
 		}
+		if ( '' === $slug ) {
+			$slug = resolve_head( fold( (string) $part ) );
+		}
 		if ( '' !== $slug ) {
 			$out[ $slug ] = true;
 		}
 	}
 
-	return array_keys( $out );
+	if ( $out ) {
+		return array_keys( $out );
+	}
+
+	$head = resolve_head( fold( $phrase ) );
+	return '' === $head ? array() : array( $head );
 }
 
 /* -------------------------------------------------------------- installing */

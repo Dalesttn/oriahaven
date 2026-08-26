@@ -590,9 +590,12 @@
       "slug": "hyperbaric-oxygen-therapy",
       "name": "Hyperbaric oxygen therapy",
       "categories": [
-        "recovery"
+        "recovery",
+        "longevity"
       ],
       "aliases": [
+        "hbot",
+        "hyperbaric chamber",
         "hyperbaric oxygen"
       ]
     },
@@ -885,10 +888,12 @@
         "nutrition"
       ],
       "aliases": [
-        "nutritional therapy",
-        "nutritional coaching",
         "dietary guidance",
-        "nutrition coaching"
+        "non-diet nutrition counselling",
+        "nutrition coaching",
+        "nutritional coaching",
+        "nutritional counselling",
+        "nutritional therapy"
       ]
     },
     {
@@ -929,7 +934,10 @@
         "community"
       ],
       "aliases": [
-        "group counselling"
+        "couples counselling",
+        "group counselling",
+        "integrative counselling",
+        "nature-based counselling"
       ]
     },
     {
@@ -1478,18 +1486,6 @@
         "wearables",
         "health monitoring",
         "resting metabolic rate testing"
-      ]
-    },
-    {
-      "slug": "hyperbaric-oxygen",
-      "name": "Hyperbaric oxygen",
-      "categories": [
-        "longevity",
-        "recovery"
-      ],
-      "aliases": [
-        "hbot",
-        "hyperbaric chamber"
       ]
     },
     {
