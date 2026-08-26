@@ -1140,5 +1140,40 @@
         }
       }
     }
-  }
+  },
+  "pairs": [
+    {
+      "slug": "yoga-vs-pilates",
+      "a": "yoga",
+      "b": "pilates",
+      "h1": "Yoga vs Pilates",
+      "intro": [
+        "Both are floor-based, both are taught in studios that look much alike from the street, and both are often booked by the same person in the same week. What separates them is where the attention goes once the class starts.",
+        "A yoga class holds shapes and links them to the breath, and most styles give some part of the hour to stillness. A Pilates class works through repetitions with the instructor counting, and the breath supports the movement rather than setting its pace. Neither is the harder one — that depends entirely on the style and the teacher, which is what the table below is for."
+      ],
+      "blurb": "Yoga and Pilates side by side: what you do in the room, how hard the body works, how much you are talked through, what a class costs in Perth and what to expect the first time."
+    },
+    {
+      "slug": "reformer-vs-mat-pilates",
+      "a": "pilates-reformer",
+      "b": "pilates-mat",
+      "h1": "Reformer vs Mat Pilates",
+      "intro": [
+        "The difference is the equipment, and everything else follows from it. Mat Pilates is your own bodyweight on the floor, sometimes with a ring, band or small ball. Reformer Pilates is a sliding carriage on springs, and the springs can make an exercise either harder or easier than the floor version — which is why the machine is not simply the advanced option.",
+        "This is also the answer to “Pilates vs reformer Pilates”. When people say plain Pilates they usually mean the mat class, so the comparison below is the same one. What changes is the booking: most studios ask you to do an intro class or a private session before joining a general reformer class, and nearly all of them require grip socks."
+      ],
+      "blurb": "Reformer and mat Pilates compared: what you work on, where the resistance comes from, class sizes, what a class costs in Perth, and whether you need an intro session before you book."
+    },
+    {
+      "slug": "infrared-vs-traditional-sauna",
+      "a": "sauna-infrared",
+      "b": "sauna-traditional",
+      "h1": "Infrared vs traditional sauna",
+      "intro": [
+        "A traditional sauna heats the air, and the air heats you. An infrared sauna heats you more directly, which is why it runs at a much lower room temperature and still feels like work.",
+        "In practice the choice is about what you find bearable and how you like to sit. A traditional room is hot enough that most people stay for shorter stretches and step out between them; an infrared cabin is cooler, usually private, and easier to sit in for a longer single session. Perth studios increasingly run both, so the table below is as much about picking a session as picking a venue."
+      ],
+      "blurb": "Infrared and traditional saunas compared: how hot each one runs, how long a session lasts, whether you sit alone or with others, and what each costs across Perth."
+    }
+  ]
 }

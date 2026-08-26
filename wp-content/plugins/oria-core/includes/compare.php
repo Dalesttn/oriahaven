@@ -34,7 +34,7 @@ const DATA_FILE = 'data/compare.json';
 const SITEMAP   = 'compare';
 const MIN_PICK  = 2;
 const MAX_PICK  = 4;
-const REWRITE_V = '2';
+const REWRITE_V = '3';   // bumped for the /compare/{a}-vs-{b}/ pair pages
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\route', 10 );
@@ -60,6 +60,22 @@ function route(): void {
 	// The session builder is a page of its own, not a state of /compare/:
 	// it answers a different question and gets its own indexable address.
 	add_rewrite_rule( '^' . PATH . '/build/?$', 'index.php?' . QUERY_VAR . '=1&' . BUILD_VAR . '=1', 'top' );
+
+	/*
+	 * One rule per curated pair, never a wildcard. A pattern like
+	 * ([a-z0-9-]+)-vs-([a-z0-9-]+) would answer 200 for every one of the
+	 * 600-odd combinations of 36 experiences, and most of them are pages
+	 * nobody would write and nobody searches for. The registry decides
+	 * which pairs exist; anything else stays a 404, which is the honest
+	 * answer.
+	 */
+	foreach ( pairs() as $slug => $pair ) {
+		add_rewrite_rule(
+			'^' . PATH . '/' . preg_quote( $slug, '#' ) . '/?$',
+			'index.php?' . QUERY_VAR . '=1&' . PAIR_VAR . '=' . rawurlencode( $slug ),
+			'top'
+		);
+	}
 }
 
 function maybe_flush(): void {
@@ -72,6 +88,7 @@ function maybe_flush(): void {
 function query_vars( array $vars ): array {
 	$vars[] = QUERY_VAR;
 	$vars[] = BUILD_VAR;
+	$vars[] = PAIR_VAR;
 	return $vars;
 }
 
@@ -81,6 +98,72 @@ function is_compare(): bool {
 
 function is_build(): bool {
 	return is_compare() && (bool) get_query_var( BUILD_VAR );
+}
+
+/* ------------------------------------------------------------------ pairs */
+
+/**
+ * The curated pair pages, keyed by slug.
+ *
+ * A pair page is the same comparison the hub renders, at an address a
+ * search engine can rank for a two-sided question: "yoga vs pilates" is
+ * asked 480 times a month in Australia and /compare/?with=yoga,pilates
+ * canonicals away to the hub, so nothing was ever competing for it.
+ *
+ * @return array<string, array>
+ */
+function pairs(): array {
+	static $cache = null;
+	if ( null !== $cache ) {
+		return $cache;
+	}
+
+	$cache = array();
+	foreach ( (array) ( registry()['pairs'] ?? array() ) as $row ) {
+		if ( ! is_array( $row ) ) {
+			continue;
+		}
+		$slug = sanitize_title( (string) ( $row['slug'] ?? '' ) );
+		$a    = by_id( (string) ( $row['a'] ?? '' ) );
+		$b    = by_id( (string) ( $row['b'] ?? '' ) );
+
+		/*
+		 * A pair naming an experience that has since been renamed or removed
+		 * is dropped rather than routed. The alternative is a live URL whose
+		 * table has one column, which reads as a fact about the modality.
+		 * Same reason picked() drops picks that span groups — and a pair that
+		 * spans groups is dropped here for exactly that reason too.
+		 */
+		if ( '' === $slug || ! $a || ! $b ) {
+			continue;
+		}
+		if ( (string) ( $a['group'] ?? '' ) !== (string) ( $b['group'] ?? '' ) ) {
+			continue;
+		}
+
+		$row['slug']  = $slug;
+		$cache[ $slug ] = $row;
+	}
+
+	return $cache;
+}
+
+/** The pair being viewed, if this request is a pair page. */
+function current_pair(): ?array {
+	if ( ! is_compare() ) {
+		return null;
+	}
+	$slug = sanitize_title( (string) get_query_var( PAIR_VAR ) );
+	return '' === $slug ? null : ( pairs()[ $slug ] ?? null );
+}
+
+function is_pair(): bool {
+	return null !== current_pair();
+}
+
+/** The canonical address of one pair page. */
+function pair_url( string $slug ): string {
+	return home_url( '/' . PATH . '/' . $slug . '/' );
 }
 
 function fix_query( \WP_Query $q ): void {
@@ -150,6 +233,7 @@ function registry(): array {
 		'attributes'  => is_array( $json['attributes'] ?? null ) ? $json['attributes'] : array(),
 		'groups'      => is_array( $json['groups'] ?? null ) ? $json['groups'] : array(),
 		'experiences' => is_array( $json['experiences'] ?? null ) ? $json['experiences'] : array(),
+		'pairs'       => is_array( $json['pairs'] ?? null ) ? $json['pairs'] : array(),
 	);
 	return $data;
 }
@@ -230,6 +314,19 @@ function group_of( array $picked ): string {
  * @return array<int, array>
  */
 function picked(): array {
+	/*
+	 * A pair page IS its pick. The two ids come from the registry, not the
+	 * query string, so ?with= cannot turn /compare/yoga-vs-pilates/ into a
+	 * comparison of something else while the H1, the title and the intro
+	 * all still say yoga and Pilates.
+	 */
+	$pair = current_pair();
+	if ( $pair ) {
+		$a = by_id( (string) $pair['a'] );
+		$b = by_id( (string) $pair['b'] );
+		return ( $a && $b ) ? array( $a, $b ) : array();
+	}
+
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
 	$raw = isset( $_GET['with'] ) && is_string( $_GET['with'] ) ? sanitize_text_field( wp_unslash( $_GET['with'] ) ) : '';
 	if ( '' === $raw ) {
@@ -935,6 +1032,7 @@ function build_matches( array $prefs, string $group = '' ): array {
 const PLACES_VAR = 'places';
 const SCOPE_VAR  = 'in';
 const BUILD_VAR  = 'oria_compare_build';
+const PAIR_VAR   = 'oria_compare_pair';
 
 /**
  * The sentinel for every empty cell. Never "No".
@@ -1469,7 +1567,44 @@ function url_for( array $ids ): string {
 	if ( count( $ids ) < MIN_PICK ) {
 		return home_url( '/' . PATH . '/' );
 	}
+
+	/*
+	 * Where a curated pair page exists for exactly this two, link to it
+	 * rather than to the query string. Every "Compare yoga with Pilates"
+	 * link the site already generates — category pages, the finder nudge,
+	 * the picker's own shortcut — then points at the indexable address
+	 * instead of one that canonicals away, which is both the better link
+	 * and the only thing stopping the pair pages being orphans.
+	 */
+	$slug = pair_for_ids( $ids );
+	if ( null !== $slug ) {
+		return pair_url( $slug );
+	}
+
 	return home_url( '/' . PATH . '/?with=' . implode( ',', array_map( 'rawurlencode', $ids ) ) );
+}
+
+/**
+ * The curated pair page matching exactly this set of ids, order-blind.
+ *
+ * Exactly: three ids are a different page from any pair, and returning a
+ * two-way page for a three-way pick would quietly drop a column.
+ */
+function pair_for_ids( array $ids ): ?string {
+	if ( 2 !== count( $ids ) ) {
+		return null;
+	}
+	$want = array_map( 'strval', $ids );
+	sort( $want );
+
+	foreach ( pairs() as $slug => $pair ) {
+		$have = array( (string) $pair['a'], (string) $pair['b'] );
+		sort( $have );
+		if ( $have === $want ) {
+			return $slug;
+		}
+	}
+	return null;
 }
 
 /**
@@ -1641,12 +1776,17 @@ function prompt_for_terms( array $terms ): ?array {
  * @return list<array{loc: string}>
  */
 function sitemap_entries(): array {
-	// One address today. The pair pages join this list, not the query
-	// strings — those canonical to the hub and must never be listed.
-	return array(
+	// The hub, the builder and the curated pair pages — every address the
+	// engine actually answers on its own canonical. The query strings are
+	// never listed: they canonical to the hub.
+	$out = array(
 		array( 'loc' => home_url( '/' . PATH . '/' ) ),
 		array( 'loc' => home_url( '/' . PATH . '/build/' ) ),
 	);
+	foreach ( pairs() as $slug => $pair ) {
+		$out[] = array( 'loc' => pair_url( $slug ) );
+	}
+	return $out;
 }
 
 function register_sitemap(): void {
@@ -1694,6 +1834,11 @@ function heading(): string {
 	if ( is_build() ) {
 		return __( 'Build your session', 'oria' );
 	}
+	$pair = current_pair();
+	if ( $pair ) {
+		/* translators: %s: the pair heading, e.g. "Yoga vs Pilates" */
+		return sprintf( __( '%s in Perth', 'oria' ), (string) $pair['h1'] );
+	}
 	$places = places();
 	if ( $places ) {
 		return sprintf(
@@ -1736,6 +1881,10 @@ function description( $desc ) {
 	if ( is_build() ) {
 		return __( 'Say what you want a session to be like — how hard, how quiet, how guided, how social — and see which Perth wellness practices sit closest. Descriptions of the room, never promises about you.', 'oria' );
 	}
+	$pair = current_pair();
+	if ( $pair && '' !== (string) ( $pair['blurb'] ?? '' ) ) {
+		return (string) $pair['blurb'];
+	}
 	$g = group( current_group() );
 	if ( $g && '' !== (string) ( $g['blurb'] ?? '' ) ) {
 		return (string) $g['blurb'];
@@ -1756,9 +1905,11 @@ function canonical( $url ) {
 	if ( ! is_compare() ) {
 		return $url;
 	}
-	// The builder is its own page; only the ?with= and ?places= states of
-	// /compare/ fold back into it.
-	return is_build()
-		? home_url( '/' . PATH . '/build/' )
-		: home_url( '/' . PATH . '/' );
+	// The builder and each pair page are their own addresses; only the
+	// ?with= and ?places= states of /compare/ fold back into the hub.
+	if ( is_build() ) {
+		return home_url( '/' . PATH . '/build/' );
+	}
+	$pair = current_pair();
+	return $pair ? pair_url( (string) $pair['slug'] ) : home_url( '/' . PATH . '/' );
 }

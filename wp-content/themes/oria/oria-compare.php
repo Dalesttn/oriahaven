@@ -19,6 +19,7 @@ use function Oria\Core\Compare\summary;
 get_header();
 
 $oria_build  = \Oria\Core\Compare\is_build();
+$oria_pair   = \Oria\Core\Compare\current_pair();
 $oria_places = \Oria\Core\Compare\places();
 $oria_scope  = \Oria\Core\Compare\place_scope();
 $oria_group  = current_group();
@@ -45,7 +46,9 @@ $oria_dots = static function ( int $n ): string {
 		<h1 class="h1 pagehead__title"><?php echo esc_html( \Oria\Core\Compare\heading() ); ?></h1>
 		<p class="lede">
 			<?php
-			if ( $oria_places || $oria_scope ) {
+			if ( $oria_pair ) {
+				echo esc_html( (string) ( $oria_pair['blurb'] ?? '' ) );
+			} elseif ( $oria_places || $oria_scope ) {
 				esc_html_e( 'The details we hold on each, side by side. Nothing here is scored or ranked, and a blank means nobody has told us — not that the answer is no.', 'oria' );
 			} elseif ( $oria_ginfo ) {
 				echo esc_html( (string) $oria_ginfo['blurb'] );
@@ -56,6 +59,25 @@ $oria_dots = static function ( int $n ): string {
 		</p>
 	</div>
 </section>
+
+<?php /* ================================ pair page: the editorial answer === */ ?>
+<?php if ( $oria_pair && ! empty( $oria_pair['intro'] ) ) : ?>
+	<?php
+	/*
+	 * The prose sits above the table deliberately. Somebody who searched
+	 * "yoga vs pilates" wants the difference in a sentence before they want
+	 * eleven rows of it, and a page that opens on a table answers the
+	 * narrower question first.
+	 */
+	?>
+	<section class="wrap section section--top-flush">
+		<div class="cmp__intro">
+			<?php foreach ( (array) $oria_pair['intro'] as $oria_para ) : ?>
+				<p><?php echo esc_html( (string) $oria_para ); ?></p>
+			<?php endforeach; ?>
+		</div>
+	</section>
+<?php endif; ?>
 
 <?php /* ============================ build your session ============ */ ?>
 <?php if ( $oria_build ) : ?>
@@ -189,7 +211,14 @@ $oria_dots = static function ( int $n ): string {
 	</section>
 <?php endif; ?>
 
-<?php if ( ! $oria_build && ! $oria_places && ! $oria_scope ) : ?>
+<?php
+/*
+ * No picker on a pair page. The page exists to answer one question, and a
+ * grid of checkboxes above the answer invites the visitor to undo it. The
+ * way out is the signpost under the table instead.
+ */
+?>
+<?php if ( ! $oria_build && ! $oria_pair && ! $oria_places && ! $oria_scope ) : ?>
 <section class="wrap section section--top-flush">
 	<form class="cmp__picker" method="get" action="<?php echo esc_url( home_url( '/compare/' ) ); ?>" aria-label="<?php esc_attr_e( 'Choose experiences to compare', 'oria' ); ?>">
 		<?php // The ids travel as one comma list, assembled from the checkboxes on submit. ?>
@@ -249,6 +278,31 @@ $oria_dots = static function ( int $n ): string {
 				</a>
 			<?php endforeach; ?>
 		<?php endif; ?>
+
+		<?php
+		/*
+		 * The head-to-heads that belong to whatever is on screen: the group's
+		 * own pairs on a group view, all of them on the hub. Without this the
+		 * pair pages are reachable only from each other, which is no way for
+		 * a crawler — or a reader — to find them.
+		 */
+		?>
+		<?php foreach ( \Oria\Core\Compare\pairs() as $oria_pslug => $oria_p ) : ?>
+			<?php
+			$oria_pa    = \Oria\Core\Compare\by_id( (string) $oria_p['a'] );
+			$oria_pgrp  = (string) ( $oria_pa['group'] ?? '' );
+			if ( '' !== $oria_group && $oria_pgrp !== $oria_group ) {
+				continue;
+			}
+			?>
+			<a href="<?php echo esc_url( \Oria\Core\Compare\pair_url( $oria_pslug ) ); ?>" data-oria-event="compare_pair">
+				<?php
+				/* translators: %s: the pair, e.g. "Reformer vs Mat Pilates" */
+				printf( esc_html__( 'Read %s', 'oria' ), esc_html( (string) $oria_p['h1'] ) );
+				?>
+				<span aria-hidden="true">&rarr;</span>
+			</a>
+		<?php endforeach; ?>
 	</div>
 
 	<?php
@@ -737,6 +791,39 @@ $oria_dots = static function ( int $n ): string {
 				endforeach;
 				wp_reset_postdata();
 				?>
+			</div>
+		</section>
+	<?php endif; ?>
+
+	<?php /* ------------------------- pair page: the way back out */ ?>
+	<?php if ( $oria_pair ) : ?>
+		<?php
+		$oria_others = array();
+		foreach ( \Oria\Core\Compare\pairs() as $oria_pslug => $oria_p ) {
+			if ( $oria_pslug !== (string) $oria_pair['slug'] ) {
+				$oria_others[ $oria_pslug ] = (string) $oria_p['h1'];
+			}
+		}
+		?>
+		<section class="wrap section">
+			<h2 class="h3 cmp__h"><?php esc_html_e( 'Compare something else', 'oria' ); ?></h2>
+			<div class="cmp__switch">
+				<?php foreach ( $oria_others as $oria_pslug => $oria_ph1 ) : ?>
+					<a href="<?php echo esc_url( \Oria\Core\Compare\pair_url( $oria_pslug ) ); ?>">
+						<?php echo esc_html( $oria_ph1 ); ?>
+						<span aria-hidden="true">&rarr;</span>
+					</a>
+				<?php endforeach; ?>
+				<?php if ( '' !== $oria_g ) : ?>
+					<a href="<?php echo esc_url( add_query_arg( 'group', $oria_g, home_url( '/compare/' ) ) ); ?>">
+						<?php esc_html_e( 'See the whole group side by side', 'oria' ); ?>
+						<span aria-hidden="true">&rarr;</span>
+					</a>
+				<?php endif; ?>
+				<a href="<?php echo esc_url( home_url( '/compare/' ) ); ?>">
+					<?php esc_html_e( 'Build your own comparison', 'oria' ); ?>
+					<span aria-hidden="true">&rarr;</span>
+				</a>
 			</div>
 		</section>
 	<?php endif; ?>
