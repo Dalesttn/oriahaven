@@ -128,6 +128,38 @@
       },
       "kind": "service",
       "note": "Lying down, voice-led, start to finish"
+    },
+    "boxing": {
+      "label": "Boxing",
+      "filter": {
+        "svc": "boxing"
+      },
+      "kind": "service",
+      "note": "Bag and pad work, contact optional"
+    },
+    "clinical-pilates": {
+      "label": "Clinical Pilates",
+      "filter": {
+        "svc": "clinical-pilates"
+      },
+      "kind": "service",
+      "note": "Assessed first, then a program written for you"
+    },
+    "qigong": {
+      "label": "Qigong",
+      "filter": {
+        "svc": "qigong"
+      },
+      "kind": "service",
+      "note": "Slow standing movement, timed to the breath"
+    },
+    "group": {
+      "label": "Group fitness",
+      "filter": {
+        "svc": "group-fitness"
+      },
+      "kind": "service",
+      "note": "Coached in a group, at a fixed time"
     }
   },
   "pages": [
@@ -324,7 +356,7 @@
     {
       "practice": "fitness",
       "intent": "reformer",
-      "live": false,
+      "live": true,
       "frame": {
         "h1": "Reformer Pilates in Perth",
         "title": "Reformer Pilates in Perth: studios and how classes work | OriaHaven",
@@ -336,6 +368,10 @@
         ],
         "faq": [
           {
+            "q": "What is reformer Pilates?",
+            "a": "Pilates done on a reformer — a sliding carriage loaded with springs, with a footbar and straps. The springs can make an exercise harder or easier than the floor version, which is why the machine is not simply the advanced option."
+          },
+          {
             "q": "How many Perth studios run reformer Pilates?",
             "a": "{count} of the {total} fitness and movement listings in the directory publish reformer classes. The count is live."
           },
@@ -346,6 +382,10 @@
           {
             "q": "Will my health fund rebate reformer classes?",
             "a": "Group reformer classes are not rebated as a natural therapy since 2019. Clinical Pilates delivered by a physiotherapist as physiotherapy can be — ask which you are booking."
+          },
+          {
+            "q": "What happens in a reformer class?",
+            "a": "Six to twelve people, one bed each, working through a sequence the instructor calls while adjusting springs between exercises. Forty-five to fifty minutes, and grip socks are required at most studios."
           }
         ]
       }
@@ -353,7 +393,7 @@
     {
       "practice": "fitness",
       "intent": "mat",
-      "live": false,
+      "live": true,
       "frame": {
         "h1": "Mat Pilates in Perth",
         "title": "Mat Pilates in Perth | OriaHaven",
@@ -365,6 +405,10 @@
         ],
         "faq": [
           {
+            "q": "What is mat Pilates?",
+            "a": "Pilates done on the floor using your own bodyweight, sometimes with a ring, a band or a small ball. No machine, more people in the room, and nothing to learn before your first class."
+          },
+          {
             "q": "How many Perth studios run mat Pilates?",
             "a": "{count} of the {total} fitness and movement listings in the directory publish mat classes. The count is live."
           },
@@ -375,6 +419,10 @@
           {
             "q": "Do I need to book?",
             "a": "Studios generally run bookings; community-hall and gym classes are often walk-in. The listing says which where we know."
+          },
+          {
+            "q": "What happens in a mat class?",
+            "a": "A sequence of controlled, repeated exercises on the floor, counted by the instructor, usually forty-five to sixty minutes. Props are handed out as needed and you can walk into a general class without an intro."
           }
         ]
       }
@@ -382,7 +430,7 @@
     {
       "practice": "fitness",
       "intent": "personal-training",
-      "live": false,
+      "live": true,
       "frame": {
         "h1": "Personal training in Perth",
         "title": "Personal training in Perth: one-to-one and small-group trainers | OriaHaven",
@@ -404,6 +452,10 @@
           {
             "q": "Where do sessions happen?",
             "a": "Studios, gym floors, parks and sometimes your home — trainers list which, and many offer more than one."
+          },
+          {
+            "q": "What happens in a first session?",
+            "a": "Most trainers use it to ask what you want and to watch how you move before writing anything — so expect questions and some light work rather than a hard session. Where a trainer charges differently for it, the listing says so."
           }
         ]
       }
@@ -614,6 +666,146 @@
           {
             "q": "How long is a yoga nidra session?",
             "a": "Usually thirty to sixty minutes, which is shorter than a general class. Sessions paired with a sound bath run longer, and the studio's timetable says which it is."
+          }
+        ]
+      }
+    },
+    {
+      "practice": "fitness",
+      "intent": "boxing",
+      "live": true,
+      "frame": {
+        "h1": "Boxing in Perth",
+        "title": "Boxing gyms in Perth: beginners, non-contact and sparring | OriaHaven",
+        "description": "Perth gyms teaching boxing, from non-contact technique classes to sparring you opt into. Counted live from the directory.",
+        "opener": "Boxing in Perth splits along one line, and it is the line worth asking about before you book: whether anybody hits you. Most gyms teach the craft on bags and pads with no contact at all, and run sparring as a separate thing you choose to join.",
+        "worth_knowing": [
+          "A beginners' class is usually stance, footwork and the basic punches on a bag or with a coach holding pads. Gyms that run partner drills commonly rule out contact to the head in them, and say so on the timetable. Sparring, where it exists, tends to be invitation-only or a separate club within the gym.",
+          "You need hand wraps and gloves. Most gyms lend gloves for a first session and sell wraps at the desk, so the first class costs the class fee and nothing else. Sessions usually run forty to sixty minutes."
+        ],
+        "faq": [
+          {
+            "q": "What is a boxing class?",
+            "a": "Technique taught on bags and focus pads — stance, footwork, and the punches — usually in a group with a coach circulating. In most Perth gyms it involves no contact with another person at all."
+          },
+          {
+            "q": "How many Perth gyms teach boxing?",
+            "a": "{count} of the {total} fitness listings in the directory publish boxing classes. The count is live and changes as listings are checked."
+          },
+          {
+            "q": "Will I have to spar?",
+            "a": "Not unless you choose to. Gyms that offer sparring run it as its own session, often by invitation, and it is normal to train for a long time without ever doing it. If a gym does not make that clear on its timetable, it is a fair question at the desk."
+          },
+          {
+            "q": "What do I need for a first class?",
+            "a": "Hand wraps, and gloves you can usually borrow. Most gyms lend a pair for a first session; wraps are a few dollars at the desk."
+          },
+          {
+            "q": "What happens in a boxing class?",
+            "a": "A warm-up, then rounds — typically three minutes on, one off — rotating between bags, pads and conditioning, with the coach correcting technique as you go. Forty to sixty minutes is the common length."
+          }
+        ]
+      }
+    },
+    {
+      "practice": "fitness",
+      "intent": "clinical-pilates",
+      "live": true,
+      "frame": {
+        "h1": "Clinical Pilates in Perth",
+        "title": "Clinical Pilates in Perth: physiotherapist-led studios | OriaHaven",
+        "description": "Perth practices running clinical Pilates — an assessment first, then small sessions delivered by a physiotherapist. Counted live from the directory.",
+        "opener": "Clinical Pilates is Pilates delivered inside a physiotherapy practice. What separates it from a studio class is the order of events: an assessment comes first, the program is written from it, and the class sizes are small enough that someone is watching you the whole time.",
+        "worth_knowing": [
+          "Expect the first appointment to be one-to-one rather than a class. Practices then run groups of three or four, sometimes one-to-one, typically forty-five to sixty minutes, using reformers, a trapeze table or a mat depending on what the practitioner picks.",
+          "It usually costs more than a studio reformer class and is often claimable through private health where a physiotherapist delivers it. Whether yours rebates it depends on your fund, your level of cover and the practitioner's registration — confirm all three before you assume it."
+        ],
+        "faq": [
+          {
+            "q": "What is clinical Pilates?",
+            "a": "Pilates prescribed and supervised by a physiotherapist, following an individual assessment, in one-to-one or very small group sessions. The equipment is the same as a studio's; what differs is who runs it and how the program is arrived at."
+          },
+          {
+            "q": "How many Perth practices offer clinical Pilates?",
+            "a": "{count} of the {total} fitness listings in the directory publish clinical Pilates. The count is live and only includes practices that say so themselves."
+          },
+          {
+            "q": "What is the difference from reformer Pilates?",
+            "a": "Who delivers it and how you get in. A reformer class is booked off a timetable and taught to the room; clinical Pilates starts with an assessment and the session is built from it. Both may use the same reformer."
+          },
+          {
+            "q": "Can I claim it on private health?",
+            "a": "Often, where a physiotherapist delivers it — but it depends on your fund, your level of extras cover and the practitioner's registration. Ask the practice and your fund before booking rather than after."
+          },
+          {
+            "q": "What happens in a clinical Pilates session?",
+            "a": "The first appointment is an assessment. After that, a set of exercises chosen for you, on a reformer, trapeze table or mat, with the practitioner adjusting as you go. Forty-five to sixty minutes is usual, and grip socks are generally required."
+          }
+        ]
+      }
+    },
+    {
+      "practice": "fitness",
+      "intent": "qigong",
+      "live": true,
+      "frame": {
+        "h1": "Qigong in Perth",
+        "title": "Qigong classes in Perth: where to practise | OriaHaven",
+        "description": "Perth teachers and schools running qigong — slow standing movement timed to the breath. Counted live from the directory.",
+        "opener": "Qigong is slow, mostly upright, and repetitive by design. Sets of simple movements are timed to the breath and repeated, which makes it one of the least demanding things on a movement timetable and one of the easiest to start late.",
+        "worth_knowing": [
+          "In Perth it is most often taught alongside tai chi or kung fu rather than on its own, so the school's name may not mention it even when the class runs weekly. Where a listing names qigong, the school publishes it as its own class rather than as a warm-up.",
+          "Classes are frequently held in halls, community centres and parks rather than studios, and several run in terms that follow the school calendar. Little equipment is involved: flat shoes or bare feet and clothes you can move in."
+        ],
+        "faq": [
+          {
+            "q": "What is qigong?",
+            "a": "A Chinese movement practice of slow, repeated sets timed to the breath, usually done standing. It shares its roots with tai chi; qigong tends to repeat short sequences where tai chi works through a longer form."
+          },
+          {
+            "q": "How many Perth schools teach qigong?",
+            "a": "{count} of the {total} fitness listings in the directory publish qigong classes. The count is live."
+          },
+          {
+            "q": "What is the difference between qigong and tai chi?",
+            "a": "Length and structure. Qigong repeats short sets of movements; tai chi learns a long sequence of postures in a fixed order. Most Perth schools teach both, often in the same session."
+          },
+          {
+            "q": "Do I need to be fit or flexible to start?",
+            "a": "Schools generally list qigong as suitable for all levels, and much of it is done standing with small movements. Several Perth classes are run for older adults specifically."
+          }
+        ]
+      }
+    },
+    {
+      "practice": "fitness",
+      "intent": "group",
+      "live": true,
+      "frame": {
+        "h1": "Group fitness classes in Perth",
+        "title": "Group fitness classes in Perth: coached, timetabled sessions | OriaHaven",
+        "description": "Perth studios running coached group fitness — a set time, a coach in the room, and a cap on numbers. Counted live from the directory.",
+        "opener": "Group fitness is the middle ground between training alone and paying for a trainer: a coach writes the session and watches the room, but the time is fixed and you share it. What varies most between Perth studios is the cap on numbers.",
+        "worth_knowing": [
+          "The cap is the thing to ask about. A studio running groups of six is selling something much closer to personal training than one running thirty, and the price usually reflects it. Where a studio publishes its cap we record it on the listing.",
+          "Most sessions run forty-five to sixty minutes and are sold as a pass or a membership rather than casually, though nearly all studios will take a casual booking at a higher rate for a first visit."
+        ],
+        "faq": [
+          {
+            "q": "What is a group fitness class?",
+            "a": "A coached session run to a timetable, with the workout written by the coach rather than by you, and numbers capped by the studio. It sits between training on your own and one-to-one personal training."
+          },
+          {
+            "q": "How many Perth studios run group fitness?",
+            "a": "{count} of the {total} fitness listings in the directory publish group fitness. The count is live."
+          },
+          {
+            "q": "How is it different from personal training?",
+            "a": "You share the time and the coach's attention, and the session is written for the group rather than for you. It is correspondingly cheaper, and the smaller the cap the closer the two get."
+          },
+          {
+            "q": "How big are the groups?",
+            "a": "It ranges widely in Perth — some studios cap at six, others run much larger rooms. Where the studio publishes a number the listing records it; where it does not, it is worth asking before buying a pass."
           }
         ]
       }

@@ -1,0 +1,65 @@
+{
+  "_note": "Batch 29: 2 REAL Perth aquatic centres researched from public information on 26 Aug 2026, closing the last genuine inventory gap in Fitness & Movement. Aqua fitness sat at 1 listing (Beatty Park) against 110 searches a month for 'aqua aerobics perth' at difficulty 20 — the only term in the category with demand and no inventory behind it. Everything else in fitness already clears the gate. Three candidates were rejected: Whitlam Leisure Centre is in Liverpool NSW and Hawthorn Aquatic is in Melbourne (both surfaced by a Perth-scoped search), and Bold Park Aquatic Centre serves a 380-byte shell that publishes nothing readable. Neither council site publishes a machine-readable street number for its leisure centres, so Cannington is recorded at suburb level rather than with an invented address. Both are filed under fitness so the /practices/fitness/ facets count them, and services[] uses the canonical names from data/services.json — 'Aqua fitness' rather than the class brand names each centre uses.",
+  "categories": [
+    { "id": "fitness", "name": "Fitness & Movement" },
+    { "id": "seniors", "name": "Senior Wellness" }
+  ],
+  "regions": [
+    { "id": "west", "name": "Western Suburbs", "suburbs": ["Mount Claremont"] },
+    { "id": "southeast", "name": "South East", "suburbs": ["Cannington"] }
+  ],
+  "listings": [
+    {
+      "id": "perth-hpc-mount-claremont",
+      "name": "Perth HPC",
+      "cat": "fitness",
+      "also": [],
+      "suburb": "Mount Claremont",
+      "region": "west",
+      "address": "Stephenson Avenue, Mount Claremont WA 6010",
+      "blurb": "The state aquatic centre on Stephenson Avenue, still widely known as HBF Stadium, running deep-water aqua classes alongside its pools and gym floor. Deep water means the feet do not touch the bottom and buoyancy equipment holds you up, which the centre notes is open to people who are not confident swimmers. Classes come with gym membership or can be paid for singly.",
+      "services": [
+        "Aqua fitness",
+        "Group fitness"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-hall",
+      "phone": "",
+      "email": "",
+      "web": "https://www.perthhpc.com.au",
+      "next": "",
+      "_source": "perthhpc.com.au/swim/adults/aqua-aerobics — the Stephenson Avenue, Mount Claremont WA 6010 address, the deep-water aqua classes, the group fitness timetable, the statement that classes suit people 'regardless of age or fitness levels' and that participants who are 'not confident in your ability to swim' can still take part, and that classes are included in gym memberships or paid as you go. No phone, email or rates published on that page. The centre's own wording about who may benefit is deliberately not repeated here."
+    },
+    {
+      "id": "cannington-leisureplex",
+      "name": "Cannington Leisureplex",
+      "cat": "fitness",
+      "also": ["seniors"],
+      "suburb": "Cannington",
+      "region": "southeast",
+      "address": "Cannington WA 6107",
+      "blurb": "A City of Canning centre running three distinct aqua classes rather than one generic timetable: Aqua Fit as a cardio and conditioning session for sixteen and over, Aqua Stick using rubber bands on a bar for added resistance, and Revitalise Aqua, a low-impact class the city describes as designed for people over fifty. A second pool runs the same programme at Riverton. Bookings open twenty-two hours before each class.",
+      "services": [
+        "Aqua fitness",
+        "Senior fitness"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-hall",
+      "phone": "1300 422 664",
+      "email": "",
+      "web": "https://www.canning.wa.gov.au/recreation-and-community/leisureplexes/swimming-and-aquatics/aqua-fitness-classes/",
+      "next": "",
+      "_source": "canning.wa.gov.au/recreation-and-community/leisureplexes/swimming-and-aquatics/aqua-fitness-classes — the three class names and their descriptions, the 16+ age note on Aqua Fit, the over-50s framing of Revitalise Aqua, the two Leisureplex locations (Cannington and Riverton) and the 22-hour booking window are published there, with 1300 422 664 as the City of Canning contact number. The council does not publish a street number for the Leisureplex on any page reached, so the address is recorded at suburb level rather than guessed. No email or rates published."
+    }
+  ]
+}
