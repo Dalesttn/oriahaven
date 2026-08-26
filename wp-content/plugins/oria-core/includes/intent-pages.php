@@ -273,6 +273,61 @@ function facts( array $page ): array {
 }
 
 /**
+ * "Who it suits", answered by counting rather than by asserting.
+ *
+ * The question every style page invites — who is this for? — is one the
+ * directory cannot answer about a reader, and should not try to. What it
+ * can say is how many of the businesses on this page have published
+ * something themselves: a beginners' class, a seniors' programme, a
+ * prenatal course. That is a count with evidence behind it rather than a
+ * claim about anybody's body.
+ *
+ * Returns the best-covered audience for this set, or null when nobody has
+ * checked. The page's own audience is skipped — telling a reader that all
+ * 25 listings on the beginners page suit beginners says nothing.
+ *
+ * @param array $page  The page definition.
+ * @param array $facts The facts() result for it.
+ * @return array{slug: string, name: string, yes: int, of: int}|null
+ */
+function audience_note( array $page, array $facts ): ?array {
+	if ( ! function_exists( '\Oria\Core\Audience\vocabulary' ) ) {
+		return null;
+	}
+	$ids = (array) ( $facts['ids'] ?? array() );
+	if ( count( $ids ) < 2 ) {
+		return null;
+	}
+
+	$own  = (string) ( $page['filter']['aud'] ?? '' );
+	$best = null;
+
+	foreach ( Audience\vocabulary() as $slug => $row ) {
+		if ( $slug === $own ) {
+			continue;
+		}
+		$yes = 0;
+		foreach ( $ids as $id ) {
+			if ( has_term( $slug, Audience\TAXONOMY, (int) $id ) ) {
+				$yes++;
+			}
+		}
+		// Two is a pair, not a pattern; and a bare majority of a small set
+		// is not worth a sentence either.
+		if ( $yes >= 3 && ( null === $best || $yes > $best['yes'] ) ) {
+			$best = array(
+				'slug' => $slug,
+				'name' => (string) $row['name'],
+				'yes'  => $yes,
+				'of'   => count( $ids ),
+			);
+		}
+	}
+
+	return $best;
+}
+
+/**
  * A local preview switch: the option `oria_intent_preview` set to 'all', or
  * to a list of "practice/intent" keys, treats those pages as live on this
  * installation only. It is a database option, never a file, so it cannot

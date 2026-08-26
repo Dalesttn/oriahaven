@@ -1,0 +1,140 @@
+{
+  "_note": "Batch 28: 3 REAL Perth yoga studios researched from public information on 26 Aug 2026, targeting the four style pages sitting at exactly 3 listings — ashtanga, restorative, pregnancy and yoga nidra. Deliberately small. Yoga nidra needed no recruitment at all: three studios already described it as 'X with yoga nidra', which the service resolver could not split, and adding 'with' as a separator takes that page from 3 to 5. Five candidates were rejected during research and the reasons matter: SOUK Studio is in New York and Ashtanga Yoga Shala is in Brisbane (both surfaced by a Perth search); Perth Ashtanga Yoga is Sarcha Thurston teaching at Yogahub Perth, which is already listed, so it would double-count the same classes at the same venue; Momentum Coaching & Yoga no longer publishes its pregnancy course, address or phone on its own site; and Yoga Senses has no website of its own, only third-party directory entries. Perth genuinely has few dedicated ashtanga schools and few pregnancy-only yoga studios — that is a finding about the market, not a gap in the search. Every string in services[] is the canonical name from data/services.json, and each studio is filed in the yoga category so the /practices/yoga/ facets count it.",
+  "categories": [
+    {
+      "id": "yoga",
+      "name": "Yoga"
+    },
+    {
+      "id": "family",
+      "name": "Women's, Men's & Family Wellness"
+    },
+    {
+      "id": "sound",
+      "name": "Sound & float"
+    },
+    {
+      "id": "recovery",
+      "name": "Sleep & Recovery"
+    },
+    {
+      "id": "meditation",
+      "name": "Meditation classes"
+    }
+  ],
+  "regions": [
+    {
+      "id": "swan",
+      "name": "Swan Valley & East",
+      "suburbs": [
+        "Bayswater"
+      ]
+    },
+    {
+      "id": "west",
+      "name": "Western Suburbs",
+      "suburbs": [
+        "Cottesloe"
+      ]
+    },
+    {
+      "id": "freo",
+      "name": "Fremantle & South",
+      "suburbs": [
+        "Beaconsfield"
+      ]
+    }
+  ],
+  "listings": [
+    {
+      "id": "open-house-yoga-bayswater",
+      "name": "Open House Yoga",
+      "cat": "yoga",
+      "also": [
+        "meditation"
+      ],
+      "suburb": "Bayswater",
+      "region": "swan",
+      "address": "83 Milne Street, Bayswater WA 6053",
+      "blurb": "A Milne Street studio that runs a Mysore room alongside a general timetable, which is less common in Perth than the number of yoga studios would suggest. Ashtanga Led covers the half primary series in seventy-five minutes and the studio asks you to do its Ashtanga Foundations course first. The rest of the week is softer — Mellow, Linger Longer, Dynamic Flow, and Yin by candlelight.",
+      "services": [
+        "Ashtanga yoga",
+        "Vinyasa yoga",
+        "Yin yoga",
+        "Meditation"
+      ],
+      "priceFrom": null,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-studio",
+      "phone": "",
+      "email": "",
+      "web": "https://www.openhouse-yoga.com",
+      "next": "",
+      "_source": "openhouse-yoga.com/pages/classes for the class list, the seventy-five-minute Ashtanga Led half primary series, the Ashtanga Foundations prerequisite and the sixty-minute general classes; openhouse-yoga.com homepage for the 83 Milne Street, Bayswater address. No phone, email or prices are published anywhere on the site, so those fields are empty and the band is indicative only. The site also refers to a Maylands shala; only the published Bayswater address is recorded here."
+    },
+    {
+      "id": "horizon-yoga-cottesloe",
+      "name": "Horizon Yoga",
+      "cat": "yoga",
+      "also": [
+        "sound"
+      ],
+      "suburb": "Cottesloe",
+      "region": "west",
+      "address": "2A Railway Street, Cottesloe WA 6011",
+      "blurb": "Two rooms on the coast — Railway Street in Cottesloe and a second inside the Swanbourne Surf Club — running more than thirty classes a week between them. The timetable is unusually wide for a studio this size: vinyasa and power vinyasa at one end, hatha flow and slow flow in the middle, and yin restorative, yin and yang, and myofascial release at the other. Sound healing runs as its own session and paired with yin.",
+      "services": [
+        "Vinyasa yoga",
+        "Hatha yoga",
+        "Yin yoga",
+        "Restorative yoga",
+        "Sound healing"
+      ],
+      "priceFrom": null,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-studio",
+      "phone": "",
+      "email": "",
+      "web": "https://www.horizonyoga.com.au",
+      "next": "",
+      "_source": "horizonyoga.com.au/classes for the class styles (vinyasa yoga, hatha flow, slow flow yoga, yin restorative, power vinyasa, yin and yang yoga, sound healing, yin sound healing, myofascial release & yin) and both addresses; the homepage for the thirty-classes-a-week figure and the $59 twenty-one-day intro offer. No phone or email published. priceFrom is left null because the $59 is an intro pass, not a standing rate."
+    },
+    {
+      "id": "small-blessings-yoga-beaconsfield",
+      "name": "Small Blessings Yoga",
+      "cat": "yoga",
+      "also": [
+        "family"
+      ],
+      "suburb": "Beaconsfield",
+      "region": "freo",
+      "address": "213A South Street, Beaconsfield WA 6162",
+      "blurb": "Jai Ram teaches pregnancy and postnatal yoga on South Street and very little else — a studio built around one stretch of life rather than a timetable that happens to include a prenatal slot. Courses run in ten-week cycles following school terms, with a six-week intensive inside them, and Mama Baba classes carry on afterwards with the baby in the room.",
+      "services": [
+        "Pregnancy yoga",
+        "Postnatal care",
+        "Yoga"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "0417 600 751",
+      "email": "jairam@smallblessingsyoga.com.au",
+      "web": "https://www.smallblessingsyoga.com.au",
+      "next": "",
+      "_source": "smallblessingsyoga.com.au/pregnancy-yoga — teacher name, the 213A South Street, Beaconsfield address, phone, email, the class list (Pregnancy Yoga, Mama Baba postnatal yoga, Yoga for Women, Conscious Pregnancy Training, one-on-one support) and the ten-week term cycle with a six-week intensive are all published there. No prices published, so priceFrom and priceBand are left empty."
+    }
+  ]
+}

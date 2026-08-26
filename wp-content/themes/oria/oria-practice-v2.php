@@ -194,6 +194,38 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 				<?php if ( ! empty( $oria_frame['opener'] ) ) : ?>
 					<p class="hint" style="margin-top:.6rem;max-width:62ch"><?php echo esc_html( $oria_fill( (string) $oria_frame['opener'] ) ); ?></p>
 				<?php endif; ?>
+				<?php
+				/*
+				 * "Who it suits" — answered by counting what these businesses
+				 * publish, never by asserting anything about the reader. Absent
+				 * until somebody has actually checked, which is the point of it.
+				 */
+				$oria_aud = ( $oria_facet && function_exists( '\Oria\Core\IntentPages\audience_note' ) && ! empty( $oria_facet['page'] ) )
+					? \Oria\Core\IntentPages\audience_note(
+						$oria_facet['page'],
+						array( 'ids' => $oria_ids )
+					)
+					: null;
+				?>
+				<?php if ( $oria_aud ) : ?>
+					<p class="hint" style="margin-top:.6rem;max-width:62ch">
+						<?php
+						/*
+						 * Label first, because the audience names are noun
+						 * phrases — "Beginner friendly", "Step-free access",
+						 * "Drop-in welcome" — and none of them sits inside a
+						 * sentence without bending it.
+						 */
+						printf(
+							/* translators: 1: audience name e.g. "Beginner friendly", 2: how many say so, 3: how many on this page. */
+							esc_html__( '%1$s — %2$s of the %3$s here say so on their own website or timetable.', 'oria' ),
+							esc_html( (string) $oria_aud['name'] ),
+							esc_html( number_format_i18n( (int) $oria_aud['yes'] ) ),
+							esc_html( number_format_i18n( (int) $oria_aud['of'] ) )
+						);
+						?>
+					</p>
+				<?php endif; ?>
 			<?php elseif ( $oria_answer['sentences'] ) : ?>
 				<span class="micro"><?php esc_html_e( 'The short answer', 'oria' ); ?></span>
 				<p class="lede" style="margin-top:.5rem;max-width:62ch"><?php echo esc_html( implode( ' ', $oria_answer['sentences'] ) ); ?></p>

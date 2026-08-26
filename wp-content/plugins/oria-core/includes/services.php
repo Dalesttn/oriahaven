@@ -252,8 +252,15 @@ function resolve_all( string $phrase ): array {
 		return array( $trimmed );
 	}
 
+	/*
+	 * "with" joins two services as often as "and" does — "Yoga nidra with
+	 * sound healing", "Finnish sauna with aufguss rituals". It is safe here
+	 * only because the whole phrase is tried first: no registered name or
+	 * alias contains the word, so nothing that resolves today can be split
+	 * by it.
+	 */
 	$decoded = wp_specialchars_decode( $phrase, ENT_QUOTES );
-	$parts   = preg_split( '/\s*(?:&|\/|\+|,|\band\b)\s*/i', $decoded );
+	$parts   = preg_split( '/\s*(?:&|\/|\+|,|\band\b|\bwith\b)\s*/i', $decoded );
 
 	$out = array();
 	foreach ( (array) $parts as $part ) {

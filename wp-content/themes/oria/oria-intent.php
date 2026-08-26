@@ -71,6 +71,29 @@ $oria_filter_value = (string) ( $oria_page['filter'][ $oria_filter_key ] ?? '' )
 				);
 				?>
 			</p>
+			<?php
+			/*
+			 * Who it suits, as a count of what these businesses publish
+			 * rather than a claim about the reader. Absent until somebody
+			 * has actually checked, which is rather the point of it.
+			 */
+			$oria_aud = function_exists( '\Oria\Core\IntentPages\audience_note' )
+				? \Oria\Core\IntentPages\audience_note( $oria_page, $oria_facts )
+				: null;
+			?>
+			<?php if ( $oria_aud ) : ?>
+				<p class="answer__also">
+					<?php
+					printf(
+						/* translators: 1: audience name e.g. "Beginner friendly", 2: how many say so, 3: how many on this page. */
+						esc_html__( '%1$s — %2$s of the %3$s here say so on their own website or timetable.', 'oria' ),
+						esc_html( (string) $oria_aud['name'] ),
+						esc_html( number_format_i18n( (int) $oria_aud['yes'] ) ),
+						esc_html( number_format_i18n( (int) $oria_aud['of'] ) )
+					);
+					?>
+				</p>
+			<?php endif; ?>
 		</div>
 	</div>
 

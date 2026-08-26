@@ -146,6 +146,10 @@
         ],
         "faq": [
           {
+            "q": "What counts as a beginners' yoga class?",
+            "a": "Two different things, and this page lists both. One is a course with an intake date that starts everyone together and assumes nothing; the other is a mixed-level class the studio states is suitable for people with no experience. The listing says which."
+          },
+          {
             "q": "How many Perth yoga studios run classes for beginners?",
             "a": "{count} of the {total} yoga listings in the directory publish a beginners' class, a course, or an all-levels welcome. The number is live and changes as listings are checked."
           },
@@ -174,6 +178,10 @@
           "Yin often shares a timetable with restorative and yoga nidra classes, and several Perth studios pair it with a sound bath on a Sunday evening. If the studio runs both, the listing usually says so."
         ],
         "faq": [
+          {
+            "q": "What is yin yoga?",
+            "a": "A slow style practised mostly on the floor, where a small number of supported postures are held for two to five minutes each rather than flowed through. Blocks and bolsters take much of the weight, and the room is usually quiet."
+          },
           {
             "q": "How many Perth studios run yin yoga?",
             "a": "{count} of the {total} yoga listings in the directory publish yin classes. The count is live."
@@ -204,6 +212,10 @@
         ],
         "faq": [
           {
+            "q": "What is an online yoga class?",
+            "a": "One of three things in Perth: a live stream that follows the studio's own timetable, a library of recordings you watch on your own clock, or a hybrid class taught to the room and the camera at once."
+          },
+          {
             "q": "How many Perth yoga studios offer online classes?",
             "a": "{count} of the {total} yoga listings in the directory offer online or hybrid sessions. The count is live."
           },
@@ -232,6 +244,10 @@
           "A heated timetable often includes one or two unheated or cooler classes a week — a Sunday community class, a beginners' hour. If the heat is the thing putting you off, look for those first."
         ],
         "faq": [
+          {
+            "q": "What is hot yoga?",
+            "a": "Yoga practised in a deliberately heated room. In Perth that covers a wide range — a warm slow flow around thirty degrees and a Bikram sequence near forty are both called hot, and the studio's timetable is where the actual temperature is published."
+          },
           {
             "q": "How many Perth studios run heated yoga?",
             "a": "{count} of the {total} yoga listings in the directory publish heated classes. The count is live and only includes studios that say so themselves."
@@ -436,6 +452,10 @@
         ],
         "faq": [
           {
+            "q": "What is vinyasa yoga?",
+            "a": "A flowing style where each posture is linked to an inhale or an exhale, so the class moves continuously rather than stopping between shapes. The sequence is built by the teacher and usually differs week to week."
+          },
+          {
             "q": "How many Perth studios run vinyasa classes?",
             "a": "{count} of the {total} yoga listings in the directory publish vinyasa on the timetable. The count is live and changes as listings are checked."
           },
@@ -446,6 +466,10 @@
           {
             "q": "Do I need experience for a vinyasa class?",
             "a": "For a general class it helps to have done a little, because the sequence moves without stopping to explain. Studios that run a slow flow or beginners class list it separately, and that is the easier way in."
+          },
+          {
+            "q": "What happens in a vinyasa class?",
+            "a": "A warm-up, then a continuously moving sequence timed to the breath, usually building to a peak and winding down into floor postures and a few minutes lying still at the end. Sixty minutes is the common length."
           }
         ]
       }
@@ -465,6 +489,10 @@
         ],
         "faq": [
           {
+            "q": "What is restorative yoga?",
+            "a": "A style built entirely around support. A handful of shapes are propped with bolsters, blankets and blocks so that almost no muscular effort is being made, and each is held for several minutes."
+          },
+          {
             "q": "How many Perth studios run restorative yoga?",
             "a": "{count} of the {total} yoga listings in the directory publish restorative classes. The count is live."
           },
@@ -475,6 +503,10 @@
           {
             "q": "Is restorative yoga suitable if I have never done yoga?",
             "a": "Studios generally list it as an all-levels class, and there is no sequence to learn. Tell the teacher before you start if anything needs adapting — the props are adjusted to you rather than the other way round."
+          },
+          {
+            "q": "What happens in a restorative class?",
+            "a": "The teacher sets up each shape with props, you settle into it, and you stay there for several minutes while very little is said. Expect four or five shapes across an hour, and to be repositioned rather than corrected."
           }
         ]
       }
@@ -494,6 +526,10 @@
         ],
         "faq": [
           {
+            "q": "What is ashtanga yoga?",
+            "a": "A set sequence of postures practised in the same order every time. It is taught either as a led class, where a teacher counts the room through together, or as Mysore, where each person works through the series at their own pace in a shared room."
+          },
+          {
             "q": "How many Perth studios teach ashtanga?",
             "a": "{count} of the {total} yoga listings in the directory publish ashtanga classes. The count is live."
           },
@@ -504,6 +540,10 @@
           {
             "q": "Is ashtanga suitable for beginners?",
             "a": "The led class is where beginners start, and studios that teach it generally say so on the timetable. The series is fixed, so the first few weeks are spent learning an order that then stops changing."
+          },
+          {
+            "q": "What happens in an ashtanga class?",
+            "a": "The same series, in the same order. A led class is counted through together and runs seventy-five to ninety minutes; a Mysore room has everyone at a different point in the sequence, with the teacher moving between people rather than teaching from the front."
           }
         ]
       }
@@ -523,6 +563,10 @@
         ],
         "faq": [
           {
+            "q": "What is pregnancy yoga?",
+            "a": "A class built around pregnancy rather than a general class with modifications offered. The room is not heated, props are used heavily, and what is taught shifts across the trimesters."
+          },
+          {
             "q": "How many Perth studios run pregnancy yoga?",
             "a": "{count} of the {total} yoga listings in the directory publish prenatal or pregnancy classes. The count is live and only includes studios that say so themselves."
           },
@@ -533,6 +577,10 @@
           {
             "q": "Are heated rooms used for pregnancy classes?",
             "a": "No. Studios run prenatal classes at room temperature, and a studio with a heated timetable will hold the pregnancy class somewhere else or at a different time."
+          },
+          {
+            "q": "What happens in a pregnancy yoga class?",
+            "a": "Standing and supported shapes, breathing, and time spent on positions used later in labour, in a group that is usually smaller than a general class. Teachers commonly ask how far along everyone is before starting and adjust from there."
           }
         ]
       }
@@ -551,6 +599,10 @@
           "It often shares a slot with a sound bath in Perth, and several studios run the two together on a Sunday evening. Where the listing says both, the session is usually longer than a nidra on its own."
         ],
         "faq": [
+          {
+            "q": "What is yoga nidra?",
+            "a": "A guided practice done lying down from start to finish, with no postures at all. The teacher speaks throughout and the participant stays still; sessions usually run thirty to sixty minutes."
+          },
           {
             "q": "How many Perth studios run yoga nidra?",
             "a": "{count} of the {total} yoga listings in the directory publish yoga nidra. The count is live."
