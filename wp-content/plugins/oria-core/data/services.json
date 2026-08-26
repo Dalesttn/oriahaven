@@ -81,7 +81,8 @@
         "bodywork"
       ],
       "aliases": [
-        "taiwanese massage"
+        "taiwanese massage",
+        "traditional thai massage"
       ]
     },
     {
@@ -633,6 +634,23 @@
       ]
     },
     {
+      "slug": "hot-yoga",
+      "name": "Hot yoga",
+      "categories": [
+        "yoga"
+      ],
+      "aliases": [
+        "bikram",
+        "bikram yoga",
+        "bikram hot yoga",
+        "heated yoga",
+        "hot vinyasa",
+        "hot vinyasa flow",
+        "heated vinyasa flow",
+        "hot flow"
+      ]
+    },
+    {
       "slug": "restorative-yoga",
       "name": "Restorative yoga",
       "categories": [
@@ -770,7 +788,8 @@
         "fitness"
       ],
       "aliases": [
-        "boxfit"
+        "boxfit",
+        "boxing all levels"
       ]
     },
     {
