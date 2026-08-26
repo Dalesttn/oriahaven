@@ -659,7 +659,9 @@
       "categories": [
         "yoga"
       ],
-      "aliases": []
+      "aliases": [
+        "restorative"
+      ]
     },
     {
       "slug": "pregnancy-yoga",
@@ -1579,6 +1581,30 @@
         "home care",
         "residential care wellbeing",
         "aged care activities"
+      ]
+    },
+    {
+      "slug": "yoga-nidra",
+      "name": "Yoga nidra",
+      "categories": [
+        "yoga",
+        "meditation"
+      ],
+      "aliases": [
+        "nidra",
+        "yogic sleep",
+        "deep restore"
+      ]
+    },
+    {
+      "slug": "ashtanga-yoga",
+      "name": "Ashtanga yoga",
+      "categories": [
+        "yoga"
+      ],
+      "aliases": [
+        "ashtanga",
+        "mysore"
       ]
     }
   ]

@@ -198,6 +198,77 @@ function resolve( string $phrase ): string {
 	return (string) ( $map[ $key ] ?? '' );
 }
 
+/**
+ * A folded phrase with trailing words that name no modality removed.
+ *
+ * "meditation courses" is the meditation service; "yin classes" is yin. The
+ * words come off one at a time and the first hit wins, so "sound bath
+ * sessions" reaches "sound bath" without also trying "sound".
+ */
+function resolve_trimmed( string $folded ): string {
+	static $tail = array( 'classes', 'class', 'sessions', 'session', 'courses', 'course' );
+
+	$map   = lookup();
+	$words = '' === $folded ? array() : explode( ' ', $folded );
+
+	while ( $words && in_array( end( $words ), $tail, true ) ) {
+		array_pop( $words );
+		$key = implode( ' ', $words );
+		if ( '' !== $key && isset( $map[ $key ] ) ) {
+			return (string) $map[ $key ];
+		}
+	}
+	return '';
+}
+
+/**
+ * Every service a phrase names, not just the one it matches whole.
+ *
+ * resolve() matches the entire folded phrase, which is right for "Pre &
+ * post-natal yoga" — one service whose own name contains a conjunction —
+ * and wrong for "Yin & vinyasa classes", which is two. Eleven studios
+ * described vinyasa this way and the vinyasa page still read two listings,
+ * because a phrase naming two things matched neither.
+ *
+ * The whole phrase is tried first and wins outright, so a registered name
+ * containing "and", "&" or a slash is never taken apart. Only when nothing
+ * matches whole is the phrase split, and each part must itself resolve —
+ * a fragment that means nothing contributes nothing.
+ *
+ * Splitting happens on the decoded phrase rather than the folded one:
+ * fold() turns "/" and "," into spaces, so "Yoga nidra / deep restore"
+ * would arrive here as a single unsplittable run of words.
+ *
+ * @return string[] Unique slugs, in the order found. Empty if none.
+ */
+function resolve_all( string $phrase ): array {
+	$whole = resolve( $phrase );
+	if ( '' !== $whole ) {
+		return array( $whole );
+	}
+
+	$trimmed = resolve_trimmed( fold( $phrase ) );
+	if ( '' !== $trimmed ) {
+		return array( $trimmed );
+	}
+
+	$decoded = wp_specialchars_decode( $phrase, ENT_QUOTES );
+	$parts   = preg_split( '/\s*(?:&|\/|\+|,|\band\b)\s*/i', $decoded );
+
+	$out = array();
+	foreach ( (array) $parts as $part ) {
+		$slug = resolve( (string) $part );
+		if ( '' === $slug ) {
+			$slug = resolve_trimmed( fold( (string) $part ) );
+		}
+		if ( '' !== $slug ) {
+			$out[ $slug ] = true;
+		}
+	}
+
+	return array_keys( $out );
+}
+
 /* -------------------------------------------------------------- installing */
 
 /**
@@ -274,9 +345,11 @@ function map_listings(): array {
 			if ( '' === $name ) {
 				continue;
 			}
-			$slug = resolve( $name );
-			if ( '' !== $slug ) {
-				$slugs[ $slug ] = true;
+			$found = resolve_all( $name );
+			if ( $found ) {
+				foreach ( $found as $slug ) {
+					$slugs[ $slug ] = true;
+				}
 			} else {
 				$unmatched[ $name ] = ( $unmatched[ $name ] ?? 0 ) + 1;
 			}
