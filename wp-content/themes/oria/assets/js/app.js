@@ -1836,12 +1836,58 @@
     });
 
     /* Profile views: one event per page, carrying the category, suburb
-       and plan so GA4 can answer "which categories convert?" */
-    if (window.ORIA_PROFILE) pushEvent("practice_view");
+       and plan so GA4 can answer "which categories convert?"
+
+       The same load also beacons the view to the site's own counter. That
+       used to be done server-side on the `wp` hook, but listing pages are
+       served from the page cache and a cached response never runs PHP, so
+       every visitor after the first went uncounted — in the one figure a
+       practitioner is shown to justify paying for the listing. A REST call
+       is never cached. The endpoint re-checks that this is not the owner
+       and not a crawler before it counts. */
+    if (window.ORIA_PROFILE) {
+      pushEvent("practice_view");
+
+      var pid = parseInt(window.ORIA_PROFILE.id, 10);
+      if (pid && window.ORIA_TRACK && navigator.sendBeacon) {
+        try {
+          navigator.sendBeacon(
+            ORIA_TRACK.url,
+            new Blob([JSON.stringify({ id: pid, type: "view" })], { type: "application/json" })
+          );
+        } catch (err) { /* counting must never break a page */ }
+      }
+    }
 
     /* Claim funnel. Started fires on the first real interaction with the
        form rather than on render, so a listing that merely displays the
        form doesn't report an intent nobody had. */
+    /* Three kinds of element carry data-oria-event, and they must not be
+       treated alike.
+
+       A form fires on first input, so a page that merely renders one does
+       not report an intent nobody had. A link or a button fires on CLICK —
+       these used to fire on render along with everything else, which meant
+       "category_compare" was pushed on every category page view whether or
+       not anyone pressed it, and any report built on it was counting
+       impressions while calling them clicks.
+
+       Anything else still fires on render, because a non-interactive
+       element carrying an event name is a state marker: claim_completed
+       exists on the page precisely because the claim completed.
+
+       Clicks are delegated so links drawn later are covered too, and each
+       carries its href and label — enough for GTM to break a single event
+       down by destination without a bespoke tag per link. */
+    document.addEventListener("click", function (e) {
+      var el = e.target.closest && e.target.closest("a[data-oria-event], button[data-oria-event]");
+      if (!el) return;
+      pushEvent(el.getAttribute("data-oria-event"), {
+        link_url: el.getAttribute("href") || "",
+        link_text: (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 100)
+      });
+    });
+
     $$("[data-oria-event]").forEach(function (el) {
       var name = el.getAttribute("data-oria-event");
       if (el.tagName === "FORM") {
@@ -1851,9 +1897,12 @@
           fired = true;
           pushEvent(name);
         });
-      } else {
-        pushEvent(name);
+        return;
       }
+      if (el.tagName === "A" || el.tagName === "BUTTON") {
+        return; // handled by the delegated click above
+      }
+      pushEvent(name);
     });
 
     /* Lead submissions round-trip through a redirect, so the completed

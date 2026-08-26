@@ -23,7 +23,6 @@ const KEEP_DAYS  = 90;
 const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq' );
 
 function bootstrap(): void {
-	add_action( 'wp', __NAMESPACE__ . '\count_view' );
 	add_action( 'rest_api_init', __NAMESPACE__ . '\routes' );
 	add_action( 'add_meta_boxes_' . PostTypes\LISTING, __NAMESPACE__ . '\metabox' );
 }
@@ -105,20 +104,30 @@ function total( int $post_id, string $type, int $days ): int {
 
 /* ----------------------------------------------------------------- views */
 
-/** Count a profile view — but never the people running the listing. */
-function count_view(): void {
-	if ( ! is_singular( PostTypes\LISTING ) || is_preview() ) {
-		return;
-	}
-	$post_id = get_queried_object_id();
+/**
+ * Whether this request should count as a profile view.
+ *
+ * Views used to be counted server-side on the `wp` hook, which quietly
+ * stopped working: listing pages are served from LiteSpeed's page cache
+ * (verified — a second request returns X-LiteSpeed-Cache: hit), and a
+ * cached response never runs PHP. Every visitor after the first within the
+ * cache window went uncounted, so the one number a practitioner is shown to
+ * justify paying was reading low by an unknown and variable margin.
+ *
+ * The count now arrives by the same beacon the contact clicks use. A REST
+ * request is never cached, so it is counted every time — and the guards
+ * that lived in the old hook move here, where they still work: the beacon
+ * carries the visitor's cookies, so an owner reading their own listing is
+ * still recognised and still not counted.
+ */
+function countable_view( int $post_id ): bool {
 	if ( current_user_can( 'edit_post', $post_id ) ) {
-		return;
+		return false;
 	}
 	$agent = (string) ( $_SERVER['HTTP_USER_AGENT'] ?? '' );
-	if ( '' === $agent || preg_match( '/bot|crawl|spider|slurp|preview|facebookexternalhit/i', $agent ) ) {
-		return;
-	}
-	record( $post_id, 'view' );
+	// Most crawlers never run the script that sends this, but the ones that
+	// do are the ones worth excluding by name.
+	return '' !== $agent && ! preg_match( '/bot|crawl|spider|slurp|preview|facebookexternalhit/i', $agent );
 }
 
 /* ---------------------------------------------------------------- clicks */
@@ -132,7 +141,7 @@ function routes(): void {
 			'permission_callback' => '__return_true',
 			'args'                => array(
 				'id'   => array( 'type' => 'integer', 'required' => true ),
-				'type' => array( 'type' => 'string', 'required' => true, 'enum' => array( 'web', 'tel', 'mail', 'book', 'dir', 'enq' ) ),
+				'type' => array( 'type' => 'string', 'required' => true, 'enum' => array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq' ) ),
 			),
 			'callback'            => __NAMESPACE__ . '\track_endpoint',
 		)
@@ -156,6 +165,10 @@ function track_endpoint( \WP_REST_Request $request ): \WP_REST_Response {
 		return new \WP_REST_Response( null, 204 );
 	}
 	set_transient( $key, $n + 1, MINUTE_IN_SECONDS );
+
+	if ( 'view' === $type && ! countable_view( $post_id ) ) {
+		return new \WP_REST_Response( null, 204 );
+	}
 
 	record( $post_id, $type );
 	return new \WP_REST_Response( null, 204 );
