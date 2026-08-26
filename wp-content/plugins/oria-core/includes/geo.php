@@ -114,9 +114,36 @@ function label( int $post_id ): string {
  */
 function clean_address( string $address ): string {
 	$a = trim( $address );
+
+	/*
+	 * Anything in brackets is a note written for a human — "(also Inglewood)",
+	 * "(studio address shared on booking)" — and a geocoder cannot place it.
+	 * Fifteen production listings failed on this alone. A semicolon introduces
+	 * the same kind of aside: "…, Trigg; also Fremantle and Victoria Park".
+	 */
+	$a = (string) preg_replace( '/\([^)]*\)/', ' ', $a );
+	$a = (string) preg_replace( '/;.*$/', '', $a );
+
+	/*
+	 * Prefixes that name a room or a host venue rather than a place. The "u"
+	 * alternative must be followed by a digit — "U2, 45 Central Walk" is a
+	 * unit, "Upper Swan Road" is not, and a bare /^u/ eats the second one.
+	 */
 	$a = (string) preg_replace( '/^(?:unit|suite|shop|level|ste|room|rm)\s*[\w-]+[,\/ ]+/i', '', $a );
+	$a = (string) preg_replace( '/^u\s*\d+[\w-]*[,\/ ]+/i', '', $a );
+	$a = (string) preg_replace( '/^(?:sessions?|consults?|classes|clinic)\s+at\s+/i', '', $a );
 	$a = (string) preg_replace( '/^\d+\s*\/\s*/', '', $a );
-	return trim( $a );
+
+	$a = (string) preg_replace( '/\s*,\s*/', ', ', $a );
+	$a = (string) preg_replace( '/\s{2,}/', ' ', $a );
+	return trim( $a, " ,\t\n\r\0\x0B" );
+}
+
+/** Does this query still name a street number, or only a suburb? */
+function has_street_number( string $query ): bool {
+	$body = (string) preg_replace( '/\b(?:WA|Western Australia)\b\s*\d{4}\s*$/i', '', $query );
+	$body = (string) preg_replace( '/\b\d{4}\b\s*$/', '', $body );
+	return (bool) preg_match( '/(?:^|,\s*)\d+[A-Za-z]?\s+\S/', trim( $body ) );
 }
 
 /**
@@ -133,8 +160,14 @@ function clean_address( string $address ): string {
 function query_variants( string $address ): array {
 	$parts = array_values( array_filter( array_map( 'trim', explode( ',', $address ) ) ) );
 	$out   = array();
-	// Keep at least a street and a suburb — two segments is the floor.
-	for ( $i = 0; $i <= max( 0, count( $parts ) - 2 ); $i++ ) {
+	/*
+	 * All the way down to the final segment, which is almost always
+	 * "Suburb WA 6000" and is the fallback that was missing. Stopping two
+	 * segments short meant a two-part address like "Applecross Community
+	 * Village, Applecross WA" produced exactly one attempt — the one that
+	 * fails — and never tried the suburb on its own.
+	 */
+	for ( $i = 0; $i < count( $parts ); $i++ ) {
 		$candidate = implode( ', ', array_slice( $parts, $i ) );
 		if ( '' !== $candidate ) {
 			$out[] = $candidate;
@@ -232,7 +265,8 @@ function geocode( int $post_id ): ?array {
 	if ( null === $q ) {
 		return null;
 	}
-	$hit = null;
+	$hit  = null;
+	$used = $q['query'];
 	foreach ( query_variants( $q['query'] ) as $i => $variant ) {
 		if ( $i > 0 ) {
 			// Every retry is another call, so it waits like the first one did.
@@ -240,6 +274,7 @@ function geocode( int $post_id ): ?array {
 		}
 		$hit = lookup( $variant );
 		if ( null !== $hit ) {
+			$used = $variant;
 			break;
 		}
 	}
@@ -247,12 +282,22 @@ function geocode( int $post_id ): ?array {
 		return null;
 	}
 
+	/*
+	 * Precision describes what was actually found, not what was asked for.
+	 * "45 Central Walk, Joondalup WA 6027" falls back to "Joondalup WA 6027"
+	 * — a suburb centroid — and calling that address-precision would put a
+	 * to-the-door figure on a page that measured to the suburb.
+	 */
+	$precision = ( 'address' === $q['precision'] && ! has_street_number( $used ) )
+		? 'suburb'
+		: $q['precision'];
+
 	update_post_meta( $post_id, META_LAT, (string) $hit[0] );
 	update_post_meta( $post_id, META_LNG, (string) $hit[1] );
-	update_post_meta( $post_id, META_PRECISION, $q['precision'] );
+	update_post_meta( $post_id, META_PRECISION, $precision );
 	update_post_meta( $post_id, META_STAMP, current_time( 'mysql' ) );
 
-	return array( 'lat' => $hit[0], 'lng' => $hit[1], 'precision' => $q['precision'], 'query' => $q['query'] );
+	return array( 'lat' => $hit[0], 'lng' => $hit[1], 'precision' => $precision, 'query' => $used );
 }
 
 /* ------------------------------------------------------------------- cli */

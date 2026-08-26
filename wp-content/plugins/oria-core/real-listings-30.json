@@ -1,0 +1,132 @@
+{
+  "_note": "Batch 30: 3 REAL Perth sauna and bathhouse businesses, researched from public information on 26 Aug 2026 from URLs supplied by Dale. Four were supplied; Ember Bath House was already live on the directory and is not duplicated here. Every entry verified on the business's own website; where a site does not publish a detail the field is left empty rather than guessed. Deduped against all 353 listings live on production. IMPORTANT — Alchemy Saunas operates TWELVE Perth venues and is recorded here as ONE listing, following the convention every other multi-venue business on the directory already uses (Perth Martial Arts Centre, Performance Pilates, Pilates Fit, Horizon Yoga, Cannington Leisureplex). All twelve are named in the blurb. That decision is worth revisiting deliberately rather than by default: twelve separate listings would put a single brand into a third of the Sleep & Recovery category and would skew every count and category page that reads from it. The importer supports it — a row may carry \"force\": true for a second venue sharing one website — but the call is Dale's, not mine.",
+  "categories": [
+    {
+      "id": "recovery",
+      "name": "Sleep & Recovery"
+    },
+    {
+      "id": "spa",
+      "name": "Spa & Recovery"
+    },
+    {
+      "id": "fitness",
+      "name": "Fitness & Movement"
+    },
+    {
+      "id": "bodywork",
+      "name": "Massage & Bodywork"
+    }
+  ],
+  "regions": [
+    {
+      "id": "central",
+      "name": "Perth Central",
+      "suburbs": [
+        "East Perth",
+        "Subiaco"
+      ]
+    },
+    {
+      "id": "freo",
+      "name": "Fremantle & South",
+      "suburbs": [
+        "Fremantle"
+      ]
+    }
+  ],
+  "listings": [
+    {
+      "id": "alchemy-saunas-perth",
+      "name": "Alchemy Saunas",
+      "cat": "recovery",
+      "also": [
+        "spa"
+      ],
+      "suburb": "East Perth",
+      "region": "central",
+      "address": "179 Claisebrook Road, Perth WA 6000",
+      "blurb": "Twelve venues across Perth, most of them within sight of water — Scarborough Beach, City Beach, Cottesloe, Port Beach and Point Walter among them, alongside indoor rooms in West Leederville, East Perth, Burswood, Nedlands and Karrinyup shopping centre. Sessions run a flat sixty minutes on the hour and are communal rather than private, with venue capacities between seven and twenty. Cold water varies by site: ice pools, ice baths, ice showers, a magnesium pool, and at the beach venues the ocean itself. Booking is through the studio's own app.",
+      "services": [
+        "Traditional sauna",
+        "Ice bath",
+        "Contrast therapy"
+      ],
+      "priceFrom": 20,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "0400 545 770",
+      "email": "",
+      "web": "https://alchemysaunas.com.au",
+      "next": "",
+      "_source": "alchemysaunas.com.au/contact-us for all twelve venue addresses and their phone numbers; the homepage for the sixty-minute hourly sessions, the communal format, venue capacities of 7–20, the cold-water options per site, app booking, and the published $20–$35 drop-in and $30–$40 weekly membership range. priceFrom is the lowest published drop-in rate, at the beach venues. The East Perth number and address are recorded as the listing's, since that venue publishes a full postcode; the other eleven are named in the blurb. No email published on any page reached."
+    },
+    {
+      "id": "melt-sauna-cold-plunge-subiaco",
+      "name": "Melt Sauna & Cold Plunge",
+      "cat": "recovery",
+      "also": [
+        "spa",
+        "fitness",
+        "bodywork"
+      ],
+      "suburb": "Subiaco",
+      "region": "central",
+      "address": "7-10/1 Forrest Street, Subiaco WA 6008",
+      "blurb": "A Forrest Street room in Subiaco running sauna and cold plunge in thirty or sixty minute blocks, with availability deliberately capped so the space stays quiet rather than filled. Unusually for a sauna address, the timetable also carries Pilates and yoga classes and Brazilian lymphatic massage, and there is a drinks list — matcha and cacao — for afterwards. Showers and change rooms are on site.",
+      "services": [
+        "Traditional sauna",
+        "Ice bath",
+        "Lymphatic drainage",
+        "Pilates"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "0437 708 917",
+      "email": "hi@meltsaunas.com",
+      "web": "https://meltsaunas.com",
+      "next": "",
+      "_source": "meltsaunas.com — the 7-10/1 Forrest Street, Subiaco address, phone, email, the 30 or 60 minute session choice, the capped-availability wording, the shower and change room facilities, and the service list including Pilates and yoga classes, Brazilian lymphatic massage and the wellness drinks are all published on the site. Prices are shown as an image rather than text, so priceFrom and priceBand are left empty rather than transcribed from a graphic."
+    },
+    {
+      "id": "the-neighbourhood-sauna-fremantle",
+      "name": "The Neighbourhood Sauna",
+      "cat": "recovery",
+      "also": [
+        "spa",
+        "bodywork"
+      ],
+      "suburb": "Fremantle",
+      "region": "freo",
+      "address": "147 South Terrace, Fremantle WA 6160",
+      "blurb": "Four sites between the South Terrace studio and the beaches at South Beach, Leighton and Hillarys Boat Harbour, and the format changes with the location. The studio runs private infrared rooms at thirty minutes and a private magnesium bath and sauna at sixty; the beachside rooms are communal, including a silent session where nobody talks. A bath house experience and massage run alongside. Booking is online.",
+      "services": [
+        "Infrared sauna",
+        "Traditional sauna",
+        "Massage",
+        "Lymphatic drainage"
+      ],
+      "priceFrom": null,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "0422 526 128",
+      "email": "hello@theneighbourhoodsauna.com",
+      "web": "https://www.theneighbourhoodsauna.com",
+      "next": "",
+      "_source": "theneighbourhoodsauna.com — the 147 South Terrace, Fremantle address, the four locations (Leighton, Hillarys Boat Harbour, South Terrace studio, South Beach), the email, the per-location phone numbers, and the service list: private infrared sauna at 30 minutes, private magnesium bath and sauna at 60, bath house experience at 60, beachside communal sauna at 60, silent sauna sessions, and massage and lymphatics. Intro offers from $49 and memberships at $29–$99 a week are published; priceFrom is left null because those are passes rather than a single-session rate. The site does not mention ice baths or cold plunges, so none is claimed here."
+    }
+  ]
+}
