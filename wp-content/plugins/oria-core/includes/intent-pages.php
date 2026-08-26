@@ -265,11 +265,23 @@ function facts( array $page ): array {
 	$all   = function_exists( '\Oria\Core\Intents\listings_in' ) ? Intents\listings_in( $term ) : array();
 	$ids   = matching_ids( $term, $page['filter'] );
 	$count = count( $ids );
-	$ok    = ( $page['live'] || previewing( $page ) ) && $count >= registry()['min'];
-	if ( $ok && 'audience' === $page['kind'] && function_exists( '\Oria\Core\Audience\coverage' ) ) {
-		$ok = ! empty( Audience\coverage( $all, (string) ( $page['filter']['aud'] ?? '' ) )['publishable'] );
+	$ok      = ( $page['live'] || previewing( $page ) ) && $count >= registry()['min'];
+	$checked = '';
+	if ( 'audience' === $page['kind'] && function_exists( '\Oria\Core\Audience\coverage' ) ) {
+		$cov     = Audience\coverage( $all, (string) ( $page['filter']['aud'] ?? '' ) );
+		$checked = (string) $cov['checked'];
+		if ( $ok ) {
+			$ok = ! empty( $cov['publishable'] );
+		}
 	}
-	return array( 'ids' => $ids, 'count' => $count, 'total' => count( $all ), 'publishable' => $ok );
+	return array(
+		'ids'              => $ids,
+		'count'            => $count,
+		'total'            => count( $all ),
+		'publishable'      => $ok,
+		// How many of the category were actually read, for {checked}.
+		'audience_checked' => $checked,
+	);
 }
 
 /**
@@ -344,11 +356,29 @@ function previewing( array $page ): bool {
 
 /** Fill {count} {total} {practice} in frame text. */
 function fill( string $text, array $facts, \WP_Term $practice ): string {
+	/*
+	 * {checked} is the number that makes the other two mean anything.
+	 *
+	 * "25 of the 42 yoga listings publish a beginners' class" reads, to a
+	 * sceptical person, as though we found 25 and never looked at the rest.
+	 * The truth is that all 42 were read and 17 do not publish it — a survey
+	 * rather than a sample. Only an audience page can say this, because only
+	 * an audience answer records that somebody checked and found nothing;
+	 * elsewhere it resolves to the category total, which is the honest
+	 * fallback rather than a claim.
+	 */
+	$checked = (int) $facts['total'];
+	$aud     = (string) ( $facts['audience_checked'] ?? '' );
+	if ( '' !== $aud ) {
+		$checked = (int) $aud;
+	}
+
 	return strtr(
 		$text,
 		array(
 			'{count}'    => number_format_i18n( (int) $facts['count'] ),
 			'{total}'    => number_format_i18n( (int) $facts['total'] ),
+			'{checked}'  => number_format_i18n( $checked ),
 			'{practice}' => strtolower( wp_specialchars_decode( $practice->name, ENT_QUOTES ) ),
 		)
 	);

@@ -183,7 +183,7 @@
           },
           {
             "q": "How many Perth yoga studios run classes for beginners?",
-            "a": "{count} of the {total} yoga listings in the directory publish a beginners' class, a course, or an all-levels welcome. The number is live and changes as listings are checked."
+            "a": "{count} of the {total} yoga listings in the directory publish a beginners' class, a course, or a plain all-levels welcome. That comes from reading {checked} of the {total} against the studio's own website rather than from sampling the easy ones. Both numbers are live and move as listings are added and re-checked."
           },
           {
             "q": "Is a beginners' course better than a mixed-level class?",
@@ -191,7 +191,7 @@
           },
           {
             "q": "How does a studio end up on this page?",
-            "a": "Only by publishing it themselves — a beginners' class on the timetable, a course with an intake, or a plain statement that classes suit all levels. We record where we read it. An intro discount on its own does not count."
+            "a": "Only by publishing it themselves — a beginners' class on the timetable, a course with an intake, or a plain statement that classes suit all levels. {checked} of the {total} yoga listings have been read against the studio's own website, and we record the page it was read on and the words that were on it. A studio checked and not listed here publishes nothing of the kind; that is not a judgement about whether beginners are welcome. An intro discount on its own does not count, because a cheaper first visit says nothing about who the class is for."
           }
         ]
       }
