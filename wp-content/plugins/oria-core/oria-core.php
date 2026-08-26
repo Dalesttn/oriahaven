@@ -37,6 +37,7 @@ require_once ORIA_CORE_DIR . 'includes/analytics.php';
 require_once ORIA_CORE_DIR . 'includes/claim-requests.php';
 require_once ORIA_CORE_DIR . 'includes/admin-ui.php';
 require_once ORIA_CORE_DIR . 'includes/specialties.php';
+require_once ORIA_CORE_DIR . 'includes/amenities.php';
 require_once ORIA_CORE_DIR . 'includes/seo.php';
 require_once ORIA_CORE_DIR . 'includes/schema.php';
 require_once ORIA_CORE_DIR . 'includes/tiers.php';

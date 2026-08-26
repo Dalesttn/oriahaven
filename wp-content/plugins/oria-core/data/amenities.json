@@ -1,0 +1,69 @@
+{
+  "_note": [
+    "What is in the building, as declared by the practitioner who claims the",
+    "listing. Nobody researches these and the directory never infers them:",
+    "an amenity is present because the business ticked it, and absent because",
+    "nobody has said yet — which is not the same as 'no'.",
+    "",
+    "That provenance is why this is separate from the audience taxonomy. An",
+    "audience answer needs a source URL and the words on it before it counts;",
+    "an amenity is the business's own statement about its own premises. Both",
+    "are legitimate, but mixing them would let a self-declared tick sit in a",
+    "system built on evidence.",
+    "",
+    "Step-free access is DELIBERATELY not in this list. It already exists as",
+    "an audience with an evidence test attached ('States step-free,",
+    "ground-floor, lift or wheelchair access to the space itself. Never",
+    "inferred from a photograph.'). Accessibility is the last thing that",
+    "should have two sources of truth and the weaker one win.",
+    "",
+    "Stored as post meta via an ACF checkbox, not as a taxonomy. A taxonomy",
+    "would mint a term archive per amenity on day one, and the directory's own",
+    "rule is that a page needs three listings before it may be indexed. When",
+    "coverage exists, promoting this to a taxonomy is a migration, not a",
+    "redesign.",
+    "",
+    "Keep the list short. A form with forty checkboxes is a form nobody",
+    "finishes, and a half-finished list is worse than none: it reads as",
+    "'no showers' when it means 'nobody asked'."
+  ],
+  "groups": [
+    {
+      "id": "facilities",
+      "label": "Facilities",
+      "amenities": [
+        { "slug": "showers",        "label": "Showers" },
+        { "slug": "change-rooms",   "label": "Change rooms" },
+        { "slug": "lockers",        "label": "Lockers" },
+        { "slug": "toilets",        "label": "Toilets on site" },
+        { "slug": "air-con",        "label": "Air conditioning or heating" },
+        { "slug": "drinking-water", "label": "Drinking water" }
+      ]
+    },
+    {
+      "id": "provided",
+      "label": "Provided for you",
+      "amenities": [
+        { "slug": "towels",       "label": "Towels provided" },
+        { "slug": "equipment",    "label": "Mats and props provided" },
+        { "slug": "refreshments", "label": "Tea or refreshments" }
+      ]
+    },
+    {
+      "id": "arriving",
+      "label": "Arriving",
+      "amenities": [
+        { "slug": "bike-parking", "label": "Secure bike parking" },
+        { "slug": "pram-space",   "label": "Room for a pram" }
+      ]
+    },
+    {
+      "id": "paying",
+      "label": "Paying",
+      "amenities": [
+        { "slug": "card-payments", "label": "Card payments" },
+        { "slug": "hicaps",        "label": "HICAPS on site" }
+      ]
+    }
+  ]
+}

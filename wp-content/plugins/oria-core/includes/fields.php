@@ -359,6 +359,29 @@ function register_listing_fields(): void {
 					'placeholder' => 'Roe St car park, 3 min walk',
 					'wrapper'     => array( 'width' => '50' ),
 				),
+				/*
+				 * Amenities. Structured, where transit and parking are prose,
+				 * because these are meant to become filters once enough
+				 * listings carry them — and a checkbox can be counted where a
+				 * sentence cannot.
+				 *
+				 * Choices come from data/amenities.json so the vocabulary
+				 * ships in git rather than living in the database. An unticked
+				 * box renders nothing at all: on a seeded listing the empty
+				 * set means nobody has been asked, and no template may turn
+				 * that into a "no".
+				 */
+				array(
+					'key'          => 'field_oria_amenities',
+					'name'         => 'amenities',
+					'label'        => 'Amenities',
+					'type'         => 'checkbox',
+					'choices'      => function_exists( '\Oria\Core\Amenities\vocabulary' )
+						? \Oria\Core\Amenities\vocabulary()
+						: array(),
+					'layout'       => 'vertical',
+					'instructions' => 'Tick only what you actually have. Anything left unticked is simply not shown — it is never displayed as a "no".',
+				),
 
 				// --- Team ---------------------------------------------------
 				array(

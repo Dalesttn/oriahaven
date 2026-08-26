@@ -3137,3 +3137,16 @@ html.has-sheet { overflow: hidden; }
 .intentcard__note { font-size: var(--fs-xs, .78rem); font-weight: 400; color: var(--muted, #5A6B66); line-height: 1.3; }
 .intentcard.is-current .intentcard__note { color: inherit; opacity: .8; }
 @media (max-width: 640px) { .intentcard__note { display: none; } }
+
+/* Amenities on a listing — only ever the ticked ones, so the block is
+   absent entirely on a listing nobody has claimed. Grouped columns rather
+   than one long list, because "Showers, Lockers, Towels provided, HICAPS"
+   in a row reads as a sentence and none of it is. */
+.amenity { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1.1rem 1.6rem; }
+.amenity__label { color: var(--moss); margin: 0 0 .4rem; }
+.amenity__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .3rem; }
+.amenity__list li { position: relative; padding-left: 1.25rem; font-size: var(--fs-sm); }
+.amenity__list li::before {
+  content: ""; position: absolute; left: 0; top: .45em;
+  width: .5rem; height: .5rem; border-radius: 50%; background: var(--moss);
+}

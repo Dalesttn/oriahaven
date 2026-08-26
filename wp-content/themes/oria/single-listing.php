@@ -510,6 +510,39 @@ while ( have_posts() ) :
 					</div>
 				</div>
 				<?php endif; ?>
+
+				<?php
+				/*
+				 * Amenities, and only the ones ticked. There is no "no showers"
+				 * row and there never should be: an empty set means the
+				 * practitioner has not filled this in, not that the building
+				 * lacks the thing. Seeded listings therefore render nothing
+				 * here at all.
+				 */
+				$oria_amenities = function_exists( '\Oria\Core\Amenities\for_listing' )
+					? \Oria\Core\Amenities\for_listing( $oria_id )
+					: array();
+				?>
+				<?php if ( $oria_amenities ) : ?>
+					<div class="section" id="amenities">
+						<h2 class="h3" style="margin-bottom:1rem"><?php esc_html_e( 'What is here', 'oria' ); ?></h2>
+						<div class="amenity">
+							<?php foreach ( $oria_amenities as $oria_grp ) : ?>
+								<div class="amenity__group">
+									<h3 class="micro amenity__label"><?php echo esc_html( $oria_grp['label'] ); ?></h3>
+									<ul class="amenity__list">
+										<?php foreach ( $oria_grp['items'] as $oria_item ) : ?>
+											<li><?php echo esc_html( $oria_item ); ?></li>
+										<?php endforeach; ?>
+									</ul>
+								</div>
+							<?php endforeach; ?>
+						</div>
+						<p class="hint" style="margin-top:.9rem">
+							<?php esc_html_e( 'Listed by the practice itself. Anything not shown has not been told to us either way.', 'oria' ); ?>
+						</p>
+					</div>
+				<?php endif; ?>
 			</div>
 
 			<!-- Rail -->

@@ -101,6 +101,10 @@ const FIELD_TIERS = array(
 	'opening_hours' => CLAIMED,
 	'transit'       => CLAIMED,
 	'parking'       => CLAIMED,
+	// Nobody researches amenities — the only source is the business ticking
+	// a box about its own premises, which is exactly what claiming makes
+	// possible. Until then the field is present, empty, and shows nothing.
+	'amenities'     => CLAIMED,
 	// Editable on any plan; how many of them publish is what the tier
 	// decides — see TEAM_LIMITS.
 	'team'          => 'free',
