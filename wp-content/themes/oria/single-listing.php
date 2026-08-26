@@ -511,7 +511,16 @@ while ( have_posts() ) :
 				<!-- Getting there -->
 				<?php
 				$oria_map = $oria_address ? \Oria\Theme\map_embed_url( $oria_address ) : '';
-				if ( $oria_address || $oria_transit || $oria_parking ) :
+				/*
+				 * Coordinates count toward showing this section. Fifty-odd
+				 * listings carry no street address at all, and those are
+				 * exactly the ones where "12 km from the CBD" is the most
+				 * useful thing on the page — without this they were the only
+				 * listings that got no distance.
+				 */
+				$oria_geo   = function_exists( '\Oria\Core\Geo\position' ) ? \Oria\Core\Geo\position( $oria_id ) : null;
+				$oria_kmlab = $oria_geo ? \Oria\Core\Geo\label( $oria_id ) : '';
+				if ( $oria_address || $oria_transit || $oria_parking || '' !== $oria_kmlab ) :
 					?>
 				<div>
 					<h2 class="h3" style="margin-bottom:1rem"><?php esc_html_e( 'Getting there', 'oria' ); ?></h2>
@@ -541,6 +550,29 @@ while ( have_posts() ) :
 								<?php endif; ?>
 								<?php if ( $oria_parking ) : ?>
 									<div><div class="keyfact__k"><?php esc_html_e( 'Parking', 'oria' ); ?></div><div class="keyfact__v" style="font-weight:500"><?php echo esc_html( $oria_parking ); ?></div></div>
+								<?php endif; ?>
+								<?php
+								/*
+								 * Distance from the CBD, and how much to trust it.
+								 * A listing placed on its suburb centroid says so —
+								 * the alternative is a figure that looks like it was
+								 * measured to the door when it was not. Both values
+								 * are resolved above, where the section guard needs
+								 * them too.
+								 */
+								?>
+								<?php if ( '' !== $oria_kmlab ) : ?>
+									<div data-oria-distance data-lat="<?php echo esc_attr( (string) $oria_geo['lat'] ); ?>" data-lng="<?php echo esc_attr( (string) $oria_geo['lng'] ); ?>">
+										<div class="keyfact__k"><?php esc_html_e( 'Distance', 'oria' ); ?></div>
+										<div class="keyfact__v" style="font-weight:500">
+											<span data-oria-distance-value><?php echo esc_html( $oria_kmlab ); ?></span>
+											<?php if ( 'suburb' === $oria_geo['precision'] ) : ?>
+												<small style="display:block;font-weight:400;opacity:.7"><?php esc_html_e( 'measured to the suburb, not the door', 'oria' ); ?></small>
+											<?php endif; ?>
+											<?php // ODbL requires OpenStreetMap to be credited wherever a derived distance is shown. ?>
+											<small style="display:block;font-weight:400;opacity:.55;margin-top:.25rem"><?php echo esc_html( \Oria\Core\Geo\attribution() ); ?></small>
+										</div>
+									</div>
 								<?php endif; ?>
 							</div>
 						</div>

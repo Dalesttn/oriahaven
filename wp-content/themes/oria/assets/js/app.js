@@ -2743,6 +2743,73 @@
     });
   }
 
+
+  /* ---------------------------------------------------------- distance
+   * "How far is this from me?", answered without anybody being tracked.
+   *
+   * The coordinates the page already carries are the listings'. The
+   * visitor's own position is asked for by the browser, granted per visit,
+   * and used only here — it is never sent anywhere, because there is no
+   * endpoint that takes it. Nothing is stored, so the prompt returns on the
+   * next visit, which is the honest trade for not keeping it.
+   */
+  function haversineKm(a, b) {
+    var R = 6371, r = Math.PI / 180;
+    var dLat = (b[0] - a[0]) * r, dLng = (b[1] - a[1]) * r;
+    var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(a[0] * r) * Math.cos(b[0] * r) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
+
+  function initDistance() {
+    var nodes = document.querySelectorAll("[data-oria-distance]");
+    if (!nodes.length || !navigator.geolocation) return;
+
+    nodes.forEach(function (node) {
+      if (node.querySelector("[data-oria-distance-btn]")) return;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "linkish";
+      btn.setAttribute("data-oria-distance-btn", "");
+      btn.textContent = "Distance from me";
+      btn.style.cssText = "display:block;margin-top:.3rem;background:none;border:0;padding:0;font:inherit;font-size:.82rem;color:var(--moss);cursor:pointer;text-decoration:underline";
+      node.appendChild(btn);
+
+      btn.addEventListener("click", function () {
+        var lat = parseFloat(node.getAttribute("data-lat"));
+        var lng = parseFloat(node.getAttribute("data-lng"));
+        if (isNaN(lat) || isNaN(lng)) return;
+
+        btn.disabled = true;
+        btn.textContent = "Asking your browser…";
+
+        navigator.geolocation.getCurrentPosition(
+          function (pos) {
+            var km = haversineKm(
+              [pos.coords.latitude, pos.coords.longitude],
+              [lat, lng]
+            );
+            var out = node.querySelector("[data-oria-distance-value]");
+            var txt = km < 1
+              ? "About " + Math.round(km * 1000 / 100) * 100 + " m from you"
+              : "About " + (km < 10 ? km.toFixed(1) : Math.round(km)) + " km from you";
+            if (out) out.textContent = txt;
+            btn.remove();
+          },
+          function () {
+            // Declined, or the device could not say. Neither is an error
+            // worth shouting about: the CBD figure is still on screen.
+            btn.disabled = false;
+            btn.textContent = "Location unavailable";
+            setTimeout(function () { btn.textContent = "Distance from me"; }, 2500);
+          },
+          { timeout: 8000, maximumAge: 300000 }
+        );
+      });
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initTracking();
     initCopy();
@@ -2780,5 +2847,6 @@
     initReadbar();
     initShare();
     initYear();
+    initDistance();
   });
 })();

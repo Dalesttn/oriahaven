@@ -276,6 +276,7 @@ function listing_data(): array {
 		$auds = is_wp_error( $auds ) ? array() : wp_list_pluck( $auds, 'slug' );
 
 		$rated = effective_rating( $post->ID );
+		$geo   = function_exists( '\Oria\Core\Geo\position' ) ? \Oria\Core\Geo\position( (int) $post->ID ) : null;
 
 		$listings[] = array(
 			'id'         => $post->post_name,
@@ -289,6 +290,17 @@ function listing_data(): array {
 			'aud'        => $auds,
 			'suburb'     => tname( $suburb ?: $region ),
 			'region'     => $region ? $region->slug : '',
+			/*
+			 * Coordinates ride along so the browser can work out how far a
+			 * listing is from wherever the visitor is standing. The position
+			 * itself never leaves the device — there is no endpoint to send it
+			 * to, and the arithmetic happens in the page. `km` is precomputed
+			 * from the CBD because that one is the same for everybody.
+			 */
+			'lat'        => $geo ? round( $geo['lat'], 5 ) : null,
+			'lng'        => $geo ? round( $geo['lng'], 5 ) : null,
+			'geo'        => $geo ? $geo['precision'] : '',
+			'km'         => $geo ? round( \Oria\Core\Geo\distance_km( array( $geo['lat'], $geo['lng'] ), \Oria\Core\Geo\CBD ), 1 ) : null,
 			'blurb'      => get_the_excerpt( $post ),
 			'services'   => array_column( (array) get_field( 'services', $post->ID ), 'name' ),
 			'priceFrom'  => (float) get_field( 'price_from', $post->ID ),
