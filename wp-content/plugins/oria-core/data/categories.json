@@ -4,7 +4,7 @@
   "min_listings": 3,
   "tint_note": "One muted tint per category, for the chip at the top of a listing card. Kept low-saturation on purpose: the gold Featured badge is what practices pay for and has to stay the most salient mark on a card, so category colour scans without competing. Community keeps the existing sand so the change reads as an addition rather than a repaint. Light theme only — the site has no dark mode.",
   "categories": [
-    { "slug": "yoga",       "name": "Yoga & Pilates",                   "emoji": "🧘", "tint": { "bg": "#EAEFDC", "fg": "#4F5F27" }, "note": "was 'Yoga & movement'" },
+    { "slug": "yoga",       "name": "Yoga",                   "emoji": "🧘", "tint": { "bg": "#EAEFDC", "fg": "#4F5F27" }, "note": "was 'Yoga & movement', then 'Yoga & Pilates' until Pilates moved to Fitness & Movement" },
     { "slug": "fitness",    "name": "Fitness & Movement",               "emoji": "💪", "tint": { "bg": "#FBE8DE", "fg": "#8A4A26" } },
     { "slug": "bodywork",   "name": "Massage & Bodywork",               "emoji": "💆", "tint": { "bg": "#F5E8E2", "fg": "#7A4A38" }, "note": "was 'Bodywork & Massage'" },
     { "slug": "mind",       "name": "Mind & Mental Wellbeing",          "emoji": "🧠", "tint": { "bg": "#E8EAF6", "fg": "#3B4478" }, "children": ["meditation", "mindfulness", "breathwork"] },

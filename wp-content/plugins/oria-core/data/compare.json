@@ -152,8 +152,9 @@
     {
       "id": "pilates",
       "label": "Pilates",
-      "url": "/practices/yoga/pilates/",
+      "url": "/perth/pilates/",
       "pair": "yoga",
+      "image_from": "fitness",
       "note": "Mat and reformer both exist; reformer runs harder and dearer.",
       "attributes": {
         "intensity": 4,
