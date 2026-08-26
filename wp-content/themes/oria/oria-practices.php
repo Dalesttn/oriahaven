@@ -10,6 +10,37 @@ declare(strict_types=1);
 get_header();
 
 $oria_terms = \Oria\Core\PracticesIndex\practices();
+
+/*
+ * Biggest category first, rather than alphabetically.
+ *
+ * "Popularity" here is the rolled-up listing count — the same number the tile
+ * itself prints, so the order and the figure beside it can never disagree.
+ * Traffic would be the other reading, but the analytics table counts events
+ * per listing and has nothing per category; ordering a navigation page by its
+ * own click-through would also feed back on itself, since the top tiles get
+ * clicked because they are at the top.
+ *
+ * Counted, then sorted, then rendered — practices() itself is left ordering
+ * by name, because its other callers ask it a different question. This is the
+ * same idiom the directory landing page uses for its category chips, name as
+ * the tiebreak so two categories on the same count do not swap places between
+ * requests.
+ */
+$oria_sorted = array();
+foreach ( $oria_terms as $oria_t ) {
+	$oria_sorted[] = array(
+		'term'  => $oria_t,
+		'count' => function_exists( '\Oria\Core\Intents\listings_in' )
+			? count( \Oria\Core\Intents\listings_in( $oria_t ) )
+			: (int) $oria_t->count,
+	);
+}
+usort(
+	$oria_sorted,
+	static fn( array $a, array $b ): int => $b['count'] <=> $a['count']
+		?: strcasecmp( \Oria\Theme\tname( $a['term'] ), \Oria\Theme\tname( $b['term'] ) )
+);
 ?>
 
 <section class="wrap pagehead">
@@ -45,17 +76,18 @@ $oria_terms = \Oria\Core\PracticesIndex\practices();
 <section class="wrap section section--top-flush">
 	<div class="ptiles">
 		<?php
-		foreach ( $oria_terms as $oria_t ) :
+		foreach ( $oria_sorted as $oria_rowt ) :
+			$oria_t = $oria_rowt['term'];
 			$oria_blurb = trim( (string) ( get_field( 'tile_blurb', 'practice_' . $oria_t->term_id ) ?: $oria_t->description ) );
 			$oria_img   = (int) get_field( 'tile_image', 'practice_' . $oria_t->term_id );
 			$oria_links = \Oria\Core\PracticesIndex\intent_links( $oria_t );
 			/*
 			 * The rolled-up count, so a parent reports the pages beneath it
-			 * rather than its own near-empty direct total.
+			 * rather than its own near-empty direct total. Computed above for
+			 * the sort; reused here so the tile cannot print a different
+			 * number from the one it was ordered by.
 			 */
-			$oria_n = function_exists( '\Oria\Core\Intents\listings_in' )
-				? count( \Oria\Core\Intents\listings_in( $oria_t ) )
-				: (int) $oria_t->count;
+			$oria_n = (int) $oria_rowt['count'];
 
 			/*
 			 * One row of links for every tile, from one rule: the category's own
