@@ -255,7 +255,8 @@
       "aliases": [
         "dietitian",
         "sports dietitian",
-        "dietitian consultation"
+        "dietitian consultation",
+        "dietitian consultations"
       ]
     },
     {
@@ -871,7 +872,8 @@
         "breathwork"
       ],
       "aliases": [
-        "breath training"
+        "breath training",
+        "group breathwork"
       ]
     },
     {
@@ -1367,7 +1369,9 @@
       "aliases": [
         "manicure",
         "pedicure",
-        "nail salon"
+        "nail salon",
+        "manicures",
+        "pedicures"
       ]
     },
     {

@@ -1,0 +1,247 @@
+{
+  "_note": "Batch 27: 7 REAL Perth practices researched from public information on 26 Aug 2026, closing the 'singles' left on the recruitment shortlist. Every entry was verified on the business's own website; where a site does not publish a detail the field is left empty rather than guessed. Deduped against ALL 341 listings live on production by name, suburb and street. IMPORTANT — this batch is deliberately smaller than the shortlist, because a tagging pass over the existing 341 closed six terms with no recruitment at all (dietetics, group fitness, yoga teacher training, trigger point therapy, steam room, and one of the two myotherapy slots). See the accompanying tagging list. Four candidates were rejected during research: Toni Weston Qigong (relocated to Eagle Bay in the South West, outside the Perth metro), Northside Myotherapy and Bodyright Massage (both publish nothing readable — JavaScript-only shells — and need checking by hand), and Myotherapy & Movement Clinic (Malvern East, Victoria, not Perth). Myotherapy therefore still sits one listing short after this batch. Every string in services[] is the canonical service name from data/services.json, because Services\\resolve() matches the whole folded phrase exactly.",
+  "categories": [
+    {
+      "id": "creative",
+      "name": "Creative Therapies"
+    },
+    {
+      "id": "fitness",
+      "name": "Fitness & Movement"
+    },
+    {
+      "id": "mindfulness",
+      "name": "Mindfulness coaching"
+    },
+    {
+      "id": "nature",
+      "name": "Nature & Outdoor Wellness"
+    },
+    {
+      "id": "experiences",
+      "name": "Retreats, Nature & Experiences"
+    },
+    {
+      "id": "mind",
+      "name": "Mind & Mental Wellbeing"
+    },
+    {
+      "id": "family",
+      "name": "Women's, Men's & Family Wellness"
+    }
+  ],
+  "regions": [
+    {
+      "id": "central",
+      "name": "Perth Central",
+      "suburbs": [
+        "North Perth",
+        "South Perth",
+        "Perth CBD"
+      ]
+    },
+    {
+      "id": "north",
+      "name": "Northern Suburbs",
+      "suburbs": [
+        "Balcatta",
+        "Wangara",
+        "Malaga"
+      ]
+    },
+    {
+      "id": "swan",
+      "name": "Swan Valley & East",
+      "suburbs": [
+        "Bullsbrook"
+      ]
+    }
+  ],
+  "listings": [
+    {
+      "id": "the-dance-workshop-north-perth",
+      "name": "The Dance Workshop",
+      "cat": "creative",
+      "also": [
+        "fitness"
+      ],
+      "suburb": "North Perth",
+      "region": "central",
+      "address": "468 Fitzgerald Street, North Perth WA 6006",
+      "blurb": "A Fitzgerald Street studio that takes adults seriously as dancers rather than as an afterthought to the children's timetable — its own description is Perth's only studio teaching exclusively adults and mature-age students. Nineteen styles run across the week, from ballet and tap to flamenco, Bollywood, K-pop and heels, and the levels start at absolute beginner and go through to professional. Six-week BASICS courses run from $120.",
+      "services": [
+        "Dance",
+        "Mat pilates"
+      ],
+      "priceFrom": 120,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-hall",
+      "phone": "0434 698 808",
+      "email": "",
+      "web": "https://danceworkshop.com.au",
+      "next": "",
+      "_source": "danceworkshop.com.au — address, phone, the adults-and-mature-age-students wording, the nineteen listed styles, the absolute-beginner-to-professional levels and the $120-$140 BASICS course prices are published on the site. Email not published. priceFrom is the lowest published course price, not a per-class rate."
+    },
+    {
+      "id": "jody-marshall-dance-company-balcatta",
+      "name": "Jody Marshall Dance Company",
+      "cat": "creative",
+      "also": [],
+      "suburb": "Balcatta",
+      "region": "north",
+      "address": "20 Mumford Place, Balcatta WA 6021",
+      "blurb": "A Balcatta studio running a six-day timetable across jazz, tap, classical ballet, lyrical and contemporary, hip hop, acrobatics and musical theatre. The adult classes are the notable part — the studio's own line is that it has lovely ladies still tapping in their eighties — and students of all ability levels including beginners are taken. Preschool classes start from eighteen months.",
+      "services": [
+        "Dance"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-hall",
+      "phone": "0407 198 081",
+      "email": "jmdcperth@gmail.com",
+      "web": "https://jmdc.com.au",
+      "next": "",
+      "_source": "jmdc.com.au — address, two contact numbers (the first is recorded here), email, the class list, the adult-classes line and the all-ability-levels wording are published on the site. No prices published, so priceFrom and priceBand are left empty."
+    },
+    {
+      "id": "spear-dojo-wangara",
+      "name": "Spear Dojo",
+      "cat": "fitness",
+      "also": [],
+      "suburb": "Wangara",
+      "region": "north",
+      "address": "Unit 3, 12 Buckingham Drive, Wangara WA 6065",
+      "blurb": "A Wangara academy running since 1987, with Zen Do Kai, Muay Thai, Brazilian jiu jitsu, boxing and MMA on one adult timetable from sixteen years up. The studio is unusually direct about what walking in cold feels like — its own wording is that beginners find structure, patience, and a community that remembers what it felt like to start from nothing. A two-week unlimited intro pass is $29.",
+      "services": [
+        "Martial arts",
+        "Boxing",
+        "Personal training"
+      ],
+      "priceFrom": null,
+      "priceBand": "$$",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-hall",
+      "phone": "(08) 9409 4172",
+      "email": "admin@speardojo.com",
+      "web": "https://www.speardojo.com",
+      "next": "",
+      "_source": "speardojo.com/martial-arts-for-adults — address, phone, email, the discipline list, the 16-years-and-up minimum, the beginners wording and the $29 two-week intro pass are published on that page. The 1987 founding date is from the site's own description. priceFrom is left null because the $29 is an intro pass, not a standing rate."
+    },
+    {
+      "id": "perth-martial-arts-centre-malaga",
+      "name": "Perth Martial Arts Centre",
+      "cat": "fitness",
+      "also": [],
+      "suburb": "Malaga",
+      "region": "north",
+      "address": "16 Trade Road, Malaga WA 6090",
+      "blurb": "Brazilian jiu jitsu, capoeira and Muay Thai taught in Malaga, with a second room in Ellenbrook, by instructors the centre says are qualified at international level. Capoeira is the uncommon one here — the Brazilian art that sits between martial art, dance and music, and it runs for adults as well as children. A FIFO programme is scheduled around swings rather than weeks.",
+      "services": [
+        "Martial arts"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-hall",
+      "phone": "0420 836 476",
+      "email": "info@perthmartialartscentre.com.au",
+      "web": "https://perthmartialartscentre.com.au",
+      "next": "",
+      "_source": "perthmartialartscentre.com.au — both addresses (16 Trade Road, Malaga and 2/4 Fringed Way, Ellenbrook), both phone numbers, the email, the discipline list, the FIFO programme and the all-ages-genders-and-fitness-levels wording are published on the site. Malaga is recorded as the listing address with Ellenbrook noted in the blurb. No prices published."
+    },
+    {
+      "id": "choy-lee-fut-perth",
+      "name": "Choy Lee Fut Kung Fu & Lohan Qigong",
+      "cat": "fitness",
+      "also": [
+        "mindfulness"
+      ],
+      "suburb": "South Perth",
+      "region": "central",
+      "address": "South Perth Primary School, 51 Forrest Street, South Perth WA 6151",
+      "blurb": "Sifu James Lui teaches Choy Lee Fut kung fu alongside Lohan qigong at three hall-and-oval venues across the river — South Perth, Brentwood and Myaree. The qigong is not a warm-up bolted onto the martial art but its own stream, which is rarer in Perth than the number of kung fu schools would suggest.",
+      "services": [
+        "Qigong",
+        "Martial arts"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-hall",
+      "phone": "0412 568 823",
+      "email": "",
+      "web": "https://choyleefutwa.com",
+      "next": "",
+      "_source": "choyleefut.org/australia/perth — instructor name, the three venues (South Perth Primary School, 51 Forrest St; Brentwood Primary School Hall, Moolyeen Road; Marmion Reserve, Stammer Place, Myaree), the phone and the kung fu and qigong streams are published there, with choyleefutwa.com given as the school's own site. The email was machine-obscured on retrieval, so it is left empty rather than guessed. Class times and prices not published."
+    },
+    {
+      "id": "whispering-sands-bullsbrook",
+      "name": "Whispering Sands",
+      "cat": "nature",
+      "also": [
+        "experiences",
+        "mind"
+      ],
+      "suburb": "Bullsbrook",
+      "region": "swan",
+      "address": "Bullsbrook WA 6084",
+      "blurb": "Equine assisted learning and counselling on a Bullsbrook property, where the session happens outdoors alongside the horses rather than across a desk — the practice's own phrase is that the therapy room is outdoors. Sessions are groundwork rather than riding: no one gets on a horse. Grief and loss work runs alongside the general counselling.",
+      "services": [],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-outdoor",
+      "phone": "(08) 9571 2575",
+      "email": "",
+      "web": "https://www.whisperingsands.com.au",
+      "next": "",
+      "_source": "whisperingsands.com.au — the Bullsbrook location, the phone, the equine assisted learning and counselling services, the outdoor-therapy-room wording and the statement that sessions do not include riding are published on the site. No street number, email, practitioner name or prices are published, so those fields are empty. The blurb names equine assisted learning so that `wp oria seed_specialties` attaches the equine-therapy specialty, whose pattern matches on 'equine'."
+    },
+    {
+      "id": "doula-matters-perth",
+      "name": "Doula Matters",
+      "cat": "family",
+      "also": [],
+      "suburb": "Perth CBD",
+      "region": "central",
+      "address": "",
+      "blurb": "Kelly works across Perth as a birth doula, covering the planning beforehand, continuous support on the day and care afterwards, with a virtual option for families outside the metro or wanting help between visits. Birth mapping and pregnancy massage sit alongside the doula work. Bookings are open for March 2026, which is the usual lead time in this field.",
+      "services": [
+        "Doula support",
+        "Pregnancy massage"
+      ],
+      "priceFrom": null,
+      "priceBand": "",
+      "format": "in-person",
+      "rating": 0,
+      "reviews": 0,
+      "status": "unclaimed",
+      "image": "scene-room",
+      "phone": "0433 071 133",
+      "email": "",
+      "web": "https://www.doulamatters.com.au",
+      "next": "",
+      "_source": "doulamatters.com.au — the practitioner's first name, the phone, the birth doula, virtual doula, birth mapping and pregnancy massage services and the March 2026 booking availability are published on the site. No street address is published because the service travels to the client; the suburb follows the convention already used for Perth Doula Services. No surname, email or prices published."
+    }
+  ]
+}
