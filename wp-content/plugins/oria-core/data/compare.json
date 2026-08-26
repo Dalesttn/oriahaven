@@ -821,6 +821,94 @@
         "firsttime": "You equalise your ears on the way down, like a plane"
       },
       "image_from": "recovery"
+    },
+    {
+      "id": "pilates-reformer",
+      "label": "Reformer Pilates",
+      "url": "/practices/fitness/reformer/",
+      "pair": "pilates-mat",
+      "group": "pilates-styles",
+      "image_from": "fitness",
+      "attributes": {
+        "equipment": "A reformer bed — a sliding carriage with springs, straps and a footbar",
+        "springs": 5,
+        "wear": "Grip socks, required at most studios",
+        "intensity": 4,
+        "pace": 3,
+        "guidance": 5,
+        "groupsize": "6–12, one bed each",
+        "assessment": "An intro class or a private session first, at most studios",
+        "duration": "45–50 min",
+        "price": "$$$",
+        "claimable": "No, unless a physiotherapist runs it as clinical Pilates",
+        "starting": "Book the beginner or intro class — the machine takes a session to learn"
+      }
+    },
+    {
+      "id": "pilates-mat",
+      "label": "Mat Pilates",
+      "url": "/practices/fitness/mat/",
+      "pair": "pilates-reformer",
+      "group": "pilates-styles",
+      "image_from": "fitness",
+      "attributes": {
+        "equipment": "A mat on the floor, sometimes with a ring, band or small ball",
+        "springs": 1,
+        "wear": "Whatever you would wear to a gym class; bare feet or socks",
+        "intensity": 3,
+        "pace": 3,
+        "guidance": 5,
+        "groupsize": "8–20",
+        "assessment": "None — you can walk into a general class",
+        "duration": "45–60 min",
+        "price": "$$",
+        "claimable": "No",
+        "starting": "Any general class; there is nothing to learn before you arrive"
+      }
+    },
+    {
+      "id": "pilates-clinical",
+      "label": "Clinical Pilates",
+      "url": "/practices/fitness/clinical-pilates/",
+      "pair": "pilates-reformer",
+      "group": "pilates-styles",
+      "image_from": "fitness",
+      "attributes": {
+        "equipment": "Reformer, trapeze table or mat, whichever the practitioner picks for you",
+        "springs": 4,
+        "wear": "Grip socks, and clothing you can be assessed in",
+        "intensity": 2,
+        "pace": 1,
+        "guidance": 5,
+        "groupsize": "One-to-one, or three or four",
+        "assessment": "Yes — a full assessment before the first session",
+        "duration": "45–60 min",
+        "price": "$$$$",
+        "claimable": "Often, where a physiotherapist delivers it — check your fund",
+        "starting": "The assessment is the first appointment"
+      }
+    },
+    {
+      "id": "pilates-barre",
+      "label": "Barre",
+      "url": "/perth/barre/",
+      "pair": "pilates-mat",
+      "group": "pilates-styles",
+      "image_from": "fitness",
+      "attributes": {
+        "equipment": "A ballet barre, with light weights, a mat and sometimes a ball",
+        "springs": 2,
+        "wear": "Grip socks, usually required",
+        "intensity": 4,
+        "pace": 5,
+        "guidance": 5,
+        "groupsize": "10–20",
+        "assessment": "None",
+        "duration": "45–50 min",
+        "price": "$$",
+        "claimable": "No",
+        "starting": "Any general class"
+      }
     }
   ],
   "groups": {
@@ -961,6 +1049,91 @@
               "label": "Your first time",
               "type": "text",
               "hint": "What staff typically do for someone new"
+            }
+          }
+        }
+      }
+    },
+    "pilates-styles": {
+      "label": "Types of Pilates",
+      "parent": "fitness",
+      "h1": "Types of Pilates compared",
+      "blurb": "Reformer, mat, clinical and barre — what actually differs once the class starts. What you work on, where the resistance comes from, whether anyone assesses you first, and whether you need grip socks. Barre sits alongside Pilates rather than inside it, but shares the studio, the timetable and the socks.",
+      "attributes": {
+        "kit": {
+          "label": "What you work on",
+          "items": {
+            "equipment": {
+              "label": "You are on",
+              "type": "text"
+            },
+            "springs": {
+              "label": "Where the resistance comes from",
+              "type": "scale",
+              "hint": "Your own bodyweight (1) to loaded springs (5)",
+              "high": "Spring resistance",
+              "low": "Bodyweight only"
+            },
+            "wear": {
+              "label": "What you wear",
+              "type": "text"
+            }
+          }
+        },
+        "session": {
+          "label": "How the class runs",
+          "items": {
+            "intensity": {
+              "label": "Physical effort",
+              "type": "scale",
+              "hint": "How hard the body works in a typical class",
+              "high": "Physical effort",
+              "low": "Gentle"
+            },
+            "pace": {
+              "label": "Pace",
+              "type": "scale",
+              "hint": "Slow and held (1) to fast and repetitive (5)",
+              "high": "Fast-paced",
+              "low": "Slow and controlled"
+            },
+            "guidance": {
+              "label": "Spoken guidance",
+              "type": "scale",
+              "hint": "Left to it (1) to corrected throughout (5)",
+              "high": "Guided throughout",
+              "low": "Self-directed"
+            },
+            "groupsize": {
+              "label": "Typical group",
+              "type": "text"
+            },
+            "assessment": {
+              "label": "Assessed first",
+              "type": "text",
+              "hint": "Whether anyone looks at you before you start"
+            },
+            "duration": {
+              "label": "Typical class",
+              "type": "text"
+            }
+          }
+        },
+        "practical": {
+          "label": "Practical",
+          "items": {
+            "price": {
+              "label": "Typical price",
+              "type": "band"
+            },
+            "claimable": {
+              "label": "Private health",
+              "type": "text",
+              "hint": "Always confirm with your own fund and practitioner"
+            },
+            "starting": {
+              "label": "Starting out",
+              "type": "text"
             }
           }
         }
