@@ -3128,3 +3128,12 @@ html.has-sheet { overflow: hidden; }
 .cmp__intro { max-width: 44rem; }
 .cmp__intro p { margin: 0 0 .85rem; }
 .cmp__intro p:last-child { margin-bottom: 0; }
+
+/* Intent cards carry an optional one-line note (intents.json → "note"), so
+   the grid reads as a set of choices rather than a list of tag names. The
+   label and note stack; the count stays on the right. Cards without a note
+   are unchanged — .intentcard__body is a plain flex child either way. */
+.intentcard__body { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+.intentcard__note { font-size: var(--fs-xs, .78rem); font-weight: 400; color: var(--muted, #5A6B66); line-height: 1.3; }
+.intentcard.is-current .intentcard__note { color: inherit; opacity: .8; }
+@media (max-width: 640px) { .intentcard__note { display: none; } }

@@ -109,6 +109,12 @@ function registry(): array {
 			'label'  => (string) ( $def['label'] ?? $slug ),
 			'filter' => array_map( 'strval', (array) $def['filter'] ),
 			'kind'   => (string) ( $def['kind'] ?? '' ),
+			/*
+			 * One line saying what happens in the room, shown on the category
+			 * grid so the cards read as choices rather than as a list of tag
+			 * names. Optional — a row without one renders as it always did.
+			 */
+			'note'   => (string) ( $def['note'] ?? '' ),
 		);
 	}
 
@@ -365,6 +371,9 @@ function canonical_rows( array $rows, \WP_Term $practice ): array {
 			}
 			if ( $match ) {
 				$row['url'] = url( $page['practice'], $page['intent'] );
+				if ( '' !== (string) ( $page['note'] ?? '' ) ) {
+					$row['note'] = (string) $page['note'];
+				}
 				break;
 			}
 		}

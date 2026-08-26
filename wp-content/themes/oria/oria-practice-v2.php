@@ -235,7 +235,13 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 				$oria_on   = '' !== $oria_facet_href && untrailingslashit( $oria_href ) === untrailingslashit( $oria_facet_href );
 				?>
 				<a class="intentcard<?php echo $oria_on ? ' is-current' : ''; ?>" href="<?php echo esc_url( $oria_href ); ?>"<?php echo $oria_on ? ' aria-current="page"' : ''; ?> style="--i:<?php echo (int) $oria_i++; ?>">
-					<span class="intentcard__label"><?php echo esc_html( (string) $oria_row['label'] ); ?></span>
+					<span class="intentcard__body">
+						<span class="intentcard__label"><?php echo esc_html( (string) $oria_row['label'] ); ?></span>
+						<?php // Only rows backed by an intent page carry one, so the grid degrades to labels. ?>
+						<?php if ( '' !== (string) ( $oria_row['note'] ?? '' ) ) : ?>
+							<span class="intentcard__note"><?php echo esc_html( (string) $oria_row['note'] ); ?></span>
+						<?php endif; ?>
+					</span>
 					<span class="intentcard__count"><?php echo esc_html( number_format_i18n( (int) $oria_row['count'] ) ); ?> <span aria-hidden="true"><?php echo $oria_on ? '✓' : '→'; ?></span></span>
 				</a>
 			<?php endforeach; ?>
