@@ -57,6 +57,82 @@ $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 	</div>
 </section>
 
+<?php
+/*
+ * What a listing costs, read from the tier registry rather than typed here.
+ * A price hard-coded into a template is a price that goes stale the first
+ * time somebody changes the plan and forgets this page exists.
+ */
+$oria_claimed_p  = function_exists( '\Oria\Core\Tiers\tier' ) ? \Oria\Core\Tiers\PRICES[ \Oria\Core\Tiers\CLAIMED ] : 29;
+$oria_featured_p = function_exists( '\Oria\Core\Tiers\tier' ) ? \Oria\Core\Tiers\PRICES[ \Oria\Core\Tiers\FEATURED ] : 79;
+$oria_plans = array(
+	array(
+		'name'  => __( 'Free', 'oria' ),
+		'price' => __( '$0', 'oria' ),
+		'note'  => __( 'forever, no card', 'oria' ),
+		'lines' => array(
+			__( 'Your listing in the directory, its category and your suburb', 'oria' ),
+			__( 'Address, phone, email and website', 'oria' ),
+			__( 'Price band and format', 'oria' ),
+			__( 'One practitioner profile', 'oria' ),
+			__( 'Enquiries straight to your inbox', 'oria' ),
+			__( 'Introductions from our matching service', 'oria' ),
+		),
+	),
+	array(
+		'name'  => __( 'Claimed', 'oria' ),
+		'price' => '$' . $oria_claimed_p,
+		'note'  => __( 'per month', 'oria' ),
+		'lines' => array(
+			__( 'Everything in Free, plus:', 'oria' ),
+			__( 'Performance stats — views, website clicks, phone taps, booking clicks and enquiries', 'oria' ),
+			__( 'Edit the listing yourself, any time', 'oria' ),
+			__( 'Up to four photos', 'oria' ),
+			__( 'Your services, timetable and opening hours', 'oria' ),
+			__( 'Booking link, Instagram and Facebook', 'oria' ),
+			__( 'A current offer, amenities and getting-there details', 'oria' ),
+			__( 'Up to four practitioner profiles', 'oria' ),
+		),
+	),
+	array(
+		'name'  => __( 'Featured', 'oria' ),
+		'price' => '$' . $oria_featured_p,
+		'note'  => __( 'per month', 'oria' ),
+		'lines' => array(
+			__( 'Everything in Claimed, plus:', 'oria' ),
+			__( 'Featured placement in your category', 'oria' ),
+			__( 'A Featured badge on your listing', 'oria' ),
+			__( "Publish your workshops and events on What's On", 'oria' ),
+			__( 'Unlimited photos', 'oria' ),
+		),
+	),
+);
+?>
+<section class="wrap section section--top-flush">
+	<h2 class="h3" style="margin-bottom:.4rem"><?php esc_html_e( 'What a listing costs', 'oria' ); ?></h2>
+	<p class="hint" style="max-width:52ch;margin-bottom:1.2rem"><?php esc_html_e( 'Listing is free and stays free. We never take a commission on a booking, and nothing here is a lock-in contract — cancel a paid plan and the listing drops back to Free with everything you added still on it.', 'oria' ); ?></p>
+	<div class="plans">
+		<?php foreach ( $oria_plans as $oria_i => $oria_plan ) : ?>
+			<div class="plans__card<?php echo 1 === $oria_i ? ' plans__card--pick' : ''; ?>">
+				<?php if ( 1 === $oria_i ) : ?>
+					<span class="plans__flag"><?php esc_html_e( 'Most practices start here', 'oria' ); ?></span>
+				<?php endif; ?>
+				<h3 class="plans__name"><?php echo esc_html( $oria_plan['name'] ); ?></h3>
+				<p class="plans__price"><?php echo esc_html( $oria_plan['price'] ); ?> <small><?php echo esc_html( $oria_plan['note'] ); ?></small></p>
+				<ul class="plans__list">
+					<?php foreach ( $oria_plan['lines'] as $oria_line ) : ?>
+						<li><?php echo esc_html( $oria_line ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+		<?php endforeach; ?>
+	</div>
+	<p class="hint" style="margin-top:1rem;max-width:52ch">
+		<?php esc_html_e( 'Already listed? You can claim an existing listing rather than creating a second one.', 'oria' ); ?>
+		<a href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your listing', 'oria' ); ?></a>
+	</p>
+</section>
+
 <section class="wrap section section--top-flush">
 	<?php if ( $oria_done ) : ?>
 		<div class="card" style="max-width:44rem"><div class="card__body">
@@ -200,6 +276,53 @@ $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 		</form>
 	<?php endif; ?>
 </section>
+
+<?php
+/*
+ * The questions a practitioner actually asks before signing up. Rendered
+ * through the shared FAQ part, which emits the FAQPage JSON-LD from the same
+ * array it prints — so the markup and the structured data cannot disagree.
+ */
+get_template_part(
+	'template-parts/faq',
+	null,
+	array(
+		'id'      => 'faq',
+		'heading' => __( 'Listing your practice — common questions', 'oria' ),
+		'faqs'    => array(
+			array(
+				'q' => __( 'How do I list my practice on Oria Haven?', 'oria' ),
+				'a' => __( 'Fill in the form on this page — it takes about ten minutes. The listing is reviewed and published within 24 hours, and your account works straight away. A listing is free and there is no card required to create one.', 'oria' ),
+			),
+			array(
+				'q' => __( 'What does a listing cost?', 'oria' ),
+				'a' => sprintf(
+					/* translators: 1: claimed monthly price, 2: featured monthly price */
+					__( 'Nothing for a free listing. Claimed is $%1$s a month and adds performance stats, photos, your timetable, a booking link and the ability to edit everything yourself. Featured is $%2$s a month and adds featured placement, unlimited photos and the ability to publish your events.', 'oria' ),
+					$oria_claimed_p,
+					$oria_featured_p
+				),
+			),
+			array(
+				'q' => __( 'Do you take a commission on bookings?', 'oria' ),
+				'a' => __( 'No, and we never have. Enquiries go directly to you with the person\'s details and you deal with them yourself. We are a directory, not a booking platform, so there is nothing for us to take a cut of.', 'oria' ),
+			),
+			array(
+				'q' => __( 'How do I know whether the listing is actually sending me clients?', 'oria' ),
+				'a' => __( 'A claimed listing shows its own performance stats: how many people opened your profile, and how many then clicked your website, tapped your phone number, opened your booking link, asked for directions or sent an enquiry. Figures cover the last 30 and 7 days, your own visits are excluded, and the counting is first-party — no cookies and no third-party trackers.', 'oria' ),
+			),
+			array(
+				'q' => __( 'My practice is already listed. How do I take it over?', 'oria' ),
+				'a' => __( 'Use the claim form rather than this one. Many listings here were built from information practices publish about themselves and are marked Unclaimed until the owner confirms them — claiming one hands you the keys to what is already there, including its address and any reviews.', 'oria' ),
+			),
+			array(
+				'q' => __( 'What happens if I cancel a paid plan?', 'oria' ),
+				'a' => __( 'The listing stays. It drops back to the free plan, still shows as claimed by you, and everything you added is kept — photos, timetable, practitioner profiles, the lot. The paid features simply stop publishing until you restart a plan, and you can still keep your location, contact details and prices current.', 'oria' ),
+			),
+		),
+	)
+);
+?>
 
 <?php
 get_footer();

@@ -3151,3 +3151,21 @@ html.has-sheet { overflow: hidden; }
 .amenity__icon { flex: none; width: 16px; height: 16px; margin-top: .12em; color: var(--ink); }
 /* Fallback for a registry slug with no icon yet — a page never renders a gap. */
 .amenity__dot { flex: none; width: .5rem; height: .5rem; margin-top: .45em; border-radius: 50%; background: var(--moss); }
+
+/* Plan cards on /list-your-practice/. Deliberately compact: this sits above
+   the signup form, so it has to answer "what does it cost" in a glance
+   without pushing the form off the screen. */
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; max-width: 58rem; }
+.plans__card { position: relative; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--white); padding: 1.25rem 1.35rem; }
+.plans__card--pick { border-color: var(--deep); box-shadow: var(--sh-2); }
+.plans__flag {
+  position: absolute; top: -.65rem; left: 1.2rem; background: var(--deep); color: var(--white);
+  font-size: .66rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  padding: .2rem .55rem; border-radius: 99px;
+}
+.plans__name { font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--moss); margin: 0 0 .35rem; }
+.plans__price { font-size: 1.9rem; font-weight: 600; line-height: 1; margin: 0 0 .9rem; font-variant-numeric: tabular-nums; }
+.plans__price small { font-size: .78rem; font-weight: 400; color: var(--text-soft); letter-spacing: 0; }
+.plans__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .4rem; }
+.plans__list li { position: relative; padding-left: 1.1rem; font-size: var(--fs-sm); line-height: 1.45; }
+.plans__list li::before { content: ""; position: absolute; left: 0; top: .5em; width: .4rem; height: .4rem; border-radius: 50%; background: var(--moss); }
