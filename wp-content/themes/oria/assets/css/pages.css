@@ -963,13 +963,25 @@ a.livesession:hover { background: var(--sand-2); }
 /* --- CTA slab ------------------------------------------------------- */
 .ctaslab { position: relative; isolation: isolate; }
 .ctaslab__bg { position: absolute; inset: 0; z-index: -1; }
-.ctaslab__bg img { width: 100%; height: 100%; object-fit: cover; opacity: .55; }
-/* Same trick as the hero: darken the copy side, let the photograph keep its
-   light on the side the button sits on. */
+/* The background is a night skyline, so it is dimmed, desaturated and
+   blurred until it reads as atmosphere rather than a photograph — a lit-up
+   city at full strength argues with a headline about lights already low.
+   scale() covers the transparent edge blur() would otherwise sample at the
+   frame. Every value here is adjustable without touching the asset. */
+.ctaslab__bg { overflow: hidden; }
+.ctaslab__bg img {
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: .34;
+  filter: saturate(.55) blur(3px);
+  transform: scale(1.06);
+}
+/* Still deepest on the copy side, but it no longer thins out to nothing on
+   the right: that is where both buttons sit, and on this image it is also
+   where the towers are brightest. */
 .ctaslab__bg::after {
   content: "";
   position: absolute; inset: 0;
-  background: linear-gradient(to right, rgba(6,26,25,.72) 0%, rgba(6,26,25,.45) 55%, rgba(6,26,25,.2) 100%);
+  background: linear-gradient(to right, rgba(6,26,25,.78) 0%, rgba(6,26,25,.62) 55%, rgba(6,26,25,.5) 100%);
 }
 .ctaslab__inner { padding: clamp(3rem, 7vw, 6rem) clamp(1.5rem, 5vw, 4.5rem); display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s-6); flex-wrap: wrap; }
 .ctaslab__title { max-width: 16ch; }

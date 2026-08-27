@@ -16,7 +16,7 @@ $t = static fn( string $k ): string => (string) ( $s[ $k ] ?? '' );
 ?>
 <section class="section section--bottom-flush">
 	<div class="slab ctaslab on-deep">
-		<div class="ctaslab__bg" aria-hidden="true"><img src="<?php echo esc_url( simg( $s, 'image', 'scene-dusk-ridge.webp' ) ); ?>" alt="" loading="lazy"></div>
+		<div class="ctaslab__bg" aria-hidden="true"><img src="<?php echo esc_url( simg( $s, 'image', 'scene-perth-skyline.webp' ) ); ?>" alt="" loading="lazy"></div>
 		<div class="ctaslab__inner">
 			<div>
 				<?php if ( $t('eyebrow') ) : ?><span class="micro"><?php echo esc_html( $t('eyebrow') ); ?></span><?php endif; ?>
