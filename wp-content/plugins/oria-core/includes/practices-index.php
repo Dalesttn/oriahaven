@@ -60,6 +60,7 @@ function bootstrap(): void {
 	add_filter( 'query_vars', __NAMESPACE__ . '\query_vars' );
 	add_action( 'parse_query', __NAMESPACE__ . '\fix_query' );
 	add_action( 'template_redirect', __NAMESPACE__ . '\facet_404', 4 );
+	add_action( 'template_redirect', __NAMESPACE__ . '\retire_old_category', 7 );
 	add_filter( 'template_include', __NAMESPACE__ . '\template' );
 
 	// Every link to a practice category — footer, header search, listing
@@ -91,6 +92,26 @@ function route(): void {
 	// /practices/{practice}/{facet}/ → the same page with one facet locked:
 	// a style (service term), a specialty, an audience, online, or free.
 	add_rewrite_rule( '^' . PATH . '/([^/]+)/([^/]+)/?$', 'index.php?practice=$matches[1]&' . V2_VAR . '=1&' . FACET_VAR . '=$matches[2]', 'top' );
+
+	/*
+	 * Page two and beyond, for both. Without these the category pages link
+	 * to a 404: three segments match none of the rules above, so the request
+	 * falls through to WordPress with no practice to query.
+	 *
+	 * Added last because 'top' prepends — these end up ahead of the bare
+	 * rules, which is the order they have to be tried in. A bare rule would
+	 * otherwise claim "page" as a facet slug.
+	 */
+	add_rewrite_rule(
+		'^' . PATH . '/([^/]+)/page/([0-9]{1,})/?$',
+		'index.php?practice=$matches[1]&' . V2_VAR . '=1&paged=$matches[2]',
+		'top'
+	);
+	add_rewrite_rule(
+		'^' . PATH . '/([^/]+)/([^/]+)/page/([0-9]{1,})/?$',
+		'index.php?practice=$matches[1]&' . V2_VAR . '=1&' . FACET_VAR . '=$matches[2]&paged=$matches[3]',
+		'top'
+	);
 }
 
 function query_vars( array $vars ): array {
@@ -592,6 +613,59 @@ function template( string $template ): string {
 	return $found ? $found : $template;
 }
 
+/**
+ * Retire the old bare category address.
+ *
+ * /practice/{slug}/ and /practices/{slug}/ have been the same page under two
+ * URLs since v2 went live; the canonical already named the second one, so
+ * this only stops serving the first.
+ *
+ * Deliberately narrow. A combo (/practice/{p}/{area}/) is a different page
+ * that keeps its URL; an intent page has its own redirect in intent-pages.php;
+ * feeds and the v2 route itself must never be touched. The V2_VAR test is
+ * what separates the two addresses — only the /practices/ rewrite sets it.
+ */
+function retire_old_category(): void {
+	if ( 'live' !== mode() || is_admin() ) {
+		return;
+	}
+	if ( ! is_tax( Taxonomies\PRACTICE ) || get_query_var( V2_VAR ) ) {
+		return; // not a practice archive, or already on the new address
+	}
+	if ( null !== \Oria\Core\Seo\combo_area() || IntentPages\current() ) {
+		return; // a combo or an intent page, neither of which moves
+	}
+	$term = get_queried_object();
+	if ( ! $term instanceof \WP_Term ) {
+		return;
+	}
+
+	/*
+	 * Decided on the path, not on WP's query flags. is_feed() and the feed
+	 * query var are both still empty here at priority 7, so guarding on them
+	 * silently sent /practice/{slug}/feed/ to a category page — and the new
+	 * address has no feed to send it to anyway: /practices/{slug}/feed/
+	 * matches the facet rule with a facet named "feed" and 404s.
+	 *
+	 * The URLs that should move are exactly two shapes. Everything else —
+	 * feeds, comment feeds, embeds, trackbacks, whatever is added next —
+	 * falls through and keeps working where it is.
+	 */
+	$path = (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH );
+	if ( ! preg_match( '#^/practice/[^/]+/(?:page/(\d+)/)?$#', $path, $m ) ) {
+		return;
+	}
+
+	$target = category_url( $term );
+	if ( ! empty( $m[1] ) && (int) $m[1] > 1 ) {
+		// Page 2 of the old address is page 2 of the new one, not page 1:
+		// dropping it would redirect a real page to different content.
+		$target .= 'page/' . (int) $m[1] . '/';
+	}
+	wp_safe_redirect( $target, 301 );
+	exit;
+}
+
 /* ---------------------------------------------------------------- sitemap */
 
 /**
@@ -931,9 +1005,16 @@ function canonical( $canonical ) {
 			return 'live' === mode() ? category_url( $term ) : original_url( $term );
 		}
 	}
-	if ( is_tax( Taxonomies\PRACTICE ) && ! IntentPages\current() ) {
+	if ( is_tax( Taxonomies\PRACTICE ) && ! IntentPages\current() && null === \Oria\Core\Seo\combo_area() ) {
 		// The original /practice/{slug}/ page: its own canonical until the
 		// switch is flipped to live, when the new page becomes the one.
+		//
+		// Combos are explicitly not this. /practice/{p}/{area}/ is also a
+		// practice archive, so without the guard above it fell in here and
+		// was told the category page was its original — overwriting the
+		// self-canonical seo_canonical() sets at priority 10, because this
+		// filter runs at 25. They are the pages that rank best on the site;
+		// they keep their own address.
 		$term = get_queried_object();
 		if ( $term instanceof \WP_Term ) {
 			return 'live' === mode() ? category_url( $term ) : original_url( $term );
