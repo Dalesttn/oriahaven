@@ -774,6 +774,31 @@ function map_embed_url( string $address, $lat = null, $lng = null ): string {
 	);
 }
 
+/**
+ * The illustration for a facet, or '' when there is not one.
+ *
+ * These ship in the theme rather than the media library for the same reason
+ * the registries ship in git: they are part of the build, identical on every
+ * environment, and nothing about them belongs in a database export.
+ *
+ * The directory is read once per request. A hundred file_exists() calls to
+ * render five cards would be five wasted stats and ninety-five pointless
+ * ones.
+ */
+function facet_image( string $slug ): string {
+	static $have = null;
+	if ( null === $have ) {
+		$have = array();
+		foreach ( (array) glob( get_stylesheet_directory() . '/assets/img/facets/*.webp' ) as $file ) {
+			$have[ basename( (string) $file, '.webp' ) ] = true;
+		}
+	}
+	if ( '' === $slug || ! isset( $have[ $slug ] ) ) {
+		return '';
+	}
+	return get_stylesheet_directory_uri() . '/assets/img/facets/' . $slug . '.webp';
+}
+
 /** Directions link — needs no API key. */
 function map_directions_url( string $address ): string {
 	return 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode( $address );

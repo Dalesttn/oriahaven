@@ -927,3 +927,40 @@ html.has-sheet .cmptray { display: none; }
   margin-bottom: var(--s-4); color: var(--white); text-decoration: none;
 }
 .drawer__saved > span:first-child { color: var(--brand-gold, #C9A227); }
+
+/* --- Service card illustration ------------------------------------------
+   The picture is collapsed to nothing and grows out of the card on hover.
+   0fr -> 1fr animates without anyone having to guess a pixel height, so the
+   card is honest about the image's real aspect ratio at every size.
+
+   Scoped to devices that hover. A phone has no hover state, and a reveal it
+   can never trigger would just be a hidden image; there it simply shows. */
+.offercard__media { display: block; }
+.offercard__img {
+  display: block; width: 100%; height: auto;
+  border-radius: var(--r-1, 10px); background: var(--sand-2, #F2EFE7);
+}
+
+@media (hover: hover) {
+  .offercard--img .offercard__media {
+    display: grid; grid-template-rows: 0fr;
+    margin-top: 0; overflow: hidden;
+    transition: grid-template-rows .3s ease, margin-top .3s ease, opacity .3s ease;
+    opacity: 0;
+  }
+  /* A grid item will not shrink below its content without this. */
+  .offercard--img .offercard__media > .offercard__img { min-height: 0; }
+  .offercard--img:hover .offercard__media,
+  .offercard--img:focus-visible .offercard__media {
+    grid-template-rows: 1fr; margin-top: .75rem; opacity: 1;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: reduce) {
+  .offercard--img .offercard__media { transition: none; }
+}
+
+/* Below the hover query the image is always out, so it needs its own gap. */
+@media (hover: none) {
+  .offercard--img .offercard__media { margin-top: .75rem; }
+}

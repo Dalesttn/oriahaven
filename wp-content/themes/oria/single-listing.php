@@ -583,16 +583,31 @@ while ( have_posts() ) :
 							'label' => $oria_sname,
 							'url'   => $oria_url,
 							'note'  => function_exists( '\Oria\Core\Services\note_any' ) ? \Oria\Core\Services\note_any( $oria_slug ) : '',
+							'slug'  => $oria_slug,
 						);
 					}
 					?>
 					<?php if ( $oria_cards ) : ?>
 						<div class="offergrid">
 							<?php foreach ( $oria_cards as $oria_c ) : ?>
-								<a class="offercard" href="<?php echo esc_url( $oria_c['url'] ); ?>">
+								<?php $oria_cimg = \Oria\Theme\facet_image( (string) $oria_c['slug'] ); ?>
+								<a class="offercard<?php echo $oria_cimg ? ' offercard--img' : ''; ?>" href="<?php echo esc_url( $oria_c['url'] ); ?>">
 									<b class="offercard__name"><?php echo esc_html( $oria_c['label'] ); ?></b>
 									<?php if ( '' !== $oria_c['note'] ) : ?>
 										<span class="offercard__note"><?php echo esc_html( $oria_c['note'] ); ?></span>
+									<?php endif; ?>
+									<?php
+									/*
+									 * Decorative: the name and the note above
+									 * already say this. alt="" and aria-hidden
+									 * keep it out of the reading order rather
+									 * than announcing the card twice.
+									 */
+									?>
+									<?php if ( $oria_cimg ) : ?>
+										<span class="offercard__media" aria-hidden="true">
+											<img class="offercard__img" src="<?php echo esc_url( $oria_cimg ); ?>" alt="" loading="lazy" decoding="async" width="800" height="450">
+										</span>
 									<?php endif; ?>
 									<span class="offercard__go"><?php esc_html_e( 'See everywhere in Perth', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></span>
 								</a>
