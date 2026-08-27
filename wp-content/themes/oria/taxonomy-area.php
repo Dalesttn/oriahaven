@@ -26,7 +26,7 @@ $oria_region = $oria_term instanceof WP_Term ? \Oria\Core\Taxonomies\region_for(
 	<div class="row-between" style="align-items:flex-end;margin-top:1rem">
 		<div>
 			<span class="micro"><?php esc_html_e( 'Area guide', 'oria' ); ?></span>
-			<h1 class="h1 pagehead__title"><?php printf( esc_html__( 'Meditation & wellness in %s', 'oria' ), esc_html( \Oria\Theme\tname( get_queried_object() ) ) ); ?></h1>
+			<h1 class="h1 pagehead__title"><?php printf( esc_html__( 'Wellness practices in %s', 'oria' ), esc_html( \Oria\Theme\tname( get_queried_object() ) ) ); ?></h1>
 		</div>
 		<?php if ( $oria_term instanceof WP_Term && $oria_term->description ) : ?>
 			<p class="lede" style="max-width:36ch"><?php echo esc_html( $oria_term->description ); ?></p>
@@ -42,28 +42,40 @@ $oria_region = $oria_term instanceof WP_Term ? \Oria\Core\Taxonomies\region_for(
  */
 get_template_part( 'template-parts/answer', 'block', array( 'term' => $oria_term ) );
 ?>
-<section class="wrap section section--top-flush">
-	<div class="dir">
-		<?php get_template_part( 'template-parts/directory', 'filters' ); ?>
-		<div>
-			<div class="dir__bar">
-				<div style="flex:1;min-width:240px">
-					<label class="sr-only" for="dirQ"><?php esc_html_e( 'Search this area', 'oria' ); ?></label>
-					<input class="input" id="dirQ" type="search" placeholder="<?php printf( esc_attr__( 'Search within %s', 'oria' ), esc_attr( \Oria\Theme\tname( get_queried_object() ) ) ); ?>">
-				</div>
-				<div class="dir__tools">
-					<button class="btn btn--ghost btn--sm btn--plain" id="filterToggle" aria-expanded="true" aria-controls="dirFilters"><?php esc_html_e( 'Filters', 'oria' ); ?></button>
-					<label class="sr-only" for="dirSort"><?php esc_html_e( 'Sort by', 'oria' ); ?></label>
-					<select class="select" id="dirSort" style="width:auto">
-						<option value="relevance"><?php esc_html_e( 'Featured first', 'oria' ); ?></option>
-						<option value="rating"><?php esc_html_e( 'Highest rated', 'oria' ); ?></option>
-						<option value="price"><?php esc_html_e( 'Lowest price', 'oria' ); ?></option>
-						<option value="name"><?php esc_html_e( 'A–Z', 'oria' ); ?></option>
-					</select>
-				</div>
-			</div>
-			<?php // Gives the listing h3s below a parent heading. ?>
-			<h2 class="sr-only"><?php printf( esc_html__( 'Practices in %s', 'oria' ), esc_html( \Oria\Theme\tname( $oria_term ) ) ); ?></h2>
+<section class="wrap section section--top-flush floor" id="browse">
+	<h2 class="micro floor__label"><?php esc_html_e( 'Browse', 'oria' ); ?></h2>
+	<?php
+	/*
+	 * The same toolbar the category pages use. term is null because an area
+	 * is not a practice — directory-v2.php passes null the same way — and
+	 * the ids are this page's own listings, which is what the toolbar counts
+	 * its facets from. That is the whole point of the swap: the old rail
+	 * counted the entire directory beside eleven Subiaco listings.
+	 */
+	$oria_ids = array();
+	if ( $oria_term instanceof WP_Term ) {
+		$oria_ids = get_posts(
+			array(
+				'post_type'      => 'listing',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'tax_query'      => array(
+					array(
+						'taxonomy'         => 'area',
+						'field'            => 'term_id',
+						'terms'            => (int) $oria_term->term_id,
+						'include_children' => true,
+					),
+				),
+			)
+		);
+	}
+	get_template_part( 'template-parts/directory', 'toolbar', array( 'term' => null, 'ids' => $oria_ids ) );
+	?>
+	<p class="dir__count" id="dirCount" style="margin-top:1rem"></p>
+	<div class="chips" id="dirChips" style="margin-top:.5rem"></div>
+	<h2 class="sr-only"><?php printf( esc_html__( 'Practices in %s', 'oria' ), esc_html( \Oria\Theme\tname( $oria_term ) ) ); ?></h2>
 			<p class="dir__count" id="dirCount"></p>
 			<div class="chips" id="dirChips" style="margin-top:1rem"></div>
 			<?php
@@ -87,7 +99,7 @@ get_template_part( 'template-parts/answer', 'block', array( 'term' => $oria_term
 			 */
 			$oria_is_suburb = $oria_term instanceof WP_Term && \Oria\Core\Taxonomies\is_suburb( $oria_term );
 			?>
-			<div class="dir__results" id="dirResults" data-region="<?php echo esc_attr( $oria_region ? $oria_region->slug : '' ); ?>"<?php echo $oria_is_suburb ? ' data-suburb="' . esc_attr( \Oria\Theme\tname( $oria_term ) ) . '"' : ''; ?>>
+			<div class="dir__results dir__results--wide" id="dirResults" data-region="<?php echo esc_attr( $oria_region ? $oria_region->slug : '' ); ?>"<?php echo $oria_is_suburb ? ' data-suburb="' . esc_attr( \Oria\Theme\tname( $oria_term ) ) . '"' : ''; ?>>
 				<?php
 				while ( have_posts() ) :
 					the_post();
@@ -128,8 +140,6 @@ get_template_part( 'template-parts/answer', 'block', array( 'term' => $oria_term
 					</p>
 				<?php endif; ?>
 			<?php endif; ?>
-		</div>
-	</div>
 </section>
 
 <?php
