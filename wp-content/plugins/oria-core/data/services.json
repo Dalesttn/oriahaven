@@ -952,11 +952,15 @@
       "slug": "life-coaching",
       "name": "Life coaching",
       "categories": [
+        "mind",
         "mindfulness"
       ],
       "aliases": [
         "coaching",
-        "mindset coaching"
+        "health coaching",
+        "lifestyle coaching",
+        "mindset coaching",
+        "wellness coaching"
       ]
     },
     {
