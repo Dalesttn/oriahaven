@@ -804,6 +804,44 @@ function map_directions_url( string $address ): string {
 	return 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode( $address );
 }
 
+/**
+ * An outbound link to a practice's own site, tagged so their analytics can
+ * see the visit came from Oria Haven.
+ *
+ * utm_source names us, utm_medium=referral files it in the channel where a
+ * practice would look for it, and utm_content carries which listing sent the
+ * click -- useful to an owner with more than one location, invisible noise
+ * to everyone else.
+ *
+ * A URL that already carries a utm_source is left entirely alone: if the
+ * practice wrote their own tags into the link they gave us, overwriting them
+ * would corrupt their campaign data to flatter ours.
+ *
+ * The fragment is split off first because add_query_arg() appends after it,
+ * which produces "#top?utm_source=..." -- a URL whose query no analytics
+ * tool will ever see.
+ */
+function outbound( string $url, string $content = '' ): string {
+	if ( '' === $url || false !== stripos( $url, 'utm_source=' ) ) {
+		return $url;
+	}
+	$fragment = '';
+	$hash     = strpos( $url, '#' );
+	if ( false !== $hash ) {
+		$fragment = substr( $url, $hash );
+		$url      = substr( $url, 0, $hash );
+	}
+	$args = array(
+		'utm_source'   => 'oriahaven',
+		'utm_medium'   => 'referral',
+		'utm_campaign' => 'directory',
+	);
+	if ( '' !== $content ) {
+		$args['utm_content'] = $content;
+	}
+	return add_query_arg( $args, $url ) . $fragment;
+}
+
 /** Estimated reading time in minutes, floor 1. */
 function reading_time( int $post_id ): int {
 	$words = str_word_count( wp_strip_all_tags( (string) get_post_field( 'post_content', $post_id ) ) );

@@ -42,8 +42,11 @@ while ( have_posts() ) :
 	$oria_address    = (string) get_field( 'address', $oria_id );
 	$oria_phone      = (string) get_field( 'phone', $oria_id );
 	$oria_email      = (string) get_field( 'email', $oria_id );
-	$oria_website    = (string) get_field( 'website', $oria_id );
-	$oria_booking    = (string) get_field( 'booking_url', $oria_id );
+	// Tagged once here, so every button and row below sends the same
+	// utm_source=oriahaven -- see Theme\outbound().
+	$oria_slugname   = (string) get_post_field( 'post_name', $oria_id );
+	$oria_website    = \Oria\Theme\outbound( (string) get_field( 'website', $oria_id ), $oria_slugname );
+	$oria_booking    = \Oria\Theme\outbound( (string) get_field( 'booking_url', $oria_id ), $oria_slugname );
 	$oria_rating     = (float) get_field( 'rating', $oria_id );
 	$oria_rcount     = (int) get_field( 'review_count', $oria_id );
 	// rows() rather than an (array) cast: ACF returns false for an empty
