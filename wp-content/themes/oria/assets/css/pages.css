@@ -692,39 +692,68 @@ a.livesession:hover { background: var(--sand-2); }
 /* --- This weekend ---------------------------------------------------- */
 .wkday { display: flex; align-items: baseline; gap: var(--s-3); margin-bottom: var(--s-4); }
 .wkday__date { font-size: var(--fs-xs); font-weight: 600; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--text-faint); }
-.wkrows { display: grid; gap: var(--s-3); }
+/* Cards, not rows. Same element and the same data attributes the filter
+   script reads — only the presentation changed. auto-fill rather than
+   auto-fit so a day holding one event gets a card the size of every other
+   card instead of one stretched across the page. */
+.wkrows {
+  display: grid; gap: var(--s-4);
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+}
 .wkrow {
-  display: grid; grid-template-columns: auto minmax(76px, auto) 1fr auto auto; gap: var(--s-4);
-  align-items: center;
-  padding: var(--s-4) var(--s-5);
+  display: flex; flex-direction: column;
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
+  overflow: hidden;
   transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
 }
 .wkrow:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
 .wkrow__mark { font-size: 1.15rem; line-height: 1; }
+
+/* 16:9 keeps a wall of cards on one grid line whatever shape the source
+   banner arrived in — and they arrive in every shape. */
 .wkrow__thumb {
-  width: 56px; height: 56px; flex: none;
-  border-radius: var(--r-sm); overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  aspect-ratio: 16 / 9; width: 100%;
   background: linear-gradient(135deg, var(--deep-2), var(--teal));
 }
-.wkrow__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.wkrow__thumb i { font-style: normal; font-size: 1.35rem; line-height: 1; }
-.wkrow__time { font-size: var(--fs-xs); font-weight: 700; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--teal); white-space: nowrap; }
-.wkrow__body { min-width: 0; }
-.wkrow__body b { display: block; font-weight: 600; letter-spacing: -0.01em; }
-.wkrow__body em { display: block; font-style: normal; font-size: var(--fs-xs); color: var(--text-faint); margin-top: 2px; }
+/* Absolutely positioned, so the picture takes no part in sizing the box.
+   As a flex child with height:100% it fed its own 4:3 back into the parent
+   and aspect-ratio never got a look in — the cards came out 1.33. */
+.wkrow__thumb img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.wkrow__thumb i {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-style: normal; font-size: 2rem; line-height: 1;
+}
+
+/* The time sits on the picture. Above the title in its own row it reads as
+   a timetable, which is the habit this layout is trying to break. */
+.wkrow__time {
+  position: absolute; left: .6rem; bottom: .6rem;
+  font-size: var(--fs-xs); font-weight: 700;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  color: var(--white); white-space: nowrap;
+  background: rgba(6, 26, 25, .72);
+  padding: .25rem .5rem; border-radius: var(--r-sm);
+  backdrop-filter: blur(3px);
+}
+.wkrow__body { min-width: 0; padding: var(--s-4) var(--s-4) 0; flex: 1; }
+.wkrow__body b { display: block; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
+.wkrow__body em { display: block; font-style: normal; font-size: var(--fs-xs); color: var(--text-faint); margin-top: .35rem; }
 .wkrow:hover .wkrow__body b { text-decoration: underline; text-underline-offset: 3px; }
-.wkrow__price { font-size: var(--fs-xs); font-weight: 600; color: var(--text-soft); white-space: nowrap; }
-.wkrow__go { color: var(--text-faint); display: inline-flex; }
-.wkrow__go svg { width: 16px; height: 16px; }
-@media (max-width: 720px) {
-  .wkrow { grid-template-columns: auto auto 1fr auto; }
-  .wkrow__thumb { width: 48px; height: 48px; grid-row: 1 / 3; align-self: start; }
-  .wkrow__body { grid-column: 2 / -1; grid-row: 2; }
-  .wkrow__go { display: none; }
+.wkrow__price {
+  font-size: var(--fs-xs); font-weight: 600; color: var(--text-soft);
+  white-space: nowrap; padding: var(--s-3) var(--s-4) var(--s-4);
+}
+/* The arrow was the row's affordance; a whole card is its own. */
+.wkrow__go { display: none; }
+@media (max-width: 480px) {
+  .wkrows { grid-template-columns: 1fr; }
 }
 
 /* Full-width event hero: banners come in every shape, so crop to a calm

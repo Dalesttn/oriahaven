@@ -138,11 +138,42 @@ foreach ( $oria_events as $oria_ev ) {
 	);
 }
 
-// Day groups, members first within each day (they pay to be here).
-$oria_days = array();
+/*
+ * Period groups, members first within each (they pay to be here).
+ *
+ * By calendar day this produced nine headings for ten events, each holding
+ * one card. "This weekend" and "Next week" are also what somebody actually
+ * came to ask; a date is a detail they want once they are interested, and
+ * every card still carries its own.
+ */
+$oria_group_of = static function ( int $ts ) use ( $oria_now ): array {
+	$today    = (int) strtotime( 'today', $oria_now );
+	$sat      = (int) strtotime( 'saturday this week', $today );
+	$sun_end  = (int) strtotime( 'sunday this week 23:59:59', $today );
+	$week_end = (int) strtotime( '+7 days 23:59:59', $today );
+
+	if ( $ts <= $sun_end && $ts >= $sat - DAY_IN_SECONDS ) {
+		// Friday counts: nobody planning a weekend excludes Friday night.
+		return array( '1-weekend', __( 'This weekend', 'oria' ) );
+	}
+	if ( $ts <= $today + DAY_IN_SECONDS ) {
+		return array( '0-now', __( 'Today and tomorrow', 'oria' ) );
+	}
+	if ( $ts <= $week_end ) {
+		return array( '2-week', __( 'In the next week', 'oria' ) );
+	}
+	// Beyond that, the month is a big enough bucket to stay full.
+	return array( '3-' . gmdate( 'Y-m', $ts ), gmdate( 'F Y', $ts ) );
+};
+
+$oria_days   = array();
+$oria_labels = array();
 foreach ( $oria_rows as $oria_r ) {
-	$oria_days[ $oria_r['day'] ][] = $oria_r;
+	list( $oria_key, $oria_label ) = $oria_group_of( (int) $oria_r['ts'] );
+	$oria_days[ $oria_key ][]      = $oria_r;
+	$oria_labels[ $oria_key ]      = $oria_label;
 }
+ksort( $oria_days );
 foreach ( $oria_days as &$oria_list ) {
 	usort( $oria_list, static fn( $a, $b ) => array( ! $a['member'], $a['ts'] ) <=> array( ! $b['member'], $b['ts'] ) );
 }
@@ -165,16 +196,31 @@ $oria_row = static function ( array $r ): void {
 		data-band="<?php echo esc_attr( $r['band'] ); ?>">
 		<span class="wkrow__thumb" aria-hidden="true">
 			<?php if ( has_post_thumbnail( $oria_ev ) ) : ?>
-				<?php echo get_the_post_thumbnail( $oria_ev, 'thumbnail', array( 'loading' => 'lazy', 'alt' => '' ) ); ?>
+				<?php
+				/*
+				 * medium_large, not thumbnail. The card is up to ~26rem wide
+				 * and 150px stretched into it is the reason these pictures
+				 * looked like placeholders.
+				 */
+				echo get_the_post_thumbnail( $oria_ev, 'medium_large', array( 'loading' => 'lazy', 'alt' => '' ) );
+				?>
 			<?php else : ?>
 				<i><?php echo esc_html( \Oria\Theme\event_mark( $oria_ev->ID ) ); ?></i>
 			<?php endif; ?>
+			<time class="wkrow__time"><?php echo esc_html( $oria_t ); ?></time>
 		</span>
-		<time class="wkrow__time"><?php echo esc_html( $oria_t ); ?></time>
 		<span class="wkrow__body">
 			<b><?php echo esc_html( \Oria\Theme\ptitle( $oria_ev ) ); ?><?php if ( $r['member'] ) : ?> <i class="wkrow__flag"><?php esc_html_e( 'Featured practice', 'oria' ); ?></i><?php endif; ?></b>
 			<em>
-				<?php echo esc_html( implode( ' · ', array_filter( array( $r['suburb'], $r['type'] ? \Oria\Theme\tname( $r['type'] ) : '' ) ) ) ); ?>
+				<?php
+				// The day, then where and what. The group heading gives the
+				// rough when; this gives the exact one.
+				echo esc_html( implode( ' · ', array_filter( array(
+					gmdate( 'D j M', $r['ts'] ),
+					$r['suburb'],
+					$r['type'] ? \Oria\Theme\tname( $r['type'] ) : '',
+				) ) ) );
+				?>
 				<?php if ( ! $r['member'] && $r['src'] ) : ?><span class="wkrow__src"><?php echo esc_html( sprintf( __( 'via %s', 'oria' ), $r['src'] ) ); ?></span><?php endif; ?>
 			</em>
 		</span>
@@ -261,8 +307,8 @@ $oria_row = static function ( array $r ): void {
 			<?php foreach ( $oria_days as $oria_day => $oria_list ) : ?>
 				<div class="wogroup">
 					<h2 class="h3 wkday">
-						<?php echo esc_html( gmdate( 'l', (int) strtotime( $oria_day ) ) ); ?>
-						<span class="wkday__date"><?php echo esc_html( gmdate( 'j F', (int) strtotime( $oria_day ) ) ); ?></span>
+						<?php echo esc_html( $oria_labels[ $oria_day ] ?? '' ); ?>
+						<span class="wkday__date"><?php echo esc_html( sprintf( _n( '%d event', '%d events', count( $oria_list ), 'oria' ), count( $oria_list ) ) ); ?></span>
 					</h2>
 					<div class="wkrows">
 						<?php foreach ( $oria_list as $oria_r ) { $oria_row( $oria_r ); } ?>
