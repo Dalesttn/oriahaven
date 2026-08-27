@@ -38,6 +38,7 @@ function bootstrap(): void {
 	// Yoast when present, core titles as the fallback.
 	add_filter( 'wpseo_title', __NAMESPACE__ . '\seo_title' );
 	add_filter( 'wpseo_metadesc', __NAMESPACE__ . '\seo_description' );
+	add_action( 'template_redirect', __NAMESPACE__ . '\retire_city_combo', 6 );
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\seo_canonical' );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\seo_robots' );
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title' );
@@ -630,6 +631,37 @@ function seo_description( $desc ) {
 	return $desc;
 }
 
+
+/**
+ * A combo whose area is the whole city is the category page. Send it there.
+ *
+ * combo_area() resolves {x} in /practice/{p}/{x}/ against the area taxonomy,
+ * and the city term is a legitimate member of it — so /practice/yoga/perth/
+ * resolves, renders, and filters nothing out. One page per category, 23 in
+ * all, each a duplicate of the category with an identical title.
+ *
+ * Region and suburb combos are real pages and are left exactly as they are.
+ */
+function retire_city_combo(): void {
+	if ( is_admin() ) {
+		return;
+	}
+	$area = combo_area();
+	if ( ! $area instanceof \WP_Term || ! \Oria\Core\Taxonomies\is_city( $area ) ) {
+		return;
+	}
+	$practice = get_queried_object();
+	if ( ! $practice instanceof \WP_Term ) {
+		return;
+	}
+	// Only the bare combo address, never a feed or anything else hanging off it.
+	$path = (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH );
+	if ( ! preg_match( '#^/practice/[^/]+/[^/]+/$#', $path ) ) {
+		return;
+	}
+	wp_safe_redirect( \Oria\Core\PracticesIndex\category_url( $practice ), 301 );
+	exit;
+}
 
 function seo_canonical( $canonical ) {
 	$area = combo_area();

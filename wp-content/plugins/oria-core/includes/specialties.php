@@ -35,6 +35,7 @@ const MAP = array(
 	'homeopathy'         => array( 'Homeopathy', 'homeopath|homoeopath', 'Homeopathic consultations from registered practitioners around Perth.' ),
 	'chinese-medicine'   => array( 'Chinese medicine', 'chinese (?:herbal )?medicine|\btcm\b', 'Traditional Chinese medicine clinics and registered practitioners in Perth.' ),
 	'ayurveda'           => array( 'Ayurveda', 'ayurved', 'Ayurvedic consultations, treatments and panchakarma programs in Perth.' ),
+	'massage'            => array( 'Massage', 'massage', 'Massage therapists and clinics across the Perth metro, from remedial and sports to relaxation, Thai and pregnancy massage.' ),
 	'remedial-massage'   => array( 'Remedial massage', 'remedial', 'Remedial massage therapists with health-fund rebates across Perth.' ),
 	'deep-tissue'        => array( 'Deep tissue massage', 'deep tissue', 'Deep tissue and firm-pressure massage across the Perth metro.' ),
 	'sports-massage'     => array( 'Sports massage', 'sports massage', 'Sports and athletic recovery massage in Perth.' ),
