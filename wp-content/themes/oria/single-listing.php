@@ -50,7 +50,17 @@ while ( have_posts() ) :
 	// repeater, and (array) false is [false] — a truthy one-element array
 	// that renders a heading with a blank row under it.
 	$oria_services   = \Oria\Theme\rows( 'services', array(), $oria_id );
-	$oria_timetable  = \Oria\Theme\rows( 'timetable', array(), $oria_id );
+	/*
+	 * Classes and packages publish only while the listing is on a paid
+	 * plan. A listing that lapses keeps everything it typed and simply
+	 * stops showing it -- deleting somebody's class list because a card
+	 * expired would be the wrong way round.
+	 */
+	$oria_paid       = function_exists( '\Oria\Core\Ownership\is_paid' )
+		? \Oria\Core\Ownership\is_paid( $oria_id )
+		: false;
+	$oria_classes    = $oria_paid ? \Oria\Theme\rows( 'classes', array(), $oria_id ) : array();
+	$oria_packages   = $oria_paid ? \Oria\Theme\rows( 'packages', array(), $oria_id ) : array();
 	$oria_verified   = (string) get_field( 'verified_at', $oria_id );
 	$oria_price_from = get_field( 'price_from', $oria_id );
 	$oria_format     = (string) ( get_field( 'format', $oria_id ) ?: 'in-person' );
@@ -428,6 +438,106 @@ while ( have_posts() ) :
 					</div>
 				</div>
 
+				<!-- Classes: the practice's own timetable -->
+				<?php if ( $oria_classes ) : ?>
+				<div>
+					<h2 class="h3" style="margin-bottom:.25rem"><?php esc_html_e( 'Classes', 'oria' ); ?></h2>
+					<p class="hint" style="margin-bottom:1.1rem"><?php esc_html_e( 'Published by the practice. Public holidays excepted — check before you travel.', 'oria' ); ?></p>
+					<?php
+					/*
+					 * Days come from each class's own day field, so the filter
+					 * matches rather than parses. Only days that appear get a
+					 * button, and the control is skipped below two: a
+					 * Saturdays-only timetable needs reading, not filtering.
+					 */
+					$oria_cls_days = function_exists( '\Oria\Core\Classes\days_used' )
+						? \Oria\Core\Classes\days_used( $oria_classes )
+						: array();
+					?>
+					<div class="classes" data-classes>
+						<?php if ( count( $oria_cls_days ) > 1 ) : ?>
+							<div class="ttdays" role="group" aria-label="<?php esc_attr_e( 'Filter classes by day', 'oria' ); ?>">
+								<button class="fchip is-on" type="button" data-cls-day="all"><?php esc_html_e( 'All days', 'oria' ); ?></button>
+								<?php foreach ( $oria_cls_days as $oria_d ) : ?>
+									<button class="fchip" type="button" data-cls-day="<?php echo (int) $oria_d; ?>"><?php echo esc_html( \Oria\Core\Classes\label( (int) $oria_d ) ); ?></button>
+								<?php endforeach; ?>
+							</div>
+						<?php endif; ?>
+						<ul class="classlist">
+							<?php
+							foreach ( $oria_classes as $oria_row ) :
+								$oria_ctitle = trim( (string) ( $oria_row['title'] ?? '' ) );
+								if ( '' === $oria_ctitle ) {
+									continue;
+								}
+								$oria_rdays  = function_exists( '\Oria\Core\Classes\days_of' )
+									? \Oria\Core\Classes\days_of( $oria_row )
+									: array();
+								$oria_cdesc  = trim( (string) ( $oria_row['description'] ?? '' ) );
+								$oria_ctime  = trim( (string) ( $oria_row['time'] ?? '' ) );
+								$oria_cprice = trim( (string) ( $oria_row['price'] ?? '' ) );
+								?>
+								<li class="classrow" data-cls-days="<?php echo esc_attr( implode( ' ', $oria_rdays ) ); ?>">
+									<div class="classrow__when">
+										<span class="classrow__day"><?php echo esc_html( \Oria\Core\Classes\day_summary( $oria_row ) ); ?></span>
+										<?php if ( $oria_ctime ) : ?>
+											<span class="classrow__time"><?php echo esc_html( $oria_ctime ); ?></span>
+										<?php endif; ?>
+									</div>
+									<div class="classrow__main">
+										<h3 class="classrow__title"><?php echo esc_html( $oria_ctitle ); ?></h3>
+										<?php if ( $oria_cdesc ) : ?>
+											<p class="classrow__desc"><?php echo esc_html( $oria_cdesc ); ?></p>
+										<?php endif; ?>
+									</div>
+									<?php // A missing price is not a free class. An empty cell says nothing, which is right. ?>
+									<?php if ( $oria_cprice ) : ?>
+										<div class="classrow__price"><?php echo esc_html( $oria_cprice ); ?></div>
+									<?php endif; ?>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+						<p class="dir__empty" data-cls-empty hidden style="margin-top:1rem"><?php esc_html_e( 'Nothing listed for that day.', 'oria' ); ?></p>
+					</div>
+				</div>
+				<?php endif; ?>
+
+				<!-- Packages -->
+				<?php if ( $oria_packages ) : ?>
+				<div>
+					<h2 class="h3" style="margin-bottom:1.1rem"><?php esc_html_e( 'Packages', 'oria' ); ?></h2>
+					<div class="pkgs">
+						<?php
+						foreach ( $oria_packages as $oria_pkg ) :
+							$oria_ptitle = trim( (string) ( $oria_pkg['title'] ?? '' ) );
+							if ( '' === $oria_ptitle ) {
+								continue;
+							}
+							$oria_pdesc  = trim( (string) ( $oria_pkg['description'] ?? '' ) );
+							$oria_pprice = trim( (string) ( $oria_pkg['price'] ?? '' ) );
+							$oria_pimg   = (int) ( $oria_pkg['image'] ?? 0 );
+							?>
+							<article class="pkgcard">
+								<?php if ( $oria_pimg ) : ?>
+									<div class="pkgcard__media">
+										<?php echo wp_get_attachment_image( $oria_pimg, 'medium_large', false, array( 'class' => 'pkgcard__img', 'loading' => 'lazy', 'alt' => esc_attr( $oria_ptitle ) ) ); ?>
+									</div>
+								<?php endif; ?>
+								<div class="pkgcard__body">
+									<h3 class="pkgcard__title"><?php echo esc_html( $oria_ptitle ); ?></h3>
+									<?php if ( $oria_pdesc ) : ?>
+										<p class="pkgcard__desc"><?php echo esc_html( $oria_pdesc ); ?></p>
+									<?php endif; ?>
+									<?php if ( $oria_pprice ) : ?>
+										<span class="pkgcard__price"><?php echo esc_html( $oria_pprice ); ?></span>
+									<?php endif; ?>
+								</div>
+							</article>
+						<?php endforeach; ?>
+					</div>
+				</div>
+				<?php endif; ?>
+
 				<!-- Services -->
 				<?php if ( $oria_services ) : ?>
 				<div>
@@ -594,55 +704,6 @@ while ( have_posts() ) :
 
 				<?php // The people behind the listing, before the timetable: who you see matters more than when. ?>
 				<?php get_template_part( 'template-parts/team', null, array( 'listing_id' => $oria_id ) ); ?>
-
-				<!-- Timetable -->
-				<?php if ( $oria_timetable ) : ?>
-				<div>
-					<h2 class="h3" style="margin-bottom:1rem"><?php esc_html_e( 'Timetable', 'oria' ); ?></h2>
-					<?php
-					/*
-					 * Days are read out of the free-text "when" each row
-					 * carries — see Oria\Core\Timetable. Only the days this
-					 * timetable actually mentions get a button, and the whole
-					 * control is skipped when there is only one of them.
-					 */
-					$oria_tt_days = function_exists( '\Oria\Core\Timetable\days_used' )
-						? \Oria\Core\Timetable\days_used( $oria_timetable )
-						: array();
-					?>
-					<div class="timetable__wrap" data-timetable>
-						<?php if ( count( $oria_tt_days ) > 1 ) : ?>
-							<div class="ttdays" role="group" aria-label="<?php esc_attr_e( 'Filter the timetable by day', 'oria' ); ?>">
-								<button class="fchip is-on" type="button" data-tt-day="all"><?php esc_html_e( 'All days', 'oria' ); ?></button>
-								<?php foreach ( $oria_tt_days as $oria_d ) : ?>
-									<button class="fchip" type="button" data-tt-day="<?php echo (int) $oria_d; ?>"><?php echo esc_html( \Oria\Core\Timetable\label( (int) $oria_d ) ); ?></button>
-								<?php endforeach; ?>
-							</div>
-						<?php endif; ?>
-						<table class="timetable">
-							<thead><tr><th><?php esc_html_e( 'When', 'oria' ); ?></th><th><?php esc_html_e( 'Session', 'oria' ); ?></th><th style="text-align:right"><?php esc_html_e( 'Price', 'oria' ); ?></th></tr></thead>
-							<tbody>
-							<?php
-							foreach ( $oria_timetable as $oria_row ) :
-								$oria_rdays = function_exists( '\Oria\Core\Timetable\days_in' )
-									? \Oria\Core\Timetable\days_in( (string) ( $oria_row['when'] ?? '' ) )
-									: array();
-								?>
-								<tr data-tt-days="<?php echo esc_attr( implode( ' ', $oria_rdays ) ); ?>">
-									<td><?php echo esc_html( (string) ( $oria_row['when'] ?? '' ) ); ?></td>
-									<td><?php echo esc_html( (string) ( $oria_row['session'] ?? '' ) ); ?></td>
-									<td><?php echo esc_html( (string) ( $oria_row['price'] ?? '' ) ); ?></td>
-								</tr>
-							<?php endforeach; ?>
-							</tbody>
-						</table>
-						<p class="dir__empty" data-tt-empty hidden style="margin-top:1rem"><?php esc_html_e( 'Nothing listed for that day.', 'oria' ); ?></p>
-					</div>
-					<?php if ( $oria_verified ) : ?>
-						<p class="hint"><?php printf( esc_html__( 'Timetable confirmed %s. Public holidays excepted — check before you travel.', 'oria' ), esc_html( mysql2date( 'j F Y', $oria_verified ) ) ); ?></p>
-					<?php endif; ?>
-				</div>
-				<?php endif; ?>
 
 				<!-- Upcoming events run by this listing -->
 				<?php

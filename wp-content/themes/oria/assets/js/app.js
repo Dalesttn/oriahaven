@@ -2386,25 +2386,25 @@
     });
   }
 
-  /* --- Timetable day filter --------------------------------------------- */
-  /* Rows carry the days the server read out of their own "when" text, so
-     this only matches — the parsing never happens twice. */
-  function initTimetable() {
-    var root = document.querySelector("[data-timetable]");
+  /* --- Class day filter -------------------------------------------------- */
+  /* Each row carries the days the server read off its own day field, so this
+     only matches -- no parsing happens here or anywhere twice. */
+  function initClasses() {
+    var root = document.querySelector("[data-classes]");
     if (!root) return;
-    var chips = $$("[data-tt-day]", root);
+    var chips = $$("[data-cls-day]", root);
     if (!chips.length) return;
-    var rows = $$("tbody tr", root);
-    var empty = root.querySelector("[data-tt-empty]");
+    var rows = $$(".classrow", root);
+    var empty = root.querySelector("[data-cls-empty]");
 
     function apply(day) {
       var shown = 0;
-      rows.forEach(function (tr) {
-        var days = (tr.dataset.ttDays || "").split(" ").filter(Boolean);
-        /* A row naming no day stays visible whatever is picked: "By
-           appointment" is still true on a Tuesday. */
+      rows.forEach(function (li) {
+        var days = (li.dataset.clsDays || "").split(" ").filter(Boolean);
+        /* A class naming no day stays visible whatever is picked: one run
+           by arrangement is still available on a Tuesday. */
         var ok = day === "all" || !days.length || days.indexOf(day) > -1;
-        tr.hidden = !ok;
+        li.hidden = !ok;
         if (ok) shown++;
       });
       if (empty) empty.hidden = shown > 0;
@@ -2413,7 +2413,7 @@
     chips.forEach(function (chip) {
       chip.addEventListener("click", function () {
         chips.forEach(function (c) { c.classList.toggle("is-on", c === chip); });
-        apply(chip.dataset.ttDay);
+        apply(chip.dataset.clsDay);
       });
     });
   }
@@ -3208,7 +3208,7 @@
     initSiteSearch();
     initStickyCta();
     initSave();
-    initTimetable();
+    initClasses();
     initSavedPage();
     paintSavedNav();
     /* Another tab is the same shortlist. Without this the count goes stale

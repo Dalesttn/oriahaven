@@ -212,41 +212,143 @@ function register_listing_fields(): void {
 					'default_value' => 'in-person',
 				),
 
-				// --- Timetable ----------------------------------------------
+				// --- Classes & packages -------------------------------------
+				/*
+				 * The two things a practice can only tell us itself. Both are
+				 * paid surfaces (see Tiers\FIELD_TIERS) not to ration them,
+				 * but because there is no public source to build them from:
+				 * class lists move weekly and package prices are nowhere but
+				 * the practice's own till.
+				 *
+				 * Every free-text box here is written by a practitioner and
+				 * published as-is, which makes them the likeliest place for a
+				 * therapeutic claim to appear. The instructions say so at the
+				 * point of writing rather than in a policy nobody reads.
+				 */
 				array(
-					'key'       => 'field_oria_tab_timetable',
-					'label'     => 'Timetable',
+					'key'       => 'field_oria_tab_classes',
+					'label'     => 'Classes & packages',
 					'type'      => 'tab',
 					'placement' => 'left',
 				),
 				array(
-					'key'          => 'field_oria_timetable',
-					'name'         => 'timetable',
-					'label'        => 'Timetable',
+					'key'          => 'field_oria_classes',
+					'name'         => 'classes',
+					'label'        => 'Classes',
 					'type'         => 'repeater',
-					'button_label' => 'Add session',
-					'layout'       => 'table',
+					'button_label' => 'Add class',
+					'layout'       => 'row',
+					'instructions' => 'Your regular timetable. Describe what happens in the room — not what it will do for someone.',
 					'sub_fields'   => array(
 						array(
-							'key'   => 'field_oria_tt_when',
-							'name'  => 'when',
-							'label' => 'When',
-							'type'  => 'text',
-							'placeholder' => 'Mon–Fri 6.30am',
+							'key'         => 'field_oria_cls_title',
+							'name'        => 'title',
+							'label'       => 'Class',
+							'type'        => 'text',
+							'placeholder' => 'Slow flow',
+							'wrapper'     => array( 'width' => '40' ),
+						),
+						/*
+						 * A list, not a single day: a class that runs Monday
+						 * and Wednesday is one class on the timetable and
+						 * should be one row here. Values are ISO numbers so
+						 * the filter on the page never parses prose.
+						 */
+						array(
+							'key'         => 'field_oria_cls_day',
+							'name'        => 'day',
+							'label'       => 'Day',
+							'type'        => 'select',
+							'choices'     => function_exists( '\Oria\Core\Classes\day_choices' )
+								? \Oria\Core\Classes\day_choices()
+								: array(),
+							'multiple'    => 1,
+							'ui'          => 1,
+							'allow_null'  => 1,
+							'instructions'=> 'Leave empty for classes by arrangement.',
+							'wrapper'     => array( 'width' => '30' ),
 						),
 						array(
-							'key'   => 'field_oria_tt_session',
-							'name'  => 'session',
-							'label' => 'Session',
-							'type'  => 'text',
-							'placeholder' => 'Morning sitting · 25 min, silent',
+							'key'         => 'field_oria_cls_time',
+							'name'        => 'time',
+							'label'       => 'Time',
+							'type'        => 'text',
+							'placeholder' => '6.15 - 7.15am',
+							'wrapper'     => array( 'width' => '30' ),
 						),
 						array(
-							'key'   => 'field_oria_tt_price',
-							'name'  => 'price',
-							'label' => 'Price',
-							'type'  => 'text',
-							'placeholder' => '$15',
+							'key'         => 'field_oria_cls_desc',
+							'name'        => 'description',
+							'label'       => 'Short description',
+							'type'        => 'textarea',
+							'rows'        => 2,
+							'maxlength'   => 200,
+							'placeholder' => 'Unheated, props provided, suits a first class.',
+							'instructions'=> 'What happens in the session. No health or outcome claims.',
+							'wrapper'     => array( 'width' => '70' ),
+						),
+						array(
+							'key'         => 'field_oria_cls_price',
+							'name'        => 'price',
+							'label'       => 'Price',
+							'type'        => 'text',
+							'placeholder' => '$25 or Free',
+							'instructions'=> 'Optional.',
+							'wrapper'     => array( 'width' => '30' ),
+						),
+					),
+				),
+				array(
+					'key'          => 'field_oria_packages',
+					'name'         => 'packages',
+					'label'        => 'Packages',
+					'type'         => 'repeater',
+					'button_label' => 'Add package',
+					'layout'       => 'row',
+					'instructions' => 'Passes, courses and bundles. One card each.',
+					'sub_fields'   => array(
+						array(
+							'key'         => 'field_oria_pkg_title',
+							'name'        => 'title',
+							'label'       => 'Package',
+							'type'        => 'text',
+							'placeholder' => 'Ten-class pass',
+							'wrapper'     => array( 'width' => '50' ),
+						),
+						array(
+							'key'         => 'field_oria_pkg_price',
+							'name'        => 'price',
+							'label'       => 'Price',
+							'type'        => 'text',
+							'placeholder' => '$180',
+							'wrapper'     => array( 'width' => '50' ),
+						),
+						/*
+						 * The practice's own photograph. Listing photos are
+						 * never copied from anywhere else, so this stays
+						 * empty until an owner uploads one, and the card is
+						 * built to look deliberate without it.
+						 */
+						array(
+							'key'           => 'field_oria_pkg_image',
+							'name'          => 'image',
+							'label'         => 'Image',
+							'type'          => 'image',
+							'return_format' => 'id',
+							'preview_size'  => 'medium',
+							'instructions'  => 'Your own photograph. Optional.',
+							'wrapper'       => array( 'width' => '30' ),
+						),
+						array(
+							'key'         => 'field_oria_pkg_desc',
+							'name'        => 'description',
+							'label'       => 'Short description',
+							'type'        => 'textarea',
+							'rows'        => 2,
+							'maxlength'   => 200,
+							'placeholder' => 'Ten classes, valid six months, shareable.',
+							'instructions'=> 'What is included and how long it lasts. No health or outcome claims.',
+							'wrapper'     => array( 'width' => '70' ),
 						),
 					),
 				),

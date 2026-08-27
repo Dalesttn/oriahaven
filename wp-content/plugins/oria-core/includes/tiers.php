@@ -89,7 +89,11 @@ const FIELD_TIERS = array(
 	'price_from'    => 'free',
 	'price_band'    => 'free',
 	'format'        => 'free',
-	'timetable'     => CLAIMED,
+	// The two blocks a practice fills in for itself. Nobody can
+	// research somebody else's class list or package prices, so
+	// these exist only where a paying owner has typed them.
+	'classes'       => CLAIMED,
+	'packages'      => CLAIMED,
 	'instagram_url' => CLAIMED,
 	'facebook_url'  => CLAIMED,
 	'offer_title'   => CLAIMED,

@@ -617,11 +617,6 @@ a.livesession:hover { background: var(--sand-2); }
 .keyfact__k { font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--text-faint); }
 .keyfact__v { font-weight: 700; font-size: var(--fs-sm); margin-top: 4px; }
 
-.timetable { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
-.timetable th { text-align: left; font-size: var(--fs-micro); letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--text-faint); padding-bottom: var(--s-3); font-weight: 700; }
-.timetable td { padding: var(--s-4) var(--s-4) var(--s-4) 0; border-top: 1px solid var(--line); vertical-align: top; }
-.timetable td:first-child { font-weight: 700; white-space: nowrap; }
-.timetable td:last-child { text-align: right; padding-right: 0; color: var(--text-soft); }
 
 .aside { position: sticky; top: calc(var(--head-h) + var(--s-4)); display: grid; gap: var(--s-4); }
 @media (max-width: 1000px) { .aside { position: static; } }
@@ -3336,3 +3331,68 @@ html.has-sheet { overflow: hidden; }
 
 /* --- Timetable day filter ----------------------------------------------- */
 .ttdays { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }
+
+/* --- Classes -------------------------------------------------------------
+   A list, not a table. The three columns a timetable wants -- when, what,
+   how much -- collapse to a stack on a phone, where a three-column table
+   would either scroll sideways or squeeze the description to two words. */
+.classlist { list-style: none; margin: 0; padding: 0; display: grid; gap: .25rem; }
+.classrow {
+  display: grid; gap: .25rem 1rem; align-items: baseline;
+  grid-template-columns: 1fr auto;
+  padding: .85rem 0; border-top: 1px solid var(--line);
+}
+.classrow:first-child { border-top: 0; }
+.classrow__when {
+  grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .5rem;
+  font-size: .8125rem; color: var(--text-muted, #4A5F5B);
+}
+.classrow__day { font-weight: 600; color: var(--ink); }
+.classrow__time { font-variant-numeric: tabular-nums; }
+.classrow__title { font-size: 1rem; margin: 0; }
+.classrow__desc { margin: .3rem 0 0; font-size: .875rem; color: var(--text-muted, #4A5F5B); }
+.classrow__price {
+  grid-row: 2; grid-column: 2; justify-self: end;
+  font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.classrow[hidden] { display: none; }
+
+@media (min-width: 40rem) {
+  /* Wide enough for the timetable shape people expect: day and time first,
+     the class in the middle, the price aligned down the right edge. */
+  .classrow { grid-template-columns: 10rem 1fr auto; align-items: start; }
+  .classrow__when { grid-column: 1; flex-direction: column; gap: .15rem; }
+  .classrow__main { grid-column: 2; }
+  .classrow__price { grid-row: 1; grid-column: 3; }
+}
+
+/* --- Packages ------------------------------------------------------------
+   Cards, because a package is a thing you buy and the photograph is doing
+   the selling. Sized so two sit side by side on a laptop and one fills a
+   phone; a practice with three passes should not get a lonely third column. */
+.pkgs {
+  display: grid; gap: var(--s-4);
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+.pkgcard {
+  display: flex; flex-direction: column;
+  border: 1px solid var(--line); border-radius: var(--r-2, 14px);
+  overflow: hidden; background: var(--surface, #fff);
+}
+.pkgcard__media { aspect-ratio: 16 / 10; position: relative; background: var(--sand-2, #F2EFE7); }
+/* Absolute, so the image cannot feed its own aspect ratio back into the
+   box and quietly override the one asked for above. */
+.pkgcard__img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.pkgcard__body {
+  display: flex; flex-direction: column; gap: .4rem;
+  padding: var(--s-4); flex: 1;
+}
+.pkgcard__title { font-size: 1rem; margin: 0; }
+.pkgcard__desc { margin: 0; font-size: .875rem; color: var(--text-muted, #4A5F5B); }
+.pkgcard__price {
+  margin-top: auto; padding-top: .35rem;
+  font-weight: 600; font-variant-numeric: tabular-nums;
+}

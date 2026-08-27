@@ -54,7 +54,7 @@ function oria_define_get_field_fallback(): void {
 
 		// ACF repeaters store a row count in the parent key; without ACF we
 		// cannot reassemble the rows, so return none rather than a number.
-		if ( in_array( $key, array( 'services', 'timetable' ), true ) ) {
+		if ( in_array( $key, array( 'services', 'classes', 'packages' ), true ) ) {
 			return is_array( $value ) ? $value : array();
 		}
 
