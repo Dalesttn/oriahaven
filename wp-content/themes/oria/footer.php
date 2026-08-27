@@ -7,7 +7,9 @@
 declare(strict_types=1);
 
 $oria_practices = get_terms( array( 'taxonomy' => 'practice', 'hide_empty' => false ) );
-$oria_suburbs   = function_exists( '\Oria\Core\Taxonomies\suburbs' ) ? \Oria\Core\Taxonomies\suburbs() : array();
+$oria_suburbs   = function_exists( '\Oria\Core\AreaDepth\popular' )
+	? \Oria\Core\AreaDepth\popular( 12 )
+	: ( function_exists( '\Oria\Core\Taxonomies\suburbs' ) ? \Oria\Core\Taxonomies\suburbs() : array() );
 ?>
 </main>
 
@@ -107,7 +109,7 @@ $oria_suburbs   = function_exists( '\Oria\Core\Taxonomies\suburbs' ) ? \Oria\Cor
 		<div style="margin-top:3rem">
 			<h4><?php esc_html_e( 'Popular suburbs', 'oria' ); ?></h4>
 			<div class="linkcloud">
-				<?php foreach ( array_slice( $oria_suburbs, 0, 12 ) as $oria_suburb ) : ?>
+				<?php foreach ( $oria_suburbs as $oria_suburb ) : ?>
 					<a href="<?php echo esc_url( (string) get_term_link( $oria_suburb ) ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_suburb ) ); ?></a>
 				<?php endforeach; ?>
 			</div>

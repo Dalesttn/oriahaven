@@ -154,6 +154,57 @@ function is_thin( int $term_id ): bool {
 	return depth( $term_id ) < minimum();
 }
 
+/**
+ * The suburbs worth linking to sitewide: the busiest, and only ones that
+ * are actually published.
+ *
+ * Never returns a thin suburb. A noindex page is one this plugin has
+ * decided is not worth Google's attention, and putting it in the footer of
+ * every page argues the opposite on every crawl.
+ *
+ * @return list<\WP_Term> Busiest first, name as the tiebreak.
+ */
+function popular( int $limit = 12 ): array {
+	$terms = get_terms(
+		array(
+			'taxonomy'   => Taxonomies\AREA,
+			'hide_empty' => false,
+		)
+	);
+	if ( is_wp_error( $terms ) || ! $terms ) {
+		return array();
+	}
+
+	$rows = array();
+	foreach ( $terms as $term ) {
+		// is_suburb() rather than a parent test: a region also has a parent,
+		// and a list headed "Popular suburbs" that opens with Perth Central
+		// is not a list of suburbs.
+		if ( ! Taxonomies\is_suburb( $term ) ) {
+			continue;
+		}
+		$n = depth( (int) $term->term_id );
+		if ( $n < minimum() ) {
+			continue; // noindexed; the footer must not argue with that
+		}
+		$rows[] = array( 'term' => $term, 'n' => $n );
+	}
+
+	usort(
+		$rows,
+		static function ( array $a, array $b ): int {
+			return $b['n'] <=> $a['n']
+				?: strcasecmp( $a['term']->name, $b['term']->name );
+		}
+	);
+
+	$out = array();
+	foreach ( array_slice( $rows, 0, max( 0, $limit ) ) as $row ) {
+		$out[] = $row['term'];
+	}
+	return $out;
+}
+
 /** The area term being viewed, if this request is an area archive. */
 function current_term(): ?\WP_Term {
 	if ( ! is_tax( Taxonomies\AREA ) ) {
