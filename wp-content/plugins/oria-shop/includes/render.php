@@ -48,14 +48,52 @@ function shortcode( $atts ): string {
 	return band( $products, (string) $atts['heading'] );
 }
 
+/**
+ * The practice term whose products belong on this page.
+ *
+ * wp_get_post_terms() sorts by name, so taking its first element chose by
+ * alphabet: Fremantle Yoga Centre is tagged Sound & float and Yoga, S beat Y,
+ * and a yoga studio was sold singing bowls.
+ *
+ * Ranked by Categories\top_for(), which is the editorial order in
+ * categories.json rather than an alphabet — the same ranking the breadcrumb
+ * and the card pills use, so all three finally agree.
+ *
+ * Then, crucially, the ranked list is walked rather than indexed. A term with
+ * no product mapping is skipped instead of returning nothing: 88 listings
+ * showed no products while holding a perfectly good mapped term further down
+ * their list.
+ */
+function best_practice( int $post_id ): ?\WP_Term {
+	$terms = wp_get_post_terms( $post_id, 'practice' );
+	if ( is_wp_error( $terms ) || ! $terms ) {
+		return null;
+	}
+
+	// Preferred order first, then anything else the listing carries.
+	$ranked = array();
+	if ( function_exists( '\Oria\Core\Categories\top_for' ) ) {
+		foreach ( \Oria\Core\Categories\top_for( $post_id, 5 ) as $row ) {
+			$ranked[ $row['term']->term_id ] = $row['term'];
+		}
+	}
+	foreach ( $terms as $t ) {
+		$ranked[ $t->term_id ] = $ranked[ $t->term_id ] ?? $t;
+	}
+
+	foreach ( $ranked as $t ) {
+		if ( Engine\categories_for_practice( $t ) ) {
+			return $t;
+		}
+	}
+	return null;
+}
+
 /** Products implied by the page being viewed — pinned first on practices. */
 function auto_products( int $limit = 0 ): array {
 	if ( is_singular( 'listing' ) || is_singular( 'event' ) ) {
-		$terms = wp_get_post_terms( get_the_ID(), 'practice' );
-		if ( ! is_wp_error( $terms ) && $terms ) {
-			return Engine\products_for_practice( $terms[0], $limit );
-		}
-		return array();
+		$term = best_practice( (int) get_the_ID() );
+		return $term ? Engine\products_for_practice( $term, $limit ) : array();
 	}
 	if ( is_singular( 'post' ) ) {
 		return Engine\products( Engine\categories_for_post( (int) get_the_ID() ), $limit );

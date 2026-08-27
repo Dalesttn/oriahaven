@@ -61,6 +61,23 @@ const DEFAULT_MAP = array(
 	'nutrition'  => array( 'water-bottles', 'wellness-books', 'journals' ),
 	'retreats'   => array( 'journals', 'wellness-books', 'yoga-mats' ),
 	'energy'     => array( 'singing-bowls', 'chimes', 'journals', 'wellness-books' ),
+
+	/*
+	 * Filled in after an audit found 203 of 356 listings showing no products
+	 * at all — twelve practice terms had no entry, including spa and fitness,
+	 * two of the biggest. Every slug below is one of the 25 already in
+	 * CATEGORIES; where a practice has no honest match in that vocabulary
+	 * (beauty, allied, family, seniors, community) it is deliberately left
+	 * out rather than padded with something loosely related.
+	 */
+	'spa'        => array( 'recovery-products', 'sleep-masks', 'diffusers', 'water-bottles' ),
+	'fitness'    => array( 'foam-rollers', 'massage-balls', 'water-bottles', 'yoga-mats' ),
+	'mind'       => array( 'mindfulness-books', 'journals', 'meditation-cushions', 'meditation-timers' ),
+	'nature'     => array( 'journals', 'water-bottles', 'wellness-books' ),
+	'experiences'=> array( 'journals', 'wellness-books', 'water-bottles' ),
+	'natural'    => array( 'wellness-books', 'diffusers', 'journals' ),
+	'creative'   => array( 'journals', 'wellness-books' ),
+	'longevity'  => array( 'recovery-products', 'sleep-books', 'water-bottles', 'wellness-books' ),
 );
 
 /** journal tag/keyword => product_category slugs. */

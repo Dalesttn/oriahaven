@@ -216,19 +216,74 @@ while ( have_posts() ) :
 					</div>
 				</div>
 
-				<!-- Key facts -->
-				<?php if ( (int) $oria_price_from > 0 || $oria_next || $oria_good_for ) : ?>
+				<!-- At a glance -->
+				<?php
+				/*
+				 * Built as a list rather than written out row by row, so a
+				 * fact with nothing behind it is simply never added. The old
+				 * block gated the whole panel on price_from, next_session and
+				 * good_for — 20%, 0% and 7% of listings — which took Format
+				 * down with it on the other 300.
+				 *
+				 * Ordered by what somebody deciding asks first: what is it,
+				 * where, how far, what does it cost, is it any good.
+				 */
+				$oria_glance = array();
+
+				if ( $oria_practice instanceof WP_Term ) {
+					$oria_glance[] = array( __( 'Practice', 'oria' ), \Oria\Theme\tname( $oria_practice ) );
+				}
+				if ( $oria_suburb instanceof WP_Term ) {
+					$oria_glance[] = array( __( 'Where', 'oria' ), \Oria\Theme\tname( $oria_suburb ) );
+				}
+
+				// No distance row either: "Getting there" further down already
+				// gives km from the CBD, with the precision caveat beside it.
+
+				$oria_glance[] = array( __( 'Format', 'oria' ), $oria_format_label );
+
+				if ( (int) $oria_price_from > 0 ) {
+					$oria_glance[] = array( __( 'From', 'oria' ), '$' . (int) $oria_price_from . ' ' . __( 'a session', 'oria' ) );
+				} elseif ( '' !== trim( (string) get_field( 'price_band', $oria_id ) ) ) {
+					/*
+					 * The band is on 80% of listings where an exact figure is
+					 * on 20%, so it is worth showing — but stored as "$$",
+					 * which means nothing to a reader. Answer\band_label()
+					 * is where the site already turns those into ranges, and
+					 * reusing it keeps this panel saying the same thing as
+					 * the filters and the category answer blocks.
+					 */
+					$oria_band = trim( (string) get_field( 'price_band', $oria_id ) );
+					$oria_band = function_exists( '\Oria\Core\Answer\band_label' )
+						? \Oria\Core\Answer\band_label( $oria_band )
+						: '';
+					if ( '' !== $oria_band ) {
+						$oria_glance[] = array( __( 'Typical price', 'oria' ), $oria_band );
+					}
+				}
+
+				// No rating row: the title block above already leads with it,
+				// attributed and linked. Repeating it here would be padding.
+
+				if ( $oria_next ) {
+					$oria_glance[] = array( __( 'Next session', 'oria' ), $oria_next );
+				}
+				if ( $oria_good_for ) {
+					$oria_glance[] = array( __( 'Good for', 'oria' ), $oria_good_for );
+				}
+
+				// Three is the point where a panel reads as a summary rather
+				// than as two orphaned facts in a box.
+				if ( count( $oria_glance ) >= 3 ) :
+					?>
+				<h2 class="sr-only"><?php esc_html_e( 'At a glance', 'oria' ); ?></h2>
 				<div class="keyfacts">
-					<?php if ( (int) $oria_price_from > 0 ) : ?>
-						<div><div class="keyfact__k"><?php esc_html_e( 'From', 'oria' ); ?></div><div class="keyfact__v"><?php echo '$' . esc_html( (string) (int) $oria_price_from ) . ' ' . esc_html__( 'a session', 'oria' ); ?></div></div>
-					<?php endif; ?>
-					<?php if ( $oria_next ) : ?>
-						<div><div class="keyfact__k"><?php esc_html_e( 'Next session', 'oria' ); ?></div><div class="keyfact__v"><?php echo esc_html( $oria_next ); ?></div></div>
-					<?php endif; ?>
-					<div><div class="keyfact__k"><?php esc_html_e( 'Format', 'oria' ); ?></div><div class="keyfact__v"><?php echo esc_html( $oria_format_label ); ?></div></div>
-					<?php if ( $oria_good_for ) : ?>
-						<div><div class="keyfact__k"><?php esc_html_e( 'Good for', 'oria' ); ?></div><div class="keyfact__v"><?php echo esc_html( $oria_good_for ); ?></div></div>
-					<?php endif; ?>
+					<?php foreach ( $oria_glance as $oria_gf ) : ?>
+						<div>
+							<div class="keyfact__k"><?php echo esc_html( $oria_gf[0] ); ?></div>
+							<div class="keyfact__v"><?php echo esc_html( $oria_gf[1] ); ?></div>
+						</div>
+					<?php endforeach; ?>
 				</div>
 				<?php endif; ?>
 
@@ -780,48 +835,59 @@ while ( have_posts() ) :
 				<?php endif; ?>
 
 				<?php
-				// Nearby: other listings in the same region.
-				if ( $oria_region ) :
-					$oria_nearby = get_posts(
-						array(
-							'post_type'      => 'listing',
-							'posts_per_page' => 3,
-							'post__not_in'   => array( $oria_id ),
-							'orderby'        => 'rand',
-							'tax_query'      => array(
-								array(
-									'taxonomy'         => 'area',
-									'field'            => 'term_id',
-									'terms'            => $oria_region->term_id,
-									'include_children' => true,
-								),
-							),
-						)
-					);
-					if ( $oria_nearby ) :
-						?>
+				/*
+				 * Similar practices, scored on shared category, shared
+				 * services and actual kilometres — see Oria\Core\Similar.
+				 * This rail used to be orderby => rand inside the region,
+				 * which put acupuncture clinics under yoga studios.
+				 */
+				$oria_similar = function_exists( '\Oria\Core\Similar\listings_for' )
+					? \Oria\Core\Similar\listings_for( $oria_id, 3 )
+					: array();
+				if ( $oria_similar ) :
+					?>
 				<div class="card">
 					<div class="card__body">
-						<h3 class="h3" style="font-size:1.05rem;margin-bottom:1rem"><?php printf( esc_html__( 'Nearby in %s', 'oria' ), esc_html( \Oria\Theme\tname( $oria_region ) ) ); ?></h3>
+						<h3 class="h3" style="font-size:1.05rem;margin-bottom:1rem"><?php esc_html_e( 'Similar practices', 'oria' ); ?></h3>
 						<div class="stack" style="font-size:.9375rem">
-							<?php foreach ( $oria_nearby as $oria_k => $oria_n ) :
-								$oria_n_sub  = wp_get_post_terms( $oria_n->ID, 'area' )[0] ?? null;
-								$oria_n_svc  = \Oria\Theme\rows( 'services', array(), $oria_n->ID )[0]['name'] ?? '';
-								$oria_n_rate = (float) get_field( 'rating', $oria_n->ID );
+							<?php
+							foreach ( $oria_similar as $oria_k => $oria_nid ) :
+								$oria_n_sub = null;
+								foreach ( wp_get_post_terms( $oria_nid, 'area' ) as $oria_at ) {
+									if ( $oria_at->parent ) {
+										$oria_n_sub = $oria_at;
+										break;
+									}
+								}
+								// Distance rather than a service name: it is the
+								// thing a reader cannot work out for themselves,
+								// and it is on every listing.
+								$oria_n_km   = function_exists( '\Oria\Core\Similar\km_between' )
+									? \Oria\Core\Similar\km_between( $oria_id, (int) $oria_nid )
+									: null;
+								$oria_n_meta = array_filter( array(
+									$oria_n_sub ? \Oria\Theme\tname( $oria_n_sub ) : '',
+									( null !== $oria_n_km && $oria_n_km >= 0.4 )
+										? sprintf( __( '%s km away', 'oria' ), number_format( $oria_n_km, $oria_n_km < 10 ? 1 : 0 ) )
+										: '',
+								) );
+								// effective_rating(), not get_field('rating') —
+								// the native field is empty on every listing, so
+								// this star has never rendered until now.
+								$oria_n_rate = \Oria\Theme\effective_rating( (int) $oria_nid );
 								?>
 								<?php if ( $oria_k > 0 ) : ?><hr class="hr"><?php endif; ?>
-								<a class="row-between" href="<?php echo esc_url( get_permalink( $oria_n ) ); ?>">
-									<span><b><?php echo esc_html( \Oria\Theme\ptitle( $oria_n ) ); ?></b><br>
-									<span class="muted" style="font-size:.8125rem"><?php echo esc_html( trim( \Oria\Theme\tname( $oria_n_sub ) . ( $oria_n_svc ? ' · ' . $oria_n_svc : '' ), ' ·' ) ); ?></span></span>
-									<?php if ( $oria_n_rate > 0 ) : ?>
-										<span class="rating"><?php echo $oria_star; // phpcs:ignore ?><?php echo esc_html( number_format_i18n( $oria_n_rate, 1 ) ); ?></span>
+								<a class="row-between" href="<?php echo esc_url( (string) get_permalink( $oria_nid ) ); ?>">
+									<span><b><?php echo esc_html( \Oria\Theme\ptitle( $oria_nid ) ); ?></b><br>
+									<span class="muted" style="font-size:.8125rem"><?php echo esc_html( implode( ' · ', $oria_n_meta ) ); ?></span></span>
+									<?php if ( ( $oria_n_rate['rating'] ?? 0 ) > 0 ) : ?>
+										<span class="rating"><?php echo $oria_star; // phpcs:ignore ?><?php echo esc_html( number_format_i18n( (float) $oria_n_rate['rating'], 1 ) ); ?></span>
 									<?php endif; ?>
 								</a>
 							<?php endforeach; ?>
 						</div>
 					</div>
 				</div>
-					<?php endif; ?>
 				<?php endif; ?>
 			</aside>
 		</div>
