@@ -532,6 +532,9 @@ while ( have_posts() ) :
 							$oria_pdesc  = trim( (string) ( $oria_pkg['description'] ?? '' ) );
 							$oria_pprice = trim( (string) ( $oria_pkg['price'] ?? '' ) );
 							$oria_pimg   = (int) ( $oria_pkg['image'] ?? 0 );
+							// Tagged like every outbound link, so the click
+							// shows as oriahaven in the practice's analytics.
+							$oria_purl   = \Oria\Theme\outbound( trim( (string) ( $oria_pkg['booking_url'] ?? '' ) ), $oria_slugname );
 							?>
 							<article class="pkgcard">
 								<?php if ( $oria_pimg ) : ?>
@@ -546,6 +549,9 @@ while ( have_posts() ) :
 									<?php endif; ?>
 									<?php if ( $oria_pprice ) : ?>
 										<span class="pkgcard__price"><?php echo esc_html( $oria_pprice ); ?></span>
+									<?php endif; ?>
+									<?php if ( $oria_purl ) : ?>
+										<a class="btn btn--dark btn--sm pkgcard__cta" href="<?php echo esc_url( $oria_purl ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="book" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Book this package', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
 									<?php endif; ?>
 								</div>
 							</article>

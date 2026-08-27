@@ -3390,3 +3390,6 @@ html.has-sheet { overflow: hidden; }
   margin-top: auto; padding-top: .35rem;
   font-weight: 600; font-variant-numeric: tabular-nums;
 }
+.pkgcard__cta { margin-top: .6rem; align-self: start; }
+/* No price on the card: the button takes over holding the bottom edge. */
+.pkgcard__body:not(:has(.pkgcard__price)) .pkgcard__cta { margin-top: auto; }
