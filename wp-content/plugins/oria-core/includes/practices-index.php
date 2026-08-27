@@ -29,6 +29,8 @@ const V2_VAR    = 'oria_practice_v2';
 const FACET_VAR = 'oria_facet';
 const PATH      = 'practices';
 const FACET_MIN = 3; // listings a facet page needs before it may be indexed
+const SITEMAP   = 'facet'; // /facet-sitemap.xml — the indexable facet pages
+const SITEMAP_CACHE = 'oria_facet_sitemap'; // built list; walking it live is a timeout
 const TILE_LINKS = 5; // links a Practices-index tile lists beneath its blurb
 
 /* Share of a category's listings a style must appear on to be offered
@@ -69,6 +71,17 @@ function bootstrap(): void {
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\canonical', 25 );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\robots', 25 );
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title', 25 );
+
+	// 101 facet pages were live, indexable and in no sitemap: nothing but a
+	// category tile linked them, so Search Console reported every one as
+	// "URL is unknown to Google". They are the pages carrying the directory's
+	// biggest terms, so they get the same treatment the intent pages already
+	// had — their own sitemap, gated by exactly the test robots() applies.
+	add_action( 'init', __NAMESPACE__ . '\register_sitemap', 20 );
+	add_filter( 'wpseo_sitemap_index', __NAMESPACE__ . '\sitemap_index' );
+	add_action( 'save_post', __NAMESPACE__ . '\flush_sitemap_cache' );
+	add_action( 'deleted_post', __NAMESPACE__ . '\flush_sitemap_cache' );
+	add_action( 'set_object_terms', __NAMESPACE__ . '\flush_sitemap_cache_terms', 10, 4 );
 }
 
 function route(): void {
@@ -577,6 +590,140 @@ function template( string $template ): string {
 	}
 	$found = locate_template( array( 'oria-practices.php' ) );
 	return $found ? $found : $template;
+}
+
+/* ---------------------------------------------------------------- sitemap */
+
+/**
+ * Every facet page that is actually indexable, as absolute URLs.
+ *
+ * The gate is not re-derived here — it is the same pair of conditions
+ * robots() applies (live mode, and FACET_MIN listings behind the facet),
+ * so a page can never be advertised in the sitemap while carrying noindex.
+ *
+ * Candidates come from the terms the category's own listings carry, which
+ * is the only honest source: a service that no listing in this category
+ * offers has no page here to find. Each candidate goes through
+ * resolve_facet() so the URL emitted is the canonical spelling — the one
+ * facet_404() redirects the others to — and never a second address for a
+ * page already listed.
+ *
+ * Intent-backed facets are left out on purpose. Those have a registry
+ * frame and are published by IntentPages' own sitemap; listing them twice
+ * would put one page at one URL in two sitemaps.
+ *
+ * @return list<array{loc: string}>
+ */
+function sitemap_entries(): array {
+	if ( 'live' !== mode() ) {
+		return array();
+	}
+
+	$cached = get_transient( SITEMAP_CACHE );
+	if ( is_array( $cached ) ) {
+		return $cached;
+	}
+
+	$out = array();
+
+	foreach ( practices() as $practice ) {
+		$ids = function_exists( '\Oria\Core\Intents\listings_in' )
+			? \Oria\Core\Intents\listings_in( $practice )
+			: array();
+		if ( ! $ids ) {
+			continue;
+		}
+
+		// The slugs a person could actually reach on this category.
+		$candidates = array();
+		foreach ( $ids as $id ) {
+			foreach ( array( 'service', Taxonomies\SPECIALTY ) as $tax ) {
+				if ( ! taxonomy_exists( $tax ) ) {
+					continue;
+				}
+				$terms = wp_get_post_terms( (int) $id, $tax );
+				if ( is_wp_error( $terms ) ) {
+					continue;
+				}
+				foreach ( $terms as $t ) {
+					$candidates[ $t->slug ] = true;
+				}
+			}
+		}
+
+		$seen = array();
+		foreach ( array_keys( $candidates ) as $slug ) {
+			$f = resolve_facet( $practice, $slug );
+			if ( null === $f || null !== $f['page'] ) {
+				continue; // unresolvable, or the intent sitemap's to publish
+			}
+			if ( isset( $seen[ $f['slug'] ] ) ) {
+				continue; // a non-canonical spelling of one already emitted
+			}
+			$seen[ $f['slug'] ] = true;
+
+			if ( count( facet_ids( $practice, $f ) ) < FACET_MIN ) {
+				continue; // robots() would noindex it
+			}
+			$out[] = array( 'loc' => category_url( $practice ) . $f['slug'] . '/' );
+		}
+	}
+
+	set_transient( SITEMAP_CACHE, $out, DAY_IN_SECONDS );
+	return $out;
+}
+
+/**
+ * Drop the cached list when the data behind it moves.
+ *
+ * Both hooks fire on far more than listings, so each checks first: rebuilding
+ * this on an unrelated save would hand the two-minute walk to whoever pressed
+ * Update.
+ */
+function flush_sitemap_cache( $post_id = 0 ): void {
+	if ( $post_id && PostTypes\LISTING !== get_post_type( (int) $post_id ) ) {
+		return;
+	}
+	delete_transient( SITEMAP_CACHE );
+}
+
+/** @param int $object_id */
+function flush_sitemap_cache_terms( $object_id, $terms = null, $tt_ids = null, $taxonomy = '' ): void {
+	if ( ! in_array( (string) $taxonomy, array( 'service', Taxonomies\SPECIALTY, Taxonomies\PRACTICE ), true ) ) {
+		return;
+	}
+	flush_sitemap_cache( (int) $object_id );
+}
+
+function register_sitemap(): void {
+	if ( ! isset( $GLOBALS['wpseo_sitemaps'] ) || ! method_exists( $GLOBALS['wpseo_sitemaps'], 'register_sitemap' ) ) {
+		return;
+	}
+	$GLOBALS['wpseo_sitemaps']->register_sitemap( SITEMAP, __NAMESPACE__ . '\build_sitemap' );
+}
+
+function build_sitemap(): void {
+	$sm = $GLOBALS['wpseo_sitemaps'] ?? null;
+	if ( ! $sm || ! isset( $sm->renderer ) ) {
+		return;
+	}
+	$links = array();
+	foreach ( sitemap_entries() as $e ) {
+		$links[] = array( 'loc' => $e['loc'], 'mod' => gmdate( 'c' ) );
+	}
+	$sm->set_sitemap( $sm->renderer->get_sitemap( $links, SITEMAP, 1 ) );
+}
+
+/** Only advertise the sitemap when it has something in it. */
+function sitemap_index( $xml ) {
+	if ( ! sitemap_entries() ) {
+		return $xml;
+	}
+	return $xml . sprintf(
+		"<sitemap><loc>%s</loc><lastmod>%s</lastmod></sitemap>\n",
+		esc_url( home_url( '/' . SITEMAP . '-sitemap.xml' ) ),
+		esc_html( gmdate( 'c' ) )
+	);
 }
 
 /**

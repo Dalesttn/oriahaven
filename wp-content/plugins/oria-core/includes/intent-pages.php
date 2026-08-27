@@ -67,6 +67,7 @@ function bootstrap(): void {
 	add_filter( 'oria_intent_rows', __NAMESPACE__ . '\canonical_rows', 10, 2 );
 
 	// Yoast sitemap entry, only ever listing pages that are allowed to be seen.
+	add_action( 'template_redirect', __NAMESPACE__ . '\legacy_redirect', 6 );
 	add_action( 'init', __NAMESPACE__ . '\register_sitemap', 20 );
 	add_filter( 'wpseo_sitemap_index', __NAMESPACE__ . '\sitemap_index' );
 }
@@ -152,8 +153,23 @@ function pages_for( string $practice ): array {
 	return array_values( array_filter( registry()['pages'], static fn( array $p ): bool => $p['practice'] === $practice ) );
 }
 
+/**
+ * One address per intent page, and it is the plural one.
+ *
+ * These pages have always answered at two URLs: /practice/{p}/{i}/ from the
+ * route below, and /practices/{p}/{i}/ from the facet route, which resolves
+ * an intent slug to this same registry page and renders identical HTML. Both
+ * declared themselves canonical. Every internal link the site draws — the
+ * category tiles, the style grid, the hub — uses the plural form, while this
+ * function put the singular one in the sitemap, so the two strongest signals
+ * disagreed on every intent page the directory has.
+ *
+ * The plural wins because it is what the site links to and what the live
+ * directory uses everywhere else. legacy_redirect() keeps the old address
+ * working with a 301.
+ */
 function url( string $practice, string $intent ): string {
-	return home_url( '/practice/' . $practice . '/' . $intent . '/' );
+	return home_url( '/' . \Oria\Core\PracticesIndex\PATH . '/' . $practice . '/' . $intent . '/' );
 }
 
 /* ------------------------------------------------------------------ routing */
@@ -465,6 +481,34 @@ function canonical_rows( array $rows, \WP_Term $practice ): array {
 	}
 	unset( $row );
 	return $rows;
+}
+
+/**
+ * Send the retired singular address to the one the sitemap now carries.
+ *
+ * Only fires where the slug is genuinely an intent page. /practice/{p}/{area}/
+ * is the practice-by-suburb combo — a different page, indexed, taking clicks,
+ * and staying exactly where it is. current() is null there, so those never
+ * reach this.
+ */
+function legacy_redirect(): void {
+	// After detect() at priority 5, never before: detect() is what sets the
+	// query var current() reads, and current() caches its answer statically.
+	// Asking too early does not just miss the redirect, it poisons that cache
+	// with null and takes the intent page down with it.
+	$page = current();
+	if ( null === $page || is_admin() ) {
+		return;
+	}
+	$target = url( (string) $page['practice'], (string) $page['intent'] );
+	$here   = home_url( add_query_arg( array() ) );
+	// Never redirect a URL to itself: the facet route serves the target, and
+	// if it ever also set our query var this would be an infinite loop.
+	if ( untrailingslashit( (string) strtok( $here, '?' ) ) === untrailingslashit( (string) strtok( $target, '?' ) ) ) {
+		return;
+	}
+	wp_safe_redirect( $target, 301 );
+	exit;
 }
 
 /* ---------------------------------------------------------------- sitemap */
