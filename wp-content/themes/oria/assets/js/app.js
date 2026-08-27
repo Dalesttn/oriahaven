@@ -2386,6 +2386,38 @@
     });
   }
 
+  /* --- Timetable day filter --------------------------------------------- */
+  /* Rows carry the days the server read out of their own "when" text, so
+     this only matches — the parsing never happens twice. */
+  function initTimetable() {
+    var root = document.querySelector("[data-timetable]");
+    if (!root) return;
+    var chips = $$("[data-tt-day]", root);
+    if (!chips.length) return;
+    var rows = $$("tbody tr", root);
+    var empty = root.querySelector("[data-tt-empty]");
+
+    function apply(day) {
+      var shown = 0;
+      rows.forEach(function (tr) {
+        var days = (tr.dataset.ttDays || "").split(" ").filter(Boolean);
+        /* A row naming no day stays visible whatever is picked: "By
+           appointment" is still true on a Tuesday. */
+        var ok = day === "all" || !days.length || days.indexOf(day) > -1;
+        tr.hidden = !ok;
+        if (ok) shown++;
+      });
+      if (empty) empty.hidden = shown > 0;
+    }
+
+    chips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        chips.forEach(function (c) { c.classList.toggle("is-on", c === chip); });
+        apply(chip.dataset.ttDay);
+      });
+    });
+  }
+
   /* --- Saved listings --------------------------------------------------- */
   /* Kept on the device, never sent anywhere. No account to create, and
      nothing for us to hold. The cost is honest and the saved page says it:
@@ -3156,6 +3188,7 @@
     initSiteSearch();
     initStickyCta();
     initSave();
+    initTimetable();
     initSavedPage();
     initHomeSearch();
     initDirectory();

@@ -599,18 +599,45 @@ while ( have_posts() ) :
 				<?php if ( $oria_timetable ) : ?>
 				<div>
 					<h2 class="h3" style="margin-bottom:1rem"><?php esc_html_e( 'Timetable', 'oria' ); ?></h2>
-					<table class="timetable">
-						<thead><tr><th><?php esc_html_e( 'When', 'oria' ); ?></th><th><?php esc_html_e( 'Session', 'oria' ); ?></th><th style="text-align:right"><?php esc_html_e( 'Price', 'oria' ); ?></th></tr></thead>
-						<tbody>
-						<?php foreach ( $oria_timetable as $oria_row ) : ?>
-							<tr>
-								<td><?php echo esc_html( (string) ( $oria_row['when'] ?? '' ) ); ?></td>
-								<td><?php echo esc_html( (string) ( $oria_row['session'] ?? '' ) ); ?></td>
-								<td><?php echo esc_html( (string) ( $oria_row['price'] ?? '' ) ); ?></td>
-							</tr>
-						<?php endforeach; ?>
-						</tbody>
-					</table>
+					<?php
+					/*
+					 * Days are read out of the free-text "when" each row
+					 * carries — see Oria\Core\Timetable. Only the days this
+					 * timetable actually mentions get a button, and the whole
+					 * control is skipped when there is only one of them.
+					 */
+					$oria_tt_days = function_exists( '\Oria\Core\Timetable\days_used' )
+						? \Oria\Core\Timetable\days_used( $oria_timetable )
+						: array();
+					?>
+					<div class="timetable__wrap" data-timetable>
+						<?php if ( count( $oria_tt_days ) > 1 ) : ?>
+							<div class="ttdays" role="group" aria-label="<?php esc_attr_e( 'Filter the timetable by day', 'oria' ); ?>">
+								<button class="fchip is-on" type="button" data-tt-day="all"><?php esc_html_e( 'All days', 'oria' ); ?></button>
+								<?php foreach ( $oria_tt_days as $oria_d ) : ?>
+									<button class="fchip" type="button" data-tt-day="<?php echo (int) $oria_d; ?>"><?php echo esc_html( \Oria\Core\Timetable\label( (int) $oria_d ) ); ?></button>
+								<?php endforeach; ?>
+							</div>
+						<?php endif; ?>
+						<table class="timetable">
+							<thead><tr><th><?php esc_html_e( 'When', 'oria' ); ?></th><th><?php esc_html_e( 'Session', 'oria' ); ?></th><th style="text-align:right"><?php esc_html_e( 'Price', 'oria' ); ?></th></tr></thead>
+							<tbody>
+							<?php
+							foreach ( $oria_timetable as $oria_row ) :
+								$oria_rdays = function_exists( '\Oria\Core\Timetable\days_in' )
+									? \Oria\Core\Timetable\days_in( (string) ( $oria_row['when'] ?? '' ) )
+									: array();
+								?>
+								<tr data-tt-days="<?php echo esc_attr( implode( ' ', $oria_rdays ) ); ?>">
+									<td><?php echo esc_html( (string) ( $oria_row['when'] ?? '' ) ); ?></td>
+									<td><?php echo esc_html( (string) ( $oria_row['session'] ?? '' ) ); ?></td>
+									<td><?php echo esc_html( (string) ( $oria_row['price'] ?? '' ) ); ?></td>
+								</tr>
+							<?php endforeach; ?>
+							</tbody>
+						</table>
+						<p class="dir__empty" data-tt-empty hidden style="margin-top:1rem"><?php esc_html_e( 'Nothing listed for that day.', 'oria' ); ?></p>
+					</div>
 					<?php if ( $oria_verified ) : ?>
 						<p class="hint"><?php printf( esc_html__( 'Timetable confirmed %s. Public holidays excepted — check before you travel.', 'oria' ), esc_html( mysql2date( 'j F Y', $oria_verified ) ) ); ?></p>
 					<?php endif; ?>

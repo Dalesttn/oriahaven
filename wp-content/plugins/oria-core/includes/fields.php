@@ -359,6 +359,39 @@ function register_listing_fields(): void {
 					'placeholder' => 'Roe St car park, 3 min walk',
 					'wrapper'     => array( 'width' => '50' ),
 				),
+				// --- Why people come here -----------------------------------
+				/*
+				 * The two ticked vocabularies, together and named after the
+				 * question they answer. Both follow the same contract: an
+				 * unticked box renders nothing, and no template may read an
+				 * empty set as a "no" -- on a seeded listing it only means
+				 * nobody has been asked yet.
+				 */
+				array(
+					'key'       => 'field_oria_tab_reasons',
+					'label'     => 'Why people come here',
+					'type'      => 'tab',
+					'placement' => 'left',
+				),
+
+				/*
+				 * Why people come here. Same contract as amenities above and
+				 * a separate vocabulary: that one is what is in the building,
+				 * this is how the place runs. Nothing in the list describes an
+				 * outcome — see data/reasons.json for where that line sits.
+				 */
+				array(
+					'key'          => 'field_oria_reasons',
+					'name'         => 'reasons',
+					'label'        => 'Why people come here',
+					'type'         => 'checkbox',
+					'choices'      => function_exists( '\Oria\Core\Reasons\vocabulary' )
+						? \Oria\Core\Reasons\vocabulary()
+						: array(),
+					'layout'       => 'vertical',
+					'instructions' => 'Only what is true of your sessions today. Unticked shows nothing at all.',
+				),
+
 				/*
 				 * Amenities. Structured, where transit and parking are prose,
 				 * because these are meant to become filters once enough
@@ -381,24 +414,6 @@ function register_listing_fields(): void {
 						: array(),
 					'layout'       => 'vertical',
 					'instructions' => 'Tick only what you actually have. Anything left unticked is simply not shown — it is never displayed as a "no".',
-				),
-
-				/*
-				 * Why people come here. Same contract as amenities above and
-				 * a separate vocabulary: that one is what is in the building,
-				 * this is how the place runs. Nothing in the list describes an
-				 * outcome — see data/reasons.json for where that line sits.
-				 */
-				array(
-					'key'          => 'field_oria_reasons',
-					'name'         => 'reasons',
-					'label'        => 'Why people come here',
-					'type'         => 'checkbox',
-					'choices'      => function_exists( '\Oria\Core\Reasons\vocabulary' )
-						? \Oria\Core\Reasons\vocabulary()
-						: array(),
-					'layout'       => 'vertical',
-					'instructions' => 'Only what is true of your sessions today. Unticked shows nothing at all.',
 				),
 
 				// --- Team ---------------------------------------------------

@@ -3333,3 +3333,6 @@ html.has-sheet { overflow: hidden; }
   text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
 }
 .savedcard__drop:hover { color: var(--ink); }
+
+/* --- Timetable day filter ----------------------------------------------- */
+.ttdays { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }

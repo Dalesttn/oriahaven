@@ -52,7 +52,10 @@ function register_listing(): void {
 			'public'          => true,
 			'menu_position'   => 20,
 			'menu_icon'       => 'dashicons-location-alt',
-			'supports'        => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields', 'author', 'comments' ),
+			// No 'editor'. The WYSIWYG was empty on every listing but three, and
+			// nothing asks a practitioner to write one: the blurb (excerpt) is
+			// what the cards, the meta description and the profile all read.
+			'supports'        => array( 'title', 'excerpt', 'thumbnail', 'revisions', 'custom-fields', 'author', 'comments' ),
 			// Listings carry their own capability set, so the practitioner
 			// role can edit a listing without gaining any access to posts or
 			// pages. Ownership\grant_admin_caps() gives administrators the lot.
