@@ -87,14 +87,21 @@ function days_of( array $row ): array {
  * that would do something. A studio closed on Sundays never gets a Sunday
  * button that empties the list.
  *
- * @param list<array<string, mixed>> $rows
+ * Classes are the grouped shape -- each carries a 'sessions' list and the
+ * days live on the sessions. A flat row with its own 'day' key still reads,
+ * so anything older that reaches here degrades to the same answer.
+ *
+ * @param list<array<string, mixed>> $classes
  * @return list<int>
  */
-function days_used( array $rows ): array {
+function days_used( array $classes ): array {
 	$all = array();
-	foreach ( $rows as $row ) {
-		foreach ( days_of( $row ) as $d ) {
-			$all[ $d ] = true;
+	foreach ( $classes as $class ) {
+		$sessions = is_array( $class['sessions'] ?? null ) ? $class['sessions'] : array( $class );
+		foreach ( $sessions as $session ) {
+			foreach ( days_of( (array) $session ) as $d ) {
+				$all[ $d ] = true;
+			}
 		}
 	}
 	$out = array_keys( $all );
@@ -121,7 +128,7 @@ function full_label( int $day ): string {
 function day_summary( array $row ): string {
 	$days = days_of( $row );
 	if ( ! $days ) {
-		return __( 'By arrangement', 'oria' );
+		return __( 'Any day', 'oria' );
 	}
 	return implode( ', ', array_map( __NAMESPACE__ . '\label', $days ) );
 }

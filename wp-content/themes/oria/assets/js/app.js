@@ -2387,8 +2387,10 @@
   }
 
   /* --- Class day filter -------------------------------------------------- */
-  /* Each row carries the days the server read off its own day field, so this
-     only matches -- no parsing happens here or anywhere twice. */
+  /* Two levels: sessions carry the days the server read off their own day
+     field, and a class hides only when every one of its sessions is hidden.
+     A class with no sessions at all -- by arrangement -- always shows: it is
+     still available on a Tuesday. */
   function initClasses() {
     var root = document.querySelector("[data-classes]");
     if (!root) return;
@@ -2400,12 +2402,18 @@
     function apply(day) {
       var shown = 0;
       rows.forEach(function (li) {
-        var days = (li.dataset.clsDays || "").split(" ").filter(Boolean);
-        /* A class naming no day stays visible whatever is picked: one run
-           by arrangement is still available on a Tuesday. */
-        var ok = day === "all" || !days.length || days.indexOf(day) > -1;
-        li.hidden = !ok;
-        if (ok) shown++;
+        var sessions = $$("[data-cls-days]", li);
+        var visible = 0;
+        sessions.forEach(function (sess) {
+          var days = (sess.dataset.clsDays || "").split(" ").filter(Boolean);
+          /* A session naming no day is "any day": it survives every filter. */
+          var ok = day === "all" || !days.length || days.indexOf(day) > -1;
+          sess.hidden = !ok;
+          if (ok) visible++;
+        });
+        var keep = !sessions.length || visible > 0;
+        li.hidden = !keep;
+        if (keep) shown++;
       });
       if (empty) empty.hidden = shown > 0;
     }

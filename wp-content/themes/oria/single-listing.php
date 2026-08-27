@@ -448,9 +448,9 @@ while ( have_posts() ) :
 					<p class="hint" style="margin-bottom:1.1rem"><?php esc_html_e( 'Published by the practice. Public holidays excepted — check before you travel.', 'oria' ); ?></p>
 					<?php
 					/*
-					 * Days come from each class's own day field, so the filter
-					 * matches rather than parses. Only days that appear get a
-					 * button, and the control is skipped below two: a
+					 * Days come from each session's own day field, so the
+					 * filter matches rather than parses. Only days that appear
+					 * get a button, and the control is skipped below two: a
 					 * Saturdays-only timetable needs reading, not filtering.
 					 */
 					$oria_cls_days = function_exists( '\Oria\Core\Classes\days_used' )
@@ -473,29 +473,42 @@ while ( have_posts() ) :
 								if ( '' === $oria_ctitle ) {
 									continue;
 								}
-								$oria_rdays  = function_exists( '\Oria\Core\Classes\days_of' )
-									? \Oria\Core\Classes\days_of( $oria_row )
-									: array();
-								$oria_cdesc  = trim( (string) ( $oria_row['description'] ?? '' ) );
-								$oria_ctime  = trim( (string) ( $oria_row['time'] ?? '' ) );
-								$oria_cprice = trim( (string) ( $oria_row['price'] ?? '' ) );
+								$oria_cdesc     = trim( (string) ( $oria_row['description'] ?? '' ) );
+								$oria_cprice    = trim( (string) ( $oria_row['price'] ?? '' ) );
+								$oria_csessions = is_array( $oria_row['sessions'] ?? null ) ? $oria_row['sessions'] : array();
 								?>
-								<li class="classrow" data-cls-days="<?php echo esc_attr( implode( ' ', $oria_rdays ) ); ?>">
-									<div class="classrow__when">
-										<span class="classrow__day"><?php echo esc_html( \Oria\Core\Classes\day_summary( $oria_row ) ); ?></span>
-										<?php if ( $oria_ctime ) : ?>
-											<span class="classrow__time"><?php echo esc_html( $oria_ctime ); ?></span>
-										<?php endif; ?>
-									</div>
-									<div class="classrow__main">
+								<li class="classrow">
+									<div class="classrow__head">
 										<h3 class="classrow__title"><?php echo esc_html( $oria_ctitle ); ?></h3>
-										<?php if ( $oria_cdesc ) : ?>
-											<p class="classrow__desc"><?php echo esc_html( $oria_cdesc ); ?></p>
+										<?php // No price is not a free class. An empty cell says nothing, which is right. ?>
+										<?php if ( $oria_cprice ) : ?>
+											<span class="classrow__price"><?php echo esc_html( $oria_cprice ); ?></span>
 										<?php endif; ?>
 									</div>
-									<?php // A missing price is not a free class. An empty cell says nothing, which is right. ?>
-									<?php if ( $oria_cprice ) : ?>
-										<div class="classrow__price"><?php echo esc_html( $oria_cprice ); ?></div>
+									<?php if ( $oria_cdesc ) : ?>
+										<p class="classrow__desc"><?php echo esc_html( $oria_cdesc ); ?></p>
+									<?php endif; ?>
+									<?php if ( $oria_csessions ) : ?>
+										<ul class="sessions">
+											<?php
+											foreach ( $oria_csessions as $oria_sess ) :
+												$oria_sdays = function_exists( '\Oria\Core\Classes\days_of' ) ? \Oria\Core\Classes\days_of( $oria_sess ) : array();
+												$oria_stime = trim( (string) ( $oria_sess['time'] ?? '' ) );
+												$oria_swith = trim( (string) ( $oria_sess['with'] ?? '' ) );
+												?>
+												<li class="session" data-cls-days="<?php echo esc_attr( implode( ' ', $oria_sdays ) ); ?>">
+													<span class="session__day"><?php echo esc_html( \Oria\Core\Classes\day_summary( $oria_sess ) ); ?></span>
+													<?php if ( $oria_stime ) : ?>
+														<span class="session__time"><?php echo esc_html( $oria_stime ); ?></span>
+													<?php endif; ?>
+													<?php if ( $oria_swith ) : ?>
+														<span class="session__with"><?php printf( esc_html__( 'with %s', 'oria' ), esc_html( $oria_swith ) ); ?></span>
+													<?php endif; ?>
+												</li>
+											<?php endforeach; ?>
+										</ul>
+									<?php else : ?>
+										<p class="session session--none"><?php esc_html_e( 'By arrangement — contact the practice.', 'oria' ); ?></p>
 									<?php endif; ?>
 								</li>
 							<?php endforeach; ?>

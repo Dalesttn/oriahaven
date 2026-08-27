@@ -231,6 +231,12 @@ function register_listing_fields(): void {
 					'type'      => 'tab',
 					'placement' => 'left',
 				),
+				/*
+				 * A class is entered once -- title, description, price --
+				 * and its week lives in the sessions repeater inside it.
+				 * "All Levels Hatha" at five day-and-time slots is one entry
+				 * with five sessions, not five near-identical rows.
+				 */
 				array(
 					'key'          => 'field_oria_classes',
 					'name'         => 'classes',
@@ -238,43 +244,15 @@ function register_listing_fields(): void {
 					'type'         => 'repeater',
 					'button_label' => 'Add class',
 					'layout'       => 'row',
-					'instructions' => 'Your regular timetable. Describe what happens in the room — not what it will do for someone.',
+					'instructions' => 'Enter each class once, then add its weekly times underneath. Describe what happens in the room — not what it will do for someone.',
 					'sub_fields'   => array(
 						array(
 							'key'         => 'field_oria_cls_title',
 							'name'        => 'title',
 							'label'       => 'Class',
 							'type'        => 'text',
-							'placeholder' => 'Slow flow',
+							'placeholder' => 'All Levels Hatha',
 							'wrapper'     => array( 'width' => '40' ),
-						),
-						/*
-						 * A list, not a single day: a class that runs Monday
-						 * and Wednesday is one class on the timetable and
-						 * should be one row here. Values are ISO numbers so
-						 * the filter on the page never parses prose.
-						 */
-						array(
-							'key'         => 'field_oria_cls_day',
-							'name'        => 'day',
-							'label'       => 'Day',
-							'type'        => 'select',
-							'choices'     => function_exists( '\Oria\Core\Classes\day_choices' )
-								? \Oria\Core\Classes\day_choices()
-								: array(),
-							'multiple'    => 1,
-							'ui'          => 1,
-							'allow_null'  => 1,
-							'instructions'=> 'Leave empty for classes by arrangement.',
-							'wrapper'     => array( 'width' => '30' ),
-						),
-						array(
-							'key'         => 'field_oria_cls_time',
-							'name'        => 'time',
-							'label'       => 'Time',
-							'type'        => 'text',
-							'placeholder' => '6.15 - 7.15am',
-							'wrapper'     => array( 'width' => '30' ),
 						),
 						array(
 							'key'         => 'field_oria_cls_desc',
@@ -283,9 +261,9 @@ function register_listing_fields(): void {
 							'type'        => 'textarea',
 							'rows'        => 2,
 							'maxlength'   => 200,
-							'placeholder' => 'Unheated, props provided, suits a first class.',
-							'instructions'=> 'What happens in the session. No health or outcome claims.',
-							'wrapper'     => array( 'width' => '70' ),
+							'placeholder' => 'Postures held, suits all levels, props provided.',
+							'instructions'=> 'No health or outcome claims.',
+							'wrapper'     => array( 'width' => '40' ),
 						),
 						array(
 							'key'         => 'field_oria_cls_price',
@@ -294,7 +272,53 @@ function register_listing_fields(): void {
 							'type'        => 'text',
 							'placeholder' => '$25 or Free',
 							'instructions'=> 'Optional.',
-							'wrapper'     => array( 'width' => '30' ),
+							'wrapper'     => array( 'width' => '20' ),
+						),
+						array(
+							'key'          => 'field_oria_cls_sessions',
+							'name'         => 'sessions',
+							'label'        => 'Weekly times',
+							'type'         => 'repeater',
+							'button_label' => 'Add time',
+							'layout'       => 'table',
+							'instructions' => 'One row per time slot. Pick several days when the same time runs more than once a week. Leave empty for classes by arrangement.',
+							'sub_fields'   => array(
+								/*
+								 * A list, not a single day: "weekday mornings
+								 * at 9.30" is one session row with five days
+								 * ticked. ISO numbers, so the page filter
+								 * never parses prose.
+								 */
+								array(
+									'key'        => 'field_oria_cls_day',
+									'name'       => 'day',
+									'label'      => 'Day(s)',
+									'type'       => 'select',
+									'choices'    => function_exists( '\Oria\Core\Classes\day_choices' )
+										? \Oria\Core\Classes\day_choices()
+										: array(),
+									'multiple'   => 1,
+									'ui'         => 1,
+									'allow_null' => 1,
+									'wrapper'    => array( 'width' => '45' ),
+								),
+								array(
+									'key'         => 'field_oria_cls_time',
+									'name'        => 'time',
+									'label'       => 'Time',
+									'type'        => 'text',
+									'placeholder' => '9.30 - 10.45am',
+									'wrapper'     => array( 'width' => '30' ),
+								),
+								array(
+									'key'         => 'field_oria_cls_with',
+									'name'        => 'with',
+									'label'       => 'Teacher',
+									'type'        => 'text',
+									'placeholder' => 'Optional',
+									'wrapper'     => array( 'width' => '25' ),
+								),
+							),
 						),
 					),
 				),
