@@ -110,7 +110,12 @@ add_action(
 		// satisfied by the slim index, and shipping the full set to the home
 		// page meant 255KB of inline JSON for the main thread to parse
 		// before the page settled.
-		if ( is_post_type_archive( 'listing' ) || is_tax( array( 'practice', 'area', 'specialty' ) ) ) {
+		// The saved page renders full cards -- photo, rating, distance --
+		// from this payload alone, so it needs the same set the
+		// directory does. It was on the slim index before, which is why
+		// its cards had no images to draw.
+		$oria_saved_page = function_exists( '\Oria\Core\Saved\is_page' ) && \Oria\Core\Saved\is_page();
+		if ( is_post_type_archive( 'listing' ) || is_tax( array( 'practice', 'area', 'specialty' ) ) || $oria_saved_page ) {
 			wp_add_inline_script( 'oria-app', 'window.ORIA_DATA = ' . wp_json_encode( listing_data() ) . ';', 'before' );
 		} else {
 			// Everywhere else — a listing, an event, a journal article — the

@@ -3315,11 +3315,15 @@ html.has-sheet { overflow: hidden; }
 .saved__empty { max-width: 44rem; }
 .saved__grid { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
 .savedcard {
-  display: flex; flex-direction: column; gap: .3rem;
-  padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: var(--r-md);
-  background: var(--white); color: inherit; text-decoration: none;
+  display: flex; flex-direction: column; overflow: hidden;
+  border: 1px solid var(--line); border-radius: var(--r-2, 14px);
+  background: var(--surface, #fff);
 }
 .savedcard:hover { border-color: var(--ink); }
+.savedcard__media { display: block; aspect-ratio: 16 / 10; position: relative; background: var(--sand-2, #F2EFE7); }
+/* Absolute, so the image cannot feed its own ratio back into the box. */
+.savedcard__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.savedcard__body { display: grid; gap: .3rem; padding: var(--s-4); justify-items: start; }
 .savedcard__name { font-weight: 600; font-size: var(--fs-sm); line-height: 1.3; }
 .savedcard__meta { font-size: var(--fs-xs); color: var(--text-faint); }
 .savedcard__drop {

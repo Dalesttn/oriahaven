@@ -2563,13 +2563,18 @@
 
       root.innerHTML = rows.map(function (l) {
         var meta = [l.suburb, l.km != null ? l.km + " km from the CBD" : ""].filter(Boolean).join(" · ");
+        /* The listing's own photo, else the shipped practice scene. Either
+           way alt is empty: the name is the very next line. */
+        var img = l.image || l.image_fb || "";
         /* keyOf, not l.id — the slim index has no id, so this button was
            rendering data-unsave="undefined" and Remove did nothing. */
         return '<div class="savedcard">' +
+          (img ? '<a class="savedcard__media" href="' + esc(l.url) + '" tabindex="-1" aria-hidden="true"><img class="savedcard__img" src="' + esc(img) + '" alt="" loading="lazy" decoding="async"></a>' : "") +
+          '<div class="savedcard__body">' +
           '<a class="savedcard__name" href="' + esc(l.url) + '">' + esc(l.name) + "</a>" +
           '<span class="savedcard__meta">' + esc(meta) + "</span>" +
           '<button class="savedcard__drop" type="button" data-unsave="' + esc(keyOf(l)) + '">Remove</button>' +
-          "</div>";
+          "</div></div>";
       }).join("");
     }
 
