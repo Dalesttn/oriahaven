@@ -118,7 +118,14 @@ function events_from_html( string $html, string $page_url ): array {
 				'venue'      => sanitize_text_field( (string) ( is_array( $loc ) ? ( $loc['name'] ?? '' ) : $loc ) ),
 				'suburb'     => sanitize_text_field( (string) ( is_array( $addr ) ? ( $addr['addressLocality'] ?? '' ) : '' ) ),
 				'region'     => sanitize_text_field( (string) ( is_array( $addr ) ? ( $addr['addressRegion'] ?? '' ) : '' ) ),
-				'price'      => sanitize_text_field( (string) ( is_array( $offer ) ? ( $offer['price'] ?? '' ) : '' ) ),
+				/*
+				 * Eventbrite and Humanitix both publish AggregateOffer, which
+				 * carries lowPrice/highPrice and no `price` at all — so asking
+				 * only for `price` returned empty on every event ever imported.
+				 * A plain Offer still wins where one is given.
+				 */
+				'price'      => sanitize_text_field( (string) ( is_array( $offer ) ? ( $offer['price'] ?? $offer['lowPrice'] ?? '' ) : '' ) ),
+				'price_high' => sanitize_text_field( (string) ( is_array( $offer ) ? ( $offer['highPrice'] ?? '' ) : '' ) ),
 				'currency'   => sanitize_text_field( (string) ( is_array( $offer ) ? ( $offer['priceCurrency'] ?? '' ) : '' ) ),
 				'organiser'  => sanitize_text_field( (string) ( is_array( $org ) ? ( $org['name'] ?? '' ) : $org ) ),
 				'url'        => esc_url_raw( (string) ( $node['url'] ?? $page_url ) ),
@@ -258,6 +265,7 @@ function events_from_ics( string $ics, string $feed_url ): array {
 			'suburb'      => '',
 			'region'      => '',
 			'price'       => '',
+			'price_high'  => '',
 			'currency'    => '',
 			'organiser'   => '',
 			'url'         => esc_url_raw( $get( 'URL' ) ?: $feed_url ),

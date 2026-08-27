@@ -154,7 +154,7 @@ function process( array $c ): string {
 			'description' => '', // never copy source copy verbatim.
 			'suburb'      => $c['suburb'],
 			'venue'       => $c['venue'],
-			'price'       => price_label( $c['price'], $c['currency'] ),
+			'price'       => price_label( $c['price'], $c['currency'], (string) ( $c['price_high'] ?? '' ) ),
 			'start'       => $start,
 			'end'         => $end,
 			'organiser'   => $c['organiser'],
@@ -230,15 +230,38 @@ function local_datetime( string $raw ): string {
 	return $dt->format( 'Y-m-d H:i:s' );
 }
 
-function price_label( string $price, string $currency ): string {
+function price_label( string $price, string $currency, string $high = '' ): string {
+	unset( $currency );
+
 	if ( '' === $price ) {
 		return '';
 	}
 	if ( ! is_numeric( $price ) ) {
 		return $price;
 	}
-	$n = (float) $price;
-	return $n > 0 ? '$' . rtrim( rtrim( number_format( $n, 2, '.', '' ), '0' ), '.' ) : 'Free';
+
+	$low = (float) $price;
+	if ( $low <= 0.0 ) {
+		// Eventbrite and Humanitix both mean free by a zero ticket price;
+		// there is no separate "unknown" value, that is the empty string.
+		return 'Free';
+	}
+
+	/*
+	 * Whole dollars. Eventbrite's figure includes its booking fee — the
+	 * Ayurvedic cooking workshop advertises $150 and reports 160.14 — so the
+	 * cents are a precision this data does not have, and printing them
+	 * against the organiser's own round number reads as a mistake.
+	 */
+	$label = '$' . number_format( round( $low ), 0, '.', ',' );
+
+	$top = is_numeric( $high ) ? (float) $high : 0.0;
+	if ( $top > $low + 0.5 ) {
+		// Tiered tickets. Quoting the cheapest as *the* price is how a
+		// directory promises something the door will not honour.
+		return sprintf( 'From %s', $label );
+	}
+	return $label;
 }
 
 /**
