@@ -930,6 +930,22 @@ while ( have_posts() ) :
 				<?php get_template_part( 'template-parts/review', 'form', array( 'listing_id' => $oria_id ) ); ?>
 				</div><?php // #reviews ?>
 
+				<!-- Quick answers: the FAQPage schema reads the same helper -->
+				<?php $oria_faq = function_exists( '\Oria\Core\Schema\listing_faq' ) ? \Oria\Core\Schema\listing_faq( $oria_id ) : array(); ?>
+				<?php if ( $oria_faq ) : ?>
+				<div>
+					<h2 class="h3" style="margin-bottom:1rem"><?php esc_html_e( 'Quick answers', 'oria' ); ?></h2>
+					<dl class="qanda">
+						<?php foreach ( $oria_faq as $oria_qa ) : ?>
+							<div class="qanda__item">
+								<dt class="qanda__q"><?php echo esc_html( $oria_qa['q'] ); ?></dt>
+								<dd class="qanda__a"><?php echo esc_html( $oria_qa['a'] ); ?></dd>
+							</div>
+						<?php endforeach; ?>
+					</dl>
+				</div>
+				<?php endif; ?>
+
 				<!-- Getting there -->
 				<?php
 				$oria_map = $oria_address ? \Oria\Theme\map_embed_url( $oria_address ) : '';

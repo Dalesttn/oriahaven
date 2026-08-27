@@ -203,6 +203,21 @@ function resolve_facet( \WP_Term $practice, string $slug ): ?array {
 	if ( 'free' === $slug ) {
 		return array( 'slug' => 'free', 'key' => 'price', 'value' => 'Free', 'label' => sprintf( 'Free or by-donation %s in Perth', lcfirst( $pname ) ), 'page' => null );
 	}
+	// 6. An area — suburb or region. Deliberately last, so no suburb name
+	//    can shadow a service or an intent page: the highest-intent page a
+	//    directory has is category x suburb, but only when the slug means
+	//    nothing else under this category.
+	$t = get_term_by( 'slug', $slug, Taxonomies\AREA );
+	if ( $t instanceof \WP_Term ) {
+		return array(
+			'slug'  => $slug,
+			'key'   => 'area',
+			'value' => $t->slug,
+			'label' => sprintf( '%1$s in %2$s', $pname, wp_specialchars_decode( $t->name, ENT_QUOTES ) ),
+			'page'  => null,
+			'area'  => $t,
+		);
+	}
 	return null;
 }
 
@@ -632,11 +647,26 @@ function retire_old_category(): void {
 	if ( ! is_tax( Taxonomies\PRACTICE ) || get_query_var( V2_VAR ) ) {
 		return; // not a practice archive, or already on the new address
 	}
-	if ( null !== \Oria\Core\Seo\combo_area() || IntentPages\current() ) {
-		return; // a combo or an intent page, neither of which moves
+	if ( IntentPages\current() ) {
+		return; // intent pages do not move
 	}
 	$term = get_queried_object();
 	if ( ! $term instanceof \WP_Term ) {
+		return;
+	}
+	$combo = \Oria\Core\Seo\combo_area();
+	if ( null !== $combo ) {
+		/*
+		 * A suburb combo moves to the facet address -- but only when the
+		 * slug resolves as an area THERE. If it turns out to name a service
+		 * under this category, redirecting would land on different content,
+		 * and the combo stays where it is instead.
+		 */
+		$f = resolve_facet( $term, $combo->slug );
+		if ( null !== $f && 'area' === ( $f['key'] ?? '' ) ) {
+			wp_safe_redirect( category_url( $term ) . $f['slug'] . '/', 301 );
+			exit;
+		}
 		return;
 	}
 
@@ -816,7 +846,7 @@ function sitemap_entries(): array {
 		// The slugs a person could actually reach on this category.
 		$candidates = array();
 		foreach ( $ids as $id ) {
-			foreach ( array( 'service', Taxonomies\SPECIALTY ) as $tax ) {
+			foreach ( array( 'service', Taxonomies\SPECIALTY, Taxonomies\AREA ) as $tax ) {
 				if ( ! taxonomy_exists( $tax ) ) {
 					continue;
 				}
@@ -826,6 +856,14 @@ function sitemap_entries(): array {
 				}
 				foreach ( $terms as $t ) {
 					$candidates[ $t->slug ] = true;
+					// A suburb nominates its region too, so "in the north"
+					// pages exist wherever they clear the same gate.
+					if ( Taxonomies\AREA === $tax && $t->parent ) {
+						$p = get_term( (int) $t->parent, Taxonomies\AREA );
+						if ( $p instanceof \WP_Term ) {
+							$candidates[ $p->slug ] = true;
+						}
+					}
 				}
 			}
 		}
@@ -872,7 +910,7 @@ function flush_sitemap_cache( $post_id = 0 ): void {
 
 /** @param int $object_id */
 function flush_sitemap_cache_terms( $object_id, $terms = null, $tt_ids = null, $taxonomy = '' ): void {
-	if ( ! in_array( (string) $taxonomy, array( 'service', Taxonomies\SPECIALTY, Taxonomies\PRACTICE ), true ) ) {
+	if ( ! in_array( (string) $taxonomy, array( 'service', Taxonomies\SPECIALTY, Taxonomies\PRACTICE, Taxonomies\AREA ), true ) ) {
 		return;
 	}
 	flush_sitemap_cache( (int) $object_id );

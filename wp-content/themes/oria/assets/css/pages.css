@@ -3409,3 +3409,13 @@ html.has-sheet { overflow: hidden; }
 .pkgcard__cta:hover { opacity: .85; }
 /* No price on the card: the button takes over holding the bottom edge. */
 .pkgcard__body:not(:has(.pkgcard__price)) .pkgcard__cta { margin-top: auto; }
+
+/* --- Quick answers -------------------------------------------------------
+   Definition list, no accordion: four short factual answers do not need
+   hiding, and an answer a crawler can see collapsed is one a visitor
+   should see open. */
+.qanda { margin: 0; display: grid; gap: .9rem; }
+.qanda__item { border-top: 1px solid var(--line); padding-top: .9rem; }
+.qanda__item:first-child { border-top: 0; padding-top: 0; }
+.qanda__q { font-weight: 600; font-size: .9375rem; }
+.qanda__a { margin: .3rem 0 0; font-size: .875rem; color: var(--text-muted, #4A5F5B); max-width: 60ch; }

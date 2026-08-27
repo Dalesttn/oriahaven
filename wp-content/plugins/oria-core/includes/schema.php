@@ -134,10 +134,120 @@ function organization(): void {
 		. '</script>' . "\n";
 }
 
+/**
+ * Question-and-answer pairs for a listing, from its own data.
+ *
+ * Assembled, not written: the address answers "where", the services answer
+ * "what", the price fields answer "how much", the contact details answer
+ * "how do I book". A field that is empty simply keeps its question off the
+ * list, and fewer than two answers means no FAQ at all -- the template and
+ * the schema both read this one function, so what is marked up is exactly
+ * what is on the page.
+ *
+ * Nothing here is a claim. Every answer is a fact the listing already
+ * publishes two scrolls up.
+ *
+ * @return list<array{q: string, a: string}>
+ */
+function listing_faq( int $id ): array {
+	$name = html_entity_decode( get_the_title( $id ), ENT_QUOTES );
+	$out  = array();
+
+	$address = trim( (string) get_field( 'address', $id ) );
+	$suburb  = '';
+	foreach ( wp_get_post_terms( $id, 'area' ) as $t ) {
+		if ( $t->parent ) {
+			$suburb = html_entity_decode( $t->name, ENT_QUOTES );
+			break;
+		}
+	}
+	if ( '' !== $address ) {
+		$out[] = array(
+			'q' => sprintf( __( 'Where is %s?', 'oria' ), $name ),
+			'a' => $suburb && false === stripos( $address, $suburb )
+				? sprintf( __( '%1$s, in %2$s.', 'oria' ), $address, $suburb )
+				: $address . '.',
+		);
+	} elseif ( '' !== $suburb ) {
+		$out[] = array(
+			'q' => sprintf( __( 'Where is %s?', 'oria' ), $name ),
+			'a' => sprintf( __( 'In %s, Perth. Contact the practice for the exact address.', 'oria' ), $suburb ),
+		);
+	}
+
+	$services = array_filter( array_map( 'trim', array_column( (array) get_field( 'services', $id ), 'name' ) ) );
+	if ( count( $services ) >= 2 ) {
+		$out[] = array(
+			'q' => sprintf( __( 'What does %s offer?', 'oria' ), $name ),
+			'a' => implode( ', ', array_slice( $services, 0, 6 ) ) . '.',
+		);
+	}
+
+	$from = (float) get_field( 'price_from', $id );
+	$band = trim( (string) get_field( 'price_band', $id ) );
+	if ( $from > 0 ) {
+		$out[] = array(
+			'q' => sprintf( __( 'How much does %s cost?', 'oria' ), $name ),
+			'a' => sprintf( __( 'Listed prices start from $%s. Confirm current prices with the practice.', 'oria' ), number_format_i18n( $from ) ),
+		);
+	} elseif ( '' !== $band && 'Free' === $band ) {
+		$out[] = array(
+			'q' => sprintf( __( 'How much does %s cost?', 'oria' ), $name ),
+			'a' => __( 'Free or by donation, as listed by the practice.', 'oria' ),
+		);
+	}
+
+	$phone = trim( (string) get_field( 'phone', $id ) );
+	$site  = trim( (string) get_field( 'website', $id ) );
+	if ( '' !== $phone || '' !== $site ) {
+		$bits = array();
+		if ( '' !== $site ) {
+			$bits[] = __( 'through their website', 'oria' );
+		}
+		if ( '' !== $phone ) {
+			$bits[] = sprintf( __( 'by phone on %s', 'oria' ), $phone );
+		}
+		$out[] = array(
+			'q' => sprintf( __( 'How do I book with %s?', 'oria' ), $name ),
+			'a' => sprintf( __( 'Directly with the practice, %s. Oria Haven takes no bookings and no commission.', 'oria' ), implode( __( ' or ', 'oria' ), $bits ) ),
+		);
+	}
+
+	return count( $out ) >= 2 ? $out : array();
+}
+
+/** The FAQPage node for a listing, or null when the page shows no FAQ. */
+function listing_faq_schema( int $id ): ?array {
+	$faq = listing_faq( $id );
+	if ( ! $faq ) {
+		return null;
+	}
+	return array(
+		'@type'      => 'FAQPage',
+		'@id'        => get_permalink( $id ) . '#faq',
+		'mainEntity' => array_map(
+			static fn( array $qa ): array => array(
+				'@type'          => 'Question',
+				'name'           => $qa['q'],
+				'acceptedAnswer' => array(
+					'@type' => 'Answer',
+					'text'  => $qa['a'],
+				),
+			),
+			$faq
+		),
+	);
+}
+
 function output(): void {
 	$graph = null;
 	if ( is_singular( 'listing' ) ) {
 		$graph = listing_schema( get_the_ID() );
+		$faq   = listing_faq_schema( (int) get_the_ID() );
+		if ( $graph && $faq ) {
+			// Same @graph, so the page stays one JSON-LD block.
+			$graph['@graph'][] = $faq;
+		}
 	} elseif ( is_singular( 'event' ) ) {
 		$graph = event_schema( get_the_ID() );
 	} elseif ( is_tax( array( 'practice', 'specialty', 'area' ) ) || is_post_type_archive( 'listing' ) ) {

@@ -40,7 +40,15 @@ $oria_ids = ( $oria_facet && $oria_term ) ? \Oria\Core\PracticesIndex\facet_ids(
  */
 $oria_area = function_exists( '\Oria\Core\Seo\combo_area' ) ? \Oria\Core\Seo\combo_area() : null;
 $oria_area = $oria_area instanceof WP_Term ? $oria_area : null;
-if ( $oria_area ) {
+if ( ! $oria_area && $oria_facet && 'area' === ( $oria_facet['key'] ?? '' ) && ( $oria_facet['area'] ?? null ) instanceof WP_Term ) {
+	/*
+	 * The same page at the new address: /practices/{cat}/{suburb}/. The ids
+	 * are already the facet subset, so only the label and the toolbar lock
+	 * need to know -- no second filter, which for a region page would have
+	 * wrongly demanded the parent term on every listing.
+	 */
+	$oria_area = $oria_facet['area'];
+} elseif ( $oria_area ) {
 	$oria_ids = array_values(
 		array_filter(
 			$oria_ids,
@@ -232,6 +240,41 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 				<p class="hint" style="margin-top:.6rem"><?php printf( esc_html__( 'Every listing hand-checked. Figures live from the directory, last updated %s.', 'oria' ), esc_html( (string) $oria_answer['updated'] ) ); ?></p>
 			<?php elseif ( $oria_term->description ) : ?>
 				<p class="lede" style="max-width:62ch"><?php echo esc_html( $oria_term->description ); ?></p>
+			<?php endif; ?>
+			<?php if ( $oria_facet && $oria_ids && $oria_all ) : ?>
+				<?php
+				/*
+				 * One dated, quotable sentence with real numbers. AI answer
+				 * engines lift exactly this shape -- a count, a place, a
+				 * date -- and a sentence they can quote is a citation the
+				 * site earns. Counts only; nothing about what any of it
+				 * does for anybody.
+				 */
+				?>
+				<p class="hint" style="margin-top:.6rem;max-width:62ch">
+					<?php
+					if ( $oria_area ) {
+						printf(
+							/* translators: 1: month year, 2: count, 3: total, 4: category, 5: suburb */
+							esc_html__( 'As of %1$s, %2$s of the %3$s %4$s listings on Oria Haven are in %5$s — counted live from the directory.', 'oria' ),
+							esc_html( date_i18n( 'F Y' ) ),
+							esc_html( number_format_i18n( count( $oria_ids ) ) ),
+							esc_html( number_format_i18n( count( $oria_all ) ) ),
+							esc_html( $oria_pname ),
+							esc_html( \Oria\Theme\tname( $oria_area ) )
+						);
+					} else {
+						printf(
+							/* translators: 1: month year, 2: count, 3: total, 4: category */
+							esc_html__( 'As of %1$s, %2$s of the %3$s %4$s listings on Oria Haven match this page — counted live from the directory.', 'oria' ),
+							esc_html( date_i18n( 'F Y' ) ),
+							esc_html( number_format_i18n( count( $oria_ids ) ) ),
+							esc_html( number_format_i18n( count( $oria_all ) ) ),
+							esc_html( $oria_pname )
+						);
+					}
+					?>
+				</p>
 			<?php endif; ?>
 		</div>
 		<dl class="facts">

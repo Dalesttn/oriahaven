@@ -263,6 +263,23 @@ function matching_ids( \WP_Term $practice, array $filter ): array {
 							return $f === $value || 'both' === $f;
 						case 'price':
 							return 0 === strcasecmp( trim( (string) get_field( 'price_band', $id ) ), $value );
+						case 'area':
+							// A region matches through its suburbs: listings
+							// carry the child term, and a page for "north"
+							// that missed everything tagged to a suburb in
+							// the north would be an empty lie.
+							$t = get_term_by( 'slug', $value, Taxonomies\AREA );
+							if ( ! $t instanceof \WP_Term ) {
+								return false;
+							}
+							$slugs = array( $t->slug );
+							foreach ( (array) get_term_children( $t->term_id, Taxonomies\AREA ) as $cid ) {
+								$c = get_term( (int) $cid, Taxonomies\AREA );
+								if ( $c instanceof \WP_Term ) {
+									$slugs[] = $c->slug;
+								}
+							}
+							return has_term( $slugs, Taxonomies\AREA, $id );
 					}
 					return false;
 				}
