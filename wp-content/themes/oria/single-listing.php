@@ -32,7 +32,12 @@ while ( have_posts() ) :
 			$oria_region = $oria_t;
 		}
 	}
-	$oria_practice = wp_get_post_terms( $oria_id, 'practice' )[0] ?? null;
+	// Ranked by the category plan, not by the alphabet — see
+	// Oria\Core\Categories\primary_for(). The breadcrumb and the pills on
+	// this listing's own card now name the same category.
+	$oria_practice = function_exists( '\Oria\Core\Categories\primary_for' )
+		? \Oria\Core\Categories\primary_for( $oria_id )
+		: ( wp_get_post_terms( $oria_id, 'practice' )[0] ?? null );
 
 	$oria_address    = (string) get_field( 'address', $oria_id );
 	$oria_phone      = (string) get_field( 'phone', $oria_id );

@@ -21,7 +21,6 @@ foreach ( $oria_areas as $oria_t ) {
 	}
 }
 
-$oria_practice   = wp_get_post_terms( $oria_id, 'practice' )[0] ?? null;
 $oria_rated      = \Oria\Theme\effective_rating( $oria_id );
 $oria_price_from = get_field( 'price_from', $oria_id );
 $oria_format     = (string) get_field( 'format', $oria_id );

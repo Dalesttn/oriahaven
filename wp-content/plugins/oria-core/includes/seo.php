@@ -489,7 +489,10 @@ function archive_heading( \WP_Term $term ): string {
 
 /** "Bodywork & Massage in Fremantle" for a listing, or ''. */
 function listing_context( int $id ): string {
-	$practice = wp_get_post_terms( $id, 'practice' )[0] ?? null;
+	// Alphabetical order used to decide this, which put "Sound & float in
+	// East Fremantle" in the meta description of a yoga centre. No
+	// function_exists guard: categories.php ships in this same plugin.
+	$practice = \Oria\Core\Categories\primary_for( $id );
 	$suburb   = '';
 	foreach ( wp_get_post_terms( $id, 'area' ) as $term ) {
 		if ( $term->parent ) {

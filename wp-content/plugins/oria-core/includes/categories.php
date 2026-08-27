@@ -477,6 +477,20 @@ function top_for( int $listing_id, int $limit = 2 ): array {
 	return array_slice( $out, 0, max( 1, $limit ) );
 }
 
+
+/**
+ * The one category a listing is most about.
+ *
+ * wp_get_post_terms() orders by name, so taking its first element picks a
+ * category by alphabet — Fremantle Yoga Centre came out as "Sound & float"
+ * because S beats Y. top_for() already ranks properly, by the plan in
+ * categories.json, so this is only a name for asking it for one.
+ */
+function primary_for( int $listing_id ): ?\WP_Term {
+	$top = top_for( $listing_id, 1 );
+	return $top ? $top[0]['term'] : null;
+}
+
 /**
  * The icon for a category, as inline SVG.
  *
