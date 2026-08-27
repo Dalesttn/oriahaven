@@ -3226,3 +3226,14 @@ html.has-sheet { overflow: hidden; }
 .evcard:hover { border-color: var(--ink); transform: translateY(-2px); }
 .evcard__name { font-weight: 600; font-size: var(--fs-sm); line-height: 1.3; }
 .evcard__meta { font-size: var(--fs-xs); color: var(--text-faint); }
+
+/* --- Listing hero ----------------------------------------------------- */
+.profile__lede { margin-top: .85rem; max-width: 54ch; }
+.profile__chips { margin-top: 1rem; }
+.profile__cta { margin-top: 1.35rem; gap: .75rem; flex-wrap: wrap; }
+@media (max-width: 560px) {
+  /* Full width and stacked: two half-width buttons on a phone read as one
+     control with a seam down the middle. */
+  .profile__cta { flex-direction: column; align-items: stretch; }
+  .profile__cta .btn { justify-content: center; }
+}

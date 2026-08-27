@@ -165,12 +165,113 @@ while ( have_posts() ) :
 								<?php endif; ?>
 							</div>
 							<h1 class="h1"><?php the_title(); ?></h1>
+
+							<?php
+							/*
+							 * One line saying what this is, before anything
+							 * else. Taken from the blurb's opening sentence,
+							 * which is on 100% of listings and was written to
+							 * be read first — it just was not being shown
+							 * until the About section most of a screen down.
+							 */
+							$oria_lede = trim( wp_strip_all_tags( (string) get_the_excerpt() ) );
+							if ( '' !== $oria_lede ) {
+								if ( preg_match( '/^(.{40,190}?[.!?])(\s|$)/u', $oria_lede, $oria_m ) ) {
+									$oria_lede = $oria_m[1];
+								} elseif ( mb_strlen( $oria_lede ) > 190 ) {
+									$oria_lede = rtrim( mb_substr( $oria_lede, 0, 190 ) ) . '…';
+								}
+							}
+							?>
+							<?php if ( '' !== $oria_lede ) : ?>
+								<p class="lede profile__lede"><?php echo esc_html( $oria_lede ); ?></p>
+							<?php endif; ?>
+
 							<?php if ( $oria_address || $oria_region ) : ?>
 							<p class="listing__where" style="font-size:.9375rem;margin-top:.75rem">
 								<?php echo $oria_pin; // phpcs:ignore ?>
 								<?php echo esc_html( trim( $oria_address . ( $oria_region ? ' · ' . \Oria\Theme\tname( $oria_region ) : '' ), ' ·' ) ); ?>
 							</p>
 							<?php endif; ?>
+
+							<?php
+							/*
+							 * What they do, as chips. Specialties first — they
+							 * are the modality names people search — then the
+							 * format. Audience tags would belong here too and
+							 * are deliberately absent: they sit on 7% of
+							 * listings, and a row that says "Beginners
+							 * welcome" on one page and nothing on the next
+							 * teaches a reader to stop looking at it.
+							 */
+							$oria_chips = array();
+
+							/*
+							 * Services first, not specialties. Fremantle Yoga
+							 * Centre carries one specialty — Sound healing —
+							 * and four services: Hatha, Vinyasa, Yin and Yoga.
+							 * Leading with the specialty put "Sound healing"
+							 * alone under the name of a yoga studio.
+							 */
+							$oria_chip_terms = wp_get_post_terms( $oria_id, 'service' );
+							$oria_chip_terms = is_wp_error( $oria_chip_terms ) ? array() : $oria_chip_terms;
+							$oria_spec_terms = wp_get_post_terms( $oria_id, 'specialty' );
+							$oria_chip_terms = array_merge( $oria_chip_terms, is_wp_error( $oria_spec_terms ) ? array() : $oria_spec_terms );
+
+							// A chip repeating the category says nothing new —
+							// "Yoga" under a yoga studio is the page you are on.
+							$oria_chip_skip = array();
+							if ( $oria_practice instanceof WP_Term ) {
+								$oria_chip_skip[] = strtolower( \Oria\Theme\tname( $oria_practice ) );
+								$oria_chip_skip[] = $oria_practice->slug;
+							}
+
+							$oria_seen_chip = array();
+							foreach ( $oria_chip_terms as $oria_ct ) {
+								if ( ! $oria_ct instanceof WP_Term || count( $oria_chips ) >= 4 ) {
+									continue;
+								}
+								$oria_cname = \Oria\Theme\tname( $oria_ct );
+								$oria_ckey  = strtolower( $oria_cname );
+								if ( isset( $oria_seen_chip[ $oria_ckey ] )
+									|| in_array( $oria_ckey, $oria_chip_skip, true )
+									|| in_array( $oria_ct->slug, $oria_chip_skip, true ) ) {
+									continue;
+								}
+								$oria_seen_chip[ $oria_ckey ] = true;
+								$oria_chips[]                 = $oria_cname;
+							}
+							if ( 'in-person' !== $oria_format && '' !== $oria_format ) {
+								$oria_chips[] = $oria_format_label;
+							}
+							?>
+							<?php if ( $oria_chips ) : ?>
+								<ul class="chips profile__chips">
+									<?php foreach ( $oria_chips as $oria_chip ) : ?>
+										<li><span class="chip"><?php echo esc_html( $oria_chip ); ?></span></li>
+									<?php endforeach; ?>
+								</ul>
+							<?php endif; ?>
+
+							<?php
+							/*
+							 * The next step, at the top rather than in a
+							 * sidebar card two-thirds down the page.
+							 *
+							 * No "Book a class": booking_url is empty on every
+							 * one of the 356 listings, and a button that
+							 * cannot book is a worse answer than a link that
+							 * goes where booking actually lives.
+							 */
+							?>
+							<div class="row profile__cta">
+								<?php if ( $oria_booking ) : ?>
+									<a class="btn btn--dark" href="<?php echo esc_url( $oria_booking ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="book" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Book a session', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
+								<?php elseif ( $oria_website ) : ?>
+									<a class="btn btn--dark" href="<?php echo esc_url( $oria_website ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="web" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Visit their website', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
+								<?php endif; ?>
+								<a class="btn btn--ghost btn--plain" href="#enquire"><?php esc_html_e( 'Send an enquiry', 'oria' ); ?></a>
+							</div>
 						</div>
 						<?php
 						/*
