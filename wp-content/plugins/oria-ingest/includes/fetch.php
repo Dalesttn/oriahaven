@@ -174,10 +174,40 @@ function event_links( string $html, string $page_url ): array {
 		}
 		$path = (string) ( wp_parse_url( $abs, PHP_URL_PATH ) ?: '' );
 		if ( preg_match( '#/(e|event|events|host)/[^/]+#i', $path ) && ! preg_match( '#/(events?)/?$#i', $path ) ) {
-			$links[ strtok( $abs, '#' ) ] = true;
+			$links[ clean_link( strtok( $abs, '#' ) ) ] = true;
 		}
 	}
 	return array_slice( array_keys( $links ), 0, MAX_FOLLOW );
+}
+
+
+/**
+ * A discovered event URL without the referrer's tracking on it.
+ *
+ * Meetup hands back every link stamped with recId, searchId and eventOrigin
+ * identifying the search that found it. They are not part of the address —
+ * they expire, they differ between two searches that return the same event,
+ * and stored as booking_url they send a visitor through somebody else's
+ * analytics. Only known tracking keys are dropped: some sources genuinely
+ * need a query string to reach the event, so nothing else is touched.
+ */
+function clean_link( string $url ): string {
+	$parts = wp_parse_url( $url );
+	if ( ! is_array( $parts ) || empty( $parts['query'] ) ) {
+		return $url;
+	}
+	parse_str( (string) $parts['query'], $q );
+	foreach ( array_keys( $q ) as $k ) {
+		$key = strtolower( (string) $k );
+		if ( 'rec' === substr( $key, 0, 3 ) || 'utm_' === substr( $key, 0, 4 )
+			|| in_array( $key, array( 'searchid', 'eventorigin', 'fbclid', 'gclid', 'ref', 'aff' ), true ) ) {
+			unset( $q[ $k ] );
+		}
+	}
+	$base = ( $parts['scheme'] ?? 'https' ) . '://' . ( $parts['host'] ?? '' )
+		. ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' )
+		. ( $parts['path'] ?? '' );
+	return $q ? $base . '?' . http_build_query( $q ) : $base;
 }
 
 /**
