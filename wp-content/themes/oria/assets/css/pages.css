@@ -541,9 +541,12 @@ a.livesession:hover { background: var(--sand-2); }
 .chip {
   display: inline-flex; align-items: center; gap: var(--s-2);
   background: var(--deep); color: var(--white);
-  border-radius: var(--r-pill); padding: 0.35rem 0.5rem 0.35rem 0.8rem;
+  border-radius: var(--r-pill); padding: 0.35rem 0.8rem;
   font-size: var(--fs-xs); font-weight: 600;
 }
+/* Same rule as the buttons: pull the right side in only for a chip that
+   actually carries a remove control. */
+.chip:has(button) { padding-right: 0.5rem; }
 .chip button { color: inherit; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,.2); }
 .chip svg { width: 9px; height: 9px; }
 

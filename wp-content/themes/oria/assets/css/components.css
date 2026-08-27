@@ -7,7 +7,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--s-3);
-  padding: 0.72rem 0.72rem 0.72rem 1.35rem;
+  padding: 0.72rem 1.35rem;
   border-radius: var(--r-pill);
   font-size: var(--fs-sm);
   font-weight: 600;
@@ -51,9 +51,16 @@
 .btn--ghost-on-deep:hover { border-color: var(--mist); background: rgba(255,255,255,.05); }
 
 .btn--plain { padding: 0.72rem 1.35rem; }
-.btn--sm { font-size: var(--fs-xs); padding: 0.5rem 0.5rem 0.5rem 1rem; }
+.btn--sm { font-size: var(--fs-xs); padding: 0.5rem 1rem; }
 .btn--sm .btn__dot { width: 24px; height: 24px; flex-basis: 24px; }
 .btn--sm.btn--plain { padding: 0.55rem 1.05rem; }
+/* The dot is what the tighter right padding was ever for, so it is asked for
+   only when the dot is really there. Without :has() a dotted button simply
+   keeps the roomier gap — wrong by a few pixels on one side, rather than
+   lopsided on every button that never had a dot. */
+.btn:has(.btn__dot) { padding-right: 0.72rem; }
+.btn--sm:has(.btn__dot) { padding-right: 0.5rem; }
+
 .btn--block { width: 100%; justify-content: center; }
 
 /* Circular icon button (carousels, close, play) */
