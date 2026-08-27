@@ -150,7 +150,17 @@ $oria_prices = array(
 <div class="toolbar" id="dirFilters">
 	<div class="toolbar__search">
 		<label class="sr-only" for="dirQ"><?php esc_html_e( 'Search', 'oria' ); ?></label>
-		<input class="input" id="dirQ" type="search" placeholder="<?php esc_attr_e( 'Search studios, teachers, styles…', 'oria' ); ?>">
+		<?php
+		/*
+		 * A combobox, not a plain field: app.js fills the panel below with
+		 * what this page actually holds. autocomplete="off" because the
+		 * browser's own history dropdown would cover ours.
+		 */
+		?>
+		<input class="input" id="dirQ" type="search" autocomplete="off"
+			role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="dirQList"
+			placeholder="<?php esc_attr_e( 'Search studios, teachers, styles…', 'oria' ); ?>">
+		<span class="osearch osearch--dir" id="dirQList" data-dir-search-panel hidden></span>
 	</div>
 
 	<?php

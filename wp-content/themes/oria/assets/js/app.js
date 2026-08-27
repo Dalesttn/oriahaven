@@ -1694,6 +1694,154 @@
           pushEvent("dir_search", { search_term: term, results_count: lastCount });
         }, 1200);
       });
+
+      initDirSuggest(qInput);
+    }
+
+    /* Suggestions for #dirQ, drawn from what this page is showing.
+       Everything except the query itself is applied first, so a suggestion
+       can never lead to an empty result — and the counts beside each one
+       are the counts you will get. */
+    function initDirSuggest(input) {
+      var panel = document.getElementById("dirQList");
+      if (!panel) return;
+      var items = [], active = -1, timer;
+
+      function poolWithoutQuery() {
+        var saved = state.q;
+        state.q = "";
+        var out = (DATA.listings || []).filter(matches);
+        state.q = saved;
+        return out;
+      }
+
+      function build(raw) {
+        var q = raw.trim().toLowerCase();
+        if (q.length < 2) return [];
+        var pool = poolWithoutQuery();
+        if (!pool.length) return [];
+
+        var specN = {}, svcN = {}, subN = {}, out = [];
+        pool.forEach(function (l) {
+          (l.spec || []).forEach(function (s) { specN[s] = (specN[s] || 0) + 1; });
+          (l.svc || []).forEach(function (s) { svcN[s] = (svcN[s] || 0) + 1; });
+          if (l.suburb) subN[l.suburb] = (subN[l.suburb] || 0) + 1;
+        });
+
+        pool.forEach(function (l) {
+          var at = (l.name || "").toLowerCase().indexOf(q);
+          if (at > -1) {
+            out.push({ kind: "Practice", label: l.name, sub: l.suburb,
+                       url: l.url, rank: at === 0 ? 0 : 1 });
+          }
+        });
+
+        /* A style or specialty already on this page. Applied as a filter,
+           never followed, so the visitor keeps the page they chose. */
+        Object.keys(specN).forEach(function (id) {
+          var name = specNames[id] || id;
+          var at = name.toLowerCase().indexOf(q);
+          if (at > -1 && !(state.spec || []).length) {
+            out.push({ kind: "Style", label: name, sub: specN[id] + " here",
+                       apply: ["spec", id], rank: at === 0 ? 2 : 3 });
+          }
+        });
+        Object.keys(svcN).forEach(function (id) {
+          var name = svcNames[id] || id;
+          var at = name.toLowerCase().indexOf(q);
+          // Skip anything a specialty of the same name already offered.
+          var dupe = out.some(function (r) { return r.label.toLowerCase() === name.toLowerCase(); });
+          if (at > -1 && !dupe) {
+            out.push({ kind: "Style", label: name, sub: svcN[id] + " here",
+                       apply: ["svc", id], rank: at === 0 ? 2 : 3 });
+          }
+        });
+        Object.keys(subN).forEach(function (name) {
+          if (name.toLowerCase().indexOf(q) === 0) {
+            out.push({ kind: "Suburb", label: name, sub: subN[name] + " here",
+                       apply: ["suburbs", name], rank: 4 });
+          }
+        });
+
+        out.sort(function (a, b) { return a.rank - b.rank || a.label.localeCompare(b.label); });
+        return out.slice(0, 8);
+      }
+
+      function close() {
+        panel.hidden = true;
+        panel.innerHTML = "";
+        items = [];
+        active = -1;
+        input.setAttribute("aria-expanded", "false");
+        input.removeAttribute("aria-activedescendant");
+      }
+
+      function paint() {
+        items = build(input.value);
+        if (!items.length) { close(); return; }
+        panel.innerHTML = items.map(function (r, i) {
+          return '<span class="osearch__opt" role="option" id="dirQ-o' + i +
+            '" data-i="' + i + '" aria-selected="false"><b>' + esc(r.label) +
+            "</b><em>" + esc(r.kind) + (r.sub ? " · " + esc(r.sub) : "") + "</em></span>";
+        }).join("");
+        panel.hidden = false;
+        panel.setAttribute("role", "listbox");
+        input.setAttribute("aria-expanded", "true");
+        active = -1;
+      }
+
+      function highlight(next) {
+        var opts = panel.querySelectorAll(".osearch__opt");
+        if (!opts.length) return;
+        if (active > -1 && opts[active]) {
+          opts[active].classList.remove("is-active");
+          opts[active].setAttribute("aria-selected", "false");
+        }
+        active = (next + opts.length) % opts.length;
+        opts[active].classList.add("is-active");
+        opts[active].setAttribute("aria-selected", "true");
+        input.setAttribute("aria-activedescendant", opts[active].id);
+        opts[active].scrollIntoView({ block: "nearest" });
+      }
+
+      function choose(i) {
+        var r = items[i];
+        if (!r) return;
+        if (r.url) { window.location.href = r.url; return; }
+        var key = r.apply[0], val = r.apply[1];
+        if (state[key] && state[key].indexOf(val) === -1) state[key].push(val);
+        // The filter says it better than the words did, so the box empties.
+        state.q = "";
+        input.value = "";
+        state.page = 1;
+        close();
+        render();
+      }
+
+      input.addEventListener("input", function () {
+        clearTimeout(timer);
+        timer = setTimeout(paint, 120);
+      });
+      input.addEventListener("focus", function () {
+        if (input.value.trim().length > 1) paint();
+      });
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown" && panel.hidden) { paint(); return; }
+        if (panel.hidden) return;
+        if (e.key === "ArrowDown") { e.preventDefault(); highlight(active + 1); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); highlight(active - 1); }
+        else if (e.key === "Enter" && active > -1) { e.preventDefault(); choose(active); }
+        else if (e.key === "Escape") { close(); }
+      });
+      panel.addEventListener("mousedown", function (e) {
+        var el = e.target.closest(".osearch__opt");
+        if (!el) return;
+        e.preventDefault();
+        choose(Number(el.dataset.i));
+      });
+      document.addEventListener("click", function (e) {
+        if (!panel.hidden && !input.parentNode.contains(e.target)) close();
+      });
     }
 
     /* Filters: a collapsible sidebar on desktop, a slide-up sheet on

@@ -389,6 +389,11 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
   .osearch__opt b { overflow-wrap: anywhere; }
 }
 
+/* The directory toolbar's box. The panel above is offset for the hero and
+   the nav; here the field is the whole cell, so it lines up with it. */
+.toolbar__search { position: relative; }
+.osearch--dir { left: 0; right: 0; min-width: 0; top: calc(100% + 8px); }
+
 /* The header's own compact search. */
 .navsearch { position: relative; display: flex; align-items: center; gap: var(--s-2); }
 .navsearch__icon { width: 15px; height: 15px; color: var(--text-faint); flex: none; }
