@@ -198,8 +198,8 @@ $oria_plans = array(
 			<label class="field"><span class="field__label"><?php esc_html_e( 'Website', 'oria' ); ?> <span style="color:var(--text-faint);font-weight:400">· <?php esc_html_e( 'optional', 'oria' ); ?></span></span>
 				<input class="input" type="url" name="website" placeholder="https://" value="<?php echo $oria_v( 'website' ); ?>"></label>
 
-			<label class="field"><span class="field__label"><?php esc_html_e( 'Description', 'oria' ); ?></span>
-				<textarea class="textarea" name="description" required minlength="40" style="min-height:130px"
+			<label class="field"><span class="field__label"><?php esc_html_e( 'Description', 'oria' ); ?> <span style="color:var(--text-faint);font-weight:400">· <?php esc_html_e( 'a short paragraph, up to 50 words', 'oria' ); ?></span></span>
+				<textarea class="textarea" name="description" required minlength="40" maxlength="400" style="min-height:130px"
 					placeholder="<?php esc_attr_e( 'What you offer, who it suits, what a first visit looks like. Plain description — no medical claims.', 'oria' ); ?>"><?php echo esc_textarea( (string) ( $oria_old['description'] ?? '' ) ); ?></textarea></label>
 
 			<div class="field">

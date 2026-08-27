@@ -108,8 +108,11 @@ function handle(): void {
 			'post_status' => 'pending',
 			'post_title'  => $in['practice_name'],
 			'post_name'   => wp_unique_post_slug( sanitize_title( $in['practice_name'] ), 0, 'publish', 'listing', 0 ),
+			// The blurb is the only place a description lives. It is what the
+			// cards, the meta description and the profile all read, and it is
+			// editable in the admin -- which matters most for the one field a
+			// practitioner writes freehand, where an outcome claim would land.
 			'post_excerpt'=> wp_trim_words( $in['description'], 50, '…' ),
-			'post_content'=> $in['description'],
 		),
 		true
 	);
@@ -407,7 +410,13 @@ function send( string $to, string $subject, string $heading, string $body ): voi
  * activates it automatically. The free plan is stated plainly as a real
  * option; nobody upgrades because they felt cornered.
  */
-function live_email( string $new, string $old, \WP_Post $post ): void {
+function live_email( string $new, string $old, ?\WP_Post $post = null ): void {
+	// transition_post_status does not always carry a post -- a strict
+	// WP_Post hint here takes the whole request down with a TypeError,
+	// including the insert inside submit() that creates the listing.
+	if ( ! $post instanceof \WP_Post ) {
+		return;
+	}
 	// Any unpublished state counts: an admin who saves as draft first and
 	// publishes later should still trigger the approval email.
 	if ( 'listing' !== $post->post_type || 'publish' !== $new || 'publish' === $old ) {
