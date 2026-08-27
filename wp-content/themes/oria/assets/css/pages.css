@@ -3369,8 +3369,13 @@ html.has-sheet { overflow: hidden; }
    the selling. Sized so two sit side by side on a laptop and one fills a
    phone; a practice with three passes should not get a lonely third column. */
 .pkgs {
-  display: grid; gap: var(--s-4);
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  display: grid; gap: var(--s-3, .75rem);
+  /* Three across: a package is a price tag, not an article, and three small
+     cards read as a menu where two large ones read as features. */
+  grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 40rem) {
+  .pkgs { grid-template-columns: repeat(2, 1fr); }
 }
 .pkgcard {
   display: flex; flex-direction: column;
@@ -3385,15 +3390,22 @@ html.has-sheet { overflow: hidden; }
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
 .pkgcard__body {
-  display: flex; flex-direction: column; gap: .4rem;
-  padding: var(--s-4); flex: 1;
+  display: flex; flex-direction: column; gap: .3rem;
+  padding: .7rem .8rem .8rem; flex: 1;
 }
-.pkgcard__title { font-size: 1rem; margin: 0; }
-.pkgcard__desc { margin: 0; font-size: .875rem; color: var(--text-muted, #4A5F5B); }
+.pkgcard__title { font-size: .875rem; margin: 0; line-height: 1.3; }
+.pkgcard__desc { margin: 0; font-size: .75rem; color: var(--text-muted, #4A5F5B); line-height: 1.4; }
 .pkgcard__price {
-  margin-top: auto; padding-top: .35rem;
-  font-weight: 600; font-variant-numeric: tabular-nums;
+  margin-top: auto; padding-top: .3rem;
+  font-size: .8125rem; font-weight: 600; font-variant-numeric: tabular-nums;
 }
-.pkgcard__cta { margin-top: .6rem; align-self: start; }
+.pkgcard__cta {
+  margin-top: .45rem; align-self: start;
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .3rem .7rem; border-radius: 999px;
+  background: var(--ink, #082220); color: var(--white, #fff);
+  font-size: .75rem; font-weight: 600; text-decoration: none; line-height: 1;
+}
+.pkgcard__cta:hover { opacity: .85; }
 /* No price on the card: the button takes over holding the bottom edge. */
 .pkgcard__body:not(:has(.pkgcard__price)) .pkgcard__cta { margin-top: auto; }
