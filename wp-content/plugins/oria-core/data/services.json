@@ -11,7 +11,8 @@
       "aliases": [
         "massage therapy",
         "therapeutic massage"
-      ]
+      ],
+      "note": "Hands-on bodywork, pressure set by you"
     },
     {
       "slug": "remedial-massage",
@@ -23,7 +24,8 @@
       "aliases": [
         "remedial",
         "remedial massage therapy"
-      ]
+      ],
+      "note": "Firm, focused work, often with a health-fund receipt"
     },
     {
       "slug": "relaxation-massage",
@@ -33,7 +35,8 @@
       ],
       "aliases": [
         "relaxation"
-      ]
+      ],
+      "note": "Slow, even pressure, whole body"
     },
     {
       "slug": "deep-tissue-massage",
@@ -43,7 +46,8 @@
       ],
       "aliases": [
         "deep tissue"
-      ]
+      ],
+      "note": "Slow strokes into the deeper layers"
     },
     {
       "slug": "sports-massage",
@@ -53,7 +57,8 @@
       ],
       "aliases": [
         "sports injury massage"
-      ]
+      ],
+      "note": "Firm work before or after training"
     },
     {
       "slug": "pregnancy-massage",
@@ -64,7 +69,8 @@
       ],
       "aliases": [
         "prenatal massage"
-      ]
+      ],
+      "note": "Side-lying with bolsters, trimester-aware"
     },
     {
       "slug": "swedish-massage",
@@ -72,7 +78,8 @@
       "categories": [
         "bodywork"
       ],
-      "aliases": []
+      "aliases": [],
+      "note": "Long, flowing strokes with oil"
     },
     {
       "slug": "thai-massage",
@@ -83,7 +90,8 @@
       "aliases": [
         "taiwanese massage",
         "traditional thai massage"
-      ]
+      ],
+      "note": "Clothed, on a mat, with stretching"
     },
     {
       "slug": "lymphatic-drainage",
@@ -94,7 +102,8 @@
       "aliases": [
         "lymphatic massage",
         "manual lymphatic drainage"
-      ]
+      ],
+      "note": "Light, rhythmic strokes in one direction"
     },
     {
       "slug": "myofascial-release",
@@ -107,7 +116,8 @@
         "fascial therapy",
         "soft tissue therapy",
         "soft tissue work"
-      ]
+      ],
+      "note": "Sustained pressure held until tissue softens"
     },
     {
       "slug": "trigger-point-therapy",
@@ -126,7 +136,8 @@
       ],
       "aliases": [
         "cupping therapy"
-      ]
+      ],
+      "note": "Suction cups moved or left in place"
     },
     {
       "slug": "dry-needling",
@@ -135,7 +146,8 @@
         "bodywork",
         "allied"
       ],
-      "aliases": []
+      "aliases": [],
+      "note": "Single-use needles into tight muscle bands"
     },
     {
       "slug": "baby-massage",
@@ -154,7 +166,8 @@
       ],
       "aliases": [
         "physio"
-      ]
+      ],
+      "note": "Assessment, hands-on work, exercises to take home"
     },
     {
       "slug": "womens-health-physiotherapy",
@@ -167,7 +180,8 @@
         "pelvic floor physio",
         "womens health physio",
         "pelvic floor physiotherapy"
-      ]
+      ],
+      "note": "Pelvic floor and pregnancy-related assessment"
     },
     {
       "slug": "occupational-therapy",
@@ -178,7 +192,8 @@
       "aliases": [
         "paediatric occupational therapy",
         "ot"
-      ]
+      ],
+      "note": "Everyday tasks, assessed and adapted"
     },
     {
       "slug": "speech-pathology",
@@ -188,7 +203,8 @@
       ],
       "aliases": [
         "speech therapy"
-      ]
+      ],
+      "note": "Assessment, then practice between sessions"
     },
     {
       "slug": "podiatry",
@@ -199,7 +215,8 @@
       "aliases": [
         "sports podiatry",
         "paediatric podiatry"
-      ]
+      ],
+      "note": "Feet, nails and gait, assessed in clinic"
     },
     {
       "slug": "exercise-physiology",
@@ -211,7 +228,8 @@
       "aliases": [
         "exercise physiologist",
         "exercise therapy"
-      ]
+      ],
+      "note": "Prescribed exercise, supervised and progressed"
     },
     {
       "slug": "chiropractic",
@@ -223,7 +241,8 @@
       "aliases": [
         "chiro",
         "chiropractic adjustments"
-      ]
+      ],
+      "note": "Assessment, then adjustments to joints and spine"
     },
     {
       "slug": "osteopathy",
@@ -234,7 +253,8 @@
       ],
       "aliases": [
         "osteo"
-      ]
+      ],
+      "note": "Hands-on work on joints and soft tissue"
     },
     {
       "slug": "myotherapy",
@@ -257,7 +277,8 @@
         "sports dietitian",
         "dietitian consultation",
         "dietitian consultations"
-      ]
+      ],
+      "note": "An Accredited Practising Dietitian, one to one"
     },
     {
       "slug": "hydrotherapy",
@@ -287,7 +308,8 @@
       ],
       "aliases": [
         "orthotic therapy"
-      ]
+      ],
+      "note": "Casting or scanning, then a fitted insert"
     },
     {
       "slug": "shockwave-therapy",
@@ -295,7 +317,8 @@
       "categories": [
         "allied"
       ],
-      "aliases": []
+      "aliases": [],
+      "note": "A handheld device delivering pulses"
     },
     {
       "slug": "gait-analysis",
@@ -313,7 +336,8 @@
       ],
       "aliases": [
         "naturopath"
-      ]
+      ],
+      "note": "A long first consult, then a plan to follow"
     },
     {
       "slug": "acupuncture",
@@ -322,7 +346,8 @@
         "natural",
         "allied"
       ],
-      "aliases": []
+      "aliases": [],
+      "note": "Fine needles at set points, left in place"
     },
     {
       "slug": "chinese-medicine",
@@ -334,7 +359,8 @@
         "chinese medicine",
         "tcm",
         "tcm health assessment"
-      ]
+      ],
+      "note": "Consultation, tongue and pulse, then a formula"
     },
     {
       "slug": "herbal-medicine",
@@ -346,7 +372,8 @@
         "herbal preparations",
         "herbal dispensary",
         "traditional herbalism"
-      ]
+      ],
+      "note": "A dispensed formula, reviewed at follow-ups"
     },
     {
       "slug": "homeopathy",
@@ -356,7 +383,8 @@
       ],
       "aliases": [
         "homeopathic medicine"
-      ]
+      ],
+      "note": "A long intake, then a prescribed remedy"
     },
     {
       "slug": "ayurveda",
@@ -368,7 +396,8 @@
         "abhyanga massage",
         "panchakarma",
         "rasayana therapy"
-      ]
+      ],
+      "note": "A constitution consult, then oils and diet"
     },
     {
       "slug": "kinesiology",
@@ -377,7 +406,8 @@
         "natural",
         "bodywork"
       ],
-      "aliases": []
+      "aliases": [],
+      "note": "Gentle muscle testing, fully clothed"
     },
     {
       "slug": "reflexology",
@@ -388,7 +418,8 @@
       ],
       "aliases": [
         "foot massage"
-      ]
+      ],
+      "note": "Pressure to points on the feet or hands"
     },
     {
       "slug": "hypnotherapy",
@@ -399,7 +430,8 @@
       ],
       "aliases": [
         "clinical hypnotherapy"
-      ]
+      ],
+      "note": "Guided relaxation, then suggestion, you stay aware"
     },
     {
       "slug": "aromatherapy",
@@ -424,7 +456,8 @@
         "crystal reiki",
         "remote reiki",
         "reiki stone massage"
-      ]
+      ],
+      "note": "Hands resting on or above you, fully clothed"
     },
     {
       "slug": "energy-healing",
@@ -437,7 +470,8 @@
         "energy clearing",
         "pranic healing",
         "quantum healing"
-      ]
+      ],
+      "note": "Hands-on or hands-off, fully clothed"
     },
     {
       "slug": "chakra-balancing",
@@ -481,7 +515,8 @@
         "sound meditation",
         "gong bath",
         "singing bowls"
-      ]
+      ],
+      "note": "Bowls, gongs or voice, you lie still"
     },
     {
       "slug": "float-therapy",
@@ -495,7 +530,8 @@
         "floatation",
         "dry float tanks",
         "sensory deprivation"
-      ]
+      ],
+      "note": "Salt water at body temperature, dark and quiet"
     },
     {
       "slug": "infrared-sauna",
@@ -507,7 +543,8 @@
       "aliases": [
         "infrared sauna suites",
         "infrared therapy"
-      ]
+      ],
+      "note": "Radiant heat, lower temperature, longer sits"
     },
     {
       "slug": "traditional-sauna",
@@ -519,7 +556,8 @@
         "sauna",
         "finnish sauna",
         "sauna therapy"
-      ]
+      ],
+      "note": "Dry heat at high temperature, short sits"
     },
     {
       "slug": "steam-room",
@@ -540,7 +578,8 @@
         "cold plunge",
         "cold immersion",
         "cold exposure"
-      ]
+      ],
+      "note": "Cold immersion, usually two to five minutes"
     },
     {
       "slug": "contrast-therapy",
@@ -551,7 +590,8 @@
       "aliases": [
         "hot and cold therapy",
         "hot plunge"
-      ]
+      ],
+      "note": "Hot then cold, in rounds"
     },
     {
       "slug": "red-light-therapy",
@@ -564,7 +604,8 @@
         "led therapy",
         "photobiomodulation",
         "cold laser therapy"
-      ]
+      ],
+      "note": "Timed sessions under red and near-infrared panels"
     },
     {
       "slug": "compression-therapy",
@@ -574,7 +615,8 @@
       ],
       "aliases": [
         "compression boots"
-      ]
+      ],
+      "note": "Inflatable boots or sleeves, timed cycles"
     },
     {
       "slug": "cryotherapy",
@@ -584,7 +626,8 @@
       ],
       "aliases": [
         "spot cryotherapy"
-      ]
+      ],
+      "note": "A short spell in a very cold chamber"
     },
     {
       "slug": "hyperbaric-oxygen-therapy",
@@ -597,7 +640,8 @@
         "hbot",
         "hyperbaric chamber",
         "hyperbaric oxygen"
-      ]
+      ],
+      "note": "A sealed chamber, pressurised, oxygen by mask"
     },
     {
       "slug": "yoga",
@@ -607,7 +651,8 @@
       ],
       "aliases": [
         "yoga classes"
-      ]
+      ],
+      "note": "Postures and breathing, held or linked"
     },
     {
       "slug": "yin-yoga",
@@ -637,7 +682,8 @@
       ],
       "aliases": [
         "hatha"
-      ]
+      ],
+      "note": "Postures held, at a slower pace"
     },
     {
       "slug": "hot-yoga",
@@ -698,7 +744,8 @@
       ],
       "aliases": [
         "teacher training"
-      ]
+      ],
+      "note": "A certified course, usually 200 hours"
     },
     {
       "slug": "pilates",
@@ -706,7 +753,8 @@
       "categories": [
         "fitness"
       ],
-      "aliases": []
+      "aliases": [],
+      "note": "Controlled movement, mat or equipment"
     },
     {
       "slug": "reformer-pilates",
@@ -734,7 +782,8 @@
       ],
       "aliases": [
         "arc classes"
-      ]
+      ],
+      "note": "Small-range movement at a rail, to music"
     },
     {
       "slug": "personal-training",
@@ -759,7 +808,8 @@
         "functional strength training",
         "powerlifting coaching",
         "small group strength"
-      ]
+      ],
+      "note": "Loaded lifts, programmed and progressed"
     },
     {
       "slug": "group-fitness",
@@ -814,7 +864,8 @@
         "aqua hiit",
         "aqua zumba",
         "deep water classes"
-      ]
+      ],
+      "note": "Shallow or deep water, low impact"
     },
     {
       "slug": "assisted-stretching",
@@ -826,7 +877,8 @@
       "aliases": [
         "assisted fascial stretching",
         "stretch and flex"
-      ]
+      ],
+      "note": "A practitioner moves you through range"
     },
     {
       "slug": "dance",
@@ -839,7 +891,8 @@
         "ecstatic dance",
         "conscious dance",
         "open floor conscious dance"
-      ]
+      ],
+      "note": "Choreography or freeform, in a group"
     },
     {
       "slug": "martial-arts",
@@ -849,7 +902,8 @@
       ],
       "aliases": [
         "kung fu"
-      ]
+      ],
+      "note": "Forms, drills and sparring, grading optional"
     },
     {
       "slug": "meditation",
@@ -860,7 +914,8 @@
       "aliases": [
         "guided meditation",
         "online meditation"
-      ]
+      ],
+      "note": "Guided or silent sitting, timed"
     },
     {
       "slug": "mindfulness",
@@ -879,7 +934,8 @@
       "aliases": [
         "breath training",
         "group breathwork"
-      ]
+      ],
+      "note": "Guided breathing patterns, lying or seated"
     },
     {
       "slug": "nutrition",
@@ -894,7 +950,8 @@
         "nutritional coaching",
         "nutritional counselling",
         "nutritional therapy"
-      ]
+      ],
+      "note": "A look at what you eat, then a written plan"
     },
     {
       "slug": "sports-nutrition",
@@ -903,7 +960,8 @@
         "nutrition",
         "fitness"
       ],
-      "aliases": []
+      "aliases": [],
+      "note": "Fuelling and timing around training"
     },
     {
       "slug": "art-therapy",
@@ -914,7 +972,8 @@
       "aliases": [
         "art psychotherapy",
         "expressive therapy"
-      ]
+      ],
+      "note": "Making something, with a trained therapist present"
     },
     {
       "slug": "music-therapy",
@@ -961,7 +1020,8 @@
         "lifestyle coaching",
         "mindset coaching",
         "wellness coaching"
-      ]
+      ],
+      "note": "Goal-setting and accountability, session by session"
     },
     {
       "slug": "support-groups",
@@ -1066,7 +1126,8 @@
       ],
       "aliases": [
         "lactation consultant"
-      ]
+      ],
+      "note": "Feeding assessed, positions and a plan"
     },
     {
       "slug": "postnatal-care",
@@ -1077,7 +1138,8 @@
       "aliases": [
         "postpartum support",
         "postnatal"
-      ]
+      ],
+      "note": "Visits and checks in the weeks after birth"
     },
     {
       "slug": "doula-support",
@@ -1089,7 +1151,8 @@
         "birth doula",
         "postpartum doula",
         "doula"
-      ]
+      ],
+      "note": "Continuous non-clinical support through birth"
     },
     {
       "slug": "hypnobirthing",
@@ -1110,7 +1173,8 @@
       "aliases": [
         "birth preparation classes",
         "antenatal care"
-      ]
+      ],
+      "note": "What to expect, practised in a group"
     },
     {
       "slug": "private-midwifery",
@@ -1132,7 +1196,8 @@
       "aliases": [
         "one day retreats",
         "weekend retreats"
-      ]
+      ],
+      "note": "A half or full day, catered, no overnight"
     },
     {
       "slug": "workshops",
@@ -1157,7 +1222,8 @@
         "digestive health",
         "gut healing",
         "microbiome"
-      ]
+      ],
+      "note": "Testing, then a staged eating plan"
     },
     {
       "slug": "meal-planning",
@@ -1346,7 +1412,8 @@
       "aliases": [
         "organic facials",
         "facial treatments"
-      ]
+      ],
+      "note": "Cleanse, mask and massage, chosen for your skin"
     },
     {
       "slug": "skin-treatments",
@@ -1358,7 +1425,8 @@
         "skin clinic",
         "dermal therapy",
         "skin consultations"
-      ]
+      ],
+      "note": "Clinical devices and actives, usually in a course"
     },
     {
       "slug": "lashes-and-brows",
@@ -1372,7 +1440,8 @@
         "brow lamination",
         "eyebrows",
         "eyelashes"
-      ]
+      ],
+      "note": "Tinting, lifting or extensions, applied one by one"
     },
     {
       "slug": "nails",
@@ -1386,7 +1455,8 @@
         "nail salon",
         "manicures",
         "pedicures"
-      ]
+      ],
+      "note": "Shape, cuticle work and colour"
     },
     {
       "slug": "waxing",
@@ -1397,7 +1467,8 @@
       "aliases": [
         "sugaring",
         "hair removal"
-      ]
+      ],
+      "note": "Warm or hard wax, strip by strip"
     },
     {
       "slug": "body-composition-scan",
@@ -1415,7 +1486,8 @@
         "inbody",
         "inbody scan",
         "bioimpedance"
-      ]
+      ],
+      "note": "A scan reporting muscle, fat and bone"
     },
     {
       "slug": "vo2-max-testing",
@@ -1429,7 +1501,8 @@
         "vo2 max",
         "aerobic capacity testing",
         "cardio fitness testing"
-      ]
+      ],
+      "note": "A mask on a bike or treadmill, to exhaustion"
     },
     {
       "slug": "functional-testing",
@@ -1446,7 +1519,8 @@
         "dna testing",
         "gut microbiome testing",
         "functional pathology"
-      ]
+      ],
+      "note": "Samples collected, results talked through"
     },
     {
       "slug": "performance-testing",
@@ -1463,7 +1537,8 @@
         "blood lactate testing",
         "athlete screening",
         "functional screening"
-      ]
+      ],
+      "note": "Lab-style tests, numbers to train from"
     },
     {
       "slug": "biohacking",
@@ -1506,7 +1581,8 @@
         "over 55s fitness",
         "seniors exercise",
         "senior strength"
-      ]
+      ],
+      "note": "Seated or standing, paced for older adults"
     },
     {
       "slug": "chair-yoga",
@@ -1553,7 +1629,8 @@
       "aliases": [
         "mobility",
         "functional capacity training"
-      ]
+      ],
+      "note": "Joint range work, loaded and held"
     },
     {
       "slug": "social-groups",
@@ -1569,7 +1646,8 @@
         "memory cafes",
         "mens shed",
         "community activities"
-      ]
+      ],
+      "note": "Regular meet-ups, no clinical component"
     },
     {
       "slug": "aged-care-wellness",

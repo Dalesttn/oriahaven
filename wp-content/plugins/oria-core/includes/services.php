@@ -47,6 +47,7 @@ const DATA_FILE = 'data/services.json';
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\register', 7 );
 	add_action( 'admin_menu', __NAMESPACE__ . '\menu' );
+	add_filter( 'oria_intent_rows', __NAMESPACE__ . '\annotate_rows', 5, 2 );
 	add_action( 'admin_post_oria_services_sync', __NAMESPACE__ . '\handle_sync' );
 	add_action( 'admin_post_oria_service_promote', __NAMESPACE__ . '\handle_promote' );
 
@@ -121,6 +122,7 @@ function vocabulary(): array {
 			'name'       => (string) $row['name'],
 			'categories' => array_map( 'strval', (array) ( $row['categories'] ?? array() ) ),
 			'aliases'    => array_map( 'strval', (array) ( $row['aliases'] ?? array() ) ),
+			'note'       => (string) ( $row['note'] ?? '' ),
 		);
 	}
 	return $cache = $out;
@@ -138,6 +140,88 @@ function fold( string $s ): string {
 	$s = str_replace( '&', ' and ', $s );
 	$s = (string) preg_replace( '/[^a-z0-9]+/', ' ', $s );
 	return trim( (string) preg_replace( '/\s+/', ' ', $s ) );
+}
+
+/**
+ * One line saying what happens in a session of this service.
+ *
+ * Written for the cards under "Start with what you want to do", where a
+ * reader is choosing between modalities they may never have tried. It
+ * describes the room, never the result: a directory does not get to say what
+ * a practitioner's work achieves.
+ */
+function note( string $slug ): string {
+	static $map = null;
+	if ( null === $map ) {
+		$map = array();
+		foreach ( vocabulary() as $entry ) {
+			if ( '' !== (string) ( $entry['note'] ?? '' ) ) {
+				$map[ (string) $entry['slug'] ] = (string) $entry['note'];
+			}
+		}
+	}
+	return (string) ( $map[ $slug ] ?? '' );
+}
+
+/**
+ * Attach those notes to the category-page rows.
+ *
+ * Priority 5, ahead of IntentPages\canonical_rows at 10: where a practice has
+ * a hand-written intent page for the same filter, that page's note is the more
+ * specific one and overwrites this.
+ *
+ * @param array<int, array<string, mixed>> $rows
+ * @return array<int, array<string, mixed>>
+ */
+function annotate_rows( array $rows, \WP_Term $practice ): array {
+	unset( $practice );
+
+	/*
+	 * The intent registry, keyed by the filter itself rather than by kind:
+	 * "Online or hybrid" and "Free or by donation" are rows too, and their
+	 * words already exist there. Reading it by filter also covers audience
+	 * rows on any category that has them.
+	 */
+	static $by_filter = null;
+	if ( null === $by_filter ) {
+		$by_filter = array();
+		if ( function_exists( '\Oria\Core\IntentPages\registry' ) ) {
+			$reg = \Oria\Core\IntentPages\registry();
+			foreach ( (array) ( $reg['intents'] ?? array() ) as $intent ) {
+				$n = (string) ( $intent['note'] ?? '' );
+				$f = (array) ( $intent['filter'] ?? array() );
+				if ( '' === $n || ! $f ) {
+					continue;
+				}
+				$k = (string) array_key_first( $f );
+				$by_filter[ $k . '=' . (string) $f[ $k ] ] = $n;
+			}
+		}
+	}
+
+	foreach ( $rows as &$row ) {
+		if ( '' !== (string) ( $row['note'] ?? '' ) ) {
+			continue;
+		}
+		parse_str( (string) wp_parse_url( (string) ( $row['url'] ?? '' ), PHP_URL_QUERY ), $q );
+
+		// A service note is the more specific of the two, so it goes first.
+		$slug = isset( $q['svc'] ) ? (string) $q['svc'] : '';
+		if ( '' !== $slug && '' !== note( $slug ) ) {
+			$row['note'] = note( $slug );
+			continue;
+		}
+
+		foreach ( (array) $q as $k => $v ) {
+			$key = (string) $k . '=' . (string) $v;
+			if ( isset( $by_filter[ $key ] ) ) {
+				$row['note'] = $by_filter[ $key ];
+				break;
+			}
+		}
+	}
+	unset( $row );
+	return $rows;
 }
 
 /**
