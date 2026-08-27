@@ -35,7 +35,7 @@ $oria_links = Share\share_links( $oria_id );
 		<p class="lede pagehead__lede">
 			<?php
 			printf(
-				esc_html__( 'Everything below is ready to use for %s — the image is made, the words are written. Nothing here costs anything, and we never take a cut of a booking.', 'oria' ),
+				esc_html__( 'Everything below is ready to use for %s — the image is made, the words are written, and there is a badge for your own website at the end. Nothing here costs anything, and we never take a cut of a booking.', 'oria' ),
 				esc_html( $oria_name )
 			);
 			?>
@@ -104,7 +104,7 @@ $oria_links = Share\share_links( $oria_id );
 			}
 			?>
 			<?php if ( $oria_badges ) : ?>
-				<h2 class="h3" style="margin-top:2.5rem"><?php esc_html_e( '4. Add it to your website', 'oria' ); ?></h2>
+				<h2 class="h3" id="website" style="margin-top:2.5rem"><?php esc_html_e( '4. Add it to your website', 'oria' ); ?></h2>
 				<p class="hint" style="margin-bottom:1.25rem">
 					<?php esc_html_e( 'Paste this into your footer or your about page. It links back to your profile, so anyone who finds you there can see your full listing. Optional, always — nothing about your listing depends on it.', 'oria' ); ?>
 				</p>

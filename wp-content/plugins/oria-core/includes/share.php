@@ -507,10 +507,23 @@ function share_links( int $listing_id ): array {
  * emails — the two moments a practitioner is most pleased with us.
  */
 function email_block( int $listing_id ): string {
-	$t = card_text( $listing_id );
+	$t   = card_text( $listing_id );
+	$url = url( $listing_id );
+
+	/*
+	 * Two paragraphs, because they do different jobs. The first is the share
+	 * kit, which earns visits. The second is the badge, which is the only
+	 * thing on that page that earns a link — and it went unmentioned here for
+	 * as long as it has existed, so nobody scrolled to it.
+	 *
+	 * Written as what it does for them: someone already on their website can
+	 * reach the full profile. That is true and it is the reason to paste it.
+	 * The benefit to the directory is real but it is ours, and dressing it up
+	 * as theirs is how a thank-you starts to read as a trade.
+	 */
 	return "\n\n" . sprintf(
-		"SHARE IT WITH YOUR CLIENTS\n%s now has a profile people can find, and it looks good shared — we've made you a card with your name on it, written the post, and put share buttons for Facebook, LinkedIn and WhatsApp all in one place:\n%s\n\nThere are Instagram-sized images there too, if you'd rather post one of those.",
+		"SHARE IT WITH YOUR CLIENTS\n%1\$s now has a profile people can find, and it looks good shared — we've made you a card with your name on it, written the post, and put share buttons for Facebook, LinkedIn and WhatsApp all in one place:\n%2\$s\n\nThere are Instagram-sized images there too, if you'd rather post one of those.\n\nAND ONE FOR YOUR OWN WEBSITE\nThere is also a small \"Listed on Oria Haven\" badge at the end of that page, with the code to paste into your footer or about page. It links back to your profile, so anyone already on your site can see your hours, your reviews and the rest of your listing in one click:\n%2\$s#website\n\nCompletely optional — nothing about your listing depends on it.",
 		$t['name'],
-		url( $listing_id )
+		$url
 	);
 }
