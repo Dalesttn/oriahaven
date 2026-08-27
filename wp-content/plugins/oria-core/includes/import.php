@@ -293,7 +293,7 @@ class Command {
 				'background'    => 'sand',
 				'eyebrow'       => 'How this works',
 				'heading'       => 'A directory you can trust at 10pm on a Tuesday.',
-				'intro'         => "Most local directories are a wall of dead phone numbers. This one is built the slow way: every listing written by a person, every detail checked against the practitioner's own site before it goes live.",
+				'intro'         => "The platform that helps Perth discover what to do to feel better, meet people, and look after themselves. Most local directories are a wall of dead phone numbers; this one is built the slow way — every listing written by a person, every detail checked against the practitioner's own site before it goes live.",
 				'rows'          => array(
 					array( 'title' => "Checked before it's published", 'text' => "Address, class times and prices verified against the practitioner's own website or a phone call. Anything we can't confirm, we don't print." ),
 					array( 'title' => 'Real timetables, not "contact for details"', 'text' => 'When a practice runs a class, you can see the day and the time on the profile.' ),
