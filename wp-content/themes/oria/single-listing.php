@@ -994,6 +994,48 @@ while ( have_posts() ) :
 		</div>
 	</section>
 
+	<?php
+	/*
+	 * The sticky bar. Rendered once, after the article, and revealed by
+	 * app.js only when the hero's own buttons have scrolled out of view.
+	 *
+	 * inert as well as aria-hidden while it is down: it repeats controls that
+	 * exist elsewhere on the page, so without it a keyboard user tabs into a
+	 * bar they cannot see.
+	 */
+	?>
+	<div class="stickybar" data-sticky-cta inert aria-hidden="true">
+		<div class="stickybar__inner">
+			<div class="stickybar__id">
+				<b><?php echo esc_html( \Oria\Theme\ptitle( $oria_id ) ); ?></b>
+				<span>
+					<?php
+					$oria_sb = array();
+					$oria_sr = \Oria\Theme\effective_rating( $oria_id );
+					if ( ( $oria_sr['rating'] ?? 0 ) > 0 ) {
+						$oria_sb[] = '★ ' . number_format_i18n( (float) $oria_sr['rating'], 1 );
+					}
+					if ( $oria_suburb instanceof WP_Term ) {
+						$oria_sb[] = \Oria\Theme\tname( $oria_suburb );
+					}
+					echo esc_html( implode( ' · ', $oria_sb ) );
+					?>
+				</span>
+			</div>
+			<div class="stickybar__actions">
+				<?php if ( $oria_address ) : ?>
+					<a class="btn btn--ghost btn--sm btn--plain stickybar__hide-sm" href="<?php echo esc_url( \Oria\Theme\map_directions_url( $oria_address ) ); ?>" rel="noopener" target="_blank" data-oria-track="dir" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Directions', 'oria' ); ?></a>
+				<?php endif; ?>
+				<a class="btn btn--ghost btn--sm btn--plain" href="#enquire" data-sticky-enquire><?php esc_html_e( 'Enquire', 'oria' ); ?></a>
+				<?php if ( $oria_booking ) : ?>
+					<a class="btn btn--dark btn--sm" href="<?php echo esc_url( $oria_booking ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="book" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Book', 'oria' ); ?></a>
+				<?php elseif ( $oria_website ) : ?>
+					<a class="btn btn--dark btn--sm" href="<?php echo esc_url( $oria_website ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="web" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Website', 'oria' ); ?></a>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+
 	<?php $oria_shop = function_exists( '\Oria\Shop\Render\auto_band' ) ? \Oria\Shop\Render\auto_band() : ''; ?>
 	<?php if ( $oria_shop ) : ?>
 	<section class="wrap section section--top-flush"><?php echo $oria_shop; // phpcs:ignore WordPress.Security.EscapeOutput ?></section>

@@ -3237,3 +3237,46 @@ html.has-sheet { overflow: hidden; }
   .profile__cta { flex-direction: column; align-items: stretch; }
   .profile__cta .btn { justify-content: center; }
 }
+
+/* --- Listing sticky bar ------------------------------------------------ */
+.stickybar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 70;
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -6px 24px rgba(6, 26, 25, .09);
+  padding: .7rem max(1rem, env(safe-area-inset-left)) calc(.7rem + env(safe-area-inset-bottom));
+  transform: translateY(110%);
+  visibility: hidden;
+  transition: transform .22s var(--ease-out), visibility 0s linear .22s;
+}
+.stickybar.is-on {
+  transform: translateY(0);
+  visibility: visible;
+  transition: transform .22s var(--ease-out), visibility 0s;
+}
+.stickybar__inner {
+  max-width: var(--wrap, 76rem); margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+}
+.stickybar__id { min-width: 0; }
+.stickybar__id b {
+  display: block; font-weight: 600; font-size: var(--fs-sm);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.stickybar__id span { font-size: var(--fs-xs); color: var(--text-faint); }
+.stickybar__actions { display: flex; gap: .5rem; flex: none; }
+
+@media (max-width: 560px) {
+  /* The name is already at the top of the page and in the tab title; on a
+     phone the room is better spent on the two things you can do. */
+  .stickybar__id { display: none; }
+  .stickybar__hide-sm { display: none; }
+  .stickybar__inner { gap: .5rem; }
+  .stickybar__actions { flex: 1; }
+  .stickybar__actions .btn { flex: 1; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stickybar { transition: visibility 0s linear .01s; transform: none; opacity: 0; }
+  .stickybar.is-on { transition: none; opacity: 1; }
+}

@@ -2386,6 +2386,46 @@
     });
   }
 
+  /* --- Listing sticky bar ---------------------------------------------- */
+  /* Shown once the hero's own buttons have scrolled away, so the two never
+     compete. Observing those buttons rather than watching scroll: it is the
+     actual question, and it costs nothing per frame. */
+  function initStickyCta() {
+    var bar = document.querySelector("[data-sticky-cta]");
+    if (!bar) return;
+    var hero = document.querySelector(".profile__cta");
+
+    function show(on) {
+      bar.classList.toggle("is-on", on);
+      bar.setAttribute("aria-hidden", on ? "false" : "true");
+      if (on) { bar.removeAttribute("inert"); } else { bar.setAttribute("inert", ""); }
+    }
+
+    /* No hero to watch (a listing with neither a website nor a booking link
+       renders no buttons) — then the bar has nothing to add either. */
+    if (!hero || !("IntersectionObserver" in window)) return;
+
+    /* Only once the buttons have gone UP past the top of the screen — not
+       merely because they are further down the page than the reader has got.
+       The gallery puts the hero CTA below the fold on a lot of screens, so
+       "not visible" on its own would show the bar the moment the page loads,
+       before anybody has scrolled anywhere. */
+    new IntersectionObserver(function (entries) {
+      var e = entries[0];
+      show(!e.isIntersecting && e.boundingClientRect.top < 0);
+    }).observe(hero);
+
+    /* The enquiry form is a <details>; jumping to a closed one lands on a
+       summary and looks like nothing happened. Open it first. */
+    var enq = bar.querySelector("[data-sticky-enquire]");
+    if (enq) {
+      enq.addEventListener("click", function () {
+        var d = document.querySelector("#enquire details");
+        if (d) d.open = true;
+      });
+    }
+  }
+
   /* What's On filters: rows carry precomputed tokens, this only matches. */
   function initWhatsOn() {
     var root = document.querySelector("[data-whatson]");
@@ -2976,6 +3016,7 @@
     initMap();
     initNiceSelects();
     initSiteSearch();
+    initStickyCta();
     initHomeSearch();
     initDirectory();
     scrollToFilteredResults();
