@@ -132,8 +132,8 @@
       "slug": "dry-needling",
       "name": "Dry needling",
       "categories": [
-        "allied",
-        "bodywork"
+        "bodywork",
+        "allied"
       ],
       "aliases": []
     },
@@ -272,8 +272,8 @@
       "slug": "clinical-pilates",
       "name": "Clinical pilates",
       "categories": [
-        "allied",
-        "fitness"
+        "fitness",
+        "allied"
       ],
       "aliases": [
         "clinical pilates studio"
@@ -383,8 +383,8 @@
       "slug": "reflexology",
       "name": "Reflexology",
       "categories": [
-        "natural",
-        "bodywork"
+        "bodywork",
+        "natural"
       ],
       "aliases": [
         "foot massage"

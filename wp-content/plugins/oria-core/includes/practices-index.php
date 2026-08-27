@@ -666,6 +666,82 @@ function retire_old_category(): void {
 	exit;
 }
 
+/**
+ * The one category a service's facet page belongs to.
+ *
+ * A service may be registered to several categories, and it should be
+ * browsable from all of them — but only one of those pages is the answer to
+ * "remedial massage perth". The first category in the registry entry is that
+ * one: an editorial decision that holds still, rather than whichever page
+ * happens to hold the most listings this week.
+ *
+ * This applies however many categories the entry lists. A service registered
+ * to one category still turns up as a facet elsewhere — resolve_facet() finds
+ * the term on any listing, whatever category that listing sits in — so
+ * /practices/spa/reiki/ exists even though reiki is registered to energy
+ * alone. Those were the noisiest duplicates of the lot: reiki had four copies
+ * and yin yoga four, none of which the registry ever sanctioned.
+ *
+ * Returns '' only for a term the registry does not know, which is every
+ * specialty facet: those have no category registry to consult.
+ */
+function facet_owner( string $service ): string {
+	static $map = null;
+	if ( null === $map ) {
+		$map = array();
+		if ( function_exists( '\Oria\Core\Services\vocabulary' ) ) {
+			foreach ( \Oria\Core\Services\vocabulary() as $entry ) {
+				$cats = (array) ( $entry['categories'] ?? array() );
+				if ( $cats ) {
+					$map[ (string) $entry['slug'] ] = (string) reset( $cats );
+				}
+			}
+		}
+	}
+	return (string) ( $map[ $service ] ?? '' );
+}
+
+/**
+ * Where a facet page's canonical should point: itself, or the owning
+ * category's copy of the same facet.
+ *
+ * Only ever redirects the tag when the owner's page is genuinely publishable
+ * — pointing a live page at one robots() would noindex is worse than the
+ * duplication it set out to fix.
+ */
+function facet_canonical_url( \WP_Term $practice, array $facet ): string {
+	$self = category_url( $practice ) . $facet['slug'] . '/';
+	if ( 'svc' !== ( $facet['key'] ?? '' ) ) {
+		return $self;
+	}
+	$owner = facet_owner( (string) $facet['value'] );
+	if ( '' === $owner || $owner === $practice->slug ) {
+		return $self;
+	}
+	$term = get_term_by( 'slug', $owner, Taxonomies\PRACTICE );
+	if ( ! $term instanceof \WP_Term ) {
+		return $self;
+	}
+
+	/*
+	 * Resolve the service against the owner rather than reusing the facet in
+	 * hand: the same service can answer at a different address in a different
+	 * category. resolve_facet() consults the intent registry first, so
+	 * yin-yoga is /practices/spa/yin-yoga/ under spa and /practices/yoga/yin/
+	 * under yoga, where a framed intent page claims it. Reusing this slug
+	 * pointed four canonicals at /practices/yoga/yin-yoga/, which no sitemap
+	 * carries and nothing links to.
+	 */
+	$owned = resolve_facet( $term, (string) $facet['value'] );
+	if ( null === $owned ) {
+		return $self;
+	}
+	if ( count( facet_ids( $term, $owned ) ) < FACET_MIN ) {
+		return $self;
+	}
+	return category_url( $term ) . $owned['slug'] . '/';
+}
+
 /* ---------------------------------------------------------------- sitemap */
 
 /**
@@ -739,7 +815,11 @@ function sitemap_entries(): array {
 			if ( count( facet_ids( $practice, $f ) ) < FACET_MIN ) {
 				continue; // robots() would noindex it
 			}
-			$out[] = array( 'loc' => category_url( $practice ) . $f['slug'] . '/' );
+			$loc = facet_canonical_url( $practice, $f );
+			if ( $loc !== category_url( $practice ) . $f['slug'] . '/' ) {
+				continue; // a non-owner copy; the owner's entry covers it
+			}
+			$out[] = array( 'loc' => $loc );
 		}
 	}
 
@@ -997,8 +1077,10 @@ function canonical( $canonical ) {
 			$f = facet();
 			if ( null !== $f ) {
 				// A facet page is its own address whatever the mode; under
-				// review it is noindexed anyway.
-				return category_url( $term ) . $f['slug'] . '/';
+				// review it is noindexed anyway. The exception is a service
+				// registered to more than one category, where every copy
+				// points at the owning one.
+				return facet_canonical_url( $term, $f );
 			}
 			// Under review the original page stays the canonical one; live,
 			// the new page speaks for itself.
