@@ -207,6 +207,75 @@ a deploy.
 
 ---
 
+## Refreshing local from production
+
+Local drifts. Production has 356 listings; this machine had 154, and the
+gate, facet and canonical bugs found in August were all invisible below
+production scale. Copy the database down before building anything that
+counts things.
+
+**This direction only.** Local → production was a one-time launch import
+(Step 4) and must never happen again: it would discard every claim, review
+and lead taken since. Nothing below writes to the server.
+
+### Once: the safety net
+
+`wp-content/mu-plugins/00-local-safety.php` — already in place, and
+gitignored so it cannot deploy. While the host looks local it:
+
+- **blocks all outbound mail.** The production database is full of real
+  practitioners' addresses. A claim approval fired on a laptop is a real
+  email to a real business owner.
+- **pins home and siteurl to `http://localhost:10052`** with a filter, so an
+  imported database does not send every local request to oriahaven.com.au.
+  Because it filters rather than rewrites, no search-replace is needed and
+  the dump can be re-imported as often as you like.
+- **disables cron**, which otherwise arrives from production already due and
+  starts running the event ingest.
+
+Images are the exception worth knowing: content-embedded URLs still point at
+production, so photographs load from the live site and there is no need to
+copy `uploads/` at all.
+
+### Each refresh
+
+On the server:
+
+```bash
+cd domains/oriahaven.com.au/public_html
+wp db export ~/oria-$(date +%F).sql --add-drop-table
+gzip -f ~/oria-$(date +%F).sql
+```
+
+`wp db export` reads; it changes nothing.
+
+On your machine, in `…\Local Sites\oriahaven\app\public`:
+
+```bash
+scp YOUR_SSH_USER@YOUR_HOST:~/oria-2026-08-27.sql.gz .
+wp db export local-backup-$(date +%F).sql
+gunzip -f oria-2026-08-27.sql.gz
+wp db reset --yes
+wp db import oria-2026-08-27.sql
+wp rewrite flush --hard
+```
+
+The local backup is not ceremony — `wp db reset` drops every table, and any
+demo listing or half-finished draft only on this machine goes with it.
+
+### After a refresh
+
+- **Your local login becomes the production one.** The user table came with
+  the dump.
+- **Reactivate Novamira** if you use it: `wp plugin activate novamira`. The
+  production database has no record of it, which is the point — see the
+  warning at the top of this file. It must never go the other way.
+- **Check the banner.** Every admin screen should carry "Local copy of
+  production", and a red LOCAL tag sits bottom-left of the front end. If
+  neither appears the safety net is not running, and mail is not blocked.
+- **Delete the dump when you are done.** It holds real names, addresses and
+  email addresses; it does not belong in Downloads for six months.
+
 ## Still to do before you call it launched
 
 - **SMTP.** WordPress's built-in mail lands in spam. Install WP Mail SMTP

@@ -28,6 +28,7 @@ require ORIA_INGEST_DIR . 'includes/ai.php';
 require ORIA_INGEST_DIR . 'includes/pipeline.php';
 require ORIA_INGEST_DIR . 'includes/admin.php';
 require ORIA_INGEST_DIR . 'includes/gone.php';
+require ORIA_INGEST_DIR . 'includes/context.php';
 
 Taxonomy\bootstrap();
 Admin\bootstrap();

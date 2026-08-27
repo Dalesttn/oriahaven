@@ -40,6 +40,25 @@ while ( have_posts() ) :
 					<span class="micro"><?php echo esc_html( gmdate( 'l j F Y', $oria_ts ) ); ?></span>
 				<?php endif; ?>
 				<h1 class="h1 pagehead__title"><?php the_title(); ?></h1>
+				<?php
+				/*
+				 * Each chip is a fact already stored — the price field, the start
+				 * and end times, or an audience tag on the linked practice that was
+				 * only applied against a source and a quote. The title attribute
+				 * carries where it came from, because a claim on somebody else's
+				 * event should be able to say why it is there.
+				 */
+				$oria_signals = function_exists( '\Oria\Ingest\Context\signals' )
+					? \Oria\Ingest\Context\signals( get_the_ID() )
+					: array();
+				if ( $oria_signals ) :
+					?>
+					<ul class="chips evsignals">
+						<?php foreach ( $oria_signals as $oria_sig ) : ?>
+							<li><span class="chip" title="<?php echo esc_attr( $oria_sig['why'] ); ?>"><?php echo esc_html( $oria_sig['label'] ); ?></span></li>
+						<?php endforeach; ?>
+					</ul>
+				<?php endif; ?>
 			</div>
 		</div>
 	</section>
@@ -125,6 +144,48 @@ while ( have_posts() ) :
 		</div>
 	</section>
 	<?php
+	/*
+	 * What else is on. Ranked rather than filtered — same type scores
+	 * highest, then venue, then host — so a night with nothing of the same
+	 * kind still offers something rather than an empty heading.
+	 */
+	$oria_similar = function_exists( '\Oria\Ingest\Context\similar' )
+		? \Oria\Ingest\Context\similar( get_the_ID(), 4 )
+		: array();
+	if ( $oria_similar ) :
+		?>
+	<section class="wrap section section--top-flush">
+		<h2 class="micro" style="margin-bottom:1rem"><?php esc_html_e( 'Also on in Perth', 'oria' ); ?></h2>
+		<div class="evgrid">
+			<?php
+			foreach ( $oria_similar as $oria_sid ) :
+				$oria_when = (string) get_field( 'event_start', $oria_sid );
+				$oria_where = (string) get_field( 'venue', $oria_sid );
+				$oria_types = wp_get_post_terms( $oria_sid, 'event_type' );
+				?>
+				<a class="evcard" href="<?php echo esc_url( (string) get_permalink( $oria_sid ) ); ?>">
+					<?php if ( $oria_when ) : ?>
+						<span class="micro"><?php echo esc_html( date_i18n( 'D j M', strtotime( $oria_when ) ) ); ?></span>
+					<?php endif; ?>
+					<b class="evcard__name"><?php echo esc_html( \Oria\Theme\ptitle( $oria_sid ) ); ?></b>
+					<span class="evcard__meta">
+						<?php
+						$oria_bits = array();
+						if ( ! is_wp_error( $oria_types ) && $oria_types ) {
+							$oria_bits[] = \Oria\Theme\tname( $oria_types[0] );
+						}
+						if ( $oria_where ) {
+							$oria_bits[] = $oria_where;
+						}
+						echo esc_html( implode( ' · ', $oria_bits ) );
+						?>
+					</span>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	</section>
+		<?php
+	endif;
 endwhile;
 
 get_footer();

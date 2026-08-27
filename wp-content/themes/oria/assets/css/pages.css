@@ -3181,3 +3181,19 @@ html.has-sheet { overflow: hidden; }
 .plans__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .4rem; }
 .plans__list li { position: relative; padding-left: 1.1rem; font-size: var(--fs-sm); line-height: 1.45; }
 .plans__list li::before { content: ""; position: absolute; left: 0; top: .5em; width: .4rem; height: .4rem; border-radius: 50%; background: var(--moss); }
+
+/* --- Event signals and the "also on" grid ---------------------------- */
+.evsignals { margin-top: 1rem; }
+.evgrid {
+  display: grid; gap: var(--s-4);
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+.evcard {
+  display: flex; flex-direction: column; gap: .35rem;
+  padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--white); text-decoration: none; color: inherit;
+  transition: border-color .15s var(--ease-out), transform .15s var(--ease-out);
+}
+.evcard:hover { border-color: var(--ink); transform: translateY(-2px); }
+.evcard__name { font-weight: 600; font-size: var(--fs-sm); line-height: 1.3; }
+.evcard__meta { font-size: var(--fs-xs); color: var(--text-faint); }
