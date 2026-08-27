@@ -2438,10 +2438,30 @@
   function writeSaved(ids) {
     try {
       window.localStorage.setItem(SAVE_KEY, JSON.stringify(ids));
+      paintSavedNav();
       return true;
     } catch (e) {
       return false;
     }
+  }
+
+  /* The count in the nav, and its twin in the drawer.
+
+     Both ship hidden inside cached markup -- LiteSpeed serves one copy of the
+     header to everybody, so there is no number the server could have printed.
+     This is the only place it can be known. */
+  function paintSavedNav() {
+    var n = savedIds().length;
+    $$("[data-saved-nav]").forEach(function (el) {
+      el.hidden = n === 0;
+      el.setAttribute(
+        "aria-label",
+        n === 1 ? "1 saved practice" : n + " saved practices"
+      );
+    });
+    $$("[data-saved-nav-count]").forEach(function (el) {
+      el.textContent = String(n);
+    });
   }
 
   function initSave() {
@@ -3190,6 +3210,13 @@
     initSave();
     initTimetable();
     initSavedPage();
+    paintSavedNav();
+    /* Another tab is the same shortlist. Without this the count goes stale
+       the moment somebody browses in two windows, which on a directory is
+       ordinary behaviour rather than an edge case. */
+    window.addEventListener("storage", function (e) {
+      if (!e.key || e.key === SAVE_KEY) paintSavedNav();
+    });
     initHomeSearch();
     initDirectory();
     scrollToFilteredResults();

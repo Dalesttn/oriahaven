@@ -86,6 +86,21 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					aria-controls="navSearchList">
 				<span class="osearch osearch--nav" id="navSearchList" data-oria-search-panel hidden></span>
 			</span>
+			<?php
+			/*
+			 * Saved count. Hidden until the device has something in it: a
+			 * counter reading zero is clutter for the many people who have
+			 * never pressed Save, and an invitation to nobody.
+			 *
+			 * Deliberately not nav__hide -- this is the one action that
+			 * should survive down to a phone, where the shortlist is most
+			 * likely to have been built.
+			 */
+			?>
+			<a class="navsaved" href="<?php echo esc_url( home_url( '/saved/' ) ); ?>" data-saved-nav hidden>
+				<span class="navsaved__heart" aria-hidden="true">&#9829;</span>
+				<span class="navsaved__count" data-saved-nav-count>0</span>
+			</a>
 			<a class="nav__link nav__hide" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'For practitioners', 'oria' ); ?></a>
 			<a class="btn btn--dark nav__hide" href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>"><?php esc_html_e( 'List your practice', 'oria' ); ?><span class="btn__dot"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg></span></a>
 			<button class="nav__toggle" data-drawer-open aria-label="<?php esc_attr_e( 'Open menu', 'oria' ); ?>" aria-controls="drawer">
@@ -128,6 +143,11 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 	);
 	?>
 	<div class="drawer__foot">
+		<a class="drawer__saved" href="<?php echo esc_url( home_url( '/saved/' ) ); ?>" data-saved-nav hidden>
+			<span aria-hidden="true">&#9829;</span>
+			<span><?php esc_html_e( 'Saved practices', 'oria' ); ?></span>
+			<span class="navsaved__count" data-saved-nav-count>0</span>
+		</a>
 		<a class="btn btn--light btn--block" href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>"><?php esc_html_e( 'List your practice', 'oria' ); ?><span class="btn__dot"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg></span></a>
 	</div>
 </div>

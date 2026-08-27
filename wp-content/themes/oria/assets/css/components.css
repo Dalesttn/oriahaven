@@ -891,3 +891,39 @@ html.has-sheet .cmptray { display: none; }
 .foot__nap a:hover { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
 .foot__legal { display: block; margin-top: .5rem; }
 .foot__legal a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* --- Saved count in the nav ---------------------------------------------
+   A shortlist behaves like a basket, so it reads like one: a heart and a
+   number, top right, going to /saved/. It carries no state of its own --
+   [hidden] comes off only when the device reports something saved, which is
+   why the cached markup can ship to everybody unchanged. */
+.navsaved {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .3rem .6rem .3rem .5rem; border-radius: 999px;
+  border: 1px solid var(--line); background: transparent;
+  color: var(--ink); text-decoration: none; line-height: 1;
+  transition: color .18s ease, border-color .18s ease;
+}
+.navsaved:hover { border-color: var(--ink); }
+.navsaved:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.navsaved__heart { color: var(--brand-gold, #C9A227); font-size: 1rem; }
+.navsaved__count {
+  font-size: .78rem; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.navsaved[hidden], .drawer__saved[hidden] { display: none; }
+
+/* Over a hero the header is glass. The pill takes the same treatment as the
+   links beside it rather than punching a solid white hole through it -- the
+   default surface token is opaque white, which read as a misplaced button. */
+.site-head:not(.site-head--solid) .navsaved {
+  color: rgba(255, 255, 255, .8); border-color: rgba(255, 255, 255, .35);
+}
+.site-head:not(.site-head--solid) .navsaved:hover {
+  color: var(--white); border-color: var(--white);
+}
+
+.drawer__saved {
+  display: flex; align-items: center; gap: .5rem;
+  margin-bottom: var(--s-4); color: var(--white); text-decoration: none;
+}
+.drawer__saved > span:first-child { color: var(--brand-gold, #C9A227); }
