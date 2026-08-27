@@ -87,6 +87,8 @@ require_once ORIA_CORE_DIR . 'includes/review-replies.php';
 require_once ORIA_CORE_DIR . 'includes/review-reports.php';
 require_once ORIA_CORE_DIR . 'includes/team.php';
 require_once ORIA_CORE_DIR . 'includes/similar.php';
+require_once ORIA_CORE_DIR . 'includes/reasons.php';
+require_once ORIA_CORE_DIR . 'includes/saved.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them

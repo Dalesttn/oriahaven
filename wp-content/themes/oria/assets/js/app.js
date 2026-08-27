@@ -2386,6 +2386,144 @@
     });
   }
 
+  /* --- Saved listings --------------------------------------------------- */
+  /* Kept on the device, never sent anywhere. No account to create, and
+     nothing for us to hold. The cost is honest and the saved page says it:
+     clear the browser and the list goes with it. */
+  var SAVE_KEY = "oria_saved";
+
+  function savedIds() {
+    try {
+      var raw = window.localStorage.getItem(SAVE_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr.map(String) : [];
+    } catch (e) {
+      /* Private windows and blocked site data throw on read. */
+      return [];
+    }
+  }
+
+  function writeSaved(ids) {
+    try {
+      window.localStorage.setItem(SAVE_KEY, JSON.stringify(ids));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function initSave() {
+    var buttons = $$("[data-save]");
+    if (!buttons.length) return;
+
+    function paint() {
+      var ids = savedIds();
+      buttons.forEach(function (b) {
+        var on = ids.indexOf(String(b.dataset.save)) > -1;
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        var label = b.querySelector(".savebtn__label");
+        if (label) label.textContent = on ? "Saved" : "Save";
+      });
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () {
+        var id = String(b.dataset.save);
+        var ids = savedIds();
+        var at = ids.indexOf(id);
+        if (at > -1) { ids.splice(at, 1); } else { ids.push(id); }
+        if (!writeSaved(ids)) {
+          /* Storage refused. Say so once rather than leaving a button that
+             looks broken. */
+          b.setAttribute("title", "Saving needs site data enabled in your browser.");
+          return;
+        }
+        paint();
+        pushEvent(at > -1 ? "listing_unsave" : "listing_save", { listing_id: id });
+      });
+    });
+
+    paint();
+  }
+
+  /* The saved page. Rendered empty by PHP and filled from ORIA_DATA, so a
+     shortlist costs no request and duplicates no listing data. */
+  function initSavedPage() {
+    var root = document.querySelector("[data-saved-list]");
+    if (!root) return;
+    var empty = document.querySelector("[data-saved-empty]");
+    var count = document.querySelector("[data-saved-count]");
+    var D = window.ORIA_DATA || window.ORIA_SEARCH_DATA;
+
+    /* The full payload carries an id (the post slug); the slim index shipped
+       on non-directory pages carries only a url. Derive the same key from
+       either, or this page silently matches nothing. */
+    function keyOf(l) {
+      if (l && l.id) return String(l.id);
+      if (l && l.url) {
+        var parts = String(l.url).replace(/[?#].*$/, "").replace(/\/+$/, "").split("/");
+        return parts[parts.length - 1] || "";
+      }
+      return "";
+    }
+
+    function render() {
+      var ids = savedIds();
+      var all = (D && D.listings) || [];
+      var byId = {};
+      all.forEach(function (l) {
+        var k = keyOf(l);
+        if (k) byId[k] = l;
+      });
+
+      var rows = [];
+      var keep = [];
+      ids.forEach(function (id) {
+        var l = byId[id];
+        if (!l) return;               // unpublished since it was saved
+        keep.push(id);
+        rows.push(l);
+      });
+
+      /* Prune only when the payload is actually usable. An empty index means
+         the script could not identify anything, not that the visitor's saves
+         are stale — and quietly deleting somebody's shortlist because a
+         payload arrived in an unexpected shape is not a trade worth making.
+         This is not hypothetical: the slim index has no id field, and the
+         first version of this wiped both saves on sight. */
+      var usable = Object.keys(byId).length > 0;
+      if (usable && keep.length !== ids.length) writeSaved(keep);
+
+      if (count) {
+        count.textContent = rows.length
+          ? rows.length + (rows.length === 1 ? " saved practice" : " saved practices")
+          : "";
+      }
+      if (empty) empty.hidden = rows.length > 0;
+
+      root.innerHTML = rows.map(function (l) {
+        var meta = [l.suburb, l.km != null ? l.km + " km from the CBD" : ""].filter(Boolean).join(" · ");
+        /* keyOf, not l.id — the slim index has no id, so this button was
+           rendering data-unsave="undefined" and Remove did nothing. */
+        return '<div class="savedcard">' +
+          '<a class="savedcard__name" href="' + esc(l.url) + '">' + esc(l.name) + "</a>" +
+          '<span class="savedcard__meta">' + esc(meta) + "</span>" +
+          '<button class="savedcard__drop" type="button" data-unsave="' + esc(keyOf(l)) + '">Remove</button>' +
+          "</div>";
+      }).join("");
+    }
+
+    root.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-unsave]");
+      if (!b) return;
+      var ids = savedIds();
+      var at = ids.indexOf(String(b.dataset.unsave));
+      if (at > -1) { ids.splice(at, 1); writeSaved(ids); render(); }
+    });
+
+    render();
+  }
+
   /* --- Listing sticky bar ---------------------------------------------- */
   /* Shown once the hero's own buttons have scrolled away, so the two never
      compete. Observing those buttons rather than watching scroll: it is the
@@ -3017,6 +3155,8 @@
     initNiceSelects();
     initSiteSearch();
     initStickyCta();
+    initSave();
+    initSavedPage();
     initHomeSearch();
     initDirectory();
     scrollToFilteredResults();

@@ -383,6 +383,24 @@ function register_listing_fields(): void {
 					'instructions' => 'Tick only what you actually have. Anything left unticked is simply not shown — it is never displayed as a "no".',
 				),
 
+				/*
+				 * Why people come here. Same contract as amenities above and
+				 * a separate vocabulary: that one is what is in the building,
+				 * this is how the place runs. Nothing in the list describes an
+				 * outcome — see data/reasons.json for where that line sits.
+				 */
+				array(
+					'key'          => 'field_oria_reasons',
+					'name'         => 'reasons',
+					'label'        => 'Why people come here',
+					'type'         => 'checkbox',
+					'choices'      => function_exists( '\Oria\Core\Reasons\vocabulary' )
+						? \Oria\Core\Reasons\vocabulary()
+						: array(),
+					'layout'       => 'vertical',
+					'instructions' => 'Only what is true of your sessions today. Unticked shows nothing at all.',
+				),
+
 				// --- Team ---------------------------------------------------
 				array(
 					'key'       => 'field_oria_tab_team',

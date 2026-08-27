@@ -1,0 +1,45 @@
+{
+  "_note": "Why people come here — a practice's own answer, ticked on claim.\n\nSeparate from amenities on purpose. Amenities say what is in the building; these say how the place runs and what it would be like to turn up. Both are self-declared and both are opt-in: an unticked box renders nothing, and no template may read an empty set as a 'no'.\n\nEvery option is a fact about the business that the business can verify itself — group size, opening times, whether you need to book. None describes an outcome, a benefit or a feeling. 'Relaxing', 'energising', 'good for stress' and anything naming a condition are deliberately absent: those would be therapeutic claims made on a practitioner's behalf, which this directory does not make anywhere, and they are also the claims a business has the least standing to self-certify.\n\nStep-free access is absent for a different reason, the same one it is absent from amenities: it already exists as an audience tag, where it carries an evidence test rather than a tick.",
+  "groups": [
+    {
+      "id": "how-it-runs",
+      "label": "How it runs",
+      "reasons": [
+        { "slug": "small-groups", "label": "Small groups" },
+        { "slug": "one-to-one", "label": "One-to-one available" },
+        { "slug": "drop-ins", "label": "Drop-ins welcome" },
+        { "slug": "no-membership", "label": "No membership needed" },
+        { "slug": "booking-required", "label": "Booking required" },
+        { "slug": "women-only", "label": "Women-only sessions" }
+      ]
+    },
+    {
+      "id": "starting-out",
+      "label": "If it is your first time",
+      "reasons": [
+        { "slug": "no-experience", "label": "No experience needed" },
+        { "slug": "beginner-course", "label": "Beginner course available" },
+        { "slug": "intro-offer", "label": "Intro or trial offer" },
+        { "slug": "nothing-to-bring", "label": "Nothing to bring" }
+      ]
+    },
+    {
+      "id": "when",
+      "label": "When they are open",
+      "reasons": [
+        { "slug": "early", "label": "Early morning sessions" },
+        { "slug": "evenings", "label": "Evening sessions" },
+        { "slug": "weekends", "label": "Open weekends" }
+      ]
+    },
+    {
+      "id": "paying",
+      "label": "Paying",
+      "reasons": [
+        { "slug": "health-fund", "label": "Health-fund rebates" },
+        { "slug": "concession", "label": "Concession rates" },
+        { "slug": "class-passes", "label": "Class passes" }
+      ]
+    }
+  ]
+}

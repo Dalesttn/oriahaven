@@ -271,6 +271,22 @@ while ( have_posts() ) :
 									<a class="btn btn--dark" href="<?php echo esc_url( $oria_website ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="web" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Visit their website', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
 								<?php endif; ?>
 								<a class="btn btn--ghost btn--plain" href="#enquire"><?php esc_html_e( 'Send an enquiry', 'oria' ); ?></a>
+								<?php
+								/*
+								 * Rendered as the unsaved state and corrected
+								 * by app.js on load. The alternative is asking
+								 * the server what this browser has saved, and
+								 * the server does not know — which is the
+								 * point of keeping it on the device.
+								 */
+								?>
+								<button class="btn btn--ghost btn--plain savebtn" type="button"
+									data-save="<?php echo esc_attr( (string) get_post_field( 'post_name', $oria_id ) ); ?>"
+									data-save-name="<?php echo esc_attr( \Oria\Theme\ptitle( $oria_id ) ); ?>"
+									aria-pressed="false">
+									<span class="savebtn__on" aria-hidden="true">&#9829;</span><span class="savebtn__off" aria-hidden="true">&#9825;</span>
+									<span class="savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
+								</button>
 							</div>
 						</div>
 						<?php
@@ -478,6 +494,29 @@ while ( have_posts() ) :
 							<?php foreach ( $oria_rest as $oria_r ) : ?>
 								<span class="pill pill--sand"><?php echo esc_html( $oria_r ); ?></span>
 							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+
+					<?php
+					/*
+					 * Why people come here — the practice's own ticks, from
+					 * Oria\Core\Reasons. Renders nothing at all when nothing
+					 * has been ticked: an empty set means nobody has been
+					 * asked, and it must never read as a list of noes.
+					 */
+					$oria_reasons = function_exists( '\Oria\Core\Reasons\flat' )
+						? \Oria\Core\Reasons\flat( $oria_id )
+						: array();
+					?>
+					<?php if ( $oria_reasons ) : ?>
+						<div style="margin-top:var(--s-5)">
+							<h3 class="h4" style="margin-bottom:.75rem"><?php esc_html_e( 'Why people come here', 'oria' ); ?></h3>
+							<ul class="chips">
+								<?php foreach ( $oria_reasons as $oria_rn ) : ?>
+									<li><span class="chip"><?php echo esc_html( $oria_rn['label'] ); ?></span></li>
+								<?php endforeach; ?>
+							</ul>
+							<p class="hint"><?php esc_html_e( 'Told to us by the practice.', 'oria' ); ?></p>
 						</div>
 					<?php endif; ?>
 				</div>
@@ -1085,6 +1124,13 @@ while ( have_posts() ) :
 				<?php if ( $oria_address ) : ?>
 					<a class="btn btn--ghost btn--sm btn--plain stickybar__hide-sm" href="<?php echo esc_url( \Oria\Theme\map_directions_url( $oria_address ) ); ?>" rel="noopener" target="_blank" data-oria-track="dir" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Directions', 'oria' ); ?></a>
 				<?php endif; ?>
+				<button class="btn btn--ghost btn--sm btn--plain savebtn stickybar__hide-sm" type="button"
+					data-save="<?php echo esc_attr( (string) get_post_field( 'post_name', $oria_id ) ); ?>"
+					data-save-name="<?php echo esc_attr( \Oria\Theme\ptitle( $oria_id ) ); ?>"
+					aria-pressed="false">
+					<span class="savebtn__on" aria-hidden="true">&#9829;</span><span class="savebtn__off" aria-hidden="true">&#9825;</span>
+					<span class="savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
+				</button>
 				<a class="btn btn--ghost btn--sm btn--plain" href="#enquire" data-sticky-enquire><?php esc_html_e( 'Enquire', 'oria' ); ?></a>
 				<?php if ( $oria_booking ) : ?>
 					<a class="btn btn--dark btn--sm" href="<?php echo esc_url( $oria_booking ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="book" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Book', 'oria' ); ?></a>
