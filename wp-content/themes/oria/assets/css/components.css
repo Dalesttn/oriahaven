@@ -928,39 +928,68 @@ html.has-sheet .cmptray { display: none; }
 }
 .drawer__saved > span:first-child { color: var(--brand-gold, #C9A227); }
 
-/* --- Service card illustration ------------------------------------------
-   The picture is collapsed to nothing and grows out of the card on hover.
-   0fr -> 1fr animates without anyone having to guess a pixel height, so the
-   card is honest about the image's real aspect ratio at every size.
+/* --- Service card reveal -------------------------------------------------
+   Illustration, ticks and meter live in one wrapper that is collapsed to
+   nothing and grows out of the card on hover or keyboard focus. 0fr -> 1fr
+   animates to the content's real height, whatever mix of parts a card has.
 
-   Scoped to devices that hover. A phone has no hover state, and a reveal it
-   can never trigger would just be a hidden image; there it simply shows. */
+   Scoped to devices that hover: a phone has no hover state, and information
+   only a pointer can reach is information withheld -- so there the wrapper
+   is simply always open. Either way the text stays in the accessibility
+   tree; only the visual is folded. */
 .offercard__media { display: block; }
 .offercard__img {
   display: block; width: 100%; height: auto;
   border-radius: var(--r-1, 10px); background: var(--sand-2, #F2EFE7);
 }
+.offercard__more,
+.offercard__morein { display: block; }
+.offercard__morein > .offercard__media { margin-top: .75rem; }
 
 @media (hover: hover) {
-  .offercard--img .offercard__media {
+  .offercard .offercard__more {
     display: grid; grid-template-rows: 0fr;
     margin-top: 0; overflow: hidden;
     transition: grid-template-rows .3s ease, margin-top .3s ease, opacity .3s ease;
     opacity: 0;
   }
-  /* A grid item will not shrink below its content without this. */
-  .offercard--img .offercard__media > .offercard__img { min-height: 0; }
-  .offercard--img:hover .offercard__media,
-  .offercard--img:focus-visible .offercard__media {
-    grid-template-rows: 1fr; margin-top: .75rem; opacity: 1;
+  /* The single grid child; it will not shrink below content without this. */
+  .offercard .offercard__more > .offercard__morein { min-height: 0; overflow: hidden; }
+  .offercard:hover .offercard__more,
+  .offercard:focus-visible .offercard__more {
+    grid-template-rows: 1fr; margin-top: .25rem; opacity: 1;
   }
 }
 
 @media (hover: hover) and (prefers-reduced-motion: reduce) {
-  .offercard--img .offercard__media { transition: none; }
+  .offercard .offercard__more { transition: none; }
 }
 
-/* Below the hover query the image is always out, so it needs its own gap. */
-@media (hover: none) {
-  .offercard--img .offercard__media { margin-top: .75rem; }
+/* --- Service card facts --------------------------------------------------
+   Three ticks and, where it means something, an effort meter. The ticks are
+   a definition of the modality, not praise of the listing -- the same three
+   lines appear on this card wherever it renders. */
+.offercard__traits { display: grid; gap: .3rem; margin-top: .75rem; }
+.offercard__traitshead {
+  font-size: .6875rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-faint, #8A968F);
 }
+.offercard__trait {
+  display: flex; align-items: baseline; gap: .45rem;
+  font-size: .8125rem; color: var(--text-soft, #4A5F5B); line-height: 1.35;
+}
+.offercard__tick { color: var(--brand-gold, #C9A227); font-weight: 700; }
+
+.offercard__meter {
+  display: flex; align-items: center; gap: .5rem; margin-top: .65rem;
+}
+.offercard__meterlabel {
+  font-size: .6875rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-faint, #8A968F);
+}
+.offercard__dots { display: inline-flex; gap: .25rem; }
+.offercard__dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  border: 1px solid var(--ink, #082220); background: transparent;
+}
+.offercard__dot.is-on { background: var(--ink, #082220); }

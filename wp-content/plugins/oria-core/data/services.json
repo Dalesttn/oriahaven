@@ -12,7 +12,12 @@
         "massage therapy",
         "therapeutic massage"
       ],
-      "note": "Hands-on bodywork, pressure set by you"
+      "note": "Hands-on bodywork, pressure set by you",
+      "traits": [
+        "Hands-on bodywork",
+        "Pressure set by you",
+        "Draped and private"
+      ]
     },
     {
       "slug": "remedial-massage",
@@ -25,7 +30,12 @@
         "remedial",
         "remedial massage therapy"
       ],
-      "note": "Firm, focused work, often with a health-fund receipt"
+      "note": "Firm, focused work, often with a health-fund receipt",
+      "traits": [
+        "Assessment before hands-on",
+        "Works to a treatment plan",
+        "Often health-fund claimable"
+      ]
     },
     {
       "slug": "relaxation-massage",
@@ -36,7 +46,12 @@
       "aliases": [
         "relaxation"
       ],
-      "note": "Slow, even pressure, whole body"
+      "note": "Slow, even pressure, whole body",
+      "traits": [
+        "Slow, even pressure",
+        "Whole body",
+        "You may well doze off"
+      ]
     },
     {
       "slug": "deep-tissue-massage",
@@ -47,7 +62,12 @@
       "aliases": [
         "deep tissue"
       ],
-      "note": "Slow strokes into the deeper layers"
+      "note": "Slow strokes into the deeper layers",
+      "traits": [
+        "Slow, firm, deliberate",
+        "Into the deeper layers",
+        "Speak up on pressure"
+      ]
     },
     {
       "slug": "sports-massage",
@@ -58,7 +78,12 @@
       "aliases": [
         "sports injury massage"
       ],
-      "note": "Firm work before or after training"
+      "note": "Firm work before or after training",
+      "traits": [
+        "Firm, targeted work",
+        "Before or after training",
+        "Event-week friendly"
+      ]
     },
     {
       "slug": "pregnancy-massage",
@@ -70,7 +95,12 @@
       "aliases": [
         "prenatal massage"
       ],
-      "note": "Side-lying with bolsters, trimester-aware"
+      "note": "Side-lying with bolsters, trimester-aware",
+      "traits": [
+        "Side-lying with bolsters",
+        "Trimester-aware",
+        "Trained practitioners"
+      ]
     },
     {
       "slug": "swedish-massage",
@@ -79,7 +109,12 @@
         "bodywork"
       ],
       "aliases": [],
-      "note": "Long, flowing strokes with oil"
+      "note": "Long, flowing strokes with oil",
+      "traits": [
+        "Long, flowing strokes",
+        "Oil on skin",
+        "The classic relaxation style"
+      ]
     },
     {
       "slug": "thai-massage",
@@ -91,7 +126,12 @@
         "taiwanese massage",
         "traditional thai massage"
       ],
-      "note": "Clothed, on a mat, with stretching"
+      "note": "Clothed, on a mat, with stretching",
+      "traits": [
+        "Clothed, on a floor mat",
+        "Stretching and compression",
+        "No oil"
+      ]
     },
     {
       "slug": "lymphatic-drainage",
@@ -103,7 +143,12 @@
         "lymphatic massage",
         "manual lymphatic drainage"
       ],
-      "note": "Light, rhythmic strokes in one direction"
+      "note": "Light, rhythmic strokes in one direction",
+      "traits": [
+        "Very light, rhythmic strokes",
+        "One direction of travel",
+        "Gentler than it sounds"
+      ]
     },
     {
       "slug": "myofascial-release",
@@ -117,7 +162,12 @@
         "soft tissue therapy",
         "soft tissue work"
       ],
-      "note": "Sustained pressure held until tissue softens"
+      "note": "Sustained pressure held until tissue softens",
+      "traits": [
+        "Sustained, held pressure",
+        "Slower than massage",
+        "Works with the tissue"
+      ]
     },
     {
       "slug": "trigger-point-therapy",
@@ -137,7 +187,12 @@
       "aliases": [
         "cupping therapy"
       ],
-      "note": "Suction cups moved or left in place"
+      "note": "Suction cups moved or left in place",
+      "traits": [
+        "Suction cups on skin",
+        "Marks fade in days",
+        "Often paired with massage"
+      ]
     },
     {
       "slug": "dry-needling",
@@ -147,7 +202,12 @@
         "allied"
       ],
       "aliases": [],
-      "note": "Single-use needles into tight muscle bands"
+      "note": "Single-use needles into tight muscle bands",
+      "traits": [
+        "Single-use needles",
+        "Into tight muscle bands",
+        "Brief and targeted"
+      ]
     },
     {
       "slug": "baby-massage",
@@ -167,7 +227,12 @@
       "aliases": [
         "physio"
       ],
-      "note": "Assessment, hands-on work, exercises to take home"
+      "note": "Assessment, hands-on work, exercises to take home",
+      "traits": [
+        "Assessment first",
+        "Exercise-led treatment",
+        "Health-fund claimable"
+      ]
     },
     {
       "slug": "womens-health-physiotherapy",
@@ -181,7 +246,12 @@
         "womens health physio",
         "pelvic floor physiotherapy"
       ],
-      "note": "Pelvic floor and pregnancy-related assessment"
+      "note": "Pelvic floor and pregnancy-related assessment",
+      "traits": [
+        "Pelvic floor assessment",
+        "Private and unhurried",
+        "Pregnancy-aware"
+      ]
     },
     {
       "slug": "occupational-therapy",
@@ -193,7 +263,12 @@
         "paediatric occupational therapy",
         "ot"
       ],
-      "note": "Everyday tasks, assessed and adapted"
+      "note": "Everyday tasks, assessed and adapted",
+      "traits": [
+        "Everyday tasks assessed",
+        "Practical adaptations",
+        "Home visits common"
+      ]
     },
     {
       "slug": "speech-pathology",
@@ -204,7 +279,12 @@
       "aliases": [
         "speech therapy"
       ],
-      "note": "Assessment, then practice between sessions"
+      "note": "Assessment, then practice between sessions",
+      "traits": [
+        "Assessment first",
+        "Practice between sessions",
+        "Children and adults"
+      ]
     },
     {
       "slug": "podiatry",
@@ -216,7 +296,12 @@
         "sports podiatry",
         "paediatric podiatry"
       ],
-      "note": "Feet, nails and gait, assessed in clinic"
+      "note": "Feet, nails and gait, assessed in clinic",
+      "traits": [
+        "Feet, nails and gait",
+        "Assessed in clinic",
+        "Orthotics if needed"
+      ]
     },
     {
       "slug": "exercise-physiology",
@@ -229,7 +314,12 @@
         "exercise physiologist",
         "exercise therapy"
       ],
-      "note": "Prescribed exercise, supervised and progressed"
+      "note": "Prescribed exercise, supervised and progressed",
+      "traits": [
+        "Prescribed exercise",
+        "Supervised and progressed",
+        "Medicare-referral friendly"
+      ]
     },
     {
       "slug": "chiropractic",
@@ -242,7 +332,12 @@
         "chiro",
         "chiropractic adjustments"
       ],
-      "note": "Assessment, then adjustments to joints and spine"
+      "note": "Assessment, then adjustments to joints and spine",
+      "traits": [
+        "Spine and joint focus",
+        "Hands-on adjustment",
+        "Short, regular visits"
+      ]
     },
     {
       "slug": "osteopathy",
@@ -254,7 +349,12 @@
       "aliases": [
         "osteo"
       ],
-      "note": "Hands-on work on joints and soft tissue"
+      "note": "Hands-on work on joints and soft tissue",
+      "traits": [
+        "Whole-body assessment",
+        "Hands-on, unhurried",
+        "Longer appointments"
+      ]
     },
     {
       "slug": "myotherapy",
@@ -278,7 +378,12 @@
         "dietitian consultation",
         "dietitian consultations"
       ],
-      "note": "An Accredited Practising Dietitian, one to one"
+      "note": "An Accredited Practising Dietitian, one to one",
+      "traits": [
+        "Accredited Practising Dietitian",
+        "One-to-one consults",
+        "Medicare-referral friendly"
+      ]
     },
     {
       "slug": "hydrotherapy",
@@ -298,7 +403,13 @@
       ],
       "aliases": [
         "clinical pilates studio"
-      ]
+      ],
+      "traits": [
+        "One-to-one or small group",
+        "Assessed before you start",
+        "Often health-fund claimable"
+      ],
+      "intensity": 2
     },
     {
       "slug": "orthotics",
@@ -309,7 +420,12 @@
       "aliases": [
         "orthotic therapy"
       ],
-      "note": "Casting or scanning, then a fitted insert"
+      "note": "Casting or scanning, then a fitted insert",
+      "traits": [
+        "Cast or scanned first",
+        "A fitted insert",
+        "Review after fitting"
+      ]
     },
     {
       "slug": "shockwave-therapy",
@@ -318,7 +434,12 @@
         "allied"
       ],
       "aliases": [],
-      "note": "A handheld device delivering pulses"
+      "note": "A handheld device delivering pulses",
+      "traits": [
+        "A handheld device",
+        "Short, repeated pulses",
+        "Brief appointments"
+      ]
     },
     {
       "slug": "gait-analysis",
@@ -337,7 +458,12 @@
       "aliases": [
         "naturopath"
       ],
-      "note": "A long first consult, then a plan to follow"
+      "note": "A long first consult, then a plan to follow",
+      "traits": [
+        "A long first consult",
+        "Diet and lifestyle first",
+        "Herbs where indicated"
+      ]
     },
     {
       "slug": "acupuncture",
@@ -347,7 +473,12 @@
         "allied"
       ],
       "aliases": [],
-      "note": "Fine needles at set points, left in place"
+      "note": "Fine needles at set points, left in place",
+      "traits": [
+        "Very fine needles",
+        "Mostly lying still",
+        "Registered practitioners"
+      ]
     },
     {
       "slug": "chinese-medicine",
@@ -360,7 +491,12 @@
         "tcm",
         "tcm health assessment"
       ],
-      "note": "Consultation, tongue and pulse, then a formula"
+      "note": "Consultation, tongue and pulse, then a formula",
+      "traits": [
+        "Tongue and pulse consult",
+        "A tailored formula",
+        "Acupuncture often paired"
+      ]
     },
     {
       "slug": "herbal-medicine",
@@ -373,7 +509,12 @@
         "herbal dispensary",
         "traditional herbalism"
       ],
-      "note": "A dispensed formula, reviewed at follow-ups"
+      "note": "A dispensed formula, reviewed at follow-ups",
+      "traits": [
+        "A dispensed formula",
+        "Reviewed at follow-ups",
+        "Practitioner-only blends"
+      ]
     },
     {
       "slug": "homeopathy",
@@ -384,7 +525,12 @@
       "aliases": [
         "homeopathic medicine"
       ],
-      "note": "A long intake, then a prescribed remedy"
+      "note": "A long intake, then a prescribed remedy",
+      "traits": [
+        "A long intake interview",
+        "A prescribed remedy",
+        "Gentle follow-up schedule"
+      ]
     },
     {
       "slug": "ayurveda",
@@ -397,7 +543,12 @@
         "panchakarma",
         "rasayana therapy"
       ],
-      "note": "A constitution consult, then oils and diet"
+      "note": "A constitution consult, then oils and diet",
+      "traits": [
+        "A constitution consult",
+        "Oils, diet and routine",
+        "An ancient system"
+      ]
     },
     {
       "slug": "kinesiology",
@@ -407,7 +558,12 @@
         "bodywork"
       ],
       "aliases": [],
-      "note": "Gentle muscle testing, fully clothed"
+      "note": "Gentle muscle testing, fully clothed",
+      "traits": [
+        "Gentle muscle testing",
+        "Fully clothed",
+        "Talking and testing mixed"
+      ]
     },
     {
       "slug": "reflexology",
@@ -419,7 +575,12 @@
       "aliases": [
         "foot massage"
       ],
-      "note": "Pressure to points on the feet or hands"
+      "note": "Pressure to points on the feet or hands",
+      "traits": [
+        "Feet, hands or ears",
+        "Mapped pressure points",
+        "You stay clothed"
+      ]
     },
     {
       "slug": "hypnotherapy",
@@ -431,7 +592,12 @@
       "aliases": [
         "clinical hypnotherapy"
       ],
-      "note": "Guided relaxation, then suggestion, you stay aware"
+      "note": "Guided relaxation, then suggestion, you stay aware",
+      "traits": [
+        "Deep guided relaxation",
+        "You stay aware throughout",
+        "Nothing happens against your will"
+      ]
     },
     {
       "slug": "aromatherapy",
@@ -457,7 +623,12 @@
         "remote reiki",
         "reiki stone massage"
       ],
-      "note": "Hands resting on or above you, fully clothed"
+      "note": "Hands resting on or above you, fully clothed",
+      "traits": [
+        "Hands-on or hands-off",
+        "Fully clothed, lying down",
+        "Quiet and still"
+      ]
     },
     {
       "slug": "energy-healing",
@@ -471,7 +642,12 @@
         "pranic healing",
         "quantum healing"
       ],
-      "note": "Hands-on or hands-off, fully clothed"
+      "note": "Hands-on or hands-off, fully clothed",
+      "traits": [
+        "Hands-on or hands-off",
+        "Fully clothed",
+        "Quiet, restful sessions"
+      ]
     },
     {
       "slug": "chakra-balancing",
@@ -516,7 +692,12 @@
         "gong bath",
         "singing bowls"
       ],
-      "note": "Bowls, gongs or voice, you lie still"
+      "note": "Bowls, gongs or voice, you lie still",
+      "traits": [
+        "Bowls, gongs and voice",
+        "You lie down and listen",
+        "Nothing asked of you"
+      ]
     },
     {
       "slug": "float-therapy",
@@ -531,7 +712,12 @@
         "dry float tanks",
         "sensory deprivation"
       ],
-      "note": "Salt water at body temperature, dark and quiet"
+      "note": "Salt water at body temperature, dark and quiet",
+      "traits": [
+        "Salt water, body temperature",
+        "Dark and silent",
+        "You float without effort"
+      ]
     },
     {
       "slug": "infrared-sauna",
@@ -544,7 +730,12 @@
         "infrared sauna suites",
         "infrared therapy"
       ],
-      "note": "Radiant heat, lower temperature, longer sits"
+      "note": "Radiant heat, lower temperature, longer sits",
+      "traits": [
+        "Gentler heat than traditional",
+        "Longer, milder sessions",
+        "Book a private cabin"
+      ]
     },
     {
       "slug": "traditional-sauna",
@@ -557,7 +748,12 @@
         "finnish sauna",
         "sauna therapy"
       ],
-      "note": "Dry heat at high temperature, short sits"
+      "note": "Dry heat at high temperature, short sits",
+      "traits": [
+        "Dry heat, high temperature",
+        "Short sits, then rest",
+        "The classic way"
+      ]
     },
     {
       "slug": "steam-room",
@@ -565,7 +761,12 @@
       "categories": [
         "recovery"
       ],
-      "aliases": []
+      "aliases": [],
+      "traits": [
+        "Wet heat, lower temperature",
+        "Easier breathing than sauna",
+        "Communal, towelled"
+      ]
     },
     {
       "slug": "ice-bath",
@@ -579,7 +780,12 @@
         "cold immersion",
         "cold exposure"
       ],
-      "note": "Cold immersion, usually two to five minutes"
+      "note": "Cold immersion, usually two to five minutes",
+      "traits": [
+        "Cold immersion",
+        "Two to five minutes",
+        "Guided your first time"
+      ]
     },
     {
       "slug": "contrast-therapy",
@@ -591,7 +797,12 @@
         "hot and cold therapy",
         "hot plunge"
       ],
-      "note": "Hot then cold, in rounds"
+      "note": "Hot then cold, in rounds",
+      "traits": [
+        "Hot then cold, in rounds",
+        "Sauna and plunge paired",
+        "Finish on cold"
+      ]
     },
     {
       "slug": "red-light-therapy",
@@ -605,7 +816,12 @@
         "photobiomodulation",
         "cold laser therapy"
       ],
-      "note": "Timed sessions under red and near-infrared panels"
+      "note": "Timed sessions under red and near-infrared panels",
+      "traits": [
+        "Timed sessions under panels",
+        "Nothing to do but rest",
+        "Eyes covered"
+      ]
     },
     {
       "slug": "compression-therapy",
@@ -616,7 +832,12 @@
       "aliases": [
         "compression boots"
       ],
-      "note": "Inflatable boots or sleeves, timed cycles"
+      "note": "Inflatable boots or sleeves, timed cycles",
+      "traits": [
+        "Inflatable boots or sleeves",
+        "Timed pressure cycles",
+        "Sit back and let it run"
+      ]
     },
     {
       "slug": "cryotherapy",
@@ -627,7 +848,12 @@
       "aliases": [
         "spot cryotherapy"
       ],
-      "note": "A short spell in a very cold chamber"
+      "note": "A short spell in a very cold chamber",
+      "traits": [
+        "A chilled chamber",
+        "Around three minutes",
+        "Dry cold, not water"
+      ]
     },
     {
       "slug": "hyperbaric-oxygen-therapy",
@@ -641,7 +867,12 @@
         "hyperbaric chamber",
         "hyperbaric oxygen"
       ],
-      "note": "A sealed chamber, pressurised, oxygen by mask"
+      "note": "A sealed chamber, pressurised, oxygen by mask",
+      "traits": [
+        "A pressurised chamber",
+        "Oxygen by mask",
+        "Sessions run about an hour"
+      ]
     },
     {
       "slug": "yoga",
@@ -652,7 +883,13 @@
       "aliases": [
         "yoga classes"
       ],
-      "note": "Postures and breathing, held or linked"
+      "note": "Postures and breathing, held or linked",
+      "traits": [
+        "Postures held or flowing",
+        "Breath sets the pace",
+        "All levels in most studios"
+      ],
+      "intensity": 3
     },
     {
       "slug": "yin-yoga",
@@ -662,7 +899,13 @@
       ],
       "aliases": [
         "yin"
-      ]
+      ],
+      "traits": [
+        "Long, supported floor holds",
+        "Props do the work",
+        "Slow and quiet"
+      ],
+      "intensity": 1
     },
     {
       "slug": "vinyasa-yoga",
@@ -672,7 +915,13 @@
       ],
       "aliases": [
         "vinyasa"
-      ]
+      ],
+      "traits": [
+        "Building strength",
+        "Continuous flowing sequences",
+        "An energetic practice"
+      ],
+      "intensity": 4
     },
     {
       "slug": "hatha-yoga",
@@ -683,7 +932,13 @@
       "aliases": [
         "hatha"
       ],
-      "note": "Postures held, at a slower pace"
+      "note": "Postures held, at a slower pace",
+      "traits": [
+        "Postures held, not flowed",
+        "A slower, steadier pace",
+        "Good first class"
+      ],
+      "intensity": 2
     },
     {
       "slug": "hot-yoga",
@@ -700,7 +955,13 @@
         "hot vinyasa flow",
         "heated vinyasa flow",
         "hot flow"
-      ]
+      ],
+      "traits": [
+        "Practised in a heated room",
+        "Expect to sweat",
+        "Bring water and a towel"
+      ],
+      "intensity": 4
     },
     {
       "slug": "restorative-yoga",
@@ -710,7 +971,13 @@
       ],
       "aliases": [
         "restorative"
-      ]
+      ],
+      "traits": [
+        "Fully supported rest poses",
+        "Blankets and bolsters",
+        "Barely any effort asked"
+      ],
+      "intensity": 1
     },
     {
       "slug": "pregnancy-yoga",
@@ -726,7 +993,13 @@
         "pre and post-natal yoga",
         "pre and postnatal yoga",
         "prenatal and postnatal yoga"
-      ]
+      ],
+      "traits": [
+        "Adapted through trimesters",
+        "Props and modifications",
+        "Taught by trained teachers"
+      ],
+      "intensity": 2
     },
     {
       "slug": "aerial-yoga",
@@ -745,7 +1018,13 @@
       "aliases": [
         "teacher training"
       ],
-      "note": "A certified course, usually 200 hours"
+      "note": "A certified course, usually 200 hours",
+      "traits": [
+        "A certified course",
+        "Usually 200 hours",
+        "Practice plus theory"
+      ],
+      "intensity": 3
     },
     {
       "slug": "pilates",
@@ -754,7 +1033,13 @@
         "fitness"
       ],
       "aliases": [],
-      "note": "Controlled movement, mat or equipment"
+      "note": "Controlled movement, mat or equipment",
+      "traits": [
+        "Controlled, precise movement",
+        "Core does the organising",
+        "Mat or equipment"
+      ],
+      "intensity": 3
     },
     {
       "slug": "reformer-pilates",
@@ -764,7 +1049,13 @@
       ],
       "aliases": [
         "reformer"
-      ]
+      ],
+      "traits": [
+        "Spring-loaded resistance",
+        "Guided by the carriage",
+        "Small class sizes"
+      ],
+      "intensity": 3
     },
     {
       "slug": "mat-pilates",
@@ -772,7 +1063,13 @@
       "categories": [
         "fitness"
       ],
-      "aliases": []
+      "aliases": [],
+      "traits": [
+        "Bodyweight on a mat",
+        "Small props sometimes",
+        "Larger class sizes"
+      ],
+      "intensity": 3
     },
     {
       "slug": "barre",
@@ -783,7 +1080,13 @@
       "aliases": [
         "arc classes"
       ],
-      "note": "Small-range movement at a rail, to music"
+      "note": "Small-range movement at a rail, to music",
+      "traits": [
+        "Ballet-inspired, at a barre",
+        "Small pulsing movements",
+        "No dance experience needed"
+      ],
+      "intensity": 3
     },
     {
       "slug": "personal-training",
@@ -794,7 +1097,13 @@
       "aliases": [
         "personal trainer",
         "womens personal training"
-      ]
+      ],
+      "traits": [
+        "Programmed one-to-one",
+        "Paced to you",
+        "Building strength"
+      ],
+      "intensity": 4
     },
     {
       "slug": "strength-training",
@@ -809,7 +1118,13 @@
         "powerlifting coaching",
         "small group strength"
       ],
-      "note": "Loaded lifts, programmed and progressed"
+      "note": "Loaded lifts, programmed and progressed",
+      "traits": [
+        "Loaded, progressive lifts",
+        "Technique coached",
+        "Building strength"
+      ],
+      "intensity": 4
     },
     {
       "slug": "group-fitness",
@@ -819,7 +1134,13 @@
       ],
       "aliases": [
         "outdoor group fitness"
-      ]
+      ],
+      "traits": [
+        "Trainer-led, in a group",
+        "A set timetable",
+        "Energy from the room"
+      ],
+      "intensity": 4
     },
     {
       "slug": "tai-chi",
@@ -840,7 +1161,13 @@
         "fitness",
         "mindfulness"
       ],
-      "aliases": []
+      "aliases": [],
+      "traits": [
+        "Slow standing sequences",
+        "Breath-led movement",
+        "Gentle on the body"
+      ],
+      "intensity": 1
     },
     {
       "slug": "boxing",
@@ -851,7 +1178,13 @@
       "aliases": [
         "boxfit",
         "boxing all levels"
-      ]
+      ],
+      "traits": [
+        "Pads, bags and footwork",
+        "A hard cardio session",
+        "No sparring unless you ask"
+      ],
+      "intensity": 5
     },
     {
       "slug": "aqua-fitness",
@@ -865,7 +1198,13 @@
         "aqua zumba",
         "deep water classes"
       ],
-      "note": "Shallow or deep water, low impact"
+      "note": "Shallow or deep water, low impact",
+      "traits": [
+        "Exercise in the pool",
+        "Easy on the joints",
+        "You don't need to swim laps"
+      ],
+      "intensity": 2
     },
     {
       "slug": "assisted-stretching",
@@ -878,7 +1217,13 @@
         "assisted fascial stretching",
         "stretch and flex"
       ],
-      "note": "A practitioner moves you through range"
+      "note": "A practitioner moves you through range",
+      "traits": [
+        "A practitioner moves you",
+        "You stay relaxed",
+        "Range worked passively"
+      ],
+      "intensity": 1
     },
     {
       "slug": "dance",
@@ -892,7 +1237,13 @@
         "conscious dance",
         "open floor conscious dance"
       ],
-      "note": "Choreography or freeform, in a group"
+      "note": "Choreography or freeform, in a group",
+      "traits": [
+        "Choreography or freeform",
+        "In a group",
+        "No experience needed"
+      ],
+      "intensity": 3
     },
     {
       "slug": "martial-arts",
@@ -903,7 +1254,13 @@
       "aliases": [
         "kung fu"
       ],
-      "note": "Forms, drills and sparring, grading optional"
+      "note": "Forms, drills and sparring, grading optional",
+      "traits": [
+        "Forms, drills and technique",
+        "Grading if you want it",
+        "Discipline and fitness"
+      ],
+      "intensity": 4
     },
     {
       "slug": "meditation",
@@ -915,7 +1272,12 @@
         "guided meditation",
         "online meditation"
       ],
-      "note": "Guided or silent sitting, timed"
+      "note": "Guided or silent sitting, timed",
+      "traits": [
+        "Guided or silent sitting",
+        "Chairs and cushions",
+        "No experience needed"
+      ]
     },
     {
       "slug": "mindfulness",
@@ -935,7 +1297,13 @@
         "breath training",
         "group breathwork"
       ],
-      "note": "Guided breathing patterns, lying or seated"
+      "note": "Guided breathing patterns, lying or seated",
+      "traits": [
+        "Patterned, sustained breathing",
+        "Physically felt",
+        "Screened before first session"
+      ],
+      "intensity": 2
     },
     {
       "slug": "nutrition",
@@ -951,7 +1319,12 @@
         "nutritional counselling",
         "nutritional therapy"
       ],
-      "note": "A look at what you eat, then a written plan"
+      "note": "A look at what you eat, then a written plan",
+      "traits": [
+        "Your eating, mapped",
+        "Practical, staged changes",
+        "No bans, no shame"
+      ]
     },
     {
       "slug": "sports-nutrition",
@@ -961,7 +1334,12 @@
         "fitness"
       ],
       "aliases": [],
-      "note": "Fuelling and timing around training"
+      "note": "Fuelling and timing around training",
+      "traits": [
+        "Fuelling for training",
+        "Timed around sessions",
+        "Numbers, not fads"
+      ]
     },
     {
       "slug": "art-therapy",
@@ -973,7 +1351,12 @@
         "art psychotherapy",
         "expressive therapy"
       ],
-      "note": "Making something, with a trained therapist present"
+      "note": "Making something, with a trained therapist present",
+      "traits": [
+        "Making, with a therapist",
+        "No art skill needed",
+        "The making is the point"
+      ]
     },
     {
       "slug": "music-therapy",
@@ -997,6 +1380,11 @@
         "group counselling",
         "integrative counselling",
         "nature-based counselling"
+      ],
+      "traits": [
+        "Talking, one-to-one",
+        "You set the agenda",
+        "A regular time that holds"
       ]
     },
     {
@@ -1021,7 +1409,12 @@
         "mindset coaching",
         "wellness coaching"
       ],
-      "note": "Goal-setting and accountability, session by session"
+      "note": "Goal-setting and accountability, session by session",
+      "traits": [
+        "Goal-setting sessions",
+        "Accountability between them",
+        "Forward-looking, practical"
+      ]
     },
     {
       "slug": "support-groups",
@@ -1127,7 +1520,12 @@
       "aliases": [
         "lactation consultant"
       ],
-      "note": "Feeding assessed, positions and a plan"
+      "note": "Feeding assessed, positions and a plan",
+      "traits": [
+        "Feeding assessed",
+        "Positions and a plan",
+        "IBCLC qualified"
+      ]
     },
     {
       "slug": "postnatal-care",
@@ -1139,7 +1537,12 @@
         "postpartum support",
         "postnatal"
       ],
-      "note": "Visits and checks in the weeks after birth"
+      "note": "Visits and checks in the weeks after birth",
+      "traits": [
+        "The weeks after birth",
+        "Home visits common",
+        "Feeding and recovery support"
+      ]
     },
     {
       "slug": "doula-support",
@@ -1152,7 +1555,12 @@
         "postpartum doula",
         "doula"
       ],
-      "note": "Continuous non-clinical support through birth"
+      "note": "Continuous non-clinical support through birth",
+      "traits": [
+        "Continuous birth support",
+        "Non-clinical, steady",
+        "Met before the day"
+      ]
     },
     {
       "slug": "hypnobirthing",
@@ -1174,7 +1582,12 @@
         "birth preparation classes",
         "antenatal care"
       ],
-      "note": "What to expect, practised in a group"
+      "note": "What to expect, practised in a group",
+      "traits": [
+        "What to expect, practised",
+        "Partners welcome",
+        "In a small group"
+      ]
     },
     {
       "slug": "private-midwifery",
@@ -1197,7 +1610,12 @@
         "one day retreats",
         "weekend retreats"
       ],
-      "note": "A half or full day, catered, no overnight"
+      "note": "A half or full day, catered, no overnight",
+      "traits": [
+        "A structured day away",
+        "Sessions, food and rest",
+        "Come alone or with a friend"
+      ]
     },
     {
       "slug": "workshops",
@@ -1209,6 +1627,11 @@
       "aliases": [
         "weekend workshops",
         "wellness workshops"
+      ],
+      "traits": [
+        "A one-off deep dive",
+        "Small groups",
+        "Beginners expected"
       ]
     },
     {
@@ -1223,7 +1646,12 @@
         "gut healing",
         "microbiome"
       ],
-      "note": "Testing, then a staged eating plan"
+      "note": "Testing, then a staged eating plan",
+      "traits": [
+        "A staged eating plan",
+        "Food diary work",
+        "Testing where useful"
+      ]
     },
     {
       "slug": "meal-planning",
@@ -1390,6 +1818,11 @@
       "aliases": [
         "spa treatments",
         "spa"
+      ],
+      "traits": [
+        "Treatments back to back",
+        "Robes and quiet rooms",
+        "Book ahead for weekends"
       ]
     },
     {
@@ -1413,7 +1846,12 @@
         "organic facials",
         "facial treatments"
       ],
-      "note": "Cleanse, mask and massage, chosen for your skin"
+      "note": "Cleanse, mask and massage, chosen for your skin",
+      "traits": [
+        "Cleanse, treat, finish",
+        "An hour of being tended",
+        "Products matched to skin"
+      ]
     },
     {
       "slug": "skin-treatments",
@@ -1426,7 +1864,12 @@
         "dermal therapy",
         "skin consultations"
       ],
-      "note": "Clinical devices and actives, usually in a course"
+      "note": "Clinical devices and actives, usually in a course",
+      "traits": [
+        "Clinical devices and actives",
+        "Usually in a course",
+        "Consult before treatment"
+      ]
     },
     {
       "slug": "lashes-and-brows",
@@ -1441,7 +1884,12 @@
         "eyebrows",
         "eyelashes"
       ],
-      "note": "Tinting, lifting or extensions, applied one by one"
+      "note": "Tinting, lifting or extensions, applied one by one",
+      "traits": [
+        "Tint, shape or extend",
+        "Precise, close work",
+        "You just lie back"
+      ]
     },
     {
       "slug": "nails",
@@ -1456,7 +1904,12 @@
         "manicures",
         "pedicures"
       ],
-      "note": "Shape, cuticle work and colour"
+      "note": "Shape, cuticle work and colour",
+      "traits": [
+        "Manicure and pedicure",
+        "Shape, buff, colour",
+        "An unhurried hour"
+      ]
     },
     {
       "slug": "waxing",
@@ -1468,7 +1921,12 @@
         "sugaring",
         "hair removal"
       ],
-      "note": "Warm or hard wax, strip by strip"
+      "note": "Warm or hard wax, strip by strip",
+      "traits": [
+        "Quick and practised",
+        "Warm wax, clean rooms",
+        "Over faster than you fear"
+      ]
     },
     {
       "slug": "body-composition-scan",
@@ -1487,7 +1945,12 @@
         "inbody scan",
         "bioimpedance"
       ],
-      "note": "A scan reporting muscle, fat and bone"
+      "note": "A scan reporting muscle, fat and bone",
+      "traits": [
+        "A short standing scan",
+        "Muscle, fat and bone",
+        "Numbers to track over time"
+      ]
     },
     {
       "slug": "vo2-max-testing",
@@ -1502,7 +1965,13 @@
         "aerobic capacity testing",
         "cardio fitness testing"
       ],
-      "note": "A mask on a bike or treadmill, to exhaustion"
+      "note": "A mask on a bike or treadmill, to exhaustion",
+      "traits": [
+        "Mask on, bike or treadmill",
+        "Effort builds to max",
+        "A hard, short test"
+      ],
+      "intensity": 5
     },
     {
       "slug": "functional-testing",
@@ -1520,7 +1989,12 @@
         "gut microbiome testing",
         "functional pathology"
       ],
-      "note": "Samples collected, results talked through"
+      "note": "Samples collected, results talked through",
+      "traits": [
+        "Samples collected",
+        "Results talked through",
+        "Ordered when indicated"
+      ]
     },
     {
       "slug": "performance-testing",
@@ -1538,7 +2012,12 @@
         "athlete screening",
         "functional screening"
       ],
-      "note": "Lab-style tests, numbers to train from"
+      "note": "Lab-style tests, numbers to train from",
+      "traits": [
+        "Lab-style measurement",
+        "Numbers to train from",
+        "Repeated to track change"
+      ]
     },
     {
       "slug": "biohacking",
@@ -1582,7 +2061,13 @@
         "seniors exercise",
         "senior strength"
       ],
-      "note": "Seated or standing, paced for older adults"
+      "note": "Seated or standing, paced for older adults",
+      "traits": [
+        "Paced for older adults",
+        "Seated or standing options",
+        "Balance and strength"
+      ],
+      "intensity": 2
     },
     {
       "slug": "chair-yoga",
@@ -1630,7 +2115,13 @@
         "mobility",
         "functional capacity training"
       ],
-      "note": "Joint range work, loaded and held"
+      "note": "Joint range work, loaded and held",
+      "traits": [
+        "Joint range work",
+        "Loaded and held",
+        "Programmed and progressed"
+      ],
+      "intensity": 2
     },
     {
       "slug": "social-groups",
@@ -1647,7 +2138,12 @@
         "mens shed",
         "community activities"
       ],
-      "note": "Regular meet-ups, no clinical component"
+      "note": "Regular meet-ups, no clinical component",
+      "traits": [
+        "Regular meet-ups",
+        "No clinical component",
+        "Just showing up counts"
+      ]
     },
     {
       "slug": "aged-care-wellness",
@@ -1672,7 +2168,13 @@
         "nidra",
         "yogic sleep",
         "deep restore"
-      ]
+      ],
+      "traits": [
+        "Lying down throughout",
+        "A guided, spoken practice",
+        "Between waking and sleep"
+      ],
+      "intensity": 1
     },
     {
       "slug": "ashtanga-yoga",
@@ -1683,7 +2185,13 @@
       "aliases": [
         "ashtanga",
         "mysore"
-      ]
+      ],
+      "traits": [
+        "A set, unchanging sequence",
+        "Physically demanding",
+        "Practised to your own breath"
+      ],
+      "intensity": 5
     }
   ]
 }

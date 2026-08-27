@@ -123,6 +123,8 @@ function vocabulary(): array {
 			'categories' => array_map( 'strval', (array) ( $row['categories'] ?? array() ) ),
 			'aliases'    => array_map( 'strval', (array) ( $row['aliases'] ?? array() ) ),
 			'note'       => (string) ( $row['note'] ?? '' ),
+			'traits'     => array_map( 'strval', (array) ( $row['traits'] ?? array() ) ),
+			'intensity'  => (int) ( $row['intensity'] ?? 0 ),
 		);
 	}
 	return $cache = $out;
@@ -175,6 +177,34 @@ function note( string $slug ): string {
  * /practices/yoga/yin/ and showed no description at all, because the words
  * were sitting in the other file. This looks in both.
  */
+/**
+ * The card facts for a service: three short traits and an effort score.
+ *
+ * Traits describe the session or who it suits, never an outcome -- the same
+ * line note() holds. Intensity is physical effort 1-5 and only exists where
+ * effort is a real property of the service; 0 means "not a thing here" and
+ * the card shows nothing, which is the amenities contract again.
+ *
+ * @return array{traits: list<string>, intensity: int}
+ */
+function card( string $slug ): array {
+	static $map = null;
+	if ( null === $map ) {
+		$map = array();
+		foreach ( vocabulary() as $entry ) {
+			$traits = array_values( array_filter( array_map( 'strval', (array) ( $entry['traits'] ?? array() ) ) ) );
+			if ( ! $traits ) {
+				continue;
+			}
+			$map[ (string) $entry['slug'] ] = array(
+				'traits'    => $traits,
+				'intensity' => max( 0, min( 5, (int) ( $entry['intensity'] ?? 0 ) ) ),
+			);
+		}
+	}
+	return $map[ $slug ] ?? array( 'traits' => array(), 'intensity' => 0 );
+}
+
 function note_any( string $slug ): string {
 	$own = note( $slug );
 	if ( '' !== $own ) {

@@ -590,7 +590,12 @@ while ( have_posts() ) :
 					<?php if ( $oria_cards ) : ?>
 						<div class="offergrid">
 							<?php foreach ( $oria_cards as $oria_c ) : ?>
-								<?php $oria_cimg = \Oria\Theme\facet_image( (string) $oria_c['slug'] ); ?>
+								<?php
+								$oria_cimg  = \Oria\Theme\facet_image( (string) $oria_c['slug'] );
+								$oria_ccard = function_exists( '\Oria\Core\Services\card' )
+									? \Oria\Core\Services\card( (string) $oria_c['slug'] )
+									: array( 'traits' => array(), 'intensity' => 0 );
+								?>
 								<a class="offercard<?php echo $oria_cimg ? ' offercard--img' : ''; ?>" href="<?php echo esc_url( $oria_c['url'] ); ?>">
 									<b class="offercard__name"><?php echo esc_html( $oria_c['label'] ); ?></b>
 									<?php if ( '' !== $oria_c['note'] ) : ?>
@@ -598,18 +603,51 @@ while ( have_posts() ) :
 									<?php endif; ?>
 									<?php
 									/*
-									 * Decorative: the name and the note above
-									 * already say this. alt="" and aria-hidden
-									 * keep it out of the reading order rather
-									 * than announcing the card twice.
+									 * Everything from here to the go-line
+									 * reveals together on hover. One wrapper,
+									 * so the image, ticks and meter can never
+									 * animate out of step. Not aria-hidden:
+									 * the ticks are real information, and a
+									 * collapsed grid row still reads.
 									 */
 									?>
+									<span class="offercard__more"><span class="offercard__morein">
+									<?php if ( $oria_ccard['traits'] ) : ?>
+										<span class="offercard__traits">
+											<span class="offercard__traitshead"><?php esc_html_e( 'Good to know:', 'oria' ); ?></span>
+											<?php foreach ( $oria_ccard['traits'] as $oria_t ) : ?>
+												<span class="offercard__trait"><span class="offercard__tick" aria-hidden="true">&#10003;</span><?php echo esc_html( $oria_t ); ?></span>
+											<?php endforeach; ?>
+										</span>
+									<?php endif; ?>
+									<?php
+									/*
+									 * Effort, 1-5, only where the registry says
+									 * effort is a real property of the service.
+									 * The dots are aria-hidden and the words
+									 * carry the value -- "Intensity 4 of 5"
+									 * reads; five filled-or-hollow circles do
+									 * not.
+									 */
+									?>
+									<?php if ( $oria_ccard['intensity'] > 0 ) : ?>
+										<span class="offercard__meter">
+											<span class="offercard__meterlabel"><?php esc_html_e( 'Intensity', 'oria' ); ?></span>
+											<span class="offercard__dots" role="img" aria-label="<?php echo esc_attr( sprintf( __( 'Intensity %1$d of 5', 'oria' ), $oria_ccard['intensity'] ) ); ?>"><?php
+											for ( $oria_i = 1; $oria_i <= 5; $oria_i++ ) {
+												echo '<span class="offercard__dot' . ( $oria_i <= $oria_ccard['intensity'] ? ' is-on' : '' ) . '" aria-hidden="true"></span>';
+											}
+											?></span>
+										</span>
+									<?php endif; ?>
 									<?php if ( $oria_cimg ) : ?>
+										<?php // Decorative: the card already says all of this in words. ?>
 										<span class="offercard__media" aria-hidden="true">
 											<img class="offercard__img" src="<?php echo esc_url( $oria_cimg ); ?>" alt="" loading="lazy" decoding="async" width="800" height="450">
 										</span>
 									<?php endif; ?>
-									<span class="offercard__go"><?php esc_html_e( 'See everywhere in Perth', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></span>
+									</span></span>
+									<span class="offercard__go"><?php echo esc_html( sprintf( __( 'Explore %s', 'oria' ), $oria_c['label'] ) ); ?> <span aria-hidden="true">&rarr;</span></span>
 								</a>
 							<?php endforeach; ?>
 						</div>
