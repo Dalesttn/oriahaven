@@ -415,12 +415,71 @@ while ( have_posts() ) :
 				<!-- Services -->
 				<?php if ( $oria_services ) : ?>
 				<div>
-					<h2 class="h3" style="margin-bottom:.85rem"><?php esc_html_e( 'What they offer', 'oria' ); ?></h2>
-					<div class="listing__tags">
-						<?php foreach ( $oria_services as $oria_service ) : ?>
-							<span class="pill pill--sand"><?php echo esc_html( (string) ( $oria_service['name'] ?? '' ) ); ?></span>
-						<?php endforeach; ?>
-					</div>
+					<h2 class="h3" style="margin-bottom:.25rem"><?php esc_html_e( 'What can I do here?', 'oria' ); ?></h2>
+					<p class="hint" style="margin-bottom:1.1rem"><?php esc_html_e( 'Each one leads to everywhere else in Perth that offers it.', 'oria' ); ?></p>
+					<?php
+					/*
+					 * Two groups. A service that resolves to a canonical term
+					 * with a live facet page becomes a card that goes there;
+					 * anything else keeps its own words as a pill.
+					 *
+					 * Deduplicated on the destination, not the wording — a
+					 * studio listing both "Morning vinyasa" and "Vinyasa
+					 * classes" means one thing and should not produce two
+					 * cards to the same page.
+					 */
+					$oria_cards = array();
+					$oria_rest  = array();
+					$oria_taken = array();
+
+					foreach ( $oria_services as $oria_service ) {
+						$oria_sname = trim( (string) ( $oria_service['name'] ?? '' ) );
+						if ( '' === $oria_sname ) {
+							continue;
+						}
+
+						$oria_slugs = function_exists( '\Oria\Core\Services\resolve_all' )
+							? \Oria\Core\Services\resolve_all( $oria_sname )
+							: array();
+						$oria_url = '';
+						$oria_slug = '';
+						if ( $oria_slugs && function_exists( '\Oria\Core\PracticesIndex\service_url' ) ) {
+							$oria_slug = (string) $oria_slugs[0];
+							$oria_url  = \Oria\Core\PracticesIndex\service_url( $oria_slug );
+						}
+
+						if ( '' === $oria_url || isset( $oria_taken[ $oria_url ] ) ) {
+							$oria_rest[] = $oria_sname;
+							continue;
+						}
+						$oria_taken[ $oria_url ] = true;
+						$oria_cards[]            = array(
+							'label' => $oria_sname,
+							'url'   => $oria_url,
+							'note'  => function_exists( '\Oria\Core\Services\note_any' ) ? \Oria\Core\Services\note_any( $oria_slug ) : '',
+						);
+					}
+					?>
+					<?php if ( $oria_cards ) : ?>
+						<div class="offergrid">
+							<?php foreach ( $oria_cards as $oria_c ) : ?>
+								<a class="offercard" href="<?php echo esc_url( $oria_c['url'] ); ?>">
+									<b class="offercard__name"><?php echo esc_html( $oria_c['label'] ); ?></b>
+									<?php if ( '' !== $oria_c['note'] ) : ?>
+										<span class="offercard__note"><?php echo esc_html( $oria_c['note'] ); ?></span>
+									<?php endif; ?>
+									<span class="offercard__go"><?php esc_html_e( 'See everywhere in Perth', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></span>
+								</a>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+					<?php if ( $oria_rest ) : ?>
+						<div class="listing__tags"<?php echo $oria_cards ? ' style="margin-top:1rem"' : ''; ?>>
+							<?php foreach ( $oria_rest as $oria_r ) : ?>
+								<span class="pill pill--sand"><?php echo esc_html( $oria_r ); ?></span>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
 				</div>
 				<?php endif; ?>
 

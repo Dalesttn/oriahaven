@@ -3283,3 +3283,31 @@ html.has-sheet { overflow: hidden; }
   .stickybar { transition: visibility 0s linear .01s; transform: none; opacity: 0; }
   .stickybar.is-on { transition: none; opacity: 1; }
 }
+
+/* --- Listing: what can I do here ---------------------------------------- */
+.offergrid {
+  display: grid; gap: var(--s-3);
+  grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr));
+}
+.offercard {
+  display: flex; flex-direction: column; gap: .3rem;
+  padding: .9rem 1rem;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--white); color: inherit; text-decoration: none;
+  transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.offercard:hover { border-color: var(--ink); transform: translateY(-2px); }
+.offercard__name { font-weight: 600; font-size: var(--fs-sm); line-height: 1.3; }
+.offercard__note { font-size: var(--fs-xs); color: var(--text-faint); line-height: 1.45; }
+/* The prompt is the reward for hovering, not a second label competing with
+   the name — it only shows once there is intent. */
+.offercard__go {
+  font-size: var(--fs-xs); font-weight: 600; color: var(--teal);
+  margin-top: .35rem; opacity: 0; transition: opacity var(--t-fast) var(--ease);
+}
+.offercard:hover .offercard__go,
+.offercard:focus-visible .offercard__go { opacity: 1; }
+@media (hover: none) {
+  /* No hover on a touch screen, so it is simply always there. */
+  .offercard__go { opacity: 1; }
+}

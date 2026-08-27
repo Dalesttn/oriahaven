@@ -667,6 +667,35 @@ function retire_old_category(): void {
 }
 
 /**
+ * The public page for a service, or '' when it has none worth linking.
+ *
+ * Goes through the owning category — the same one facet_canonical_url()
+ * picks — so a link never lands on a copy that canonicals somewhere else,
+ * and never on a page below the gate that robots() would noindex.
+ */
+function service_url( string $service_slug ): string {
+	if ( 'live' !== mode() ) {
+		return '';
+	}
+	$owner = facet_owner( $service_slug );
+	if ( '' === $owner ) {
+		return '';
+	}
+	$term = get_term_by( 'slug', $owner, Taxonomies\PRACTICE );
+	if ( ! $term instanceof \WP_Term ) {
+		return '';
+	}
+	$facet = resolve_facet( $term, $service_slug );
+	if ( null === $facet ) {
+		return '';
+	}
+	if ( count( facet_ids( $term, $facet ) ) < FACET_MIN ) {
+		return '';
+	}
+	return category_url( $term ) . $facet['slug'] . '/';
+}
+
+/**
  * The one category a service's facet page belongs to.
  *
  * A service may be registered to several categories, and it should be

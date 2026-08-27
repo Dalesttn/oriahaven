@@ -164,6 +164,41 @@ function note( string $slug ): string {
 }
 
 /**
+ * A service's description, wherever it is kept.
+ *
+ * Two registries hold these. services.json carries a note for most services;
+ * intents.json carries one for the handful that also have a hand-framed
+ * intent page — yin, vinyasa, reformer and the rest — and those were written
+ * first, so they were never duplicated into services.json.
+ *
+ * The result: a card for "Restorative yin" linked correctly to
+ * /practices/yoga/yin/ and showed no description at all, because the words
+ * were sitting in the other file. This looks in both.
+ */
+function note_any( string $slug ): string {
+	$own = note( $slug );
+	if ( '' !== $own ) {
+		return $own;
+	}
+	if ( ! function_exists( '\Oria\Core\IntentPages\registry' ) ) {
+		return '';
+	}
+	static $by_svc = null;
+	if ( null === $by_svc ) {
+		$by_svc = array();
+		$reg    = \Oria\Core\IntentPages\registry();
+		foreach ( (array) ( $reg['intents'] ?? array() ) as $intent ) {
+			$svc = (string) ( $intent['filter']['svc'] ?? '' );
+			$txt = (string) ( $intent['note'] ?? '' );
+			if ( '' !== $svc && '' !== $txt ) {
+				$by_svc[ $svc ] = $txt;
+			}
+		}
+	}
+	return (string) ( $by_svc[ $slug ] ?? '' );
+}
+
+/**
  * Attach those notes to the category-page rows.
  *
  * Priority 5, ahead of IntentPages\canonical_rows at 10: where a practice has
