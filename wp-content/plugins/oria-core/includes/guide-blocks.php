@@ -28,8 +28,21 @@ function bootstrap(): void {
 	add_shortcode( 'oria_suburbs', __NAMESPACE__ . '\suburbs' );
 }
 
-/** Listings carrying any of the given service slugs, best-rated first. */
-function ids_for( array $svc_slugs, int $limit ): array {
+/**
+ * Listings for a guide block, best-rated first. Filter by service slugs,
+ * an area (suburb or region -- children included), or both.
+ */
+function ids_for( array $svc_slugs, int $limit, string $area = '' ): array {
+	$tax = array();
+	if ( $svc_slugs ) {
+		$tax[] = array( 'taxonomy' => 'service', 'field' => 'slug', 'terms' => $svc_slugs );
+	}
+	if ( '' !== $area ) {
+		$tax[] = array( 'taxonomy' => Taxonomies\AREA, 'field' => 'slug', 'terms' => array( $area ), 'include_children' => true );
+	}
+	if ( ! $tax ) {
+		return array();
+	}
 	$q = new \WP_Query(
 		array(
 			'post_type'      => 'listing',
@@ -37,9 +50,7 @@ function ids_for( array $svc_slugs, int $limit ): array {
 			'posts_per_page' => 50,
 			'fields'         => 'ids',
 			'no_found_rows'  => true,
-			'tax_query'      => array(
-				array( 'taxonomy' => 'service', 'field' => 'slug', 'terms' => $svc_slugs ),
-			),
+			'tax_query'      => $tax,
 		)
 	);
 	$ids = array_map( 'intval', $q->posts );
@@ -57,12 +68,13 @@ function ids_for( array $svc_slugs, int $limit ): array {
 }
 
 function listings( $atts ): string {
-	$a    = shortcode_atts( array( 'svc' => '', 'n' => 4 ), $atts );
+	$a    = shortcode_atts( array( 'svc' => '', 'area' => '', 'n' => 4 ), $atts );
 	$svcs = array_filter( array_map( 'sanitize_title', explode( ',', (string) $a['svc'] ) ) );
-	if ( ! $svcs ) {
+	$area = sanitize_title( (string) $a['area'] );
+	if ( ! $svcs && '' === $area ) {
 		return '';
 	}
-	$ids = ids_for( $svcs, max( 1, min( 6, (int) $a['n'] ) ) );
+	$ids = ids_for( $svcs, max( 1, min( 8, (int) $a['n'] ) ), $area );
 	if ( ! $ids ) {
 		return '';
 	}
