@@ -1134,6 +1134,67 @@ a.livesession:hover { background: var(--sand-2); }
 }
 .pager__gap { color: var(--text-faint); padding: 0 .15rem; }
 
+/* --- Journal pagination ---------------------------------------------------- */
+/* the_posts_pagination() (home.php / index.php) renders WP core markup —
+   .pagination > .nav-links > .page-numbers — so the directory's .pager pill
+   language is mapped onto those classes here rather than templating over core. */
+.pagination .nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+}
+.pagination .screen-reader-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.pagination .page-numbers {
+  min-width: 42px;
+  height: 42px;
+  padding: 0 .55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--text);
+  font-size: .9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.pagination a.page-numbers:hover {
+  border-color: var(--deep);
+  color: var(--deep);
+}
+.pagination a.page-numbers:focus-visible {
+  outline: 2px solid var(--deep);
+  outline-offset: 3px;
+}
+.pagination .page-numbers.current {
+  background: var(--deep);
+  border-color: var(--deep);
+  color: var(--white);
+}
+.pagination .page-numbers.dots {
+  min-width: auto;
+  border: 0;
+  background: transparent;
+  color: var(--text-faint);
+}
+.pagination .prev,
+.pagination .next { padding: 0 1.1rem; }
+
 /* --- Event host card (Run by …) ------------------------------------------- */
 .hostcard {
   display: flex;
