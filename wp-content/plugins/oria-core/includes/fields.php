@@ -551,6 +551,46 @@ function register_listing_fields(): void {
 					'instructions' => 'Tick only what you actually have. Anything left unticked is simply not shown — it is never displayed as a "no".',
 				),
 
+				// --- Quick answers ------------------------------------------
+				/*
+				 * Custom question-and-answer pairs, appended after the ones
+				 * the page generates from the listing's own data. A question
+				 * here that exactly matches a generated one replaces it.
+				 */
+				array(
+					'key'       => 'field_oria_tab_faq',
+					'label'     => 'Quick answers',
+					'type'      => 'tab',
+					'placement' => 'left',
+				),
+				array(
+					'key'          => 'field_oria_faq',
+					'name'         => 'faq',
+					'label'        => 'Custom questions',
+					'type'         => 'repeater',
+					'button_label' => 'Add question',
+					'layout'       => 'row',
+					'instructions' => 'Shown after the automatic answers (location, services, price, booking). Never write that a practice treats, cures or relieves a condition.',
+					'sub_fields'   => array(
+						array(
+							'key'         => 'field_oria_faq_q',
+							'name'        => 'question',
+							'label'       => 'Question',
+							'type'        => 'text',
+							'placeholder' => 'Do I need to bring anything?',
+						),
+						array(
+							'key'         => 'field_oria_faq_a',
+							'name'        => 'answer',
+							'label'       => 'Answer',
+							'type'        => 'textarea',
+							'rows'        => 2,
+							'maxlength'   => 400,
+							'placeholder' => 'Just yourself — mats, towels and water are provided.',
+						),
+					),
+				),
+
 				// --- Team ---------------------------------------------------
 				array(
 					'key'       => 'field_oria_tab_team',

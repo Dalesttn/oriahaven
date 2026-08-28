@@ -1449,3 +1449,14 @@ function amenity_icon( string $slug ): string {
 		. 'stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" '
 		. 'aria-hidden="true" focusable="false">' . $p[ $slug ] . '</svg>';
 }
+
+/*
+ * One favicon authority. The theme ships a complete icon set (SVG plus
+ * rasters regenerated from it), and WordPress's Site Icon was still
+ * printing the OLD dark-on-transparent mark alongside it -- two competing
+ * declarations, and Google picked the wrong one. The Customizer icon still
+ * serves the admin area; it just stops speaking on the front end.
+ */
+add_action( 'init', static function (): void {
+	remove_action( 'wp_head', 'wp_site_icon', 99 );
+} );

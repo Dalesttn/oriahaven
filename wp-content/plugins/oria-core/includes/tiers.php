@@ -94,6 +94,9 @@ const FIELD_TIERS = array(
 	// these exist only where a paying owner has typed them.
 	'classes'       => CLAIMED,
 	'packages'      => CLAIMED,
+	// Free-text questions and answers: prose, so the same gate as the
+	// other prose fields.
+	'faq'           => CLAIMED,
 	'instagram_url' => CLAIMED,
 	'facebook_url'  => CLAIMED,
 	'offer_title'   => CLAIMED,

@@ -213,6 +213,31 @@ function listing_faq( int $id ): array {
 		);
 	}
 
+	/*
+	 * The owner's own questions, after the generated ones. An exact match
+	 * on the question replaces the generated row -- rewording "How do I
+	 * book" should not make the page ask it twice -- and anything else is
+	 * appended in the order it was written.
+	 */
+	foreach ( (array) get_field( 'faq', $id ) as $row ) {
+		$q = trim( (string) ( $row['question'] ?? '' ) );
+		$a = trim( (string) ( $row['answer'] ?? '' ) );
+		if ( '' === $q || '' === $a ) {
+			continue;
+		}
+		$replaced = false;
+		foreach ( $out as $i => $existing ) {
+			if ( 0 === strcasecmp( $existing['q'], $q ) ) {
+				$out[ $i ]['a'] = $a;
+				$replaced       = true;
+				break;
+			}
+		}
+		if ( ! $replaced ) {
+			$out[] = array( 'q' => $q, 'a' => $a );
+		}
+	}
+
 	return count( $out ) >= 2 ? $out : array();
 }
 
