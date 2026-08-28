@@ -91,9 +91,38 @@ function sanitize( $value ): string {
 	return $value;
 }
 
+/**
+ * Whether analytics may load for this request.
+ *
+ * Two gates. Logged-in users are never tracked -- that has always been the
+ * promise on the settings screen, and it is cache-safe because logged-in
+ * pages bypass the page cache.
+ *
+ * And a non-production host never tracks anyone: localhost sessions were
+ * quietly polluting the property with development traffic every time the
+ * tab was a logged-out one. Decided by host, not by an option, so the same
+ * code ships everywhere and behaves right on each environment -- and it is
+ * deterministic per environment, which keeps cached pages honest.
+ */
+function may_track(): bool {
+	if ( is_user_logged_in() ) {
+		return false;
+	}
+	$host = strtolower( (string) wp_parse_url( home_url( '/' ), PHP_URL_HOST ) );
+	if ( '' === $host || 'localhost' === $host || '127.0.0.1' === $host ) {
+		return false;
+	}
+	foreach ( array( '.local', '.test', '.localhost' ) as $tld ) {
+		if ( str_ends_with( $host, $tld ) ) {
+			return false;
+		}
+	}
+	return true;
+}
+
 function snippet(): void {
 	$id = (string) get_option( OPTION, '' );
-	if ( '' === $id || is_user_logged_in() ) {
+	if ( '' === $id || ! may_track() ) {
 		return;
 	}
 
@@ -123,7 +152,7 @@ function snippet(): void {
 /** Tag Manager's no-JavaScript iframe, printed right after <body>. */
 function noscript(): void {
 	$id = (string) get_option( OPTION, '' );
-	if ( '' === $id || is_user_logged_in() || ! is_gtm( $id ) ) {
+	if ( '' === $id || ! may_track() || ! is_gtm( $id ) ) {
 		return;
 	}
 	printf(
