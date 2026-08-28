@@ -129,12 +129,32 @@ function suburbs( $atts ): string {
 	if ( ! $seen ) {
 		return '';
 	}
-	asort( $seen );
 
-	$out = '<div class="guideburbs">';
+	/*
+	 * Grouped by region, because "Fremantle & South" is how a person asks
+	 * the question. Region names and membership come from the area
+	 * taxonomy itself, never a hand-kept list.
+	 */
+	$groups = array();
 	foreach ( $seen as $slug => $name ) {
-		$url  = home_url( '/practices/' . $term->slug . '/' . $slug . '/' );
-		$out .= '<a class="pill pill--sand" href="' . esc_url( $url ) . '">' . esc_html( $name ) . '</a>';
+		$sub    = get_term_by( 'slug', $slug, Taxonomies\AREA );
+		$region = $sub && function_exists( '\Oria\Core\Taxonomies\region_for' )
+			? Taxonomies\region_for( $sub )
+			: null;
+		$label  = $region instanceof \WP_Term ? html_entity_decode( $region->name, ENT_QUOTES ) : __( 'Elsewhere', 'oria' );
+		$groups[ $label ][ $slug ] = $name;
+	}
+	ksort( $groups );
+
+	$out = '<div class="guideburbs guideburbs--grouped">';
+	foreach ( $groups as $label => $burbs ) {
+		asort( $burbs );
+		$out .= '<div class="guideburbs__group"><span class="guideburbs__region">' . esc_html( $label ) . '</span>';
+		foreach ( $burbs as $slug => $name ) {
+			$url  = home_url( '/practices/' . $term->slug . '/' . $slug . '/' );
+			$out .= '<a class="pill pill--sand" href="' . esc_url( $url ) . '">' . esc_html( $name ) . '</a>';
+		}
+		$out .= '</div>';
 	}
 	$out .= '</div>';
 	return $out;

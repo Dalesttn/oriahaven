@@ -3500,3 +3500,70 @@ html.has-sheet { overflow: hidden; }
 .guidecard__go { margin-top: .35rem; font-size: .8125rem; font-weight: 600; color: var(--ink); }
 
 .guideburbs { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 1.4rem; }
+
+/* --- Guide editorial furniture -------------------------------------------
+   Pull quotes, decision tables, callouts, the payment ladder. Everything
+   here supports prose that is already doing the persuading. */
+.gpull {
+  font-family: var(--font-edit); font-style: italic; font-weight: 450;
+  font-size: clamp(1.375rem, 2.6vw, 1.75rem); line-height: 1.35;
+  color: var(--ink); max-width: 24ch;
+  margin: 2.2rem 0; padding-left: 1.1rem;
+  border-left: 3px solid var(--brand-gold, #C9A24B);
+}
+
+.prose--article table { width: 100%; border-collapse: collapse; font-size: .875rem; margin: 1.4rem 0; }
+.prose--article th {
+  text-align: left; font-size: .6875rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint, #566762);
+  padding: 0 1rem .5rem 0; border-bottom: 1px solid var(--ink);
+}
+.prose--article td { padding: .55rem 1rem .55rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.prose--article td:first-child { font-weight: 600; }
+
+.gcallout {
+  border: 1px solid var(--line); border-radius: var(--r-2, 14px);
+  padding: 1.2rem 1.4rem; margin: 1.8rem 0;
+}
+.gcallout__no { font-size: .6875rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint, #566762); }
+.gcallout__yes { font-size: .6875rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--moss); margin-top: 1rem; }
+.gcallout p { margin: .35rem 0 0; }
+.gcallout--rule { background: var(--sand-2, #F2EFE7); border-color: transparent; }
+.gcallout--rule .gcallout__yes { margin-top: 0; }
+
+.doorblock { margin: 1.3rem 0; padding-left: 1.1rem; border-left: 2px solid var(--line); }
+.doorblock b { display: block; font-size: 1rem; }
+.doorblock p { margin: .3rem 0 0; }
+.doorblock .hint { margin-top: .35rem; }
+
+.paysteps { list-style: none; margin: 1.4rem 0; padding: 0; display: grid; gap: 0; }
+.paysteps li { position: relative; padding: 0 0 1.1rem 1.6rem; }
+.paysteps li::before {
+  content: ""; position: absolute; left: .35rem; top: .45em; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--brand-gold, #C9A24B);
+}
+.paysteps li:not(:last-child)::after {
+  content: ""; position: absolute; left: calc(.35rem + 3px); top: 1.1em; bottom: 0;
+  width: 2px; background: var(--line);
+}
+.paysteps b { font-size: .6875rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--moss); display: block; }
+.paysteps span { display: block; font-size: .9375rem; }
+.paysteps small { color: var(--text-faint, #566762); }
+
+.gchecklist { list-style: none; margin: 1.2rem 0; padding: 0; display: grid; gap: .45rem; }
+.gchecklist li { display: flex; align-items: baseline; gap: .6rem; font-size: .9375rem; }
+.gchecklist li::before {
+  content: ""; flex: 0 0 auto; width: .85em; height: .85em; transform: translateY(.08em);
+  border: 1.5px solid var(--moss); border-radius: 4px;
+}
+
+.guideburbs--grouped { display: grid; gap: 1rem; }
+.guideburbs__region { display: block; font-size: .6875rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint, #566762); margin-bottom: .45rem; }
+.guideburbs__group .pill { margin: 0 .35rem .35rem 0; }
+
+.gpaths { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); margin: 1.6rem 0; }
+.gpath { border: 1px solid var(--line); border-radius: var(--r-2, 14px); padding: 1.1rem 1.2rem; color: inherit; text-decoration: none; display: block; }
+.gpath:hover { border-color: var(--ink); }
+.gpath b { display: block; margin-bottom: .3rem; }
+.gpath span { font-size: .875rem; color: var(--text-muted, #4A5F5B); }
+.gpath .guidecard__go { display: block; margin-top: .6rem; }
