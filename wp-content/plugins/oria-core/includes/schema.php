@@ -149,6 +149,39 @@ function organization(): void {
  *
  * @return list<array{q: string, a: string}>
  */
+/**
+ * FAQPage markup for an article, read out of the accordions the article
+ * actually renders. The source of truth is the published HTML -- parse it,
+ * never a parallel list -- so the markup can only ever describe questions
+ * a reader can see and open.
+ */
+function post_faq_schema( int $id ): ?array {
+	$content = (string) get_post_field( 'post_content', $id, 'raw' );
+	if ( ! preg_match_all( '/<details class="qanda__item"[^>]*>\s*<summary[^>]*>(.*?)<\/summary>(.*?)<\/details>/s', $content, $m, PREG_SET_ORDER ) ) {
+		return null;
+	}
+	$qs = array();
+	foreach ( $m as $hit ) {
+		$q = trim( wp_strip_all_tags( $hit[1] ) );
+		$a = trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( $hit[2] ) ) ?? '' );
+		if ( '' !== $q && '' !== $a ) {
+			$qs[] = array(
+				'@type'          => 'Question',
+				'name'           => $q,
+				'acceptedAnswer' => array( '@type' => 'Answer', 'text' => $a ),
+			);
+		}
+	}
+	if ( count( $qs ) < 2 ) {
+		return null;
+	}
+	return array(
+		'@type'      => 'FAQPage',
+		'@id'        => get_permalink( $id ) . '#faq',
+		'mainEntity' => $qs,
+	);
+}
+
 function listing_faq( int $id ): array {
 	$name = html_entity_decode( get_the_title( $id ), ENT_QUOTES );
 	$out  = array();
@@ -267,7 +300,9 @@ function listing_faq_schema( int $id ): ?array {
 
 function output(): void {
 	$graph = null;
-	if ( is_singular( 'listing' ) ) {
+	if ( is_singular( 'post' ) ) {
+		$graph = post_faq_schema( (int) get_the_ID() );
+	} elseif ( is_singular( 'listing' ) ) {
 		$graph = listing_schema( get_the_ID() );
 		$faq   = listing_faq_schema( (int) get_the_ID() );
 		if ( $graph && $faq ) {

@@ -881,23 +881,51 @@ a.livesession:hover { background: var(--sand-2); }
   .pullquote__text .pq-w { transition: none; opacity: 1; transform: none; }
 }
 
-/* A short, solid green rule under each heading. Sized in em so it scales
-   with the heading level and keeps the same proportion at h2 and h3, and
-   given a small radius so the ends don't read as a cut-off border. */
-.prose--article h2::after,
+/* --- Numbered section eyebrows -------------------------------------------
+   01 / THE MACHINE above each H2. The number is a CSS counter -- it can
+   never disagree with the section order and costs the author nothing. The
+   label is optional, carried in data-eyebrow on the H2; without one the
+   number stands alone. The accent is a slim bar under the eyebrow now,
+   not the thick rule under the heading: punctuation, not a divider. */
+.prose--article { counter-reset: guide-section; }
+.prose--article h2 {
+  counter-increment: guide-section;
+  /* Manrope, a shade lighter than the H1 above it -- the serif experiment
+     read as a different site once it was in context. The eyebrow carries
+     the editorial flavour; the heading stays in the house voice. */
+  font-size: clamp(2.125rem, 4.2vw, 3.375rem);
+  font-weight: 450;
+  letter-spacing: -0.02em;
+  line-height: 1.03;
+  margin-top: 2.2em;
+}
+.prose--article h2::before {
+  content: counter(guide-section, decimal-leading-zero);
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 550;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--moss);
+  margin-bottom: 0.9rem;
+  /* The accent: 68 x 3px under the eyebrow. A background, not a border,
+     so its width is the design's and not the text's. Corners square --
+     at three pixels a radius is a rumour. */
+  background: linear-gradient(var(--brand-gold, #C9A24B) 0 0) left bottom / 68px 3px no-repeat;
+  padding-bottom: 0.6rem;
+}
+.prose--article h2[data-eyebrow]::before {
+  content: counter(guide-section, decimal-leading-zero) "\2002/\2002" attr(data-eyebrow);
+}
 .prose--article h3::after {
   content: "";
   display: block;
-  width: 2.4em;
-  height: 0.18em;
+  width: 2em;
+  height: 0.15em;
   margin-top: 0.42em;
   border-radius: 999px;
-  /* Moss, not deep: the heading itself is near-black, and a rule in the
-     same value reads as a divider rather than as the green accent it is
-     replacing. */
   background: var(--moss);
 }
-.prose--article h3::after { width: 2em; height: 0.15em; }
 
 /* Article body + "Try it in person" sidebar. */
 .jlayout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: var(--s-7); align-items: start; }
@@ -3434,3 +3462,41 @@ html.has-sheet { overflow: hidden; }
 .qanda__a p { margin: 0 0 .6rem; }
 .qanda__a p:last-child, .qanda__a ul:last-child { margin-bottom: 0; }
 .qanda__a ul { margin: 0 0 .6rem; padding-left: 1.1rem; display: grid; gap: .35rem; }
+
+/* --- Guide utility blocks ------------------------------------------------
+   The working parts around a guide's prose: the section map, the glance
+   table, the price box, the cards that hand a reader to the directory.
+   Quiet by design -- the voice is the product, these are furniture. */
+/* NOT sticky: .jside is already stuck at the same offset, and a sticky
+   child inside a stuck parent slides over its siblings as the page
+   scrolls. The aside carries the stickiness; the TOC just rides at its
+   top. */
+.jtoc { margin-bottom: var(--s-5); }
+.jtoc__list { margin: .6rem 0 0; padding: 0 0 0 1.1rem; display: grid; gap: .3rem; }
+.jtoc__list li { line-height: 1.3; }
+.jtoc__list a { font-size: .8125rem; line-height: 1.3; color: var(--text-muted, #4A5F5B); text-decoration: none; }
+.jtoc__list a:hover { color: var(--ink); text-decoration: underline; }
+/* The section under the reader's eye, kept lit by the scrollspy. */
+.jtoc__list a.is-here { color: var(--ink); font-weight: 700; }
+
+.glance { border: 1px solid var(--line); border-radius: var(--r-2, 14px); padding: 1.1rem 1.2rem; margin: 1.5rem 0; }
+.glance table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+.glance td { padding: .45rem 0; border-top: 1px solid var(--line); vertical-align: top; }
+.glance tr:first-child td { border-top: 0; }
+.glance td:first-child { font-weight: 600; width: 34%; padding-right: 1rem; }
+
+.pricebox { border-left: 3px solid var(--brand-gold, #C9A227); background: var(--sand-2, #F2EFE7); border-radius: 0 var(--r-1, 10px) var(--r-1, 10px) 0; padding: 1rem 1.2rem; margin: 1.4rem 0; }
+.pricebox p { margin: 0 0 .4rem; font-size: .9375rem; }
+.pricebox .hint { margin: .5rem 0 0; }
+
+.guidecards { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); margin: 1.4rem 0; }
+.guidecard { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--r-2, 14px); overflow: hidden; background: var(--surface, #fff); color: inherit; text-decoration: none; }
+.guidecard:hover { border-color: var(--ink); }
+.guidecard__media { display: block; aspect-ratio: 16 / 10; position: relative; background: var(--sand-2, #F2EFE7); }
+.guidecard__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.guidecard__body { display: grid; gap: .25rem; padding: .8rem .9rem .9rem; justify-items: start; }
+.guidecard__name { font-size: .9375rem; line-height: 1.3; }
+.guidecard__meta { font-size: .78125rem; color: var(--text-faint, #8A968F); }
+.guidecard__go { margin-top: .35rem; font-size: .8125rem; font-weight: 600; color: var(--ink); }
+
+.guideburbs { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 1.4rem; }

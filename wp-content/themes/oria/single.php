@@ -162,6 +162,24 @@ while ( have_posts() ) :
 			</div>
 			<?php if ( $oria_side ) : ?>
 			<aside class="jside">
+				<?php
+				/*
+				 * In this guide -- built from the article's own H2s, anchors
+				 * minted by the same function that stamps the ids. Only
+				 * offered when there is enough article to need a map.
+				 */
+				$oria_toc = \Oria\Theme\article_toc( (string) get_post_field( 'post_content', get_the_ID(), 'raw' ) );
+				?>
+				<?php if ( count( $oria_toc ) >= 3 ) : ?>
+					<nav class="jtoc" aria-label="<?php esc_attr_e( 'In this guide', 'oria' ); ?>">
+						<span class="micro"><?php esc_html_e( 'In this guide', 'oria' ); ?></span>
+						<ol class="jtoc__list">
+							<?php foreach ( $oria_toc as $oria_t ) : ?>
+								<li><a href="#<?php echo esc_attr( $oria_t['id'] ); ?>"><?php echo esc_html( $oria_t['title'] ); ?></a></li>
+							<?php endforeach; ?>
+						</ol>
+					</nav>
+				<?php endif; ?>
 				<div class="card">
 					<div class="card__body">
 						<span class="micro" style="display:block;margin-bottom:.35rem"><?php esc_html_e( 'Try it in person', 'oria' ); ?></span>

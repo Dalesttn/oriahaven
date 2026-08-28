@@ -2386,6 +2386,44 @@
     });
   }
 
+  /* --- Guide scrollspy --------------------------------------------------- */
+  /* Keeps the "In this guide" link for the section under the reader's eye
+     lit. Driven by the H2 anchors the TOC already points at, so the two can
+     never disagree about what a section is. */
+  function initGuideToc() {
+    var links = $$(".jtoc__list a[href^='#']");
+    if (!links.length || !("IntersectionObserver" in window)) return;
+    var byId = {};
+    links.forEach(function (a) { byId[a.getAttribute("href").slice(1)] = a; });
+    var heads = Object.keys(byId)
+      .map(function (id) { return document.getElementById(id); })
+      .filter(Boolean);
+    if (!heads.length) return;
+
+    function light(id) {
+      links.forEach(function (a) {
+        a.classList.toggle("is-here", a.getAttribute("href") === "#" + id);
+      });
+    }
+
+    /* The active section is the last heading above the reading line (30%
+       down the viewport). An observer per heading just tells us "something
+       crossed"; the arithmetic picks which. */
+    var line = function () { return window.innerHeight * 0.3; };
+    function pick() {
+      var current = heads[0].id;
+      for (var i = 0; i < heads.length; i++) {
+        if (heads[i].getBoundingClientRect().top <= line()) current = heads[i].id;
+      }
+      light(current);
+    }
+
+    var io = new IntersectionObserver(pick, { rootMargin: "0px 0px -60% 0px" });
+    heads.forEach(function (h) { io.observe(h); });
+    window.addEventListener("scroll", pick, { passive: true });
+    pick();
+  }
+
   /* --- Class day filter -------------------------------------------------- */
   /* Two levels: sessions carry the days the server read off their own day
      field, and a class hides only when every one of its sessions is hidden.
@@ -3222,6 +3260,7 @@
     initStickyCta();
     initSave();
     initClasses();
+    initGuideToc();
     initSavedPage();
     paintSavedNav();
     /* Another tab is the same shortlist. Without this the count goes stale

@@ -880,6 +880,46 @@ function qanda_html( string $text ): string {
 	return $out;
 }
 
+/**
+ * The H2s of an article, as anchor targets.
+ *
+ * Ids are minted from the heading text, so the TOC needs no metadata and
+ * an author writing plain H2s gets navigation for free. The same slugs are
+ * injected into the content by article_anchor_ids(); the two must stay one
+ * function apart, never two implementations.
+ *
+ * @return list<array{id: string, title: string}>
+ */
+function article_toc( string $content ): array {
+	$out = array();
+	if ( ! preg_match_all( '/<h2[^>]*>(.*?)<\/h2>/s', $content, $m ) ) {
+		return $out;
+	}
+	foreach ( $m[1] as $h ) {
+		$title = trim( wp_strip_all_tags( $h ) );
+		if ( '' !== $title ) {
+			$out[] = array( 'id' => sanitize_title( $title ), 'title' => $title );
+		}
+	}
+	return $out;
+}
+
+/** Give every article H2 the id article_toc() promised it. */
+function article_anchor_ids( string $content ): string {
+	if ( ! is_singular( 'post' ) || ! in_the_loop() ) {
+		return $content;
+	}
+	return (string) preg_replace_callback(
+		'/<h2(?![^>]*\bid=)([^>]*)>(.*?)<\/h2>/s',
+		static function ( array $m ): string {
+			$id = sanitize_title( trim( wp_strip_all_tags( $m[2] ) ) );
+			return '' === $id ? $m[0] : '<h2 id="' . esc_attr( $id ) . '"' . $m[1] . '>' . $m[2] . '</h2>';
+		},
+		$content
+	);
+}
+add_filter( 'the_content', __NAMESPACE__ . '\\article_anchor_ids', 8 );
+
 /** Estimated reading time in minutes, floor 1. */
 function reading_time( int $post_id ): int {
 	$words = str_word_count( wp_strip_all_tags( (string) get_post_field( 'post_content', $post_id ) ) );

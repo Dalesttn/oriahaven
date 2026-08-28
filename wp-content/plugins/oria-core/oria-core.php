@@ -90,6 +90,7 @@ require_once ORIA_CORE_DIR . 'includes/similar.php';
 require_once ORIA_CORE_DIR . 'includes/reasons.php';
 require_once ORIA_CORE_DIR . 'includes/saved.php';
 require_once ORIA_CORE_DIR . 'includes/classes.php';
+require_once ORIA_CORE_DIR . 'includes/guide-blocks.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
