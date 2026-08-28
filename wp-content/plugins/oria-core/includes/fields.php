@@ -570,7 +570,7 @@ function register_listing_fields(): void {
 					'type'         => 'repeater',
 					'button_label' => 'Add question',
 					'layout'       => 'row',
-					'instructions' => 'Shown after the automatic answers (location, services, price, booking). Never write that a practice treats, cures or relieves a condition.',
+					'instructions' => 'Shown after the automatic answers (location, services, price, booking). A blank line starts a new paragraph; start a line with \'* \' for a bullet point. One question per topic reads better than one long answer. Never write that a practice treats, cures or relieves a condition.',
 					'sub_fields'   => array(
 						array(
 							'key'         => 'field_oria_faq_q',
@@ -584,8 +584,8 @@ function register_listing_fields(): void {
 							'name'        => 'answer',
 							'label'       => 'Answer',
 							'type'        => 'textarea',
-							'rows'        => 5,
-							'maxlength'   => 1200,
+							'rows'        => 8,
+							'maxlength'   => 2500,
 							'placeholder' => 'Just yourself — mats, towels and water are provided.',
 						),
 					),

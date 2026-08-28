@@ -3414,8 +3414,23 @@ html.has-sheet { overflow: hidden; }
    Definition list, no accordion: four short factual answers do not need
    hiding, and an answer a crawler can see collapsed is one a visitor
    should see open. */
-.qanda { margin: 0; display: grid; gap: .9rem; }
-.qanda__item { border-top: 1px solid var(--line); padding-top: .9rem; }
+.qanda { margin: 0; display: grid; gap: 0; }
+.qanda__item { border-top: 1px solid var(--line); padding: .8rem 0; }
 .qanda__item:first-child { border-top: 0; padding-top: 0; }
-.qanda__q { font-weight: 600; font-size: .9375rem; }
-.qanda__a { margin: .3rem 0 0; font-size: .875rem; color: var(--text-muted, #4A5F5B); max-width: 60ch; }
+.qanda__q {
+  font-weight: 600; font-size: .9375rem; cursor: pointer;
+  list-style: none; position: relative; padding-right: 1.6rem;
+}
+.qanda__q::-webkit-details-marker { display: none; }
+.qanda__q::after {
+  content: ''; position: absolute; right: .2rem; top: .3em;
+  width: .5em; height: .5em;
+  border-right: 2px solid var(--text-faint, #8A968F);
+  border-bottom: 2px solid var(--text-faint, #8A968F);
+  transform: rotate(45deg); transition: transform .18s ease;
+}
+.qanda__item[open] > .qanda__q::after { transform: rotate(225deg); top: .45em; }
+.qanda__a { margin: .5rem 0 0; font-size: .875rem; color: var(--text-muted, #4A5F5B); max-width: 62ch; }
+.qanda__a p { margin: 0 0 .6rem; }
+.qanda__a p:last-child, .qanda__a ul:last-child { margin-bottom: 0; }
+.qanda__a ul { margin: 0 0 .6rem; padding-left: 1.1rem; display: grid; gap: .35rem; }

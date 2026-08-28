@@ -847,6 +847,39 @@ function outbound( string $url, string $content = '' ): string {
 	return add_query_arg( $args, $url ) . $fragment;
 }
 
+/**
+ * A quick-answer body as safe HTML: paragraphs and bullets, nothing else.
+ *
+ * Blank lines split paragraphs; a line starting "* " is a bullet. Every
+ * piece of text is escaped before any tag is added, so the owner's answer
+ * can shape itself but never script anything.
+ */
+function qanda_html( string $text ): string {
+	$out = '';
+	foreach ( preg_split( '/\n\s*\n/', str_replace( "\r", '', $text ) ) ?: array() as $block ) {
+		$lines   = array_filter( array_map( 'trim', explode( "\n", $block ) ), 'strlen' );
+		if ( ! $lines ) {
+			continue;
+		}
+		$bullets = array();
+		$prose   = array();
+		foreach ( $lines as $line ) {
+			if ( str_starts_with( $line, '* ' ) ) {
+				$bullets[] = esc_html( substr( $line, 2 ) );
+			} else {
+				$prose[] = esc_html( $line );
+			}
+		}
+		if ( $prose ) {
+			$out .= '<p>' . implode( '<br>', $prose ) . '</p>';
+		}
+		if ( $bullets ) {
+			$out .= '<ul><li>' . implode( '</li><li>', $bullets ) . '</li></ul>';
+		}
+	}
+	return $out;
+}
+
 /** Estimated reading time in minutes, floor 1. */
 function reading_time( int $post_id ): int {
 	$words = str_word_count( wp_strip_all_tags( (string) get_post_field( 'post_content', $post_id ) ) );

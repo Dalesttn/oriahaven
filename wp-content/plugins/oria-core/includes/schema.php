@@ -256,7 +256,8 @@ function listing_faq_schema( int $id ): ?array {
 				'name'           => $qa['q'],
 				'acceptedAnswer' => array(
 					'@type' => 'Answer',
-					'text'  => $qa['a'],
+					// Plain sentences for the machines: bullets become "- " lines.
+					'text'  => trim( (string) preg_replace( '/^\* /m', '- ', str_replace( "\r", '', $qa['a'] ) ) ),
 				),
 			),
 			$faq

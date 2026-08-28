@@ -935,14 +935,15 @@ while ( have_posts() ) :
 				<?php if ( $oria_faq ) : ?>
 				<div>
 					<h2 class="h3" style="margin-bottom:1rem"><?php esc_html_e( 'Quick answers', 'oria' ); ?></h2>
-					<dl class="qanda">
-						<?php foreach ( $oria_faq as $oria_qa ) : ?>
-							<div class="qanda__item">
-								<dt class="qanda__q"><?php echo esc_html( $oria_qa['q'] ); ?></dt>
-								<dd class="qanda__a"><?php echo esc_html( $oria_qa['a'] ); ?></dd>
-							</div>
+					<div class="qanda">
+						<?php foreach ( $oria_faq as $oria_i => $oria_qa ) : ?>
+							<?php // Native accordion: crawler-visible collapsed, no JS. First stands open. ?>
+							<details class="qanda__item"<?php echo 0 === $oria_i ? ' open' : ''; ?>>
+								<summary class="qanda__q"><?php echo esc_html( $oria_qa['q'] ); ?></summary>
+								<div class="qanda__a"><?php echo wp_kses_post( \Oria\Theme\qanda_html( (string) $oria_qa['a'] ) ); ?></div>
+							</details>
 						<?php endforeach; ?>
-					</dl>
+					</div>
 				</div>
 				<?php endif; ?>
 
