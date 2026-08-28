@@ -3567,6 +3567,23 @@ html.has-sheet { overflow: hidden; }
 
 .guideburbs { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 1.4rem; }
 
+/* --- Category page: tagline + near-you strip ------------------------------ */
+/* The tagline is the page's one emotional line — editorial voice, so the
+   journal's italic face, sitting between the H1 and the evidence below it. */
+.pagehead__tag {
+  font-family: var(--font-edit);
+  font-style: italic;
+  font-weight: 450;
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  line-height: 1.4;
+  color: var(--text-soft);
+  margin-top: .55rem;
+  max-width: 40ch;
+}
+.nearyou { margin-top: 2.4rem; }
+.nearyou__pills { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
+.nearyou__n { color: var(--text-faint); font-weight: 400; margin-left: .1rem; }
+
 /* --- Guide editorial furniture -------------------------------------------
    Pull quotes, decision tables, callouts, the payment ladder. Everything
    here supports prose that is already doing the persuading. */

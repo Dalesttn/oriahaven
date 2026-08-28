@@ -427,6 +427,29 @@ function intro_for( string $slug ): string {
 	return trim( (string) ( $intros[ $slug ] ?? '' ) );
 }
 
+/**
+ * The one evocative line under a category page's H1, or '' for none.
+ *
+ * Same file as the intros so the copy lives in one place. Room-language
+ * only — what you do there, never what it does for you — because this
+ * line sits above structured data and the TGA rule applies to it as much
+ * as to anything else on the page.
+ */
+function tagline_for( string $slug ): string {
+	static $lines = null;
+	if ( null === $lines ) {
+		$lines = array();
+		$path  = ORIA_CORE_DIR . 'data/category-intros.json';
+		if ( is_readable( $path ) ) {
+			$json = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			if ( is_array( $json ) ) {
+				$lines = (array) ( $json['taglines'] ?? array() );
+			}
+		}
+	}
+	return trim( (string) ( $lines[ $slug ] ?? '' ) );
+}
+
 /* ------------------------------------------------------- cards and colour */
 
 /**
