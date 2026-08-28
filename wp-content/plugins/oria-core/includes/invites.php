@@ -64,6 +64,7 @@ function bootstrap(): void {
 	add_filter( 'manage_listing_posts_columns', __NAMESPACE__ . '\column' );
 	add_action( 'manage_listing_posts_custom_column', __NAMESPACE__ . '\column_content', 20, 2 );
 	add_action( 'admin_post_oria_invite', __NAMESPACE__ . '\handle_send' );
+	add_action( 'admin_menu', __NAMESPACE__ . '\menu' );
 	add_action( 'phpmailer_init', __NAMESPACE__ . '\attach_alt_text' );
 	add_action( 'admin_notices', __NAMESPACE__ . '\notice' );
 	add_action( 'add_meta_boxes', __NAMESPACE__ . '\metabox' );
@@ -351,6 +352,15 @@ function body_html( int $listing_id, string $token ): string {
 		)
 	);
 
+	$html .= heading( __( 'One more thing worth a look', 'oria' ) );
+	$html .= para(
+		sprintf(
+			/* translators: %s: link to the listing's share page */
+			esc_html__( 'Your listing has a share page — a ready-made social card with your name on it, and a small "Listed on Oria Haven" badge you can paste into your own website\'s footer. The badge links back to your profile, so anyone already on your site can see your hours, reviews and the rest in one click: %s', 'oria' ),
+			link_to( \Oria\Core\Share\url( $listing_id ) )
+		)
+	);
+
 	$html .= '<div style="border-top:1px solid #EFEDE6;margin:22px 0 18px;"></div>';
 	$html .= small(
 		sprintf(
@@ -425,14 +435,16 @@ function body_text( int $listing_id, string $token ): string {
 		"IF YOU'D LIKE TO LOOK AFTER IT YOURSELF, YOU CAN — FREE.\nClaiming confirms you're the owner. You can then keep your address, phone, email, website, prices and session format current yourself, and the listing stops being marked Unclaimed. There are paid plans that add photos, opening hours, offers and visitor stats, but you never have to take one.\n\n" .
 		"Claim it here:\n%4\$s\n\n" .
 		"That link is just for your listing and works for %5\$d days.\n\n" .
-		"About us: we list %6\$d practices across Perth, from Fremantle to the Hills, all checked by hand. Enquiries go straight to you. We don't take a cut of bookings and we never will.\n\n" .
-		"%7\$s\n\n" .
-		"---\nWould you rather not be listed? Tell us here and we'll take it down:\n%8\$s\n",
+		"ONE MORE THING WORTH A LOOK\nYour listing has a share page — a ready-made social card with your name on it, and a small \"Listed on Oria Haven\" badge you can paste into your own website's footer. The badge links back to your profile, so anyone already on your site can see your hours, reviews and the rest in one click:\n%6\$s\n\n" .
+		"About us: we list %7\$d practices across Perth, from Fremantle to the Hills, all checked by hand. Enquiries go straight to you. We don't take a cut of bookings and we never will.\n\n" .
+		"%8\$s\n\n" .
+		"---\nWould you rather not be listed? Tell us here and we'll take it down:\n%9\$s\n",
 		$name,
 		get_permalink( $listing_id ),
 		$describe ? ' — ' . $describe : '',
 		link( $token ),
 		TTL_DAYS,
+		\Oria\Core\Share\url( $listing_id ),
 		(int) wp_count_posts( PostTypes\LISTING )->publish,
 		signature(),
 		link( $token, true )
@@ -570,6 +582,194 @@ function status_html( int $post_id ): string {
 		esc_url( $url ),
 		esc_html( $count ? __( 'Send follow-up', 'oria' ) : __( 'Send invite', 'oria' ) )
 	);
+}
+
+/* ------------------------------------------------------------ outreach queue */
+
+/**
+ * How many first invites make a sensible day.
+ *
+ * Five is pacing, not law: small daily runs keep each email personal enough
+ * to answer replies properly, and keep the sending domain's reputation
+ * warming slowly instead of tripping bulk filters in week one. The page
+ * still shows the buttons past five — it just says you're done.
+ */
+const DAY_PACE = 5;
+
+function menu(): void {
+	add_submenu_page(
+		'edit.php?post_type=' . PostTypes\LISTING,
+		__( 'Outreach queue', 'oria' ),
+		__( 'Outreach queue', 'oria' ),
+		'manage_options',
+		'oria-outreach',
+		__NAMESPACE__ . '\render_queue'
+	);
+}
+
+/** Invites that left today, by SENT stamp. */
+function sent_today(): int {
+	global $wpdb;
+	return (int) $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value LIKE %s",
+			SENT,
+			$wpdb->esc_like( current_time( 'Y-m-d' ) ) . '%'
+		)
+	);
+}
+
+/**
+ * The next listings worth writing to, oldest ID first.
+ *
+ * Queried loosely (never-sent, published) and then confirmed with
+ * blocked(), so the eligibility rules live in exactly one place.
+ */
+function fresh_candidates( int $limit ): array {
+	$ids = get_posts(
+		array(
+			'post_type'      => PostTypes\LISTING,
+			'post_status'    => 'publish',
+			'posts_per_page' => $limit * 6,
+			'fields'         => 'ids',
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			'meta_query'     => array(
+				array(
+					'key'     => COUNT,
+					'compare' => 'NOT EXISTS',
+				),
+			),
+		)
+	);
+	$out = array();
+	foreach ( $ids as $id ) {
+		if ( ! blocked( (int) $id ) ) {
+			$out[] = (int) $id;
+			if ( count( $out ) >= $limit ) {
+				break;
+			}
+		}
+	}
+	return $out;
+}
+
+/** First invite sent, no reply in two weeks, follow-up not yet sent. */
+function followups_due( int $limit ): array {
+	$ids = get_posts(
+		array(
+			'post_type'      => PostTypes\LISTING,
+			'post_status'    => 'publish',
+			'posts_per_page' => $limit * 6,
+			'fields'         => 'ids',
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			'meta_query'     => array(
+				array(
+					'key'   => COUNT,
+					'value' => '1',
+				),
+				array(
+					'key'     => SENT,
+					'value'   => gmdate( 'Y-m-d H:i:s', strtotime( current_time( 'mysql' ) ) - 14 * DAY_IN_SECONDS ),
+					'compare' => '<',
+				),
+			),
+		)
+	);
+	$out = array();
+	foreach ( $ids as $id ) {
+		if ( ! blocked( (int) $id ) ) {
+			$out[] = (int) $id;
+			if ( count( $out ) >= $limit ) {
+				break;
+			}
+		}
+	}
+	return $out;
+}
+
+/** One queue row: who they are, where they are, and the send button. */
+function queue_row( int $id ): string {
+	$areas  = get_the_terms( $id, 'area' );
+	$suburb = ( $areas && ! is_wp_error( $areas ) ) ? $areas[0]->name : '';
+
+	return sprintf(
+		'<tr><td><a href="%s"><b>%s</b></a>%s</td><td>%s</td><td>%s</td></tr>',
+		esc_url( (string) get_permalink( $id ) ),
+		esc_html( wp_specialchars_decode( (string) get_post_field( 'post_title', $id, 'raw' ), ENT_QUOTES ) ),
+		$suburb ? '<span style="color:#646970"> — ' . esc_html( $suburb ) . '</span>' : '',
+		esc_html( address( $id ) ),
+		wp_kses_post( status_html( $id ) )
+	);
+}
+
+/**
+ * The queue: today's pace, the next five, follow-ups due, recent sends.
+ *
+ * Everything sends through the existing per-listing handler, so this page
+ * adds no second sending path — it is a view over the same buttons the
+ * listings column already has, minus the scrolling through 350 rows.
+ */
+function render_queue(): void {
+	$today   = sent_today();
+	$fresh   = fresh_candidates( DAY_PACE );
+	$due     = followups_due( DAY_PACE );
+	$head    = '<tr><th style="text-align:left">' . esc_html__( 'Practice', 'oria' ) . '</th><th style="text-align:left">' . esc_html__( 'Email', 'oria' ) . '</th><th style="text-align:left">' . esc_html__( 'Invite', 'oria' ) . '</th></tr>';
+
+	echo '<div class="wrap"><h1>' . esc_html__( 'Outreach queue', 'oria' ) . '</h1>';
+
+	if ( $today >= DAY_PACE ) {
+		printf(
+			'<div class="notice notice-success"><p>%s</p></div>',
+			esc_html(
+				sprintf(
+					/* translators: %d: number sent today */
+					__( '%d sent today — that\'s the day\'s pace done. Tomorrow\'s five will be waiting here.', 'oria' ),
+					$today
+				)
+			)
+		);
+	} else {
+		printf(
+			'<p style="font-size:14px">%s</p>',
+			esc_html(
+				sprintf(
+					/* translators: 1: sent today, 2: daily pace */
+					__( 'Sent today: %1$d of %2$d. Each email offers a fix-it reply, a free claim, and the website badge — and a listing is never emailed more than twice.', 'oria' ),
+					$today,
+					DAY_PACE
+				)
+			)
+		);
+	}
+
+	echo '<h2>' . esc_html__( 'Next up', 'oria' ) . '</h2>';
+	if ( $fresh ) {
+		echo '<table class="widefat striped" style="max-width:900px"><thead>' . $head . '</thead><tbody>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		foreach ( $fresh as $id ) {
+			echo queue_row( $id ); // phpcs:ignore WordPress.Security.EscapeOutput
+		}
+		echo '</tbody></table>';
+	} else {
+		echo '<p>' . esc_html__( 'Nobody left to invite — every listing with an email address has been written to.', 'oria' ) . '</p>';
+	}
+
+	echo '<h2>' . esc_html__( 'Follow-ups due', 'oria' ) . '</h2>';
+	echo '<p style="color:#646970">' . esc_html__( 'First invite sent at least two weeks ago, no claim, no opt-out. The follow-up is the last email a listing ever gets.', 'oria' ) . '</p>';
+	if ( $due ) {
+		echo '<table class="widefat striped" style="max-width:900px"><thead>' . $head . '</thead><tbody>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		foreach ( $due as $id ) {
+			echo queue_row( $id ); // phpcs:ignore WordPress.Security.EscapeOutput
+		}
+		echo '</tbody></table>';
+	} else {
+		echo '<p>' . esc_html__( 'None due.', 'oria' ) . '</p>';
+	}
+
+	echo '</div>';
 }
 
 /* ----------------------------------------------------------- edit-screen box */

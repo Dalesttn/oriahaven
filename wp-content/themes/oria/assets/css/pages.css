@@ -3551,8 +3551,13 @@ html.has-sheet { overflow: hidden; }
 .pricebox .hint { margin: .5rem 0 0; }
 
 .guidecards { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); margin: 1.4rem 0; }
-.guidecard { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--r-2, 14px); overflow: hidden; background: var(--surface, #fff); color: inherit; text-decoration: none; }
-.guidecard:hover { border-color: var(--ink); }
+/* Boxed variant is ONLY the shortcode cards ([oria_listings] renders
+   .guidecards > .guidecard with a padded __body). The guides floor and the
+   journal reuse .guidecard on .article cards, which are the OPEN journal
+   design — an unscoped box here once swallowed those cards with zero text
+   padding. Scope keeps the two families apart. */
+.guidecards .guidecard { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--r-2, 14px); overflow: hidden; background: var(--surface, #fff); color: inherit; text-decoration: none; }
+.guidecards .guidecard:hover { border-color: var(--ink); }
 .guidecard__media { display: block; aspect-ratio: 16 / 10; position: relative; background: var(--sand-2, #F2EFE7); }
 .guidecard__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .guidecard__body { display: grid; gap: .25rem; padding: .8rem .9rem .9rem; justify-items: start; }
