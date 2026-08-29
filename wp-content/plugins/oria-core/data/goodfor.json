@@ -1,0 +1,237 @@
+{
+  "_note": "The discovery chips: twelve wants a visitor can arrive with, each mapping to a set of SPECIALTY slugs the directory's filter engine already understands. This is the want-axis pattern the journal uses ('Something calming', 'Time to myself') applied to browsing: every label is the VISITOR'S want, never a promise about a business, and no label may describe an outcome, a benefit or a condition. 'Heal' and 'Sleep' were deliberately rejected from the original proposal for exactly that reason (see reasons.json for where the line sits); 'Hands-on care' and 'Wind down' are their room-language replacements. Colours are dark enough for white text at small sizes. Icons are keyed by slug in template-parts/directory-goodfor.php.",
+  "labels": [
+    {
+      "slug": "relax",
+      "label": "Relax",
+      "color": "#9E5238",
+      "line": "Slow hours and quiet rooms",
+      "specs": [
+        "massage",
+        "sound-healing",
+        "float-therapy",
+        "infrared-sauna",
+        "aromatherapy",
+        "reflexology"
+      ]
+    },
+    {
+      "slug": "recover",
+      "label": "Recover",
+      "color": "#3F6B8C",
+      "line": "For tired legs and training weeks",
+      "specs": [
+        "remedial-massage",
+        "sports-massage",
+        "cold-plunge",
+        "compression",
+        "cryotherapy",
+        "mobility"
+      ]
+    },
+    {
+      "slug": "reset",
+      "label": "Reset",
+      "color": "#6B7C3B",
+      "line": "Step out of the week for a bit",
+      "specs": [
+        "float-therapy",
+        "breathwork",
+        "sound-healing",
+        "wellness-retreats"
+      ]
+    },
+    {
+      "slug": "wind-down",
+      "label": "Wind down",
+      "color": "#4E5180",
+      "line": "Evening-paced, lights low",
+      "specs": [
+        "meditation",
+        "yoga-nidra",
+        "sound-healing",
+        "float-therapy",
+        "yin-yoga"
+      ]
+    },
+    {
+      "slug": "recharge",
+      "label": "Recharge",
+      "color": "#A87B23",
+      "line": "Heat, cold and light",
+      "specs": [
+        "infrared-sauna",
+        "cold-plunge",
+        "red-light-therapy",
+        "hyperbaric-oxygen"
+      ]
+    },
+    {
+      "slug": "move",
+      "label": "Move",
+      "color": "#2F7A57",
+      "line": "Classes and coaches that get you moving",
+      "specs": [
+        "yoga",
+        "pilates",
+        "personal-training",
+        "tai-chi",
+        "barre",
+        "hiking",
+        "strength-training",
+        "aqua-fitness",
+        "functional-fitness",
+        "dance",
+        "senior-fitness",
+        "assisted-stretching",
+        "boxing",
+        "walking-groups",
+        "gym",
+        "swimming",
+        "martial-arts",
+        "bushwalking",
+        "ashtanga-yoga",
+        "vinyasa-yoga",
+        "pregnancy-yoga",
+        "yin-yoga"
+      ]
+    },
+    {
+      "slug": "stillness",
+      "label": "Stillness",
+      "color": "#5A7D78",
+      "line": "Sit still, on purpose",
+      "specs": [
+        "meditation",
+        "mindfulness",
+        "float-therapy",
+        "yoga-nidra"
+      ]
+    },
+    {
+      "slug": "connect",
+      "label": "Connect",
+      "color": "#A34E6B",
+      "line": "With other people in the room",
+      "specs": [
+        "hiking",
+        "mens-groups",
+        "womens-circles",
+        "recovery-meetings",
+        "art-therapy",
+        "social-groups",
+        "wellness-meetups",
+        "walking-groups",
+        "dance",
+        "parenting-support",
+        "workshops",
+        "support-groups"
+      ]
+    },
+    {
+      "slug": "explore",
+      "label": "Explore",
+      "color": "#7A518F",
+      "line": "Something you haven't tried yet",
+      "specs": [
+        "breathwork",
+        "shamanic-healing",
+        "crystal-healing",
+        "aura-clearing",
+        "equine-therapy",
+        "energy-healing",
+        "reiki",
+        "music-therapy",
+        "iridology",
+        "workshops",
+        "eco-therapy"
+      ]
+    },
+    {
+      "slug": "go-deeper",
+      "label": "Go deeper",
+      "color": "#2C5750",
+      "line": "Longer, fuller, more immersive",
+      "specs": [
+        "wellness-retreats",
+        "meditation",
+        "breathwork",
+        "hypnotherapy"
+      ]
+    },
+    {
+      "slug": "hands-on",
+      "label": "Hands-on care",
+      "color": "#8A5D33",
+      "line": "Someone else does the work",
+      "specs": [
+        "massage",
+        "remedial-massage",
+        "acupuncture",
+        "reflexology",
+        "bowen-therapy",
+        "cupping",
+        "podiatry",
+        "physiotherapy",
+        "chiropractic",
+        "lymphatic-drainage",
+        "reiki",
+        "assisted-stretching",
+        "craniosacral",
+        "structural-integration",
+        "myofascial-release"
+      ]
+    },
+    {
+      "slug": "indulge",
+      "label": "Indulge",
+      "color": "#8E3F55",
+      "line": "Because you feel like it",
+      "specs": [
+        "massage",
+        "thai-massage",
+        "aromatherapy",
+        "infrared-sauna",
+        "float-therapy",
+        "facials",
+        "waxing",
+        "nails",
+        "lashes-and-brows",
+        "skin-treatments",
+        "day-spa",
+        "hot-stone-massage"
+      ]
+    },
+    {
+      "slug": "talk-it-through",
+      "label": "Talk it through",
+      "color": "#54707E",
+      "line": "A professional across the desk",
+      "specs": [
+        "nutrition",
+        "dietetics",
+        "naturopathy",
+        "herbal-medicine",
+        "homeopathy",
+        "life-coaching",
+        "kinesiology",
+        "lactation-consulting",
+        "lactation",
+        "sleep-coaching",
+        "womens-health",
+        "fertility-support",
+        "functional-testing",
+        "gut-health",
+        "sports-nutrition",
+        "counselling",
+        "psychology",
+        "hypnotherapy",
+        "midwifery",
+        "private-midwifery",
+        "postnatal-care",
+        "speech-pathology",
+        "occupational-therapy"
+      ]
+    }
+  ]
+}

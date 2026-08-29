@@ -47,6 +47,8 @@ get_header();
 			</span>
 		</a>
 	<?php endif; ?>
+
+	<?php get_template_part( 'template-parts/directory', 'goodfor' ); ?>
 </section>
 
 <section class="wrap section section--top-flush">

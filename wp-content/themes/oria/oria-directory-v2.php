@@ -68,7 +68,17 @@ $oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 	<div style="margin-top:1rem">
 		<?php $oria_qh = \Oria\Core\PracticesIndex\query_heading(); ?>
 		<span class="micro"><?php esc_html_e( 'The directory', 'oria' ); ?></span>
-		<h1 class="h1 pagehead__title"><?php echo '' !== $oria_qh ? esc_html( $oria_qh ) : esc_html__( "Every practice we've found in Perth.", 'oria' ); ?></h1>
+		<?php if ( '' !== $oria_qh ) : ?>
+			<h1 class="h1 pagehead__title"><?php echo esc_html( $oria_qh ); ?></h1>
+		<?php else : ?>
+			<h1 class="h1 pagehead__title"><?php
+				printf(
+					/* translators: %s: live listing count. The page's one big emotional line — the count keeps it honest and keeps it fresh. */
+					esc_html__( 'Discover %s ways to look after yourself.', 'oria' ),
+					'<b>' . esc_html( number_format_i18n( count( $oria_all ) ) ) . '</b>'
+				);
+			?></h1>
+		<?php endif; ?>
 	</div>
 
 	<div class="decide">
@@ -87,13 +97,16 @@ $oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 			</p>
 			<p class="hint" style="margin-top:.6rem"><?php esc_html_e( "Most listings here were built from public information and are waiting for their owner to take them over — each one says so on its own page. We never take a cut of a booking.", 'oria' ); ?></p>
 		</div>
-		<dl class="facts">
-			<div><dt><?php esc_html_e( 'listings', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( count( $oria_all ) ) ); ?></dd></div>
-			<div><dt><?php esc_html_e( 'categories', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( count( $oria_cats ) ) ); ?></dd></div>
-			<div><dt><?php esc_html_e( 'suburbs', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( count( $oria_suburbs ) ) ); ?></dd></div>
-			<div><dt><?php esc_html_e( 'claimed by the business', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_claimed ) ); ?></dd></div>
-		</dl>
+		<?php
+		/*
+		 * The four stat cards that used to sit here repeated the exact
+		 * numbers the sentence above already states — the quotable, dated
+		 * sentence is the one machines cite, so it stays and the cards go.
+		 */
+		?>
 	</div>
+
+	<?php get_template_part( 'template-parts/directory', 'goodfor' ); ?>
 
 	<?php if ( $oria_cats ) : ?>
 		<h2 class="h3 typewrite" style="margin-top:2rem" data-typewrite><?php esc_html_e( 'Start with a practice', 'oria' ); ?></h2>

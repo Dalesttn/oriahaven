@@ -7,6 +7,11 @@
 declare(strict_types=1);
 
 $oria_id     = get_the_ID();
+if ( ! $oria_id ) {
+	// A null post in the loop (seen locally when a broken row enters a
+	// query) must skip a card, not fatal the page under strict_types.
+	return;
+}
 $oria_status = \Oria\Theme\display_status( $oria_id );
 
 $oria_areas  = wp_get_post_terms( $oria_id, 'area' );
@@ -71,7 +76,18 @@ $oria_badges = array(
 			? \Oria\Core\Categories\top_for( $oria_id )
 			: array();
 		?>
-		<?php if ( $oria_cats ) : ?>
+		<?php
+		// Want-tags lead when the listing's specialties map to any -- the
+		// category pill stays as the fallback. Mirrors gfTags() in app.js.
+		$oria_gf = function_exists( '\Oria\Core\GoodFor\for_listing' ) ? \Oria\Core\GoodFor\for_listing( $oria_id ) : array();
+		?>
+		<?php if ( $oria_gf ) : ?>
+			<div class="listing__cats">
+				<?php foreach ( $oria_gf as $oria_g ) : ?>
+					<span class="pill pill--gf" style="--gf:<?php echo esc_attr( $oria_g['color'] ); ?>"><?php echo esc_html( $oria_g['label'] ); ?></span>
+				<?php endforeach; ?>
+			</div>
+		<?php elseif ( $oria_cats ) : ?>
 			<div class="listing__cats">
 				<?php foreach ( $oria_cats as $oria_cat ) : ?>
 					<a class="pill pill--cat pill--cat-<?php echo esc_attr( $oria_cat['term']->slug ); ?>" href="<?php echo esc_url( (string) get_term_link( $oria_cat['term'] ) ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_cat['term'] ) ); ?></a>

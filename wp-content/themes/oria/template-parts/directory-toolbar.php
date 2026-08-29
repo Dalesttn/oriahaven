@@ -240,13 +240,22 @@ $oria_prices = array(
 	</details>
 
 	<details class="popover" data-popover>
-		<summary class="btn btn--ghost btn--sm"><?php esc_html_e( 'Format', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
-		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'Format', 'oria' ); ?>">
-			<label class="check"><input type="checkbox" data-filter="format" value="in-person"><span><?php esc_html_e( 'In person', 'oria' ); ?></span></label>
-			<label class="check"><input type="checkbox" data-filter="format" value="online"><span><?php esc_html_e( 'Online available', 'oria' ); ?></span></label>
-			<span class="micro" style="display:block;margin:.9rem 0 .4rem"><?php esc_html_e( 'Rating on Google', 'oria' ); ?></span>
-			<label class="check"><input type="checkbox" data-filter="rating" value="4.5"><span><?php esc_html_e( '4.5 and above', 'oria' ); ?></span></label>
-			<label class="check"><input type="checkbox" data-filter="rating" value="4.8"><span><?php esc_html_e( '4.8 and above', 'oria' ); ?></span></label>
+		<summary class="btn btn--sm gfsummary" title="<?php esc_attr_e( 'What are you after?', 'oria' ); ?>"><?php esc_html_e( 'Good for', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
+		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'Good for', 'oria' ); ?>">
+			<span class="micro" style="display:block;margin:0 0 .5rem"><?php esc_html_e( 'What are you after?', 'oria' ); ?></span>
+			<?php
+			/*
+			 * The twelve wants, as multi-select options over the same specialty
+			 * checkboxes the chip row drives — app.js initGoodFor() reads
+			 * data-goodfor-opt and keeps the ticks honest against the real
+			 * filters. Format and rating live on below them, demoted from the
+			 * pill label but not lost.
+			 */
+			$oria_gf_all = function_exists( '\Oria\Core\GoodFor\labels' ) ? \Oria\Core\GoodFor\labels() : array();
+			?>
+			<?php foreach ( $oria_gf_all as $oria_g ) : ?>
+				<label class="check"><input type="checkbox" data-goodfor-opt data-specs="<?php echo esc_attr( (string) wp_json_encode( $oria_g['specs'] ) ); ?>"><span><span class="gfdot" style="--gf:<?php echo esc_attr( $oria_g['color'] ); ?>"></span><?php echo esc_html( $oria_g['label'] ); ?></span></label>
+			<?php endforeach; ?>
 			<button type="button" class="popover__done" data-popover-close><?php esc_html_e( 'Done', 'oria' ); ?></button>
 		</div>
 	</details>

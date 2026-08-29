@@ -398,9 +398,8 @@ while ( have_posts() ) :
 				if ( $oria_next ) {
 					$oria_glance[] = array( __( 'Next session', 'oria' ), $oria_next );
 				}
-				if ( $oria_good_for ) {
-					$oria_glance[] = array( __( 'Good for', 'oria' ), $oria_good_for );
-				}
+				// good_for now has its own headed section below About — a
+				// paragraph doesn't belong in a keyfacts row as well.
 
 				// Three is the point where a panel reads as a summary rather
 				// than as two orphaned facts in a box.
@@ -440,6 +439,21 @@ while ( have_posts() ) :
 						<?php echo $oria_body ? wp_kses_post( $oria_body ) : '<p>' . esc_html( get_the_excerpt() ) . '</p>'; // phpcs:ignore ?>
 					</div>
 				</div>
+
+				<!-- What they're good at: the good_for field, in its own section.
+				     Renders nothing when empty — most listings haven't been asked
+				     yet, and an empty heading would read as a blank report card. -->
+				<?php if ( '' !== trim( $oria_good_for ) ) : ?>
+				<div>
+					<h2 class="h3" style="margin-bottom:.85rem"><?php esc_html_e( "What they're good at", 'oria' ); ?></h2>
+					<div class="prose">
+						<?php echo wp_kses_post( wpautop( esc_html( $oria_good_for ) ) ); ?>
+					</div>
+					<?php if ( (int) get_post_meta( $oria_id, 'claimed_by', true ) ) : ?>
+						<p class="hint"><?php esc_html_e( 'Told to us by the practice.', 'oria' ); ?></p>
+					<?php endif; ?>
+				</div>
+				<?php endif; ?>
 
 				<!-- Classes: the practice's own timetable -->
 				<?php if ( $oria_classes ) : ?>

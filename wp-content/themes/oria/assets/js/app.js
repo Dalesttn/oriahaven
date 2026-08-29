@@ -1016,6 +1016,88 @@
     }, 60);
   }
 
+  /* "What are you after?" chips — presets over the specialty filters.
+     A chip checks its mapped [data-filter="spec"] boxes and lets the
+     existing engine run; it claims nothing of its own. State is derived,
+     not stored: after ANY filter change a chip is lit only while every
+     one of its (present) specialties is still ticked, so hand-editing
+     the filters can never leave a chip lying. */
+  function initGoodFor() {
+    if (!$("#dirResults")) return;
+    var chips = $$("[data-goodfor-chip]");
+    var opts = $$("[data-goodfor-opt]");
+    if (!chips.length && !opts.length) return;
+
+    function boxFor(slug) {
+      return document.querySelector('[data-filter="spec"][value="' + slug + '"]');
+    }
+    function specsOf(el) {
+      var list;
+      try { list = JSON.parse(el.getAttribute("data-specs") || "[]"); } catch (e) { list = []; }
+      return list.map(boxFor).filter(Boolean);
+    }
+    function isOn(el) {
+      var boxes = specsOf(el);
+      return boxes.length > 0 && boxes.every(function (b) { return b.checked; });
+    }
+    function sync() {
+      chips.forEach(function (chip) {
+        var on = isOn(chip);
+        chip.classList.toggle("is-on", on);
+        chip.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      opts.forEach(function (opt) { opt.checked = isOn(opt); });
+    }
+    function setBoxes(boxes, checked) {
+      boxes.forEach(function (b) {
+        if (b.checked !== checked) {
+          b.checked = checked;
+          b.dispatchEvent(new Event("change"));
+        }
+      });
+    }
+
+    chips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        var mine = specsOf(chip);
+        var wasOn = chip.classList.contains("is-on");
+        // One want at a time in the row: clear every chip-managed spec,
+        // then apply this chip's set (or nothing, if it was the lit one).
+        chips.forEach(function (other) { setBoxes(specsOf(other), false); });
+        if (!wasOn) setBoxes(mine, true);
+        sync();
+      });
+    });
+
+    /* The popover options multi-select: ticking a want checks its
+       specialties; un-ticking releases only the specialties no other
+       ticked want still needs, so overlapping wants (Relax and Indulge
+       both carry massage) never fight each other. */
+    opts.forEach(function (opt) {
+      opt.addEventListener("change", function () {
+        var mine = specsOf(opt);
+        if (opt.checked) {
+          setBoxes(mine, true);
+        } else {
+          var keep = {};
+          opts.forEach(function (other) {
+            if (other !== opt && isOn(other)) {
+              specsOf(other).forEach(function (b) { keep[b.value] = 1; });
+            }
+          });
+          setBoxes(mine.filter(function (b) { return !keep[b.value]; }), false);
+        }
+        sync();
+      });
+    });
+
+    // Keep every derived state honest when filters change by any route.
+    document.addEventListener("change", function (e) {
+      if (e.target && e.target.closest && e.target.closest('[data-filter="spec"]')) sync();
+    });
+    sync();
+  }
+
   function initDirectory() {
     var root = $("#dirResults");
     if (!root) return;
@@ -1033,6 +1115,30 @@
 
     var PER_PAGE = 10;
     var state = { cats: [], regions: [], suburbs: [], spec: [], svc: [], aud: [], price: [], format: [], rating: 0, q: "", sort: "relevance", page: 1 };
+
+    /* The want-tags a card leads with, derived from the listing's own
+       specialties against DATA.goodfor — the most-overlapping wants win.
+       Nothing is stored per listing, so retuning goodfor.json retunes
+       every card at once. */
+    var GF = DATA.goodfor || [];
+    function gfTags(l) {
+      /* Specialties AND services: allied professions (podiatry, orthotics)
+         live in the service vocabulary, not the specialty one, and a want
+         set may name either kind of slug. */
+      var specs = (l.spec || []).concat(l.svc || []);
+      if (!GF.length || !specs.length) return [];
+      var have = {};
+      specs.forEach(function (s) { have[s] = 1; });
+      return GF
+        .map(function (g, i) {
+          var hits = (g.specs || []).filter(function (s) { return have[s]; }).length;
+          return { g: g, hits: hits, i: i };
+        })
+        .filter(function (x) { return x.hits > 0; })
+        .sort(function (a, b) { return b.hits - a.hits || a.i - b.i; })
+        .slice(0, 3)
+        .map(function (x) { return x.g; });
+    }
 
     // Read the URL so category tiles, map regions and footer links all land
     // on a pre-filtered view — the same URLs the WordPress build will use.
@@ -1150,19 +1256,28 @@
           (statusBadge ? '<div class="listing__flag">' + statusBadge + "</div>" : "") +
         "</div>" +
         '<div class="listing__body">' +
-          /* Category chips lead the card — see the same block in
-             template-parts/listing-card.php. catTop is the top-level
-             category so this agrees with the sidebar, rather than the
-             first practice term, which after categories gained parents
-             could be a child like "Meditation classes". */
-          ((l.catTop || []).length
-            ? '<div class="listing__cats">' +
-              (l.catTop || []).map(function (c) {
-                return '<span class="pill pill--cat pill--cat-' + esc(c) + '">' +
-                  esc(catNames[c] || c) + "</span>";
-              }).join("") +
-              "</div>"
-            : "") +
+          /* Want-tags lead the card (same derivation as the chip row);
+             the top-level category pill is the fallback for listings whose
+             specialties map to no want — see the matching block in
+             template-parts/listing-card.php. */
+          (function () {
+            var tags = gfTags(l);
+            if (tags.length) {
+              return '<div class="listing__cats">' +
+                tags.map(function (g) {
+                  return '<span class="pill pill--gf" style="--gf:' + esc(g.color) + '">' + esc(g.label) + "</span>";
+                }).join("") +
+                "</div>";
+            }
+            return (l.catTop || []).length
+              ? '<div class="listing__cats">' +
+                (l.catTop || []).map(function (c) {
+                  return '<span class="pill pill--cat pill--cat-' + esc(c) + '">' +
+                    esc(catNames[c] || c) + "</span>";
+                }).join("") +
+                "</div>"
+              : "";
+          })() +
           '<div class="listing__head">' +
             "<div>" +
               '<h3 class="listing__name"><a href="' + esc(l.url || '#') + '">' + esc(l.name) + "</a></h3>" +
@@ -3271,6 +3386,7 @@
     });
     initHomeSearch();
     initDirectory();
+    initGoodFor();
     scrollToFilteredResults();
     initPopoverDone();
     initFilterSheet();

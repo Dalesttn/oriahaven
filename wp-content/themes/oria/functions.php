@@ -323,6 +323,13 @@ function listing_data(): array {
 	}
 
 	$cache = array(
+		/*
+		 * The discovery-chip map, so cards can derive their want-tags from
+		 * the same data the chip row filters by. Derived, never stored:
+		 * a card shows a want only because the listing's own specialties
+		 * sit in that want's set.
+		 */
+		'goodfor'    => function_exists( '\Oria\Core\GoodFor\labels' ) ? \Oria\Core\GoodFor\labels() : array(),
 		'categories' => array_map(
 			static fn( \WP_Term $t ): array => array(
 				'id'   => $t->slug,

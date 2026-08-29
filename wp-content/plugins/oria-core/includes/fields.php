@@ -461,9 +461,12 @@ function register_listing_fields(): void {
 				array(
 					'key'          => 'field_oria_good_for',
 					'name'         => 'good_for',
-					'label'        => 'Good for',
-					'type'         => 'text',
-					'placeholder'  => 'Complete beginners',
+					'label'        => 'What they\'re good at',
+					'type'         => 'textarea',
+					'rows'         => 3,
+					'maxlength'    => 300,
+					'placeholder'  => 'Small reformer classes with plenty of instructor attention, and a proper beginner intro course.',
+					'instructions' => 'A sentence or two on what this practice does especially well — the room, the format, the teaching. Describe what happens there, never what it treats or fixes.',
 					'wrapper'      => array( 'width' => '50' ),
 				),
 				array(

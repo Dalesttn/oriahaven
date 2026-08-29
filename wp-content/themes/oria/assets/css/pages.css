@@ -1041,6 +1041,73 @@ a.livesession:hover { background: var(--sand-2); }
 .ctaslab__inner { padding: clamp(3rem, 7vw, 6rem) clamp(1.5rem, 5vw, 4.5rem); display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s-6); flex-wrap: wrap; }
 .ctaslab__title { max-width: 16ch; }
 
+/* --- "What are you after?" discovery chips -------------------------------- */
+/* Colour-coded want-chips above the directory filters. Each chip's colour
+   arrives as --gf from goodfor.json; text and icon stay white, so every
+   colour in that file must be dark enough to carry it. */
+.goodfor { margin-top: 1.6rem; }
+.goodfor__head { margin-bottom: .75rem; }
+.goodfor__row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.goodfor__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  min-height: 40px;
+  padding: .45rem .95rem;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill, 999px);
+  background: var(--gf, var(--deep));
+  color: #fff;
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .12s ease, filter .15s ease, box-shadow .15s ease;
+}
+.goodfor__chip svg { width: 17px; height: 17px; flex: none; }
+.goodfor__chip .goodfor__icon { width: 20px; height: 20px; flex: none; display: block; }
+.goodfor__chip:hover { filter: brightness(1.12); transform: translateY(-1px); }
+.goodfor__chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.goodfor__chip.is-on {
+  box-shadow: 0 0 0 2px var(--bg, #F4F2EA), 0 0 0 4px var(--gf, var(--deep));
+}
+.goodfor__hint { margin-top: .6rem; }
+
+/* The "Good for" pill in the toolbar — the one filter that is an invitation
+   rather than a facet, so it wears the deep brand green while its siblings
+   stay ghost outlines. Native title tooltip carries the question. */
+.gfsummary {
+  background: var(--deep);
+  border-color: var(--deep);
+  color: #fff;
+}
+.gfsummary:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
+details[open] > .gfsummary { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+/* The colour key inside the "Good for" popover options. */
+.gfdot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gf, var(--deep));
+  margin-right: .45rem;
+  vertical-align: baseline;
+}
+
+/* The card-level want-tags: same colours as the chip row, quieter scale. */
+.pill--gf {
+  background: var(--gf, var(--deep));
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+@media (max-width: 40rem) {
+  /* One row that scrolls, rather than a twelve-chip wall above the results. */
+  .goodfor__row { flex-wrap: nowrap; overflow-x: auto; padding-bottom: .4rem; scrollbar-width: thin; }
+  .goodfor__chip { flex: none; }
+}
+
 /* --- Directory pagination ------------------------------------------------- */
 /* The load-more control (app.js). The button is the real mechanism — an
    observer clicks it on scroll — so it is styled to be seen and used, not

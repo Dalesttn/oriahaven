@@ -299,20 +299,13 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 				</p>
 			<?php endif; ?>
 		</div>
-		<dl class="facts">
-			<div><dt><?php esc_html_e( 'listings', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( count( $oria_ids ) ) ); ?></dd></div>
-			<div><dt><?php esc_html_e( 'suburbs', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( count( $oria_suburbs ) ) ); ?></dd></div>
-			<div><dt><?php esc_html_e( 'claimed by the business', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_claimed ) ); ?></dd></div>
-			<?php if ( $oria_price > 0 ) : ?>
-				<div>
-					<dt><?php esc_html_e( 'typical price', 'oria' ); ?></dt>
-					<dd><?php printf( esc_html__( 'from $%s', 'oria' ), esc_html( number_format_i18n( round( $oria_price ) ) ) ); ?></dd>
-					<small class="facts__note"><?php printf( esc_html( _n( 'median, %s priced listing', 'median, %s priced listings', $oria_price_n, 'oria' ) ), esc_html( number_format_i18n( $oria_price_n ) ) ); ?></small>
-				</div>
-			<?php elseif ( '' !== $oria_typical ) : ?>
-				<div><dt><?php esc_html_e( 'typical price band', 'oria' ); ?></dt><dd><?php echo esc_html( $oria_typical ); ?></dd></div>
-			<?php endif; ?>
-		</dl>
+		<?php
+		/*
+		 * The facts strip that sat here repeated the answer sentence's own
+		 * numbers card by card — the quotable sentence is the citation, so
+		 * it speaks alone now (same call as the directory page).
+		 */
+		?>
 	</div>
 
 	<?php
