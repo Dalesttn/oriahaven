@@ -132,3 +132,87 @@ function day_summary( array $row ): string {
 	}
 	return implode( ', ', array_map( __NAMESPACE__ . '\label', $days ) );
 }
+
+/* ------------------------------------------------------------- timetable */
+
+/**
+ * The listing's week as flat session rows, one per day-and-time:
+ *
+ *     { day: 1-7, time: 'HH:MM', title, with, mins: int, tone, free: bool }
+ *
+ * Two sources, in order of authority. Owner-entered classes (the paid ACF
+ * repeater) always win -- that is the practice speaking. When the owner has
+ * entered nothing, a curated file at data/timetables/{slug}.json fills in:
+ * Oria's own transcription of the studio's published schedule, the same
+ * standing photos-from-Google have. Both arrive here in one shape so the
+ * template never knows which it got.
+ *
+ * @return array<int, array{day: int, time: string, title: string, with: string, mins: int, tone: string, free: bool}>
+ */
+function timetable_for( int $post_id ): array {
+	$flat = array();
+
+	$classes = function_exists( 'get_field' ) ? get_field( 'classes', $post_id ) : null;
+	foreach ( (array) ( $classes ?: array() ) as $row ) {
+		if ( ! is_array( $row ) || '' === trim( (string) ( $row['title'] ?? '' ) ) ) {
+			continue;
+		}
+		foreach ( (array) ( $row['sessions'] ?? array() ) as $sess ) {
+			if ( ! is_array( $sess ) ) {
+				continue;
+			}
+			foreach ( days_of( $sess ) as $day ) {
+				$flat[] = array(
+					'day'   => (int) $day,
+					'time'  => trim( (string) ( $sess['time'] ?? '' ) ),
+					'title' => trim( (string) $row['title'] ),
+					'with'  => trim( (string) ( $sess['with'] ?? '' ) ),
+					'mins'  => 0,
+					'tone'  => 'class',
+					'free'  => false,
+				);
+			}
+		}
+	}
+	if ( $flat ) {
+		return sort_week( $flat );
+	}
+
+	$slug = (string) get_post_field( 'post_name', $post_id );
+	$path = ORIA_CORE_DIR . 'data/timetables/' . $slug . '.json';
+	if ( '' === $slug || ! is_readable( $path ) ) {
+		return array();
+	}
+	$json = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	foreach ( (array) ( $json['sessions'] ?? array() ) as $row ) {
+		if ( ! is_array( $row ) || empty( $row['title'] ) ) {
+			continue;
+		}
+		$day = (int) ( $row['day'] ?? 0 );
+		if ( $day < 1 || $day > 7 ) {
+			continue;
+		}
+		$flat[] = array(
+			'day'   => $day,
+			'time'  => trim( (string) ( $row['time'] ?? '' ) ),
+			'title' => trim( (string) $row['title'] ),
+			'with'  => trim( (string) ( $row['with'] ?? '' ) ),
+			'mins'  => (int) ( $row['mins'] ?? 0 ),
+			'tone'  => in_array( $row['tone'] ?? '', array( 'venue', 'event' ), true ) ? (string) $row['tone'] : 'class',
+			'free'  => ! empty( $row['free'] ),
+		);
+	}
+	return sort_week( $flat );
+}
+
+/** Days in order, then times within the day. */
+function sort_week( array $flat ): array {
+	usort(
+		$flat,
+		static function ( array $a, array $b ): int {
+			return ( $a['day'] <=> $b['day'] ) ?: strcmp( $a['time'], $b['time'] );
+		}
+	);
+	return $flat;
+}
+

@@ -3828,7 +3828,16 @@
     });
   }
     initDistance();
+
+  /* The weekly timetable opens on today when it scrolls (phones). */
+  function initWeek() {
+    var week = $("[data-week]");
+    if (!week || week.scrollWidth <= week.clientWidth + 8) return;
+    var today = week.querySelector(".week__day--today");
+    if (today) week.scrollLeft = Math.max(0, today.offsetLeft - week.offsetLeft - 8);
+  }
     initLightbox();
+    initWeek();
     initMapFacade();
   });
 })();

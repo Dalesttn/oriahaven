@@ -529,6 +529,17 @@ while ( have_posts() ) :
 				</div>
 				<?php endif; ?>
 
+				<!-- The week, as a timetable. Owner-entered classes win inside
+				     timetable_for(); otherwise a curated data file fills in. -->
+				<?php $oria_week = function_exists( '\Oria\Core\Classes\timetable_for' ) ? \Oria\Core\Classes\timetable_for( $oria_id ) : array(); ?>
+				<?php if ( $oria_week ) : ?>
+				<div class="reveal">
+					<h2 class="h3" style="margin-bottom:.25rem"><?php esc_html_e( 'Weekly timetable', 'oria' ); ?></h2>
+					<p class="hint" style="margin-bottom:1.1rem"><?php esc_html_e( 'From the studio\'s published schedule. Public holidays excepted — check before you travel.', 'oria' ); ?></p>
+					<?php get_template_part( 'template-parts/listing-week', null, array( 'sessions' => $oria_week ) ); ?>
+				</div>
+				<?php endif; ?>
+
 				<!-- Classes: the practice's own timetable -->
 				<?php if ( $oria_classes ) : ?>
 				<div>
