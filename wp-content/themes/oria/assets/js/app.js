@@ -1066,6 +1066,9 @@
         chips.forEach(function (other) { setBoxes(specsOf(other), false); });
         if (!wasOn) setBoxes(mine, true);
         sync();
+        // Choosing a want answers "show me" — take the visitor to the
+        // answer rather than leaving them looking at the chip row.
+        if (!wasOn && typeof goToResults === "function") goToResults(false);
       });
     });
 
@@ -1138,6 +1141,19 @@
         .sort(function (a, b) { return b.hits - a.hits || a.i - b.i; })
         .slice(0, 3)
         .map(function (x) { return x.g; });
+    }
+    /* The wants currently in force: every one whose known specialties are
+       all in the active spec filters. Powers the coloured chip in the
+       filter row and the one-line description after the count. */
+    function activeWants() {
+      return GF.filter(function (g) {
+        /* "Known" means it has a checkbox on THIS page — the same rule the
+           chip row lights by, so the two can never disagree. */
+        var known = (g.specs || []).filter(function (x) {
+          return document.querySelector('[data-filter="spec"][value="' + x + '"]');
+        });
+        return known.length > 0 && known.every(function (x) { return state.spec.indexOf(x) > -1; });
+      });
     }
 
     // Read the URL so category tiles, map regions and footer links all land
@@ -1363,12 +1379,31 @@
       if (state.rating) out.push(["rating", String(state.rating), state.rating + "+ rating"]);
       if (state.q) out.push(["q", state.q, '"' + state.q + '"']);
 
-      box.innerHTML = out.map(function (c) {
+      var wants = activeWants();
+      box.innerHTML = wants.map(function (g) {
+        return '<span class="chip chip--gf" style="--gf:' + esc(g.color) + '">' + esc(g.label) +
+          '<button type="button" data-clear-want="' + esc(g.slug) +
+          '" aria-label="Remove ' + esc(g.label) + '">' + ICON.x + "</button></span>";
+      }).join("") + out.map(function (c) {
         return '<span class="chip">' + esc(c[2]) +
           '<button type="button" data-clear-kind="' + c[0] + '" data-clear-val="' + esc(c[1]) +
           '" aria-label="Remove filter ' + esc(c[2]) + '">' + ICON.x + "</button></span>";
-      }).join("") + (out.length > 1
+      }).join("") + (out.length + wants.length > 1
         ? '<button type="button" class="pill" id="clearAll">Clear all</button>' : "");
+
+      /* Removing a want releases all its specialties at once — the same
+         boxes the chip row manages, so both stay in step via their events. */
+      $$("[data-clear-want]", box).forEach(function (b) {
+        b.addEventListener("click", function () {
+          var g = null;
+          GF.forEach(function (x) { if (x.slug === b.dataset.clearWant) g = x; });
+          if (!g) return;
+          (g.specs || []).forEach(function (slug) {
+            var boxEl = document.querySelector('[data-filter="spec"][value="' + slug + '"]');
+            if (boxEl && boxEl.checked) { boxEl.checked = false; boxEl.dispatchEvent(new Event("change")); }
+          });
+        });
+      });
 
       $$("[data-clear-kind]", box).forEach(function (b) {
         b.addEventListener("click", function () {
@@ -1579,6 +1614,13 @@
         count.innerHTML = "<b>" + found.length + "</b> " +
           (found.length === 1 ? "listing" : "listings") +
           (place ? " in " + esc(place) : "");
+        /* When a want is driving the filters, say what it means — the same
+           line the chip's tooltip carries, e.g. "Evening-paced, lights low". */
+        var aw = activeWants().filter(function (g) { return g.line; }).slice(0, 2);
+        if (aw.length) {
+          count.innerHTML += ' <span class="dir__countline">— ' +
+            aw.map(function (g) { return esc(g.line); }).join(" · ") + "</span>";
+        }
       }
 
       /* With the filters hidden in a sheet, the button has to say how many

@@ -1082,6 +1082,12 @@ a.livesession:hover { background: var(--sand-2); }
   color: #fff;
 }
 .gfsummary:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+/* The active want as a chip in the filter row, and its one-line meaning
+   after the count. Colour arrives per-chip as --gf from goodfor.json. */
+.chip--gf { background: var(--gf, var(--deep)); border-color: transparent; color: #fff; font-weight: 600; }
+.chip--gf button { color: #fff; }
+.dir__countline { color: var(--text-soft); font-weight: 400; }
 details[open] > .gfsummary { background: var(--ink); border-color: var(--ink); color: #fff; }
 
 /* The colour key inside the "Good for" popover options. */
