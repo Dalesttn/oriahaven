@@ -33,6 +33,7 @@ if ( ! $oria_chips ) {
 				type="button"
 				style="--gf:<?php echo esc_attr( $oria_c['color'] ); ?>"
 				data-goodfor-chip
+				data-slug="<?php echo esc_attr( $oria_c['slug'] ); ?>"
 				data-specs="<?php echo esc_attr( (string) wp_json_encode( $oria_c['specs'] ) ); ?>"
 				title="<?php echo esc_attr( $oria_c['line'] ); ?>"
 				aria-pressed="false"

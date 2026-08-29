@@ -256,7 +256,7 @@ $oria_prices = array(
 			$oria_gf_all = function_exists( '\Oria\Core\GoodFor\labels' ) ? \Oria\Core\GoodFor\labels() : array();
 			?>
 			<?php foreach ( $oria_gf_all as $oria_g ) : ?>
-				<label class="check"><input type="checkbox" data-goodfor-opt data-specs="<?php echo esc_attr( (string) wp_json_encode( $oria_g['specs'] ) ); ?>"><span><span class="gfdot" style="--gf:<?php echo esc_attr( $oria_g['color'] ); ?>"></span><?php echo esc_html( $oria_g['label'] ); ?></span></label>
+				<label class="check"><input type="checkbox" data-goodfor-opt data-slug="<?php echo esc_attr( $oria_g['slug'] ); ?>" data-specs="<?php echo esc_attr( (string) wp_json_encode( $oria_g['specs'] ) ); ?>"><span><span class="gfdot" style="--gf:<?php echo esc_attr( $oria_g['color'] ); ?>"></span><?php echo esc_html( $oria_g['label'] ); ?></span></label>
 			<?php endforeach; ?>
 			<button type="button" class="popover__done" data-popover-close><?php esc_html_e( 'Done', 'oria' ); ?></button>
 		</div>

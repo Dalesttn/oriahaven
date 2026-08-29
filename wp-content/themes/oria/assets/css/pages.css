@@ -531,7 +531,7 @@ a.livesession:hover { background: var(--sand-2); }
   display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
   flex-wrap: wrap; margin-bottom: var(--s-5);
 }
-.dir__count { font-size: var(--fs-sm); color: var(--text-soft); }
+.dir__count { font-size: var(--fs-md); color: var(--text-soft); }
 .dir__count b { color: var(--ink); }
 .dir__tools { display: flex; align-items: center; gap: var(--s-3); }
 .dir__results { display: grid; gap: var(--s-4); }
@@ -1087,7 +1087,7 @@ a.livesession:hover { background: var(--sand-2); }
    after the count. Colour arrives per-chip as --gf from goodfor.json. */
 .chip--gf { background: var(--gf, var(--deep)); border-color: transparent; color: #fff; font-weight: 600; }
 .chip--gf button { color: #fff; }
-.dir__countline { color: var(--text-soft); font-weight: 400; }
+.dir__countline { color: var(--ink); font-weight: 700; }
 details[open] > .gfsummary { background: var(--ink); border-color: var(--ink); color: #fff; }
 
 /* The colour key inside the "Good for" popover options. */

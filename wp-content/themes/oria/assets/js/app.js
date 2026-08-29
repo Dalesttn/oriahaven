@@ -1022,6 +1022,13 @@
      not stored: after ANY filter change a chip is lit only while every
      one of its (present) specialties is still ticked, so hand-editing
      the filters can never leave a chip lying. */
+  /* Wants the visitor has explicitly chosen (chip row or popover), keyed
+     by slug. Kept separate from the derived all-boxes-ticked state so a
+     visitor can prune specialties inside a want without the want itself
+     vanishing — it lets go only when its last specialty does, or when
+     they dismiss it themselves. */
+  var GFSel = {};
+
   function initGoodFor() {
     if (!$("#dirResults")) return;
     var chips = $$("[data-goodfor-chip]");
@@ -1040,19 +1047,34 @@
       var boxes = specsOf(el);
       return boxes.length > 0 && boxes.every(function (b) { return b.checked; });
     }
+    function anyOn(el) {
+      return specsOf(el).some(function (b) { return b.checked; });
+    }
+    function slugOf(el) { return el.getAttribute("data-slug") || ""; }
+    function lit(el) {
+      // Chosen: stays while any of its specialties survives. Not chosen:
+      // lights only when the visitor has ticked the complete set by hand.
+      return GFSel[slugOf(el)] ? anyOn(el) : isOn(el);
+    }
     function sync() {
+      // A chosen want with none of its specialties left has been fully
+      // pruned — let it go rather than filter by nothing.
+      chips.concat(opts).forEach(function (el) {
+        var k = slugOf(el);
+        if (GFSel[k] && !anyOn(el)) delete GFSel[k];
+      });
       chips.forEach(function (chip) {
-        var on = isOn(chip);
+        var on = lit(chip);
         chip.classList.toggle("is-on", on);
         chip.setAttribute("aria-pressed", on ? "true" : "false");
       });
-      opts.forEach(function (opt) { opt.checked = isOn(opt); });
+      opts.forEach(function (opt) { opt.checked = lit(opt); });
     }
     function setBoxes(boxes, checked) {
       boxes.forEach(function (b) {
         if (b.checked !== checked) {
           b.checked = checked;
-          b.dispatchEvent(new Event("change"));
+          b.dispatchEvent(new Event("change", { bubbles: true }));
         }
       });
     }
@@ -1063,8 +1085,12 @@
         var wasOn = chip.classList.contains("is-on");
         // One want at a time in the row: clear every chip-managed spec,
         // then apply this chip's set (or nothing, if it was the lit one).
+        GFSel = {};
         chips.forEach(function (other) { setBoxes(specsOf(other), false); });
-        if (!wasOn) setBoxes(mine, true);
+        if (!wasOn) {
+          GFSel[slugOf(chip)] = 1;
+          setBoxes(mine, true);
+        }
         sync();
         // Choosing a want answers "show me" — take the visitor to the
         // answer rather than leaving them looking at the chip row.
@@ -1080,8 +1106,10 @@
       opt.addEventListener("change", function () {
         var mine = specsOf(opt);
         if (opt.checked) {
+          GFSel[slugOf(opt)] = 1;
           setBoxes(mine, true);
         } else {
+          delete GFSel[slugOf(opt)];
           var keep = {};
           opts.forEach(function (other) {
             if (other !== opt && isOn(other)) {
@@ -1152,7 +1180,11 @@
         var known = (g.specs || []).filter(function (x) {
           return document.querySelector('[data-filter="spec"][value="' + x + '"]');
         });
-        return known.length > 0 && known.every(function (x) { return state.spec.indexOf(x) > -1; });
+        if (!known.length) return false;
+        var on = known.filter(function (x) { return state.spec.indexOf(x) > -1; });
+        // A chosen want survives pruning down to its last specialty; an
+        // unchosen one appears only when the full set is ticked by hand.
+        return GFSel[g.slug] ? on.length > 0 : on.length === known.length;
       });
     }
 
@@ -1398,9 +1430,10 @@
           var g = null;
           GF.forEach(function (x) { if (x.slug === b.dataset.clearWant) g = x; });
           if (!g) return;
+          delete GFSel[g.slug];
           (g.specs || []).forEach(function (slug) {
             var boxEl = document.querySelector('[data-filter="spec"][value="' + slug + '"]');
-            if (boxEl && boxEl.checked) { boxEl.checked = false; boxEl.dispatchEvent(new Event("change")); }
+            if (boxEl && boxEl.checked) { boxEl.checked = false; boxEl.dispatchEvent(new Event("change", { bubbles: true })); }
           });
         });
       });
@@ -1421,6 +1454,7 @@
       });
       var all = $("#clearAll");
       if (all) all.addEventListener("click", function () {
+        GFSel = {};
         state.cats = locked.cat ? [locked.cat] : [];
         state.regions = locked.region ? [locked.region] : [];
         state.spec = locked.spec ? [locked.spec] : [];
