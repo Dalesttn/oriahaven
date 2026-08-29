@@ -15,7 +15,40 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Fill "People come here for" with the vocabulary this listing qualifies
+ * for — podiatry gets feet, nutrition gets eating — so an editor is never
+ * shown a list belonging to somebody else's profession.
+ *
+ * A listing whose services match no vocabulary gets an empty field with a
+ * note saying so, rather than a checkbox list it cannot use.
+ */
+function come_for_choices( array $field ): array {
+	if ( ! function_exists( '\Oria\Core\ComeFor\options_for' ) ) {
+		return $field;
+	}
+	$post_id = 0;
+	if ( isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$post_id = (int) $_GET['post']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	} elseif ( isset( $_POST['post_ID'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$post_id = (int) $_POST['post_ID']; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	}
+	if ( ! $post_id ) {
+		return $field;
+	}
+	$choices = array();
+	foreach ( \Oria\Core\ComeFor\options_for( $post_id ) as $slug => $row ) {
+		$choices[ $slug ] = trim( $row['emoji'] . ' ' . $row['label'] );
+	}
+	$field['choices'] = $choices;
+	if ( ! $choices ) {
+		$field['instructions'] = 'No list yet for this practice\'s services. Add one to data/comefor.json keyed by the service or specialty slug.';
+	}
+	return $field;
+}
+
 function bootstrap(): void {
+	add_filter( 'acf/load_field/key=field_oria_come_for', __NAMESPACE__ . '\\come_for_choices' );
 	add_filter( 'acf/settings/save_json', __NAMESPACE__ . '\json_path' );
 	add_filter( 'acf/settings/load_json', __NAMESPACE__ . '\json_paths' );
 	add_action( 'acf/init', __NAMESPACE__ . '\register_listing_fields' );
@@ -528,6 +561,28 @@ function register_listing_fields(): void {
 						: array(),
 					'layout'       => 'vertical',
 					'instructions' => 'Only what is true of your sessions today. Unticked shows nothing at all.',
+				),
+
+				/*
+				 * "People come here for" — the presenting reasons, per
+				 * profession. Choices are filled at render time from the
+				 * listing's own services and specialties (see the
+				 * acf/load_field filter below), because a podiatrist and a
+				 * dietitian have nothing in common here.
+				 *
+				 * Scope, never outcome: every label names what somebody
+				 * arrives WITH, and none of them says what the practice
+				 * achieves. That distinction is what separates this from a
+				 * therapeutic claim — see data/comefor.json.
+				 */
+				array(
+					'key'          => 'field_oria_come_for',
+					'name'         => 'come_for',
+					'label'        => 'People come here for',
+					'type'         => 'checkbox',
+					'choices'      => array(),
+					'layout'       => 'vertical',
+					'instructions' => 'The reasons people actually book in — their words on arrival, not what the treatment achieves. Only tick what is true of this practice; anything unticked shows nothing at all.',
 				),
 
 				/*

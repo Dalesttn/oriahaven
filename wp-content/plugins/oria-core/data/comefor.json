@@ -1,0 +1,39 @@
+{
+  "_note": "\"People come here for\" — the presenting reasons a practice itself says people arrive with, keyed by the service or specialty slug the vocabulary belongs to. A listing is offered the union of the vocabularies for the terms it carries.\n\nWHY THIS IS ALLOWED WHERE 'Good for: sleep' IS NOT. These describe SCOPE — what a practice works with — not OUTCOME. 'People come here for heel pain' is the reason for the appointment; 'good for heel pain' is a promise about its result, and only the second creates the expectation of beneficial treatment that the National Law's advertising rules forbid. Two rules keep the distinction real: the section is headed with what people come FOR, never what the practice fixes; and it is the practice's own answer, ticked by the owner or matched from their own published words, never our inference about a business we have not asked.\n\nWrite labels as complaints and reasons, in plain words. Never 'treats X', 'relieves X', 'cures X'. Aliases exist only for matching a practice's own text during pre-population, so include the clinical terms a clinic would actually write.",
+  "vocab": {
+    "podiatry": [
+      { "slug": "foot-heel-pain", "emoji": "🦶", "label": "Foot & heel pain", "aliases": ["heel pain", "plantar fasciitis", "plantar fascia", "foot pain", "arch pain", "heel spur"] },
+      { "slug": "sports-injuries", "emoji": "🏃", "label": "Sports injuries & shin splints", "aliases": ["sports podiatry", "shin splints", "sports injury", "running injuries", "sports work"] },
+      { "slug": "orthotics-alignment", "emoji": "👣", "label": "Orthotics & foot alignment", "aliases": ["orthotic", "orthotics", "gait analysis", "foot alignment", "custom orthoses"] },
+      { "slug": "lower-limb", "emoji": "🦵", "label": "Ankle, knee & lower-limb problems", "aliases": ["lower limb", "ankle", "knee pain", "biomechanic"] },
+      { "slug": "nail-foot-care", "emoji": "💅", "label": "Nail & general foot care", "aliases": ["nail surgery", "ingrown toenail", "fungal nail", "general foot care", "diabetic foot", "callus", "corns"] },
+      { "slug": "childrens-feet", "emoji": "👶", "label": "Children's foot problems", "aliases": ["paediatric", "pediatric", "children's feet", "childrens feet", "kids feet"] }
+    ],
+    "physiotherapy": [
+      { "slug": "back-neck", "emoji": "🦴", "label": "Back & neck complaints", "aliases": ["back pain", "neck pain", "lower back", "spinal"] },
+      { "slug": "sports-injuries", "emoji": "🏃", "label": "Sports injuries", "aliases": ["sports injury", "sports injuries", "sports physio"] },
+      { "slug": "post-surgery", "emoji": "🏥", "label": "After surgery or injury", "aliases": ["post-operative", "post surgical", "rehabilitation", "rehab"] },
+      { "slug": "work-posture", "emoji": "💻", "label": "Desk & work-related strain", "aliases": ["postural", "posture", "occupational", "workplace"] },
+      { "slug": "pregnancy-related", "emoji": "🫀", "label": "Pregnancy & post-natal", "aliases": ["pregnancy", "pre-natal", "postnatal", "post-natal", "women's health physio"] }
+    ],
+    "remedial-massage": [
+      { "slug": "tight-shoulders", "emoji": "💪", "label": "Tight shoulders, neck & back", "aliases": ["neck and shoulder", "shoulders", "back tension", "knots"] },
+      { "slug": "training-load", "emoji": "🏃", "label": "Training load & recovery", "aliases": ["sports massage", "sports recovery", "athletes", "training"] },
+      { "slug": "desk-work", "emoji": "💻", "label": "Desk-work stiffness", "aliases": ["desk", "office workers", "postural"] },
+      { "slug": "pregnancy-related", "emoji": "🫀", "label": "Pregnancy", "aliases": ["pregnancy massage", "prenatal massage", "pre-natal"] }
+    ],
+    "nutrition": [
+      { "slug": "gut", "emoji": "🦠", "label": "Gut & digestion questions", "aliases": ["gut health", "ibs", "digestive", "digestion", "fodmap"] },
+      { "slug": "hormonal", "emoji": "🩺", "label": "Hormonal & women's health", "aliases": ["pcos", "endometriosis", "hormonal", "menopause", "fertility"] },
+      { "slug": "sports-fuel", "emoji": "🏃", "label": "Eating for training", "aliases": ["sports nutrition", "athlete", "performance nutrition"] },
+      { "slug": "family-eating", "emoji": "👶", "label": "Family & children's eating", "aliases": ["children's nutrition", "paediatric", "fussy eating", "family"] },
+      { "slug": "food-relationship", "emoji": "🥗", "label": "A calmer relationship with food", "aliases": ["intuitive eating", "weight-neutral", "non-diet", "disordered eating"] }
+    ],
+    "acupuncture": [
+      { "slug": "pain-tension", "emoji": "🦴", "label": "Musculoskeletal pain & tension", "aliases": ["musculoskeletal", "back pain", "neck", "sports injuries"] },
+      { "slug": "fertility-support", "emoji": "🩺", "label": "Fertility & pregnancy support", "aliases": ["fertility", "ivf", "pregnancy", "prenatal"] },
+      { "slug": "stress-sleep", "emoji": "🌙", "label": "Stress and sleep concerns", "aliases": ["stress", "sleep", "insomnia", "anxiety"] },
+      { "slug": "womens-health", "emoji": "🫀", "label": "Women's health", "aliases": ["women's health", "menstrual", "period", "menopause"] }
+    ]
+  }
+}

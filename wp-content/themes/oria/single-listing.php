@@ -726,6 +726,29 @@ while ( have_posts() ) :
 						? \Oria\Core\Reasons\flat( $oria_id )
 						: array();
 					?>
+					<?php
+					/*
+					 * "People come here for" — the practice's own answer about
+					 * why people book in. Renders nothing when nothing is
+					 * ticked: an empty set means nobody has been asked, and it
+					 * must never read as a list of things they do not do.
+					 */
+					$oria_comefor = function_exists( '\Oria\Core\ComeFor\for_listing' )
+						? \Oria\Core\ComeFor\for_listing( $oria_id )
+						: array();
+					?>
+					<?php if ( $oria_comefor ) : ?>
+						<div style="margin-top:var(--s-5)">
+							<h3 class="h4" style="margin-bottom:.75rem"><?php esc_html_e( 'People come here for', 'oria' ); ?></h3>
+							<ul class="chips">
+								<?php foreach ( $oria_comefor as $oria_cf ) : ?>
+									<li><span class="chip"><?php echo $oria_cf['emoji'] ? esc_html( $oria_cf['emoji'] ) . ' ' : ''; ?><?php echo esc_html( $oria_cf['label'] ); ?></span></li>
+								<?php endforeach; ?>
+							</ul>
+							<p class="hint"><?php esc_html_e( 'Told to us by the practice. Reasons people book in — not a statement about what treatment achieves.', 'oria' ); ?></p>
+						</div>
+					<?php endif; ?>
+
 					<?php if ( $oria_reasons ) : ?>
 						<div style="margin-top:var(--s-5)">
 							<h3 class="h4" style="margin-bottom:.75rem"><?php esc_html_e( 'Why people come here', 'oria' ); ?></h3>
