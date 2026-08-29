@@ -99,6 +99,18 @@ while ( have_posts() ) :
 		$oria_gallery = array( listing_image( $oria_id, 'oria-wide' ) );
 	}
 
+	/*
+	 * Google place photos arrive with a size suffix the CDN honours --
+	 * the live pages were pulling s4800-class originals for a 640px slot.
+	 * Rewriting the suffix costs nothing and only ever touches Google's
+	 * own URLs; uploaded images pass through untouched.
+	 */
+	$oria_gsz = static function ( string $oria_gu, int $oria_gw ): string {
+		return false !== strpos( $oria_gu, 'googleusercontent.com' )
+			? (string) preg_replace( '/=[a-z0-9-]+$/i', '=w' . $oria_gw, $oria_gu )
+			: $oria_gu;
+	};
+
 	// LocalBusiness schema is emitted once by Oria\Core\Schema\listing_schema(),
 	// which carries the @id, price band, website and rating this used to duplicate.
 	?>
@@ -128,12 +140,23 @@ while ( have_posts() ) :
 		$oria_fb = 'this.onerror=null;this.src=\'' . esc_js( \Oria\Theme\listing_scene( $oria_id ) ) . '\'';
 		?>
 		<?php if ( count( $oria_gallery ) >= 3 ) : ?>
-			<div class="gallery">
-				<img class="gallery__main" src="<?php echo esc_url( $oria_gallery[0] ); ?>" alt="<?php echo esc_attr( \Oria\Theme\ptitle() ); ?>" onerror="<?php echo esc_attr( $oria_fb ); ?>">
-				<div class="gallery__side">
-					<img src="<?php echo esc_url( $oria_gallery[1] ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: practice name */ __( '%s, second photo', 'oria' ), \Oria\Theme\ptitle() ) ); ?>" onerror="<?php echo esc_attr( $oria_fb ); ?>">
-					<img src="<?php echo esc_url( $oria_gallery[2] ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: practice name */ __( '%s, third photo', 'oria' ), \Oria\Theme\ptitle() ) ); ?>" onerror="<?php echo esc_attr( $oria_fb ); ?>">
+			<div class="gallery" data-lightbox>
+				<div class="gallery__mainwrap">
+					<img class="gallery__main" src="<?php echo esc_url( $oria_gsz( $oria_gallery[0], 1200 ) ); ?>"
+					srcset="<?php echo esc_attr( $oria_gsz( $oria_gallery[0], 800 ) . ' 800w, ' . $oria_gsz( $oria_gallery[0], 1600 ) . ' 1600w' ); ?>"
+					sizes="(max-width: 50rem) 100vw, 66vw"
+					alt="<?php echo esc_attr( \Oria\Theme\ptitle() ); ?>" data-lb="0" onerror="<?php echo esc_attr( $oria_fb ); ?>">
 				</div>
+				<div class="gallery__side">
+					<img src="<?php echo esc_url( $oria_gsz( $oria_gallery[1], 800 ) ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: practice name */ __( '%s, second photo', 'oria' ), \Oria\Theme\ptitle() ) ); ?>" data-lb="1" onerror="<?php echo esc_attr( $oria_fb ); ?>">
+					<img src="<?php echo esc_url( $oria_gsz( $oria_gallery[2], 800 ) ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: practice name */ __( '%s, third photo', 'oria' ), \Oria\Theme\ptitle() ) ); ?>" data-lb="2" onerror="<?php echo esc_attr( $oria_fb ); ?>">
+				</div>
+				<?php
+				// Every photo, not just the three shown -- the lightbox pages
+				// through the lot, which is where the rest finally go.
+				$oria_lb = array_map( static fn( string $oria_gu ): string => $oria_gsz( $oria_gu, 1600 ), $oria_gallery );
+				?>
+				<script type="application/json" data-lightbox-set><?php echo wp_json_encode( array_values( $oria_lb ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></script>
 			</div>
 		<?php else : ?>
 			<div style="border-radius:var(--r-lg);overflow:hidden">
@@ -181,6 +204,55 @@ while ( have_posts() ) :
 
 							<?php
 							/*
+							 * The rating sits directly under the name -- it is the
+							 * strongest trust signal on the page and it used to
+							 * arrive after the ask, below the buttons.
+							 */
+							?>
+						<?php
+						/*
+						 * Ratings, in order of preference: reviews collected
+						 * here; else the listing's Google rating, labelled as
+						 * Google's and linked to the source — never presented
+						 * as our own.
+						 */
+						if ( $oria_rating > 0 ) :
+							?>
+						<div class="profile__title__rating">
+							<span class="rating">
+								<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>
+								<?php echo esc_html( number_format_i18n( $oria_rating, 1 ) ); ?>
+							</span>
+							<?php if ( $oria_rcount > 0 ) : ?>
+								<span class="profile__title__sub"><?php printf( esc_html( _n( '%d Oria Haven review', '%d Oria Haven reviews', $oria_rcount, 'oria' ) ), (int) $oria_rcount ); ?></span>
+							<?php endif; ?>
+						</div>
+						<?php
+						else :
+							$oria_g = \Oria\Core\Places\rating_for( $oria_id );
+							if ( $oria_g['rating'] > 0 ) :
+								?>
+						<div class="profile__title__rating">
+							<a class="rating" href="<?php echo esc_url( $oria_g['uri'] ?: 'https://www.google.com/maps' ); ?>" rel="nofollow noopener" target="_blank">
+								<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>
+								<?php echo esc_html( number_format_i18n( $oria_g['rating'], 1 ) ); ?>
+							</a>
+							<span class="profile__title__sub">
+								<?php
+								if ( $oria_g['count'] > 0 ) {
+									/* translators: %d: number of Google reviews */
+									printf( esc_html__( '%d Google reviews', 'oria' ), (int) $oria_g['count'] );
+								} else {
+									esc_html_e( 'Rating on Google', 'oria' );
+								}
+								?>
+							</span>
+						</div>
+							<?php endif; ?>
+						<?php endif; ?>
+
+							<?php
+							/*
 							 * The want-tags, derived from this practice's own services and
 							 * specialties exactly as the directory cards derive them — the
 							 * same three words a visitor saw on the card that brought them
@@ -196,27 +268,6 @@ while ( have_posts() ) :
 										<span class="pill pill--gf" style="--gf:<?php echo esc_attr( $oria_w['color'] ); ?>"><?php echo esc_html( $oria_w['label'] ); ?></span>
 									<?php endforeach; ?>
 								</div>
-							<?php endif; ?>
-
-							<?php
-							/*
-							 * One line saying what this is, before anything
-							 * else. Taken from the blurb's opening sentence,
-							 * which is on 100% of listings and was written to
-							 * be read first — it just was not being shown
-							 * until the About section most of a screen down.
-							 */
-							$oria_lede = trim( wp_strip_all_tags( (string) get_the_excerpt() ) );
-							if ( '' !== $oria_lede ) {
-								if ( preg_match( '/^(.{40,190}?[.!?])(\s|$)/u', $oria_lede, $oria_m ) ) {
-									$oria_lede = $oria_m[1];
-								} elseif ( mb_strlen( $oria_lede ) > 190 ) {
-									$oria_lede = rtrim( mb_substr( $oria_lede, 0, 190 ) ) . '…';
-								}
-							}
-							?>
-							<?php if ( '' !== $oria_lede ) : ?>
-								<p class="lede profile__lede"><?php echo esc_html( $oria_lede ); ?></p>
 							<?php endif; ?>
 
 							<?php if ( $oria_address || $oria_region ) : ?>
@@ -321,47 +372,6 @@ while ( have_posts() ) :
 								</button>
 							</div>
 						</div>
-						<?php
-						/*
-						 * Ratings, in order of preference: reviews collected
-						 * here; else the listing's Google rating, labelled as
-						 * Google's and linked to the source — never presented
-						 * as our own.
-						 */
-						if ( $oria_rating > 0 ) :
-							?>
-						<div class="profile__title__rating">
-							<span class="rating">
-								<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>
-								<?php echo esc_html( number_format_i18n( $oria_rating, 1 ) ); ?>
-							</span>
-							<?php if ( $oria_rcount > 0 ) : ?>
-								<span class="profile__title__sub"><?php printf( esc_html( _n( '%d Oria Haven review', '%d Oria Haven reviews', $oria_rcount, 'oria' ) ), (int) $oria_rcount ); ?></span>
-							<?php endif; ?>
-						</div>
-						<?php
-						else :
-							$oria_g = \Oria\Core\Places\rating_for( $oria_id );
-							if ( $oria_g['rating'] > 0 ) :
-								?>
-						<div class="profile__title__rating">
-							<a class="rating" href="<?php echo esc_url( $oria_g['uri'] ?: 'https://www.google.com/maps' ); ?>" rel="nofollow noopener" target="_blank">
-								<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>
-								<?php echo esc_html( number_format_i18n( $oria_g['rating'], 1 ) ); ?>
-							</a>
-							<span class="profile__title__sub">
-								<?php
-								if ( $oria_g['count'] > 0 ) {
-									/* translators: %d: number of Google reviews */
-									printf( esc_html__( '%d Google reviews', 'oria' ), (int) $oria_g['count'] );
-								} else {
-									esc_html_e( 'Rating on Google', 'oria' );
-								}
-								?>
-							</span>
-						</div>
-							<?php endif; ?>
-						<?php endif; ?>
 					</div>
 				</div>
 
@@ -420,12 +430,42 @@ while ( have_posts() ) :
 				// good_for now has its own headed section below About — a
 				// paragraph doesn't belong in a keyfacts row as well.
 
+				/*
+				 * Hours, amenities and the verified date, each only when the
+				 * listing actually carries them. Hours sit on almost none of
+				 * the imported listings yet -- the row exists for the owners
+				 * who add them, never as dressing.
+				 */
+				$oria_hrows = \Oria\Theme\rows( 'opening_hours', array(), $oria_id );
+				if ( $oria_hrows ) {
+					$oria_hbits = array();
+					foreach ( $oria_hrows as $oria_hr ) {
+						$oria_hline = trim( trim( (string) ( $oria_hr['days'] ?? '' ) ) . ' ' . trim( (string) ( $oria_hr['hours'] ?? '' ) ) );
+						if ( '' !== $oria_hline ) {
+							$oria_hbits[] = $oria_hline;
+						}
+					}
+					if ( $oria_hbits ) {
+						$oria_glance[] = array( __( 'Hours', 'oria' ), implode( ' · ', array_slice( $oria_hbits, 0, 3 ) ) );
+					}
+				}
+				$oria_amen = get_field( 'amenities', $oria_id );
+				if ( is_string( $oria_amen ) && '' !== trim( $oria_amen ) ) {
+					$oria_amen = array_map( 'trim', explode( ',', $oria_amen ) );
+				}
+				if ( is_array( $oria_amen ) && $oria_amen ) {
+					$oria_glance[] = array( __( 'Amenities', 'oria' ), implode( ', ', array_slice( array_map( 'strval', $oria_amen ), 0, 4 ) ) );
+				}
+				if ( $oria_verified ) {
+					$oria_glance[] = array( __( 'Verified', 'oria' ), mysql2date( 'j M Y', $oria_verified ) );
+				}
+
 				// Three is the point where a panel reads as a summary rather
 				// than as two orphaned facts in a box.
 				if ( count( $oria_glance ) >= 3 ) :
 					?>
 				<h2 class="sr-only"><?php esc_html_e( 'At a glance', 'oria' ); ?></h2>
-				<div class="keyfacts">
+				<div class="keyfacts reveal">
 					<?php foreach ( $oria_glance as $oria_gf ) : ?>
 						<div>
 							<div class="keyfact__k"><?php echo esc_html( $oria_gf[0] ); ?></div>
@@ -452,7 +492,7 @@ while ( have_posts() ) :
 
 				<!-- About: full content, or the imported blurb until one is written -->
 				<?php $oria_body = trim( (string) apply_filters( 'the_content', get_the_content() ) ); ?>
-				<div>
+				<div class="reveal">
 					<h2 class="h3" style="margin-bottom:.85rem"><?php esc_html_e( 'About', 'oria' ); ?></h2>
 					<div class="prose">
 						<?php echo $oria_body ? wp_kses_post( $oria_body ) : '<p>' . esc_html( get_the_excerpt() ) . '</p>'; // phpcs:ignore ?>
@@ -590,6 +630,45 @@ while ( have_posts() ) :
 							</article>
 						<?php endforeach; ?>
 					</div>
+				</div>
+				<?php endif; ?>
+
+				<!-- Who you'll see: the practice's own people, when they've told us -->
+				<?php
+				$oria_team = \Oria\Theme\rows( 'team', array(), $oria_id );
+				$oria_team = array_values( array_filter( (array) $oria_team, static function ( $oria_tr ) {
+					return is_array( $oria_tr ) && '' !== trim( (string) ( $oria_tr['name'] ?? '' ) );
+				} ) );
+				?>
+				<?php if ( $oria_team ) : ?>
+				<div class="reveal">
+					<h2 class="h3" style="margin-bottom:.85rem"><?php esc_html_e( 'Who you\'ll see', 'oria' ); ?></h2>
+					<div class="teamrow">
+						<?php foreach ( array_slice( $oria_team, 0, 6 ) as $oria_tm ) : ?>
+							<?php
+							$oria_tphoto = $oria_tm['photo'] ?? null;
+							if ( is_array( $oria_tphoto ) ) {
+								$oria_tphoto = $oria_tphoto['sizes']['thumbnail'] ?? ( $oria_tphoto['url'] ?? '' );
+							} elseif ( is_numeric( $oria_tphoto ) ) {
+								$oria_tphoto = (string) wp_get_attachment_image_url( (int) $oria_tphoto, 'thumbnail' );
+							} else {
+								$oria_tphoto = '';
+							}
+							?>
+							<div class="teamcard">
+								<?php if ( $oria_tphoto ) : ?>
+									<img class="teamcard__photo" src="<?php echo esc_url( $oria_tphoto ); ?>" alt="" width="56" height="56" loading="lazy">
+								<?php endif; ?>
+								<div>
+									<b class="teamcard__name"><?php echo esc_html( (string) $oria_tm['name'] ); ?></b>
+									<?php if ( ! empty( $oria_tm['role'] ) ) : ?>
+										<span class="teamcard__role"><?php echo esc_html( (string) $oria_tm['role'] ); ?></span>
+									<?php endif; ?>
+								</div>
+							</div>
+						<?php endforeach; ?>
+					</div>
+					<p class="hint" style="margin-top:.6rem"><?php esc_html_e( 'Told to us by the practice.', 'oria' ); ?></p>
 				</div>
 				<?php endif; ?>
 
@@ -941,6 +1020,34 @@ while ( have_posts() ) :
 				<div id="reviews">
 				<?php get_template_part( 'template-parts/review', 'list', array( 'listing_id' => $oria_id ) ); ?>
 
+				<?php
+				/*
+				 * One line from the reviews, set large on the page's single
+				 * dark moment. Google's words, attributed and linked exactly
+				 * as the cards below are -- shortened with an ellipsis, which
+				 * their display rules allow, never reworded.
+				 */
+				$oria_quote = null;
+				foreach ( $oria_reviews as $oria_qrv ) {
+					$oria_qt = trim( (string) ( $oria_qrv['text'] ?? '' ) );
+					if ( mb_strlen( $oria_qt ) >= 60 && (float) ( $oria_qrv['rating'] ?? 0 ) >= 4 ) {
+						if ( preg_match( '/^(.{50,180}?[.!?])(\s|$)/u', $oria_qt, $oria_qm ) ) {
+							$oria_qt = $oria_qm[1];
+						} elseif ( mb_strlen( $oria_qt ) > 180 ) {
+							$oria_qt = rtrim( mb_substr( $oria_qt, 0, 180 ) ) . '…';
+						}
+						$oria_quote = array( 'text' => $oria_qt, 'by' => (string) ( $oria_qrv['author'] ?? '' ) );
+						break;
+					}
+				}
+				?>
+				<?php if ( $oria_quote ) : ?>
+				<figure class="gquote reveal">
+					<blockquote>“<?php echo esc_html( $oria_quote['text'] ); ?>”</blockquote>
+					<figcaption>— <?php echo esc_html( $oria_quote['by'] ); ?>, <?php esc_html_e( 'on Google', 'oria' ); ?></figcaption>
+				</figure>
+				<?php endif; ?>
+
 				<!-- Reviews (Google's, attributed and linked as their terms require) -->
 				<?php if ( $oria_reviews ) : ?>
 				<div>
@@ -1017,17 +1124,22 @@ while ( have_posts() ) :
 				$oria_kmlab = $oria_geo ? \Oria\Core\Geo\label( $oria_id ) : '';
 				if ( $oria_address || $oria_transit || $oria_parking || '' !== $oria_kmlab ) :
 					?>
-				<div>
+				<div class="reveal">
 					<h2 class="h3" style="margin-bottom:1rem"><?php esc_html_e( 'Getting there', 'oria' ); ?></h2>
 					<div class="card" style="overflow:hidden">
 						<?php if ( $oria_map ) : ?>
-							<iframe
-								src="<?php echo esc_url( $oria_map ); ?>"
-								title="<?php printf( esc_attr__( 'Map showing %s', 'oria' ), esc_attr( \Oria\Theme\ptitle() ) ); ?>"
-								style="display:block;width:100%;aspect-ratio:16/7;border:0"
-								loading="lazy"
-								allowfullscreen
-								referrerpolicy="no-referrer-when-downgrade"></iframe>
+							<?php
+							/*
+							 * The live embed loads on request, not on page load: a
+							 * Google Maps iframe is the heaviest thing on a page
+							 * this long, and most readers only want the address.
+							 */
+							?>
+							<button type="button" class="mapfacade" data-map-src="<?php echo esc_url( $oria_map ); ?>"
+								data-map-title="<?php printf( esc_attr__( 'Map showing %s', 'oria' ), esc_attr( \Oria\Theme\ptitle() ) ); ?>">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+								<span><?php esc_html_e( 'Show the map', 'oria' ); ?></span>
+							</button>
 						<?php endif; ?>
 						<div class="card__body">
 							<div class="grid grid-2" style="gap:1rem">

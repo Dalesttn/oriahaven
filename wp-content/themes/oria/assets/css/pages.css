@@ -560,6 +560,8 @@ a.livesession:hover { background: var(--sand-2); }
 .gallery { display: grid; grid-template-columns: 2fr 1fr; gap: var(--s-3); border-radius: var(--r-lg); overflow: hidden; }
 .gallery img { width: 100%; height: 100%; object-fit: cover; }
 .gallery__main { aspect-ratio: 3 / 2; }
+.gallery__mainwrap { overflow: hidden; aspect-ratio: 3 / 2; }
+.gallery__mainwrap .gallery__main { height: 100%; }
 .gallery__side { display: grid; gap: var(--s-3); }
 .gallery__side img { aspect-ratio: 3 / 2; }
 @media (max-width: 700px) { .gallery { grid-template-columns: 1fr; } .gallery__side { grid-template-columns: 1fr 1fr; display: grid; } }
@@ -3908,3 +3910,62 @@ article.is-spotlit {
   .chip { padding-block: .45rem; }
   .pill { padding-block: .6rem; }
 }
+
+/* --- Listing profile: motion + the dark moment ------------------------
+   The motion vocabulary is the homepage's breathing orb, not SaaS
+   micro-bounce: slow, one direction, fired once. Everything transformable
+   sits behind prefers-reduced-motion -- wellness readers skew higher on
+   vestibular sensitivity, so the guard is the point, not box-ticking. */
+
+/* Ken Burns on the hero photo: a 22s drift, alternating. The single
+   cheapest way to make a static listing feel inhabited. */
+@media (prefers-reduced-motion: no-preference) {
+  .gallery__main { animation: oriakb 22s ease-in-out infinite alternate; }
+  @keyframes oriakb { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+  /* The star fills as the page opens -- a fill, not a count-up. */
+  .profile__title__rating .rating__star { animation: oriastar .7s var(--ease-out, ease-out) both; transform-origin: center; }
+  @keyframes oriastar { from { opacity: 0; transform: scale(.55); } 60% { transform: scale(1.12); } to { opacity: 1; transform: scale(1); } }
+
+  /* The save heart: the one place a snappy interaction is right. */
+  .savebtn[aria-pressed="true"] .savebtn__on { animation: oriaheart .22s ease; }
+  @keyframes oriaheart { 0% { transform: scale(1); } 50% { transform: scale(1.25); } 100% { transform: scale(1); } }
+}
+
+/* The rating, now directly under the name. */
+.profile__title__rating { display: flex; align-items: baseline; gap: .5rem; margin-top: .65rem; }
+
+/* One warm grade over every photograph. 380 scraped photo sets, one
+   white balance -- gentle enough that no single image reads as filtered. */
+.gallery img, .listing__media img, .catmap__pop img { filter: sepia(.06) saturate(.94); }
+
+/* The page's one dark moment: a review line set large. */
+.gquote { margin: 0 0 2.6rem; padding: clamp(1.6rem, 4vw, 2.6rem); background: var(--deep); border-radius: var(--r-lg); color: var(--mist, #DDE7E1); }
+.gquote blockquote { margin: 0; font-family: var(--font-display, Georgia, serif); font-style: italic; font-size: clamp(1.25rem, 2.6vw, 1.6rem); line-height: 1.45; color: var(--white, #fff); text-wrap: balance; }
+.gquote figcaption { margin-top: .9rem; font-size: var(--fs-sm); color: var(--mist, #B9C9C0); }
+
+/* Who you'll see. */
+.teamrow { display: flex; flex-wrap: wrap; gap: .7rem; }
+.teamcard { display: flex; align-items: center; gap: .65rem; padding: .55rem .9rem .55rem .6rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-pill); }
+.teamcard__photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.teamcard__name { display: block; font-size: var(--fs-sm); line-height: 1.25; }
+.teamcard__role { display: block; font-size: var(--fs-xs); color: var(--text-faint); }
+
+/* The map facade: the live embed loads on request. */
+.mapfacade { display: flex; width: 100%; aspect-ratio: 16 / 7; align-items: center; justify-content: center; gap: .6rem; border: 0; cursor: pointer; font: inherit; font-weight: 600; color: var(--deep); background:
+  radial-gradient(circle at 30% 40%, rgba(78,127,112,.16), transparent 55%),
+  radial-gradient(circle at 70% 65%, rgba(201,162,75,.12), transparent 50%),
+  var(--sand-2, #F2EFE7); }
+.mapfacade svg { width: 22px; height: 22px; }
+.mapfacade:hover { background-color: var(--sand-3, #ECE7DA); }
+
+/* The gallery lightbox. */
+.gallery[data-lightbox] img { cursor: zoom-in; }
+.lbox { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; background: rgba(8, 34, 32, .92); padding: 3.5rem 1rem 1rem; }
+.lbox img { max-width: min(1200px, 94vw); max-height: 84vh; object-fit: contain; border-radius: var(--r-md); }
+.lbox__x, .lbox__nav { position: absolute; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgba(255,255,255,.14); color: #fff; font-size: 1.4rem; line-height: 1; cursor: pointer; }
+.lbox__x { top: 1rem; right: 1rem; }
+.lbox__nav { top: 50%; transform: translateY(-50%); }
+.lbox__nav--prev { left: .8rem; }
+.lbox__nav--next { right: .8rem; }
+.lbox__n { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,.75); font-size: var(--fs-sm); }

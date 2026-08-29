@@ -3748,6 +3748,87 @@
     initReadbar();
     initShare();
     initYear();
+
+  /* --- Listing profile: gallery lightbox + click-to-load map ---------- */
+  /* The lightbox pages through EVERY photo the listing has, not the three
+     the grid shows -- which is where the rest finally go. Keyboard: Esc
+     closes, arrows page. Focus returns to the image that opened it. */
+  function initLightbox() {
+    var host = $(".gallery[data-lightbox]");
+    if (!host) return;
+    var setEl = host.querySelector("[data-lightbox-set]");
+    var urls = [];
+    try { urls = JSON.parse(setEl ? setEl.textContent : "[]") || []; } catch (e) { urls = []; }
+    if (!urls.length) return;
+
+    var at = 0, box = null, opener = null;
+
+    function paint() {
+      var img = box.querySelector("img");
+      img.src = urls[at];
+      box.querySelector(".lbox__n").textContent = (at + 1) + " / " + urls.length;
+    }
+    function close() {
+      if (!box) return;
+      box.remove(); box = null;
+      document.removeEventListener("keydown", keys);
+      if (opener) opener.focus();
+    }
+    function step(d) { at = (at + d + urls.length) % urls.length; paint(); }
+    function keys(e) {
+      if ("Escape" === e.key) close();
+      else if ("ArrowRight" === e.key) step(1);
+      else if ("ArrowLeft" === e.key) step(-1);
+    }
+    function open(i, from) {
+      at = i; opener = from;
+      box = document.createElement("div");
+      box.className = "lbox";
+      box.setAttribute("role", "dialog");
+      box.setAttribute("aria-label", "Photo viewer");
+      box.innerHTML =
+        '<img alt="">' +
+        '<button class="lbox__x" type="button" aria-label="Close">\u00d7</button>' +
+        (urls.length > 1
+          ? '<button class="lbox__nav lbox__nav--prev" type="button" aria-label="Previous photo">\u2190</button>' +
+            '<button class="lbox__nav lbox__nav--next" type="button" aria-label="Next photo">\u2192</button>'
+          : "") +
+        '<span class="lbox__n"></span>';
+      document.body.appendChild(box);
+      box.querySelector(".lbox__x").addEventListener("click", close);
+      box.addEventListener("click", function (e) { if (e.target === box) close(); });
+      var p = box.querySelector(".lbox__nav--prev"), n = box.querySelector(".lbox__nav--next");
+      if (p) p.addEventListener("click", function () { step(-1); });
+      if (n) n.addEventListener("click", function () { step(1); });
+      document.addEventListener("keydown", keys);
+      paint();
+      box.querySelector(".lbox__x").focus();
+    }
+
+    host.addEventListener("click", function (e) {
+      var img = e.target.closest("[data-lb]");
+      if (!img) return;
+      open(parseInt(img.dataset.lb, 10) || 0, img);
+    });
+  }
+
+  /* The Google Maps iframe is the heaviest asset on the longest page of
+     the site; it now loads when somebody asks for it. */
+  function initMapFacade() {
+    var btn = $(".mapfacade");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var frame = document.createElement("iframe");
+      frame.src = btn.dataset.mapSrc;
+      frame.title = btn.dataset.mapTitle || "Map";
+      frame.style.cssText = "display:block;width:100%;aspect-ratio:16/7;border:0";
+      frame.setAttribute("allowfullscreen", "");
+      frame.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
+      btn.replaceWith(frame);
+    });
+  }
     initDistance();
+    initLightbox();
+    initMapFacade();
   });
 })();
