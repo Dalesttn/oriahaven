@@ -260,3 +260,13 @@ div[submit-success] > .wpforms-confirmation-container-full {
 .oform-lookup__note.is-ok { color: var(--claimed, #20604c); font-weight: 600; }
 .oform-lookup__note.is-warn { color: var(--gold, #a87a18); font-weight: 600; }
 
+
+/* ------------------------------------------------------------------ phones.
+   Every field at 16px: anything smaller makes iOS Safari zoom the whole
+   page the moment a field takes focus, and leave it zoomed after the
+   keyboard goes -- the "the site jumped and stayed huge" bug. 16px is the
+   documented threshold, so this is the one font size that is not taste. */
+@media (max-width: 50rem) {
+  .input, .select, .textarea, .newsletter input,
+  .searchbar input, .searchoverlay input, .navsearch input { font-size: 1rem; }
+}

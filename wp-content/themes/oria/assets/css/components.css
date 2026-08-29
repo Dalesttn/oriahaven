@@ -928,15 +928,11 @@ html.has-sheet .cmptray { display: none; }
 }
 .drawer__saved > span:first-child { color: var(--brand-gold, #C9A227); }
 
-/* --- Service card reveal -------------------------------------------------
-   Illustration, ticks and meter live in one wrapper that is collapsed to
-   nothing and grows out of the card on hover or keyboard focus. 0fr -> 1fr
-   animates to the content's real height, whatever mix of parts a card has.
-
-   Scoped to devices that hover: a phone has no hover state, and information
-   only a pointer can reach is information withheld -- so there the wrapper
-   is simply always open. Either way the text stays in the accessibility
-   tree; only the visual is folded. */
+/* --- Service card extras -------------------------------------------------
+   Illustration, ticks and meter, always open. This began as a hover
+   reveal; it now stays down on every device -- the ticks and meter are the
+   card's substance, and phones were already showing them, so hover-only
+   was two behaviours where one reads better. */
 .offercard__media { display: block; }
 .offercard__img {
   display: block; width: 100%; height: auto;
@@ -945,25 +941,6 @@ html.has-sheet .cmptray { display: none; }
 .offercard__more,
 .offercard__morein { display: block; }
 .offercard__morein > .offercard__media { margin-top: .75rem; }
-
-@media (hover: hover) {
-  .offercard .offercard__more {
-    display: grid; grid-template-rows: 0fr;
-    margin-top: 0; overflow: hidden;
-    transition: grid-template-rows .3s ease, margin-top .3s ease, opacity .3s ease;
-    opacity: 0;
-  }
-  /* The single grid child; it will not shrink below content without this. */
-  .offercard .offercard__more > .offercard__morein { min-height: 0; overflow: hidden; }
-  .offercard:hover .offercard__more,
-  .offercard:focus-visible .offercard__more {
-    grid-template-rows: 1fr; margin-top: .25rem; opacity: 1;
-  }
-}
-
-@media (hover: hover) and (prefers-reduced-motion: reduce) {
-  .offercard .offercard__more { transition: none; }
-}
 
 /* --- Service card facts --------------------------------------------------
    Three ticks and, where it means something, an effort meter. The ticks are
@@ -993,3 +970,10 @@ html.has-sheet .cmptray { display: none; }
   border: 1px solid var(--ink, #082220); background: transparent;
 }
 .offercard__dot.is-on { background: var(--ink, #082220); }
+
+/* Phones: the footer is read with a thumb. The type stays the same size --
+   the touch target grows around it, which is why this is padding and not
+   font-size. The link cloud already wears chip padding and needs nothing. */
+@media (max-width: 50rem) {
+  .foot__list a, .foot__legal a { display: inline-block; padding-block: .3rem; }
+}
