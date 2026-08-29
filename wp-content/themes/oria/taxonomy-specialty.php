@@ -150,11 +150,78 @@ $oria_guides = ( $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) )
 
 		<?php
 		/*
-		 * The facts strip that sat here repeated the answer sentence's own
-		 * numbers card by card — the quotable sentence is the citation, so
-		 * it speaks alone now (same call as the directory page).
+		 * The map, exactly as the category pages carry it: every listing on
+		 * this page pinned at its real coordinates, hover to name it, click
+		 * for the photo card and the profile. Same payload shape, so the one
+		 * initCatMap() in app.js serves both.
 		 */
+		$oria_map = array();
+		foreach ( $oria_ids as $oria_mid ) {
+			$oria_mla = get_post_meta( (int) $oria_mid, 'geo_lat', true );
+			$oria_mlo = get_post_meta( (int) $oria_mid, 'geo_lng', true );
+			if ( ! is_numeric( $oria_mla ) || ! is_numeric( $oria_mlo ) || 0.0 === (float) $oria_mla ) {
+				continue;
+			}
+			$oria_msub = '';
+			foreach ( wp_get_post_terms( (int) $oria_mid, 'area' ) as $oria_mt ) {
+				if ( $oria_mt->parent ) {
+					$oria_msub = $oria_mt->name;
+					break;
+				}
+			}
+			$oria_map[] = array(
+				'n'  => wp_specialchars_decode( (string) get_post_field( 'post_title', $oria_mid, 'raw' ), ENT_QUOTES ),
+				'u'  => (string) get_permalink( (int) $oria_mid ),
+				'la' => (float) $oria_mla,
+				'lo' => (float) $oria_mlo,
+				's'  => $oria_msub,
+				'i'  => function_exists( '\Oria\Theme\listing_image' ) ? \Oria\Theme\listing_image( (int) $oria_mid ) : '',
+			);
+		}
+
+		/*
+		 * "Near you" for this specialty. A specialty has no facet family of
+		 * its own — /practices/{cat}/{suburb}/ belongs to categories — so the
+		 * pills filter this page in place rather than inventing an address
+		 * that would 404.
+		 */
+		$oria_near = array();
+		foreach ( $oria_ids as $oria_nid ) {
+			foreach ( wp_get_post_terms( (int) $oria_nid, 'area' ) as $oria_na ) {
+				if ( ! $oria_na->parent ) {
+					continue;
+				}
+				if ( ! isset( $oria_near[ $oria_na->slug ] ) ) {
+					$oria_near[ $oria_na->slug ] = array( 'name' => $oria_na->name, 'n' => 0 );
+				}
+				++$oria_near[ $oria_na->slug ]['n'];
+			}
+		}
+		$oria_near = array_filter( $oria_near, static fn( array $oria_r ): bool => $oria_r['n'] >= 3 );
+		uasort( $oria_near, static fn( array $oria_a, array $oria_b ): int => $oria_b['n'] <=> $oria_a['n'] );
+		$oria_near = array_slice( $oria_near, 0, 12, true );
 		?>
+		<?php if ( $oria_map ) : ?>
+		<div class="decide__map">
+			<div class="catmap" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of %s places across Perth', 'oria' ), esc_attr( $oria_sname ) ); ?>">
+				<div class="catmap__tip" hidden></div>
+			</div>
+			<script type="application/json" data-catmap-data><?php echo wp_json_encode( $oria_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data script tag ?></script>
+			<?php if ( $oria_near && $oria_term ) : ?>
+				<div class="nearyou nearyou--map">
+					<h2 class="h4"><?php printf( esc_html__( '%s near you', 'oria' ), esc_html( $oria_sname ) ); ?></h2>
+					<div class="nearyou__pills">
+						<?php foreach ( $oria_near as $oria_nrow ) : ?>
+							<a class="pill" data-suburb="<?php echo esc_attr( $oria_nrow['name'] ); ?>" href="<?php echo esc_url( add_query_arg( 'suburb', rawurlencode( $oria_nrow['name'] ), (string) get_term_link( $oria_term ) ) ); ?>">
+								<?php echo esc_html( $oria_nrow['name'] ); ?> <span class="nearyou__n"><?php echo esc_html( number_format_i18n( $oria_nrow['n'] ) ); ?></span>
+							</a>
+						<?php endforeach; ?>
+					</div>
+					<p class="hint" style="margin-top:.5rem"><?php esc_html_e( 'Click a suburb to zoom the map there — click it again to zoom back out.', 'oria' ); ?></p>
+				</div>
+			<?php endif; ?>
+		</div>
+		<?php endif; ?>
 	</div>
 
 	<?php

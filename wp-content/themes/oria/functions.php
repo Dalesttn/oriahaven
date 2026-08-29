@@ -89,7 +89,8 @@ add_action(
 		 * for window.L before drawing, so the dependency stays one-way.
 		 */
 		if ( get_query_var( 'oria_practice_v2' )
-			|| ( function_exists( '\Oria\Core\PracticesIndex\mode' ) && '' !== \Oria\Core\PracticesIndex\mode() && is_post_type_archive( 'listing' ) && ! is_search() ) ) {
+			|| ( function_exists( '\Oria\Core\PracticesIndex\mode' ) && '' !== \Oria\Core\PracticesIndex\mode() && is_post_type_archive( 'listing' ) && ! is_search() )
+			|| is_tax( 'specialty' ) ) {
 			wp_enqueue_style( 'oria-leaflet', "{$uri}/assets/vendor/leaflet/leaflet.css", array(), '1.9.4' );
 			wp_enqueue_script( 'oria-leaflet', "{$uri}/assets/vendor/leaflet/leaflet.js", array(), '1.9.4', array( 'in_footer' => true ) );
 		}
