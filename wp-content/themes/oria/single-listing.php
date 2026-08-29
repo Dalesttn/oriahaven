@@ -181,6 +181,25 @@ while ( have_posts() ) :
 
 							<?php
 							/*
+							 * The want-tags, derived from this practice's own services and
+							 * specialties exactly as the directory cards derive them — the
+							 * same three words a visitor saw on the card that brought them
+							 * here. Nothing is stored per listing and nothing is claimed on
+							 * the practice's behalf: a tag appears only because the business
+							 * genuinely offers what sits behind it.
+							 */
+							$oria_wants = function_exists( '\Oria\Core\GoodFor\for_listing' ) ? \Oria\Core\GoodFor\for_listing( $oria_id ) : array();
+							?>
+							<?php if ( $oria_wants ) : ?>
+								<div class="profile__wants">
+									<?php foreach ( $oria_wants as $oria_w ) : ?>
+										<span class="pill pill--gf" style="--gf:<?php echo esc_attr( $oria_w['color'] ); ?>"><?php echo esc_html( $oria_w['label'] ); ?></span>
+									<?php endforeach; ?>
+								</div>
+							<?php endif; ?>
+
+							<?php
+							/*
 							 * One line saying what this is, before anything
 							 * else. Taken from the blurb's opening sentence,
 							 * which is on 100% of listings and was written to

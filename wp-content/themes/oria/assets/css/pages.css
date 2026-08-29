@@ -1160,6 +1160,8 @@ a.livesession:hover { background: var(--sand-2); }
    after the count. Colour arrives per-chip as --gf from goodfor.json. */
 .chip--gf { background: var(--gf, var(--deep)); border-color: transparent; color: #fff; font-weight: 600; }
 .chip--gf button { color: #fff; }
+/* The want tags on a listing profile, right under its name. */
+.profile__wants { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .7rem; }
 /* Area chips wear the sand/tan side of the palette, so "where" reads apart
    from "what" at a glance without adding a third accent to the page. */
 .chip--area { background: var(--sand-3, #E6DFCD); border-color: transparent; color: var(--ink); font-weight: 600; }
