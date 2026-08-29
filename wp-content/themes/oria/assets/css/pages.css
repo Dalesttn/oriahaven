@@ -1087,6 +1087,10 @@ a.livesession:hover { background: var(--sand-2); }
    after the count. Colour arrives per-chip as --gf from goodfor.json. */
 .chip--gf { background: var(--gf, var(--deep)); border-color: transparent; color: #fff; font-weight: 600; }
 .chip--gf button { color: #fff; }
+/* Area chips wear the sand/tan side of the palette, so "where" reads apart
+   from "what" at a glance without adding a third accent to the page. */
+.chip--area { background: var(--sand-3, #E6DFCD); border-color: transparent; color: var(--ink); font-weight: 600; }
+.chip--area button { color: var(--text-soft); }
 .dir__countline { color: var(--ink); font-weight: 700; }
 details[open] > .gfsummary { background: var(--ink); border-color: var(--ink); color: #fff; }
 
@@ -2723,11 +2727,13 @@ html.has-sheet { overflow: hidden; }
   .dir__results--wide .listing__foot .btn { padding: .4rem .7rem; font-size: var(--fs-xs); }
 }
 
-/* Phones — a long category grid shows eight, then a button for the rest. */
-.intentgrid__more { display: none; }
+/* A long category grid holds back: three rows on desktop, two on phones,
+   then a button for the rest. Twenty-three cards of grid before any
+   content is a wall, not a menu. */
+.intentgrid--cats:not(.is-expanded) .intentcard:nth-child(n+13) { display: none; }
+.intentgrid__more { display: block; width: 100%; margin-top: var(--s-3); padding: .7rem; border: 1px dashed var(--line-strong); border-radius: var(--r-md); background: transparent; color: var(--deep); font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer; }
 @media (max-width: 50rem) {
   .intentgrid--cats:not(.is-expanded) .intentcard:nth-child(n+9) { display: none; }
-  .intentgrid__more { display: block; width: 100%; margin-top: var(--s-3); padding: .7rem; border: 1px dashed var(--line-strong); border-radius: var(--r-md); background: transparent; color: var(--deep); font: inherit; font-size: var(--fs-sm); font-weight: 600; }
 }
 
 /* --- Reviews: ours, and the form that collects them ------------------ */
@@ -3727,6 +3733,16 @@ article.is-spotlit {
   transition: box-shadow .4s ease;
 }
 .nearyou--map { margin-top: 0; }
+
+/* Directory page: the category grid compacted into the heading's right
+   column, and the full-width map that took the grid's old spot. */
+.intentgrid--side { grid-template-columns: 1fr 1fr; gap: .5rem; }
+.intentgrid--side .intentcard { padding: .55rem .7rem; }
+.intentgrid--side .intentcard__label { font-size: var(--fs-xs); }
+.intentgrid--side .intentcard__count { font-size: var(--fs-xs); }
+.intentgrid--side .intentcard__icon svg { width: 16px; height: 16px; }
+.catmap--wide { height: 560px; }
+@media (max-width: 60rem) { .catmap--wide { height: 400px; } }
 .nearyou--map .pill.is-here { background: var(--deep); border-color: var(--deep); color: #fff; }
 .nearyou--map .pill.is-here .nearyou__n { color: rgba(255,255,255,.7); }
 .nearyou__open { display: inline-block; margin-top: .6rem; font-weight: 600; color: var(--deep); text-decoration: underline; text-underline-offset: 3px; }

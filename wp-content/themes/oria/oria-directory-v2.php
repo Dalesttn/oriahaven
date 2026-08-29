@@ -65,24 +65,23 @@ $oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span><span><?php esc_html_e( 'Directory', 'oria' ); ?></span>
 	</nav>
-	<div style="margin-top:1rem">
-		<?php $oria_qh = \Oria\Core\PracticesIndex\query_heading(); ?>
-		<span class="micro"><?php esc_html_e( 'The directory', 'oria' ); ?></span>
-		<?php if ( '' !== $oria_qh ) : ?>
-			<h1 class="h1 pagehead__title"><?php echo esc_html( $oria_qh ); ?></h1>
-		<?php else : ?>
-			<h1 class="h1 pagehead__title"><?php
-				printf(
-					/* translators: %s: live listing count. The page's one big emotional line — the count keeps it honest and keeps it fresh. */
-					esc_html__( 'Discover %s ways to look after yourself.', 'oria' ),
-					'<b>' . esc_html( number_format_i18n( count( $oria_all ) ) ) . '</b>'
-				);
-			?></h1>
-		<?php endif; ?>
-	</div>
-
 	<div class="decide">
 		<div class="decide__answer">
+			<div class="decide__head">
+				<?php $oria_qh = \Oria\Core\PracticesIndex\query_heading(); ?>
+				<span class="micro"><?php esc_html_e( 'The directory', 'oria' ); ?></span>
+				<?php if ( '' !== $oria_qh ) : ?>
+					<h1 class="h1 pagehead__title"><?php echo esc_html( $oria_qh ); ?></h1>
+				<?php else : ?>
+					<h1 class="h1 pagehead__title"><?php
+						printf(
+							/* translators: %s: live listing count. The page's one big emotional line — the count keeps it honest and keeps it fresh. */
+							esc_html__( 'Discover %s ways to look after yourself.', 'oria' ),
+							'<b>' . esc_html( number_format_i18n( count( $oria_all ) ) ) . '</b>'
+						);
+					?></h1>
+				<?php endif; ?>
+			</div>
 			<span class="micro"><?php esc_html_e( 'The short answer', 'oria' ); ?></span>
 			<p class="lede" style="margin-top:.5rem;max-width:62ch">
 				<?php
@@ -97,18 +96,10 @@ $oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 			</p>
 			<p class="hint" style="margin-top:.6rem"><?php esc_html_e( "Most listings here were built from public information and are waiting for their owner to take them over — each one says so on its own page. We never take a cut of a booking.", 'oria' ); ?></p>
 		</div>
-		<?php
-		/*
-		 * The four stat cards that used to sit here repeated the exact
-		 * numbers the sentence above already states — the quotable, dated
-		 * sentence is the one machines cite, so it stays and the cards go.
-		 */
-		?>
 	</div>
 
-	<?php get_template_part( 'template-parts/directory', 'goodfor' ); ?>
-
 	<?php if ( $oria_cats ) : ?>
+	<div class="dirsw">
 		<h2 class="h3 typewrite" style="margin-top:2rem" data-typewrite><?php esc_html_e( 'Start with a practice', 'oria' ); ?></h2>
 		<p class="hint typewrite__after" style="margin:.35rem 0 1rem"><?php esc_html_e( 'Each opens that category — its styles, its suburbs and its questions. Counts are live; nothing here is ranked.', 'oria' ); ?></p>
 		<div class="intentgrid intentgrid--cats">
@@ -125,6 +116,46 @@ $oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 		<?php if ( count( $oria_cats ) > 8 ) : ?>
 			<button type="button" class="intentgrid__more" data-intentgrid-more aria-expanded="false"><?php printf( esc_html__( 'Show all %s categories', 'oria' ), esc_html( number_format_i18n( count( $oria_cats ) ) ) ); ?> <span aria-hidden="true">▾</span></button>
 		<?php endif; ?>
+	</div>
+	<?php endif; ?>
+
+	<?php get_template_part( 'template-parts/directory', 'goodfor' ); ?>
+
+		<?php
+	/*
+	 * The whole directory on one map — every listing with coordinates,
+	 * same pins, popups and photo cards as the category pages, full
+	 * width where the category grid used to sprawl.
+	 */
+	$oria_map = array();
+	foreach ( $oria_all as $oria_mid ) {
+		$oria_mla = get_post_meta( (int) $oria_mid, 'geo_lat', true );
+		$oria_mlo = get_post_meta( (int) $oria_mid, 'geo_lng', true );
+		if ( ! is_numeric( $oria_mla ) || ! is_numeric( $oria_mlo ) || 0.0 === (float) $oria_mla ) {
+			continue;
+		}
+		$oria_mterms = wp_get_post_terms( (int) $oria_mid, 'area' );
+		$oria_msub  = '';
+		foreach ( $oria_mterms as $oria_mt ) {
+			if ( $oria_mt->parent ) { $oria_msub = $oria_mt->name; break; }
+		}
+		$oria_map[] = array(
+			'n'  => wp_specialchars_decode( (string) get_post_field( 'post_title', $oria_mid, 'raw' ), ENT_QUOTES ),
+			'u'  => (string) get_permalink( (int) $oria_mid ),
+			'la' => (float) $oria_mla,
+			'lo' => (float) $oria_mlo,
+			's'  => $oria_msub,
+			'i'  => function_exists( '\Oria\Theme\listing_image' ) ? \Oria\Theme\listing_image( (int) $oria_mid ) : '',
+		);
+	}
+	?>
+	<?php if ( $oria_map ) : ?>
+		<h2 class="h3" style="margin-top:2rem"><?php esc_html_e( 'Every practice, on the map', 'oria' ); ?></h2>
+		<p class="hint" style="margin:.35rem 0 1rem"><?php esc_html_e( 'Hover a pin to see who it is; click for the photo and profile.', 'oria' ); ?></p>
+		<div class="catmap catmap--wide" data-catmap role="img" aria-label="<?php esc_attr_e( 'Map of every listed practice across Perth', 'oria' ); ?>">
+			<div class="catmap__tip" hidden></div>
+		</div>
+		<script type="application/json" data-catmap-data><?php echo wp_json_encode( $oria_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data script tag ?></script>
 	<?php endif; ?>
 </section>
 

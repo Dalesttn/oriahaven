@@ -1574,30 +1574,40 @@
     function chips() {
       var box = $("#dirChips");
       if (!box) return;
-      var out = [];
-      state.cats.forEach(function (c) { if (c !== locked.cat) out.push(["cat", c, catNames[c] || c]); });
-      state.regions.forEach(function (r) { if (r !== locked.region) out.push(["region", r, regionNames[r] || r]); });
-      state.suburbs.forEach(function (s) { out.push(["suburb", s, s]); });
-      state.spec.forEach(function (s) { if (s !== locked.spec) out.push(["spec", s, specNames[s] || s]); });
+      /* Three groups, in the order a visitor assembles them: what they're
+         after, what kind of thing it is, and where. Anything left over
+         (price, format, rating, search) trails behind. */
+      var kind = [], area = [], rest = [];
+      state.cats.forEach(function (c) { if (c !== locked.cat) kind.push(["cat", c, catNames[c] || c]); });
+      state.spec.forEach(function (s) { if (s !== locked.spec) kind.push(["spec", s, specNames[s] || s]); });
       // Arrived from an intent row. Without these the list is filtered with
       // nothing on screen saying why and no way to undo it.
-      state.svc.forEach(function (s) { if (!isLockedIntent("svc", s)) out.push(["svc", s, svcNames[s] || s]); });
-      state.aud.forEach(function (a) { if (!isLockedIntent("aud", a)) out.push(["aud", a, audNames[a] || a]); });
-      state.price.forEach(function (p) { if (!isLockedIntent("price", p)) out.push(["price", p, p === "Free" ? "Free" : p]); });
-      state.format.forEach(function (f) { if (!isLockedIntent("format", f)) out.push(["format", f, f === "online" ? "Online" : "In person"]); });
-      if (state.rating) out.push(["rating", String(state.rating), state.rating + "+ rating"]);
-      if (state.q) out.push(["q", state.q, '"' + state.q + '"']);
+      state.svc.forEach(function (s) { if (!isLockedIntent("svc", s)) kind.push(["svc", s, svcNames[s] || s]); });
+      state.aud.forEach(function (a) { if (!isLockedIntent("aud", a)) kind.push(["aud", a, audNames[a] || a]); });
+      state.regions.forEach(function (r) { if (r !== locked.region) area.push(["region", r, regionNames[r] || r]); });
+      state.suburbs.forEach(function (s) { area.push(["suburb", s, s]); });
+      state.price.forEach(function (p) { if (!isLockedIntent("price", p)) rest.push(["price", p, p === "Free" ? "Free" : p]); });
+      state.format.forEach(function (f) { if (!isLockedIntent("format", f)) rest.push(["format", f, f === "online" ? "Online" : "In person"]); });
+      if (state.rating) rest.push(["rating", String(state.rating), state.rating + "+ rating"]);
+      if (state.q) rest.push(["q", state.q, '"' + state.q + '"']);
+      var out = kind.concat(area, rest);
+
+      function chipHtml(c, cls) {
+        return '<span class="chip' + (cls ? " " + cls : "") + '">' + esc(c[2]) +
+          '<button type="button" data-clear-kind="' + c[0] + '" data-clear-val="' + esc(c[1]) +
+          '" aria-label="Remove filter ' + esc(c[2]) + '">' + ICON.x + "</button></span>";
+      }
 
       var wants = activeWants();
       box.innerHTML = wants.map(function (g) {
         return '<span class="chip chip--gf" style="--gf:' + esc(g.color) + '">' + esc(g.label) +
           '<button type="button" data-clear-want="' + esc(g.slug) +
           '" aria-label="Remove ' + esc(g.label) + '">' + ICON.x + "</button></span>";
-      }).join("") + out.map(function (c) {
-        return '<span class="chip">' + esc(c[2]) +
-          '<button type="button" data-clear-kind="' + c[0] + '" data-clear-val="' + esc(c[1]) +
-          '" aria-label="Remove filter ' + esc(c[2]) + '">' + ICON.x + "</button></span>";
-      }).join("") + (out.length + wants.length > 1
+      }).join("") +
+      kind.map(function (c) { return chipHtml(c, ""); }).join("") +
+      area.map(function (c) { return chipHtml(c, "chip--area"); }).join("") +
+      rest.map(function (c) { return chipHtml(c, ""); }).join("") +
+      (out.length + wants.length > 1
         ? '<button type="button" class="pill" id="clearAll">Clear all</button>' : "");
 
       /* Removing a want releases all its specialties at once — the same
@@ -1844,11 +1854,53 @@
           (found.length === 1 ? "listing" : "listings") +
           (place ? " in " + esc(place) : "");
         /* When a want is driving the filters, say what it means — the same
-           line the chip's tooltip carries, e.g. "Evening-paced, lights low". */
+           line the chip's tooltip carries, typed out in the site's
+           typewriter voice the first time each phrase appears. Renders
+           run constantly (every filter change), so the animation keys on
+           the phrase itself: same phrase, no re-typing. */
         var aw = activeWants().filter(function (g) { return g.line; }).slice(0, 2);
         if (aw.length) {
-          count.innerHTML += ' <span class="dir__countline">— ' +
-            aw.map(function (g) { return esc(g.line); }).join(" · ") + "</span>";
+          var phrase = aw.map(function (g) { return g.line; }).join(" · ");
+          var lineEl = document.createElement("span");
+          lineEl.className = "dir__countline";
+          count.appendChild(document.createTextNode(" "));
+          count.appendChild(lineEl);
+          var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          var full = "— " + phrase;
+          /* Activating a want ticks several checkboxes, each of which
+             re-renders — so typing progress lives on the count element and
+             each new render RESUMES the animation instead of restarting
+             it (or worse, skipping straight to the end). */
+          if (count.dataset.typedLine !== phrase) {
+            count.dataset.typedLine = phrase;
+            count.dataset.typedN = "0";
+          }
+          var i = parseInt(count.dataset.typedN || "0", 10);
+          if (still || i >= full.length) {
+            lineEl.textContent = full;
+          } else {
+            lineEl.setAttribute("aria-label", full);
+            var caret = document.createElement("span");
+            caret.className = "typewrite__caret";
+            caret.setAttribute("aria-hidden", "true");
+            var out = document.createElement("span");
+            out.textContent = full.slice(0, i);
+            lineEl.appendChild(out);
+            lineEl.appendChild(caret);
+            var step = function () {
+              if (!lineEl.isConnected) return; // a newer render carries on from typedN
+              out.textContent = full.slice(0, ++i);
+              count.dataset.typedN = String(i);
+              if (i < full.length) {
+                setTimeout(step, 24 + Math.random() * 30 + (full[i - 1] === " " ? 30 : 0));
+              } else {
+                setTimeout(function () { caret.remove(); }, 1200);
+              }
+            };
+            step();
+          }
+        } else {
+          delete count.dataset.typedLine;
         }
       }
 
