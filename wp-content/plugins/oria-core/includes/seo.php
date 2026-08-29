@@ -160,7 +160,15 @@ function add_routes(): void {
 
 /** Bare /events/ was the archive before it moved to /whats-on-perth/. */
 function legacy_events_url(): void {
-	if ( is_404() && '/events/' === trailingslashit( (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH ) ) ) {
+	/*
+	 * Any 404 under /events/ goes to the What's On page, not just the bare
+	 * archive URL. The ingest expiry sweep hard-deletes past events, so every
+	 * event URL eventually 404s; that steady drip is the one recurring 4xx
+	 * class in every site audit, and a stale link from a Facebook post or a
+	 * newsletter deserves the current listings, not a dead end.
+	 */
+	$path = trailingslashit( (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH ) );
+	if ( is_404() && str_starts_with( $path, '/events/' ) ) {
 		wp_safe_redirect( get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ), 301 );
 		exit;
 	}
