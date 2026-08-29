@@ -560,7 +560,10 @@ a.livesession:hover { background: var(--sand-2); }
 .gallery { display: grid; grid-template-columns: 2fr 1fr; gap: var(--s-3); border-radius: var(--r-lg); overflow: hidden; }
 .gallery img { width: 100%; height: 100%; object-fit: cover; }
 .gallery__main { aspect-ratio: 3 / 2; }
-.gallery__mainwrap { overflow: hidden; aspect-ratio: 3 / 2; }
+/* height:100% stretches the wrapper to the row the side column sets, so
+   the bottoms line up; in a single column that percentage resolves to
+   auto and the aspect ratio takes over. */
+.gallery__mainwrap { overflow: hidden; aspect-ratio: 3 / 2; height: 100%; }
 .gallery__mainwrap .gallery__main { height: 100%; }
 .gallery__side { display: grid; gap: var(--s-3); }
 .gallery__side img { aspect-ratio: 3 / 2; }
