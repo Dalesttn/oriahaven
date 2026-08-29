@@ -1729,8 +1729,13 @@
         if (started) return;
         started = true;
         window.removeEventListener("scroll", tick);
-        host.classList.add("is-hinting");
-        setTimeout(hide, 10000);
+        // A host can ask to hold back (data-hint-delay, ms) so two hints
+        // on one toolbar take turns instead of bobbing side by side.
+        var delay = parseInt(host.getAttribute("data-hint-delay") || "0", 10);
+        setTimeout(function () {
+          host.classList.add("is-hinting");
+          setTimeout(hide, 10000);
+        }, delay);
       };
       var tick = function () { if (inView()) start(); };
       window.addEventListener("scroll", tick, { passive: true });

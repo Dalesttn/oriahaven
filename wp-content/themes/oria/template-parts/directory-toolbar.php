@@ -239,8 +239,10 @@ $oria_prices = array(
 		</div>
 	</details>
 
+	<div class="hinthost hinthost--gf" data-hint-key="goodfor" data-hint-delay="2600">
+	<span class="hintbubble" id="gfHint" role="tooltip"><?php esc_html_e( 'What are you after?', 'oria' ); ?></span>
 	<details class="popover" data-popover>
-		<summary class="btn btn--sm gfsummary" title="<?php esc_attr_e( 'What are you after?', 'oria' ); ?>"><?php esc_html_e( 'Good for', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
+		<summary class="btn btn--sm gfsummary" aria-describedby="gfHint"><?php esc_html_e( 'Good for', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
 		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'Good for', 'oria' ); ?>">
 			<span class="micro" style="display:block;margin:0 0 .5rem"><?php esc_html_e( 'What are you after?', 'oria' ); ?></span>
 			<?php
@@ -259,6 +261,7 @@ $oria_prices = array(
 			<button type="button" class="popover__done" data-popover-close><?php esc_html_e( 'Done', 'oria' ); ?></button>
 		</div>
 	</details>
+	</div>
 
 	</div>
 

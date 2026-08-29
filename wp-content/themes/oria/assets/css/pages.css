@@ -2600,6 +2600,12 @@ html.has-sheet { overflow: hidden; }
 }
 @media (max-width: 50rem) { .hintbubble { left: 0; transform: none; } .hinthost.is-hinting .hintbubble { transform: none; animation: none; } .hintbubble::after { left: 1.25rem; } }
 
+/* The Good for pill's nudge: same mechanism, gold coat — the pill itself is
+   already deep green, so bubble and ring both go gold to stay visible. */
+.hinthost--gf { --hint-ring: var(--gold); }
+.hinthost--gf .hintbubble { background: var(--gold); color: var(--ink); }
+.hinthost--gf .hintbubble::after { border-bottom-color: var(--gold); }
+
 
 /* The spine's three stops drop in one after another, left to right, on
    every load. Pure CSS, so it runs on each refresh with nothing to
