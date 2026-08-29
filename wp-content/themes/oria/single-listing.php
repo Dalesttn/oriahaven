@@ -62,7 +62,6 @@ while ( have_posts() ) :
 	$oria_paid       = function_exists( '\Oria\Core\Ownership\is_paid' )
 		? \Oria\Core\Ownership\is_paid( $oria_id )
 		: false;
-	$oria_classes    = $oria_paid ? \Oria\Theme\rows( 'classes', array(), $oria_id ) : array();
 	$oria_packages   = $oria_paid ? \Oria\Theme\rows( 'packages', array(), $oria_id ) : array();
 	$oria_verified   = (string) get_field( 'verified_at', $oria_id );
 	$oria_price_from = get_field( 'price_from', $oria_id );
@@ -529,93 +528,18 @@ while ( have_posts() ) :
 				</div>
 				<?php endif; ?>
 
-				<!-- The week, as a timetable. Owner-entered classes win inside
-				     timetable_for(); otherwise a curated data file fills in. -->
+				<!-- The week, as a timetable, straight from the Classes repeater
+				     the practitioner or admin keeps in the backend. -->
 				<?php $oria_week = function_exists( '\Oria\Core\Classes\timetable_for' ) ? \Oria\Core\Classes\timetable_for( $oria_id ) : array(); ?>
 				<?php if ( $oria_week ) : ?>
 				<div class="reveal">
 					<h2 class="h3" style="margin-bottom:.25rem"><?php esc_html_e( 'Weekly timetable', 'oria' ); ?></h2>
-					<p class="hint" style="margin-bottom:1.1rem"><?php esc_html_e( 'From the studio\'s published schedule. Public holidays excepted — check before you travel.', 'oria' ); ?></p>
+					<p class="hint" style="margin-bottom:1.1rem"><?php esc_html_e( 'Published by the practice. Public holidays excepted — check before you travel.', 'oria' ); ?></p>
 					<?php get_template_part( 'template-parts/listing-week', null, array( 'sessions' => $oria_week ) ); ?>
 				</div>
 				<?php endif; ?>
 
-				<!-- Classes: the practice's own timetable -->
-				<?php if ( $oria_classes ) : ?>
-				<div>
-					<h2 class="h3" style="margin-bottom:.25rem"><?php esc_html_e( 'Classes', 'oria' ); ?></h2>
-					<p class="hint" style="margin-bottom:1.1rem"><?php esc_html_e( 'Published by the practice. Public holidays excepted — check before you travel.', 'oria' ); ?></p>
-					<?php
-					/*
-					 * Days come from each session's own day field, so the
-					 * filter matches rather than parses. Only days that appear
-					 * get a button, and the control is skipped below two: a
-					 * Saturdays-only timetable needs reading, not filtering.
-					 */
-					$oria_cls_days = function_exists( '\Oria\Core\Classes\days_used' )
-						? \Oria\Core\Classes\days_used( $oria_classes )
-						: array();
-					?>
-					<div class="classes" data-classes>
-						<?php if ( count( $oria_cls_days ) > 1 ) : ?>
-							<div class="ttdays" role="group" aria-label="<?php esc_attr_e( 'Filter classes by day', 'oria' ); ?>">
-								<button class="fchip is-on" type="button" data-cls-day="all"><?php esc_html_e( 'All days', 'oria' ); ?></button>
-								<?php foreach ( $oria_cls_days as $oria_d ) : ?>
-									<button class="fchip" type="button" data-cls-day="<?php echo (int) $oria_d; ?>"><?php echo esc_html( \Oria\Core\Classes\label( (int) $oria_d ) ); ?></button>
-								<?php endforeach; ?>
-							</div>
-						<?php endif; ?>
-						<ul class="classlist">
-							<?php
-							foreach ( $oria_classes as $oria_row ) :
-								$oria_ctitle = trim( (string) ( $oria_row['title'] ?? '' ) );
-								if ( '' === $oria_ctitle ) {
-									continue;
-								}
-								$oria_cdesc     = trim( (string) ( $oria_row['description'] ?? '' ) );
-								$oria_cprice    = trim( (string) ( $oria_row['price'] ?? '' ) );
-								$oria_csessions = is_array( $oria_row['sessions'] ?? null ) ? $oria_row['sessions'] : array();
-								?>
-								<li class="classrow">
-									<div class="classrow__head">
-										<h3 class="classrow__title"><?php echo esc_html( $oria_ctitle ); ?></h3>
-										<?php // No price is not a free class. An empty cell says nothing, which is right. ?>
-										<?php if ( $oria_cprice ) : ?>
-											<span class="classrow__price"><?php echo esc_html( $oria_cprice ); ?></span>
-										<?php endif; ?>
-									</div>
-									<?php if ( $oria_cdesc ) : ?>
-										<p class="classrow__desc"><?php echo esc_html( $oria_cdesc ); ?></p>
-									<?php endif; ?>
-									<?php if ( $oria_csessions ) : ?>
-										<ul class="sessions">
-											<?php
-											foreach ( $oria_csessions as $oria_sess ) :
-												$oria_sdays = function_exists( '\Oria\Core\Classes\days_of' ) ? \Oria\Core\Classes\days_of( $oria_sess ) : array();
-												$oria_stime = trim( (string) ( $oria_sess['time'] ?? '' ) );
-												$oria_swith = trim( (string) ( $oria_sess['with'] ?? '' ) );
-												?>
-												<li class="session" data-cls-days="<?php echo esc_attr( implode( ' ', $oria_sdays ) ); ?>">
-													<span class="session__day"><?php echo esc_html( \Oria\Core\Classes\day_summary( $oria_sess ) ); ?></span>
-													<?php if ( $oria_stime ) : ?>
-														<span class="session__time"><?php echo esc_html( $oria_stime ); ?></span>
-													<?php endif; ?>
-													<?php if ( $oria_swith ) : ?>
-														<span class="session__with"><?php printf( esc_html__( 'with %s', 'oria' ), esc_html( $oria_swith ) ); ?></span>
-													<?php endif; ?>
-												</li>
-											<?php endforeach; ?>
-										</ul>
-									<?php else : ?>
-										<p class="session session--none"><?php esc_html_e( 'By arrangement — contact the practice.', 'oria' ); ?></p>
-									<?php endif; ?>
-								</li>
-							<?php endforeach; ?>
-						</ul>
-						<p class="dir__empty" data-cls-empty hidden style="margin-top:1rem"><?php esc_html_e( 'Nothing listed for that day.', 'oria' ); ?></p>
-					</div>
-				</div>
-				<?php endif; ?>
+<?php // The week grid above is the classes renderer now; the old per-class card list retired with it. ?>
 
 				<!-- Packages -->
 				<?php if ( $oria_packages ) : ?>

@@ -140,12 +140,10 @@ function day_summary( array $row ): string {
  *
  *     { day: 1-7, time: 'HH:MM', title, with, mins: int, tone, free: bool }
  *
- * Two sources, in order of authority. Owner-entered classes (the paid ACF
- * repeater) always win -- that is the practice speaking. When the owner has
- * entered nothing, a curated file at data/timetables/{slug}.json fills in:
- * Oria's own transcription of the studio's published schedule, the same
- * standing photos-from-Google have. Both arrive here in one shape so the
- * template never knows which it got.
+ * One source only: the Classes repeater on the listing, which is where the
+ * practitioner or the admin keeps it current. kind/mins/free live on the
+ * class row -- a class is free, or an event, as a whole -- and each of its
+ * session rows inherits them.
  *
  * @return array<int, array{day: int, time: string, title: string, with: string, mins: int, tone: string, free: bool}>
  */
@@ -157,6 +155,7 @@ function timetable_for( int $post_id ): array {
 		if ( ! is_array( $row ) || '' === trim( (string) ( $row['title'] ?? '' ) ) ) {
 			continue;
 		}
+		$tone = in_array( $row['kind'] ?? '', array( 'venue', 'event' ), true ) ? (string) $row['kind'] : 'class';
 		foreach ( (array) ( $row['sessions'] ?? array() ) as $sess ) {
 			if ( ! is_array( $sess ) ) {
 				continue;
@@ -167,40 +166,12 @@ function timetable_for( int $post_id ): array {
 					'time'  => trim( (string) ( $sess['time'] ?? '' ) ),
 					'title' => trim( (string) $row['title'] ),
 					'with'  => trim( (string) ( $sess['with'] ?? '' ) ),
-					'mins'  => 0,
-					'tone'  => 'class',
-					'free'  => false,
+					'mins'  => max( 0, (int) ( $row['mins'] ?? 0 ) ),
+					'tone'  => $tone,
+					'free'  => ! empty( $row['free'] ),
 				);
 			}
 		}
-	}
-	if ( $flat ) {
-		return sort_week( $flat );
-	}
-
-	$slug = (string) get_post_field( 'post_name', $post_id );
-	$path = ORIA_CORE_DIR . 'data/timetables/' . $slug . '.json';
-	if ( '' === $slug || ! is_readable( $path ) ) {
-		return array();
-	}
-	$json = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-	foreach ( (array) ( $json['sessions'] ?? array() ) as $row ) {
-		if ( ! is_array( $row ) || empty( $row['title'] ) ) {
-			continue;
-		}
-		$day = (int) ( $row['day'] ?? 0 );
-		if ( $day < 1 || $day > 7 ) {
-			continue;
-		}
-		$flat[] = array(
-			'day'   => $day,
-			'time'  => trim( (string) ( $row['time'] ?? '' ) ),
-			'title' => trim( (string) $row['title'] ),
-			'with'  => trim( (string) ( $row['with'] ?? '' ) ),
-			'mins'  => (int) ( $row['mins'] ?? 0 ),
-			'tone'  => in_array( $row['tone'] ?? '', array( 'venue', 'event' ), true ) ? (string) $row['tone'] : 'class',
-			'free'  => ! empty( $row['free'] ),
-		);
 	}
 	return sort_week( $flat );
 }
@@ -210,9 +181,27 @@ function sort_week( array $flat ): array {
 	usort(
 		$flat,
 		static function ( array $a, array $b ): int {
-			return ( $a['day'] <=> $b['day'] ) ?: strcmp( $a['time'], $b['time'] );
+			return ( $a['day'] <=> $b['day'] ) ?: ( time_minutes( $a['time'] ) <=> time_minutes( $b['time'] ) );
 		}
 	);
 	return $flat;
+}
+
+/**
+ * "9:30" -> 570, so times order numerically -- as strings, "9:30" sorts
+ * after "18:30" and the morning class lands at the bottom of the day.
+ * Takes the first h[:.]mm it can find, honours a trailing pm, and sends
+ * anything unparseable to the end rather than to 6am.
+ */
+function time_minutes( string $time ): int {
+	if ( ! preg_match( '/(\d{1,2})(?:[.:h](\d{2}))?/', $time, $m ) ) {
+		return 24 * 60;
+	}
+	$h = (int) $m[1];
+	$i = (int) ( $m[2] ?? 0 );
+	if ( $h < 12 && preg_match( '/pm/i', $time ) ) {
+		$h += 12;
+	}
+	return ( $h * 60 ) + $i;
 }
 
