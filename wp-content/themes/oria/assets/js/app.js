@@ -1034,6 +1034,22 @@
      directory engine to page a listing's card into view and spotlight it. */
   var DirAPI = {};
 
+  /* The checkboxes a want should drive on this page.
+
+     A want's vocabulary can be filed under either taxonomy, and the engine
+     ANDs `spec` against `svc` — so ticking both kinds intersects two sets
+     instead of widening one, and a want that reads "19 places" delivers 5.
+     Take whichever kind reaches more of the want here, and use only that. */
+  function gfBoxesFor(slugs) {
+    var bySpec = [], bySvc = [];
+    (slugs || []).forEach(function (slug) {
+      var a = document.querySelector('[data-filter="spec"][value="' + slug + '"]');
+      var b = document.querySelector('[data-filter="svc"][value="' + slug + '"]');
+      if (a) { bySpec.push(a); } else if (b) { bySvc.push(b); }
+    });
+    return bySpec.length >= bySvc.length ? bySpec : bySvc;
+  }
+
   /* --- Category map ---------------------------------------------------- */
   /* A real, interactive map of every listing on a category page — Leaflet
      over CARTO's light basemap, both self-hosted/keyless. Hover names the
@@ -1203,13 +1219,10 @@
     var opts = $$("[data-goodfor-opt]");
     if (!chips.length && !opts.length) return;
 
-    function boxFor(slug) {
-      return document.querySelector('[data-filter="spec"][value="' + slug + '"]');
-    }
     function specsOf(el) {
       var list;
       try { list = JSON.parse(el.getAttribute("data-specs") || "[]"); } catch (e) { list = []; }
-      return list.map(boxFor).filter(Boolean);
+      return gfBoxesFor(list);
     }
     function isOn(el) {
       var boxes = specsOf(el);
@@ -1345,11 +1358,12 @@
       return GF.filter(function (g) {
         /* "Known" means it has a checkbox on THIS page — the same rule the
            chip row lights by, so the two can never disagree. */
-        var known = (g.specs || []).filter(function (x) {
-          return document.querySelector('[data-filter="spec"][value="' + x + '"]');
+        var boxes = gfBoxesFor(g.specs || []);
+        if (!boxes.length) return false;
+        var known = boxes.map(function (b) { return b.value; });
+        var on = known.filter(function (x) {
+          return state.spec.indexOf(x) > -1 || state.svc.indexOf(x) > -1;
         });
-        if (!known.length) return false;
-        var on = known.filter(function (x) { return state.spec.indexOf(x) > -1; });
         // A chosen want survives pruning down to its last specialty; an
         // unchosen one appears only when the full set is ticked by hand.
         return GFSel[g.slug] ? on.length > 0 : on.length === known.length;

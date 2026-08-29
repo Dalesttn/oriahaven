@@ -1071,6 +1071,7 @@ a.livesession:hover { background: var(--sand-2); }
 .goodfor__chip.is-on {
   box-shadow: 0 0 0 2px var(--bg, #F4F2EA), 0 0 0 4px var(--gf, var(--deep));
 }
+.goodfor__chip .goodfor__n { font-weight: 700; opacity: .72; margin-left: .1rem; }
 .goodfor__hint { margin-top: .6rem; }
 
 /* The "Good for" pill in the toolbar — the one filter that is an invitation

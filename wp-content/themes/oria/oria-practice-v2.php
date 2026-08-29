@@ -460,6 +460,36 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 <!-- Floor 2 — Browse -->
 <section class="wrap section section--top-flush floor" id="browse">
 	<h2 class="micro floor__label"><?php esc_html_e( 'Browse', 'oria' ); ?></h2>
+	<?php
+	/*
+	 * The wants this category can actually answer: every service and
+	 * specialty slug carried by the listings on this page.
+	 */
+	$oria_wcount = array();
+	if ( function_exists( '\Oria\Core\GoodFor\labels' ) ) {
+		foreach ( $oria_ids as $oria_hid ) {
+			$oria_slugs = array();
+			foreach ( array( 'service', 'specialty' ) as $oria_tax ) {
+				foreach ( wp_get_post_terms( (int) $oria_hid, $oria_tax ) as $oria_ht ) {
+					$oria_slugs[ $oria_ht->slug ] = true;
+				}
+			}
+			foreach ( \Oria\Core\GoodFor\labels() as $oria_w ) {
+				foreach ( $oria_w['specs'] as $oria_ws ) {
+					if ( isset( $oria_slugs[ $oria_ws ] ) ) {
+						$oria_wcount[ $oria_w['slug'] ] = ( $oria_wcount[ $oria_w['slug'] ] ?? 0 ) + 1;
+						break;
+					}
+				}
+			}
+		}
+		// Three is the directory's own floor for a filtered view worth
+		// offering; below it a chip is a dead end dressed as a choice.
+		$oria_wcount = array_filter( $oria_wcount, static fn( int $oria_n ): bool => $oria_n >= 3 );
+		arsort( $oria_wcount );
+	}
+	get_template_part( 'template-parts/directory', 'goodfor', array( 'counts' => $oria_wcount ) );
+	?>
 	<?php get_template_part( 'template-parts/directory', 'toolbar', array( 'term' => $oria_term, 'ids' => $oria_ids ) ); ?>
 	<p class="dir__count" id="dirCount" style="margin-top:1rem"></p>
 	<div class="chips" id="dirChips" style="margin-top:.5rem"></div>

@@ -14,8 +14,25 @@ declare(strict_types=1);
 
 $oria_chips = function_exists( '\Oria\Core\GoodFor\labels' ) ? \Oria\Core\GoodFor\labels() : array();
 
-if ( ! $oria_chips ) {
-	return;
+/*
+ * On a category page only some wants have anything behind them, and a chip
+ * that filters to nothing is worse than no chip. Pass `only` — the service
+ * and specialty slugs this page actually offers — and the row keeps just
+ * the wants that reach them. No `only`, no filtering: the directory shows
+ * the full set.
+ */
+$oria_counts = isset( $args['counts'] ) && is_array( $args['counts'] ) ? $args['counts'] : null;
+if ( null !== $oria_counts ) {
+	$oria_chips = array_values(
+		array_filter(
+			$oria_chips,
+			static fn( array $oria_c ): bool => ! empty( $oria_counts[ $oria_c['slug'] ] )
+		)
+	);
+}
+
+if ( count( $oria_chips ) < 2 ) {
+	return; // one lonely want is a label, not a choice
 }
 
 /*
