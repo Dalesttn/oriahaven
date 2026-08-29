@@ -56,6 +56,33 @@ function labels(): array {
 }
 
 /**
+ * Where a want points when it has to be a link rather than a filter toggle
+ * (the homepage has no results engine to drive).
+ *
+ * The directory ANDs `spec` against `svc`, so a URL naming both kinds
+ * intersects two sets instead of widening one. Same rule as gfBoxesFor()
+ * in app.js: take whichever taxonomy holds more of this want's vocabulary
+ * and send only that.
+ */
+function filter_url( array $want ): string {
+	$spec = array();
+	$svc  = array();
+	foreach ( $want['specs'] as $slug ) {
+		if ( get_term_by( 'slug', $slug, 'specialty' ) ) {
+			$spec[] = $slug;
+		} elseif ( get_term_by( 'slug', $slug, 'service' ) ) {
+			$svc[] = $slug;
+		}
+	}
+	$use  = count( $spec ) >= count( $svc ) ? $spec : $svc;
+	$kind = count( $spec ) >= count( $svc ) ? 'spec' : 'svc';
+	if ( ! $use ) {
+		return home_url( '/directory/' );
+	}
+	return add_query_arg( $kind, rawurlencode( implode( ',', $use ) ), home_url( '/directory/' ) );
+}
+
+/**
  * The want-tags for one listing, derived from its specialty terms.
  *
  * Same rule as gfTags() in app.js: the labels whose spec sets overlap the

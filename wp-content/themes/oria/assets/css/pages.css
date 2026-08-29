@@ -1074,6 +1074,78 @@ a.livesession:hover { background: var(--sand-2); }
 .goodfor__chip .goodfor__n { font-weight: 700; opacity: .72; margin-left: .1rem; }
 .goodfor__hint { margin-top: .6rem; }
 
+/* The hero's copy of the want row: on the dark hero the chips keep their
+   colours but gain a hairline so they read as one set against the photo,
+   and the heading/hint invert. */
+/* The six category families as cards, each wearing its want's colour so the
+   homepage, the chips and the card tags read as one palette. Three across,
+   with the coloured caps locked to one height so the lists start on the
+   same line whatever the description runs to. */
+.fams { display: grid; gap: var(--s-4); grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: var(--s-5); }
+.fam {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-lg, 18px);
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: var(--sh-1, 0 1px 3px rgba(8,34,32,.06));
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.fam:hover { transform: translateY(-2px); box-shadow: var(--sh-2, 0 8px 24px rgba(8,34,32,.10)); }
+.fam__cap {
+  background: var(--fam, var(--deep));
+  color: #fff;
+  padding: 1rem 1.1rem 1.1rem;
+  min-height: 6.5rem;              /* one height for every cap */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.fam__name { display: flex; align-items: center; gap: .5rem; font-size: 1.3rem; font-weight: 700; letter-spacing: -.01em; color: #fff; }
+.fam__icon { width: 22px; height: 22px; flex: none; display: block; }
+.fam__line { margin: .3rem 0 0; color: rgba(255,255,255,.82); font-size: var(--fs-xs); line-height: 1.45; }
+.fam__list { list-style: none; margin: 0; padding: .35rem 1.1rem .5rem; display: grid; gap: 0; }
+.fam__list a {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .75rem;
+  padding: .55rem 0; border-bottom: 1px solid var(--line);
+  color: var(--text); text-decoration: none; font-size: var(--fs-sm); font-weight: 500;
+  transition: color .15s ease, padding-left .15s ease;
+}
+.fam__list li:last-child a { border-bottom: 0; }
+.fam__list a:hover { color: var(--fam, var(--deep)); padding-left: .25rem; }
+.fam__list b { color: var(--text-faint); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Something to read and something to turn up to, at the foot of each card.
+   Pushed to the bottom so the three cards in a row end level. */
+.fam__extras { margin-top: auto; padding: .5rem 1.1rem 1rem; display: grid; gap: .5rem; }
+.fam__kicker {
+  display: block; font-size: var(--fs-micro, .6875rem); font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--fam, var(--deep));
+}
+.fam__guide, .fam__event {
+  display: block; text-decoration: none; color: var(--text);
+  border-top: 1px solid var(--line); padding-top: .6rem;
+}
+.fam__gtitle, .fam__evtitle {
+  display: block; margin-top: .15rem; font-size: var(--fs-sm); font-weight: 600; line-height: 1.3;
+}
+.fam__guide:hover .fam__gtitle, .fam__event:hover .fam__evtitle { text-decoration: underline; text-underline-offset: 3px; }
+.fam__event, .fam__guide { display: flex; gap: .65rem; align-items: center; }
+.fam__evimg { flex: none; width: 56px; height: 56px; border-radius: var(--r-sm); overflow: hidden; }
+.fam__evimg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fam__evtext { min-width: 0; }
+
+@media (max-width: 62rem) { .fams { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 40rem) { .fams { grid-template-columns: 1fr; } .fam__cap { min-height: 0; } }
+
+.goodfor--hero { margin-top: 1.6rem; }
+.goodfor--hero .goodfor__head { color: #fff; }
+.goodfor--hero .goodfor__hint { color: rgba(255,255,255,.72); }
+.goodfor--hero .goodfor__chip { box-shadow: 0 0 0 1px rgba(255,255,255,.22); text-decoration: none; }
+.goodfor--hero .goodfor__chip:hover { box-shadow: 0 0 0 1px rgba(255,255,255,.5); }
+@media (max-width: 50rem) { .goodfor--hero .goodfor__row { flex-wrap: nowrap; overflow-x: auto; } }
+
 /* The "Good for" pill in the toolbar — the one filter that is an invitation
    rather than a facet, so it wears the deep brand green while its siblings
    stay ghost outlines. Native title tooltip carries the question. */

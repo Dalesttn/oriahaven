@@ -450,6 +450,43 @@ function tagline_for( string $slug ): string {
 	return trim( (string) ( $lines[ $slug ] ?? '' ) );
 }
 
+/**
+ * The six homepage families over the 23 categories, from data/families.json.
+ *
+ * Presentation only: every category keeps its own term, URL and count, and
+ * a family is just a heading a visitor can scan. Any category absent from
+ * the file is reported by the caller rather than silently dropped — a new
+ * category must be filed, not lost.
+ *
+ * @return array<int, array{slug: string, name: string, line: string, cats: array<int, string>}>
+ */
+function families(): array {
+	static $fams = null;
+	if ( null !== $fams ) {
+		return $fams;
+	}
+	$fams = array();
+	$path = ORIA_CORE_DIR . 'data/families.json';
+	if ( is_readable( $path ) ) {
+		$json = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		if ( is_array( $json ) && is_array( $json['families'] ?? null ) ) {
+			foreach ( $json['families'] as $row ) {
+				if ( empty( $row['slug'] ) || empty( $row['name'] ) || empty( $row['cats'] ) ) {
+					continue;
+				}
+				$fams[] = array(
+					'slug' => (string) $row['slug'],
+					'name' => (string) $row['name'],
+					'line' => (string) ( $row['line'] ?? '' ),
+					'want' => (string) ( $row['want'] ?? '' ),
+					'cats' => array_values( array_map( 'strval', (array) $row['cats'] ) ),
+				);
+			}
+		}
+	}
+	return $fams;
+}
+
 /* ------------------------------------------------------- cards and colour */
 
 /**

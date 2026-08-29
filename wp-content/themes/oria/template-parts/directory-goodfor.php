@@ -41,24 +41,49 @@ if ( count( $oria_chips ) < 2 ) {
  * regenerate via the same pipeline if a label is ever added.
  */
 ?>
-<div class="goodfor" data-goodfor>
+<?php
+/*
+ * Two modes. On a page with the results engine the chips are buttons that
+ * drive the filters; anywhere else (the homepage) they are plain links
+ * into the directory, pre-filtered. Links need no JS and are crawlable.
+ */
+$oria_links = ! empty( $args['links'] );
+$oria_class = 'goodfor' . ( ! empty( $args['class'] ) ? ' ' . $args['class'] : '' );
+?>
+<div class="<?php echo esc_attr( $oria_class ); ?>"<?php echo $oria_links ? '' : ' data-goodfor'; ?>>
 	<h2 class="h4 goodfor__head"><?php esc_html_e( 'What are you after?', 'oria' ); ?></h2>
 	<div class="goodfor__row" role="group" aria-label="<?php esc_attr_e( 'Browse by what you want from the visit', 'oria' ); ?>">
 		<?php foreach ( $oria_chips as $oria_c ) : ?>
-			<button
-				class="goodfor__chip"
-				type="button"
-				style="--gf:<?php echo esc_attr( $oria_c['color'] ); ?>"
-				data-goodfor-chip
-				data-slug="<?php echo esc_attr( $oria_c['slug'] ); ?>"
-				data-specs="<?php echo esc_attr( (string) wp_json_encode( $oria_c['specs'] ) ); ?>"
-				title="<?php echo esc_attr( $oria_c['line'] ); ?>"
-				aria-pressed="false"
-			>
-				<img class="goodfor__icon" src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/goodfor/' . $oria_c['slug'] . '.webp' ); ?>" alt="" width="64" height="64" loading="lazy" decoding="async">
-				<span><?php echo esc_html( $oria_c['label'] ); ?></span>
-			</button>
+			<?php if ( $oria_links ) : ?>
+				<a
+					class="goodfor__chip"
+					style="--gf:<?php echo esc_attr( $oria_c['color'] ); ?>"
+					href="<?php echo esc_url( function_exists( '\Oria\Core\GoodFor\filter_url' ) ? \Oria\Core\GoodFor\filter_url( $oria_c ) : home_url( '/directory/' ) ); ?>"
+					title="<?php echo esc_attr( $oria_c['line'] ); ?>"
+				>
+					<img class="goodfor__icon" src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/goodfor/' . $oria_c['slug'] . '.webp' ); ?>" alt="" width="64" height="64" loading="lazy" decoding="async">
+					<span><?php echo esc_html( $oria_c['label'] ); ?></span>
+				</a>
+			<?php else : ?>
+				<button
+					class="goodfor__chip"
+					type="button"
+					style="--gf:<?php echo esc_attr( $oria_c['color'] ); ?>"
+					data-goodfor-chip
+					data-slug="<?php echo esc_attr( $oria_c['slug'] ); ?>"
+					data-specs="<?php echo esc_attr( (string) wp_json_encode( $oria_c['specs'] ) ); ?>"
+					title="<?php echo esc_attr( $oria_c['line'] ); ?>"
+					aria-pressed="false"
+				>
+					<img class="goodfor__icon" src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/goodfor/' . $oria_c['slug'] . '.webp' ); ?>" alt="" width="64" height="64" loading="lazy" decoding="async">
+					<span><?php echo esc_html( $oria_c['label'] ); ?></span>
+				</button>
+			<?php endif; ?>
 		<?php endforeach; ?>
 	</div>
+	<?php if ( $oria_links ) : ?>
+		<p class="hint goodfor__hint"><?php esc_html_e( 'Each one opens the directory, already narrowed to what you picked.', 'oria' ); ?></p>
+	<?php else : ?>
 	<p class="hint goodfor__hint"><?php esc_html_e( 'Each one picks a set of experience types below — the same filters, chosen for you. Un-tick anything that isn\'t what you meant.', 'oria' ); ?></p>
+	<?php endif; ?>
 </div>

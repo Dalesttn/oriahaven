@@ -1,0 +1,76 @@
+{
+  "_note": "Six families over the 23 practice categories, for the homepage. Twenty-three boxes is a filing cabinet; six is a menu. Each family is named for what a visitor DOES there — the same want-axis language as goodfor.json — while the categories underneath keep their real names and URLs, so nothing about the taxonomy, the counts or the SEO changes. Every category must appear exactly once: a category missing from this file is dropped from the homepage, which is why load() checks. Ordered as a journey rather than by size: move, restore, mind, nourish, connect, escape. Each family also names a want from goodfor.json; the card takes its colour from there, so the homepage, the chips and the card tags stay one palette.",
+  "families": [
+    {
+      "slug": "move",
+      "name": "Move",
+      "line": "Classes, coaches and rooms with a floor",
+      "cats": [
+        "yoga",
+        "fitness",
+        "nature",
+        "seniors"
+      ],
+      "want": "move"
+    },
+    {
+      "slug": "restore",
+      "name": "Restore",
+      "line": "Hands, heat, water and quiet",
+      "cats": [
+        "bodywork",
+        "spa",
+        "recovery",
+        "sound",
+        "beauty"
+      ],
+      "want": "relax"
+    },
+    {
+      "slug": "mind",
+      "name": "Mind",
+      "line": "Sitting still, breathing, and people trained to listen",
+      "cats": [
+        "mind",
+        "meditation",
+        "breathwork",
+        "mindfulness"
+      ],
+      "want": "stillness"
+    },
+    {
+      "slug": "nourish",
+      "name": "Nourish",
+      "line": "Long appointments and proper questions",
+      "cats": [
+        "nutrition",
+        "natural",
+        "allied",
+        "longevity"
+      ],
+      "want": "talk-it-through"
+    },
+    {
+      "slug": "connect",
+      "name": "Connect",
+      "line": "Other people in the room",
+      "cats": [
+        "community",
+        "family",
+        "creative"
+      ],
+      "want": "connect"
+    },
+    {
+      "slug": "escape",
+      "name": "Escape",
+      "line": "A day away, within a day's reach",
+      "cats": [
+        "experiences",
+        "retreats",
+        "energy"
+      ],
+      "want": "explore"
+    }
+  ]
+}

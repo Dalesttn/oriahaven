@@ -51,6 +51,16 @@ $oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
 		<?php endif; ?>
 
 		<?php
+		/*
+		 * The want row, the same one the directory carries — the homepage's
+		 * answer to "I don't know what it's called, I know what I'm after".
+		 * Links rather than filter toggles: there is no results engine on
+		 * this page, and a crawlable link is worth more here anyway.
+		 */
+		get_template_part( 'template-parts/directory', 'goodfor', array( 'links' => true, 'class' => 'goodfor--hero' ) );
+		?>
+
+		<?php
 		$oria_tags = srows( $s, 'tags' );
 
 		/*
