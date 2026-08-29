@@ -3663,6 +3663,46 @@ html.has-sheet { overflow: hidden; }
 .nearyou__pills { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
 .nearyou__n { color: var(--text-faint); font-weight: 400; margin-left: .1rem; }
 
+/* --- Category map: the decide floor's right column ------------------------- */
+.decide__map { display: flex; flex-direction: column; gap: 1rem; }
+/* The heading lives inside the left column now, so the map's top edge
+   lines up with the H1 rather than starting below it. */
+.decide__head { margin-bottom: var(--s-5); }
+.catmap {
+  height: 460px;
+  border-radius: var(--r-lg, 18px);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--sand-2, #F2EFE7);
+  z-index: 0; /* its own stacking context, under the sticky spine and nav */
+}
+.catmap .leaflet-tooltip { font: 600 .8125rem var(--font-body, inherit); color: var(--ink); border-radius: var(--r-sm); }
+.catmap__pop-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+  margin-bottom: .5rem;
+}
+.catmap__pop b { display: block; font-weight: 700; margin-bottom: .1rem; }
+.catmap__pop span { display: block; color: var(--text-soft); font-size: .8125rem; margin-bottom: .35rem; }
+.catmap__pop a { font-weight: 600; color: var(--deep); }
+
+/* The spotlight a map popup throws on its card in the list below. */
+article.is-spotlit {
+  box-shadow: 0 0 0 4px var(--brand-gold, #C9A24B), var(--sh-2);
+  border-radius: var(--r-lg, 18px);
+  transition: box-shadow .4s ease;
+}
+.nearyou--map { margin-top: 0; }
+.nearyou--map .pill.is-here { background: var(--deep); border-color: var(--deep); color: #fff; }
+.nearyou--map .pill.is-here .nearyou__n { color: rgba(255,255,255,.7); }
+.nearyou--map .pill.is-here::after { content: " 92"; }
+@media (max-width: 60rem) {
+  .catmap { height: 360px; }
+}
+
 /* --- Guide editorial furniture -------------------------------------------
    Pull quotes, decision tables, callouts, the payment ladder. Everything
    here supports prose that is already doing the persuading. */

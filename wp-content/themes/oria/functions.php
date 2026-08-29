@@ -82,6 +82,17 @@ add_action(
 			wp_add_inline_style( 'oria-components', \Oria\Core\Categories\tint_css() );
 		}
 
+		/*
+		 * Leaflet, self-hosted, only where the category map renders: the
+		 * v2 category/facet template is the sole consumer, and 160KB of
+		 * map library has no business on every other page. app.js checks
+		 * for window.L before drawing, so the dependency stays one-way.
+		 */
+		if ( get_query_var( 'oria_practice_v2' ) ) {
+			wp_enqueue_style( 'oria-leaflet', "{$uri}/assets/vendor/leaflet/leaflet.css", array(), '1.9.4' );
+			wp_enqueue_script( 'oria-leaflet', "{$uri}/assets/vendor/leaflet/leaflet.js", array(), '1.9.4', array( 'in_footer' => true ) );
+		}
+
 		wp_enqueue_script(
 			'oria-app',
 			"{$uri}/assets/js/app.js",

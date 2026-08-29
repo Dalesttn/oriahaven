@@ -1029,7 +1029,115 @@
      they dismiss it themselves. */
   var GFSel = {};
 
+  /* Bridge between the map and the results list: the popup's link asks the
+     directory engine to page a listing's card into view and spotlight it. */
+  var DirAPI = {};
+
+  /* --- Category map ---------------------------------------------------- */
+  /* A real, interactive map of every listing on a category page — Leaflet
+     over CARTO's light basemap, both self-hosted/keyless. Hover names the
+     place; click opens a card with the link. Leaflet is only enqueued on
+     the pages that render a map, so window.L is the feature test. */
+  function initCatMap() {
+    var host = $("[data-catmap]");
+    var dataEl = $("[data-catmap-data]");
+    if (!host || !dataEl || !window.L) return;
+    var places;
+    try { places = JSON.parse(dataEl.textContent || "[]"); } catch (e) { places = []; }
+    places = places.filter(function (p) { return p.la && p.lo; });
+    if (!places.length) { host.hidden = true; return; }
+
+    var map = L.map(host, {
+      scrollWheelZoom: false,   // the page scroll must survive passing over the map
+      attributionControl: true,
+      zoomControl: true
+    });
+    /* OSM standard tiles: keyless, attribution required. CARTO's light
+       basemap looked better but now watermarks without an API key. */
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var group = [];
+    places.forEach(function (p) {
+      var mk = L.circleMarker([p.la, p.lo], {
+        radius: 8,
+        color: "#fff",
+        weight: 2,
+        fillColor: "#0E3B38",
+        fillOpacity: 0.95
+      }).addTo(map);
+      mk.bindTooltip(p.n + (p.s ? " · " + p.s : ""), { direction: "top", offset: [0, -8] });
+      mk.bindPopup(
+        '<div class="catmap__pop">' +
+        (p.i ? '<img class="catmap__pop-img" src="' + esc(p.i) + '" alt="" loading="lazy">' : "") +
+        "<b>" + esc(p.n) + "</b>" +
+        (p.s ? "<span>" + esc(p.s) + "</span>" : "") +
+        '<a href="' + esc(p.u) + '" data-catmap-view>View profile &rarr;</a></div>',
+        { minWidth: 200 }
+      );
+      mk._oriaSub = (p.s || "").toLowerCase();
+      mk.on("mouseover", function () { mk.setStyle({ fillColor: "#C9A24B" }); });
+      mk.on("mouseout", function () { mk.setStyle({ fillColor: mk._oriaHeld ? "#C9A24B" : "#0E3B38" }); });
+      group.push(mk);
+    });
+
+    var bounds = L.featureGroup(group).getBounds();
+    map.fitBounds(bounds, { padding: [24, 24], maxZoom: 14 });
+
+    /* "View profile" in a popup goes to the card in the list below —
+       scrolled to and spotlit gold — rather than straight off the page:
+       the card holds the rating, price and blurb the decision needs. The
+       href stays the real profile URL, so new-tab and no-JS still land
+       there, and so does anyone the filters have hidden the card from. */
+    host.addEventListener("click", function (e) {
+      var link = e.target.closest && e.target.closest("[data-catmap-view]");
+      if (!link || !DirAPI.revealCard) return;
+      var card = DirAPI.revealCard(link.getAttribute("href"));
+      if (!card) return; // filtered out of the list: follow the link
+      e.preventDefault();
+      map.closePopup();
+      $$(".listing.is-spotlit, article.is-spotlit").forEach(function (el) { el.classList.remove("is-spotlit"); });
+      card.classList.add("is-spotlit");
+      var top = card.getBoundingClientRect().top + window.pageYOffset - chromeTop() - 24;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      setTimeout(function () { card.classList.remove("is-spotlit"); }, 6000);
+    });
+
+    /* The suburb pills under the map drive it: first click zooms to that
+       suburb's pins and lights them gold; a second click on the now-active
+       pill follows its link to the area page. The href stays real the whole
+       time, so crawlers, middle-clicks and no-JS visitors lose nothing. */
+    var pills = $$(".nearyou--map .pill");
+    function releasePins() {
+      group.forEach(function (mk) { mk._oriaHeld = false; mk.setStyle({ fillColor: "#0E3B38" }); });
+    }
+    pills.forEach(function (pill) {
+      var name = (pill.getAttribute("data-suburb") || "").toLowerCase();
+      pill.addEventListener("click", function (e) {
+        if (pill.classList.contains("is-here")) return; // second click: navigate
+        var mks = group.filter(function (mk) { return mk._oriaSub === name; });
+        if (!mks.length) return; // nothing to zoom to: behave as a plain link
+        e.preventDefault();
+        pills.forEach(function (o) { o.classList.remove("is-here"); });
+        pill.classList.add("is-here");
+        releasePins();
+        mks.forEach(function (mk) { mk._oriaHeld = true; mk.setStyle({ fillColor: "#C9A24B" }); });
+        map.fitBounds(L.featureGroup(mks).getBounds(), { padding: [46, 46], maxZoom: 15 });
+      });
+    });
+    /* Zooming back out by hand reads as "never mind" — release the pills. */
+    map.on("zoomend", function () {
+      if (map.getZoom() <= map.getBoundsZoom(bounds, false)) {
+        pills.forEach(function (o) { o.classList.remove("is-here"); });
+        releasePins();
+      }
+    });
+  }
+
   function initGoodFor() {
+
     if (!$("#dirResults")) return;
     var chips = $$("[data-goodfor-chip]");
     var opts = $$("[data-goodfor-opt]");
@@ -1610,6 +1718,24 @@
        typed that the directory could not answer is demand it cannot serve
        yet, which is a recruitment list rather than a bug report. */
     var lastCount = 0;
+
+    /* Page the card for this URL into the list and hand it back, or null
+       when the current filters exclude that listing. Used by the map. */
+    DirAPI.revealCard = function (url) {
+      var found = DATA.listings.filter(matches).sort(sortFn);
+      var idx = -1;
+      found.forEach(function (l, i) { if (idx === -1 && l.url === url) idx = i; });
+      if (idx === -1) return null;
+      if (idx >= state.page * PER_PAGE) {
+        state.page = Math.ceil((idx + 1) / PER_PAGE);
+        render();
+      }
+      var card = null;
+      $$(".listing__name a", root).forEach(function (a) {
+        if (!card && a.getAttribute("href") === url) card = a.closest("article");
+      });
+      return card;
+    };
 
     function render() {
       var found = DATA.listings.filter(matches).sort(sortFn);
@@ -3468,6 +3594,7 @@
     initHomeSearch();
     initDirectory();
     initGoodFor();
+    initCatMap();
     scrollToFilteredResults();
     initPopoverDone();
     initFilterSheet();

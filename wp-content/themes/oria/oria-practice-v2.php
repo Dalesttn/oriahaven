@@ -179,35 +179,59 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 			<span><?php echo esc_html( $oria_pname ); ?></span>
 		<?php endif; ?>
 	</nav>
-	<div style="margin-top:1rem">
-		<span class="micro"><?php echo $oria_facet ? esc_html( $oria_pname ) . ' · ' . esc_html__( 'Filtered view', 'oria' ) : esc_html__( 'Practice', 'oria' ); ?></span>
-		<h1 class="h1 pagehead__title"><?php echo esc_html( $oria_h1 ); ?></h1>
-		<?php
-		/*
-		 * The emotional register, one line, before the numbers. Base view
-		 * only: facet and suburb views are already narrowed to a decision,
-		 * and their opener copy does this job.
-		 */
-		$oria_tag = '';
-		if ( ! $oria_facet && ! $oria_area && function_exists( '\Oria\Core\Categories\tagline_for' ) ) {
-			$oria_tag = \Oria\Core\Categories\tagline_for( (string) $oria_term->slug );
-			if ( '' === $oria_tag && $oria_term->parent ) {
-				// Child categories inherit the parent's line — "Meditation
-				// classes" reads under Mind's tagline as naturally as Mind does.
-				$oria_parent = get_term( $oria_term->parent, 'practice' );
-				if ( $oria_parent instanceof WP_Term ) {
-					$oria_tag = \Oria\Core\Categories\tagline_for( (string) $oria_parent->slug );
+
+	<?php
+	/*
+	 * "Near you" suburbs, computed before the two-column block so the map
+	 * column can render the pills as its drill-down. Only suburbs that
+	 * clear the facet gate (three or more) get a link, so every pill lands
+	 * on a page the sitemap also stands behind. Base view only.
+	 */
+	$oria_near = array();
+	if ( ! $oria_facet && ! $oria_area && $oria_term ) {
+		foreach ( $oria_all as $oria_nid ) {
+			foreach ( wp_get_post_terms( (int) $oria_nid, 'area' ) as $oria_na ) {
+				if ( $oria_na->parent ) {
+					if ( ! isset( $oria_near[ $oria_na->slug ] ) ) {
+						$oria_near[ $oria_na->slug ] = array( 'name' => $oria_na->name, 'n' => 0 );
+					}
+					++$oria_near[ $oria_na->slug ]['n'];
 				}
 			}
 		}
-		?>
-		<?php if ( '' !== $oria_tag ) : ?>
-			<p class="pagehead__tag"><?php echo esc_html( $oria_tag ); ?></p>
-		<?php endif; ?>
-	</div>
-
+		$oria_near = array_filter( $oria_near, static fn( array $oria_r ): bool => $oria_r['n'] >= 3 );
+		uasort( $oria_near, static fn( array $oria_a, array $oria_b ): int => $oria_b['n'] <=> $oria_a['n'] );
+		$oria_near = array_slice( $oria_near, 0, 12, true );
+	}
+	?>
 	<div class="decide">
 		<div class="decide__answer">
+		<div class="decide__head">
+			<span class="micro"><?php echo $oria_facet ? esc_html( $oria_pname ) . ' · ' . esc_html__( 'Filtered view', 'oria' ) : esc_html__( 'Practice', 'oria' ); ?></span>
+			<h1 class="h1 pagehead__title"><?php echo esc_html( $oria_h1 ); ?></h1>
+			<?php
+			/*
+			 * The emotional register, one line, before the numbers. Base view
+			 * only: facet and suburb views are already narrowed to a decision,
+			 * and their opener copy does this job.
+			 */
+			$oria_tag = '';
+			if ( ! $oria_facet && ! $oria_area && function_exists( '\Oria\Core\Categories\tagline_for' ) ) {
+				$oria_tag = \Oria\Core\Categories\tagline_for( (string) $oria_term->slug );
+				if ( '' === $oria_tag && $oria_term->parent ) {
+					// Child categories inherit the parent's line — "Meditation
+					// classes" reads under Mind's tagline as naturally as Mind does.
+					$oria_parent = get_term( $oria_term->parent, 'practice' );
+					if ( $oria_parent instanceof WP_Term ) {
+						$oria_tag = \Oria\Core\Categories\tagline_for( (string) $oria_parent->slug );
+					}
+				}
+			}
+			?>
+			<?php if ( '' !== $oria_tag ) : ?>
+				<p class="pagehead__tag"><?php echo esc_html( $oria_tag ); ?></p>
+			<?php endif; ?>
+		</div>
 			<?php if ( $oria_facet ) : ?>
 				<span class="micro"><?php esc_html_e( 'The short answer', 'oria' ); ?></span>
 				<p class="lede" style="margin-top:.5rem;max-width:62ch">
@@ -301,50 +325,57 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 		</div>
 		<?php
 		/*
-		 * The facts strip that sat here repeated the answer sentence's own
-		 * numbers card by card — the quotable sentence is the citation, so
-		 * it speaks alone now (same call as the directory page).
+		 * The right column is the map: every listing on this page with a
+		 * pin at its real coordinates (coverage is 100% — geo_lat/geo_lng
+		 * are set on import). Hover names the place, click goes to it, and
+		 * the suburb pills beneath drill into the area facet pages. Facet
+		 * and suburb views get the map too — narrowed to their own pins.
 		 */
-		?>
-	</div>
-
-	<?php
-	/*
-	 * "Near you", from the same listings the page is already holding. Only
-	 * suburbs that clear the facet gate (three or more) get a link, so
-	 * every pill lands on a page the sitemap also stands behind; smaller
-	 * suburbs stay reachable through the toolbar's area filter. Base view
-	 * only — a narrowed page answering "where" twice is noise.
-	 */
-	$oria_near = array();
-	if ( ! $oria_facet && ! $oria_area && $oria_term ) {
-		foreach ( $oria_all as $oria_nid ) {
-			foreach ( wp_get_post_terms( (int) $oria_nid, 'area' ) as $oria_na ) {
-				if ( $oria_na->parent ) {
-					if ( ! isset( $oria_near[ $oria_na->slug ] ) ) {
-						$oria_near[ $oria_na->slug ] = array( 'name' => $oria_na->name, 'n' => 0 );
-					}
-					++$oria_near[ $oria_na->slug ]['n'];
-				}
+		$oria_map = array();
+		foreach ( $oria_ids as $oria_mid ) {
+			$oria_mla = get_post_meta( (int) $oria_mid, 'geo_lat', true );
+			$oria_mlo = get_post_meta( (int) $oria_mid, 'geo_lng', true );
+			if ( ! is_numeric( $oria_mla ) || ! is_numeric( $oria_mlo ) || 0.0 === (float) $oria_mla ) {
+				continue;
 			}
+			$oria_mterms = wp_get_post_terms( (int) $oria_mid, 'area' );
+			$oria_msub  = '';
+			foreach ( $oria_mterms as $oria_mt ) {
+				if ( $oria_mt->parent ) { $oria_msub = $oria_mt->name; break; }
+			}
+			$oria_map[] = array(
+				'n'  => wp_specialchars_decode( (string) get_post_field( 'post_title', $oria_mid, 'raw' ), ENT_QUOTES ),
+				'u'  => (string) get_permalink( (int) $oria_mid ),
+				'la' => (float) $oria_mla,
+				'lo' => (float) $oria_mlo,
+				's'  => $oria_msub,
+				// Same image the listing card shows, so map and cards agree.
+				'i'  => function_exists( '\Oria\Theme\listing_image' ) ? \Oria\Theme\listing_image( (int) $oria_mid ) : '',
+			);
 		}
-		$oria_near = array_filter( $oria_near, static fn( array $oria_r ): bool => $oria_r['n'] >= 3 );
-		uasort( $oria_near, static fn( array $oria_a, array $oria_b ): int => $oria_b['n'] <=> $oria_a['n'] );
-		$oria_near = array_slice( $oria_near, 0, 12, true );
-	}
-	?>
-	<?php if ( $oria_near ) : ?>
-		<div class="nearyou">
-			<h2 class="h3"><?php printf( esc_html__( '%s near you', 'oria' ), esc_html( $oria_pname ) ); ?></h2>
-			<div class="nearyou__pills">
-				<?php foreach ( $oria_near as $oria_nslug => $oria_nrow ) : ?>
-					<a class="pill" href="<?php echo esc_url( home_url( '/practices/' . $oria_term->slug . '/' . $oria_nslug . '/' ) ); ?>">
-						<?php echo esc_html( $oria_nrow['name'] ); ?> <span class="nearyou__n"><?php echo esc_html( number_format_i18n( $oria_nrow['n'] ) ); ?></span>
-					</a>
-				<?php endforeach; ?>
+		?>
+		<?php if ( $oria_map ) : ?>
+		<div class="decide__map">
+			<div class="catmap" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of %s places across Perth', 'oria' ), esc_attr( $oria_pname ) ); ?>">
+				<div class="catmap__tip" hidden></div>
 			</div>
+			<script type="application/json" data-catmap-data><?php echo wp_json_encode( $oria_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data script tag ?></script>
+			<?php if ( $oria_near ) : ?>
+				<div class="nearyou nearyou--map">
+					<h2 class="h4"><?php printf( esc_html__( '%s near you', 'oria' ), esc_html( $oria_pname ) ); ?></h2>
+					<div class="nearyou__pills">
+						<?php foreach ( $oria_near as $oria_nslug => $oria_nrow ) : ?>
+							<a class="pill" data-suburb="<?php echo esc_attr( $oria_nrow['name'] ); ?>" href="<?php echo esc_url( home_url( '/practices/' . $oria_term->slug . '/' . $oria_nslug . '/' ) ); ?>">
+								<?php echo esc_html( $oria_nrow['name'] ); ?> <span class="nearyou__n"><?php echo esc_html( number_format_i18n( $oria_nrow['n'] ) ); ?></span>
+							</a>
+						<?php endforeach; ?>
+					</div>
+					<p class="hint" style="margin-top:.5rem"><?php esc_html_e( 'Click a suburb to zoom the map there — click it again to open that area\'s page.', 'oria' ); ?></p>
+				</div>
+			<?php endif; ?>
 		</div>
-	<?php endif; ?>
+		<?php endif; ?>
+	</div>
 
 	<?php if ( count( $oria_rows ) >= 2 ) : ?>
 		<h2 class="h3 typewrite" style="margin-top:2rem" data-typewrite><?php echo $oria_facet ? esc_html__( 'Or another kind', 'oria' ) : esc_html__( 'Start with what you want to do', 'oria' ); ?></h2>
