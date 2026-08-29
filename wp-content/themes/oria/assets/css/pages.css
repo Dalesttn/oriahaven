@@ -3690,6 +3690,37 @@ html.has-sheet { overflow: hidden; }
 .catmap__pop a { font-weight: 600; color: var(--deep); }
 
 /* The spotlight a map popup throws on its card in the list below. */
+/* Card corner actions: heart to save, pin to jump the map. The pin only
+   appears on pages where the map actually initialised. */
+.listing__quick {
+  position: absolute;
+  top: .6rem;
+  right: .6rem;
+  display: flex;
+  gap: .4rem;
+  z-index: 2;
+}
+.qact {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.92);
+  color: var(--deep);
+  cursor: pointer;
+  box-shadow: var(--sh-1, 0 1px 4px rgba(0,0,0,.12));
+  transition: transform .12s ease, background .15s ease, color .15s ease;
+}
+.qact svg { width: 17px; height: 17px; }
+.qact:hover { transform: scale(1.08); }
+.qact[aria-pressed="true"] { background: var(--deep); color: #fff; }
+.qact[aria-pressed="true"] svg path { fill: currentColor; }
+.qact--pin { display: none; }
+body.has-catmap .qact--pin { display: grid; }
+
 article.is-spotlit {
   box-shadow: 0 0 0 4px var(--brand-gold, #C9A24B), var(--sh-2);
   border-radius: var(--r-lg, 18px);

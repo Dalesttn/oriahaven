@@ -19,7 +19,8 @@
     arrow: '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg>',
     x: '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg>',
     scales: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v12M3 5h10M4.5 5 2.5 9.5h4zM11.5 5 9.5 9.5h4z"/></svg>',
-    tick: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 6.5 12 13 4.5"/></svg>'
+    tick: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 6.5 12 13 4.5"/></svg>',
+    heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6a4.9 4.9 0 0 0-8.8-3A4.9 4.9 0 0 0 3.2 8.6c0 4.9 8.8 10.2 8.8 10.2s8.8-5.3 8.8-10.2Z"/></svg>'
   };
 
   /* ------------------------------------------------------------------ *
@@ -1086,6 +1087,21 @@
     var bounds = L.featureGroup(group).getBounds();
     map.fitBounds(bounds, { padding: [24, 24], maxZoom: 14 });
 
+    /* Cards' pin buttons jump here: zoom to the marker, open its card,
+       and bring the map into view. Hidden by CSS unless this ran. */
+    var byUrl = {};
+    group.forEach(function (mk, i) { byUrl[places[i].u] = mk; });
+    document.body.classList.add("has-catmap");
+    DirAPI.focusOnMap = function (url) {
+      var mk = byUrl[url];
+      if (!mk) return false;
+      var top = host.getBoundingClientRect().top + window.pageYOffset - chromeTop() - 16;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      map.setView(mk.getLatLng(), Math.max(map.getZoom(), 14));
+      mk.openPopup();
+      return true;
+    };
+
     /* "View profile" in a popup goes to the card in the list below —
        scrolled to and spotlit gold — rather than straight off the page:
        the card holds the rating, price and blurb the decision needs. The
@@ -1152,6 +1168,31 @@
         releasePins();
         openLink.hidden = true;
       }
+    });
+  }
+
+  /* Card corner actions — delegated, because the engine redraws cards on
+     every filter change and per-card listeners would be lost each time. */
+  function initCardQuickActions() {
+    document.addEventListener("click", function (e) {
+      var save = e.target.closest && e.target.closest("[data-card-save]");
+      if (save) {
+        var id = String(save.dataset.cardSave);
+        var ids = savedIds();
+        var at = ids.indexOf(id);
+        if (at > -1) { ids.splice(at, 1); } else { ids.push(id); }
+        if (!writeSaved(ids)) {
+          save.setAttribute("title", "Saving needs site data enabled in your browser.");
+          return;
+        }
+        $$('[data-card-save="' + id + '"]').forEach(function (b) {
+          b.setAttribute("aria-pressed", at > -1 ? "false" : "true");
+        });
+        pushEvent(at > -1 ? "listing_unsave" : "listing_save", { listing_id: id });
+        return;
+      }
+      var pin = e.target.closest && e.target.closest("[data-card-pin]");
+      if (pin && DirAPI.focusOnMap) DirAPI.focusOnMap(pin.dataset.cardPin);
     });
   }
 
@@ -1429,6 +1470,15 @@
               ? " onerror=\"this.onerror=null;this.src='" + esc(l.image_fb) + "'\""
               : "") + '>' : "") +
           (statusBadge ? '<div class="listing__flag">' + statusBadge + "</div>" : "") +
+          /* Top-right of the image: save to the device shortlist, and — on
+             pages that carry the map — jump the map to this practice. */
+          '<div class="listing__quick">' +
+            '<button class="qact" type="button" data-card-save="' + esc(String(l.id)) +
+              '" aria-pressed="' + (savedIds().indexOf(String(l.id)) > -1 ? "true" : "false") +
+              '" aria-label="Save ' + esc(l.name) + '" title="Save">' + ICON.heart + "</button>" +
+            '<button class="qact qact--pin" type="button" data-card-pin="' + esc(l.url) +
+              '" aria-label="Show ' + esc(l.name) + ' on the map" title="Show on map">' + ICON.pin + "</button>" +
+          "</div>" +
         "</div>" +
         '<div class="listing__body">' +
           /* Want-tags lead the card (same derivation as the chip row);
@@ -3614,6 +3664,7 @@
     initDirectory();
     initGoodFor();
     initCatMap();
+    initCardQuickActions();
     scrollToFilteredResults();
     initPopoverDone();
     initFilterSheet();
