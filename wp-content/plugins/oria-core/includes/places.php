@@ -23,9 +23,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/* v4: the record gained the place's top reviews; the new key retires older
-   cache entries cleanly. */
-const META_CACHE   = '_oria_places_v4';
+/* v5: the record gained the opening hours; the new key retires older
+   cache entries cleanly, and the warm cron walks every listing onto it. */
+const META_CACHE   = '_oria_places_v5';
 const CACHE_DAYS   = 29;
 const MAX_PHOTOS   = 3;
 const SEARCH_URL   = 'https://places.googleapis.com/v1/places:searchText';
@@ -149,6 +149,17 @@ function reviews_for( int $post_id ): array {
 }
 
 /**
+ * The place's opening hours, one line per weekday exactly as Google words
+ * them ("Monday: 9:00 am \u{2013} 5:00 pm"). Empty when the place lists none.
+ *
+ * @return string[]
+ */
+function hours_for( int $post_id ): array {
+	$cache = data_for( $post_id );
+	return $cache ? array_values( array_map( 'strval', (array) ( $cache['hours'] ?? array() ) ) ) : array();
+}
+
+/**
  * The listing's Google rating, labelled data for the profile header.
  *
  * @return array{rating: float, count: int, uri: string}
@@ -221,7 +232,7 @@ function fetch( int $post_id, string $place_id ): ?array {
 				'headers' => array(
 					'Content-Type'     => 'application/json',
 					'X-Goog-Api-Key'   => $key,
-					'X-Goog-FieldMask' => 'places.id,places.photos,places.rating,places.userRatingCount,places.googleMapsUri,places.reviews',
+					'X-Goog-FieldMask' => 'places.id,places.photos,places.rating,places.userRatingCount,places.googleMapsUri,places.reviews,places.regularOpeningHours',
 				),
 				'body'    => (string) wp_json_encode(
 					array(
@@ -253,7 +264,7 @@ function fetch( int $post_id, string $place_id ): ?array {
 			'timeout' => 8,
 			'headers' => array(
 				'X-Goog-Api-Key'   => $key,
-				'X-Goog-FieldMask' => 'photos,rating,userRatingCount,googleMapsUri,reviews',
+				'X-Goog-FieldMask' => 'photos,rating,userRatingCount,googleMapsUri,reviews,regularOpeningHours',
 			),
 		)
 	);
@@ -332,6 +343,7 @@ function pack( array $place ): array {
 	return array(
 		'names'        => $names,
 		'attributions' => array_values( $attr ),
+		'hours'        => array_values( array_map( 'strval', (array) ( $place['regularOpeningHours']['weekdayDescriptions'] ?? array() ) ) ),
 		'rating'       => (float) ( $place['rating'] ?? 0 ),
 		'count'        => (int) ( $place['userRatingCount'] ?? 0 ),
 		'maps_uri'     => (string) ( $place['googleMapsUri'] ?? '' ),
@@ -339,3 +351,59 @@ function pack( array $place ): array {
 		'ts'           => time(),
 	);
 }
+
+/* ------------------------------------------------------------------ warm */
+
+/**
+ * A daily walk that refreshes the stalest Places records, forty at a time,
+ * so hours (and everything else in the record) exist for every listing
+ * without waiting for someone to visit each profile. Forty a day covers
+ * the whole directory inside ten days and then keeps every record inside
+ * the 29-day cache window forever after.
+ */
+function bootstrap(): void {
+	add_action( 'oria_places_warm', __NAMESPACE__ . '\\warm' );
+	add_action( 'init', static function (): void {
+		if ( enabled() && ! wp_next_scheduled( 'oria_places_warm' ) ) {
+			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', 'oria_places_warm' );
+		}
+	} );
+}
+
+function warm( int $budget = 40 ): array {
+	$fresh = 0;
+	$had   = 0;
+	if ( ! enabled() ) {
+		return array( 'fetched' => 0, 'fresh' => 0 );
+	}
+	$ids = get_posts(
+		array(
+			'post_type'      => 'listing',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+		)
+	);
+	foreach ( $ids as $id ) {
+		if ( ! $id ) {
+			continue;
+		}
+		$cache = get_post_meta( (int) $id, META_CACHE, true );
+		if ( is_array( $cache ) && isset( $cache['ts'] )
+			&& ( time() - (int) $cache['ts'] ) < ( CACHE_DAYS - 2 ) * DAY_IN_SECONDS ) {
+			++$had;
+			continue; // still comfortably fresh
+		}
+		if ( $budget <= 0 ) {
+			break;
+		}
+		--$budget;
+		if ( null !== data_for( (int) $id, true ) ) {
+			++$fresh;
+		}
+	}
+	return array( 'fetched' => $fresh, 'fresh' => $had + $fresh );
+}
+

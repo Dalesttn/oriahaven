@@ -449,6 +449,21 @@ while ( have_posts() ) :
 						$oria_glance[] = array( __( 'Hours', 'oria' ), implode( ' · ', array_slice( $oria_hbits, 0, 3 ) ) );
 					}
 				}
+				/*
+				 * No owner-entered hours: today's line from the Google record
+				 * the page already holds for rating and photos. The full week
+				 * sits in "Getting there"; the panel answers only "can I go
+				 * now", which is the question a glance is for.
+				 */
+				if ( ! $oria_hrows && function_exists( '\Oria\Core\Places\hours_for' ) ) {
+					$oria_today = (string) wp_date( 'l' );
+					foreach ( \Oria\Core\Places\hours_for( $oria_id ) as $oria_ghl ) {
+						if ( 0 === stripos( $oria_ghl, $oria_today ) ) {
+							$oria_glance[] = array( __( 'Hours today', 'oria' ), trim( (string) preg_replace( '/^[^:]+:\s*/u', '', $oria_ghl ) ) );
+							break;
+						}
+					}
+				}
 				$oria_amen = get_field( 'amenities', $oria_id );
 				if ( is_string( $oria_amen ) && '' !== trim( $oria_amen ) ) {
 					$oria_amen = array_map( 'trim', explode( ',', $oria_amen ) );
@@ -1182,6 +1197,20 @@ while ( have_posts() ) :
 									</div>
 								<?php endif; ?>
 							</div>
+
+							<?php $oria_wk = function_exists( '\Oria\Core\Places\hours_for' ) ? \Oria\Core\Places\hours_for( $oria_id ) : array(); ?>
+							<?php if ( $oria_wk ) : ?>
+								<div style="margin-top:1.1rem">
+									<div class="keyfact__k"><?php esc_html_e( 'Opening hours', 'oria' ); ?></div>
+									<ul class="hourslist">
+										<?php $oria_todayw = (string) wp_date( 'l' ); ?>
+										<?php foreach ( $oria_wk as $oria_hl ) : ?>
+											<li<?php echo 0 === stripos( $oria_hl, $oria_todayw ) ? ' class="is-today"' : ''; ?>><?php echo esc_html( $oria_hl ); ?></li>
+										<?php endforeach; ?>
+									</ul>
+									<p class="hint" style="margin-top:.45rem"><?php esc_html_e( 'Hours via Google — worth a check before a special trip.', 'oria' ); ?></p>
+								</div>
+							<?php endif; ?>
 						</div>
 					</div>
 				</div>

@@ -113,6 +113,7 @@ ClaimRequests\bootstrap();
 AdminUI\bootstrap();
 Seo\bootstrap();
 Schema\bootstrap();
+Places\bootstrap();
 ListingSearch\bootstrap();
 Signup\bootstrap();
 Ga\bootstrap();
