@@ -1110,28 +1110,47 @@
        pill follows its link to the area page. The href stays real the whole
        time, so crawlers, middle-clicks and no-JS visitors lose nothing. */
     var pills = $$(".nearyou--map .pill");
+    /* While a suburb is active, its drill-down page gets an explicit door:
+       a link that appears under the pills, so the pill itself can stay a
+       pure zoom toggle. */
+    var openLink = document.createElement("a");
+    openLink.className = "nearyou__open";
+    openLink.hidden = true;
+    var pillWrap = pills.length ? pills[0].closest(".nearyou--map") : null;
+    if (pillWrap) pillWrap.appendChild(openLink);
+
     function releasePins() {
       group.forEach(function (mk) { mk._oriaHeld = false; mk.setStyle({ fillColor: "#0E3B38" }); });
+    }
+    function resetMap() {
+      pills.forEach(function (o) { o.classList.remove("is-here"); });
+      releasePins();
+      openLink.hidden = true;
+      map.fitBounds(bounds, { padding: [24, 24], maxZoom: 14 });
     }
     pills.forEach(function (pill) {
       var name = (pill.getAttribute("data-suburb") || "").toLowerCase();
       pill.addEventListener("click", function (e) {
-        if (pill.classList.contains("is-here")) return; // second click: navigate
         var mks = group.filter(function (mk) { return mk._oriaSub === name; });
         if (!mks.length) return; // nothing to zoom to: behave as a plain link
         e.preventDefault();
+        if (pill.classList.contains("is-here")) { resetMap(); return; } // declick: back to all of Perth
         pills.forEach(function (o) { o.classList.remove("is-here"); });
         pill.classList.add("is-here");
         releasePins();
         mks.forEach(function (mk) { mk._oriaHeld = true; mk.setStyle({ fillColor: "#C9A24B" }); });
         map.fitBounds(L.featureGroup(mks).getBounds(), { padding: [46, 46], maxZoom: 15 });
+        openLink.href = pill.getAttribute("href");
+        openLink.textContent = "Open the " + (pill.getAttribute("data-suburb") || "area") + " page →";
+        openLink.hidden = false;
       });
     });
-    /* Zooming back out by hand reads as "never mind" — release the pills. */
+    /* Zooming back out by hand reads as "never mind" — same as a declick. */
     map.on("zoomend", function () {
       if (map.getZoom() <= map.getBoundsZoom(bounds, false)) {
         pills.forEach(function (o) { o.classList.remove("is-here"); });
         releasePins();
+        openLink.hidden = true;
       }
     });
   }

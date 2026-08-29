@@ -370,7 +370,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 							</a>
 						<?php endforeach; ?>
 					</div>
-					<p class="hint" style="margin-top:.5rem"><?php esc_html_e( 'Click a suburb to zoom the map there — click it again to open that area\'s page.', 'oria' ); ?></p>
+					<p class="hint" style="margin-top:.5rem"><?php esc_html_e( 'Click a suburb to zoom the map there — click it again to zoom back out.', 'oria' ); ?></p>
 				</div>
 			<?php endif; ?>
 		</div>
