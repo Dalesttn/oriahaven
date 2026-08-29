@@ -2785,14 +2785,15 @@ html.has-sheet { overflow: hidden; }
 
 /* Phones — the results card. Last in the file on purpose: it has to win
    against the 190px desktop column rule above, which shares its
-   specificity. A compact row — thumbnail left, the essentials right — so
-   three or four listings fit a screen instead of one and a half. */
+   specificity. The card takes its natural stacked form — photo on top,
+   essentials under it. The side-thumbnail row it replaced bought density
+   at the cost of a 104px sliver of photo stretched to the card's height,
+   which read as squashed; a short panoramic crop shows the actual room
+   and still keeps two listings to a screen. */
 @media (max-width: 50rem) {
   .dir__results--wide { gap: var(--s-3); }
-  .dir__results--wide .listing { grid-template-columns: 104px 1fr; position: relative; }
-  .dir__results--wide .listing__media { min-height: 100%; }
-  .dir__results--wide .listing__media img { aspect-ratio: auto; height: 100%; min-height: 140px; }
-  .dir__results--wide .listing__flag { top: 6px; left: 6px; transform: scale(.82); transform-origin: top left; }
+  .dir__results--wide .listing { grid-template-columns: 1fr; position: relative; }
+  .dir__results--wide .listing__media img { aspect-ratio: 2 / 1; height: auto; min-height: 0; }
   .dir__results--wide .listing__body { padding: var(--s-3); gap: var(--s-2); }
   .dir__results--wide .listing__tags { display: none; }
   .dir__results--wide .listing__head { gap: var(--s-2); }
