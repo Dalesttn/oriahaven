@@ -126,13 +126,12 @@ $oria_guides = ( $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) )
 		<a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Directory', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span><span><?php echo esc_html( $oria_sname ); ?></span>
 	</nav>
-	<div style="margin-top:1rem">
-		<span class="micro"><?php esc_html_e( 'Specialty', 'oria' ); ?></span>
-		<h1 class="h1 pagehead__title"><?php echo esc_html( $oria_h1 ); ?></h1>
-	</div>
-
 	<div class="decide">
 		<div class="decide__answer">
+			<div class="decide__head">
+				<span class="micro"><?php esc_html_e( 'Specialty', 'oria' ); ?></span>
+				<h1 class="h1 pagehead__title"><?php echo esc_html( $oria_h1 ); ?></h1>
+			</div>
 			<?php if ( $oria_answer['sentences'] ) : ?>
 				<span class="micro"><?php esc_html_e( 'The short answer', 'oria' ); ?></span>
 				<p class="lede" style="margin-top:.5rem;max-width:62ch"><?php echo esc_html( implode( ' ', $oria_answer['sentences'] ) ); ?></p>
