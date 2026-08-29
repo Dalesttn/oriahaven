@@ -18,7 +18,14 @@
  * 2. An empty set means nobody has been asked, never "this practice does
  *    not do these things". No template may read it as a no.
  *
- * @see data/comefor.json for the vocabulary and the writing rules.
+ * Stored as a taxonomy so the edit screen is WordPress's own tag box:
+ * type a reason, press enter, done — with autocomplete across every
+ * listing, which is what stops "foot alignment" and "Foot Alignment"
+ * becoming two different things. Deliberately not public: these are
+ * useful ON a profile, but a browsable archive of complaints is a
+ * different kind of page and a different kind of claim.
+ *
+ * @see data/comefor.json for the seed vocabulary used when pre-filling.
  */
 
 declare(strict_types=1);
@@ -29,8 +36,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/** ACF field name on the listing. */
-const FIELD = 'come_for';
+/** The taxonomy the reasons live in. */
+const TAX = 'come_for';
 
 /**
  * The whole vocabulary, keyed by the service/specialty slug it belongs to.
@@ -91,29 +98,18 @@ function options_for( int $listing_id ): array {
 }
 
 /**
- * What the owner has actually ticked, as rows ready to render.
+ * The reasons on this listing, as rows ready to render.
  *
- * Anything stored that is no longer offered to this listing (its terms
- * changed) is dropped rather than shown from a vocabulary it has left.
- *
- * @return array<int, array{slug: string, label: string, emoji: string}>
+ * @return array<int, array{slug: string, label: string}>
  */
 function for_listing( int $listing_id ): array {
-	$saved = get_post_meta( $listing_id, FIELD, true );
-	$saved = is_array( $saved ) ? array_map( 'strval', $saved ) : array();
-	if ( ! $saved ) {
+	$terms = get_the_terms( $listing_id, TAX );
+	if ( ! $terms || is_wp_error( $terms ) ) {
 		return array();
 	}
-	$options = options_for( $listing_id );
-	$out     = array();
-	foreach ( $saved as $slug ) {
-		if ( isset( $options[ $slug ] ) ) {
-			$out[] = array(
-				'slug'  => $options[ $slug ]['slug'],
-				'label' => $options[ $slug ]['label'],
-				'emoji' => $options[ $slug ]['emoji'],
-			);
-		}
+	$out = array();
+	foreach ( $terms as $term ) {
+		$out[] = array( 'slug' => $term->slug, 'label' => $term->name );
 	}
 	return $out;
 }
@@ -146,9 +142,10 @@ function haystack( int $listing_id ): string {
 }
 
 /**
- * The rows this listing's own words support — the suggestion, not a save.
+ * The reasons this listing's own words support — the suggestion, not a
+ * save. Labels rather than ids: they become tags, and a tag is its words.
  *
- * @return array<int, string> Slugs.
+ * @return array<int, string>
  */
 function suggest( int $listing_id ): array {
 	$options = options_for( $listing_id );
@@ -160,11 +157,11 @@ function suggest( int $listing_id ): array {
 		return array();
 	}
 	$hit = array();
-	foreach ( $options as $slug => $row ) {
+	foreach ( $options as $row ) {
 		foreach ( $row['aliases'] as $alias ) {
 			$needle = trim( (string) preg_replace( '/[^a-z0-9]+/', ' ', strtolower( $alias ) ) );
 			if ( '' !== $needle && false !== strpos( $hay, $needle ) ) {
-				$hit[] = $slug;
+				$hit[] = $row['label'];
 				break;
 			}
 		}
@@ -175,8 +172,41 @@ function suggest( int $listing_id ): array {
 /* ------------------------------------------------------------------ admin */
 
 function bootstrap(): void {
+	add_action( 'init', __NAMESPACE__ . '\\register' );
 	add_action( 'admin_menu', __NAMESPACE__ . '\\menu' );
 	add_action( 'admin_post_oria_comefor_fill', __NAMESPACE__ . '\\handle_fill' );
+}
+
+/**
+ * The tag box on a listing: type a reason, press enter.
+ *
+ * public=false on purpose. The reasons belong on a profile, where the
+ * practice's own answer sits beside its name; an archive of every clinic
+ * filed under a complaint is a different page making a different claim,
+ * and nothing links to one.
+ */
+function register(): void {
+	register_taxonomy(
+		TAX,
+		array( 'listing' ),
+		array(
+			'labels'            => array(
+				'name'          => __( 'People come here for', 'oria' ),
+				'singular_name' => __( 'Reason', 'oria' ),
+				'add_new_item'  => __( 'Add a reason', 'oria' ),
+				'search_items'  => __( 'Search reasons', 'oria' ),
+				'popular_items' => __( 'Most used', 'oria' ),
+			),
+			'public'            => false,
+			'publicly_queryable' => false,
+			'show_ui'           => true,
+			'show_in_menu'      => true,
+			'show_in_rest'      => true,
+			'show_admin_column' => false,
+			'hierarchical'      => false,
+			'rewrite'           => false,
+		)
+	);
 }
 
 function menu(): void {
@@ -203,11 +233,11 @@ function candidates(): array {
 }
 
 /**
- * Fill empty fields from each practice's own published words.
+ * Fill empty listings from each practice's own published words.
  *
- * Never overwrites: a set already ticked is somebody's answer — ours or
- * the owner's — and a bulk job may not overrule it. Nothing is invented;
- * a row appears only because the practice's own text names it.
+ * Never touches a listing that already has reasons: those are somebody's
+ * answer and a bulk job may not overrule them. Nothing is invented — a tag
+ * appears only because the practice's own text names it.
  *
  * @return array{filled: int, rows: int, skipped: int}
  */
@@ -219,8 +249,8 @@ function fill_empty(): array {
 		if ( ! $id ) {
 			continue;
 		}
-		$have = get_post_meta( (int) $id, FIELD, true );
-		if ( is_array( $have ) && $have ) {
+		$have = get_the_terms( (int) $id, TAX );
+		if ( $have && ! is_wp_error( $have ) ) {
 			++$skip;
 			continue;
 		}
@@ -228,7 +258,7 @@ function fill_empty(): array {
 		if ( ! $hits ) {
 			continue;
 		}
-		update_post_meta( (int) $id, FIELD, $hits );
+		wp_set_object_terms( (int) $id, $hits, TAX, false );
 		++$filled;
 		$rows += count( $hits );
 	}
@@ -254,8 +284,8 @@ function render(): void {
 		if ( ! $id ) {
 			continue;
 		}
-		$have = get_post_meta( (int) $id, FIELD, true );
-		if ( is_array( $have ) && $have ) {
+		$have = get_the_terms( (int) $id, TAX );
+		if ( $have && ! is_wp_error( $have ) ) {
 			++$already;
 			continue;
 		}
@@ -263,12 +293,7 @@ function render(): void {
 		if ( $hits ) {
 			++$covered;
 			if ( count( $preview ) < 25 ) {
-				$opts   = options_for( (int) $id );
-				$labels = array();
-				foreach ( $hits as $slug ) {
-					$labels[] = trim( ( $opts[ $slug ]['emoji'] ?? '' ) . ' ' . ( $opts[ $slug ]['label'] ?? $slug ) );
-				}
-				$preview[] = array( 'id' => (int) $id, 'labels' => $labels );
+				$preview[] = array( 'id' => (int) $id, 'labels' => $hits );
 			}
 		}
 	}

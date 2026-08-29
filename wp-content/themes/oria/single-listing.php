@@ -742,7 +742,7 @@ while ( have_posts() ) :
 							<h3 class="h4" style="margin-bottom:.75rem"><?php esc_html_e( 'People come here for', 'oria' ); ?></h3>
 							<ul class="chips">
 								<?php foreach ( $oria_comefor as $oria_cf ) : ?>
-									<li><span class="chip"><?php echo $oria_cf['emoji'] ? esc_html( $oria_cf['emoji'] ) . ' ' : ''; ?><?php echo esc_html( $oria_cf['label'] ); ?></span></li>
+									<li><span class="chip"><?php echo esc_html( $oria_cf['label'] ); ?></span></li>
 								<?php endforeach; ?>
 							</ul>
 							<p class="hint"><?php esc_html_e( 'Told to us by the practice. Reasons people book in — not a statement about what treatment achieves.', 'oria' ); ?></p>
