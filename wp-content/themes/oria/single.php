@@ -59,9 +59,20 @@ while ( have_posts() ) :
 
 	<?php if ( has_post_thumbnail() ) : ?>
 	<section class="wrap">
-		<div style="border-radius:var(--r-lg);overflow:hidden">
+		<?php
+		/*
+		 * A figure, not a div: the caption is part of the picture, and the
+		 * class carries the settle-on-load treatment the design asks for.
+		 */
+		$oria_thumb = get_post( get_post_thumbnail_id() );
+		$oria_cap   = $oria_thumb ? trim( (string) $oria_thumb->post_excerpt ) : '';
+		?>
+		<figure class="herofig">
 			<?php the_post_thumbnail( 'oria-wide' ); ?>
-		</div>
+			<?php if ( '' !== $oria_cap ) : ?>
+				<figcaption><?php echo esc_html( $oria_cap ); ?></figcaption>
+			<?php endif; ?>
+		</figure>
 	</section>
 	<?php endif; ?>
 
@@ -157,7 +168,7 @@ while ( have_posts() ) :
 
 	<section class="wrap section section--tight">
 		<div class="<?php echo $oria_side ? 'jlayout' : ''; ?>">
-			<div class="prose <?php echo $oria_side ? '' : 'prose--wide'; ?> prose--article" style="font-size:1.0625rem">
+			<div class="prose <?php echo $oria_side ? '' : 'prose--wide'; ?> prose--article">
 				<?php the_content(); ?>
 			</div>
 			<?php if ( $oria_side ) : ?>
