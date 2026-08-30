@@ -1086,11 +1086,19 @@
         fillOpacity: 0.95
       }).addTo(map);
       mk.bindTooltip(p.n + (p.s ? " · " + p.s : ""), { direction: "top", offset: [0, -8] });
+      /* Rating and open-now, when the Places cache holds them. p.o is
+         true/false/null -- null means unknown, and the popup then says
+         nothing rather than guessing. */
+      var meta = "";
+      if (p.r > 0) meta += '<span class="catmap__pop-star">★ ' + Number(p.r).toFixed(1) + "</span>";
+      if (p.o === true) meta += '<span class="catmap__pop-open">Open now</span>';
+      else if (p.o === false) meta += '<span class="catmap__pop-shut">Closed now</span>';
       mk.bindPopup(
         '<div class="catmap__pop">' +
         (p.i ? '<img class="catmap__pop-img" src="' + esc(p.i) + '" alt="" loading="lazy">' : "") +
         "<b>" + esc(p.n) + "</b>" +
         (p.s ? "<span>" + esc(p.s) + "</span>" : "") +
+        (meta ? '<span class="catmap__pop-meta">' + meta + "</span>" : "") +
         '<a href="' + esc(p.u) + '" data-catmap-view>View profile &rarr;</a></div>',
         { minWidth: 200 }
       );

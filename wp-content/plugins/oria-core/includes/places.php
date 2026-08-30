@@ -160,6 +160,45 @@ function hours_for( int $post_id ): array {
 }
 
 /**
+ * Whether the place is open right now, from the cached structured periods.
+ * Cache-only on purpose: this is called per map pin, and a map of 350 pins
+ * must never turn into 350 API calls. null means "we don't know" -- no
+ * cached record, or the place lists no hours -- and the popup then simply
+ * says nothing, which is honest.
+ *
+ * Google's periods: day 0 = Sunday; a 24/7 place is one open point with no
+ * close. Overnight spans close on a later day, so everything is minutes on
+ * a week-long clock, wrapped once.
+ */
+function open_now( int $post_id ): ?bool {
+	$cache = data_for( $post_id, false );
+	if ( ! $cache || empty( $cache['periods'] ) || ! is_array( $cache['periods'] ) ) {
+		return null;
+	}
+	$now  = (int) current_time( 'w' ) * 1440 + (int) current_time( 'G' ) * 60 + (int) current_time( 'i' );
+	$week = 7 * 1440;
+	foreach ( $cache['periods'] as $period ) {
+		$open = $period['open'] ?? null;
+		if ( ! is_array( $open ) ) {
+			continue;
+		}
+		if ( empty( $period['close'] ) ) {
+			return true; // open around the clock
+		}
+		$close = $period['close'];
+		$a     = (int) ( $open['day'] ?? 0 ) * 1440 + (int) ( $open['hour'] ?? 0 ) * 60 + (int) ( $open['minute'] ?? 0 );
+		$b     = (int) ( $close['day'] ?? 0 ) * 1440 + (int) ( $close['hour'] ?? 0 ) * 60 + (int) ( $close['minute'] ?? 0 );
+		if ( $b <= $a ) {
+			$b += $week; // spans the week boundary
+		}
+		if ( ( $now >= $a && $now < $b ) || ( $now + $week >= $a && $now + $week < $b ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
  * The listing's Google rating, labelled data for the profile header.
  *
  * @return array{rating: float, count: int, uri: string}
@@ -344,6 +383,7 @@ function pack( array $place ): array {
 		'names'        => $names,
 		'attributions' => array_values( $attr ),
 		'hours'        => array_values( array_map( 'strval', (array) ( $place['regularOpeningHours']['weekdayDescriptions'] ?? array() ) ) ),
+		'periods'      => array_values( (array) ( $place['regularOpeningHours']['periods'] ?? array() ) ),
 		'rating'       => (float) ( $place['rating'] ?? 0 ),
 		'count'        => (int) ( $place['userRatingCount'] ?? 0 ),
 		'maps_uri'     => (string) ( $place['googleMapsUri'] ?? '' ),

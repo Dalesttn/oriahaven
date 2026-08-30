@@ -351,6 +351,8 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 				's'  => $oria_msub,
 				// Same image the listing card shows, so map and cards agree.
 				'i'  => function_exists( '\Oria\Theme\listing_image' ) ? \Oria\Theme\listing_image( (int) $oria_mid ) : '',
+				'r'  => function_exists( '\Oria\Core\Places\rating_for' ) ? round( \Oria\Core\Places\rating_for( (int) $oria_mid, false )['rating'], 1 ) : 0,
+				'o'  => function_exists( '\Oria\Core\Places\open_now' ) ? \Oria\Core\Places\open_now( (int) $oria_mid ) : null,
 			);
 		}
 		?>

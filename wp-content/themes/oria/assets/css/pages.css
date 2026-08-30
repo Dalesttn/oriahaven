@@ -4012,3 +4012,11 @@ article.is-spotlit {
   .week { grid-template-columns: repeat(7, 15rem); scrollbar-width: thin; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
   .week__day { scroll-snap-align: start; }
 }
+
+/* Map popup: rating and open-now, under the name. */
+.catmap__pop-meta { display: flex; align-items: center; gap: .55rem; font-size: .75rem; margin-top: .1rem; }
+.catmap__pop-star { color: #A87B23; font-weight: 700; }
+.catmap__pop-open, .catmap__pop-shut { display: inline-flex; align-items: center; gap: .3rem; font-weight: 600; }
+.catmap__pop-open { color: #2F6A3A; }
+.catmap__pop-shut { color: var(--text-faint, #8A968F); }
+.catmap__pop-open::before, .catmap__pop-shut::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
