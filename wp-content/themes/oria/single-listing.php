@@ -1176,7 +1176,7 @@ while ( have_posts() ) :
 						<div class="contactcard__row"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3.5" width="12" height="9" rx="2"/><path d="m2.6 4.5 5.4 3.6 5.4-3.6"/></svg><a href="mailto:<?php echo esc_attr( $oria_email ); ?>" data-oria-track="mail" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo esc_html( $oria_email ); ?></a></div>
 						<?php endif; ?>
 						<?php if ( $oria_website ) : ?>
-						<div class="contactcard__row"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c1.8 2 1.8 10 0 12M8 2C6.2 4 6.2 12 8 14"/></svg><a href="<?php echo esc_url( $oria_website ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="web" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo esc_html( wp_parse_url( $oria_website, PHP_URL_HOST ) ?: $oria_website ); ?></a></div>
+						<div class="contactcard__row"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c1.8 2 1.8 10 0 12M8 2C6.2 4 6.2 12 8 14"/></svg><a href="<?php echo esc_url( $oria_website ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="web" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo esc_html( \Oria\Theme\link_label( $oria_website ) ); ?></a></div>
 						<?php endif; ?>
 					</div>
 					<?php if ( $oria_booking ) : ?>

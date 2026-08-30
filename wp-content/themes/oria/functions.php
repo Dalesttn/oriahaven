@@ -876,6 +876,31 @@ function outbound( string $url, string $content = '' ): string {
 }
 
 /**
+ * The domain, for showing a website link as text.
+ *
+ * wp_parse_url() cannot find a host in a schemeless string, and outbound()
+ * appends UTM parameters to whatever it is handed -- so a listing whose
+ * website was stored as "example.com.au" rendered its entire tracked URL
+ * as the visible link text and pushed the contact card off the page.
+ * Prepending // before parsing makes the schemeless case work, and www.
+ * comes off because nobody reads it.
+ */
+function link_label( string $url ): string {
+	$url = trim( $url );
+	if ( '' === $url ) {
+		return '';
+	}
+	$probe = preg_match( '#^[a-z][a-z0-9+.-]*://#i', $url ) ? $url : '//' . ltrim( $url, '/' );
+	$host  = (string) wp_parse_url( $probe, PHP_URL_HOST );
+	if ( '' === $host ) {
+		// Unparseable: show the part before any query string rather than
+		// the whole thing, so the card still cannot be blown apart.
+		$host = (string) strtok( $url, '?' );
+	}
+	return (string) preg_replace( '#^www\.#i', '', $host );
+}
+
+/**
  * A quick-answer body as safe HTML: paragraphs and bullets, nothing else.
  *
  * Blank lines split paragraphs; a line starting "* " is a bullet. Every

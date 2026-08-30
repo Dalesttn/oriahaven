@@ -629,6 +629,9 @@ a.livesession:hover { background: var(--sand-2); }
 .contactcard__rows { display: grid; gap: var(--s-3); margin-block: var(--s-5); font-size: var(--fs-sm); }
 .contactcard__row { display: flex; align-items: center; gap: var(--s-3); color: var(--mist-2); }
 .contactcard__row svg { width: 15px; height: 15px; color: var(--mist); flex: none; }
+/* A long unbroken token -- a tracked URL, a very long domain -- must wrap
+   rather than push the card past the viewport. */
+.contactcard__row a { overflow-wrap: anywhere; min-width: 0; }
 .contactcard__row a:hover { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
 
 .claimprompt { border: 1px dashed var(--line-strong); border-radius: var(--r-md); padding: var(--s-5); background: var(--sand-2); }
