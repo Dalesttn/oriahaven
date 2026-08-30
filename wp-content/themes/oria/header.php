@@ -52,7 +52,7 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					echo '<ul class="nav__links">';
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Directory', 'oria' ) );
 					/*
-					 * Practices carries a submenu. The markup matches what WordPress's
+					 * Experiences carries a submenu. The markup matches what WordPress's
 					 * own walker emits for a nested menu item -- menu-item-has-children
 					 * on the li, ul.sub-menu inside -- so the CSS and the JS enhancement
 					 * work the same whether this fallback renders or an admin-built menu
@@ -60,9 +60,10 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					 * panel is never the only way past it.
 					 */
 					echo '<li class="menu-item-has-children">';
-					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( home_url( '/practices/' ) ), esc_html__( 'Practices', 'oria' ) );
+					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( home_url( '/practices/' ) ), esc_html__( 'Experiences', 'oria' ) );
 					echo '<ul class="sub-menu">';
-					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/practices/' ) ), esc_html__( 'All practices', 'oria' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/practices/' ) ), esc_html__( 'All experiences', 'oria' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
 					echo '</ul></li>';
@@ -129,9 +130,10 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 			'fallback_cb'    => static function (): void {
 				echo '<div class="drawer__links">';
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Directory', 'oria' ) );
-				printf( '<a href="%s">%s</a>', esc_url( home_url( '/practices/' ) ), esc_html__( 'Practices', 'oria' ) );
-				// On a phone the child is simply shown, indented, under its parent:
-				// an accordion hiding a single item is a tap that buys nothing.
+				printf( '<a href="%s">%s</a>', esc_url( home_url( '/practices/' ) ), esc_html__( 'Experiences', 'oria' ) );
+				// On a phone the children are simply shown, indented, under their
+				// parent: an accordion hiding a few items is a tap that buys nothing.
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );

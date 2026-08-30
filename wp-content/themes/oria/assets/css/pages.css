@@ -4325,3 +4325,16 @@ article.is-spotlit {
   .journey__what { padding-left: 1.4rem; }
   .journey__what::before { top: .5rem; }
 }
+
+
+/* --- Journeys index ---------------------------------------------------
+   The journal cards stop at a title because a guide's subject is its title.
+   A journey's title is a place and a mood ("One day on the Cottesloe coast")
+   and says nothing about the shape of the day, so these carry the excerpt as
+   well -- clamped, so an uneven set of excerpts cannot stagger the grid. */
+.article__excerpt {
+  margin: .4rem 0 0;
+  font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.55;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden;
+}

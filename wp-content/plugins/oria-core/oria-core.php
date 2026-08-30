@@ -93,6 +93,7 @@ require_once ORIA_CORE_DIR . 'includes/reasons.php';
 require_once ORIA_CORE_DIR . 'includes/saved.php';
 require_once ORIA_CORE_DIR . 'includes/classes.php';
 require_once ORIA_CORE_DIR . 'includes/guide-blocks.php';
+require_once ORIA_CORE_DIR . 'includes/journeys.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
@@ -152,6 +153,7 @@ Replies\bootstrap();
 Reports\bootstrap();
 Team\bootstrap();
 ComeFor\bootstrap();
+Journeys\bootstrap();
 
 /**
  * Rewrite rules are only rebuilt on activation and deactivation. Flushing on
