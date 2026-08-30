@@ -1069,7 +1069,31 @@ class Command {
 	/** Create practice and area terms from the seed's categories/regions. */
 	private function ensure_terms( array $data, bool $dry ): void {
 		foreach ( (array) ( $data['categories'] ?? array() ) as $cat ) {
-			$this->ensure_term( (string) $cat['name'], (string) $cat['id'], Taxonomies\PRACTICE, 0, $dry );
+			/*
+			 * An optional "parent" slug makes the category a SUB-category.
+			 * That matters beyond tidiness: the practices index builds each
+			 * tile's link row from declared sub-categories first and tops up
+			 * with styles that clear a share of the category. A style below
+			 * that share never surfaces -- so a small, real grouping like
+			 * smoothies & juice inside a broad category can only be shown by
+			 * being declared, which is exactly what a sub-category is for.
+			 *
+			 * An unknown parent slug is reported rather than silently
+			 * creating the term at the root, where its URL would sit beside
+			 * the top-level categories and read as one of them.
+			 */
+			$parent = 0;
+			$pslug  = sanitize_title( (string) ( $cat['parent'] ?? '' ) );
+			if ( '' !== $pslug ) {
+				$pterm = get_term_by( 'slug', $pslug, Taxonomies\PRACTICE );
+				if ( $pterm instanceof \WP_Term ) {
+					$parent = (int) $pterm->term_id;
+				} else {
+					\WP_CLI::warning( sprintf( '%s: no "%s" category to hang it under, so it was not created.', (string) $cat['name'], $pslug ) );
+					continue;
+				}
+			}
+			$this->ensure_term( (string) $cat['name'], (string) $cat['id'], Taxonomies\PRACTICE, $parent, $dry );
 		}
 
 		/*
