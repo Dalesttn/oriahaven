@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function bootstrap(): void {
 	add_action( 'acf/init', __NAMESPACE__ . '\register_sections' );
 	add_action( 'acf/init', __NAMESPACE__ . '\register_practice_term' );
+	add_action( 'acf/init', __NAMESPACE__ . '\register_specialty_term' );
 	add_action( 'acf/init', __NAMESPACE__ . '\register_options' );
 }
 
@@ -291,6 +292,42 @@ function register_practice_term(): void {
 				// reviewed as HTML elsewhere, and pasting markup into a
 				// Visual-only editor escapes it into literal text on the page.
 				array( 'key' => 'field_oria_practice_intro', 'name' => 'landing_intro', 'label' => 'Landing page introduction', 'type' => 'wysiwyg', 'tabs' => 'all', 'media_upload' => 0, 'toolbar' => 'basic' ),
+			),
+		)
+	);
+}
+
+/* -------------------------------------------------- specialty term extras */
+function register_specialty_term(): void {
+	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+		return;
+	}
+
+	/*
+	 * A modality's own picture, optional.
+	 *
+	 * Without one, every specialty borrowed its category's tile -- which is
+	 * fine for "Sound healing" under "Sound & Float" and wrong for "Red light
+	 * therapy" under "Sleep & Recovery", where the category photo shows
+	 * somebody asleep. Leave it empty and the category tile still applies, so
+	 * nothing has to be filled in before the page works; fill it in and the
+	 * card stops describing the wrong thing.
+	 */
+	acf_add_local_field_group(
+		array(
+			'key'      => 'group_oria_specialty_term',
+			'title'    => 'Modality display',
+			'location' => array( array( array( 'param' => 'taxonomy', 'operator' => '==', 'value' => 'specialty' ) ) ),
+			'fields'   => array(
+				array(
+					'key'           => 'field_oria_spec_tile_image',
+					'name'          => 'tile_image',
+					'label'         => 'Tile image',
+					'type'          => 'image',
+					'return_format' => 'id',
+					'preview_size'  => 'medium',
+					'instructions'  => 'Optional. Leave empty to use the parent category\'s tile. Landscape, at least 720x480.',
+				),
 			),
 		)
 	);

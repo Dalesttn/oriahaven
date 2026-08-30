@@ -713,6 +713,23 @@ function term_tile( $term, string $size = 'oria-card' ): string {
 		return '';
 	}
 
+	/*
+	 * A modality's own picture wins. Falling straight through to the parent
+	 * category put one photo on every modality under it -- the sleeping figure
+	 * from Sleep & Recovery sat on both "Red light therapy" and "Ice bath &
+	 * cold plunge", describing neither. The parent stays as the fallback, so a
+	 * modality with no picture of its own still shows something.
+	 */
+	if ( 'specialty' === $term->taxonomy ) {
+		$own = (int) get_field( 'tile_image', 'specialty_' . $term->term_id );
+		if ( $own ) {
+			$url = (string) wp_get_attachment_image_url( $own, $size );
+			if ( '' !== $url ) {
+				return $url;
+			}
+		}
+	}
+
 	$practice = null;
 	if ( 'practice' === $term->taxonomy ) {
 		$practice = $term;
