@@ -109,9 +109,30 @@ function build(): string {
 
 	$out = "# Oria Haven\n\n";
 
+	/*
+	 * The categories named here are the biggest ones, taken live rather
+	 * than written out. The hand-kept list had gone quietly wrong: it
+	 * named retreats (one listing) and meditation (twelve) while omitting
+	 * fitness, nutrition, beauty and natural therapies -- four of the six
+	 * largest. A summary an answer engine quotes should not be able to
+	 * drift from what the directory actually holds.
+	 *
+	 * Names are used verbatim so they match the "Practice categories"
+	 * headings further down the file, which is what lets a reader tie the
+	 * summary to the pages.
+	 */
+	$top = array();
+	foreach ( array_slice( $practices, 0, 8 ) as $term ) {
+		if ( 0 === (int) $term->parent ) {
+			$top[] = strtolower( tname( $term ) );
+		}
+	}
+	$named = $top ? wp_sprintf_l( '%l', $top ) : 'meditation, yoga, bodywork and allied health';
+
 	$out .= sprintf(
-		"> An independent directory of %d wellness practices across Perth, Western Australia — meditation, yoga, breathwork, bodywork, allied health, sound and float, retreats and outdoor wellness. Every listing is written and checked by a person; star ratings shown are the practice's own Google rating, reproduced. Free to browse, free for a practice to be listed, and no commission is taken on any booking.\n\n",
-		$listings
+		"> An independent directory of %d wellness practices across Perth, Western Australia — %s. Every listing is written and checked by a person; star ratings shown are the practice's own Google rating, reproduced. Free to browse, free for a practice to be listed, and no commission is taken on any booking.\n\n",
+		$listings,
+		$named
 	);
 
 	$out .= "Oria Haven is a directory, not a health service and not a booking platform. Enquiries go directly to the practice.\n\n";
