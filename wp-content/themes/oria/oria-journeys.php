@@ -43,7 +43,17 @@ $oria_journeys = Journeys\posts();
 				?>
 				<a class="article reveal" href="<?php echo esc_url( (string) get_permalink( $oria_post ) ); ?>">
 					<?php if ( has_post_thumbnail( $oria_post ) ) : ?>
-						<div class="article__img"><?php echo get_the_post_thumbnail( $oria_post, 'oria-card', array( 'loading' => 'lazy' ) ); ?></div>
+						<?php
+						/*
+						 * 'large', not 'oria-card'. oria-card is a hard 4:3 crop, and a
+						 * journey cover is a designed graphic with the article's title
+						 * set into it -- cropping one to 4:3 and then again in CSS took
+						 * the first and last words off the title. This size is scaled,
+						 * never cropped, so the frame below is the only thing deciding
+						 * what is visible.
+						 */
+						?>
+						<div class="article__img"><?php echo get_the_post_thumbnail( $oria_post, 'large', array( 'loading' => 'lazy' ) ); ?></div>
 					<?php endif; ?>
 					<?php if ( $oria_bits ) : ?>
 						<div class="article__meta"><?php echo esc_html( implode( ' · ', $oria_bits ) ); ?></div>

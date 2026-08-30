@@ -4359,3 +4359,21 @@ article.is-spotlit {
   .journeygrid .article__title { font-size: 1.28rem; }
   .journeygrid .article__excerpt { font-size: var(--fs-sm); -webkit-line-clamp: 3; }
 }
+
+
+/* Journey covers are artwork with the title set into them, not photographs.
+   The journal's 3:2 'cover' frame is wrong for that twice over: it crops, and
+   what it crops is words. These are made at 16:9, so a 16:9 frame showing the
+   whole image fits them exactly -- and anything uploaded at another ratio
+   sits complete inside it rather than losing its edges. The ground behind is
+   a card surface, so the rare letterbox reads as a mount, not a gap. */
+.journeygrid .article__img {
+  aspect-ratio: 16 / 9;
+  background: var(--sand-2, #EFEDE6);
+  display: flex;
+}
+.journeygrid .article__img img {
+  aspect-ratio: auto;
+  width: 100%; height: 100%;
+  object-fit: contain;
+}
