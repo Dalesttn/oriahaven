@@ -291,6 +291,17 @@ function page_defaults(): array {
 	return apply_filters(
 		'oria_page_seo_defaults',
 		array(
+			/*
+			 * The front page. Its typed Yoast title was the full 175-character
+			 * tagline, and a SERP cuts that at about 60 -- so the half naming
+			 * the site never showed at all. Still a DEFAULT, per the note above:
+			 * clear the Yoast title and description on the Home page and these
+			 * take over, versioned in code rather than typed once into a box.
+			 */
+			'home'                 => array(
+				'title' => 'Perth wellness directory — massage, yoga, saunas | ' . get_bloginfo( 'name' ),
+				'desc'  => 'Perth\'s independent wellness directory: massage, pilates, saunas, breathwork and day spas. Real prices, real timetables, checked by a person.',
+			),
 			'acupuncture-in-perth' => array(
 				'title' => 'Acupuncture in Perth: Costs & What to Expect | ' . get_bloginfo( 'name' ),
 				'desc'  => 'Thinking about acupuncture in Perth? Registration, typical costs, what a first session involves, and verified Perth clinics — no booking fees.',
