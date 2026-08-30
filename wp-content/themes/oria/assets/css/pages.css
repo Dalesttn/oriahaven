@@ -4338,3 +4338,24 @@ article.is-spotlit {
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+
+/* --- Journeys index: two up -------------------------------------------
+   A journey card carries more than a journal card does -- a shape line, a
+   title that is a place rather than a subject, and an excerpt -- so it gets
+   half a row instead of a third. Type scales with the column: a 1.22rem
+   title in a 570px card reads as a small card that has been stretched.
+   The 3:2 image is left alone; at this width it is doing the work a hero
+   would, and cropping it further would cost the horizon line these photos
+   are mostly about. */
+.journeygrid { gap: var(--s-6); }
+.journeygrid .article__title { font-size: 1.5rem; line-height: 1.22; }
+.journeygrid .article__meta { font-size: var(--fs-sm); margin-top: var(--s-4); }
+.journeygrid .article__excerpt { font-size: var(--fs-body); -webkit-line-clamp: 2; }
+
+/* Below the 980px collapse the grid is already single-column, so the card is
+   full width on a phone -- where a 1.5rem title is too large again. */
+@media (max-width: 980px) {
+  .journeygrid .article__title { font-size: 1.28rem; }
+  .journeygrid .article__excerpt { font-size: var(--fs-sm); -webkit-line-clamp: 3; }
+}

@@ -26,7 +26,7 @@ $oria_journeys = Journeys\posts();
 
 <section class="wrap section section--top-flush">
 	<?php if ( $oria_journeys ) : ?>
-		<div class="grid grid-3">
+		<div class="grid grid-2 journeygrid">
 			<?php
 			foreach ( $oria_journeys as $oria_post ) :
 				$oria_shape = Journeys\shape( $oria_post->ID );
