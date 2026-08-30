@@ -929,6 +929,61 @@ class Command {
 	 *     wp oria seed_specialties --dry-run
 	 *     wp oria seed_specialties
 	 */
+	/**
+	 * Install the modality tile images that ship with the plugin.
+	 *
+	 * The pictures on the specialty cards cannot ride the normal deploy:
+	 * uploads is gitignored, and the database only ever travels production
+	 * to local. The chosen set lives in data/tiles instead, and this puts it
+	 * into the media library and onto the terms.
+	 *
+	 * Safe to re-run. A modality that already has a tile is left alone
+	 * unless --force is given, so a picture swapped by hand on the server
+	 * is not quietly reverted by the next deploy.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--dry-run]
+	 * : Report what would change and write nothing.
+	 *
+	 * [--force]
+	 * : Replace tiles that are already set.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp oria tiles --dry-run
+	 *     wp oria tiles
+	 *
+	 * @when after_wp_load
+	 */
+	public function tiles( array $args, array $assoc ): void {
+		$dry   = isset( $assoc['dry-run'] );
+		$force = isset( $assoc['force'] );
+
+		$r = \Oria\Core\Tiles\install( $dry, $force );
+
+		foreach ( $r['lines'] as $line ) {
+			\WP_CLI::log( '  ' . $line );
+		}
+
+		$summary = sprintf(
+			'%d set, %d left alone, %d problem(s).',
+			$r['set'],
+			$r['skipped'],
+			$r['missing']
+		);
+
+		if ( $dry ) {
+			\WP_CLI::success( 'Dry run. ' . $summary . ' Nothing written.' );
+			return;
+		}
+		if ( $r['missing'] ) {
+			\WP_CLI::warning( $summary );
+			return;
+		}
+		\WP_CLI::success( $summary );
+	}
+
 	public function seed_specialties( array $args, array $assoc ): void {
 		$dry     = isset( $assoc['dry-run'] );
 		$claimed = isset( $assoc['include-claimed'] );

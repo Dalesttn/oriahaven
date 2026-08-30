@@ -1,0 +1,158 @@
+{
+    "acupuncture": {
+        "name": "Acupuncture",
+        "alt": "",
+        "caption": "",
+        "source": ""
+    },
+    "art-therapy": {
+        "name": "Art therapy",
+        "alt": "Hands painting at a table set with brushes, paints and a palette",
+        "caption": "Photo by Matthew Hernandez on Pexels",
+        "source": "https://www.pexels.com/photo/creative-acrylic-painting-session-at-home-37195334/"
+    },
+    "ayurveda": {
+        "name": "Ayurveda",
+        "alt": "An Ayurvedic kati basti treatment, warm oil held on the lower back",
+        "caption": "Photo by RIshikesh Yoga Valley School on Pexels",
+        "source": "https://www.pexels.com/photo/traditional-ayurvedic-kati-basti-therapy-in-uttarakhand-38494113/"
+    },
+    "chinese-medicine": {
+        "name": "Chinese medicine",
+        "alt": "Dried Chinese herbs in wooden bowls and glass jars",
+        "caption": "Photo by Chinese Medicine Podcast Podcast on Pexels",
+        "source": "https://www.pexels.com/photo/close-up-photo-of-traditional-chinese-medicine-12809571/"
+    },
+    "chiropractic": {
+        "name": "Chiropractic",
+        "alt": "A practitioner's hands assessing a person's shoulder and neck",
+        "caption": "Photo by https://kaboompics.com/ on Pexels",
+        "source": "https://www.pexels.com/photo/crop-anonymous-chiropractor-examining-spine-of-fit-lady-in-hospital-4506110/"
+    },
+    "cupping": {
+        "name": "Cupping",
+        "alt": "Four glass cups placed along a person's upper back",
+        "caption": "Photo by RDNE Stock project on Pexels",
+        "source": "https://www.pexels.com/photo/a-back-of-a-person-with-cupping-glass-8312856/"
+    },
+    "dry-needling": {
+        "name": "Dry needling",
+        "alt": "Fine needles placed along a person's back",
+        "caption": "Photo by RDNE Stock project on Pexels",
+        "source": "https://www.pexels.com/photo/close-up-of-acupuncture-needles-8312851/"
+    },
+    "exercise-physiology": {
+        "name": "Exercise physiology",
+        "alt": "A person working through a resistance band exercise",
+        "caption": "Photo by MART  PRODUCTION on Pexels",
+        "source": "https://www.pexels.com/photo/person-in-gray-shirt-using-a-resistance-band-on-arms-8846512/"
+    },
+    "herbal-medicine": {
+        "name": "Herbal medicine",
+        "alt": "Glass jars of dried herbs, rosebuds and star anise",
+        "caption": "Photo by Rahib Yaqubov on Pexels",
+        "source": "https://www.pexels.com/photo/glass-containers-with-dried-flowers-and-herbs-15666789/"
+    },
+    "hiking": {
+        "name": "Hiking & bushwalking",
+        "alt": "A walker on a fern-lined bush track through tall forest",
+        "caption": "Photo by Eclipse Chasers on Pexels",
+        "source": "https://www.pexels.com/photo/australian-bushwalk-20501586/"
+    },
+    "homeopathy": {
+        "name": "Homeopathy",
+        "alt": "",
+        "caption": "",
+        "source": ""
+    },
+    "cold-plunge": {
+        "name": "Ice bath & cold plunge",
+        "alt": "",
+        "caption": "",
+        "source": ""
+    },
+    "infrared-sauna": {
+        "name": "Infrared sauna",
+        "alt": "",
+        "caption": "",
+        "source": ""
+    },
+    "lymphatic-drainage": {
+        "name": "Lymphatic drainage",
+        "alt": "A therapist's hands working lightly along a person's lower leg",
+        "caption": "Photo by Gustavo Fring on Pexels",
+        "source": "https://www.pexels.com/photo/a-close-up-shot-of-a-person-s-legs-being-massaged-5888062/"
+    },
+    "naturopathy": {
+        "name": "Naturopathy",
+        "alt": "Fresh herbs in a marble mortar and pestle",
+        "caption": "Photo by AS Photography on Pexels",
+        "source": "https://www.pexels.com/photo/purple-petaled-flowers-in-mortar-and-pestle-105028/"
+    },
+    "personal-training": {
+        "name": "Personal training",
+        "alt": "A trainer coaching a client through an overhead lift in a bright studio",
+        "caption": "Photo by Vitaly Gariev on Pexels",
+        "source": "https://www.pexels.com/photo/personal-trainer-assisting-woman-in-gym-workout-39219673/"
+    },
+    "physiotherapy": {
+        "name": "Physiotherapy",
+        "alt": "A physiotherapist guiding a client through a leg stretch",
+        "caption": "Photo by Funkcinės Terapijos Centras on Pexels",
+        "source": "https://www.pexels.com/photo/physiotherapist-massaging-leg-20860587/"
+    },
+    "pilates": {
+        "name": "Pilates",
+        "alt": "",
+        "caption": "",
+        "source": ""
+    },
+    "pregnancy-massage": {
+        "name": "Pregnancy massage",
+        "alt": "A pregnant woman resting during a prenatal massage",
+        "caption": "Photo by Jonathan Borba on Pexels",
+        "source": "https://www.pexels.com/photo/pregnant-woman-relaxing-in-a-massage-parlour-19666196/"
+    },
+    "red-light-therapy": {
+        "name": "Red light therapy",
+        "alt": "A red light therapy panel standing in a treatment room",
+        "caption": "Generated image (Higgsfield)",
+        "source": "higgsfield:soul_location"
+    },
+    "reflexology": {
+        "name": "Reflexology",
+        "alt": "A therapist pressing into the sole of a client's foot",
+        "caption": "Photo by Yan Krukau on Pexels",
+        "source": "https://www.pexels.com/photo/a-person-massaging-a-person-s-foot-5793976/"
+    },
+    "reiki": {
+        "name": "Reiki",
+        "alt": "A practitioner holding their hands above a person lying on a mat",
+        "caption": "Photo by Arina Krasnikova on Pexels",
+        "source": "https://www.pexels.com/photo/energy-practitioner-healing-relaxed-woman-on-yoga-mat-6998265/"
+    },
+    "remedial-massage": {
+        "name": "Remedial massage",
+        "alt": "A massage therapist working on a client's back",
+        "caption": "Photo by KoolShooters on Pexels",
+        "source": "https://www.pexels.com/photo/a-woman-having-a-massage-6628601/"
+    },
+    "smoothies-juice": {
+        "name": "Smoothies & juice",
+        "alt": "Bottles of cold-pressed juice laid out with fresh fruit and vegetables",
+        "caption": "Photo by Polina Tankilevitch on Pexels",
+        "source": "https://www.pexels.com/photo/colorful-bottles-with-smoothies-beside-carrots-ginger-leaves-and-berries-4443492/"
+    },
+    "sound-healing": {
+        "name": "Sound healing",
+        "alt": "",
+        "caption": "",
+        "source": ""
+    },
+    "sports-massage": {
+        "name": "Sports massage",
+        "alt": "A therapist stretching a client's leg on a treatment table",
+        "caption": "Photo by Yan Krukau on Pexels",
+        "source": "https://www.pexels.com/photo/a-massage-therapist-massaging-the-leg-of-a-client-5793890/"
+    }
+}
