@@ -4326,54 +4326,204 @@ article.is-spotlit {
   .journey__what::before { top: .5rem; }
 }
 
+/* --- Wellness Journeys index ------------------------------------------
+   Same design language as the guides: Caveat hand marker, warm sand panel,
+   one dark moment at the end. What an index needs that an article does not
+   is to explain an unfamiliar format in a screen, so the page leads with a
+   single journey at full width before it shows a grid of them.
 
-/* --- Journeys index ---------------------------------------------------
-   The journal cards stop at a title because a guide's subject is its title.
-   A journey's title is a place and a mood ("One day on the Cottesloe coast")
-   and says nothing about the shape of the day, so these carry the excerpt as
-   well -- clamped, so an uneven set of excerpts cannot stagger the grid. */
-.article__excerpt {
-  margin: .4rem 0 0;
-  font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.55;
+   No numerals on the cards. The guides number their sections because a guide
+   IS a sequence; a set of journeys is not, and numbering them would claim an
+   order that does not exist. The only counting on this page happens inside a
+   day, on the hour rail, where the order is real. */
+
+.jhero { padding-block: clamp(2rem, 5vw, 3.4rem) clamp(1.6rem, 3vw, 2.4rem); }
+.jhero__hand {
+  /* The same hand that marks a guide's section numbers, used here as the
+     page's only script. Caveat reads optically smaller than Manrope at the
+     same pixel size, hence the step up. */
+  display: block;
+  font-family: 'Caveat', var(--font-sans);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700; line-height: 1; letter-spacing: 0;
+  color: var(--moss);
+  margin-top: var(--s-5);
+}
+.jhero__title {
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
+  font-weight: 600; line-height: 1.02; letter-spacing: -0.03em;
+  color: var(--ink);
+  max-width: 16ch; text-wrap: balance;
+  margin-top: .5rem;
+}
+.jhero__lede {
+  font-family: var(--font-edit);
+  font-size: clamp(1.125rem, 1.6vw, 1.3125rem);
+  line-height: 1.62; color: var(--text-soft);
+  max-width: 46ch; margin-top: var(--s-5);
+}
+.jhero__meta {
+  font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  color: var(--text-faint); margin-top: var(--s-5);
+}
+
+.jsection { padding-block: clamp(1.4rem, 3vw, 2.2rem); }
+.jsection--last { padding-bottom: clamp(3rem, 6vw, 5rem); }
+
+/* --- The card ---------------------------------------------------------
+   One component, two sizes. The feature turns the same parts sideways
+   rather than being a second component that can drift from this one. */
+.jcard {
+  display: block; color: inherit; text-decoration: none;
+  transition: transform .24s var(--ease), box-shadow .24s var(--ease);
+}
+.jcard__img {
+  /* 16:9 and contain: journey covers are artwork with the article's title
+     set into them, so a frame that crops would eventually cut words. */
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--sand-2);
+  display: flex;
+}
+.jcard__img img {
+  aspect-ratio: auto; width: 100%; height: 100%;
+  object-fit: contain; display: block;
+  transition: transform var(--t-slow) var(--ease-out);
+}
+.jcard__img--empty { background: linear-gradient(150deg, var(--sand-2), var(--mist-2, #E4EAE5)); }
+
+.jcard__body { padding-top: var(--s-5); }
+.jcard__meta {
+  display: block;
+  font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  color: var(--moss);
+  font-variant-numeric: tabular-nums;
+}
+.jcard__title {
+  font-size: 1.5rem; font-weight: 600; line-height: 1.2;
+  letter-spacing: -0.02em; color: var(--ink);
+  margin-top: .5rem; text-wrap: balance;
+}
+.jcard__excerpt {
+  margin-top: .6rem; color: var(--text-soft);
+  font-size: var(--fs-sm); line-height: 1.6;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.jcard__go {
+  display: inline-flex; align-items: center; gap: .4rem;
+  margin-top: var(--s-4);
+  font-size: var(--fs-sm); font-weight: 600; color: var(--deep);
+}
+.jcard__go svg { transition: transform .22s var(--ease); }
 
+@media (prefers-reduced-motion: no-preference) {
+  .jcard:hover { transform: translateY(-4px); }
+  .jcard:hover .jcard__img img { transform: scale(1.03); }
+  .jcard:hover .jcard__go svg { transform: translateX(3px); }
+}
+.jcard:hover .jcard__title { text-decoration: underline; text-underline-offset: 4px; }
 
-/* --- Journeys index: two up -------------------------------------------
-   A journey card carries more than a journal card does -- a shape line, a
-   title that is a place rather than a subject, and an excerpt -- so it gets
-   half a row instead of a third. Type scales with the column: a 1.22rem
-   title in a 570px card reads as a small card that has been stretched.
-   The 3:2 image is left alone; at this width it is doing the work a hero
-   would, and cropping it further would cost the horizon line these photos
-   are mostly about. */
-.journeygrid { gap: var(--s-6); }
-.journeygrid .article__title { font-size: 1.5rem; line-height: 1.22; }
-.journeygrid .article__meta { font-size: var(--fs-sm); margin-top: var(--s-4); }
-.journeygrid .article__excerpt { font-size: var(--fs-body); -webkit-line-clamp: 2; }
-
-/* Below the 980px collapse the grid is already single-column, so the card is
-   full width on a phone -- where a 1.5rem title is too large again. */
-@media (max-width: 980px) {
-  .journeygrid .article__title { font-size: 1.28rem; }
-  .journeygrid .article__excerpt { font-size: var(--fs-sm); -webkit-line-clamp: 3; }
+/* --- The feature ------------------------------------------------------ */
+.jcard--feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(1.6rem, 4vw, 3.2rem);
+  align-items: center;
+}
+.jcard--feature .jcard__body { padding-top: 0; max-width: 34rem; }
+.jcard--feature .jcard__title { font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; }
+.jcard--feature .jcard__excerpt {
+  font-family: var(--font-edit);
+  font-size: 1.0625rem; line-height: 1.65; -webkit-line-clamp: 4;
+  margin-top: .8rem;
 }
 
-
-/* Journey covers are artwork with the title set into them, not photographs.
-   The journal's 3:2 'cover' frame is wrong for that twice over: it crops, and
-   what it crops is words. These are made at 16:9, so a 16:9 frame showing the
-   whole image fits them exactly -- and anything uploaded at another ratio
-   sits complete inside it rather than losing its edges. The ground behind is
-   a card surface, so the rare letterbox reads as a mount, not a gap. */
-.journeygrid .article__img {
-  aspect-ratio: 16 / 9;
-  background: var(--sand-2, #EFEDE6);
-  display: flex;
+/* --- The hour rail ----------------------------------------------------
+   The shape of the day as a line of times. Tabular figures so 7:00am and
+   12:30pm sit on the same rhythm instead of jittering. */
+.jrail {
+  list-style: none; margin: var(--s-5) 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; align-items: center; gap: .45rem .7rem;
+  font-variant-numeric: tabular-nums;
 }
-.journeygrid .article__img img {
-  aspect-ratio: auto;
-  width: 100%; height: 100%;
-  object-fit: contain;
+.jrail__t {
+  position: relative;
+  font-size: .8125rem; font-weight: 600; color: var(--text-soft);
+  padding-left: .95rem;
+}
+.jrail__t::before {
+  content: ""; position: absolute; left: 0; top: 50%;
+  width: 5px; height: 5px; margin-top: -2.5px; border-radius: 50%;
+  background: var(--brand-gold, #C9A24B);
+}
+.jrail__gap { font-size: .8125rem; color: var(--text-faint); letter-spacing: .1em; }
+
+/* --- The pair --------------------------------------------------------- */
+.jgrid {
+  display: grid; gap: clamp(1.6rem, 3vw, 2.6rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* --- What a journey is, in three facts -------------------------------- */
+.jnote {
+  background: var(--sand-2);
+  border-radius: var(--r-lg);
+  padding: clamp(1.6rem, 3.5vw, 2.6rem);
+}
+.jnote__list {
+  margin: var(--s-5) 0 0;
+  display: grid; gap: clamp(1.2rem, 3vw, 2.2rem);
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+.jnote__list dt {
+  font-size: 1.0625rem; font-weight: 600; color: var(--deep);
+  line-height: 1.35;
+  /* A short gold rule instead of a numeral: it marks the item without
+     claiming these three are a sequence. */
+  padding-top: .7rem;
+  background: linear-gradient(var(--brand-gold, #C9A24B) 0 0) left top / 1.6rem 3px no-repeat;
+}
+.jnote__list dd {
+  margin: .45rem 0 0; color: var(--text-soft);
+  font-size: var(--fs-sm); line-height: 1.62;
+}
+
+/* --- The one dark moment ---------------------------------------------- */
+.jout {
+  background: var(--deep); color: var(--text-on-deep, #EAF1EC);
+  border-radius: var(--r-lg);
+  padding: clamp(1.8rem, 4vw, 3rem);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(1.4rem, 3vw, 2.6rem); align-items: center;
+}
+.jout__title {
+  font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 600;
+  line-height: 1.12; letter-spacing: -0.02em; color: var(--white, #fff);
+  text-wrap: balance;
+}
+.jout__text p {
+  margin: .7rem 0 0; color: var(--text-on-deep-soft, #C6D6CC);
+  font-size: var(--fs-sm); line-height: 1.62; max-width: 46ch;
+}
+.jout__acts { display: flex; flex-wrap: wrap; gap: var(--s-4); }
+/* btn--ghost is drawn for a light ground; on the deep panel it needs its
+   own colours rather than a second global variant nothing else would use. */
+.jout__alt { color: var(--white, #fff); border-color: rgba(255,255,255,.32); }
+.jout__alt:hover { border-color: var(--white, #fff); background: rgba(255,255,255,.06); }
+
+/* --- Phones ----------------------------------------------------------- */
+@media (max-width: 60rem) {
+  .jcard--feature { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .jcard--feature .jcard__body { max-width: none; }
+  .jgrid { grid-template-columns: minmax(0, 1fr); }
+  .jout { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 40rem) {
+  .jcard__title { font-size: 1.3125rem; }
+  .jcard--feature .jcard__excerpt { font-size: 1rem; }
+  .jout__acts .btn { width: 100%; justify-content: center; }
 }

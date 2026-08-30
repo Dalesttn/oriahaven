@@ -136,6 +136,43 @@ function shape( int $post_id ): array {
 	return array(
 		'stops' => count( $rows ),
 		'span'  => count( $times ) > 1 ? $times[0] . ' – ' . $times[ count( $times ) - 1 ] : '',
+		'times' => $times,
+	);
+}
+
+/**
+ * The feature card's hour rail.
+ *
+ * The one place on this page where a numbered sequence is honest: the stops
+ * in a day do have an order, where the journeys themselves do not. Long days
+ * are trimmed from the middle rather than the end, because the first and last
+ * hours are what tell you whether the day fits yours.
+ *
+ * @param string[] $times
+ * @return array{times:string[],trimmed:bool}
+ */
+function rail( array $times, int $max = 7 ): array {
+	if ( count( $times ) <= $max ) {
+		return array(
+			'times'   => $times,
+			'trimmed' => false,
+		);
+	}
+	$head = (int) ceil( $max / 2 );
+	return array(
+		'times'   => array_merge( array_slice( $times, 0, $head ), array_slice( $times, -( $max - $head ) ) ),
+		'trimmed' => true,
+	);
+}
+
+/**
+ * @return array{feature:?\WP_Post,rest:\WP_Post[]}
+ */
+function split(): array {
+	$all = posts();
+	return array(
+		'feature' => array_shift( $all ),
+		'rest'    => $all,
 	);
 }
 
