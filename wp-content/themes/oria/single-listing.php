@@ -64,6 +64,8 @@ while ( have_posts() ) :
 		: false;
 	$oria_packages   = $oria_paid ? \Oria\Theme\rows( 'packages', array(), $oria_id ) : array();
 	$oria_verified   = (string) get_field( 'verified_at', $oria_id );
+	/* practice or place -- see \Oria\Theme\words(). */
+	$oria_words      = \Oria\Theme\words( $oria_id );
 	$oria_price_from = get_field( 'price_from', $oria_id );
 	$oria_format     = (string) ( get_field( 'format', $oria_id ) ?: 'in-person' );
 	$oria_next       = (string) get_field( 'next_session', $oria_id );
@@ -1157,7 +1159,7 @@ while ( have_posts() ) :
 			<aside class="aside">
 				<div class="contactcard on-deep">
 					<span class="micro"><?php esc_html_e( 'Get in touch', 'oria' ); ?></span>
-					<h2 class="h3" style="color:#fff;margin-top:.6rem"><?php esc_html_e( 'Book a first session', 'oria' ); ?></h2>
+					<h2 class="h3" style="color:#fff;margin-top:.6rem"><?php echo esc_html( $oria_words['contact_head'] ); ?></h2>
 					<div class="contactcard__rows">
 						<?php if ( $oria_phone ) : ?>
 						<div class="contactcard__row"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 4.5c0 5 3.5 8.5 8.5 8.5l1.5-2-2.6-1.4-1.4 1.2A9.5 9.5 0 0 1 5.7 7l1.2-1.4L5.5 3 3.5 3Z"/></svg><a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $oria_phone ) ); ?>" data-oria-track="tel" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo esc_html( $oria_phone ); ?></a></div>
@@ -1229,7 +1231,10 @@ while ( have_posts() ) :
 						<?php endif; ?>
 						</div>
 					<?php endif; ?>
-					<p class="hint" style="color:var(--mist)"><?php esc_html_e( 'Enquiries go straight to the practice — you\'ll get a copy by email. We never take a cut of bookings.', 'oria' ); ?></p>
+					<p class="hint" style="color:var(--mist)"><?php
+						/* translators: %s: "Enquiries go straight to the practice" or "... business" */
+						printf( esc_html__( '%s — you\'ll get a copy by email. We never take a cut of bookings.', 'oria' ), esc_html( $oria_words['enquiry_note'] ) );
+					?></p>
 				</div>
 
 				<?php
@@ -1257,7 +1262,7 @@ while ( have_posts() ) :
 				<?php endif; ?>
 
 				<?php if ( $oria_owns_this ) : ?>
-					<?php get_template_part( 'template-parts/share-box', null, array( 'id' => $oria_id, 'owner' => true ) ); ?>
+					<?php get_template_part( 'template-parts/share-box', null, array( 'id' => $oria_id, 'owner' => true, 'share_label' => $oria_words['share'] ) ); ?>
 				<?php endif; ?>
 
 				<?php
@@ -1304,12 +1309,12 @@ while ( have_posts() ) :
 				<?php endif; ?>
 
 				<?php if ( ! $oria_owns_this ) : ?>
-					<?php get_template_part( 'template-parts/share-box', null, array( 'id' => $oria_id, 'owner' => false ) ); ?>
+					<?php get_template_part( 'template-parts/share-box', null, array( 'id' => $oria_id, 'owner' => false, 'share_label' => $oria_words['share'] ) ); ?>
 				<?php endif; ?>
 
 				<?php if ( 'unclaimed' === $oria_status && ! (int) get_post_meta( $oria_id, 'claimed_by', true ) ) : // Free-plan listings have an owner — don't invite rival claims. ?>
 				<div class="claimprompt" id="claim">
-					<b style="display:block;margin-bottom:.4rem"><?php esc_html_e( 'Is this your practice?', 'oria' ); ?></b>
+					<b style="display:block;margin-bottom:.4rem"><?php echo esc_html( $oria_words['claim_head'] ); ?></b>
 					<?php if ( isset( $_GET['oria_claim'] ) && 'received' === $_GET['oria_claim'] ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 						<div class="notice" style="background:var(--white)" data-oria-event="claim_completed">
 							<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.2l2.4 2.4 4.6-5"/></svg>
@@ -1359,7 +1364,7 @@ while ( have_posts() ) :
 					?>
 				<div class="card">
 					<div class="card__body">
-						<h3 class="h3" style="font-size:1.05rem;margin-bottom:1rem"><?php esc_html_e( 'Similar practices', 'oria' ); ?></h3>
+						<h3 class="h3" style="font-size:1.05rem;margin-bottom:1rem"><?php echo esc_html( $oria_words['similar'] ); ?></h3>
 						<div class="stack" style="font-size:.9375rem">
 							<?php
 							foreach ( $oria_similar as $oria_k => $oria_nid ) :

@@ -59,7 +59,7 @@ $oria_share_url   = \Oria\Core\Share\url( $oria_share_id );
 			echo esc_html(
 				$oria_share_owner
 					? __( 'Share my Oria Haven profile', 'oria' )
-					: __( 'Share this practice', 'oria' )
+					: ( isset( $args['share_label'] ) && '' !== $args['share_label'] ? (string) $args['share_label'] : __( 'Share this practice', 'oria' ) )
 			);
 			?>
 			<?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

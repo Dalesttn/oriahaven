@@ -200,6 +200,26 @@ function register_listing_fields(): void {
 					'wrapper'       => array( 'width' => '50' ),
 				),
 				array(
+					/*
+					 * What kind of thing this is. Nearly every listing is a
+					 * practice: you book an hour of somebody's time. A few are
+					 * places you simply turn up to -- a juice bar, a bathhouse,
+					 * a health-food shop -- where "Book a first session" and
+					 * "Is this your practice?" are both wrong. This switches
+					 * the page's vocabulary; it changes nothing else.
+					 */
+					'key'           => 'field_oria_kind',
+					'name'          => 'kind',
+					'label'         => 'Kind',
+					'type'          => 'button_group',
+					'choices'       => array(
+						'practice' => 'Practice — you book a session',
+						'place'    => 'Place — you turn up',
+					),
+					'default_value' => 'practice',
+					'wrapper'       => array( 'width' => '50' ),
+				),
+				array(
 					'key'           => 'field_oria_format',
 					'name'          => 'format',
 					'label'         => 'Format',

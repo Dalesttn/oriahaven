@@ -876,6 +876,38 @@ function outbound( string $url, string $content = '' ): string {
 }
 
 /**
+ * The words a listing page uses about itself.
+ *
+ * A practice is a person whose time you book; a place is a door you walk
+ * through. The directory is overwhelmingly the former, so "practice" and
+ * "session" stay the default and are not watered down for the handful that
+ * are not -- the handful gets its own vocabulary instead.
+ *
+ * @return array<string, string>
+ */
+function words( int $post_id ): array {
+	$kind = function_exists( 'get_field' ) ? (string) get_field( 'kind', $post_id ) : '';
+	if ( 'place' !== $kind ) {
+		return array(
+			'contact_head' => __( 'Book a first session', 'oria' ),
+			'claim_head'   => __( 'Is this your practice?', 'oria' ),
+			'enquiry_note' => __( 'Enquiries go straight to the practice', 'oria' ),
+			'share'        => __( 'Share this practice', 'oria' ),
+			'similar'      => __( 'Similar practices', 'oria' ),
+			'noun'         => __( 'practice', 'oria' ),
+		);
+	}
+	return array(
+		'contact_head' => __( 'Get in touch', 'oria' ),
+		'claim_head'   => __( 'Is this your business?', 'oria' ),
+		'enquiry_note' => __( 'Enquiries go straight to the business', 'oria' ),
+		'share'        => __( 'Share this place', 'oria' ),
+		'similar'      => __( 'Similar places', 'oria' ),
+		'noun'         => __( 'business', 'oria' ),
+	);
+}
+
+/**
  * The domain, for showing a website link as text.
  *
  * wp_parse_url() cannot find a host in a schemeless string, and outbound()
