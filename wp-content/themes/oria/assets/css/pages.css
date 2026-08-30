@@ -563,11 +563,21 @@ a.livesession:hover { background: var(--sand-2); }
 /* height:100% stretches the wrapper to the row the side column sets, so
    the bottoms line up; in a single column that percentage resolves to
    auto and the aspect ratio takes over. */
-.gallery__mainwrap { overflow: hidden; aspect-ratio: 3 / 2; height: 100%; }
+/* The side column sets the row height (two 3:2 images plus the gap) and
+   the wrapper fills it. No aspect-ratio here: with height:100% also set,
+   the ratio drove the WIDTH instead, making the wrapper 18px wider than
+   its column and sliding the side images 6px over the top of it. The
+   ratio is only wanted once the grid collapses to a single column, where
+   there is no side column left to set a height. */
+.gallery__mainwrap { overflow: hidden; height: 100%; }
 .gallery__mainwrap .gallery__main { height: 100%; }
 .gallery__side { display: grid; gap: var(--s-3); }
 .gallery__side img { aspect-ratio: 3 / 2; }
-@media (max-width: 700px) { .gallery { grid-template-columns: 1fr; } .gallery__side { grid-template-columns: 1fr 1fr; display: grid; } }
+@media (max-width: 700px) {
+  .gallery { grid-template-columns: 1fr; }
+  .gallery__side { grid-template-columns: 1fr 1fr; display: grid; }
+  .gallery__mainwrap { aspect-ratio: 3 / 2; height: auto; }
+}
 
 /* --- Verified seal ----------------------------------------------------
    Sits inline after the listing name once the owner has claimed and been
