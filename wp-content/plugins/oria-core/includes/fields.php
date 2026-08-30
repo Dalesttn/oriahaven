@@ -908,6 +908,70 @@ function register_journal_fields(): void {
 			),
 			'position' => 'normal',
 			'fields'   => array(
+				/*
+				 * A journey: an ordered day, each step pointing at a real listing.
+				 * The step names the time and what it is; the name, suburb, price
+				 * and photo are read from the listing when the page renders, so a
+				 * journey cannot quietly go stale the way a hand-typed itinerary
+				 * does -- a studio that closes disappears from every journey at once.
+				 */
+				array(
+					'key'          => 'field_oria_journey',
+					'name'         => 'journey',
+					'label'        => 'Journey (day at a glance)',
+					'type'         => 'repeater',
+					'button_label' => 'Add a step',
+					'layout'       => 'table',
+					'instructions' => 'One row per step, in order. Place it in the article with the [oria_journey] shortcode. A step with no listing still shows, which is useful for something the directory does not hold.',
+					'sub_fields'   => array(
+						array(
+							'key'         => 'field_oria_journey_time',
+							'name'        => 'time',
+							'label'       => 'Time',
+							'type'        => 'text',
+							'placeholder' => '7:00am',
+							'wrapper'     => array( 'width' => '14' ),
+						),
+						array(
+							'key'          => 'field_oria_journey_icon',
+							'name'         => 'icon',
+							'label'        => 'Icon',
+							'type'         => 'text',
+							'maxlength'    => 4,
+							'placeholder'  => '🌊',
+							'instructions' => 'Optional emoji.',
+							'wrapper'      => array( 'width' => '10' ),
+						),
+						array(
+							'key'         => 'field_oria_journey_label',
+							'name'        => 'label',
+							'label'       => 'Step',
+							'type'        => 'text',
+							'placeholder' => 'Ocean dip',
+							'wrapper'     => array( 'width' => '22' ),
+						),
+						array(
+							'key'           => 'field_oria_journey_listing',
+							'name'          => 'listing',
+							'label'         => 'Where',
+							'type'          => 'post_object',
+							'post_type'     => array( 'listing' ),
+							'return_format' => 'id',
+							'ui'            => 1,
+							'allow_null'    => 1,
+							'wrapper'       => array( 'width' => '32' ),
+						),
+						array(
+							'key'         => 'field_oria_journey_note',
+							'name'        => 'note',
+							'label'       => 'Note',
+							'type'        => 'text',
+							'maxlength'   => 90,
+							'placeholder' => 'Park on Marine Parade',
+							'wrapper'     => array( 'width' => '22' ),
+						),
+					),
+				),
 				array(
 					'key'          => 'field_oria_pull_quote',
 					'name'         => 'pull_quote',

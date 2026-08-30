@@ -10,6 +10,8 @@
  * [oria_listings svc="reformer-pilates" n="4"]  cards for practices
  *     offering the service, best-rated first. Pass slugs="a,b,c" to
  *     name the picks instead, in that order.
+ * [oria_journey]  the article's own "day at a glance" timeline, from the
+ *     journey repeater on the post. Each step reads its listing live.
  * [oria_events type="sound-healing" n="4"]  the next sessions of a
  *     kind, from the events aggregator. Renders nothing when the
  *     diary is empty, which is the honest answer that week.
@@ -31,6 +33,7 @@ function bootstrap(): void {
 	add_shortcode( 'oria_listings', __NAMESPACE__ . '\listings' );
 	add_shortcode( 'oria_suburbs', __NAMESPACE__ . '\suburbs' );
 	add_shortcode( 'oria_events', __NAMESPACE__ . '\events' );
+	add_shortcode( 'oria_journey', __NAMESPACE__ . '\journey' );
 }
 
 /**
@@ -279,6 +282,98 @@ function events( $atts ): string {
 		$out .= '</span></a>';
 	}
 	$out .= '</div>';
+	return $out;
+}
+
+/**
+ * The day-at-a-glance timeline.
+ *
+ * Steps are ordered by the editor; everything about the place -- name,
+ * suburb, price, photo, whether it still exists -- is read from the listing
+ * at render time. That is the whole point of building a journey out of
+ * listings rather than typing one: when a studio closes or moves, every
+ * journey that sends someone there corrects itself.
+ *
+ * A step whose listing has been deleted keeps its time and label and simply
+ * stops being a link, because a broken day is worse than an incomplete one.
+ */
+function journey( $atts ): string {
+	$a    = shortcode_atts( array( 'id' => 0 ), $atts );
+	$post = (int) $a['id'] ?: get_the_ID();
+	if ( ! $post || ! function_exists( 'get_field' ) ) {
+		return '';
+	}
+	$rows = (array) ( get_field( 'journey', $post ) ?: array() );
+	$rows = array_values( array_filter( $rows, static function ( $r ): bool {
+		return is_array( $r ) && ( '' !== trim( (string) ( $r['label'] ?? '' ) ) || '' !== trim( (string) ( $r['time'] ?? '' ) ) );
+	} ) );
+	if ( ! $rows ) {
+		return '';
+	}
+
+	$out = '<div class="journey"><ol class="journey__list">';
+	foreach ( $rows as $row ) {
+		$time  = trim( (string) ( $row['time'] ?? '' ) );
+		$icon  = trim( (string) ( $row['icon'] ?? '' ) );
+		$label = trim( (string) ( $row['label'] ?? '' ) );
+		$note  = trim( (string) ( $row['note'] ?? '' ) );
+		$id    = (int) ( $row['listing'] ?? 0 );
+		$live  = $id && 'publish' === get_post_status( $id );
+
+		$out .= '<li class="journey__step">';
+		$out .= '<div class="journey__when">';
+		if ( '' !== $time ) {
+			$out .= '<span class="journey__time">' . esc_html( $time ) . '</span>';
+		}
+		$out .= '</div>';
+
+		$out .= '<div class="journey__what">';
+		$out .= '<span class="journey__label">';
+		if ( '' !== $icon ) {
+			$out .= '<span class="journey__icon" aria-hidden="true">' . esc_html( $icon ) . '</span>';
+		}
+		$out .= esc_html( $label ) . '</span>';
+
+		if ( $live ) {
+			$name   = function_exists( '\Oria\Theme\ptitle' ) ? \Oria\Theme\ptitle( $id ) : get_the_title( $id );
+			/*
+			 * A real photograph only. listing_image() falls back to one of the
+			 * theme's scene illustrations, which are pale by design and at 52px
+			 * read as an empty box beside the name rather than as a picture.
+			 * Better no thumbnail than a smudge: the row closes up without one.
+			 */
+			$img = (string) get_the_post_thumbnail_url( $id, 'oria-card' );
+			if ( '' === $img && function_exists( '\Oria\Core\Places\card_photo' ) ) {
+				$img = (string) \Oria\Core\Places\card_photo( $id );
+			}
+			$suburb = '';
+			foreach ( wp_get_post_terms( $id, 'area' ) as $t ) {
+				if ( $t->parent ) {
+					$suburb = html_entity_decode( $t->name, ENT_QUOTES );
+					break;
+				}
+			}
+			$from = (float) get_field( 'price_from', $id );
+			$meta = array_filter( array( $suburb, $from > 0 ? sprintf( 'from $%s', number_format_i18n( $from ) ) : '' ) );
+
+			$out .= '<a class="journey__place" href="' . esc_url( (string) get_permalink( $id ) ) . '">';
+			if ( $img ) {
+				$out .= '<img class="journey__img" src="' . esc_url( $img ) . '" alt="" loading="lazy" decoding="async">';
+			}
+			$out .= '<span class="journey__placebody">';
+			$out .= '<b class="journey__name">' . esc_html( $name ) . '</b>';
+			if ( $meta ) {
+				$out .= '<span class="journey__meta">' . esc_html( implode( ' · ', $meta ) ) . '</span>';
+			}
+			$out .= '</span></a>';
+		}
+
+		if ( '' !== $note ) {
+			$out .= '<span class="journey__note">' . esc_html( $note ) . '</span>';
+		}
+		$out .= '</div></li>';
+	}
+	$out .= '</ol></div>';
 	return $out;
 }
 
