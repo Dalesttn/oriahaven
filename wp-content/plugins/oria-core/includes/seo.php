@@ -484,9 +484,33 @@ function seo_title( $title ) {
 			 * search payload, the suffix is not. The same trade the event
 			 * branch above makes for long event names.
 			 */
-			$base = sprintf( '%s — %s', decoded_title( get_the_ID() ), $context );
-			$full = sprintf( '%s | %s', $base, get_bloginfo( 'name' ) );
-			return mb_strlen( $full ) <= 65 ? $full : $base;
+			/*
+			 * Four candidates, richest first; the first that fits is the one
+			 * that ships. A SERP shows about sixty characters, and 151 of the
+			 * 366 listings were longer than that — so the suburb, the part a
+			 * local searcher scans for, was the part being cut off. The order
+			 * gives up the least valuable thing each time: the brand suffix,
+			 * then the category (least distinctive, and on the page anyway),
+			 * leaving name and suburb, which are the search payload.
+			 */
+			$name   = decoded_title( get_the_ID() );
+			$suburb = listing_suburb( (int) get_the_ID() );
+			$base   = sprintf( '%s — %s', $name, $context );
+
+			$tries = array( sprintf( '%s | %s', $base, get_bloginfo( 'name' ) ), $base );
+			if ( '' !== $suburb ) {
+				$tries[] = sprintf( '%s — %s', $name, $suburb );
+			}
+			$tries[] = $name;
+
+			foreach ( $tries as $try ) {
+				if ( mb_strlen( $try ) <= TITLE_MAX ) {
+					return $try;
+				}
+			}
+			// Every candidate is long, which means the business name alone is:
+			// nothing to trim but the name itself, and that we do not do.
+			return $name;
 		}
 	}
 	return $title;
@@ -524,6 +548,19 @@ function listing_context( int $id ): string {
 	}
 	$name = wp_specialchars_decode( $practice->name );
 	return '' !== $suburb ? sprintf( '%s in %s', $name, $suburb ) : $name;
+}
+
+/** Just the suburb for a listing, for titles too long to carry the category. */
+/* What a search result shows before it truncates. */
+const TITLE_MAX = 61;
+
+function listing_suburb( int $id ): string {
+	foreach ( wp_get_post_terms( $id, 'area' ) as $term ) {
+		if ( $term->parent ) {
+			return wp_specialchars_decode( $term->name );
+		}
+	}
+	return '';
 }
 
 function decoded_title( int $id ): string {
