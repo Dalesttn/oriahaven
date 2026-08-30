@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace Oria\Core\Guides;
 
 use Oria\Core\Taxonomies;
+use Oria\Core\Journeys;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -72,6 +73,8 @@ function for_term( \WP_Term $term, int $limit = LIMIT ): array {
 	$posts = get_posts(
 		array(
 			'post_type'      => 'post',
+			// A journey lives at /journeys/; it is not one of the journal's guides.
+			'meta_query'     => Journeys\not_journey_meta(),
 			'post_status'    => 'publish',
 			'posts_per_page' => 30,
 			'orderby'        => 'date',

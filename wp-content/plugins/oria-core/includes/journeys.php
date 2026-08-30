@@ -35,6 +35,7 @@ function bootstrap(): void {
 	add_filter( 'wpseo_title', __NAMESPACE__ . '\title', 20 );
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title', 20 );
 	add_filter( 'wpseo_metadesc', __NAMESPACE__ . '\description', 20 );
+	add_action( 'pre_get_posts', __NAMESPACE__ . '\exclude_from_journal' );
 }
 
 function route(): void {
@@ -77,6 +78,64 @@ function template( string $template ): string {
 	}
 	$found = locate_template( array( 'oria-journeys.php' ) );
 	return $found ? $found : $template;
+}
+
+/**
+ * The clause that means "not a journey".
+ *
+ * Two cases, because ACF writes the repeater's row count to the post's own
+ * meta key: an article that has never had steps has no row at all, and one
+ * whose steps were removed has a row holding 0 or an empty string. Testing
+ * only for absence would leave the second kind in the journal.
+ *
+ * @return array<int|string, mixed>
+ */
+function not_journey_meta(): array {
+	return array(
+		'relation' => 'OR',
+		array(
+			'key'     => 'journey',
+			'compare' => 'NOT EXISTS',
+		),
+		array(
+			'key'     => 'journey',
+			'value'   => 0,
+			'compare' => '<=',
+			'type'    => 'NUMERIC',
+		),
+	);
+}
+
+/**
+ * Keep journeys out of the journal's own listings.
+ *
+ * The journal index and its archives are the places that claim to be "the
+ * journal"; a journey belongs to /journeys/ and showing it in both leaves a
+ * reader unsure which is its home. Search is deliberately not on this list --
+ * somebody looking for the Cottesloe day should find it wherever they ask.
+ */
+function exclude_from_journal( \WP_Query $q ): void {
+	if ( is_admin() || ! $q->is_main_query() ) {
+		return;
+	}
+	// The journeys index runs its own query for exactly these posts.
+	if ( $q->get( QUERY_VAR ) ) {
+		return;
+	}
+	if ( ! ( $q->is_home() || $q->is_category() || $q->is_tag() || $q->is_date() || $q->is_author() ) ) {
+		return;
+	}
+	$existing = $q->get( 'meta_query' );
+	$q->set(
+		'meta_query',
+		$existing && is_array( $existing )
+			? array(
+				'relation' => 'AND',
+				$existing,
+				not_journey_meta(),
+			)
+			: array( not_journey_meta() )
+	);
 }
 
 /**

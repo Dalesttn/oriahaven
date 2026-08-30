@@ -287,6 +287,10 @@ while ( have_posts() ) :
 		'posts_per_page'      => 3,
 		'post__not_in'        => array( get_the_ID() ),
 		'ignore_sticky_posts' => true,
+		// "More from the journal" means the journal. Journeys have their own
+		// index and their own rail; mixing them here sends a reader sideways
+		// into a different format without warning.
+		'meta_query'          => \Oria\Core\Journeys\not_journey_meta(),
 	);
 	$oria_related = $oria_cats
 		? get_posts( $oria_args + array( 'category__in' => $oria_cats ) )
@@ -300,6 +304,7 @@ while ( have_posts() ) :
 					'posts_per_page'      => 3 - count( $oria_related ),
 					'post__not_in'        => array_merge( array( get_the_ID() ), wp_list_pluck( $oria_related, 'ID' ) ),
 					'ignore_sticky_posts' => true,
+					'meta_query'          => \Oria\Core\Journeys\not_journey_meta(),
 				)
 			)
 		);
