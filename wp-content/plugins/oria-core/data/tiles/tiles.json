@@ -5,6 +5,18 @@
         "caption": "",
         "source": ""
     },
+    "aqua-fitness": {
+        "name": "Aqua fitness",
+        "alt": "An aqua fitness class working with floats in a pool",
+        "caption": "Photo by Dwi Rizqi F on Pexels",
+        "source": "https://www.pexels.com/photo/aquatic-exercise-class-in-west-java-pool-37304109/"
+    },
+    "aromatherapy": {
+        "name": "Aromatherapy",
+        "alt": "A dropper bottle of essential oil on a wooden tray with dried lavender",
+        "caption": "Photo by Alesia  Kozik on Pexels",
+        "source": "https://www.pexels.com/photo/black-and-brown-glass-bottle-on-brown-wooden-round-tray-7795817/"
+    },
     "art-therapy": {
         "name": "Art therapy",
         "alt": "Hands painting at a table set with brushes, paints and a palette",
@@ -16,6 +28,18 @@
         "alt": "An Ayurvedic kati basti treatment, warm oil held on the lower back",
         "caption": "Photo by RIshikesh Yoga Valley School on Pexels",
         "source": "https://www.pexels.com/photo/traditional-ayurvedic-kati-basti-therapy-in-uttarakhand-38494113/"
+    },
+    "barre": {
+        "name": "Barre",
+        "alt": "Dancers working at the barre in a bright studio",
+        "caption": "Photo by Anna Shvets on Pexels",
+        "source": "https://www.pexels.com/photo/woman-holding-on-handrail-3901644/"
+    },
+    "chakra-balancing": {
+        "name": "Chakra balancing",
+        "alt": "Stones being placed along the body of a person lying down",
+        "caption": "Photo by Arina Krasnikova on Pexels",
+        "source": "https://www.pexels.com/photo/a-person-putting-a-rock-on-a-man-s-chest-6998231/"
     },
     "chinese-medicine": {
         "name": "Chinese medicine",
@@ -29,11 +53,41 @@
         "caption": "Photo by https://kaboompics.com/ on Pexels",
         "source": "https://www.pexels.com/photo/crop-anonymous-chiropractor-examining-spine-of-fit-lady-in-hospital-4506110/"
     },
+    "craniosacral": {
+        "name": "Craniosacral therapy",
+        "alt": "A practitioner's hands cradling a client's head on a treatment table",
+        "caption": "Photo by Yan Krukau on Pexels",
+        "source": "https://www.pexels.com/photo/close-up-view-of-massaging-head-5794031/"
+    },
+    "crystal-healing": {
+        "name": "Crystal healing",
+        "alt": "An arrangement of quartz and crystal points on a shelf",
+        "caption": "Photo by 光术 山影 on Pexels",
+        "source": "https://www.pexels.com/photo/elegant-crystal-and-mineral-display-in-soft-lighting-35697096/"
+    },
     "cupping": {
         "name": "Cupping",
         "alt": "Four glass cups placed along a person's upper back",
         "caption": "Photo by RDNE Stock project on Pexels",
         "source": "https://www.pexels.com/photo/a-back-of-a-person-with-cupping-glass-8312856/"
+    },
+    "dance-movement": {
+        "name": "Dance & movement",
+        "alt": "Bare feet mid-step in a dance studio",
+        "caption": "Photo by cottonbro studio on Pexels",
+        "source": "https://www.pexels.com/photo/woman-legs-in-dance-choreography-6221472/"
+    },
+    "deep-tissue": {
+        "name": "Deep tissue massage",
+        "alt": "A therapist working firm pressure into a client's shoulder",
+        "caption": "Photo by Pixabay on Pexels",
+        "source": "https://www.pexels.com/photo/person-massaging-man-s-shoulder-275768/"
+    },
+    "doula": {
+        "name": "Doulas",
+        "alt": "A pregnant woman supported by others during a birth preparation session",
+        "caption": "Photo by Hannah Barata on Pexels",
+        "source": "https://www.pexels.com/photo/family-supporting-a-pregnant-woman-20082011/"
     },
     "dry-needling": {
         "name": "Dry needling",
@@ -41,11 +95,41 @@
         "caption": "Photo by RDNE Stock project on Pexels",
         "source": "https://www.pexels.com/photo/close-up-of-acupuncture-needles-8312851/"
     },
+    "eco-therapy": {
+        "name": "Eco therapy",
+        "alt": "A person walking a tree-lined path in open bushland",
+        "caption": "Photo by cottonbro studio on Pexels",
+        "source": "https://www.pexels.com/photo/back-view-of-person-walking-on-pathway-between-green-trees-5385905/"
+    },
+    "equine-therapy": {
+        "name": "Equine assisted therapy",
+        "alt": "A horse standing in a paddock behind a timber rail",
+        "caption": "Photo by TRAVEL BLOG on Pexels",
+        "source": "https://www.pexels.com/photo/a-horse-inside-the-wooden-fence-7030241/"
+    },
     "exercise-physiology": {
         "name": "Exercise physiology",
         "alt": "A person working through a resistance band exercise",
         "caption": "Photo by MART  PRODUCTION on Pexels",
         "source": "https://www.pexels.com/photo/person-in-gray-shirt-using-a-resistance-band-on-arms-8846512/"
+    },
+    "expressive-therapies": {
+        "name": "Expressive therapies",
+        "alt": "Hands painting together around a shared table, seen from above",
+        "caption": "Photo by Schena Maria  Karlec on Pexels",
+        "source": "https://www.pexels.com/photo/collaborative-painting-session-with-mixed-media-29922793/"
+    },
+    "forest-bathing": {
+        "name": "Forest bathing",
+        "alt": "Green canopy seen from below among tall trunks",
+        "caption": "Photo by Gianluca Buonaiuto on Pexels",
+        "source": "https://www.pexels.com/photo/sunlit-green-leaves-in-forest-canopy-29731003/"
+    },
+    "functional-fitness": {
+        "name": "Functional fitness",
+        "alt": "A rack of medicine balls and weights in a training gym",
+        "caption": "Photo by Emanuel Pedro on Pexels",
+        "source": "https://www.pexels.com/photo/modern-indoor-gym-with-kettlebells-and-equipment-32610333/"
     },
     "herbal-medicine": {
         "name": "Herbal medicine",
@@ -65,6 +149,12 @@
         "caption": "",
         "source": ""
     },
+    "hypnotherapy": {
+        "name": "Hypnotherapy",
+        "alt": "A practitioner and client seated facing each other in a quiet consulting room",
+        "caption": "Photo by Vitaly Gariev on Pexels",
+        "source": "https://www.pexels.com/photo/a-woman-sitting-in-a-chair-talking-to-another-woman-23496505/"
+    },
     "cold-plunge": {
         "name": "Ice bath & cold plunge",
         "alt": "",
@@ -77,17 +167,77 @@
         "caption": "",
         "source": ""
     },
+    "iridology": {
+        "name": "Iridology",
+        "alt": "A close-up of a green iris showing its fibre pattern",
+        "caption": "Photo by iilushk0 on Pexels",
+        "source": "https://www.pexels.com/photo/close-up-of-a-human-eye-with-detailed-iris-pattern-30878230/"
+    },
+    "lactation": {
+        "name": "Lactation consultants",
+        "alt": "A mother feeding her newborn",
+        "caption": "Photo by Helena Jankovičová Kováčová on Pexels",
+        "source": "https://www.pexels.com/photo/woman-holding-child-and-breastfeeding-10472186/"
+    },
     "lymphatic-drainage": {
         "name": "Lymphatic drainage",
         "alt": "A therapist's hands working lightly along a person's lower leg",
         "caption": "Photo by Gustavo Fring on Pexels",
         "source": "https://www.pexels.com/photo/a-close-up-shot-of-a-person-s-legs-being-massaged-5888062/"
     },
+    "mens-groups": {
+        "name": "Men's groups",
+        "alt": "A circle of chairs in a hall, a group in conversation",
+        "caption": "Photo by Tima Miroshnichenko on Pexels",
+        "source": "https://www.pexels.com/photo/group-of-people-sitting-on-chair-5711023/"
+    },
+    "midwifery": {
+        "name": "Midwifery",
+        "alt": "A midwife going through notes with a pregnant client",
+        "caption": "Photo by MART  PRODUCTION on Pexels",
+        "source": "https://www.pexels.com/photo/photo-of-pregnant-woman-having-a-consultation-7089329/"
+    },
+    "mobility": {
+        "name": "Mobility coaching",
+        "alt": "A group working through standing mobility work on mats",
+        "caption": "Photo by Pavel Danilyuk on Pexels",
+        "source": "https://www.pexels.com/photo/people-in-activewear-stretching-6339322/"
+    },
+    "music-therapy": {
+        "name": "Music therapy",
+        "alt": "Hands playing a steel tongue drum",
+        "caption": "Photo by Mikhail Nilov on Pexels",
+        "source": "https://www.pexels.com/photo/a-person-in-gray-sweater-and-pants-tapping-a-steel-tongue-drum-6944192/"
+    },
     "naturopathy": {
         "name": "Naturopathy",
         "alt": "Fresh herbs in a marble mortar and pestle",
         "caption": "Photo by AS Photography on Pexels",
         "source": "https://www.pexels.com/photo/purple-petaled-flowers-in-mortar-and-pestle-105028/"
+    },
+    "occupational-therapy": {
+        "name": "Occupational therapy",
+        "alt": "A practitioner guiding a client's hands with a therapy ball",
+        "caption": "Photo by Matthias Zomer on Pexels",
+        "source": "https://www.pexels.com/photo/person-holding-multicolored-ball-339619/"
+    },
+    "osteopathy": {
+        "name": "Osteopathy",
+        "alt": "An osteopath's hands assessing a standing client's shoulders",
+        "caption": "Photo by https://kaboompics.com/ on Pexels",
+        "source": "https://www.pexels.com/photo/crop-anonymous-osteopath-straightening-shoulders-of-woman-in-doctor-office-4506106/"
+    },
+    "outdoor-fitness": {
+        "name": "Outdoor fitness",
+        "alt": "Two people training outdoors on turf with a balance trainer",
+        "caption": "Photo by RDNE Stock project on Pexels",
+        "source": "https://www.pexels.com/photo/woman-doing-exercise-at-a-park-8401877/"
+    },
+    "parenting-support": {
+        "name": "Parenting support",
+        "alt": "Parents sitting together feeding their baby",
+        "caption": "Photo by Anna Shvets on Pexels",
+        "source": "https://www.pexels.com/photo/happy-couple-sitting-on-bed-carrying-a-baby-11369289/"
     },
     "personal-training": {
         "name": "Personal training",
@@ -113,6 +263,12 @@
         "caption": "Photo by Jonathan Borba on Pexels",
         "source": "https://www.pexels.com/photo/pregnant-woman-relaxing-in-a-massage-parlour-19666196/"
     },
+    "pregnancy-yoga": {
+        "name": "Pregnancy yoga",
+        "alt": "A class of pregnant women kneeling on mats in a light studio",
+        "caption": "Photo by Gustavo Fring on Pexels",
+        "source": "https://www.pexels.com/photo/group-of-pregnant-women-practicing-yoga-in-fitness-studio-3984345/"
+    },
     "red-light-therapy": {
         "name": "Red light therapy",
         "alt": "A red light therapy panel standing in a treatment room",
@@ -137,6 +293,12 @@
         "caption": "Photo by KoolShooters on Pexels",
         "source": "https://www.pexels.com/photo/a-woman-having-a-massage-6628601/"
     },
+    "sleep-coaching": {
+        "name": "Sleep support",
+        "alt": "An unmade bed in soft morning light",
+        "caption": "Photo by Letícia Alvares on Pexels",
+        "source": "https://www.pexels.com/photo/cozy-bed-with-morning-light-and-shadows-31145681/"
+    },
     "smoothies-juice": {
         "name": "Smoothies & juice",
         "alt": "Bottles of cold-pressed juice laid out with fresh fruit and vegetables",
@@ -149,10 +311,46 @@
         "caption": "",
         "source": ""
     },
+    "speech-pathology": {
+        "name": "Speech pathology",
+        "alt": "A speech pathologist working through picture cards with a child",
+        "caption": "Photo by Gustavo Fring on Pexels",
+        "source": "https://www.pexels.com/photo/man-showing-posters-to-girl-holding-plush-toy-7447271/"
+    },
     "sports-massage": {
         "name": "Sports massage",
         "alt": "A therapist stretching a client's leg on a treatment table",
         "caption": "Photo by Yan Krukau on Pexels",
         "source": "https://www.pexels.com/photo/a-massage-therapist-massaging-the-leg-of-a-client-5793890/"
+    },
+    "stretch-therapy": {
+        "name": "Stretch therapy",
+        "alt": "A therapist guiding a client's leg through an assisted stretch",
+        "caption": "Photo by Yan Krukau on Pexels",
+        "source": "https://www.pexels.com/photo/a-massage-therapist-holding-a-woman-s-leg-up-5794011/"
+    },
+    "tai-chi": {
+        "name": "Tai chi & qigong",
+        "alt": "A person practising tai chi outdoors on grass",
+        "caption": "Photo by Hebert  Santos on Pexels",
+        "source": "https://www.pexels.com/photo/man-in-black-outfit-practicing-tai-chi-8461244/"
+    },
+    "thai-massage": {
+        "name": "Thai massage",
+        "alt": "A Thai massage stretch on a floor mat",
+        "caption": "Photo by Pete Miller Portraits on Pexels",
+        "source": "https://www.pexels.com/photo/thai-massage-therapy-session-for-health-and-relaxation-34821383/"
+    },
+    "wellness-meetups": {
+        "name": "Wellness meetups",
+        "alt": "A group gathered on mats outdoors in a park",
+        "caption": "Photo by Tahir Xəlfəquliyev on Pexels",
+        "source": "https://www.pexels.com/photo/outdoor-yoga-meditation-class-in-historical-park-33819771/"
+    },
+    "yoga-nidra": {
+        "name": "Yoga nidra",
+        "alt": "A person lying still on a blanket with eyes closed",
+        "caption": "Photo by PNW Production on Pexels",
+        "source": "https://www.pexels.com/photo/woman-in-black-activewear-lying-down-on-a-white-cloth-8981321/"
     }
 }
