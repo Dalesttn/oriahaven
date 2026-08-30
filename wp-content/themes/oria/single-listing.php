@@ -66,6 +66,13 @@ while ( have_posts() ) :
 	$oria_verified   = (string) get_field( 'verified_at', $oria_id );
 	/* practice or place -- see \Oria\Theme\words(). */
 	$oria_words      = \Oria\Theme\words( $oria_id );
+	/*
+	 * A beach has no phone, no inbox and no owner. Rewording the contact
+	 * and claim blocks was not enough -- an empty "Getting there" card and
+	 * a claim form asking who you are are both worse than absent. The
+	 * blocks come out entirely.
+	 */
+	$oria_contactless = '' !== (string) ( $oria_words['contactless'] ?? '' );
 	$oria_price_from = get_field( 'price_from', $oria_id );
 	$oria_format     = (string) ( get_field( 'format', $oria_id ) ?: 'in-person' );
 	$oria_next       = (string) get_field( 'next_session', $oria_id );
@@ -354,7 +361,9 @@ while ( have_posts() ) :
 								<?php elseif ( $oria_website ) : ?>
 									<a class="btn btn--dark" href="<?php echo esc_url( $oria_website ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="web" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Visit their website', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
 								<?php endif; ?>
-								<a class="btn btn--ghost btn--plain" href="#enquire"><?php esc_html_e( 'Send an enquiry', 'oria' ); ?></a>
+								<?php if ( ! $oria_contactless ) : ?>
+									<a class="btn btn--ghost btn--plain" href="#enquire"><?php esc_html_e( 'Send an enquiry', 'oria' ); ?></a>
+								<?php endif; ?>
 								<?php
 								/*
 								 * Rendered as the unsaved state and corrected
@@ -1157,6 +1166,7 @@ while ( have_posts() ) :
 
 			<!-- Rail -->
 			<aside class="aside">
+				<?php if ( ! $oria_contactless ) : ?>
 				<div class="contactcard on-deep">
 					<span class="micro"><?php esc_html_e( 'Get in touch', 'oria' ); ?></span>
 					<h2 class="h3" style="color:#fff;margin-top:.6rem"><?php echo esc_html( $oria_words['contact_head'] ); ?></h2>
@@ -1238,6 +1248,7 @@ while ( have_posts() ) :
 					?></p>
 					<?php endif; ?>
 				</div>
+				<?php endif; // contact card ?>
 
 				<?php
 				// An owner should meet their share kit before anything else in
@@ -1314,7 +1325,8 @@ while ( have_posts() ) :
 					<?php get_template_part( 'template-parts/share-box', null, array( 'id' => $oria_id, 'owner' => false, 'share_label' => $oria_words['share'] ) ); ?>
 				<?php endif; ?>
 
-				<?php if ( 'unclaimed' === $oria_status && ! (int) get_post_meta( $oria_id, 'claimed_by', true ) ) : // Free-plan listings have an owner — don't invite rival claims. ?>
+				<?php if ( $oria_contactless ) : // nobody owns a beach, so neither prompt applies ?>
+				<?php elseif ( 'unclaimed' === $oria_status && ! (int) get_post_meta( $oria_id, 'claimed_by', true ) ) : // Free-plan listings have an owner — don't invite rival claims. ?>
 				<div class="claimprompt" id="claim">
 					<?php if ( '' !== $oria_words['claim_head'] ) : ?>
 					<b style="display:block;margin-bottom:.4rem"><?php echo esc_html( $oria_words['claim_head'] ); ?></b>
@@ -1452,7 +1464,9 @@ while ( have_posts() ) :
 					<span class="savebtn__on" aria-hidden="true">&#9829;</span><span class="savebtn__off" aria-hidden="true">&#9825;</span>
 					<span class="savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
 				</button>
-				<a class="btn btn--ghost btn--sm btn--plain" href="#enquire" data-sticky-enquire><?php esc_html_e( 'Enquire', 'oria' ); ?></a>
+				<?php if ( ! $oria_contactless ) : ?>
+					<a class="btn btn--ghost btn--sm btn--plain" href="#enquire" data-sticky-enquire><?php esc_html_e( 'Enquire', 'oria' ); ?></a>
+				<?php endif; ?>
 				<?php if ( $oria_booking ) : ?>
 					<a class="btn btn--dark btn--sm" href="<?php echo esc_url( $oria_booking ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="book" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Book', 'oria' ); ?></a>
 				<?php elseif ( $oria_website ) : ?>
