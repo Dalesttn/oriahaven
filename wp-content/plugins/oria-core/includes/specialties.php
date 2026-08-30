@@ -63,6 +63,7 @@ const MAP = array(
 	'sound-healing'      => array( 'Sound healing', 'sound bath|sound healing|sound journey|\bgong\b', 'Sound baths and gong sessions around Perth.' ),
 	'float-therapy'      => array( 'Float therapy', '\bfloat\b', 'Float tanks and sensory-rest rooms in Perth.' ),
 	'nutrition'          => array( 'Nutrition', 'nutrition|dietitian|dietetic', 'Dietitians and nutrition consultations, in clinic and online.' ),
+	'smoothies-juice'    => array( 'Smoothies & juice', 'cold[- ]press|cold[- ]pressed|juice bar|juicery|smoothie|açaí|acai|juice cleanse|juices|fresh juice', 'Juice bars, cold-press producers and acai counters across Perth — walk-in counters and delivery-only presses alike.' ),
 	'iridology'          => array( 'Iridology', 'iridolog', 'Iridology offered within naturopathic clinics in Perth.' ),
 	'aromatherapy'       => array( 'Aromatherapy', 'aromatherap|essential oil', 'Aromatherapy consultations, blending and training in Perth.' ),
 	'flower-essences'    => array( 'Flower essences', 'flower essence|bach flower|bush flower', 'Bach and Australian bush flower essence practitioners in Perth.' ),
