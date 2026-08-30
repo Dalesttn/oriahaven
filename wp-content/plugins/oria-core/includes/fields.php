@@ -215,6 +215,7 @@ function register_listing_fields(): void {
 					'choices'       => array(
 						'practice' => 'Practice — you book a session',
 						'place'    => 'Place — you turn up',
+						'spot'     => 'Spot — free and public, nobody to contact',
 					),
 					'default_value' => 'practice',
 					'wrapper'       => array( 'width' => '50' ),

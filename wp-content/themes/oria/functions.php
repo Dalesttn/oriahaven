@@ -887,6 +887,23 @@ function outbound( string $url, string $content = '' ): string {
  */
 function words( int $post_id ): array {
 	$kind = function_exists( 'get_field' ) ? (string) get_field( 'kind', $post_id ) : '';
+	/*
+	 * A spot is a beach, a lookout, a coastal path: free, public, and with
+	 * nobody to ring. It gets no contact card and no claim box at all --
+	 * asking "is this your business?" of Cottesloe Beach is the same
+	 * category error the juice bars had, one step further along.
+	 */
+	if ( 'spot' === $kind ) {
+		return array(
+			'contact_head' => __( 'Getting there', 'oria' ),
+			'claim_head'   => '',
+			'enquiry_note' => '',
+			'share'        => __( 'Share this spot', 'oria' ),
+			'similar'      => __( 'Nearby spots', 'oria' ),
+			'noun'         => __( 'spot', 'oria' ),
+			'contactless'  => '1',
+		);
+	}
 	if ( 'place' !== $kind ) {
 		return array(
 			'contact_head' => __( 'Book a first session', 'oria' ),
@@ -895,6 +912,7 @@ function words( int $post_id ): array {
 			'share'        => __( 'Share this practice', 'oria' ),
 			'similar'      => __( 'Similar practices', 'oria' ),
 			'noun'         => __( 'practice', 'oria' ),
+			'contactless'  => '',
 		);
 	}
 	return array(
@@ -904,6 +922,7 @@ function words( int $post_id ): array {
 		'share'        => __( 'Share this place', 'oria' ),
 		'similar'      => __( 'Similar places', 'oria' ),
 		'noun'         => __( 'business', 'oria' ),
+		'contactless'  => '',
 	);
 }
 

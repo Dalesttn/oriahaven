@@ -1231,10 +1231,12 @@ while ( have_posts() ) :
 						<?php endif; ?>
 						</div>
 					<?php endif; ?>
+					<?php if ( '' !== $oria_words['enquiry_note'] ) : ?>
 					<p class="hint" style="color:var(--mist)"><?php
 						/* translators: %s: "Enquiries go straight to the practice" or "... business" */
 						printf( esc_html__( '%s — you\'ll get a copy by email. We never take a cut of bookings.', 'oria' ), esc_html( $oria_words['enquiry_note'] ) );
 					?></p>
+					<?php endif; ?>
 				</div>
 
 				<?php
@@ -1314,7 +1316,9 @@ while ( have_posts() ) :
 
 				<?php if ( 'unclaimed' === $oria_status && ! (int) get_post_meta( $oria_id, 'claimed_by', true ) ) : // Free-plan listings have an owner — don't invite rival claims. ?>
 				<div class="claimprompt" id="claim">
+					<?php if ( '' !== $oria_words['claim_head'] ) : ?>
 					<b style="display:block;margin-bottom:.4rem"><?php echo esc_html( $oria_words['claim_head'] ); ?></b>
+					<?php endif; ?>
 					<?php if ( isset( $_GET['oria_claim'] ) && 'received' === $_GET['oria_claim'] ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 						<div class="notice" style="background:var(--white)" data-oria-event="claim_completed">
 							<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.2l2.4 2.4 4.6-5"/></svg>

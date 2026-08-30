@@ -1468,7 +1468,7 @@ class Command {
 			'price_band'   => (string) ( $row['priceBand'] ?? '' ),
 			'format'       => (string) ( $row['format'] ?? 'in-person' ),
 			// practice unless the seed says otherwise -- see Theme\\words().
-			'kind'         => in_array( $row['kind'] ?? '', array( 'practice', 'place' ), true ) ? (string) $row['kind'] : 'practice',
+			'kind'         => in_array( $row['kind'] ?? '', array( 'practice', 'place', 'spot' ), true ) ? (string) $row['kind'] : 'practice',
 			'rating'       => $row['rating'] ?? '',
 			'review_count' => $row['reviews'] ?? '',
 			'next_session' => (string) ( $row['next'] ?? '' ),
