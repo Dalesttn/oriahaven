@@ -390,6 +390,34 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 				</a>
 			<?php endif; ?>
 			<?php
+			/*
+			 * The same service across the whole directory rather than just
+			 * this category -- /perth/{specialty}/. Those pages carried two
+			 * internal links each (the /perth/ hub and a stray query string),
+			 * which is why Google crawled them monthly and ranked them in the
+			 * eighties. This is the one contextually right place to link them
+			 * from: the narrow view pointing at the broad one.
+			 */
+			$oria_specpage = null;
+			if ( $oria_facet && in_array( $oria_facet['key'] ?? '', array( 'svc', 'spec' ), true ) ) {
+				$oria_st = get_term_by( 'slug', (string) $oria_facet['slug'], 'specialty' );
+				if ( ! $oria_st instanceof WP_Term ) {
+					$oria_st = get_term_by( 'slug', (string) $oria_facet['value'], 'specialty' );
+				}
+				// Only when it genuinely holds more than this page does --
+				// otherwise the link promises a wider view and delivers this one.
+				if ( $oria_st instanceof WP_Term && (int) $oria_st->count > count( $oria_ids ) ) {
+					$oria_specpage = $oria_st;
+				}
+			}
+			?>
+			<?php if ( $oria_specpage ) : ?>
+				<a class="intentcard intentcard--all" href="<?php echo esc_url( \Oria\Core\PracticesIndex\specialty_url( $oria_specpage ) ); ?>" style="--i:0">
+					<span class="intentcard__label"><?php printf( esc_html__( 'All %s in Perth', 'oria' ), esc_html( strtolower( \Oria\Theme\tname( $oria_specpage ) ) ) ); ?></span>
+					<span class="intentcard__count"><?php echo esc_html( number_format_i18n( (int) $oria_specpage->count ) ); ?> <span aria-hidden="true">→</span></span>
+				</a>
+			<?php endif; ?>
+			<?php
 			$oria_i = $oria_facet ? 1 : 0; // the "All …" card, when present, takes slot 0
 			foreach ( $oria_rows as $oria_row ) :
 				$oria_href = $oria_row_url( $oria_row );

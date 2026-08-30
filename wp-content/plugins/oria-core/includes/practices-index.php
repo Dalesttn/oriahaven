@@ -1115,7 +1115,32 @@ function title( $title ) {
 	$f = facet();
 	if ( null !== $f ) {
 		$own = (string) ( $f['page']['frame']['title'] ?? '' );
-		return '' !== $own ? $own : sprintf( '%s | %s', $f['label'], get_bloginfo( 'name' ) );
+		if ( '' !== $own ) {
+			return $own;
+		}
+		/*
+		 * A service or specialty facet names the same thing the
+		 * /perth/{term}/ specialty page does, and both shipped the identical
+		 * title -- "Infrared sauna in Perth" on two indexed, self-canonical
+		 * URLs, 51 pairs of them site-wide. Google had to pick one and
+		 * neither got the whole signal.
+		 *
+		 * The category is what actually distinguishes this page: the service
+		 * scoped to one practice, where the specialty page is the service
+		 * across all of them. So the title says so -- the same shape the
+		 * audience facets have always used.
+		 */
+		$term = get_queried_object();
+		if ( $term instanceof \WP_Term && in_array( $f['key'], array( 'svc', 'spec' ), true ) ) {
+			$bare = (string) preg_replace( '/ in Perth$/', '', $f['label'] );
+			return sprintf(
+				'%s — %s in Perth | %s',
+				$bare,
+				wp_specialchars_decode( $term->name, ENT_QUOTES ),
+				get_bloginfo( 'name' )
+			);
+		}
+		return sprintf( '%s | %s', $f['label'], get_bloginfo( 'name' ) );
 	}
 	return $title;
 }
