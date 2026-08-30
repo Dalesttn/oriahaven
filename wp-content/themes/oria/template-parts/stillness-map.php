@@ -10,7 +10,6 @@ declare(strict_types=1);
 <div class="stillmap" id="stillmap" data-default="central">
       <div class="stillmap__canvas reveal">
         <svg class="stillmap__svg" viewBox="0 0 760 900" role="img" aria-label="Stylised map of the Perth metropolitan area showing eight regions">
-          <title>Practices across the Perth metropolitan area</title>
           <defs>
             <linearGradient id="hillband" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="#A9C2B7" stop-opacity="0"/>

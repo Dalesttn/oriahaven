@@ -417,6 +417,14 @@ function mark( string $cut = 'small', int $size = 24 ): string {
 	}
 	// Strip the XML size so CSS controls it; keep viewBox.
 	$svg = (string) preg_replace( '/\s(width|height)="\d+"/', '', $svg, 2 );
+	/*
+	 * And strip the file's own <title>. The mark is decorative and
+	 * carries aria-hidden, so the title names an element screen readers
+	 * are told to skip -- while SEO crawlers, which do not respect
+	 * aria-hidden, count it as a second page title. The logo appears
+	 * three times on the home page, which is three phantom titles.
+	 */
+	$svg = (string) preg_replace( '#<title>.*?</title>#s', '', $svg );
 	return str_replace(
 		'<svg ',
 		sprintf( '<svg class="brand__mark" width="%d" height="%d" aria-hidden="true" ', $size, $size ),
