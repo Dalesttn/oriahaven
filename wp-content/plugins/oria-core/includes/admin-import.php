@@ -3,7 +3,8 @@
  * Admin batch import: Listings → Import batch.
  *
  * Upload a JSON seed file (the real-listings-N.json format) and run the
- * SAME importer the CLI uses — add-only, duplicate-checked by id, name,
+ * SAME importer the CLI uses — add-only unless the update box is ticked,
+ * duplicate-checked by id, name,
  * phone and website domain, with missing practice categories and area
  * terms created on the way. Dry run is the default so every file gets a
  * preview before it writes anything.
@@ -67,7 +68,7 @@ function screen(): void {
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Import a listings batch', 'oria' ); ?></h1>
-		<p style="max-width:62ch"><?php esc_html_e( 'Upload a JSON seed file in the same format as the existing real-listings files: top-level "categories", "regions" and "listings". The import only ADDS — anything already in the directory (matched by id, name, phone or website domain) is reported and left untouched, claimed listings are never modified, and missing categories or suburbs are created automatically.', 'oria' ); ?></p>
+		<p style="max-width:62ch"><?php esc_html_e( 'Upload a JSON seed file in the same format as the existing real-listings files: top-level "categories", "regions" and "listings". By default the import only ADDS — anything already in the directory (matched by id, name, phone or website domain) is reported and left untouched. Tick "update" below to correct listings this file has already created. Claimed and featured listings are never modified either way, and missing categories or suburbs are created automatically.', 'oria' ); ?></p>
 
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
 			<?php wp_nonce_field( 'oria_import_batch' ); ?>
@@ -76,11 +77,27 @@ function screen(): void {
 			<p>
 				<label><input type="checkbox" name="dry" value="1" checked> <?php esc_html_e( 'Dry run — report what would happen without writing anything', 'oria' ); ?></label>
 			</p>
+			<?php
+			/*
+			 * Add-only is the safe default and stays the default: a stale
+			 * seed file must never be able to quietly rewrite live records.
+			 * But a file that created a listing needs a way to correct it --
+			 * without this the only fix for a typo was the CLI, and the
+			 * screen said "left untouched" while looking like it had run.
+			 */
+			?>
+			<p>
+				<label><input type="checkbox" name="update" value="1"> <?php esc_html_e( 'Update listings that already exist, instead of skipping them', 'oria' ); ?></label>
+				<span class="description" style="display:block;margin-left:1.8em"><?php esc_html_e( 'Matches on the row id. Claimed and featured listings are still skipped.', 'oria' ); ?></span>
+			</p>
 			<p><button class="button button-primary"><?php esc_html_e( 'Run import', 'oria' ); ?></button></p>
 		</form>
 
 		<?php if ( is_array( $report ) && $report ) : ?>
 			<h2><?php echo $report['dry'] ? esc_html__( 'Dry-run result (nothing was written)', 'oria' ) : esc_html__( 'Import result', 'oria' ); ?></h2>
+			<p class="description"><?php echo empty( $report['update'] )
+				? esc_html__( 'Add-only: existing listings were reported and left alone.', 'oria' )
+				: esc_html__( 'Update mode: existing listings were refreshed from the file.', 'oria' ); ?></p>
 			<pre style="background:#fff;border:1px solid #dcdcde;padding:12px;max-width:52rem;overflow:auto;max-height:420px"><?php echo esc_html( implode( "\n", (array) $report['lines'] ) ); ?></pre>
 			<?php if ( $report['dry'] ) : ?>
 				<p><?php esc_html_e( 'Happy with the preview? Upload the same file again with the dry-run box unticked.', 'oria' ); ?></p>
@@ -98,9 +115,10 @@ function handle(): void {
 
 	$back = admin_url( 'edit.php?post_type=listing&page=oria-import-batch' );
 	$dry  = ! empty( $_POST['dry'] );
+	$upd  = ! empty( $_POST['update'] );
 
 	$fail = static function ( string $why ) use ( $back, $dry ): void {
-		set_transient( TRANSIENT, array( 'dry' => $dry, 'lines' => array( 'Import not run: ' . $why ) ), HOUR_IN_SECONDS );
+		set_transient( TRANSIENT, array( 'dry' => $dry, 'update' => false, 'lines' => array( 'Import not run: ' . $why ) ), HOUR_IN_SECONDS );
 		wp_safe_redirect( $back );
 		exit;
 	};
@@ -125,13 +143,19 @@ function handle(): void {
 	CliShim::$lines = array();
 
 	try {
-		$assoc = $dry ? array( 'dry-run' => true ) : array();
+		$assoc = array();
+		if ( $dry ) {
+			$assoc['dry-run'] = true;
+		}
+		if ( $upd ) {
+			$assoc['update'] = true;
+		}
 		( new Import\Command() )->import( array( (string) $file['tmp_name'] ), $assoc );
 	} catch ( \RuntimeException $e ) {
 		CliShim::$lines[] = 'Error: ' . $e->getMessage();
 	}
 
-	set_transient( TRANSIENT, array( 'dry' => $dry, 'lines' => CliShim::$lines ), HOUR_IN_SECONDS );
+	set_transient( TRANSIENT, array( 'dry' => $dry, 'update' => $upd, 'lines' => CliShim::$lines ), HOUR_IN_SECONDS );
 	wp_safe_redirect( $back );
 	exit;
 }
