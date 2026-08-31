@@ -68,6 +68,298 @@ function bootstrap(): void {
 	add_action( 'phpmailer_init', __NAMESPACE__ . '\attach_alt_text' );
 	add_action( 'admin_notices', __NAMESPACE__ . '\notice' );
 	add_action( 'add_meta_boxes', __NAMESPACE__ . '\metabox' );
+
+	add_action( 'init', __NAMESPACE__ . '\schedule' );
+	add_action( CRON_HOOK, __NAMESPACE__ . '\cron_run' );
+}
+
+/* ------------------------------------------------------------ daily run */
+
+/**
+ * The morning run.
+ *
+ * Outreach was a person clicking Send, five a day, reading each listing
+ * first. This keeps the pacing and drops the clicking, but it is off until
+ * somebody turns it on -- an automated cold email to a real business cannot
+ * be unsent, and the difference between a queue that waits and a queue that
+ * fires is worth one deliberate decision.
+ *
+ *   wp option update oria_invite_auto 1     # arm it
+ *   wp option delete oria_invite_auto       # disarm it
+ *   wp oria invites --dry-run               # see today's list, send nothing
+ */
+const CRON_HOOK   = 'oria_invite_daily';
+const AUTO_OPTION = 'oria_invite_auto';
+const LOG_OPTION  = 'oria_invite_last_run';
+
+/** Views, or any single click that shows somebody wanted to reach them. */
+const ENGAGED_VIEWS = 5;
+
+function armed(): bool {
+	return (bool) apply_filters( 'oria_invite_auto', (bool) get_option( AUTO_OPTION ) );
+}
+
+/**
+ * 8am in Perth, daily.
+ *
+ * Scheduled against the site's own timezone rather than UTC so the run
+ * stays at 8am for the person reading the replies, and so a server moved
+ * between regions does not quietly start writing to practitioners at
+ * midnight.
+ */
+function schedule(): void {
+	if ( wp_next_scheduled( CRON_HOOK ) ) {
+		return;
+	}
+	try {
+		$next = new \DateTimeImmutable( 'tomorrow 8:00', wp_timezone() );
+	} catch ( \Exception $e ) {
+		return;
+	}
+	wp_schedule_event( $next->getTimestamp(), 'daily', CRON_HOOK );
+}
+
+/**
+ * Listings somebody has actually looked at, most engaged first.
+ *
+ * The old queue worked through the directory by ID, which meant writing to
+ * practices nobody had visited yet -- a claim email whose whole argument is
+ * "people are finding this" reads badly when they are not. Ordering by
+ * engagement also means the email that quotes a view count quotes a good one.
+ */
+function engaged_candidates( int $limit ): array {
+	if ( ! function_exists( '\Oria\Core\Analytics\total' ) ) {
+		return array();
+	}
+	$ids = get_posts(
+		array(
+			'post_type'      => PostTypes\LISTING,
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			'meta_query'     => array(
+				array(
+					'key'     => COUNT,
+					'compare' => 'NOT EXISTS',
+				),
+			),
+		)
+	);
+
+	$scored = array();
+	foreach ( $ids as $id ) {
+		$id   = (int) $id;
+		$view = (int) \Oria\Core\Analytics\total( $id, 'view', 90 );
+		$web  = (int) \Oria\Core\Analytics\total( $id, 'web', 90 );
+		$book = (int) \Oria\Core\Analytics\total( $id, 'book', 90 );
+
+		// Any one of the three qualifies. A single click on "website" or
+		// "book" is a stronger signal than several views, so those count
+		// even when the view total is low.
+		if ( $view < ENGAGED_VIEWS && $web < 1 && $book < 1 ) {
+			continue;
+		}
+		if ( blocked( $id ) ) {
+			continue;
+		}
+		$scored[ $id ] = ( $book * 10 ) + ( $web * 5 ) + $view;
+	}
+
+	arsort( $scored );
+	return array_slice( array_keys( $scored ), 0, max( 0, $limit ), true );
+}
+
+/**
+ * One day's sending. Returns what it did, for the report and for --dry-run.
+ *
+ * @return array{armed:bool,room:int,picked:int,sent:int,failed:int,rows:array<int,array<string,mixed>>,left:int}
+ */
+function cron_run( bool $dry = false ): array {
+	$room = max( 0, DAY_PACE - sent_today() );
+	$out  = array(
+		'armed'  => armed(),
+		'room'   => $room,
+		'picked' => 0,
+		'sent'   => 0,
+		'failed' => 0,
+		'rows'   => array(),
+		'left'   => 0,
+	);
+
+	if ( ! $out['armed'] || ! $room ) {
+		return $out;
+	}
+
+	$ids           = engaged_candidates( $room );
+	$out['picked'] = count( $ids );
+
+	foreach ( $ids as $id ) {
+		$id  = (int) $id;
+		$row = array(
+			'id'    => $id,
+			'name'  => wp_specialchars_decode( (string) get_post_field( 'post_title', $id, 'raw' ), ENT_QUOTES ),
+			'email' => address( $id ),
+			'url'   => (string) get_permalink( $id ),
+			'view'  => function_exists( '\Oria\Core\Analytics\total' ) ? (int) \Oria\Core\Analytics\total( $id, 'view', 90 ) : 0,
+			'web'   => function_exists( '\Oria\Core\Analytics\total' ) ? (int) \Oria\Core\Analytics\total( $id, 'web', 90 ) : 0,
+			'book'  => function_exists( '\Oria\Core\Analytics\total' ) ? (int) \Oria\Core\Analytics\total( $id, 'book', 90 ) : 0,
+			'ok'    => null,
+		);
+		if ( ! $dry ) {
+			$row['ok'] = send( $id );
+			if ( $row['ok'] ) {
+				++$out['sent'];
+			} else {
+				++$out['failed'];
+			}
+		}
+		$out['rows'][] = $row;
+	}
+
+	// Counted after sending, so the report says how many are genuinely left
+	// rather than how many there were before this morning.
+	$out['left'] = count( engaged_candidates( 9999 ) );
+
+	if ( ! $dry ) {
+		update_option(
+			LOG_OPTION,
+			array(
+				'at'     => current_time( 'mysql' ),
+				'sent'   => $out['sent'],
+				'failed' => $out['failed'],
+				'left'   => $out['left'],
+			),
+			false
+		);
+		report( $out );
+	}
+	return $out;
+}
+
+/* ---------------------------------------------------------------- report */
+
+/** Where the morning report goes. */
+function report_to(): string {
+	return (string) apply_filters( 'oria_invite_report_to', 'hello@oriahaven.com.au' );
+}
+
+/**
+ * Tell someone what went out.
+ *
+ * Only when the run actually did something. A "nothing sent" email every
+ * morning is noise that trains you to ignore the one that matters, and the
+ * queue running dry is visible in the next report's "left" count anyway.
+ * Failures always report, because a silent failure is the case where the
+ * outreach quietly stops and nobody notices for a fortnight.
+ */
+function report( array $run ): void {
+	if ( ! $run['sent'] && ! $run['failed'] ) {
+		return;
+	}
+
+	$to   = report_to();
+	$when = wp_date( 'j F Y' );
+
+	$subject = sprintf(
+		/* translators: 1: number sent, 2: date */
+		__( 'Oria outreach: %1$d invite(s) sent, %2$s', 'oria' ),
+		$run['sent'],
+		$when
+	);
+	if ( $run['failed'] ) {
+		$subject = sprintf(
+			/* translators: 1: number sent, 2: number failed, 3: date */
+			__( 'Oria outreach: %1$d sent, %2$d FAILED, %3$s', 'oria' ),
+			$run['sent'],
+			$run['failed'],
+			$when
+		);
+	}
+
+	$rows = '';
+	foreach ( $run['rows'] as $r ) {
+		$rows .= sprintf(
+			'<tr>
+				<td style="padding:8px 10px;border-bottom:1px solid #E1DED4;">%s<br><a href="%s" style="color:#3F6E60;font-size:12px;">%s</a></td>
+				<td style="padding:8px 10px;border-bottom:1px solid #E1DED4;font-size:13px;">%s</td>
+				<td style="padding:8px 10px;border-bottom:1px solid #E1DED4;text-align:right;font-variant-numeric:tabular-nums;">%d</td>
+				<td style="padding:8px 10px;border-bottom:1px solid #E1DED4;text-align:right;font-variant-numeric:tabular-nums;">%d</td>
+				<td style="padding:8px 10px;border-bottom:1px solid #E1DED4;text-align:right;font-variant-numeric:tabular-nums;">%d</td>
+				<td style="padding:8px 10px;border-bottom:1px solid #E1DED4;font-weight:700;color:%s;">%s</td>
+			</tr>',
+			esc_html( $r['name'] ),
+			esc_url( $r['url'] ),
+			esc_html( (string) $r['email'] ),
+			esc_html( (string) $r['email'] ),
+			(int) $r['view'],
+			(int) $r['web'],
+			(int) $r['book'],
+			$r['ok'] ? '#2F7A5A' : '#9C3A2A',
+			$r['ok'] ? esc_html__( 'sent', 'oria' ) : esc_html__( 'FAILED', 'oria' )
+		);
+	}
+
+	$html = sprintf(
+		'<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#10211F;max-width:720px;">
+			<h2 style="font-size:18px;margin:0 0 4px;">%s</h2>
+			<p style="color:#47605B;font-size:14px;margin:0 0 18px;">%s</p>
+			<table style="border-collapse:collapse;width:100%%;font-size:14px;">
+				<tr style="background:#EFEDE6;">
+					<th style="padding:8px 10px;text-align:left;">%s</th>
+					<th style="padding:8px 10px;text-align:left;">%s</th>
+					<th style="padding:8px 10px;text-align:right;">%s</th>
+					<th style="padding:8px 10px;text-align:right;">%s</th>
+					<th style="padding:8px 10px;text-align:right;">%s</th>
+					<th style="padding:8px 10px;text-align:left;">%s</th>
+				</tr>
+				%s
+			</table>
+			<p style="color:#47605B;font-size:13px;margin:18px 0 0;">%s</p>
+			<p style="font-size:13px;margin:6px 0 0;"><a href="%s" style="color:#3F6E60;">%s</a></p>
+		</div>',
+		esc_html( sprintf( __( 'Claim invites sent %s', 'oria' ), $when ) ),
+		esc_html( sprintf(
+			/* translators: 1: sent, 2: failed */
+			__( '%1$d sent, %2$d failed. These practices were picked because people are visiting their listings.', 'oria' ),
+			$run['sent'],
+			$run['failed']
+		) ),
+		esc_html__( 'Practice', 'oria' ),
+		esc_html__( 'Sent to', 'oria' ),
+		esc_html__( 'Views', 'oria' ),
+		esc_html__( 'Web', 'oria' ),
+		esc_html__( 'Book', 'oria' ),
+		esc_html__( 'Result', 'oria' ),
+		$rows,
+		esc_html( sprintf(
+			/* translators: 1: remaining count, 2: daily pace */
+			_n( '%1$d engaged listing still to write to, at %2$d a day.', '%1$d engaged listings still to write to, at %2$d a day.', (int) $run['left'], 'oria' ),
+			(int) $run['left'],
+			DAY_PACE
+		) ),
+		esc_url( admin_url( 'edit.php?post_type=' . PostTypes\LISTING . '&page=oria-outreach' ) ),
+		esc_html__( 'Open the outreach queue', 'oria' )
+	);
+
+	$text = sprintf( "%s\n\n", $subject );
+	foreach ( $run['rows'] as $r ) {
+		$text .= sprintf(
+			"%s  [%s]\n  %s\n  views %d, web %d, book %d\n  %s\n\n",
+			$r['ok'] ? 'SENT  ' : 'FAILED',
+			$r['email'],
+			$r['name'],
+			$r['view'],
+			$r['web'],
+			$r['book'],
+			$r['url']
+		);
+	}
+	$text .= sprintf( "%d engaged listings still to write to, at %d a day.\n", (int) $run['left'], DAY_PACE );
+
+	alt_text( $text );
+	wp_mail( $to, $subject, $html, \Oria\Forms\Emails\html_headers() );
+	alt_text( '' );
 }
 
 /* ------------------------------------------------------------------ route */

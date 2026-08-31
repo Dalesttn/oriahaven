@@ -984,6 +984,60 @@ class Command {
 		\WP_CLI::success( $summary );
 	}
 
+	/**
+	 * Today's claim-email run.
+	 *
+	 * Writes to listings people have actually visited -- five or more views,
+	 * or a single click on their website or booking link. Never writes twice,
+	 * never writes to a listing that opted out, was claimed, or has no email.
+	 *
+	 * The daily cron does exactly this. Run it by hand to see the list first.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--dry-run]
+	 * : Show who would be written to and send nothing.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp oria invites --dry-run
+	 *     wp oria invites
+	 *
+	 * @when after_wp_load
+	 */
+	public function invites( array $args, array $assoc ): void {
+		$dry = isset( $assoc['dry-run'] );
+		$r   = \Oria\Core\Invites\cron_run( $dry );
+
+		if ( ! $r['armed'] ) {
+			\WP_CLI::warning( 'Automatic sending is off. Arm it with: wp option update oria_invite_auto 1' );
+		}
+		\WP_CLI::log( sprintf( '  room today: %d of %d', $r['room'], \Oria\Core\Invites\DAY_PACE ) );
+		foreach ( $r['rows'] as $row ) {
+			\WP_CLI::log( sprintf(
+				'  - %-38s views %-3d web %-2d book %-2d  %s',
+				$row['name'],
+				$row['view'],
+				$row['web'],
+				$row['book'],
+				$row['email']
+			) );
+		}
+		if ( isset( $r['left'] ) ) {
+			\WP_CLI::log( sprintf( '  %d engaged listing(s) left in the queue', $r['left'] ) );
+		}
+
+		if ( $dry ) {
+			\WP_CLI::success( sprintf( 'Dry run. %d would be written to. Nothing sent.', $r['picked'] ) );
+			return;
+		}
+		if ( $r['failed'] ) {
+			\WP_CLI::warning( sprintf( '%d sent, %d failed.', $r['sent'], $r['failed'] ) );
+			return;
+		}
+		\WP_CLI::success( sprintf( '%d sent.', $r['sent'] ) );
+	}
+
 	public function seed_specialties( array $args, array $assoc ): void {
 		$dry     = isset( $assoc['dry-run'] );
 		$claimed = isset( $assoc['include-claimed'] );
