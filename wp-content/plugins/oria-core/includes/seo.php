@@ -41,6 +41,9 @@ function bootstrap(): void {
 	add_action( 'template_redirect', __NAMESPACE__ . '\retire_city_combo', 6 );
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\seo_canonical' );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\seo_robots' );
+	// Priority 1: verification tags belong near the top of the head, and
+	// some crawlers only read the first few kilobytes of it.
+	add_action( 'wp_head', __NAMESPACE__ . '\verification', 1 );
 	add_filter( 'wp_robots', __NAMESPACE__ . '\wp_robots_filtered' );
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title' );
 	// Listing preview images live in Share, which has to reach Yoast a step
@@ -721,6 +724,45 @@ function retire_city_combo(): void {
 	}
 	wp_safe_redirect( \Oria\Core\PracticesIndex\category_url( $practice ), 301 );
 	exit;
+}
+
+/**
+ * Site ownership verification tags.
+ *
+ * Public by design -- these are meant to be read out of the page source by
+ * the service checking the domain, so they are not secrets and belong in git
+ * beside the rest of the head. Filterable so a tag can be added or dropped
+ * without editing this file.
+ *
+ * Commission Factory checks the tag is present on the domain, then never
+ * looks again; it stays because removing it can silently unverify the
+ * account months later.
+ *
+ * @return array<string, string> meta name => content
+ */
+function verification_tags(): array {
+	return (array) apply_filters(
+		'oria_verification_tags',
+		array(
+			'commission-factory-verification' => '463061dbe63d4140abaa230e927e24f8',
+		)
+	);
+}
+
+function verification(): void {
+	foreach ( verification_tags() as $name => $content ) {
+		$name    = trim( (string) $name );
+		$content = trim( (string) $content );
+		if ( '' === $name || '' === $content ) {
+			continue;
+		}
+		printf(
+			'<meta name="%s" content="%s" />' . "
+",
+			esc_attr( $name ),
+			esc_attr( $content )
+		);
+	}
 }
 
 /**
