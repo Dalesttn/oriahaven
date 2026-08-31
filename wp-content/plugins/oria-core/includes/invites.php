@@ -212,6 +212,30 @@ function subject( int $listing_id, bool $again ): string {
 }
 
 /**
+ * Views this listing has actually had, if there are enough to be worth
+ * mentioning, else zero.
+ *
+ * The temptation on a claim email is a general line about the directory
+ * getting traffic. That is a claim about their page, made to a business, in
+ * writing, and for most listings it would not be true: the median listing has
+ * had three views. Telling somebody their page is busy when it is not is
+ * misleading, and it is the kind of thing a practitioner checks against their
+ * own booking system and remembers.
+ *
+ * So the line only appears where the number carries it. Below the floor the
+ * email says nothing about traffic at all and keeps the accuracy argument,
+ * which stands on its own.
+ */
+function views( int $listing_id ): int {
+	if ( ! function_exists( '\Oria\Core\Analytics\total' ) ) {
+		return 0;
+	}
+	$n     = (int) \Oria\Core\Analytics\total( $listing_id, 'view', 90 );
+	$floor = (int) apply_filters( 'oria_invite_views_floor', 5 );
+	return $n >= $floor ? $n : 0;
+}
+
+/**
  * What we've tagged them as, in words — the detail that shows a person
  * looked at their listing, and the quickest way to earn a correction.
  */
@@ -336,8 +360,23 @@ function body_html( int $listing_id, string $token ): string {
 		)
 	);
 
+	$seen = views( $listing_id );
+	if ( $seen ) {
+		$html .= para(
+			sprintf(
+				/* translators: %s: number of profile views in the last 90 days */
+				esc_html__( 'People are finding it. Your listing has been viewed %s times in the last three months, and that number is growing as the directory settles into search results.', 'oria' ),
+				'<b>' . esc_html( number_format_i18n( $seen ) ) . '</b>'
+			)
+		);
+	}
+
 	$html .= heading( __( 'If anything\'s wrong, just reply and I\'ll fix it', 'oria' ) );
-	$html .= para( esc_html__( 'No account, no charge. An out-of-date price or a wrong opening time is worse for you than not being listed at all.', 'oria' ) );
+	$html .= para(
+		$seen
+			? esc_html__( 'No account, no charge. Those visitors are reading whatever we got from your website, so an out-of-date price or a wrong opening time is doing real damage right now — worse than not being listed at all.', 'oria' )
+			: esc_html__( 'No account, no charge. An out-of-date price or a wrong opening time is worse for you than not being listed at all.', 'oria' )
+	);
 
 	$html .= heading( __( 'If you\'d like to look after it yourself, you can — free', 'oria' ) );
 	$html .= para( esc_html__( 'Claiming confirms you\'re the owner. You can then keep your address, phone, email, website, prices and session format current yourself, and the listing stops being marked Unclaimed. There are paid plans that add photos, opening hours, offers and visitor stats, but you never have to take one.', 'oria' ) );
@@ -426,12 +465,14 @@ function signature_html(): string {
 function body_text( int $listing_id, string $token ): string {
 	$name     = wp_specialchars_decode( (string) get_post_field( 'post_title', $listing_id, 'raw' ), ENT_QUOTES );
 	$describe = described( $listing_id );
+	$seen     = views( $listing_id );
 
 	return sprintf(
 		"Hi there,\n\n" .
 		"We run Oria Haven, a directory of wellness practices in Perth. %1\$s is on it:\n\n%2\$s\n\n" .
 		"We put the listing together from what's public on your website%3\$s. Nobody from your team has checked it, which is why I'm writing.\n\n" .
-		"IF ANYTHING'S WRONG, JUST REPLY AND I'LL FIX IT.\nNo account, no charge. An out-of-date price or a wrong opening time is worse for you than not being listed at all.\n\n" .
+		"%10\$s" .
+		"IF ANYTHING'S WRONG, JUST REPLY AND I'LL FIX IT.\n%11\$s\n\n" .
 		"IF YOU'D LIKE TO LOOK AFTER IT YOURSELF, YOU CAN — FREE.\nClaiming confirms you're the owner. You can then keep your address, phone, email, website, prices and session format current yourself, and the listing stops being marked Unclaimed. There are paid plans that add photos, opening hours, offers and visitor stats, but you never have to take one.\n\n" .
 		"Claim it here:\n%4\$s\n\n" .
 		"That link is just for your listing and works for %5\$d days.\n\n" .
@@ -447,7 +488,17 @@ function body_text( int $listing_id, string $token ): string {
 		\Oria\Core\Share\url( $listing_id ),
 		(int) wp_count_posts( PostTypes\LISTING )->publish,
 		signature(),
-		link( $token, true )
+		link( $token, true ),
+		$seen
+			? sprintf(
+				/* translators: %s: number of profile views in the last 90 days */
+				__( "People are finding it. Your listing has been viewed %s times in the last three months, and that number is growing as the directory settles into search results.\n\n", 'oria' ),
+				number_format_i18n( $seen )
+			)
+			: '',
+		$seen
+			? __( 'No account, no charge. Those visitors are reading whatever we got from your website, so an out-of-date price or a wrong opening time is doing real damage right now — worse than not being listed at all.', 'oria' )
+			: __( 'No account, no charge. An out-of-date price or a wrong opening time is worse for you than not being listed at all.', 'oria' )
 	);
 }
 
