@@ -292,6 +292,21 @@ function facet_404(): void {
 			exit;
 		}
 	}
+
+	/*
+	 * A combination with nothing behind it is not a page. Creative x cold
+	 * plunge and energy x cold plunge both answered 200 and rendered an empty
+	 * category, and Google indexed them. Zero is the only threshold used
+	 * here: a combination holding one or two real listings still answers, it
+	 * simply does not ask to be indexed.
+	 */
+	$term = get_queried_object();
+	if ( $term instanceof \WP_Term && 0 === count( facet_ids( $term, $f ) ) ) {
+		global $wp_query;
+		$wp_query->set_404();
+		status_header( 404 );
+		nocache_headers();
+	}
 }
 
 function is_index(): bool {
@@ -573,7 +588,15 @@ function area_url( \WP_Term $practice, \WP_Term $area ): string {
  * page additionally needs FACET_MIN listings, the same floor as a combo.
  */
 function robots( $robots ) {
-	if ( ! is_category() ) {
+	/*
+	 * is_tax(), not is_category(). These are `practice` taxonomy archives, so
+	 * is_category() is false on every one of them and this function returned
+	 * at the first line for its entire life -- the FACET_MIN floor below was
+	 * never once applied. That is why Search Console shows eight indexed
+	 * cold-plunge pages including /practices/creative/cold-plunge/, which has
+	 * no listings behind it at all.
+	 */
+	if ( ! is_tax( Taxonomies\PRACTICE ) ) {
 		return $robots;
 	}
 	if ( 'live' !== mode() ) {
@@ -583,6 +606,18 @@ function robots( $robots ) {
 	if ( null !== $f ) {
 		$term = get_queried_object();
 		if ( ! $term instanceof \WP_Term || count( facet_ids( $term, $f ) ) < FACET_MIN ) {
+			return 'noindex, follow';
+		}
+		/*
+		 * A page whose canonical names somewhere else must not also ask to be
+		 * indexed. A canonical is a hint Google is free to ignore, and for
+		 * three weeks it did; noindex is a directive. The pair actually
+		 * consolidates. 'follow' keeps the listings linked from here
+		 * reachable, which is the whole reason the page still renders.
+		 */
+		$self  = category_url( $term ) . $f['slug'] . '/';
+		$canon = facet_canonical_url( $term, $f );
+		if ( untrailingslashit( $canon ) !== untrailingslashit( $self ) ) {
 			return 'noindex, follow';
 		}
 	}
@@ -744,6 +779,26 @@ function service_url( string $service_slug ): string {
  * Returns '' only for a term the registry does not know, which is every
  * specialty facet: those have no category registry to consult.
  */
+/**
+ * The specialty a service term is another name for, if any.
+ *
+ * Most pairs share a slug and need no entry. These two do not, and a slug
+ * comparison alone left /practices/recovery/ice-bath/ competing with
+ * /perth/cold-plunge/ for the same searches. Written out rather than
+ * inferred: "ice bath" and "cold plunge" are the same thing to a reader but
+ * nothing in the data says so, and a fuzzy match would eventually fold two
+ * modalities together that are genuinely different.
+ *
+ * @return string The specialty slug to prefer, or the service slug unchanged.
+ */
+function specialty_twin( string $service ): string {
+	$synonyms = array(
+		'ice-bath'                  => 'cold-plunge',
+		'hyperbaric-oxygen-therapy' => 'hyperbaric-oxygen',
+	);
+	return (string) ( $synonyms[ $service ] ?? $service );
+}
+
 function facet_owner( string $service ): string {
 	static $map = null;
 	if ( null === $map ) {
@@ -770,9 +825,52 @@ function facet_owner( string $service ): string {
  */
 function facet_canonical_url( \WP_Term $practice, array $facet ): string {
 	$self = category_url( $practice ) . $facet['slug'] . '/';
+
+	/*
+	 * A modality has one home, and it is not inside a category.
+	 *
+	 * /perth/{modality}/ holds every listing of the modality rather than one
+	 * category's slice, and it is already where the site's own cards link.
+	 * Cold plunge was answering at seven category URLs besides it, splitting
+	 * 1,152 impressions of demand seven ways.
+	 *
+	 * Only point there when the term resolves -- a canonical aimed at a page
+	 * that does not exist is worse than the duplication it set out to fix.
+	 */
+	if ( 'spec' === ( $facet['key'] ?? '' ) ) {
+		$term = get_term_by( 'slug', (string) $facet['value'], Taxonomies\SPECIALTY );
+		if ( $term instanceof \WP_Term ) {
+			$url = specialty_url( $term );
+			if ( is_string( $url ) && '' !== $url ) {
+				return $url;
+			}
+		}
+		return $self;
+	}
+
 	if ( 'svc' !== ( $facet['key'] ?? '' ) ) {
 		return $self;
 	}
+
+	/*
+	 * Some modalities exist in both taxonomies -- infrared sauna, ice bath,
+	 * red light therapy and hyperbaric oxygen are each a service term AND a
+	 * specialty. resolve_facet() consults services first, so under the owning
+	 * category they took the service path and stayed self-canonical, leaving
+	 * /practices/recovery/infrared-sauna/ competing with
+	 * /perth/infrared-sauna/ for the same searches.
+	 *
+	 * Where both exist the specialty page wins: it holds the modality across
+	 * every category rather than one category's slice of it.
+	 */
+	$twin = get_term_by( 'slug', specialty_twin( (string) $facet['value'] ), Taxonomies\SPECIALTY );
+	if ( $twin instanceof \WP_Term ) {
+		$url = specialty_url( $twin );
+		if ( is_string( $url ) && '' !== $url ) {
+			return $url;
+		}
+	}
+
 	$owner = facet_owner( (string) $facet['value'] );
 	if ( '' === $owner || $owner === $practice->slug ) {
 		return $self;
@@ -1163,7 +1261,13 @@ function description( $desc ) {
 }
 
 function canonical( $canonical ) {
-	if ( is_category() ) {
+	/*
+	 * is_tax(), not is_category() -- the same dead gate robots() carried.
+	 * These are `practice` taxonomy archives, so this branch never ran and
+	 * every facet page kept whatever self-canonical Yoast defaulted to. That
+	 * is half of why one modality answered at eight indexed addresses.
+	 */
+	if ( is_tax( Taxonomies\PRACTICE ) ) {
 		$term = get_queried_object();
 		if ( $term instanceof \WP_Term ) {
 			$f = facet();
