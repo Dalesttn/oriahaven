@@ -21,7 +21,7 @@ $oria_suburbs   = function_exists( '\Oria\Core\AreaDepth\popular' )
 					<?php echo \Oria\Theme\mark( 'small', 24 ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 					<b>Oria</b><i>&thinsp;Haven</i>
 				</a>
-				<p style="margin-top:1rem;font-size:.9375rem;max-width:30ch"><?php echo esc_html( \Oria\Theme\opt( 'footer_tagline', "Perth's meditation and wellness directory. Built in Fremantle, one listing at a time." ) ); ?></p>
+				<p style="margin-top:1rem;font-size:.9375rem;max-width:30ch"><?php echo esc_html( \Oria\Theme\opt( 'footer_tagline', "Oria Haven — Discover wellness that fits you." ) ); ?></p>
 
 				<?php
 				/*
