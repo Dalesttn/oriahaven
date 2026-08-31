@@ -41,6 +41,7 @@ function bootstrap(): void {
 	add_action( 'template_redirect', __NAMESPACE__ . '\retire_city_combo', 6 );
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\seo_canonical' );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\seo_robots' );
+	add_filter( 'wp_robots', __NAMESPACE__ . '\wp_robots_filtered' );
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title' );
 	// Listing preview images live in Share, which has to reach Yoast a step
 	// earlier than a filter to set one at all.
@@ -722,11 +723,63 @@ function retire_city_combo(): void {
 	exit;
 }
 
+/**
+ * The parameters that change which listings a page shows.
+ *
+ * Named rather than "any query string": utm_source and fbclid arrive on
+ * perfectly ordinary shared links and should not cost a page its place in
+ * the index. These ten are the directory's own filter state, read by the
+ * engine on load.
+ *
+ * @return string[]
+ */
+function filter_params(): array {
+	return array( 'aud', 'cat', 'format', 'pg', 'price', 'q', 'region', 'spec', 'suburb', 'svc' );
+}
+
+/**
+ * Is this a filtered view of a page rather than the page?
+ *
+ * Only asked on the pages that carry filters -- the directory, and the
+ * practice, specialty and area archives. A filter is navigation: it narrows
+ * what is already on the canonical page, and the ten parameters combine into
+ * more URLs than the directory has listings to put in them.
+ *
+ * Search Console shows /practices/mind/?region=north and
+ * /practices/mind/?suburb=Mahogany%20Creek already indexed, which is two
+ * more than should ever have been.
+ */
+function is_filtered_view(): bool {
+	$filterable = is_post_type_archive( 'listing' )
+		|| is_tax( array( Taxonomies\PRACTICE, Taxonomies\SPECIALTY, Taxonomies\AREA ) )
+		|| ( function_exists( '\Oria\Core\PracticesIndex\is_index' ) && \Oria\Core\PracticesIndex\is_index() );
+	if ( ! $filterable ) {
+		return false;
+	}
+	foreach ( filter_params() as $p ) {
+		// phpcs:ignore WordPress.Security.NonceVerification
+		if ( isset( $_GET[ $p ] ) && '' !== trim( (string) $_GET[ $p ] ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/** The same address with the filter state taken off it. */
+function unfiltered_url(): string {
+	$path = (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '/' ), PHP_URL_PATH ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	return home_url( '' === $path ? '/' : $path );
+}
+
 function seo_canonical( $canonical ) {
 	$area = combo_area();
 	if ( $area ) {
 		$practice = get_queried_object();
 		return home_url( '/practice/' . $practice->slug . '/' . $area->slug . '/' );
+	}
+	// A filtered view's canonical is the page it is a view of.
+	if ( is_filtered_view() ) {
+		return unfiltered_url();
 	}
 	return $canonical;
 }
@@ -739,7 +792,26 @@ function seo_robots( $robots ) {
 	if ( empty_term_archive() ) {
 		return 'noindex, follow';
 	}
+	if ( is_filtered_view() ) {
+		return 'noindex, follow';
+	}
 	return $robots;
+}
+
+/**
+ * The same rule through WordPress core's own filter.
+ *
+ * wpseo_robots only fires where Yoast is doing the output. Core's wp_robots
+ * runs regardless, so the directive survives Yoast being deactivated, failing
+ * on a missing table, or simply not running on a given template. 'follow' is
+ * left alone: the listings linked from a filtered view are the point of it.
+ */
+function wp_robots_filtered( array $r ): array {
+	if ( is_filtered_view() ) {
+		$r['noindex'] = true;
+		unset( $r['nofollow'] );
+	}
+	return $r;
 }
 
 /**
