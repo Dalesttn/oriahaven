@@ -34,6 +34,21 @@ function bootstrap(): void {
 	// so a mapped URL never renders a template first.
 	add_action( 'template_redirect', __NAMESPACE__ . '\maybe_redirect', 1 );
 	add_action( 'admin_menu', __NAMESPACE__ . '\menu' );
+
+	/*
+	 * Never let WordPress guess a permalink for a 404.
+	 *
+	 * redirect_guess_404_permalink() matches an unknown path against post
+	 * slugs by prefix, and attachments are posts. In production that turned
+	 * /perth/acupuncture/ into a 301 to Acupuncture.jpg -- a category page
+	 * answering with a photograph. It does the same wherever a rewrite rule
+	 * has not been flushed yet, which is exactly when the site can least
+	 * afford to invent destinations.
+	 *
+	 * A 404 is a true answer. A confident redirect to the wrong thing is
+	 * not, and it is the version search engines index.
+	 */
+	add_filter( 'do_redirect_guess_404_permalink', '__return_false' );
 }
 
 /**
