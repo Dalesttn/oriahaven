@@ -70,6 +70,9 @@ function bootstrap(): void {
 	add_filter( 'wpseo_title', __NAMESPACE__ . '\title', 25 );
 	add_filter( 'wpseo_metadesc', __NAMESPACE__ . '\description', 25 );
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\canonical', 25 );
+	// Priority 30: after Yoast has built the graph from the main query,
+	// which on a facet page is the parent category rather than this page.
+	add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\schema_graph', 30 );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\robots', 25 );
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title', 25 );
 
@@ -1426,6 +1429,94 @@ function description( $desc ) {
 		return sprintf( '%s — %s checked by hand, with timetables, prices and contact details. Counted live from the Oria Haven directory.', $f['label'], $n ? sprintf( _n( '%d practice', '%d practices', $n, 'oria' ), $n ) : 'practices' );
 	}
 	return $desc;
+}
+
+/**
+ * Make the schema graph describe THIS page, not its parent category.
+ *
+ * Yoast builds the graph from the main query. On a facet page the main
+ * query is the practice archive, so the CollectionPage claimed to be
+ * /explore/perth/fitness/ while the canonical said
+ * /explore/perth/fitness/reformer/ -- the page telling Google two different
+ * things about what it is, with the structured data contradicting the tag
+ * that is supposed to settle it. The breadcrumb had the same gap: it ended
+ * at the category and never named the facet a reader had actually opened.
+ *
+ * The ItemList is already correct; register_list() fixed that separately.
+ * This aligns the page node and the trail with it.
+ */
+function schema_graph( $graph ) {
+	if ( ! is_array( $graph ) || ! is_tax( Taxonomies\PRACTICE ) ) {
+		return $graph;
+	}
+	$term = get_queried_object();
+	$f    = facet();
+	if ( ! $term instanceof \WP_Term || null === $f ) {
+		return $graph;
+	}
+
+	$url   = facet_canonical_url( $term, $f );
+	$label = (string) ( $f['label'] ?? '' );
+	if ( '' === $url ) {
+		return $graph;
+	}
+
+	// The id every other node points at, before it is corrected.
+	$old = '';
+	foreach ( $graph as $node ) {
+		$types = (array) ( $node['@type'] ?? '' );
+		if ( array_intersect( $types, array( 'CollectionPage', 'WebPage' ) ) ) {
+			$old = (string) ( $node['@id'] ?? '' );
+			break;
+		}
+	}
+
+	foreach ( $graph as &$node ) {
+		$types = (array) ( $node['@type'] ?? '' );
+
+		if ( array_intersect( $types, array( 'CollectionPage', 'WebPage' ) ) ) {
+			$node['@id'] = $url;
+			$node['url'] = $url;
+			if ( '' !== $label ) {
+				$node['name'] = $label;
+			}
+		}
+
+		if ( in_array( 'BreadcrumbList', $types, true ) ) {
+			$node['@id'] = $url . '#breadcrumb';
+			$items       = isset( $node['itemListElement'] ) ? (array) $node['itemListElement'] : array();
+			$last        = end( $items );
+			$last_name   = is_array( $last ) ? (string) ( $last['name'] ?? '' ) : '';
+			// Only add the step if Yoast has not somehow already ended here.
+			if ( '' !== $label && $last_name !== $label ) {
+				$items[] = array(
+					'@type'    => 'ListItem',
+					'position' => count( $items ) + 1,
+					'name'     => $label,
+				);
+				$node['itemListElement'] = array_values( $items );
+			}
+		}
+	}
+	unset( $node );
+
+	/*
+	 * Repoint everything that referenced the old page id -- isPartOf,
+	 * mainEntityOfPage, the breadcrumb's about. A dangling @id reference is
+	 * worse than the wrong url it replaced.
+	 */
+	if ( '' !== $old && $old !== $url ) {
+		array_walk_recursive(
+			$graph,
+			static function ( &$value, $key ) use ( $old, $url ): void {
+				if ( '@id' === $key && $value === $old ) {
+					$value = $url;
+				}
+			}
+		);
+	}
+
+	return $graph;
 }
 
 function canonical( $canonical ) {

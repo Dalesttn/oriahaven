@@ -109,6 +109,14 @@ const MAP = array(
 	'pregnancy-yoga'     => array( 'Pregnancy yoga', 'pregnancy yoga|prenatal|antenatal yoga', 'Pregnancy and postnatal yoga classes across the Perth metro.' ),
 	'parenting-support'  => array( 'Parenting support', 'parenting coach|sleep consultant|sleep support|parenting support|antenatal class|birth education|birth preparation|childbirth education|hypnobirth', 'Parenting coaches, sleep consultants and birth education in Perth.' ),
 	'pilates'            => array( 'Pilates', 'pilates|reformer', 'Mat, reformer and clinical Pilates studios across the Perth metro.' ),
+	/*
+	 * Reformer sits beside Pilates rather than inside it. "Reformer pilates"
+	 * is what people search -- the machine is the reason they are choosing --
+	 * and it had no term of its own, so no sitemap entry and no landing page.
+	 * The broader 'pilates' pattern still matches reformer, so a reformer
+	 * studio carries both: the specific page and the general one.
+	 */
+	'reformer-pilates'   => array( 'Reformer Pilates', 'reformer', 'Reformer Pilates studios across the Perth metro, with class sizes and prices where studios publish them.' ),
 	'barre'              => array( 'Barre', '\bbarre\b', 'Barre classes in studios around Perth.' ),
 	'personal-training'  => array( 'Personal training', 'personal train|1:1 coaching|one.on.one training', 'Personal trainers and small-group coaching across Perth.' ),
 	'functional-fitness' => array( 'Functional fitness', 'functional (?:fitness|training|strength|movement)|strength and conditioning', 'Functional strength and movement training in Perth.' ),
