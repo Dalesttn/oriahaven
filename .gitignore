@@ -56,3 +56,6 @@ Thumbs.db
 *.log
 node_modules/
 /wp-content/mu-plugins/
+
+# Local-only plugin. Must never reach production.
+wp-content/plugins/novamira/
