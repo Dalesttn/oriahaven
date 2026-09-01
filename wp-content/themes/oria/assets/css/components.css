@@ -696,7 +696,9 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
 .linkcloud a:hover { background: rgba(255,255,255,.1); color: var(--white); }
 
 /* --- Breadcrumb ----------------------------------------------------- */
-.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); font-size: var(--fs-xs); color: var(--text-faint); }
+/* One step up the scale: at --fs-xs the trail read as a caption rather
+   than as navigation, and it is now four levels deep on a city page. */
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); font-size: var(--fs-sm); color: var(--text-faint); }
 .crumbs a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 .crumbs span[aria-hidden] { opacity: .5; }
 
@@ -994,4 +996,127 @@ html.has-sheet .cmptray { display: none; }
 @media (max-width: 40rem) {
   .toolbar__near { width: 100%; }
   .toolbar__near .btn { width: 100%; justify-content: center; }
+}
+
+/* --- Region bar -------------------------------------------------------
+   Which city you are browsing, under the nav on every page. Quiet by
+   default: it is orientation, not a call to action, so the current city is
+   the only thing that carries weight and the others read as links. */
+.regionbar {
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+.regionbar__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
+.regionbar__label {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  flex: 0 0 auto;
+}
+/* Scrolls rather than wraps: more cities must not push the page down. */
+.regionbar__opts {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.regionbar__opts::-webkit-scrollbar { display: none; }
+.regionbar__opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 0 0 auto;
+  padding: 0.26rem 0.7rem;
+  border-radius: var(--r-pill, 100px);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.regionbar__opt:hover { background: rgba(14, 59, 56, 0.06); }
+.regionbar__opt:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+.regionbar__opt.is-on {
+  background: var(--deep);
+  border-color: var(--deep);
+  color: var(--white);
+  font-weight: 600;
+}
+.regionbar__n {
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+.regionbar__opt.is-on .regionbar__n { color: rgba(255, 255, 255, 0.72); }
+
+@media (max-width: 50rem) {
+  .regionbar__label { display: none; }
+  .regionbar__inner { padding-top: 0.35rem; padding-bottom: 0.35rem; }
+}
+
+/* --- What to expect ---------------------------------------------------
+   The decision row on a listing: price, how you book, format, distance.
+   Quiet by default — these are facts to scan, not calls to action. Price
+   carries the only emphasis, because it is what people decide on. */
+.expect {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+}
+.expect__chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill, 100px);
+  background: rgba(255, 255, 255, 0.5);
+  font-size: var(--fs-xs);
+  line-height: 1.45;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.expect__chip--price {
+  border-color: var(--deep);
+  color: var(--deep);
+  font-weight: 600;
+}
+.expect__chip--where { color: var(--text-faint); }
+
+@media (max-width: 40rem) {
+  .expect { gap: 0.3rem; }
+  .expect__chip { padding: 0.24rem 0.6rem; }
+}
+
+/* A quiet name above a row of pills. Without one, three stacked rows of
+   pills read as decoration; with one, each row is a question answered. */
+.rowlabel {
+  display: block;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 1.1rem 0 0.45rem;
+}
+.rowlabel:first-child { margin-top: 0; }
+
+/* The derived "you'll probably like this if" line. Set as prose, not as a
+   pill: it is a sentence, and pills would make it look like a claim. */
+.likely {
+  margin: 0 0 0.25rem;
+  max-width: 52ch;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--ink);
 }

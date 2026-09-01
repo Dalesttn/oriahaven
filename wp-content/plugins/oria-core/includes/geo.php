@@ -76,9 +76,48 @@ function distance_km( array $a, array $b ): float {
 }
 
 /** Kilometres from the CBD, or null when the listing has no position. */
+/**
+ * The centre a listing's distance should be measured from.
+ *
+ * Its own city's, from cities.json. CBD stays the fallback for a listing
+ * with no city -- and for the whole site before cities existed.
+ *
+ * @return array{0: float, 1: float}
+ */
+function centre_for( int $post_id ): array {
+	if ( ! function_exists( '\Oria\Core\Cities\for_area' ) ) {
+		return CBD;
+	}
+
+	$terms = get_the_terms( $post_id, Taxonomies\AREA );
+	foreach ( is_array( $terms ) ? $terms : array() as $term ) {
+		$city = \Oria\Core\Cities\for_area( $term );
+		if ( is_array( $city ) && isset( $city['centre']['lat'], $city['centre']['lng'] ) ) {
+			return array( (float) $city['centre']['lat'], (float) $city['centre']['lng'] );
+		}
+	}
+
+	return CBD;
+}
+
+/** The name of the place that distance is measured from. */
+function centre_name( int $post_id ): string {
+	if ( function_exists( '\Oria\Core\Cities\for_area' ) ) {
+		$terms = get_the_terms( $post_id, Taxonomies\AREA );
+		foreach ( is_array( $terms ) ? $terms : array() as $term ) {
+			$city = \Oria\Core\Cities\for_area( $term );
+			if ( is_array( $city ) && ! empty( $city['slug'] ) && 'perth' !== $city['slug'] ) {
+				return \Oria\Core\Cities\name( $city );
+			}
+		}
+	}
+
+	return __( 'the CBD', 'oria' );
+}
+
 function km_from_cbd( int $post_id ): ?float {
 	$p = position( $post_id );
-	return $p ? distance_km( array( $p['lat'], $p['lng'] ), CBD ) : null;
+	return $p ? distance_km( array( $p['lat'], $p['lng'] ), centre_for( $post_id ) ) : null;
 }
 
 /**
@@ -93,16 +132,20 @@ function label( int $post_id ): string {
 	if ( null === $km ) {
 		return '';
 	}
+	$where = centre_name( $post_id );
 	if ( $km < 1.5 ) {
-		return __( 'In the CBD', 'oria' );
+		/* translators: %s: the town or city centre. */
+		return __( 'the CBD', 'oria' ) === $where
+			? __( 'In the CBD', 'oria' )
+			: sprintf( __( 'In %s', 'oria' ), $where );
 	}
 	$p = position( $post_id );
 	$n = ( 'address' === ( $p['precision'] ?? '' ) && $km < 10 )
 		? number_format_i18n( round( $km, 1 ), 1 )
 		: number_format_i18n( round( $km ) );
 
-	/* translators: %s: distance in kilometres */
-	return sprintf( __( '%s km from the CBD', 'oria' ), $n );
+	/* translators: 1: distance in kilometres, 2: the town or city centre. */
+	return sprintf( __( '%1$s km from %2$s', 'oria' ), $n, $where );
 }
 
 /* ------------------------------------------------------------- geocoding */

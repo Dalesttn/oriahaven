@@ -62,6 +62,12 @@ function profiles(): array {
 
 function bootstrap(): void {
 	add_action( 'wp_head', __NAMESPACE__ . '\output', 5 );
+	/*
+	 * The ItemList waits for the footer. A template that renders its own
+	 * set -- the facet and area-locked category pages do -- cannot tell
+	 * wp_head what is on the page, because wp_head has already run.
+	 */
+	add_action( 'wp_footer', __NAMESPACE__ . '\output_list', 20 );
 	add_action( 'wp_head', __NAMESPACE__ . '\organization', 6 );
 }
 
@@ -311,14 +317,46 @@ function output(): void {
 		}
 	} elseif ( is_singular( 'event' ) ) {
 		$graph = event_schema( get_the_ID() );
-	} elseif ( is_tax( array( 'practice', 'specialty', 'area' ) ) || is_post_type_archive( 'listing' ) ) {
-		$graph = item_list_schema();
 	}
 	if ( $graph ) {
 		echo '<script type="application/ld+json">'
 			. wp_json_encode( $graph, JSON_UNESCAPED_SLASHES )
 			. '</script>' . "\n";
 	}
+}
+
+/**
+ * What the page rendered, in the order it rendered it.
+ *
+ * @var list<int>|null
+ */
+$GLOBALS['oria_schema_list'] = $GLOBALS['oria_schema_list'] ?? null;
+
+/**
+ * Let a template say which listings it put on the page.
+ *
+ * Called by templates that build their own set instead of looping the main
+ * query. Without it the ItemList describes whatever the main query happened
+ * to hold, which on a facet page is a different ten listings entirely.
+ *
+ * @param list<int> $ids
+ */
+function register_list( array $ids ): void {
+	$GLOBALS['oria_schema_list'] = array_values( array_map( 'intval', $ids ) );
+}
+
+/** The ItemList, emitted late enough to know what the page showed. */
+function output_list(): void {
+	if ( ! is_tax( array( 'practice', 'specialty', 'area' ) ) && ! is_post_type_archive( 'listing' ) ) {
+		return;
+	}
+	$graph = item_list_schema();
+	if ( ! $graph ) {
+		return;
+	}
+	echo '<script type="application/ld+json">'
+		. wp_json_encode( $graph, JSON_UNESCAPED_SLASHES )
+		. '</script>' . "\n";
 }
 
 /**
@@ -336,20 +374,29 @@ function output(): void {
  * @return array<string, mixed>|null
  */
 function item_list_schema(): ?array {
-	$posts = $GLOBALS['wp_query']->posts ?? array();
+	/*
+	 * What the template rendered, when it told us. Falling back to the main
+	 * query is right for every archive that simply loops it -- there the
+	 * main query IS the rendered set -- and wrong only for the pages that
+	 * build their own, which is exactly what register_list() covers.
+	 */
+	$listed = $GLOBALS['oria_schema_list'] ?? null;
+	$posts  = is_array( $listed ) ? $listed : ( $GLOBALS['wp_query']->posts ?? array() );
 	if ( count( $posts ) < 2 ) {
 		return null;
 	}
 
 	$items = array();
-	foreach ( $posts as $i => $post ) {
+	foreach ( $posts as $post ) {
 		$url = get_permalink( $post );
 		if ( ! $url ) {
 			continue;
 		}
+		// Counted off the items kept, not the source index: a skipped post
+		// used to leave a hole in the positions.
 		$items[] = array(
 			'@type'    => 'ListItem',
-			'position' => $i + 1,
+			'position' => count( $items ) + 1,
 			'url'      => $url,
 			'name'     => wp_specialchars_decode( get_post_field( 'post_title', $post, 'raw' ) ),
 		);
@@ -360,6 +407,20 @@ function item_list_schema(): ?array {
 
 	$term = get_queried_object();
 	$self = $term instanceof \WP_Term ? get_term_link( $term ) : get_post_type_archive_link( 'listing' );
+
+	/*
+	 * A facet is its own page and needs its own @id. Keyed on the
+	 * queried term alone, the Margaret River and Perth CBD lists both
+	 * answered to /practices/spa/#listings.
+	 */
+	if ( is_string( $self ) && $term instanceof \WP_Term
+		&& function_exists( '\Oria\Core\PracticesIndex\facet' ) ) {
+		$facet = \Oria\Core\PracticesIndex\facet();
+		if ( is_array( $facet ) && ! empty( $facet['slug'] ) ) {
+			$self = \Oria\Core\PracticesIndex\category_url( $term )
+				. $facet['slug'] . '/';
+		}
+	}
 
 	return array(
 		'@context'        => 'https://schema.org',

@@ -1501,7 +1501,13 @@ class Command {
 		}
 
 		// Area: assign the suburb; the region is implied by ancestry.
-		$suburb = get_term_by( 'slug', sanitize_title( (string) ( $row['suburb'] ?? '' ) ), Taxonomies\AREA );
+		/*
+		 * area_slug(), not sanitize_title(): the alias map is what stops a
+		 * seed saying "Margaret River" resolving to the CITY term of that
+		 * slug. It was applied when terms are created and skipped here,
+		 * which filed four listings on the city itself.
+		 */
+		$suburb = get_term_by( 'slug', $this->area_slug( (string) ( $row['suburb'] ?? '' ) ), Taxonomies\AREA );
 		if ( $suburb instanceof \WP_Term ) {
 			wp_set_object_terms( $post_id, array( $suburb->term_id ), Taxonomies\AREA );
 		} elseif ( ! empty( $row['region'] ) ) {

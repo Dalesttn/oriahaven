@@ -209,6 +209,221 @@ function profile_context(): array {
  * Every published listing in the exact structure the prototype's app.js
  * already filters and renders. One query, cached per request.
  */
+/**
+ * A post's terms, from the cache rather than the database.
+ *
+ * wp_get_post_terms() always queries; get_the_terms() reads the object term
+ * cache that get_posts() has already primed. Same answer either way, but
+ * listing_data() asked five taxonomies about 384 listings and paid 1,920
+ * queries for it -- most of a four-second page.
+ *
+ * @return list<\WP_Term>
+ */
+/**
+ * Load every taxonomy for a set of listings in one go.
+ *
+ * A get_posts() with fields => ids returns no objects, so nothing primes the
+ * object term cache and each later get_the_terms() is its own query. The
+ * category pages walk two or three hundred ids looking at areas: that is
+ * hundreds of queries for what this does in a handful.
+ *
+ * @param list<int> $ids
+ */
+/**
+ * wp_get_post_terms() with the cache actually used.
+ *
+ * Same arguments, so it is a drop-in. get_the_terms() reads the object term
+ * cache; wp_get_post_terms() never does. A call that asks for a particular
+ * field or ordering still has to go to the database, and says so by passing
+ * $args.
+ *
+ * @return list<\WP_Term>
+ */
+function oria_terms_of( int $post_id, string $taxonomy, array $args = array() ) {
+	if ( $args ) {
+		$terms = wp_get_post_terms( $post_id, $taxonomy, $args );
+
+		return is_array( $terms ) ? $terms : array();
+	}
+
+	$terms = get_the_terms( $post_id, $taxonomy );
+
+	return is_array( $terms ) ? $terms : array();
+}
+
+function prime_listing_terms( array $ids ): void {
+	static $done = array();
+
+	$ids = array_values( array_diff( array_map( 'intval', $ids ), $done ) );
+	if ( ! $ids ) {
+		return;
+	}
+	$done = array_merge( $done, $ids );
+
+	update_object_term_cache( $ids, 'listing' );
+}
+
+/**
+ * The "what to expect" chips for a listing.
+ *
+ * Derived, never stored: every chip restates a field the listing already
+ * carries, so nothing here can drift from the profile below it and nothing
+ * is claimed on the practice's behalf.
+ *
+ * Deliberately not a fixed set of slots. A listing that knows its price and
+ * nothing else shows one chip rather than four, three of them empty.
+ *
+ * @return list<array{label: string, kind: string}>
+ */
+/**
+ * "You'll probably like this if...", assembled from stored facts.
+ *
+ * Every clause below is one field. Nothing is inferred about how a place
+ * feels, what it is good for, or who it suits beyond what it has actually
+ * published -- a directory that has never been to a business does not get
+ * to characterise it.
+ *
+ * Returns '' when there is not enough to say something specific, which is
+ * the honest answer far more often than a generic sentence would be.
+ */
+function likely_line( int $post_id ): string {
+	$bits = array();
+
+	// Who else is in the room -- the thing a first-timer actually asks.
+	$group = (string) get_field( 'group_size', $post_id );
+	$groups = array(
+		'one-to-one' => __( 'you would rather have someone to yourself than join a class', 'oria' ),
+		'small'      => __( 'you want a small room rather than a full class', 'oria' ),
+		'class'      => __( 'you are happy in a class with other people', 'oria' ),
+		'solo'       => __( 'you would rather be left alone with the room', 'oria' ),
+	);
+	if ( isset( $groups[ $group ] ) ) {
+		$bits[] = $groups[ $group ];
+	}
+
+	// How you get in the door.
+	$kind = (string) get_field( 'kind', $post_id );
+	if ( 'spot' === $kind ) {
+		$bits[] = __( 'you want to turn up without booking anything', 'oria' );
+	} elseif ( 'place' === $kind ) {
+		$bits[] = __( 'you would rather book a slot than talk to anyone first', 'oria' );
+	}
+
+	// How long it takes, once that field is filled.
+	$mins = (int) get_field( 'duration_min', $post_id );
+	if ( $mins >= 15 ) {
+		if ( $mins <= 45 ) {
+			$bits[] = __( 'you have under an hour', 'oria' );
+		} elseif ( $mins >= 90 ) {
+			$bits[] = __( 'you can give it most of a morning', 'oria' );
+		}
+	}
+
+	// Price, only at the ends where it changes the decision.
+	$band = (string) get_field( 'price_band', $post_id );
+	if ( 'Free' === $band ) {
+		$bits[] = __( 'you would rather not pay for a first try', 'oria' );
+	} elseif ( '$$$$' === $band ) {
+		$bits[] = __( 'you are treating it as an occasion rather than a habit', 'oria' );
+	}
+
+	foreach ( (array) get_the_terms( $post_id, 'audience' ) as $term ) {
+		if ( $term instanceof \WP_Term && 'beginner-friendly' === $term->slug ) {
+			$bits[] = __( 'you have not done this before', 'oria' );
+		}
+	}
+
+	if ( 'online' === (string) get_field( 'format', $post_id ) ) {
+		$bits[] = __( 'you want to do it from home', 'oria' );
+	}
+
+	// One clause is a fragment, not a sentence worth a heading.
+	if ( count( $bits ) < 2 ) {
+		return '';
+	}
+
+	$bits = array_slice( array_values( array_unique( $bits ) ), 0, 3 );
+	$last = array_pop( $bits );
+
+	return $bits
+		? sprintf(
+			/* translators: 1: list of clauses, 2: the final clause. */
+			__( '%1$s, and %2$s.', 'oria' ),
+			implode( __( ', ', 'oria' ), $bits ),
+			$last
+		)
+		: $last . '.';
+}
+function expect_chips( int $post_id ): array {
+	$out = array();
+
+	// Price first: it is the thing people decide on, and the field most
+	// often missing -- 28% carry a number, 78% at least carry a band.
+	$from = (float) get_field( 'price_from', $post_id );
+	$band = (string) get_field( 'price_band', $post_id );
+	if ( $from > 0 ) {
+		/* translators: %s: lowest published price. */
+		$out[] = array( 'label' => sprintf( __( 'From $%s', 'oria' ), number_format_i18n( $from ) ), 'kind' => 'price' );
+	} elseif ( '' !== $band ) {
+		$bands = array(
+			'Free'   => __( 'Free or by donation', 'oria' ),
+			'$'      => __( 'Under $25', 'oria' ),
+			'$$'     => __( '$25–$60', 'oria' ),
+			'$$$'    => __( '$60–$200', 'oria' ),
+			'$$$$'   => __( '$200+', 'oria' ),
+		);
+		if ( isset( $bands[ $band ] ) ) {
+			$out[] = array( 'label' => $bands[ $band ], 'kind' => 'price' );
+		}
+	}
+
+	// How you book it. Empty on most of the corpus, so it simply does not
+	// appear rather than guessing at a default.
+	$kinds = array(
+		'practice' => __( 'Book a practitioner', 'oria' ),
+		'place'    => __( 'Book a room or a slot', 'oria' ),
+		'spot'     => __( 'Turn up, nothing to book', 'oria' ),
+	);
+	$kind = (string) get_field( 'kind', $post_id );
+	if ( isset( $kinds[ $kind ] ) ) {
+		$out[] = array( 'label' => $kinds[ $kind ], 'kind' => 'book' );
+	}
+
+	// Only when it is not the default. "In person" on 327 listings is noise.
+	$format = (string) get_field( 'format', $post_id );
+	if ( in_array( $format, array( 'both', 'hybrid' ), true ) ) {
+		$out[] = array( 'label' => __( 'In person or online', 'oria' ), 'kind' => 'format' );
+	} elseif ( 'online' === $format ) {
+		$out[] = array( 'label' => __( 'Online only', 'oria' ), 'kind' => 'format' );
+	}
+
+	$aud = get_the_terms( $post_id, 'audience' );
+	foreach ( is_array( $aud ) ? $aud : array() as $term ) {
+		$out[] = array( 'label' => tname( $term ), 'kind' => 'who' );
+	}
+
+	$next = trim( (string) get_field( 'next_session', $post_id ) );
+	if ( '' !== $next ) {
+		/* translators: %s: the next session, as the practice states it. */
+		$out[] = array( 'label' => sprintf( __( 'Next: %s', 'oria' ), $next ), 'kind' => 'when' );
+	}
+
+	// Where, measured from the listing's own city centre.
+	if ( function_exists( '\Oria\Core\Geo\label' ) ) {
+		$where = \Oria\Core\Geo\label( $post_id );
+		if ( '' !== $where ) {
+			$out[] = array( 'label' => $where, 'kind' => 'where' );
+		}
+	}
+
+	return $out;
+}
+function oria_terms( int $post_id, string $taxonomy ): array {
+	$terms = get_the_terms( $post_id, $taxonomy );
+
+	return is_array( $terms ) ? $terms : array();
+}
+
 function listing_data(): array {
 	static $cache = null;
 	if ( null !== $cache ) {
@@ -227,8 +442,8 @@ function listing_data(): array {
 
 	$listings = array();
 	foreach ( $posts as $post ) {
-		$practices = wp_get_post_terms( $post->ID, 'practice' );
-		$areas     = wp_get_post_terms( $post->ID, 'area' );
+		$practices = oria_terms( $post->ID, 'practice' );
+		$areas     = oria_terms( $post->ID, 'area' );
 
 		$suburb = null;
 		$region = null;
@@ -239,6 +454,18 @@ function listing_data(): array {
 			} elseif ( ! $region ) {
 				$region = $term;
 			}
+		}
+
+		/*
+		 * Which city this listing belongs to, so the client can honour a
+		 * city-scoped page. Resolved from the area term rather than stored,
+		 * which keeps it right when a suburb is moved between cities.
+		 */
+		$oria_city = '';
+		if ( function_exists( '\Oria\Core\Cities\for_area' ) ) {
+			$oria_cterm = $suburb ?: $region;
+			$oria_cinfo = $oria_cterm instanceof \WP_Term ? \Oria\Core\Cities\for_area( $oria_cterm ) : null;
+			$oria_city  = (string) ( $oria_cinfo['slug'] ?? '' );
 		}
 
 		$primary = $practices[0] ?? null;
@@ -274,7 +501,7 @@ function listing_data(): array {
 			)
 			: array();
 
-		$specs = wp_get_post_terms( $post->ID, 'specialty' );
+		$specs = oria_terms( $post->ID, 'specialty' );
 		$specs = is_wp_error( $specs ) ? array() : wp_list_pluck( $specs, 'slug' );
 
 		/*
@@ -287,10 +514,10 @@ function listing_data(): array {
 		 * Both taxonomies are private and mint no URLs; this is filter state,
 		 * not navigation.
 		 */
-		$svcs = wp_get_post_terms( $post->ID, 'service' );
+		$svcs = oria_terms( $post->ID, 'service' );
 		$svcs = is_wp_error( $svcs ) ? array() : wp_list_pluck( $svcs, 'slug' );
 
-		$auds = wp_get_post_terms( $post->ID, 'audience' );
+		$auds = oria_terms( $post->ID, 'audience' );
 		$auds = is_wp_error( $auds ) ? array() : wp_list_pluck( $auds, 'slug' );
 
 		$rated = effective_rating( $post->ID );
@@ -308,6 +535,7 @@ function listing_data(): array {
 			'aud'        => $auds,
 			'suburb'     => tname( $suburb ?: $region ),
 			'region'     => $region ? $region->slug : '',
+			'city'       => $oria_city,
 			/*
 			 * Coordinates ride along so the browser can work out how far a
 			 * listing is from wherever the visitor is standing. The position

@@ -77,7 +77,25 @@ function matching( \WP_Term $term ): array {
 	$out  = array();
 	$slug = $term->slug;
 
+	/*
+	 * The city this page belongs to. An area term carries its own city; a
+	 * practice or specialty page takes the one it is being viewed under.
+	 * Without this the generated answers counted the whole corpus and the
+	 * spa page told Google "89 practices across 58 suburbs" above a list of
+	 * 82 -- the same unfiltered-count fault the ItemList had.
+	 */
+	$city = '';
+	if ( function_exists( '\Oria\Core\Cities\for_area' ) ) {
+		$info = Taxonomies\AREA === $term->taxonomy
+			? \Oria\Core\Cities\for_area( $term )
+			: \Oria\Core\Cities\current();
+		$city = (string) ( $info['slug'] ?? '' );
+	}
+
 	foreach ( $all as $row ) {
+		if ( '' !== $city && isset( $row['city'] ) && $row['city'] !== $city ) {
+			continue;
+		}
 		$hit = false;
 		switch ( $term->taxonomy ) {
 			case Taxonomies\PRACTICE:

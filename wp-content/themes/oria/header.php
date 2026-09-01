@@ -50,7 +50,7 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 				'fallback_cb'    => static function (): void {
 					// Sensible default until a menu is assigned in the admin.
 					echo '<ul class="nav__links">';
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Directory', 'oria' ) );
+					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Explore', 'oria' ) );
 					/*
 					 * Experiences carries a submenu. The markup matches what WordPress's
 					 * own walker emits for a nested menu item -- menu-item-has-children
@@ -60,9 +60,9 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					 * panel is never the only way past it.
 					 */
 					echo '<li class="menu-item-has-children">';
-					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( home_url( '/practices/' ) ), esc_html__( 'Experiences', 'oria' ) );
+					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( function_exists( '\Oria\Core\PracticesIndex\url' ) ? \Oria\Core\PracticesIndex\url() : home_url( '/practices/' ) ), esc_html__( 'Experiences', 'oria' ) );
 					echo '<ul class="sub-menu">';
-					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/practices/' ) ), esc_html__( 'All experiences', 'oria' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( function_exists( '\Oria\Core\PracticesIndex\url' ) ? \Oria\Core\PracticesIndex\url() : home_url( '/practices/' ) ), esc_html__( 'All experiences', 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
@@ -111,6 +111,22 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 	</nav>
 </header>
 
+<?php
+/*
+ * The region bar sits under the nav wherever the nav occupies space.
+ *
+ * Not on a hero page. There .site-head is position:absolute so it floats
+ * over the hero and takes no room in flow, which left the bar sitting at
+ * the very top with the header painted on top of it and main pushed down
+ * by its height -- a band of empty page above the hero.
+ *
+ * It prints nothing while there is only one city either.
+ */
+if ( ! $oria_has_hero ) {
+	get_template_part( 'template-parts/city', 'switcher' );
+}
+?>
+
 <div class="drawer" id="drawer" hidden>
 	<div class="drawer__top">
 		<a class="brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
@@ -129,8 +145,8 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 			'container_class' => 'drawer__links',
 			'fallback_cb'    => static function (): void {
 				echo '<div class="drawer__links">';
-				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Directory', 'oria' ) );
-				printf( '<a href="%s">%s</a>', esc_url( home_url( '/practices/' ) ), esc_html__( 'Experiences', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Explore', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( function_exists( '\Oria\Core\PracticesIndex\url' ) ? \Oria\Core\PracticesIndex\url() : home_url( '/practices/' ) ), esc_html__( 'Experiences', 'oria' ) );
 				// On a phone the children are simply shown, indented, under their
 				// parent: an accordion hiding a few items is a tap that buys nothing.
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );

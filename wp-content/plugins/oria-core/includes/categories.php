@@ -502,8 +502,10 @@ function families(): array {
  * @return array<int, array{term: \WP_Term, emoji: string}>
  */
 function top_for( int $listing_id, int $limit = 2 ): array {
-	$terms = wp_get_post_terms( $listing_id, Taxonomies\PRACTICE );
-	if ( is_wp_error( $terms ) || ! $terms ) {
+	// get_the_terms() reads the primed cache; wp_get_post_terms() never
+	// does, and this runs once per card.
+	$terms = get_the_terms( $listing_id, Taxonomies\PRACTICE );
+	if ( ! is_array( $terms ) || ! $terms ) {
 		return array();
 	}
 

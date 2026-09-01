@@ -85,7 +85,7 @@ $oria_card = static function ( WP_Post $post, bool $feature = false ): void {
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span>
-		<a href="<?php echo esc_url( home_url( '/practices/' ) ); ?>"><?php esc_html_e( 'Experiences', 'oria' ); ?></a>
+		<a href="<?php echo esc_url( function_exists( '\Oria\Core\PracticesIndex\url' ) ? \Oria\Core\PracticesIndex\url() : home_url( '/practices/' ) ); ?>"><?php esc_html_e( 'Experiences', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span><span><?php echo esc_html( Journeys\heading() ); ?></span>
 	</nav>
 
@@ -175,7 +175,7 @@ $oria_card = static function ( WP_Post $post, bool $feature = false ): void {
 			<p><?php esc_html_e( 'Every stop in every journey came out of the directory. Swap any of them for something nearer you, or answer four questions and let the finder do it.', 'oria' ); ?></p>
 		</div>
 		<div class="jout__acts">
-			<a class="btn btn--light" href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Browse the directory', 'oria' ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
+			<a class="btn btn--light" href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Explore', 'oria' ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
 			<a class="btn btn--ghost jout__alt" href="<?php echo esc_url( home_url( '/wellness-finder/' ) ); ?>"><?php esc_html_e( 'Try the Wellness Finder', 'oria' ); ?></a>
 		</div>
 	</div>

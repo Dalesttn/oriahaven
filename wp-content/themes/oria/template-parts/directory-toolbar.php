@@ -31,9 +31,18 @@ $oria_ids  = isset( $args['ids'] ) && is_array( $args['ids'] )
  * their region and filter as well — the engine reads a suburb by its name,
  * which is what the payload carries.
  */
+/*
+ * Load every listing's terms in one go. The three loops below walk the
+ * same ids asking for areas, specialties and services -- on the full
+ * directory that was 1,152 queries, and most of a four-second page.
+ */
+if ( function_exists( '\Oria\Theme\prime_listing_terms' ) ) {
+	\Oria\Theme\prime_listing_terms( $oria_ids );
+}
+
 $oria_area_counts = array();
 foreach ( $oria_ids as $oria_lid ) {
-	$oria_terms = wp_get_post_terms( (int) $oria_lid, 'area' );
+	$oria_terms = \Oria\Theme\oria_terms_of( (int) $oria_lid, 'area' );
 	if ( is_wp_error( $oria_terms ) ) {
 		continue;
 	}
@@ -45,6 +54,18 @@ foreach ( $oria_ids as $oria_lid ) {
 		// than guessing from parent ids.
 		if ( \Oria\Core\Taxonomies\is_city( $oria_at ) ) {
 			continue;
+		}
+		/*
+		 * And skip an area belonging to a different city. A practitioner
+		 * who works in Perth and drives south carries terms in both, so
+		 * the Perth spa page was offering "Margaret River & South (1)"
+		 * in its area filter -- true of the listing, wrong for the page.
+		 */
+		if ( function_exists( '\Oria\Core\Cities\for_area' ) && function_exists( '\Oria\Core\Cities\current' ) ) {
+			$oria_ac = \Oria\Core\Cities\for_area( $oria_at );
+			if ( is_array( $oria_ac ) && ( $oria_ac['slug'] ?? '' ) !== ( \Oria\Core\Cities\current()['slug'] ?? '' ) ) {
+				continue;
+			}
 		}
 		if ( \Oria\Core\Taxonomies\is_suburb( $oria_at ) ) {
 			$oria_suburb = $oria_at;
@@ -85,14 +106,14 @@ unset( $oria_rc );
 $oria_spec_counts = array(); // slug => ['term' => WP_Term, 'count' => n]
 $oria_svc_counts  = array();
 foreach ( $oria_ids as $oria_lid ) {
-	$oria_sp = wp_get_post_terms( (int) $oria_lid, 'specialty' );
+	$oria_sp = \Oria\Theme\oria_terms_of( (int) $oria_lid, 'specialty' );
 	if ( ! is_wp_error( $oria_sp ) ) {
 		foreach ( $oria_sp as $oria_t ) {
 			$oria_spec_counts[ $oria_t->slug ] = array( 'term' => $oria_t, 'count' => ( $oria_spec_counts[ $oria_t->slug ]['count'] ?? 0 ) + 1 );
 		}
 	}
 	if ( taxonomy_exists( 'service' ) ) {
-		$oria_sv = wp_get_post_terms( (int) $oria_lid, 'service' );
+		$oria_sv = \Oria\Theme\oria_terms_of( (int) $oria_lid, 'service' );
 		if ( ! is_wp_error( $oria_sv ) ) {
 			foreach ( $oria_sv as $oria_t ) {
 				$oria_svc_counts[ $oria_t->slug ] = array( 'term' => $oria_t, 'count' => ( $oria_svc_counts[ $oria_t->slug ]['count'] ?? 0 ) + 1 );
@@ -148,21 +169,6 @@ $oria_prices = array(
 );
 ?>
 <div class="toolbar" id="dirFilters">
-	<div class="toolbar__search">
-		<label class="sr-only" for="dirQ"><?php esc_html_e( 'Search', 'oria' ); ?></label>
-		<?php
-		/*
-		 * A combobox, not a plain field: app.js fills the panel below with
-		 * what this page actually holds. autocomplete="off" because the
-		 * browser's own history dropdown would cover ours.
-		 */
-		?>
-		<input class="input" id="dirQ" type="search" autocomplete="off"
-			role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="dirQList"
-			placeholder="<?php esc_attr_e( 'Search studios, teachers, styles…', 'oria' ); ?>">
-		<span class="osearch osearch--dir" id="dirQList" data-dir-search-panel hidden></span>
-	</div>
-
 	<?php
 	/*
 	 * The style facet is the one people miss, so it gets a nudge: a pulsing

@@ -23,7 +23,7 @@ get_header();
 $oria_term  = get_queried_object();
 $oria_term  = $oria_term instanceof WP_Term ? $oria_term : null;
 $oria_pname = $oria_term ? \Oria\Theme\tname( $oria_term ) : '';
-$oria_here  = $oria_term ? \Oria\Core\PracticesIndex\category_url( $oria_term ) : home_url( '/practices/' );
+$oria_here  = $oria_term ? \Oria\Core\PracticesIndex\category_url( $oria_term ) : \Oria\Core\PracticesIndex\url();
 $oria_facet = \Oria\Core\PracticesIndex\facet();
 $oria_frame = (array) ( $oria_facet['page']['frame'] ?? array() );
 $oria_intro = $oria_term ? get_field( 'landing_intro', 'practice_' . $oria_term->term_id ) : '';
@@ -31,6 +31,10 @@ $oria_intro = $oria_term ? get_field( 'landing_intro', 'practice_' . $oria_term-
 // The sets: everything in the category, and the locked subset when a facet is on.
 $oria_all = $oria_term && function_exists( '\Oria\Core\Intents\listings_in' ) ? \Oria\Core\Intents\listings_in( $oria_term ) : array();
 $oria_ids = ( $oria_facet && $oria_term ) ? \Oria\Core\PracticesIndex\facet_ids( $oria_term, $oria_facet ) : $oria_all;
+
+// Every listing's terms in a handful of queries rather than one
+// per listing per taxonomy: the loops below walk hundreds of ids.
+\Oria\Theme\prime_listing_terms( array_merge( $oria_all, $oria_ids ) );
 
 /*
  * A suburb combo — /practice/recovery/currambine/ — is this same page with
@@ -57,13 +61,35 @@ if ( ! $oria_area && $oria_facet && 'area' === ( $oria_facet['key'] ?? '' ) && (
 	);
 }
 
+/*
+ * City scope. A locked area is narrower than a city and has already been
+ * applied above, so it governs the set on its own -- and it also says which
+ * city the page's prose belongs to, which is how the Margaret River facet
+ * stopped claiming this category was "taught in Perth".
+ *
+ * With no area locked the page is one city's view of the category, and the
+ * set has to agree with the heading: before this it said Perth and listed
+ * Yallingup.
+ */
+$oria_city  = null;
+$oria_cname = __( 'Perth', 'oria' );
+if ( function_exists( '\Oria\Core\Cities\filter_ids' ) ) {
+	$oria_city = $oria_area ? \Oria\Core\Cities\for_area( $oria_area ) : null;
+	$oria_city = $oria_city ?: \Oria\Core\Cities\current();
+	if ( ! $oria_area ) {
+		$oria_all = \Oria\Core\Cities\filter_ids( $oria_all, $oria_city );
+		$oria_ids = \Oria\Core\Cities\filter_ids( $oria_ids, $oria_city );
+	}
+	$oria_cname = \Oria\Core\Cities\name( $oria_city );
+}
+
 // Facts for the strip, over whichever set the page is about.
 $oria_suburbs = array();
 $oria_claimed = 0;
 $oria_bands   = array();
 $oria_prices  = array();
 foreach ( $oria_ids as $oria_id ) {
-	foreach ( wp_get_post_terms( (int) $oria_id, 'area' ) as $oria_a ) {
+	foreach ( \Oria\Theme\oria_terms_of( (int) $oria_id, 'area' ) as $oria_a ) {
 		if ( $oria_a->parent ) { $oria_suburbs[ $oria_a->slug ] = true; }
 	}
 	if ( 'unclaimed' !== \Oria\Theme\claim_status( (int) $oria_id ) ) { $oria_claimed++; }
@@ -90,7 +116,21 @@ if ( $oria_price_n >= 3 ) {
 }
 
 $oria_answer = ( $oria_term && ! $oria_facet && function_exists( '\Oria\Core\Answer\for_term' ) ) ? \Oria\Core\Answer\for_term( $oria_term ) : array( 'sentences' => array(), 'updated' => '' );
-$oria_rows   = $oria_term && function_exists( '\Oria\Core\Intents\for_practice' ) ? \Oria\Core\Intents\for_practice( $oria_term ) : array();
+/*
+ * Counted over this page's listings, not the category's. On
+ * /explore/margaret-river/spa/ these cards were offering "Infrared sauna 27"
+ * above seven listings, and every one of them led to a 404 because the
+ * combination holds nothing south.
+ */
+$oria_rows   = $oria_term && function_exists( '\Oria\Core\Intents\for_practice' )
+	/*
+	 * The category within this page's geography. With an area locked that
+	 * is $oria_ids, which is already category-and-area; otherwise it is
+	 * $oria_all, which the city filter has narrowed. Using the facet
+	 * subset instead would zero every other row on the grid.
+	 */
+	? \Oria\Core\Intents\for_practice( $oria_term, $oria_area ? $oria_ids : $oria_all )
+	: array();
 $oria_guides = $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) ? \Oria\Core\Guides\for_term( $oria_term ) : array();
 $oria_latest = $oria_guides ? array() : get_posts( array( 'post_type' => 'post', 'post_status' => 'publish', 'numberposts' => 3, 'orderby' => 'date', 'order' => 'DESC' ) );
 
@@ -107,7 +147,7 @@ if ( $oria_facet ) {
 	$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_term );
 }
 
-$oria_h1 = $oria_facet ? (string) $oria_facet['label'] : sprintf( __( '%s in Perth', 'oria' ), $oria_pname );
+$oria_h1 = $oria_facet ? (string) $oria_facet['label'] : sprintf( __( '%1$s in %2$s', 'oria' ), $oria_pname, $oria_cname );
 if ( $oria_area ) {
 	// "Sleep & Recovery in Currambine" — the suburb is the whole point of
 	// the page, so it replaces Perth rather than sitting beside it.
@@ -129,17 +169,33 @@ $oria_row_url = static function ( array $row ) use ( $oria_term, $oria_here ): s
 	if ( ! $oria_term ) {
 		return $url;
 	}
-	$old = untrailingslashit( \Oria\Core\PracticesIndex\original_url( $oria_term ) );
+	/*
+	 * Every address this category has ever had. A row can carry any of them
+	 * depending on which builder wrote it, and matching only one left rows
+	 * pointing at /practices/yoga/yin/ after that family was retired --
+	 * eleven cards on the yoga page, nine of them a 404.
+	 */
+	$olds = array( untrailingslashit( \Oria\Core\PracticesIndex\original_url( $oria_term ) ) );
+	foreach ( array( 'practice', 'practices' ) as $oria_seg ) {
+		$olds[] = untrailingslashit( home_url( '/' . $oria_seg . '/' . $oria_term->slug ) );
+	}
+	$olds[] = untrailingslashit( $oria_here );
+	$olds    = array_values( array_unique( $olds ) );
+
 	if ( false === strpos( $url, '?' ) ) {
-		// A row already pointing at a canonical intent page under the old
-		// family (/practice/yoga/yin/) moves to the same slug here — the
-		// facet resolver reads the registry, so it renders the same frame.
-		if ( 0 === strpos( $url, $old . '/' ) ) {
-			$seg = trim( substr( $url, strlen( $old ) ), '/' );
+		// A row pointing at a canonical intent page under any of those moves
+		// to the same slug here — the facet resolver reads the registry, so
+		// it renders the same frame.
+		foreach ( $olds as $oria_old ) {
+			if ( 0 !== strpos( $url, $oria_old . '/' ) ) {
+				continue;
+			}
+			$seg = trim( substr( $url, strlen( $oria_old ) ), '/' );
 			if ( '' !== $seg && false === strpos( $seg, '/' ) ) {
 				return $oria_here . $seg . '/';
 			}
 		}
+
 		return $url;
 	}
 	$clean = \Oria\Core\PracticesIndex\facet_url_for_query( $oria_term, (string) wp_parse_url( $url, PHP_URL_QUERY ) );
@@ -170,11 +226,35 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span>
-		<a href="<?php echo esc_url( \Oria\Core\PracticesIndex\url() ); ?>"><?php esc_html_e( 'Practices', 'oria' ); ?></a>
+		<?php // Home / Explore / {City} / {Category} — the address, said back. ?>
+		<a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/explore/' ) ); ?>"><?php esc_html_e( 'Explore', 'oria' ); ?></a>
+		<span aria-hidden="true">/</span>
+		<a href="<?php echo esc_url( \Oria\Core\Explore\base_url( $oria_city ) ); ?>"><?php echo esc_html( $oria_cname ); ?></a>
 		<span aria-hidden="true">/</span>
 		<?php if ( $oria_facet ) : ?>
 			<a href="<?php echo esc_url( $oria_here ); ?>"><?php echo esc_html( $oria_pname ); ?></a>
-			<span aria-hidden="true">/</span><span><?php echo esc_html( (string) ( $oria_facet['page']['label'] ?? preg_replace( '/ in Perth$/', '', (string) $oria_facet['label'] ) ) ); ?></span>
+			<?php
+			// The label carries the city; the crumb already named it, so peel
+			// it back off using whatever label_city() wrote rather than a
+			// literal that only ever matched Perth.
+			$oria_fl = (string) ( $oria_facet['page']['label'] ?? '' );
+			/*
+			 * An area facet's label is the whole sentence -- "Spa & Recovery
+			 * in Perth CBD" -- and the category crumb sitting right beside it
+			 * already said the first half. Name the area.
+			 */
+			if ( '' === $oria_fl && ( $oria_facet['area'] ?? null ) instanceof WP_Term ) {
+				$oria_fl = \Oria\Theme\tname( $oria_facet['area'] );
+			}
+			if ( '' === $oria_fl ) {
+				$oria_fl = (string) preg_replace(
+					'/ in ' . preg_quote( \Oria\Core\PracticesIndex\label_city(), '/' ) . '$/',
+					'',
+					(string) $oria_facet['label']
+				);
+			}
+			?>
+			<span aria-hidden="true">/</span><span><?php echo esc_html( $oria_fl ); ?></span>
 		<?php else : ?>
 			<span><?php echo esc_html( $oria_pname ); ?></span>
 		<?php endif; ?>
@@ -190,7 +270,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 	$oria_near = array();
 	if ( ! $oria_facet && ! $oria_area && $oria_term ) {
 		foreach ( $oria_all as $oria_nid ) {
-			foreach ( wp_get_post_terms( (int) $oria_nid, 'area' ) as $oria_na ) {
+			foreach ( \Oria\Theme\oria_terms_of( (int) $oria_nid, 'area' ) as $oria_na ) {
 				if ( $oria_na->parent ) {
 					if ( ! isset( $oria_near[ $oria_na->slug ] ) ) {
 						$oria_near[ $oria_na->slug ] = array( 'name' => $oria_na->name, 'n' => 0 );
@@ -207,7 +287,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 	<div class="decide">
 		<div class="decide__answer">
 		<div class="decide__head">
-			<span class="micro"><?php echo $oria_facet ? esc_html( $oria_pname ) . ' · ' . esc_html__( 'Filtered view', 'oria' ) : esc_html__( 'Practice', 'oria' ); ?></span>
+			<span class="micro"><?php echo $oria_facet ? esc_html( $oria_pname ) . ' · ' . esc_html__( 'Filtered view', 'oria' ) : esc_html__( 'Explore', 'oria' ); ?></span>
 			<h1 class="h1 pagehead__title"><?php echo esc_html( $oria_h1 ); ?></h1>
 			<?php
 			/*
@@ -338,7 +418,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 			if ( ! is_numeric( $oria_mla ) || ! is_numeric( $oria_mlo ) || 0.0 === (float) $oria_mla ) {
 				continue;
 			}
-			$oria_mterms = wp_get_post_terms( (int) $oria_mid, 'area' );
+			$oria_mterms = \Oria\Theme\oria_terms_of( (int) $oria_mid, 'area' );
 			$oria_msub  = '';
 			foreach ( $oria_mterms as $oria_mt ) {
 				if ( $oria_mt->parent ) { $oria_msub = $oria_mt->name; break; }
@@ -358,7 +438,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 		?>
 		<?php if ( $oria_map ) : ?>
 		<div class="decide__map">
-			<div class="catmap" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of %s places across Perth', 'oria' ), esc_attr( $oria_pname ) ); ?>">
+			<div class="catmap" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of %1$s places across %2$s', 'oria' ), esc_attr( $oria_pname ), esc_attr( $oria_cname ) ); ?>">
 				<div class="catmap__tip" hidden></div>
 			</div>
 			<script type="application/json" data-catmap-data><?php echo wp_json_encode( $oria_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data script tag ?></script>
@@ -367,7 +447,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 					<h2 class="h4"><?php printf( esc_html__( '%s near you', 'oria' ), esc_html( $oria_pname ) ); ?></h2>
 					<div class="nearyou__pills">
 						<?php foreach ( $oria_near as $oria_nslug => $oria_nrow ) : ?>
-							<a class="pill" data-suburb="<?php echo esc_attr( $oria_nrow['name'] ); ?>" href="<?php echo esc_url( home_url( '/practices/' . $oria_term->slug . '/' . $oria_nslug . '/' ) ); ?>">
+							<a class="pill" data-suburb="<?php echo esc_attr( $oria_nrow['name'] ); ?>" href="<?php echo esc_url( \Oria\Core\PracticesIndex\category_url( $oria_term ) . $oria_nslug . '/' ); ?>">
 								<?php echo esc_html( $oria_nrow['name'] ); ?> <span class="nearyou__n"><?php echo esc_html( number_format_i18n( $oria_nrow['n'] ) ); ?></span>
 							</a>
 						<?php endforeach; ?>
@@ -413,7 +493,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 			?>
 			<?php if ( $oria_specpage ) : ?>
 				<a class="intentcard intentcard--all" href="<?php echo esc_url( \Oria\Core\PracticesIndex\specialty_url( $oria_specpage ) ); ?>" style="--i:0">
-					<span class="intentcard__label"><?php printf( esc_html__( 'All %s in Perth', 'oria' ), esc_html( strtolower( \Oria\Theme\tname( $oria_specpage ) ) ) ); ?></span>
+					<span class="intentcard__label"><?php printf( esc_html__( 'All %1$s in %2$s', 'oria' ), esc_html( strtolower( \Oria\Theme\tname( $oria_specpage ) ) ), esc_html( $oria_cname ) ); ?></span>
 					<span class="intentcard__count"><?php echo esc_html( number_format_i18n( (int) $oria_specpage->count ) ); ?> <span aria-hidden="true">→</span></span>
 				</a>
 			<?php endif; ?>
@@ -500,7 +580,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 		foreach ( $oria_ids as $oria_hid ) {
 			$oria_slugs = array();
 			foreach ( array( 'service', 'specialty' ) as $oria_tax ) {
-				foreach ( wp_get_post_terms( (int) $oria_hid, $oria_tax ) as $oria_ht ) {
+				foreach ( \Oria\Theme\oria_terms_of( (int) $oria_hid, $oria_tax ) as $oria_ht ) {
 					$oria_slugs[ $oria_ht->slug ] = true;
 				}
 			}
@@ -528,9 +608,24 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 		class="dir__results dir__results--wide"
 		id="dirResults"
 		data-cat="<?php echo esc_attr( $oria_term->slug ); ?>"
-		<?php if ( $oria_area ) : ?>
-			<?php // app.js already honours data-suburb as a locked filter. ?>
+		<?php // The city this page was scoped to, so the script keeps that scope. ?>
+		<?php if ( ! empty( $oria_city['slug'] ) ) : ?>
+			data-city="<?php echo esc_attr( (string) $oria_city['slug'] ); ?>"
+		<?php endif; ?>
+		<?php
+		/*
+		 * Lock the client at the level the term actually sits at. It used to
+		 * emit data-suburb for any locked area, which an exact suburb match
+		 * cannot honour above suburb level: /practices/spa/margaret-river/
+		 * rendered seven listings and the script cut them to the two whose
+		 * suburb is literally "Margaret River". A city is already locked by
+		 * data-city above, so it needs nothing more here.
+		 */
+		?>
+		<?php if ( $oria_area && \Oria\Core\Taxonomies\is_suburb( $oria_area ) ) : ?>
 			data-suburb="<?php echo esc_attr( \Oria\Theme\tname( $oria_area ) ); ?>"
+		<?php elseif ( $oria_area && \Oria\Core\Taxonomies\is_region( $oria_area ) ) : ?>
+			data-region="<?php echo esc_attr( $oria_area->slug ); ?>"
 		<?php endif; ?>
 		<?php if ( $oria_facet ) : ?>
 			data-intent-key="<?php echo esc_attr( (string) $oria_facet['key'] ); ?>"
@@ -538,6 +633,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 		<?php endif; ?>
 	>
 		<?php
+		$oria_shown = array();
 		if ( $oria_facet || $oria_area ) {
 			/*
 			 * The matching set, server-rendered, members first then
@@ -558,14 +654,25 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 			global $post;
 			foreach ( $oria_posts as $post ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 				setup_postdata( $post );
+				$oria_shown[] = (int) $post->ID;
 				get_template_part( 'template-parts/listing', 'card' );
 			}
 			wp_reset_postdata();
 		} else {
 			while ( have_posts() ) :
 				the_post();
+				$oria_shown[] = (int) get_the_ID();
 				get_template_part( 'template-parts/listing', 'card' );
 			endwhile;
+		}
+
+		/*
+		 * Tell the ItemList what is actually here. On a facet or area page
+		 * the set above is nothing like the main query, and the schema was
+		 * advertising ten Perth listings on the Margaret River page.
+		 */
+		if ( function_exists( '\Oria\Core\Schema\register_list' ) ) {
+			\Oria\Core\Schema\register_list( $oria_shown );
 		}
 		?>
 	</div>
@@ -583,7 +690,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 			<?php endforeach; ?>
 		</div>
 	<?php elseif ( is_string( $oria_intro ) && '' !== trim( $oria_intro ) ) : ?>
-		<h2 class="h3" style="margin-bottom:1rem"><?php printf( esc_html__( 'How %s is taught in Perth', 'oria' ), esc_html( strtolower( $oria_pname ) ) ); ?></h2>
+		<h2 class="h3" style="margin-bottom:1rem"><?php printf( esc_html__( 'How %1$s is taught in %2$s', 'oria' ), esc_html( strtolower( $oria_pname ) ), esc_html( $oria_cname ) ); ?></h2>
 		<div class="prose prose--intro"><?php echo wp_kses_post( \Oria\Core\PracticesIndex\rewrite_content_links( (string) $oria_intro, $oria_term ) ); ?></div>
 	<?php endif; ?>
 
@@ -616,7 +723,7 @@ if ( $oria_facet ) {
 		get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_filled, 'heading' => sprintf( __( '%s — common questions', 'oria' ), $oria_h1 ), 'id' => 'faq' ) );
 	}
 } elseif ( $oria_faqs ) {
-	get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_faqs, 'heading' => sprintf( __( 'Questions people ask about %s in Perth', 'oria' ), strtolower( $oria_pname ) ), 'id' => 'faq' ) );
+	get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_faqs, 'heading' => sprintf( __( 'Questions people ask about %1$s in %2$s', 'oria' ), strtolower( $oria_pname ), $oria_cname ), 'id' => 'faq' ) );
 }
 ?>
 
@@ -626,6 +733,24 @@ if ( $oria_facet ) {
 	$oria_counts  = \Oria\Theme\combo_counts( $oria_term->slug );
 	$oria_regions = \Oria\Core\Taxonomies\regions();
 	$oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
+
+	/*
+	 * regions() spans every city, so the Perth page was offering
+	 * "Margaret River & South (1)" in its area mesh -- and the count
+	 * beside it came from the whole corpus, not from this page.
+	 */
+	if ( $oria_city && function_exists( '\Oria\Core\Cities\for_area' ) ) {
+		$oria_regions = array_values(
+			array_filter(
+				$oria_regions,
+				static function ( $oria_rt ) use ( $oria_city ): bool {
+					$oria_rc = \Oria\Core\Cities\for_area( $oria_rt );
+					return ! is_array( $oria_rc ) || ( $oria_rc['slug'] ?? '' ) === ( $oria_city['slug'] ?? '' );
+				}
+			)
+		);
+	}
+
 	$oria_links   = array();
 	foreach ( $oria_regions as $oria_r ) {
 		$oria_n = (int) ( $oria_counts['regions'][ $oria_r->slug ] ?? 0 );

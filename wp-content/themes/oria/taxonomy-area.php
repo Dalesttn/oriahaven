@@ -16,7 +16,7 @@ $oria_region = $oria_term instanceof WP_Term ? \Oria\Core\Taxonomies\region_for(
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span>
-		<a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Directory', 'oria' ); ?></a>
+		<a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Explore', 'oria' ); ?></a>
 		<?php if ( $oria_region && $oria_term instanceof WP_Term && $oria_region->term_id !== $oria_term->term_id ) : ?>
 			<span aria-hidden="true">/</span>
 			<a href="<?php echo esc_url( (string) get_term_link( $oria_region ) ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_region ) ); ?></a>
@@ -98,8 +98,16 @@ get_template_part( 'template-parts/answer', 'block', array( 'term' => $oria_term
 			 * taxonomy-practice.php already passes.
 			 */
 			$oria_is_suburb = $oria_term instanceof WP_Term && \Oria\Core\Taxonomies\is_suburb( $oria_term );
+
+			/*
+			 * A city term is neither a region nor a suburb, and locking it to
+			 * either matches almost nothing: /area/margaret-river/ rendered
+			 * seven listings and the script cut them to the two whose suburb
+			 * is literally "Margaret River".
+			 */
+			$oria_is_city = $oria_term instanceof WP_Term && \Oria\Core\Taxonomies\is_city( $oria_term );
 			?>
-			<div class="dir__results dir__results--wide" id="dirResults" data-region="<?php echo esc_attr( $oria_region ? $oria_region->slug : '' ); ?>"<?php echo $oria_is_suburb ? ' data-suburb="' . esc_attr( \Oria\Theme\tname( $oria_term ) ) . '"' : ''; ?>>
+			<div class="dir__results dir__results--wide" id="dirResults" data-region="<?php echo esc_attr( ! $oria_is_city && $oria_region ? $oria_region->slug : '' ); ?>"<?php echo $oria_is_city ? ' data-city="' . esc_attr( $oria_term->slug ) . '"' : ''; ?><?php echo $oria_is_suburb ? ' data-suburb="' . esc_attr( \Oria\Theme\tname( $oria_term ) ) . '"' : ''; ?>>
 				<?php
 				while ( have_posts() ) :
 					the_post();

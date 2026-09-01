@@ -201,6 +201,60 @@ function register_listing_fields(): void {
 				),
 				array(
 					/*
+					 * How long one of these takes, in minutes.
+					 *
+					 * A number rather than free text so it can be compared and
+					 * filtered later. Where a place runs 45, 60 and 90 minute
+					 * versions this is the one people book -- usually the shortest
+					 * standard session, never the longest on the menu.
+					 */
+					'key'           => 'field_oria_duration_min',
+					'name'          => 'duration_min',
+					'label'         => 'Typical session (minutes)',
+					'type'          => 'number',
+					'min'           => 0,
+					'instructions'  => 'The standard session, not the longest on the menu. Leave empty if the site does not say.',
+					'wrapper'       => array( 'width' => '33' ),
+				),
+				array(
+					/*
+					 * Who else is in the room. The single most useful thing a
+					 * nervous first-timer wants to know, and almost never in a
+					 * directory. A closed set, because free text here would be
+					 * unfilterable and would drift into describing the vibe.
+					 */
+					'key'           => 'field_oria_group_size',
+					'name'          => 'group_size',
+					'label'         => 'Group size',
+					'type'          => 'select',
+					'allow_null'    => 1,
+					'choices'       => array(
+						'one-to-one' => 'One to one',
+						'small'      => 'Small groups (under 12)',
+						'class'      => 'Class sized (12+)',
+						'solo'       => 'On your own (a room or a machine)',
+					),
+					'wrapper'       => array( 'width' => '33' ),
+				),
+				array(
+					/*
+					 * What to bring, in the practice's own terms.
+					 *
+					 * One short line, not a paragraph: "Bring a towel and water,
+					 * mats provided". Anything longer belongs on their own site,
+					 * which is one click away.
+					 */
+					'key'           => 'field_oria_what_to_bring',
+					'name'          => 'what_to_bring',
+					'label'         => 'Before you go',
+					'type'          => 'text',
+					'maxlength'     => 140,
+					'placeholder'   => 'Bring a towel and water. Mats provided.',
+					'instructions'  => 'One line, in their words. Never a claim about what the session does.',
+					'wrapper'       => array( 'width' => '34' ),
+				),
+				array(
+					/*
 					 * What kind of thing this is. Nearly every listing is a
 					 * practice: you book an hour of somebody's time. A few are
 					 * places you simply turn up to -- a juice bar, a bathhouse,

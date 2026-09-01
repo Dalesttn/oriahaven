@@ -45,7 +45,7 @@ function register_listing(): void {
 				'not_found_in_trash'    => __( 'No listings in the bin', 'oria' ),
 				'featured_image'        => __( 'Main photo', 'oria' ),
 				'set_featured_image'    => __( 'Set main photo', 'oria' ),
-				'archives'              => __( 'Directory', 'oria' ),
+				'archives'              => __( 'Explore', 'oria' ),
 				'item_published'        => __( 'Listing published.', 'oria' ),
 				'item_updated'          => __( 'Listing updated.', 'oria' ),
 			),

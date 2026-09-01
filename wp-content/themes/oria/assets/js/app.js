@@ -1185,6 +1185,37 @@
         openLink.hidden = false;
       });
     });
+    /* The Area filter drives the map too. Named suburbs are framed and
+       held gold exactly as a pill does; an empty list means no area is
+       chosen, which is the same "show me everything" the declick means.
+
+       Kept separate from the pills rather than folded into them: the pills
+       are a zoom toggle that never touches the results, while this follows
+       a filter that has already changed them. */
+    DirAPI.zoomToAreas = function (names) {
+      if (!names || !names.length) { resetMap(); return; }
+
+      var mks = group.filter(function (mk) {
+        return names.indexOf(mk._oriaSub) > -1;
+      });
+      /* Every pin in the chosen area lacks coordinates, or sits in a suburb
+         the map has nothing for. Leave the view alone rather than fitting
+         to an empty set, which throws in Leaflet. */
+      if (!mks.length) { return; }
+
+      pills.forEach(function (o) { o.classList.remove("is-here"); });
+      openLink.hidden = true;
+      releasePins();
+      mks.forEach(function (mk) { mk._oriaHeld = true; mk.setStyle({ fillColor: "#C9A24B" }); });
+      map.fitBounds(L.featureGroup(mks).getBounds(), { padding: [46, 46], maxZoom: 15 });
+    };
+
+    /* The engine syncs the area once, on init -- and that happens before
+       this function runs, so a page opened at ?region=freo would draw the
+       whole of Perth under a list of eight. Ask for the sync again now the
+       map can answer. */
+    if (DirAPI.syncMapToArea) DirAPI.syncMapToArea();
+
     /* Zooming back out by hand reads as "never mind" — same as a declick. */
     map.on("zoomend", function () {
       if (map.getZoom() <= map.getBoundsZoom(bounds, false)) {
@@ -1403,6 +1434,9 @@
       region: root.dataset.region || "",
       spec: root.dataset.spec || "",
       suburb: root.dataset.suburb || "",
+      // A city page is scoped to its city on the server; without the same
+      // lock here the rebuild pulled the whole corpus back in.
+      city: root.dataset.city || "",
       // An intent page locks one more facet (svc / aud / spec / format /
       // price) the same way. Key and value come from the registry via the
       // template, so the server-rendered set and this view agree exactly.
@@ -1422,6 +1456,7 @@
       if (state.cats.length && state.cats.indexOf(l.cat) === -1 &&
           !(l.also || []).some(function (a) { return state.cats.indexOf(a) > -1; })) return false;
       if (state.regions.length && state.regions.indexOf(l.region) === -1) return false;
+      if (locked.city && l.city !== locked.city) return false;
       if (locked.suburb && l.suburb !== locked.suburb) return false;
       if (state.suburbs.length && state.suburbs.indexOf(l.suburb) === -1) return false;
       if (state.spec.length && !(l.spec || []).some(function (s) { return state.spec.indexOf(s) > -1; })) return false;
@@ -1709,7 +1744,7 @@
       $$("[data-clear-kind]", box).forEach(function (b) {
         b.addEventListener("click", function () {
           var k = b.dataset.clearKind, v = b.dataset.clearVal;
-          if (k === "q") { state.q = ""; var si = $("#dirQ"); if (si) si.value = ""; }
+          if (k === "q") { state.q = ""; }
           else if (k === "rating") { state.rating = 0; }
           else {
             var key = k === "cat" ? "cats" : k === "region" ? "regions" : k;
@@ -1730,7 +1765,6 @@
         state.price = []; state.format = []; state.rating = 0; state.q = "";
         // Clearing never unlocks the page's own facet.
         if (locked.intentKey && state[locked.intentKey] !== undefined) state[locked.intentKey] = [locked.intentValue];
-        var si = $("#dirQ"); if (si) si.value = "";
         syncInputs();
         state.page = 1;
         render();
@@ -1748,6 +1782,56 @@
           input.checked = state[key].indexOf(val) > -1;
         }
       });
+
+      /* A region's suburbs are shown once that region is chosen. Driven from
+         state rather than from the click, so it is also right on a page
+         loaded with ?region= already set, and folds back up when a chip or
+         "clear all" removes the region.
+
+         A checked suburb holds its own group open too: a ?suburb= link can
+         arrive without its region, and a filter you cannot see is a filter
+         you cannot turn off. */
+      $$(".areagroup").forEach(function (group) {
+        var region = group.querySelector('[data-filter="region"]');
+        var open = !!(region && region.checked) ||
+          !!group.querySelector('[data-filter="suburb"]:checked');
+        group.classList.toggle("is-open", open);
+      });
+
+      syncMapToArea();
+    }
+
+    /* The suburbs the area filter is currently showing, as the lowercase
+       names the map keys its pins by. A checked region means all of its
+       suburbs; otherwise only the suburbs ticked individually. Read from
+       the popover because it lists exactly the suburbs that have listings
+       in this view. */
+    function activeAreaNames() {
+      var names = [];
+      $$(".areagroup").forEach(function (group) {
+        var region = group.querySelector('[data-filter="region"]');
+        var subs = $$('[data-filter="suburb"]', group);
+        subs.forEach(function (s) {
+          if ((region && region.checked) || s.checked) {
+            names.push(s.value.toLowerCase());
+          }
+        });
+      });
+      return names;
+    }
+
+    /* Only when the area actually changed. syncInputs() runs on every
+       filter change, and reframing the map because someone picked a price
+       would throw away a zoom they set by hand with a pill. */
+    var lastAreaKey = null;
+    DirAPI.syncMapToArea = function () { syncMapToArea(); };
+    function syncMapToArea() {
+      if (!DirAPI.zoomToAreas) return;
+      var names = activeAreaNames();
+      var key = names.slice().sort().join("|");
+      if (key === lastAreaKey) return;
+      lastAreaKey = key;
+      DirAPI.zoomToAreas(names);
     }
 
     /* The list grows in place instead of turning over a page at a time.
@@ -1756,11 +1840,12 @@
        when you come back from a listing — with the whole run re-rendered,
        not just the tenth page of it.
 
-       The button is the mechanism rather than a fallback: an observer
-       clicks it when it scrolls into view. That keeps the list reachable by
-       keyboard, announceable to a screen reader, and working on anything
-       without IntersectionObserver. Server-rendered pagination and rel=next
-       are untouched, so crawlers still get real paginated URLs.
+       The button is the only way the list grows. It used to be clicked
+       for you by an observer when it scrolled into view; now reaching the
+       end of a run is a place to stop rather than a place that keeps
+       going, and the next ten are asked for. Server-rendered pagination
+       and rel=next are untouched, so crawlers still get real paginated
+       URLs.
 
        Lives directly under the results grid, created once, so the three
        directory templates need no markup of their own. */
@@ -1778,11 +1863,12 @@
     moreNote.setAttribute("role", "status");
     moreNote.setAttribute("aria-live", "polite");
 
-    /* Three dots while the next run is on its way. The listings are already
-       in memory, so appending them is instantaneous — which reads as the
-       page twitching rather than as more listings arriving. The pause is
-       there to be seen: it gives the dots long enough to register, and it
-       paces a fast scroll into distinct loads instead of one long blur. */
+    /* Three dots while the next run is on its way. The listings are
+       already in memory, so appending them is instantaneous — which reads
+       as the page twitching rather than as more listings arriving. The
+       pause is there to be seen, but it is now answering a click rather
+       than pacing a scroll, so it is short: long enough for the dots to
+       register, not long enough to feel like waiting. */
     var moreDots = document.createElement("div");
     moreDots.className = "loadmore__dots";
     moreDots.hidden = true;
@@ -1793,12 +1879,11 @@
     moreBox.appendChild(moreDots);
     moreBox.appendChild(moreNote);
 
-    var PAUSE = 1200;
+    var PAUSE = 320;
     var pending = false;
     var timer = null;
 
-    /* @param {boolean} typed  Was this a real click, rather than the scroll? */
-    function loadNext(typed) {
+    function loadNext() {
       if (pending || moreBtn.hidden) return;
       pending = true;
       moreBtn.hidden = true;
@@ -1809,28 +1894,14 @@
         pending = false;
         state.page += 1;
         render(); // more() puts the button back and clears the dots
-        /* Focus the button again after it moves down the page, but only for
-           a real click — doing it on a scroll-triggered load would snatch
-           focus away from someone who never asked for it. */
-        if (typed && !moreBtn.hidden) moreBtn.focus();
+        /* Follow the button down the page. Every load is a deliberate
+           click now, so this can never snatch focus from someone who did
+           not ask for it. */
+        if (!moreBtn.hidden) moreBtn.focus();
       }, PAUSE);
     }
 
-    moreBtn.addEventListener("click", function () { loadNext(true); });
-
-    /* Auto-load when the button comes into view. rootMargin starts it a
-       screen early so the join is invisible at a normal scroll speed. The
-       pending flag is the whole guard: cards whose images have not been
-       measured yet are short, so without it the button can still be inside
-       the margin when the next run lands and fire again immediately — the
-       whole directory arriving in one frame instead of on scroll. */
-    var watcher = null;
-    if (window.IntersectionObserver) {
-      watcher = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) loadNext(false);
-      }, { rootMargin: "600px 0px" });
-      watcher.observe(moreBtn);
-    }
+    moreBtn.addEventListener("click", function () { loadNext(); });
 
     function more(found, pages) {
       /* A filter changed while a load was in flight: the list has already
@@ -2256,176 +2327,6 @@
       });
     })();
 
-    var qInput = $("#dirQ");
-    if (qInput) {
-      qInput.value = state.q;
-      var t;
-      /* Two timers on purpose. The short one redraws as you type; the long
-         one reports, and only once you have stopped — otherwise "massage"
-         arrives as seven searches, six of which nobody made. The same term
-         is never reported twice in a row for the same reason. */
-      var reportTimer, lastReported = "";
-      qInput.addEventListener("input", function () {
-        clearTimeout(t);
-        t = setTimeout(function () { state.q = qInput.value.trim(); state.page = 1; render(); }, 180);
-
-        clearTimeout(reportTimer);
-        reportTimer = setTimeout(function () {
-          var term = state.q.toLowerCase();
-          if (term.length < 2 || term === lastReported) return;
-          lastReported = term;
-          pushEvent("dir_search", { search_term: term, results_count: lastCount });
-        }, 1200);
-      });
-
-      initDirSuggest(qInput);
-    }
-
-    /* Suggestions for #dirQ, drawn from what this page is showing.
-       Everything except the query itself is applied first, so a suggestion
-       can never lead to an empty result — and the counts beside each one
-       are the counts you will get. */
-    function initDirSuggest(input) {
-      var panel = document.getElementById("dirQList");
-      if (!panel) return;
-      var items = [], active = -1, timer;
-
-      function poolWithoutQuery() {
-        var saved = state.q;
-        state.q = "";
-        var out = (DATA.listings || []).filter(matches);
-        state.q = saved;
-        return out;
-      }
-
-      function build(raw) {
-        var q = raw.trim().toLowerCase();
-        if (q.length < 2) return [];
-        var pool = poolWithoutQuery();
-        if (!pool.length) return [];
-
-        var specN = {}, svcN = {}, subN = {}, out = [];
-        pool.forEach(function (l) {
-          (l.spec || []).forEach(function (s) { specN[s] = (specN[s] || 0) + 1; });
-          (l.svc || []).forEach(function (s) { svcN[s] = (svcN[s] || 0) + 1; });
-          if (l.suburb) subN[l.suburb] = (subN[l.suburb] || 0) + 1;
-        });
-
-        pool.forEach(function (l) {
-          var at = (l.name || "").toLowerCase().indexOf(q);
-          if (at > -1) {
-            out.push({ kind: "Practice", label: l.name, sub: l.suburb,
-                       url: l.url, rank: at === 0 ? 0 : 1 });
-          }
-        });
-
-        /* A style or specialty already on this page. Applied as a filter,
-           never followed, so the visitor keeps the page they chose. */
-        Object.keys(specN).forEach(function (id) {
-          var name = specNames[id] || id;
-          var at = name.toLowerCase().indexOf(q);
-          if (at > -1 && !(state.spec || []).length) {
-            out.push({ kind: "Style", label: name, sub: specN[id] + " here",
-                       apply: ["spec", id], rank: at === 0 ? 2 : 3 });
-          }
-        });
-        Object.keys(svcN).forEach(function (id) {
-          var name = svcNames[id] || id;
-          var at = name.toLowerCase().indexOf(q);
-          // Skip anything a specialty of the same name already offered.
-          var dupe = out.some(function (r) { return r.label.toLowerCase() === name.toLowerCase(); });
-          if (at > -1 && !dupe) {
-            out.push({ kind: "Style", label: name, sub: svcN[id] + " here",
-                       apply: ["svc", id], rank: at === 0 ? 2 : 3 });
-          }
-        });
-        Object.keys(subN).forEach(function (name) {
-          if (name.toLowerCase().indexOf(q) === 0) {
-            out.push({ kind: "Suburb", label: name, sub: subN[name] + " here",
-                       apply: ["suburbs", name], rank: 4 });
-          }
-        });
-
-        out.sort(function (a, b) { return a.rank - b.rank || a.label.localeCompare(b.label); });
-        return out.slice(0, 8);
-      }
-
-      function close() {
-        panel.hidden = true;
-        panel.innerHTML = "";
-        items = [];
-        active = -1;
-        input.setAttribute("aria-expanded", "false");
-        input.removeAttribute("aria-activedescendant");
-      }
-
-      function paint() {
-        items = build(input.value);
-        if (!items.length) { close(); return; }
-        panel.innerHTML = items.map(function (r, i) {
-          return '<span class="osearch__opt" role="option" id="dirQ-o' + i +
-            '" data-i="' + i + '" aria-selected="false"><b>' + esc(r.label) +
-            "</b><em>" + esc(r.kind) + (r.sub ? " · " + esc(r.sub) : "") + "</em></span>";
-        }).join("");
-        panel.hidden = false;
-        panel.setAttribute("role", "listbox");
-        input.setAttribute("aria-expanded", "true");
-        active = -1;
-      }
-
-      function highlight(next) {
-        var opts = panel.querySelectorAll(".osearch__opt");
-        if (!opts.length) return;
-        if (active > -1 && opts[active]) {
-          opts[active].classList.remove("is-active");
-          opts[active].setAttribute("aria-selected", "false");
-        }
-        active = (next + opts.length) % opts.length;
-        opts[active].classList.add("is-active");
-        opts[active].setAttribute("aria-selected", "true");
-        input.setAttribute("aria-activedescendant", opts[active].id);
-        opts[active].scrollIntoView({ block: "nearest" });
-      }
-
-      function choose(i) {
-        var r = items[i];
-        if (!r) return;
-        if (r.url) { window.location.href = r.url; return; }
-        var key = r.apply[0], val = r.apply[1];
-        if (state[key] && state[key].indexOf(val) === -1) state[key].push(val);
-        // The filter says it better than the words did, so the box empties.
-        state.q = "";
-        input.value = "";
-        state.page = 1;
-        close();
-        render();
-      }
-
-      input.addEventListener("input", function () {
-        clearTimeout(timer);
-        timer = setTimeout(paint, 120);
-      });
-      input.addEventListener("focus", function () {
-        if (input.value.trim().length > 1) paint();
-      });
-      input.addEventListener("keydown", function (e) {
-        if (e.key === "ArrowDown" && panel.hidden) { paint(); return; }
-        if (panel.hidden) return;
-        if (e.key === "ArrowDown") { e.preventDefault(); highlight(active + 1); }
-        else if (e.key === "ArrowUp") { e.preventDefault(); highlight(active - 1); }
-        else if (e.key === "Enter" && active > -1) { e.preventDefault(); choose(active); }
-        else if (e.key === "Escape") { close(); }
-      });
-      panel.addEventListener("mousedown", function (e) {
-        var el = e.target.closest(".osearch__opt");
-        if (!el) return;
-        e.preventDefault();
-        choose(Number(el.dataset.i));
-      });
-      document.addEventListener("click", function (e) {
-        if (!panel.hidden && !input.parentNode.contains(e.target)) close();
-      });
-    }
 
     /* Filters: a collapsible sidebar on desktop, a slide-up sheet on
        phones. Same button, same panel — only the presentation differs,

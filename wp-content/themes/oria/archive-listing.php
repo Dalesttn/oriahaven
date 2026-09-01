@@ -15,11 +15,11 @@ get_header();
 <section class="wrap pagehead">
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
-		<span aria-hidden="true">/</span><span><?php esc_html_e( 'Directory', 'oria' ); ?></span>
+		<span aria-hidden="true">/</span><span><?php esc_html_e( 'Explore', 'oria' ); ?></span>
 	</nav>
 	<div class="row-between" style="align-items:flex-end;margin-top:1rem">
 		<div>
-			<span class="micro"><?php esc_html_e( 'The directory', 'oria' ); ?></span>
+			<span class="micro"><?php esc_html_e( 'Explore', 'oria' ); ?></span>
 			<h1 class="h1 pagehead__title"><?php esc_html_e( "Every practice we've found in Perth.", 'oria' ); ?></h1>
 		</div>
 		<p class="lede dir__lede" style="max-width:34ch"><?php esc_html_e( "Filter by practice, area, price and format. Most listings were built from public information and are waiting for their owner to take them over — each one says so on its own page.", 'oria' ); ?></p>

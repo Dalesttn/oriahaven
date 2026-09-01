@@ -2792,10 +2792,14 @@ html.has-sheet { overflow: hidden; }
 .areagroup__region { padding: .25rem .4rem; margin: 0 -.4rem; border-radius: var(--r-sm); }
 .areagroup__region span { font-weight: 600; }
 .areagroup__region:hover { background: rgba(14,59,56,.05); }
-.areagroup__suburbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: .1rem .75rem; margin: .25rem 0 .1rem 1.5rem; }
+/* Suburbs stay folded until their region is chosen. Perth Central alone
+   listed twenty-five of them, so the panel opened as a wall of checkboxes
+   with the regions lost inside it. */
+.areagroup__suburbs { display: none; }
+.areagroup.is-open > .areagroup__suburbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: .1rem .75rem; margin: .25rem 0 .1rem 1.5rem; }
 .areagroup__suburbs .check, .areagroup__suburbs .check + .check { font-size: var(--fs-xs); padding: .15rem 0; margin: 0; }
 .areagroup__suburbs .check span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-@media (max-width: 50rem) { .areagroup__suburbs { grid-template-columns: 1fr 1fr; margin-left: 1.2rem; } }
+@media (max-width: 50rem) { .areagroup.is-open > .areagroup__suburbs { grid-template-columns: 1fr 1fr; margin-left: 1.2rem; } }
 
 
 /* Floor 4 — guides as image cards. The journal's .article card, plus an

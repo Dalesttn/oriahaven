@@ -14,11 +14,14 @@
     "",
     "This will earn its keep again when a second city lands: Sydney has a",
     "Central, a North and a West too, and every one of them collides with a",
-    "Perth region slug."
+    "Perth region slug.",
+    "",
+    "margaret-river: the CITY term owns that slug, so the town of the same name has to be margaret-river-town. Without this alias a seed saying suburb 'Margaret River' attaches the listing to the city itself."
   ],
   "aliases": {
     "perth": "perth-cbd",
     "perth-cbd": "perth-cbd",
-    "perth-city": "perth-cbd"
+    "perth-city": "perth-cbd",
+    "margaret-river": "margaret-river-town"
   }
 }

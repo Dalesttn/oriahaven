@@ -448,7 +448,7 @@ function seo_title( $title ) {
 		return sprintf( '%s in %s | %s', decoded( $practice ), decoded( $area ), get_bloginfo( 'name' ) );
 	}
 	if ( is_tax( Taxonomies\SPECIALTY ) ) {
-		return sprintf( '%s in Perth | %s', decoded( get_queried_object() ), get_bloginfo( 'name' ) );
+		return sprintf( '%s in %s | %s', decoded( get_queried_object() ), city_name(), get_bloginfo( 'name' ) );
 	}
 
 	/*
@@ -531,7 +531,7 @@ function seo_title( $title ) {
 function archive_heading( \WP_Term $term ): string {
 	return Taxonomies\AREA === $term->taxonomy
 		? sprintf( 'Wellness practices in %s', decoded( $term ) )
-		: sprintf( '%s in Perth', decoded( $term ) );
+		: sprintf( '%s in %s', decoded( $term ), city_name() );
 }
 
 /** "Bodywork & Massage in Fremantle" for a listing, or ''. */
@@ -813,6 +813,20 @@ function unfiltered_url(): string {
 	return home_url( '' === $path ? '/' : $path );
 }
 
+/**
+ * The city this page is about, as a word.
+ *
+ * Cities\current() resolves from the route's own query var, then from the
+ * area term, then falls back to the default -- which is Perth. So every
+ * Perth page keeps the exact string it had, and a /margaret-river/ page
+ * stops claiming to be somewhere it is not.
+ */
+function city_name(): string {
+	return function_exists( '\Oria\Core\Cities\name' )
+		? \Oria\Core\Cities\name()
+		: 'Perth';
+}
+
 function seo_canonical( $canonical ) {
 	$area = combo_area();
 	if ( $area ) {
@@ -905,7 +919,7 @@ function core_title( array $parts ): array {
 	if ( $area ) {
 		$parts['title'] = sprintf( '%s in %s', decoded( get_queried_object() ), decoded( $area ) );
 	} elseif ( is_tax( Taxonomies\SPECIALTY ) ) {
-		$parts['title'] = sprintf( '%s in Perth', decoded( get_queried_object() ) );
+		$parts['title'] = sprintf( '%s in %s', decoded( get_queried_object() ), city_name() );
 	} elseif ( plain_term() ) {
 		$parts['title'] = archive_heading( plain_term() );
 	} elseif ( is_post_type_archive( 'event' ) ) {

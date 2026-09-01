@@ -88,8 +88,14 @@ function listings_in( \WP_Term $practice ): array {
  *
  * @return list<array{label: string, count: int, url: string, kind: string}>
  */
-function for_practice( \WP_Term $practice ): array {
-	$ids = listings_in( $practice );
+/**
+ * @param list<int>|null $ids The set to count over. Defaults to the whole
+ *                            category; a city page passes its own, or every
+ *                            count on the page describes a different set of
+ *                            listings from the one on screen.
+ */
+function for_practice( \WP_Term $practice, ?array $ids = null ): array {
+	$ids = null === $ids ? listings_in( $practice ) : array_values( $ids );
 
 	if ( count( $ids ) < MIN ) {
 		return array();

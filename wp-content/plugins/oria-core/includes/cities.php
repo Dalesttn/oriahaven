@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace Oria\Core\Cities;
 
+use Oria\Core\PostTypes;
 use Oria\Core\Taxonomies;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -45,6 +46,52 @@ function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\route', 8 );
 	add_filter( 'term_link', __NAMESPACE__ . '\specialty_link', 10, 3 );
 	add_action( 'init', __NAMESPACE__ . '\maybe_flush', 20 );
+	add_action( 'pre_get_posts', __NAMESPACE__ . '\scope_archives' );
+}
+
+/**
+ * Keep a category archive inside its city.
+ *
+ * The templates build their own sets and are filtered there, but the main
+ * query feeds things no template touches -- item_list_schema() reads
+ * $GLOBALS['wp_query']->posts, and on /practices/spa/ it was advertising
+ * seven Margaret River businesses in the page's ItemList.
+ *
+ * The city is read off the query rather than through current(), which
+ * leans on get_query_var() and the queried object; neither is settled
+ * while pre_get_posts is running.
+ *
+ * Area archives are skipped: an area is already narrower than its city,
+ * and a southern suburb's own page must keep showing its own listings.
+ * The listing post type archive is skipped too -- /directory/ is the
+ * whole-corpus view by design.
+ */
+function scope_archives( \WP_Query $q ): void {
+	if ( is_admin() || ! $q->is_main_query() ) {
+		return;
+	}
+	$slug = (string) $q->get( QUERY_VAR );
+
+	/*
+	 * Category and specialty archives are always one city's. The listing
+	 * archive is only a city's when the URL says so: /explore/ is the whole
+	 * corpus on purpose, /explore/perth/ is not.
+	 */
+	$scoped = $q->is_tax( array( Taxonomies\PRACTICE, Taxonomies\SPECIALTY ) )
+		|| ( $q->is_post_type_archive( PostTypes\LISTING ) && '' !== $slug );
+	if ( ! $scoped ) {
+		return;
+	}
+
+	$city   = ( '' !== $slug && exists( $slug ) ) ? (array) get( $slug ) : default_city();
+	$clause = tax_clause( $city );
+	if ( ! $clause ) {
+		return;
+	}
+
+	$tq   = (array) $q->get( 'tax_query' );
+	$tq[] = $clause;
+	$q->set( 'tax_query', $tq ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 }
 
 /**
@@ -60,11 +107,13 @@ function bootstrap(): void {
  * takes /{city}/{region}/{suburb}/ next.
  */
 function route(): void {
-	add_rewrite_rule(
-		'^(' . slug_pattern() . ')/([^/]+)/?$',
-		'index.php?' . Taxonomies\SPECIALTY . '=$matches[2]&' . QUERY_VAR . '=$matches[1]',
-		'top'
-	);
+	/*
+	 * PHASE 6: the old addresses are retired. Nothing is registered here
+	 * any more, so these paths 404 -- and the 301 map, which runs on
+	 * template_redirect before the 404 is rendered, carries the ones
+	 * worth carrying. Restoring them is re-adding the rules below.
+	 */
+	// add_rewrite_rule( '^(' . slug_pattern() . ')/([^/]+)/?$', ... );
 }
 
 /**
@@ -100,6 +149,32 @@ function maybe_flush(): void {
 function specialty_link( $link, $term, $taxonomy ): string {
 	if ( Taxonomies\SPECIALTY !== $taxonomy || ! $term instanceof \WP_Term ) {
 		return (string) $link;
+	}
+
+	/*
+	 * /explore/{city}/{category}/{specialty}/ — the category being the one
+	 * declared in data/specialty-homes.json, not whichever page you happen
+	 * to be on. That is what keeps one specialty to one address: 79 of 90
+	 * appear under several categories in the listing data.
+	 *
+	 * No home means no page, and the old flat address is the honest answer
+	 * until one is declared.
+	 */
+	if ( function_exists( '\Oria\Core\PracticesIndex\specialty_home' )
+		&& function_exists( '\Oria\Core\Explore\base_url' ) ) {
+		$home = \Oria\Core\PracticesIndex\specialty_home( $term->slug );
+		if ( '' !== $home ) {
+			/*
+			 * A specialty that shares its category's slug is that category,
+			 * and three of them answer on a shorter segment the intent
+			 * registry claims. Both come from the map: asking the resolver
+			 * here cost 227 queries per link and a category page renders
+			 * dozens of them.
+			 */
+			$tail = $home === $term->slug ? '' : \Oria\Core\PracticesIndex\specialty_slug( $term->slug ) . '/';
+
+			return \Oria\Core\Explore\base_url() . $home . '/' . $tail;
+		}
 	}
 
 	return user_trailingslashit( home_url( '/' . path() . '/' . $term->slug ) );
@@ -194,6 +269,33 @@ function current(): array {
 		}
 	}
 
+	/*
+	 * A listing belongs to wherever it is. Without this every category and
+	 * specialty link on a Margaret River profile pointed back into Perth,
+	 * and the page said "everywhere else in Perth that offers it" under a
+	 * sauna parked at the Prevelly rivermouth.
+	 *
+	 * Memoised: current() is asked repeatedly per request, and this is the
+	 * one branch that costs a term read.
+	 */
+	if ( $obj instanceof \WP_Post && PostTypes\LISTING === $obj->post_type ) {
+		static $for_post = array();
+		if ( ! isset( $for_post[ $obj->ID ] ) ) {
+			$found = null;
+			$terms = get_the_terms( $obj->ID, Taxonomies\AREA );
+			foreach ( is_array( $terms ) ? $terms : array() as $term ) {
+				$found = for_area( $term );
+				if ( null !== $found ) {
+					break;
+				}
+			}
+			$for_post[ $obj->ID ] = $found;
+		}
+		if ( null !== $for_post[ $obj->ID ] ) {
+			return $for_post[ $obj->ID ];
+		}
+	}
+
 	return default_city();
 }
 
@@ -222,7 +324,127 @@ function for_area( \WP_Term $term ): ?array {
 	return null;
 }
 
+/**
+ * Every area term id belonging to a city: the city term and its descendants.
+ *
+ * The piece the original city work left out. Naming a page after a city is
+ * cosmetic on its own -- /margaret-river/infrared-sauna/ still listed thirty
+ * Perth saunas -- so the query needs the same answer the title does.
+ *
+ * Returns an empty array when the city has no area term, and callers treat
+ * that as "do not filter": a city halfway through being set up should show
+ * everything rather than nothing.
+ *
+ * @return list<int>
+ */
+function area_ids( ?array $city = null ): array {
+	static $cache = array();
+
+	$city = $city ?: current();
+	$slug = (string) ( $city['slug'] ?? '' );
+	if ( '' === $slug ) {
+		return array();
+	}
+	if ( isset( $cache[ $slug ] ) ) {
+		return $cache[ $slug ];
+	}
+
+	$term = get_term_by( 'slug', $slug, Taxonomies\AREA );
+	if ( ! $term instanceof \WP_Term ) {
+		return $cache[ $slug ] = array();
+	}
+
+	$ids = array( (int) $term->term_id );
+	foreach ( (array) get_term_children( (int) $term->term_id, Taxonomies\AREA ) as $child ) {
+		$ids[] = (int) $child;
+	}
+
+	return $cache[ $slug ] = $ids;
+}
+
+/**
+ * A tax_query clause restricting results to one city, or nothing at all.
+ *
+ * Written to be dropped straight into an existing tax_query. Returns an
+ * empty array when the city cannot be resolved, so `array_filter` or a
+ * simple merge leaves the query untouched rather than impossible.
+ *
+ * @return array<string, mixed>
+ */
+function tax_clause( ?array $city = null ): array {
+	$ids = area_ids( $city );
+	if ( ! $ids ) {
+		return array();
+	}
+	return array(
+		'taxonomy'         => Taxonomies\AREA,
+		'field'            => 'term_id',
+		'terms'            => $ids,
+		'include_children' => false,
+	);
+}
+
+/**
+ * Narrow a list of listing ids to one city, keeping the order it arrived in.
+ *
+ * The practices pages build their set through Intents and facet resolvers
+ * rather than a WP_Query we can add a clause to, so they need the filter as
+ * a second pass. Order is the whole value of what they hand over -- it is a
+ * ranking, not a bag -- so this intersects rather than re-queries.
+ *
+ * An unresolvable city filters nothing, matching tax_clause().
+ *
+ * @param list<int> $ids
+ * @return list<int>
+ */
+function filter_ids( array $ids, ?array $city = null ): array {
+	$clause = tax_clause( $city );
+	if ( ! $clause || ! $ids ) {
+		return array_values( $ids );
+	}
+
+	$keep = get_posts(
+		array(
+			'post_type'              => PostTypes\LISTING,
+			'post_status'            => 'publish',
+			'post__in'               => array_map( 'intval', $ids ),
+			'posts_per_page'         => -1,
+			'fields'                 => 'ids',
+			'tax_query'              => array( $clause ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		)
+	);
+
+	$keep = array_flip( array_map( 'intval', (array) $keep ) );
+
+	return array_values(
+		array_filter( $ids, static fn( $id ): bool => isset( $keep[ (int) $id ] ) )
+	);
+}
+
 /* -------------------------------------------------------------- shortcuts */
+
+/**
+ * The prose for this city's directory page, paragraph by paragraph.
+ *
+ * Lives in cities.json with the rest of what a city is, so writing one for
+ * a new region is the same act as adding the region. A city without any is
+ * not a broken city -- the page simply carries no read-up.
+ *
+ * @return list<string>
+ */
+function read_up( ?array $city = null ): array {
+	$city = $city ?? current();
+	$rows = $city['read_up'] ?? array();
+
+	if ( ! is_array( $rows ) ) {
+		return array();
+	}
+
+	return array_values( array_filter( array_map( 'strval', $rows ) ) );
+}
 
 /** The display name — "Perth". */
 function name( ?array $city = null ): string {

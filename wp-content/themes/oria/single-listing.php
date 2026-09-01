@@ -123,10 +123,20 @@ while ( have_posts() ) :
 	// which carries the @id, price band, website and rating this used to duplicate.
 	?>
 	<section class="wrap" style="padding-top:1.75rem">
+		<?php
+		// Where this listing actually is. current() reads it off the post's
+		// own area terms, so a southern profile no longer sits under Perth.
+		$oria_lcity = function_exists( '\Oria\Core\Cities\current' ) ? \Oria\Core\Cities\current() : null;
+		$oria_lname = $oria_lcity ? \Oria\Core\Cities\name( $oria_lcity ) : '';
+		?>
 		<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
 			<span aria-hidden="true">/</span>
-			<a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Directory', 'oria' ); ?></a>
+			<a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Explore', 'oria' ); ?></a>
+			<?php if ( '' !== $oria_lname && function_exists( '\Oria\Core\Explore\base_url' ) ) : ?>
+				<span aria-hidden="true">/</span>
+				<a href="<?php echo esc_url( \Oria\Core\Explore\base_url( $oria_lcity ) ); ?>"><?php echo esc_html( $oria_lname ); ?></a>
+			<?php endif; ?>
 			<?php if ( $oria_practice ) : ?>
 				<span aria-hidden="true">/</span>
 				<a href="<?php echo esc_url( (string) get_term_link( $oria_practice ) ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_practice ) ); ?></a>
@@ -271,11 +281,51 @@ while ( have_posts() ) :
 							$oria_wants = function_exists( '\Oria\Core\GoodFor\for_listing' ) ? \Oria\Core\GoodFor\for_listing( $oria_id ) : array();
 							?>
 							<?php if ( $oria_wants ) : ?>
+								<span class="micro rowlabel"><?php esc_html_e( 'Good for', 'oria' ); ?></span>
 								<div class="profile__wants">
 									<?php foreach ( $oria_wants as $oria_w ) : ?>
 										<span class="pill pill--gf" style="--gf:<?php echo esc_attr( $oria_w['color'] ); ?>"><?php echo esc_html( $oria_w['label'] ); ?></span>
 									<?php endforeach; ?>
 								</div>
+							<?php endif; ?>
+
+							<?php
+							/*
+							 * What to expect. Derived from fields the listing already
+							 * carries -- price, how you book, format, who it is for,
+							 * the next session, and how far it is from its own city.
+							 * Every one is a fact about the visit; none of them says
+							 * what it is supposed to do for you.
+							 *
+							 * The row is not a fixed set of slots. A listing that
+							 * knows its price and nothing else shows one chip, not
+							 * four with three of them blank.
+							 */
+							$oria_expect = function_exists( '\Oria\Theme\expect_chips' )
+								? \Oria\Theme\expect_chips( $oria_id )
+								: array();
+							?>
+							<?php if ( $oria_expect ) : ?>
+								<div class="expect" role="group" aria-label="<?php esc_attr_e( 'What to expect', 'oria' ); ?>">
+									<?php foreach ( $oria_expect as $oria_e ) : ?>
+										<span class="expect__chip expect__chip--<?php echo esc_attr( $oria_e['kind'] ); ?>"><?php echo esc_html( $oria_e['label'] ); ?></span>
+									<?php endforeach; ?>
+								</div>
+							<?php endif; ?>
+
+							<?php
+							/*
+							 * Assembled from stored fields, never written. Empty until a
+							 * listing knows at least two things worth saying, which today
+							 * is a small number of them -- duration_min and group_size are
+							 * new and unfilled. It gets specific as they fill, without
+							 * this template changing.
+							 */
+							$oria_likely = function_exists( '\Oria\Theme\likely_line' ) ? \Oria\Theme\likely_line( $oria_id ) : '';
+							?>
+							<?php if ( '' !== $oria_likely ) : ?>
+								<span class="micro rowlabel"><?php esc_html_e( 'You will probably like this if', 'oria' ); ?></span>
+								<p class="likely"><?php echo esc_html( $oria_likely ); ?></p>
 							<?php endif; ?>
 
 							<?php if ( $oria_address || $oria_region ) : ?>
@@ -337,6 +387,9 @@ while ( have_posts() ) :
 							}
 							?>
 							<?php if ( $oria_chips ) : ?>
+								<?php // Named, because a row of dark pills under a row of coloured
+								      // ones reads as decoration until you say what it is. ?>
+								<span class="micro rowlabel"><?php esc_html_e( 'What you can do here', 'oria' ); ?></span>
 								<ul class="chips profile__chips">
 									<?php foreach ( $oria_chips as $oria_chip ) : ?>
 										<li><span class="chip"><?php echo esc_html( $oria_chip ); ?></span></li>
@@ -637,7 +690,7 @@ while ( have_posts() ) :
 				<?php if ( $oria_services ) : ?>
 				<div>
 					<h2 class="h3" style="margin-bottom:.25rem"><?php esc_html_e( 'What can I do here?', 'oria' ); ?></h2>
-					<p class="hint" style="margin-bottom:1.1rem"><?php esc_html_e( 'Each one leads to everywhere else in Perth that offers it.', 'oria' ); ?></p>
+					<p class="hint" style="margin-bottom:1.1rem"><?php printf( esc_html__( 'Each one leads to everywhere else in %s that offers it.', 'oria' ), esc_html( '' !== $oria_lname ? $oria_lname : __( 'Perth', 'oria' ) ) ); ?></p>
 					<?php
 					/*
 					 * Two groups. A service that resolves to a canonical term
@@ -834,6 +887,36 @@ while ( have_posts() ) :
 					<div class="speccards">
 						<?php
 						foreach ( $oria_specs as $oria_spec ) :
+							$oria_scount = (int) $oria_spec->count;
+
+							/*
+							 * Only where the destination actually holds something in
+							 * this city. A southern listing carries the specialty term
+							 * but not the matching service term, and the facet resolves
+							 * through services first -- so the card pointed at
+							 * /explore/margaret-river/recovery/traditional-sauna/ and
+							 * that page is a 404 by design. Skip rather than link.
+							 */
+							if ( function_exists( '\Oria\Core\PracticesIndex\specialty_home' ) && function_exists( '\Oria\Core\Cities\filter_ids' ) ) {
+								$oria_shome = \Oria\Core\PracticesIndex\specialty_home( $oria_spec->slug );
+								$oria_scat  = '' !== $oria_shome ? get_term_by( 'slug', $oria_shome, \Oria\Core\Taxonomies\PRACTICE ) : null;
+								if ( ! $oria_scat instanceof WP_Term ) {
+									continue;
+								}
+								$oria_sfacet = \Oria\Core\PracticesIndex\resolve_facet( $oria_scat, $oria_spec->slug );
+								if ( ! is_array( $oria_sfacet ) ) {
+									continue;
+								}
+								$oria_srows = \Oria\Core\Cities\filter_ids( \Oria\Core\PracticesIndex\facet_ids( $oria_scat, $oria_sfacet ) );
+								if ( ! $oria_srows ) {
+									continue;
+								}
+								// The count of what the card links to. $oria_spec->count is
+								// the whole corpus, and read "32 places" on a page whose
+								// destination holds four.
+								$oria_scount = count( $oria_srows );
+							}
+
 							$oria_stile   = \Oria\Theme\term_tile( $oria_spec );
 							$oria_sparent = \Oria\Theme\specialty_parent( $oria_spec );
 							?>
@@ -849,18 +932,19 @@ while ( have_posts() ) :
 									<span class="speccard__name">
 										<?php
 										printf(
-											/* translators: %s: modality name */
-											esc_html__( '%s in Perth', 'oria' ),
-											esc_html( \Oria\Theme\tname( $oria_spec ) )
+											/* translators: 1: modality name, 2: city name. */
+											esc_html__( '%1$s in %2$s', 'oria' ),
+											esc_html( \Oria\Theme\tname( $oria_spec ) ),
+											esc_html( '' !== $oria_lname ? $oria_lname : __( 'Perth', 'oria' ) )
 										);
 										?>
 									</span>
-									<?php if ( (int) $oria_spec->count > 0 ) : ?>
+									<?php if ( $oria_scount > 0 ) : ?>
 										<span class="speccard__count">
 											<?php
 											printf(
-												esc_html( _n( '%s place', '%s places', (int) $oria_spec->count, 'oria' ) ),
-												esc_html( number_format_i18n( (int) $oria_spec->count ) )
+												esc_html( _n( '%s place', '%s places', $oria_scount, 'oria' ) ),
+												esc_html( number_format_i18n( $oria_scount ) )
 											);
 											?>
 										</span>

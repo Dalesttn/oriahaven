@@ -86,33 +86,18 @@ function bootstrap(): void {
 }
 
 function route(): void {
-	add_rewrite_rule( '^' . PATH . '/?$', 'index.php?' . QUERY_VAR . '=1', 'top' );
-	// /practices/{practice}/ → the practice archive, flagged for the v2 template.
-	add_rewrite_rule( '^' . PATH . '/([^/]+)/?$', 'index.php?practice=$matches[1]&' . V2_VAR . '=1', 'top' );
-	// /practices/{practice}/{facet}/ → the same page with one facet locked:
-	// a style (service term), a specialty, an audience, online, or free.
-	add_rewrite_rule( '^' . PATH . '/([^/]+)/([^/]+)/?$', 'index.php?practice=$matches[1]&' . V2_VAR . '=1&' . FACET_VAR . '=$matches[2]', 'top' );
-
 	/*
-	 * Page two and beyond, for both. Without these the category pages link
-	 * to a 404: three segments match none of the rules above, so the request
-	 * falls through to WordPress with no practice to query.
+	 * PHASE 6: the /practices/ addresses are retired. The directory now lives
+	 * at /explore/{city}/{category}/{facet}/, registered in explore.php, and
+	 * these paths 404 -- the 301 map runs on template_redirect ahead of the
+	 * 404 and carries the ones worth carrying.
 	 *
-	 * Added last because 'top' prepends — these end up ahead of the bare
-	 * rules, which is the order they have to be tried in. A bare rule would
-	 * otherwise claim "page" as a facet slug.
+	 * PATH is kept because it still names the old segment for the redirect
+	 * map and for facet_404(). Restoring the old routes means re-adding the
+	 * five add_rewrite_rule() calls this replaced; git has them.
 	 */
-	add_rewrite_rule(
-		'^' . PATH . '/([^/]+)/page/([0-9]{1,})/?$',
-		'index.php?practice=$matches[1]&' . V2_VAR . '=1&paged=$matches[2]',
-		'top'
-	);
-	add_rewrite_rule(
-		'^' . PATH . '/([^/]+)/([^/]+)/page/([0-9]{1,})/?$',
-		'index.php?practice=$matches[1]&' . V2_VAR . '=1&' . FACET_VAR . '=$matches[2]&paged=$matches[3]',
-		'top'
-	);
 }
+
 
 function query_vars( array $vars ): array {
 	$vars[] = QUERY_VAR;
@@ -152,7 +137,31 @@ function facet(): ?array {
 	return $cache = resolve_facet( $term, $slug );
 }
 
+/**
+ * The city a facet label should name.
+ *
+ * One function so the labels and the patterns that later peel the city back
+ * off them can never disagree about what was written.
+ */
+function label_city(): string {
+	return function_exists( '\Oria\Core\Seo\city_name' )
+		? \Oria\Core\Seo\city_name()
+		: 'Perth';
+}
+
 function resolve_facet( \WP_Term $practice, string $slug ): ?array {
+	// Same question, same answer, many times per request: facet_404(),
+	// the canonical, the switcher and every link that asks all land here.
+	static $memo = array();
+	$key = $practice->term_id . '|' . $slug;
+	if ( array_key_exists( $key, $memo ) ) {
+		return $memo[ $key ];
+	}
+
+	return $memo[ $key ] = resolve_facet_uncached( $practice, $slug );
+}
+
+function resolve_facet_uncached( \WP_Term $practice, string $slug ): ?array {
 	// 1. A registry page (its filter is authoritative, its frame is the copy).
 	if ( function_exists( '\Oria\Core\IntentPages\page' ) ) {
 		$page = IntentPages\page( $practice->slug, $slug );
@@ -171,6 +180,22 @@ function resolve_facet( \WP_Term $practice, string $slug ): ?array {
 			if ( ! $t instanceof \WP_Term ) {
 				continue;
 			}
+			/*
+			 * An empty service must not shadow a populated specialty of the
+			 * same name. Services are consulted first because a service is
+			 * the more specific claim -- but only when it actually holds
+			 * something. wellness-retreats and aromatherapy exist in both
+			 * taxonomies with nothing on the service side, and the facet
+			 * resolved to a set of zero while 36 and 4 listings sat under
+			 * the specialty. Invisible until the specialty pages started
+			 * being addressed through this resolver.
+			 */
+			if ( 0 === (int) $t->count ) {
+				$rival = get_term_by( 'slug', $slug, Taxonomies\SPECIALTY );
+				if ( $rival instanceof \WP_Term && (int) $rival->count > 0 ) {
+					continue;
+				}
+			}
 			if ( function_exists( '\Oria\Core\IntentPages\pages_for' ) ) {
 				foreach ( IntentPages\pages_for( $practice->slug ) as $p ) {
 					if ( ( $p['filter']['svc'] ?? '' ) === $t->slug ) {
@@ -180,28 +205,28 @@ function resolve_facet( \WP_Term $practice, string $slug ): ?array {
 			}
 			$suffix    = '-' . $practice->slug;
 			$canonical = str_ends_with( $t->slug, $suffix ) && strlen( $t->slug ) > strlen( $suffix ) ? substr( $t->slug, 0, -strlen( $suffix ) ) : $t->slug;
-			return array( 'slug' => $canonical, 'key' => 'svc', 'value' => $t->slug, 'label' => sprintf( '%s in Perth', wp_specialchars_decode( $t->name, ENT_QUOTES ) ), 'page' => null );
+			return array( 'slug' => $canonical, 'key' => 'svc', 'value' => $t->slug, 'label' => sprintf( '%s in %s', wp_specialchars_decode( $t->name, ENT_QUOTES ), label_city() ), 'page' => null );
 		}
 	}
 	// 3. A specialty term.
 	$t = get_term_by( 'slug', $slug, Taxonomies\SPECIALTY );
 	if ( $t instanceof \WP_Term ) {
-		return array( 'slug' => $slug, 'key' => 'spec', 'value' => $t->slug, 'label' => sprintf( '%s in Perth', wp_specialchars_decode( $t->name, ENT_QUOTES ) ), 'page' => null );
+		return array( 'slug' => $slug, 'key' => 'spec', 'value' => $t->slug, 'label' => sprintf( '%s in %s', wp_specialchars_decode( $t->name, ENT_QUOTES ), label_city() ), 'page' => null );
 	}
 	// 4. An audience term (only reachable when the intent rows offer it).
 	if ( taxonomy_exists( 'audience' ) ) {
 		$t = get_term_by( 'slug', $slug, 'audience' );
 		if ( $t instanceof \WP_Term ) {
-			return array( 'slug' => $slug, 'key' => 'aud', 'value' => $t->slug, 'label' => sprintf( '%s — %s in Perth', wp_specialchars_decode( $t->name, ENT_QUOTES ), wp_specialchars_decode( $practice->name, ENT_QUOTES ) ), 'page' => null );
+			return array( 'slug' => $slug, 'key' => 'aud', 'value' => $t->slug, 'label' => sprintf( '%s — %s in %s', wp_specialchars_decode( $t->name, ENT_QUOTES ), wp_specialchars_decode( $practice->name, ENT_QUOTES ), label_city() ), 'page' => null );
 		}
 	}
 	// 5. The fixed pair.
 	$pname = wp_specialchars_decode( $practice->name, ENT_QUOTES );
 	if ( 'online' === $slug ) {
-		return array( 'slug' => 'online', 'key' => 'format', 'value' => 'online', 'label' => sprintf( 'Online %s in Perth', lcfirst( $pname ) ), 'page' => null );
+		return array( 'slug' => 'online', 'key' => 'format', 'value' => 'online', 'label' => sprintf( 'Online %s in %s', lcfirst( $pname ), label_city() ), 'page' => null );
 	}
 	if ( 'free' === $slug ) {
-		return array( 'slug' => 'free', 'key' => 'price', 'value' => 'Free', 'label' => sprintf( 'Free or by-donation %s in Perth', lcfirst( $pname ) ), 'page' => null );
+		return array( 'slug' => 'free', 'key' => 'price', 'value' => 'Free', 'label' => sprintf( 'Free or by-donation %s in %s', lcfirst( $pname ), label_city() ), 'page' => null );
 	}
 	// 6. An area — suburb or region. Deliberately last, so no suburb name
 	//    can shadow a service or an intent page: the highest-intent page a
@@ -258,7 +283,15 @@ function facet_url_for_query( \WP_Term $practice, string $query ): string {
 
 /** Listings in the practice that match the locked facet. @return list<int> */
 function facet_ids( \WP_Term $practice, array $facet ): array {
-	return function_exists( '\Oria\Core\IntentPages\matching_ids' )
+	// matching_ids() walks the category's listings, which is fine once and
+	// ruinous when a page asks for the same set forty times.
+	static $memo = array();
+	$key = $practice->term_id . '|' . ( $facet['key'] ?? '' ) . '|' . ( $facet['value'] ?? '' );
+	if ( isset( $memo[ $key ] ) ) {
+		return $memo[ $key ];
+	}
+
+	return $memo[ $key ] = function_exists( '\Oria\Core\IntentPages\matching_ids' )
 		? IntentPages\matching_ids( $practice, array( $facet['key'] => $facet['value'] ) )
 		: array();
 }
@@ -301,7 +334,21 @@ function facet_404(): void {
 	 * simply does not ask to be indexed.
 	 */
 	$term = get_queried_object();
-	if ( $term instanceof \WP_Term && 0 === count( facet_ids( $term, $f ) ) ) {
+	$rows = $term instanceof \WP_Term ? facet_ids( $term, $f ) : array();
+
+	/*
+	 * Count within the city the page is about. A combination can hold plenty
+	 * across the corpus and nothing here -- infrared sauna has 27 listings
+	 * and none of them south -- and without this
+	 * /explore/margaret-river/spa/infrared-sauna/ answered 200 with an empty
+	 * grid under a confident heading. Same fault the empty category combos
+	 * had, re-made along the city axis.
+	 */
+	if ( $rows && function_exists( '\Oria\Core\Cities\filter_ids' ) ) {
+		$rows = \Oria\Core\Cities\filter_ids( $rows );
+	}
+
+	if ( $term instanceof \WP_Term && 0 === count( $rows ) ) {
 		global $wp_query;
 		$wp_query->set_404();
 		status_header( 404 );
@@ -319,10 +366,27 @@ function is_category(): bool {
 }
 
 function url(): string {
+	// The category index is a city's overview now. PATH still routes until
+	// phase 6 retires it.
+	if ( function_exists( '\Oria\Core\Explore\base_url' ) ) {
+		return \Oria\Core\Explore\base_url();
+	}
+
 	return home_url( '/' . PATH . '/' );
 }
 
-function category_url( \WP_Term $term ): string {
+function category_url( \WP_Term $term, ?array $city = null ): string {
+	/*
+	 * /explore/{city}/{category}/. The city defaults to the one being viewed,
+	 * so the links on a Margaret River page keep you in Margaret River rather
+	 * than dropping you back into Perth.
+	 *
+	 * PATH is still the old segment and still routes; phase 6 retires it.
+	 */
+	if ( function_exists( '\Oria\Core\Explore\base_url' ) ) {
+		return \Oria\Core\Explore\base_url( $city ) . $term->slug . '/';
+	}
+
 	return home_url( '/' . PATH . '/' . $term->slug . '/' );
 }
 
@@ -512,7 +576,7 @@ function query_heading( ?\WP_Term $practice = null ): string {
 			foreach ( IntentPages\pages_for( $practice->slug ) as $pg ) {
 				if ( ( $pg['filter'][ $want[0] ] ?? null ) === $want[1] && ! empty( $pg['frame']['h1'] ) ) {
 					$h1 = (string) $pg['frame']['h1'];
-					return '' !== $where ? (string) preg_replace( '/\s+in Perth$/', ' in ' . $where, $h1 ) : $h1;
+					return '' !== $where ? (string) preg_replace( '/\s+in ' . preg_quote( label_city(), '/' ) . '$/', ' in ' . $where, $h1 ) : $h1;
 				}
 			}
 		}
@@ -551,6 +615,98 @@ function query_heading( ?\WP_Term $practice = null ): string {
  */
 function specialty_url( \WP_Term $specialty ): string {
 	return (string) get_term_link( $specialty );
+}
+
+const HOMES_FILE = 'data/specialty-homes.json';
+
+/**
+ * Every specialty's home category, slug => top-level practice slug.
+ *
+ * A specialty appears under several categories in the listing data -- 79 of
+ * 90 do -- so without one declared home, an address of the shape
+ * /{city}/{category}/{specialty}/ generates a page per combination rather
+ * than a page per specialty. This file is what makes that address canonical.
+ *
+ * @return array<string, string>
+ */
+function specialty_homes(): array {
+	static $cache = null;
+
+	if ( null !== $cache ) {
+		return $cache;
+	}
+
+	$cache = array();
+	$path  = ORIA_CORE_DIR . HOMES_FILE;
+	if ( ! is_readable( $path ) ) {
+		return $cache;
+	}
+
+	$json = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	if ( ! is_array( $json ) || ! isset( $json['homes'] ) || ! is_array( $json['homes'] ) ) {
+		return $cache;
+	}
+
+	foreach ( $json['homes'] as $spec => $cat ) {
+		if ( is_string( $spec ) && is_string( $cat ) && '' !== $cat ) {
+			$cache[ $spec ] = $cat;
+		}
+	}
+
+	return $cache;
+}
+
+/**
+ * The category a specialty lives under, or '' when it has none.
+ *
+ * Returning '' rather than guessing is deliberate: a specialty with no home
+ * gets no page, which is the right answer for one no listing carries yet.
+ */
+/**
+ * The trailing segment a specialty answers on under its home category.
+ *
+ * Usually its own slug; for three of them the intent registry claims a
+ * shorter one. Read from the map rather than resolved live -- resolve_facet()
+ * plus facet_ids() is 227 queries, and a category page renders dozens of
+ * specialty links.
+ */
+function specialty_slug( string $slug ): string {
+	static $map = null;
+
+	if ( null === $map ) {
+		$map  = array();
+		$path = ORIA_CORE_DIR . HOMES_FILE;
+		if ( is_readable( $path ) ) {
+			$json = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			if ( is_array( $json['slugs'] ?? null ) ) {
+				$map = $json['slugs'];
+			}
+		}
+	}
+
+	return (string) ( $map[ $slug ] ?? $slug );
+}
+
+function specialty_home( string $slug ): string {
+	$homes = specialty_homes();
+	return (string) ( $homes[ $slug ] ?? '' );
+}
+
+/**
+ * The home category as a term, or null.
+ *
+ * Verifies the slug still resolves: the map is data and the taxonomy is
+ * data, and a renamed category would otherwise leave a URL pointing at a
+ * segment that no longer exists.
+ */
+function specialty_home_term( string $slug ): ?\WP_Term {
+	$cat = specialty_home( $slug );
+	if ( '' === $cat ) {
+		return null;
+	}
+	$term = get_term_by( 'slug', $cat, Taxonomies\PRACTICE );
+
+	return $term instanceof \WP_Term ? $term : null;
 }
 
 /**
@@ -754,9 +910,21 @@ function service_url( string $service_slug ): string {
 	if ( null === $facet ) {
 		return '';
 	}
-	if ( count( facet_ids( $term, $facet ) ) < FACET_MIN ) {
+	/*
+	 * Counted where the link would land. category_url() follows the city
+	 * being viewed, so on a southern listing this built
+	 * /explore/margaret-river/recovery/traditional-sauna/ off a corpus-wide
+	 * count of twenty-odd -- and that page 404s, because none of them are
+	 * south. No listings here, no link.
+	 */
+	$rows = facet_ids( $term, $facet );
+	if ( function_exists( '\Oria\Core\Cities\filter_ids' ) ) {
+		$rows = \Oria\Core\Cities\filter_ids( $rows );
+	}
+	if ( count( $rows ) < FACET_MIN ) {
 		return '';
 	}
+
 	return category_url( $term ) . $facet['slug'] . '/';
 }
 
@@ -1230,7 +1398,7 @@ function title( $title ) {
 		 */
 		$term = get_queried_object();
 		if ( $term instanceof \WP_Term && in_array( $f['key'], array( 'svc', 'spec' ), true ) ) {
-			$bare = (string) preg_replace( '/ in Perth$/', '', $f['label'] );
+			$bare = (string) preg_replace( '/ in ' . preg_quote( label_city(), '/' ) . '$/', '', $f['label'] );
 			return sprintf(
 				'%s — %s in Perth | %s',
 				$bare,

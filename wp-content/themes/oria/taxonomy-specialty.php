@@ -28,7 +28,8 @@ get_header();
 $oria_term  = get_queried_object();
 $oria_term  = $oria_term instanceof WP_Term ? $oria_term : null;
 $oria_sname = $oria_term ? \Oria\Theme\tname( $oria_term ) : '';
-$oria_h1    = sprintf( __( '%s in Perth', 'oria' ), $oria_sname );
+$oria_city  = function_exists( '\Oria\Core\Cities\name' ) ? \Oria\Core\Cities\name() : 'Perth';
+$oria_h1    = sprintf( __( '%s in %s', 'oria' ), $oria_sname, $oria_city );
 
 /*
  * The whole set for this specialty, resolved server-side so the facts and
@@ -42,12 +43,23 @@ if ( $oria_term ) {
 			'post_status'    => 'publish',
 			'posts_per_page' => 300,
 			'fields'         => 'ids',
-			'tax_query'      => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-				array(
-					'taxonomy' => 'specialty',
-					'field'    => 'term_id',
-					'terms'    => $oria_term->term_id,
-				),
+			/*
+			 * Specialty AND city. Without the second clause this page listed
+			 * every practice offering the modality anywhere in the corpus,
+			 * under a heading naming one city -- thirty Perth saunas on the
+			 * Margaret River page, and three Margaret River ones on Perth's.
+			 */
+			'tax_query'      => array_values( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+				array_filter(
+					array(
+						array(
+							'taxonomy' => 'specialty',
+							'field'    => 'term_id',
+							'terms'    => $oria_term->term_id,
+						),
+						function_exists( '\Oria\Core\Cities\tax_clause' ) ? \Oria\Core\Cities\tax_clause() : array(),
+					)
+				)
 			),
 		)
 	);
@@ -123,7 +135,7 @@ $oria_guides = ( $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) )
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span>
-		<a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Directory', 'oria' ); ?></a>
+		<a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Explore', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span><span><?php echo esc_html( $oria_sname ); ?></span>
 	</nav>
 	<div class="decide">
@@ -204,7 +216,7 @@ $oria_guides = ( $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) )
 		?>
 		<?php if ( $oria_map ) : ?>
 		<div class="decide__map">
-			<div class="catmap" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of %s places across Perth', 'oria' ), esc_attr( $oria_sname ) ); ?>">
+			<div class="catmap" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of %1$s places across %2$s', 'oria' ), esc_attr( $oria_sname ), esc_attr( $oria_city ) ); ?>">
 				<div class="catmap__tip" hidden></div>
 			</div>
 			<script type="application/json" data-catmap-data><?php echo wp_json_encode( $oria_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data script tag ?></script>
@@ -251,8 +263,16 @@ $oria_guides = ( $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) )
 	<p class="dir__count" id="dirCount" style="margin-top:1rem"></p>
 	<div class="chips" id="dirChips" style="margin-top:.5rem"></div>
 	<h2 class="sr-only"><?php echo esc_html( $oria_h1 ); ?> — <?php esc_html_e( 'listings', 'oria' ); ?></h2>
-	<?php // data-spec is what app.js reads to lock a specialty, as data-cat locks a practice. ?>
-	<div class="dir__results dir__results--wide" id="dirResults" data-spec="<?php echo esc_attr( $oria_term->slug ); ?>">
+	<?php
+	/*
+	 * data-spec is what app.js reads to lock a specialty, as data-cat locks
+	 * a practice. data-city locks the city the same way: without it the
+	 * script rebuilt this grid from the whole corpus and put thirty Perth
+	 * saunas back on the Margaret River page the server had just filtered.
+	 */
+	$oria_clock = function_exists( '\Oria\Core\Cities\current' ) ? (string) ( \Oria\Core\Cities\current()['slug'] ?? '' ) : '';
+	?>
+	<div class="dir__results dir__results--wide" id="dirResults" data-spec="<?php echo esc_attr( $oria_term->slug ); ?>"<?php echo $oria_clock ? ' data-city="' . esc_attr( $oria_clock ) . '"' : ''; ?>>
 		<?php
 		while ( have_posts() ) :
 			the_post();
@@ -305,7 +325,7 @@ if ( $oria_faqs ) {
 		array(
 			'faqs'    => $oria_faqs,
 			/* translators: %s: the specialty, lowercased */
-			'heading' => sprintf( __( 'Questions people ask about %s in Perth', 'oria' ), strtolower( $oria_sname ) ),
+			'heading' => sprintf( __( 'Questions people ask about %1$s in %2$s', 'oria' ), strtolower( $oria_sname ), $oria_city ),
 			'id'      => 'faq',
 		)
 	);

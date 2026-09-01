@@ -27,7 +27,7 @@ $oria_aname = $oria_area ? \Oria\Theme\tname( $oria_area ) : '';
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span>
-		<a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Directory', 'oria' ); ?></a>
+		<a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Explore', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span>
 		<?php if ( $oria_is_combo ) : ?>
 			<a href="<?php echo esc_url( get_term_link( $oria_term ) ); ?>"><?php echo esc_html( $oria_pname ); ?></a>

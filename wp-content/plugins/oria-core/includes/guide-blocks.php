@@ -200,7 +200,7 @@ function suburbs( $atts ): string {
 		asort( $burbs );
 		$out .= '<div class="guideburbs__group"><span class="guideburbs__region">' . esc_html( $label ) . '</span>';
 		foreach ( $burbs as $slug => $name ) {
-			$url  = home_url( '/practices/' . $term->slug . '/' . $slug . '/' );
+			$url  = \Oria\Core\PracticesIndex\category_url( $term ) . $slug . '/';
 			$out .= '<a class="pill pill--sand" href="' . esc_url( $url ) . '">' . esc_html( $name ) . '</a>';
 		}
 		$out .= '</div>';
