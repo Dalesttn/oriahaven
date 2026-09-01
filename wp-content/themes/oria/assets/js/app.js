@@ -1457,9 +1457,67 @@
       return true;
     }
 
+    /* ---- find near me --------------------------------------------------
+       The listing payload already carries lat, lng and a `geo` precision
+       flag. Half these listings sit on a suburb centroid rather than a
+       street address, so a distance from one is a fair answer to "roughly
+       how far is that" and a lie if shown as the distance to the door --
+       hence approx() below, and the "about" the label wears.
+       The position never leaves the browser: no request carries it, nothing
+       stores it, and reloading the page forgets it. */
+    var here = null;
+
+    function haversine(aLat, aLng, bLat, bLng) {
+      var R = 6371, rad = Math.PI / 180;
+      var dLat = (bLat - aLat) * rad, dLng = (bLng - aLng) * rad;
+      var s = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(aLat * rad) * Math.cos(bLat * rad) *
+              Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      return 2 * R * Math.asin(Math.sqrt(s));
+    }
+
+    /* Distance from `here`, or null when we cannot honestly give one. */
+    function distanceOf(l) {
+      if (!here || typeof l.lat !== "number" || typeof l.lng !== "number") return null;
+      return haversine(here.lat, here.lng, l.lat, l.lng);
+    }
+
+    /* The distance as shown, rounded. Centroid positions round to the half
+       kilometre: quoting one decimal off a suburb centroid reads as though
+       we know where the door is, and we know the suburb. Sorting uses this
+       same number, so the order on screen can never disagree with the
+       figures on screen -- an earlier version sorted on the raw distance and
+       put "1.6 km" above "1.5 km". */
+    function shownKm(l) {
+      var d = distanceOf(l);
+      if (d === null) return null;
+      if (l.geo === "suburb") return Math.max(0.5, Math.round(d * 2) / 2);
+      return d < 10 ? Math.round(d * 10) / 10 : Math.round(d);
+    }
+
+    function nearLabel(l) {
+      var km = shownKm(l);
+      if (km === null) return "";
+      var n = km < 10 ? km.toFixed(1) : Math.round(km);
+      return (l.geo === "suburb" ? "about " : "") + n + " km away";
+    }
+
     var rank = { featured: 0, claimed: 1, unclaimed: 2 };
     function sortFn(a, b) {
       switch (state.sort) {
+        case "near": {
+          var da = shownKm(a), db = shownKm(b);
+          /* Listings with no coordinates sort last rather than to zero. */
+          if (da === null && db === null) return a.name.localeCompare(b.name);
+          if (da === null) return 1;
+          if (db === null) return -1;
+          if (da !== db) return da - db;
+          /* Same shown distance: the one whose position we actually know
+             goes first. A whole suburb shares one centroid, so without this
+             a run of identical approximations leads the page. */
+          var pa = a.geo === "address" ? 0 : 1, pb = b.geo === "address" ? 0 : 1;
+          return pa - pb || a.name.localeCompare(b.name);
+        }
         case "rating": return b.rating - a.rating || b.reviews - a.reviews;
         case "reviews": return b.reviews - a.reviews;
         case "price": return a.priceFrom - b.priceFrom;
@@ -1528,7 +1586,8 @@
           '<div class="listing__head">' +
             "<div>" +
               '<h3 class="listing__name"><a href="' + esc(l.url || '#') + '">' + esc(l.name) + "</a></h3>" +
-              '<p class="listing__where">' + ICON.pin + esc(l.suburb) + " · " + esc(regionNames[l.region] || "") + "</p>" +
+              '<p class="listing__where">' + ICON.pin + esc(l.suburb) + " · " + esc(regionNames[l.region] || "") +
+                (nearLabel(l) ? '<span class="listing__km">' + esc(nearLabel(l)) + "</span>" : "") + "</p>" +
             "</div>" +
             (l.rating > 0
               ? '<span class="rating">' + ICON.star + l.rating.toFixed(1) +
@@ -2137,6 +2196,65 @@
 
     var sortSel = $("#dirSort");
     if (sortSel) sortSel.addEventListener("change", function () { state.sort = sortSel.value; state.page = 1; render(); });
+
+    /* ---- the button ---------------------------------------------------- */
+    (function initNearMe() {
+      var btn = $("[data-near]");
+      var msg = $("#dirNearMsg");
+      if (!btn) return;
+
+      /* No geolocation, or an insecure page: remove the control rather than
+         leave one that cannot work. Geolocation needs HTTPS; localhost is
+         exempt, so development still exercises this path. */
+      if (!navigator.geolocation || !window.isSecureContext) {
+        btn.parentNode.removeChild(btn);
+        return;
+      }
+
+      function say(text) { if (msg) msg.textContent = text || ""; }
+
+      btn.addEventListener("click", function () {
+        btn.disabled = true;
+        say("Finding you\u2026");
+
+        navigator.geolocation.getCurrentPosition(
+          function (pos) {
+            here = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            btn.disabled = false;
+
+            /* Perth, roughly. Someone in another city gets an honest answer
+               instead of a list whose first entry is 2,000km away. */
+            var far = haversine(here.lat, here.lng, -31.9535, 115.857);
+            if (far > 400) {
+              here = null;
+              say("You look to be about " + Math.round(far) + " km from Perth \u2014 showing everything instead.");
+              return;
+            }
+
+            /* Add the option once, then select it. */
+            if (sortSel && !sortSel.querySelector('option[value="near"]')) {
+              var opt = document.createElement("option");
+              opt.value = "near";
+              opt.textContent = "Sort: Nearest to me";
+              sortSel.insertBefore(opt, sortSel.firstChild);
+            }
+            if (sortSel) sortSel.value = "near";
+            state.sort = "near";
+            state.page = 1;
+            render();
+            btn.textContent = "Sorted by distance";
+            say("");
+          },
+          function (err) {
+            btn.disabled = false;
+            say(err && err.code === 1
+              ? "No problem \u2014 filter by suburb instead."
+              : "Could not get your location. Try the suburb filter.");
+          },
+          { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+        );
+      });
+    })();
 
     var qInput = $("#dirQ");
     if (qInput) {

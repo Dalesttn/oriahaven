@@ -265,6 +265,27 @@ $oria_prices = array(
 
 	</div>
 
+	<?php
+	/*
+	 * Find near me. Category pages only -- on the whole directory "nearest"
+	 * answers a question nobody asked ("what is closest, of anything?"),
+	 * where on a category page it answers the one people actually have:
+	 * which of these is near me.
+	 *
+	 * Rendered without the hidden attribute so it works before app.js runs,
+	 * and removed by the script when the browser has no geolocation. A
+	 * button that does nothing is worse than no button.
+	 */
+	?>
+	<?php if ( isset( $args['term'] ) && $args['term'] instanceof WP_Term ) : ?>
+		<div class="toolbar__near">
+			<button type="button" class="btn btn--ghost btn--sm" id="dirNear" data-near>
+				<?php esc_html_e( 'Use my location', 'oria' ); ?>
+			</button>
+			<span class="toolbar__nearmsg" id="dirNearMsg" role="status" aria-live="polite"></span>
+		</div>
+	<?php endif; ?>
+
 	<div class="toolbar__sort">
 		<label class="sr-only" for="dirSort"><?php esc_html_e( 'Sort by', 'oria' ); ?></label>
 		<select class="select" id="dirSort">

@@ -977,3 +977,21 @@ html.has-sheet .cmptray { display: none; }
 @media (max-width: 50rem) {
   .foot__list a, .foot__legal a { display: inline-block; padding-block: .3rem; }
 }
+
+
+/* --- Find near me ------------------------------------------------------
+   The button sits with the sort control because that is what it changes.
+   The message beside it is a live region, so a screen reader hears the
+   refusal as well as seeing it. */
+.toolbar__near { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.toolbar__nearmsg { font-size: var(--fs-sm); color: var(--text-soft); }
+.listing__km {
+  margin-left: .5rem; padding-left: .5rem;
+  border-left: 1px solid var(--line);
+  color: var(--moss); font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 40rem) {
+  .toolbar__near { width: 100%; }
+  .toolbar__near .btn { width: 100%; justify-content: center; }
+}
