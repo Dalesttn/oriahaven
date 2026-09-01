@@ -147,8 +147,8 @@ function build(): string {
 
 	$out .= "## Key pages\n\n";
 	$out .= item( 'Home', $home . '/', 'What the directory is, and search by practice and suburb' );
-	$out .= item( 'Full directory', $home . '/directory/', 'Every published practice, filterable by category, area, price and format' );
-	$out .= item( 'Browse all of Perth', $home . '/perth/', 'Hub linking every practice category, modality and suburb in one place' );
+	$out .= item( 'Full directory', $home . '/explore/', 'Every published practice, filterable by category, area, price and format' );
+	$out .= item( 'Browse all of Perth', $home . '/explore/perth/', 'Hub linking every practice category, modality and suburb in one place' );
 	$out .= item( 'Wellness Finder', $home . '/wellness-finder/', 'Four questions, then matched practices, events and articles' );
 	$out .= item( "What's on in Perth", $home . '/whats-on-perth/', 'Upcoming wellness workshops and events, filterable by date, suburb, type and price' );
 	$out .= item( 'The Journal', $home . '/journal/', 'Articles about wellness in Perth — practical guides, no health claims' );

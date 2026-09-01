@@ -83,8 +83,26 @@ $oria_suburbs   = function_exists( '\Oria\Core\AreaDepth\popular' )
 				<h4><?php esc_html_e( 'Explore', 'oria' ); ?></h4>
 				<ul class="foot__list">
 					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Explore', 'oria' ); ?></a></li>
-					<?php // Sitewide, so every practice, modality and suburb page sits two clicks from anywhere on the site. ?>
-					<li><a href="<?php echo esc_url( home_url( '/perth/' ) ); ?>"><?php esc_html_e( 'Browse all of Perth', 'oria' ); ?></a></li>
+					<?php
+					/*
+					 * Sitewide, so every practice, modality and suburb page sits two
+					 * clicks from anywhere on the site.
+					 *
+					 * Points straight at /explore/{city}/ rather than /{city}/, which
+					 * only 301s there -- a redirect on a link this many pages carry.
+					 * And it follows the city rather than naming Perth, so a southern
+					 * page offers the south rather than sending the reader north.
+					 */
+					$oria_footcity = function_exists( '\Oria\Core\Cities\current' ) ? \Oria\Core\Cities\current() : null;
+					$oria_footurl  = function_exists( '\Oria\Core\Explore\base_url' )
+						? \Oria\Core\Explore\base_url( $oria_footcity )
+						: home_url( '/explore/perth/' );
+					$oria_footname = function_exists( '\Oria\Core\Cities\name' ) ? \Oria\Core\Cities\name( $oria_footcity ) : __( 'Perth', 'oria' );
+					?>
+					<li><a href="<?php echo esc_url( $oria_footurl ); ?>"><?php
+						/* translators: %s: the city, e.g. Perth. */
+						printf( esc_html__( 'Browse all of %s', 'oria' ), esc_html( $oria_footname ) );
+					?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/wellness-finder/' ) ); ?>"><?php esc_html_e( 'Wellness Finder', 'oria' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/compare/' ) ); ?>"><?php esc_html_e( 'Compare experiences', 'oria' ); ?></a></li>
 					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ); ?>"><?php esc_html_e( 'Workshops/Events', 'oria' ); ?></a></li>
