@@ -1604,6 +1604,37 @@ class Command {
 			}
 		}
 
+		/*
+		 * Optional fields, written only when the seed carries them.
+		 *
+		 * Unlike the scalars above these are NOT unconditional: a file that
+		 * omits them must not blank a value a crawl or an owner already
+		 * filled in. That is the difference between a seed and a truth.
+		 *
+		 * Coordinates carry a provenance rule. Nominatim data is ODbL and may
+		 * be stored with attribution; Google Places coordinates may not be
+		 * stored at all. geo_precision records which, so the rule stays
+		 * checkable after the import. The seed is trusted to have obeyed it.
+		 */
+		foreach ( array( 'duration_min', 'group_size', 'what_to_bring' ) as $key ) {
+			if ( ! array_key_exists( $key, $row ) || '' === $row[ $key ] || null === $row[ $key ] ) {
+				continue;
+			}
+			if ( function_exists( 'update_field' ) ) {
+				update_field( $key, $row[ $key ], $post_id );
+			} else {
+				update_post_meta( $post_id, $key, $row[ $key ] );
+			}
+		}
+
+		// Plain post meta, not ACF: geo_* has no field group behind it.
+		foreach ( array( 'geo_lat', 'geo_lng', 'geo_precision' ) as $key ) {
+			if ( ! array_key_exists( $key, $row ) || '' === $row[ $key ] || null === $row[ $key ] ) {
+				continue;
+			}
+			update_post_meta( $post_id, $key, $row[ $key ] );
+		}
+
 		// services[] -> the ACF repeater's [{name}] shape.
 		$services = array_map(
 			static fn( $s ): array => array( 'name' => (string) $s ),
