@@ -1130,10 +1130,18 @@
        scrolled to and spotlit gold — rather than straight off the page:
        the card holds the rating, price and blurb the decision needs. The
        href stays the real profile URL, so new-tab and no-JS still land
-       there, and so does anyone the filters have hidden the card from. */
+       there, and so does anyone the filters have hidden the card from.
+
+       Desktop only. Below the breakpoint where the map stops sitting beside
+       its list, the card is somewhere further down a stacked page, so the
+       redirect reads as a link that scrolled instead of opening — and a
+       button saying "View profile" has to open the profile. Checked at click
+       time, not at load, so rotating a phone gets the right behaviour. */
+    var sideBySide = window.matchMedia("(min-width: 60.0625rem)");
     host.addEventListener("click", function (e) {
       var link = e.target.closest && e.target.closest("[data-catmap-view]");
       if (!link || !DirAPI.revealCard) return;
+      if (!sideBySide.matches) return; // let the link do what it says
       var card = DirAPI.revealCard(link.getAttribute("href"));
       if (!card) return; // filtered out of the list: follow the link
       e.preventDefault();
