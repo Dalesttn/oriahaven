@@ -133,13 +133,75 @@ function band( array $products, string $heading = '' ): string {
 	return $out;
 }
 
-/** @param array<string, string> $p */
+/**
+ * One product card.
+ *
+ * The card carries its own filterable data on the element — category, budget
+ * band, price as a number, and a folded search string. Filtering, searching
+ * and sorting are then reads of the DOM rather than a second copy of the
+ * catalogue shipped to the browser as JSON that could fall out of step.
+ *
+ * Everything editorial is optional and renders only when it has been
+ * written. A product with no note, no best-for and no price is still a valid
+ * card; it simply says less, which is the honest result of saying less.
+ *
+ * @param array<string, mixed> $p
+ */
 function card( array $p ): string {
-	$out = '<div class="prodcard" data-oshop-product="' . esc_attr( $p['id'] ) . '" data-oshop-cat="' . esc_attr( $p['category'] ) . '">';
+	$amount = (float) ( $p['amount'] ?? 0 );
+	$band   = Engine\budget_band( $amount );
+
+	// What a search box should match: everything a reader can see.
+	$haystack = strtolower(
+		trim(
+			implode(
+				' ',
+				array_filter(
+					array(
+						(string) $p['title'],
+						(string) ( $p['brand'] ?? '' ),
+						// Every category, so a search for one finds a product
+						// filed under it even when the card names another.
+						implode( ' ', (array) ( $p['cat_names'] ?? array() ) ),
+						(string) ( $p['blurb'] ?? '' ),
+						(string) ( $p['note'] ?? '' ),
+					)
+				)
+			)
+		)
+	);
+
+	$best        = (string) ( $p['best_for'] ?? '' );
+	$best_labels = array(
+		'beginners'    => __( 'Good for beginners', 'oria' ),
+		'everyday'     => __( 'Everyday use', 'oria' ),
+		'practitioner' => __( 'For practitioners', 'oria' ),
+		'gift'         => __( 'Makes a gift', 'oria' ),
+	);
+
+	$out  = '<article class="prodcard"';
+	$out .= ' data-oshop-product="' . esc_attr( $p['id'] ) . '"';
+	$out .= ' data-oshop-cat="' . esc_attr( $p['category'] ) . '"';
+	// Space-separated so a chip can match any one of them, not just the first.
+	$out .= ' data-oshop-catslug="' . esc_attr( (string) ( $p['cat_slug'] ?? '' ) ) . '"';
+	$out .= ' data-oshop-catslugs=" ' . esc_attr( implode( ' ', (array) ( $p['cat_slugs'] ?? array() ) ) ) . ' "';
+	$out .= ' data-oshop-amount="' . esc_attr( (string) $amount ) . '"';
+	$out .= ' data-oshop-band="' . esc_attr( $band ) . '"';
+	$out .= ' data-oshop-search="' . esc_attr( $haystack ) . '">';
+
 	if ( '' !== ( $p['image'] ?? '' ) ) {
-		// Only ever an API-provided URL (PA-API mode) — never a scraped one.
-		$out .= '<span class="prodcard__img"><img src="' . esc_url( $p['image'] ) . '" alt="" loading="lazy"></span>';
+		// Only ever an API-provided or owner-uploaded URL — never a scraped one.
+		/* translators: %s: product name */
+		$alt  = sprintf( __( '%s product photograph', 'oria' ), $p['title'] );
+		$out .= '<span class="prodcard__img"><img src="' . esc_url( $p['image'] ) . '"'
+			. ' alt="' . esc_attr( $alt ) . '" loading="lazy" decoding="async"'
+			. ' width="400" height="300"></span>';
+	} else {
+		// A card with no picture keeps the grid even rather than collapsing.
+		$out .= '<span class="prodcard__img prodcard__img--none" aria-hidden="true"></span>';
 	}
+
+	$out .= '<div class="prodcard__head">';
 	if ( '' !== $p['category'] ) {
 		$out .= '<span class="prodcard__cat micro">' . esc_html( $p['category'] ) . '</span>';
 	}
@@ -147,17 +209,40 @@ function card( array $p ): string {
 	if ( '' !== $p['brand'] ) {
 		$out .= '<em class="prodcard__brand">' . esc_html( $p['brand'] ) . '</em>';
 	}
+	$out .= '</div>';
+
 	if ( '' !== $p['blurb'] ) {
 		$out .= '<p class="prodcard__blurb">' . esc_html( $p['blurb'] ) . '</p>';
 	}
+
+	if ( isset( $best_labels[ $best ] ) ) {
+		$out .= '<span class="prodcard__tag">' . esc_html( $best_labels[ $best ] ) . '</span>';
+	}
+
+	/*
+	 * A native disclosure: keyboard accessible for free, closed by default so
+	 * the grid stays scannable, and no JavaScript to go wrong.
+	 */
+	if ( '' !== (string) ( $p['note'] ?? '' ) ) {
+		$out .= '<details class="prodcard__why">';
+		$out .= '<summary>' . esc_html__( 'Why we picked it', 'oria' ) . '</summary>';
+		$out .= '<p>' . esc_html( (string) $p['note'] ) . '</p>';
+		$out .= '</details>';
+	}
+
 	$out .= '<div class="prodcard__foot">';
 	if ( '' !== $p['price'] ) {
 		/* translators: %s: approximate price */
 		$out .= '<span class="prodcard__price">' . esc_html( sprintf( __( 'around %s', 'oria' ), $p['price'] ) ) . '</span>';
+	} else {
+		// Never invent a price. Say where the real one lives.
+		$out .= '<span class="prodcard__price prodcard__price--none">' . esc_html__( 'Price on Amazon', 'oria' ) . '</span>';
 	}
 	$out .= '<a class="btn btn--dark btn--sm" href="' . esc_url( $p['url'] ) . '" target="_blank" rel="sponsored nofollow noopener" data-oshop-click="' . esc_attr( $p['id'] ) . '">'
-		. esc_html__( 'View on Amazon', 'oria' ) . ' ' . \Oria\Theme\arrow() . '</a>';
-	$out .= '</div></div>';
+		. esc_html__( 'View on Amazon', 'oria' ) . ' ' . \Oria\Theme\arrow()
+		. '<span class="sr-only"> ' . esc_html__( '(opens on Amazon)', 'oria' ) . '</span></a>';
+	$out .= '</div></article>';
+
 	return $out;
 }
 

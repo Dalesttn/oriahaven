@@ -160,23 +160,82 @@ function build_rows( array $posts, int $limit, array &$seen ): array {
 		$upload = (int) get_post_meta( $p->ID, 'image', true );
 		$image  = $upload ? (string) wp_get_attachment_image_url( $upload, 'medium_large' ) : '';
 
-		$terms  = wp_get_post_terms( $p->ID, Data\TAX );
+		$terms = wp_get_post_terms( $p->ID, Data\TAX );
+		$terms = is_wp_error( $terms ) ? array() : $terms;
+
+		/*
+		 * The first term names the card; ALL of them make it findable.
+		 *
+		 * A bowl filed under both singing-bowls and sound-healing is one
+		 * product with two homes, and a category chip that only knows the
+		 * first one quietly hides it from the other — with a count beside
+		 * the chip saying so out loud.
+		 */
 		$rows[] = array(
-			'id'       => (string) $p->ID,
-			'image'    => $image ?: (string) get_post_meta( $p->ID, '_oshop_image', true ),
-			'title'    => \Oria\Theme\ptitle( $p ),
-			'asin'     => $asin,
-			'price'    => (string) get_post_meta( $p->ID, 'price', true ),
-			'brand'    => (string) get_post_meta( $p->ID, 'brand', true ),
-			'blurb'    => (string) get_post_meta( $p->ID, 'blurb', true ),
-			'category' => ! is_wp_error( $terms ) && $terms ? $terms[0]->name : '',
-			'url'      => affiliate_url( $asin ),
+			'id'        => (string) $p->ID,
+			'image'     => $image ?: (string) get_post_meta( $p->ID, '_oshop_image', true ),
+			'title'     => \Oria\Theme\ptitle( $p ),
+			'asin'      => $asin,
+			'price'     => (string) get_post_meta( $p->ID, 'price', true ),
+			'brand'     => (string) get_post_meta( $p->ID, 'brand', true ),
+			'blurb'     => (string) get_post_meta( $p->ID, 'blurb', true ),
+			'category'  => $terms ? $terms[0]->name : '',
+			'cat_slug'  => $terms ? $terms[0]->slug : '',
+			'cat_slugs' => wp_list_pluck( $terms, 'slug' ),
+			'cat_names' => wp_list_pluck( $terms, 'name' ),
+			'url'       => affiliate_url( $asin ),
+			// Curation, not catalogue: written by an editor or absent.
+			'note'     => (string) get_post_meta( $p->ID, 'editorial_note', true ),
+			'best_for' => (string) get_post_meta( $p->ID, 'best_for', true ),
+			'featured' => (bool) get_post_meta( $p->ID, 'featured', true ),
+			'collections' => array_values( array_filter( (array) get_post_meta( $p->ID, 'collections', true ) ) ),
+			// Derived, never asked for: one number cannot disagree with itself.
+			'amount'   => price_amount( (string) get_post_meta( $p->ID, 'price', true ) ),
 		);
 		if ( count( $rows ) >= $limit ) {
 			break;
 		}
 	}
 	return $rows;
+}
+
+/**
+ * The number inside a curated price string, or 0 when there is not one.
+ *
+ * Prices are typed by hand as display text ($49, around $49, From $115), so
+ * sorting and budget bands need a number teased back out rather than a
+ * second field an editor could contradict. 0 means unknown, and unknown
+ * sorts last rather than pretending to be free.
+ */
+function price_amount( string $price ): float {
+	if ( ! preg_match( '~[0-9][0-9,]*(?:[.][0-9]{1,2})?~', $price, $m ) ) {
+		return 0.0;
+	}
+
+	return (float) str_replace( ',', '', $m[0] );
+}
+
+/**
+ * Which budget band a price falls in, for the finder and the filters.
+ *
+ * Bands come from the brief. A product with no price has no band: it is
+ * excluded from a budget filter rather than guessed into one.
+ */
+function budget_band( float $amount ): string {
+	if ( $amount <= 0 ) {
+		return '';
+	}
+	if ( $amount < 50 ) {
+		return 'under-50';
+	}
+	if ( $amount < 100 ) {
+		return '50-100';
+	}
+	if ( $amount < 250 ) {
+		return '100-250';
+	}
+
+	return '250-plus';
 }
 
 /** The outbound URL: marketplace product page carrying the Associate tag. */

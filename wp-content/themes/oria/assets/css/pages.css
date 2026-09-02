@@ -778,6 +778,137 @@ a.livesession:hover { background: var(--sand-2); }
 .evhero img { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; display: block; }
 @media (max-width: 720px) { .evhero img { aspect-ratio: 16 / 10; } }
 
+/* --- Shop: hero ------------------------------------------------------- */
+/* Deliberately not tall. The brief asks for an editorial opening that still
+   lets the products start above the fold, so the hero earns its space with
+   type and a single quiet mark rather than height. */
+.shophero {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s-6); align-items: center;
+  /* padding-block only: .wrap owns the inline padding, and the shorthand
+     silently reset it to zero, pinning the hero to the window edge. */
+  padding-block: var(--s-6) var(--s-5);
+}
+.shophero__copy { max-width: 60ch; display: grid; gap: var(--s-3); }
+.shophero__eyebrow { color: var(--moss); letter-spacing: .14em; }
+/* Sized for two lines rather than three. At the theme's full h1 scale this
+   headline wrapped to three lines once the photograph took its column, and
+   the extra line alone pushed the first product off the fold. */
+.shophero__title { margin: 0; font-size: clamp(2rem, 3.5vw, 2.9rem); line-height: 1.1; }
+.shophero__lede { margin: 0; max-width: 54ch; }
+.shophero__trust {
+  display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center;
+  margin: var(--s-1) 0 0; font-size: var(--fs-xs); font-weight: 600;
+  color: var(--text-soft);
+}
+.shophero__trust span[aria-hidden] { color: var(--text-faint); }
+.shophero__disclosure {
+  margin: 0; font-size: var(--fs-xs); color: var(--text-faint); max-width: 62ch;
+}
+/* The photograph sits in a soft organic frame rather than a hard rectangle,
+   which keeps the edge quiet against the sand ground. The tinted backdrop
+   means the space is already the right colour before the image loads. */
+.shophero__art {
+  width: clamp(200px, 26vw, 340px); aspect-ratio: 4 / 3;
+  border-radius: 52% 48% 46% 54% / 46% 52% 48% 54%;
+  overflow: hidden; border: 1px solid var(--teal-line);
+  /* The tint is the fallback as well as the backdrop, so the space is
+     already the right colour before — or without — the photograph. */
+  background: var(--sand-2) center / cover no-repeat;
+}
+/* Declared only above the breakpoint where the element is shown, so phones
+   never request it at all. image-set lets a retina screen take the larger
+   file without a second element. */
+@media (min-width: 721px) {
+  .shophero__art {
+    background-image: image-set(
+      url("../img/shop-hero-520.webp") 1x,
+      url("../img/shop-hero.webp") 2x
+    );
+    background-image: -webkit-image-set(
+      url("../img/shop-hero-520.webp") 1x,
+      url("../img/shop-hero.webp") 2x
+    );
+  }
+}
+@media (max-width: 720px) {
+  .shophero { grid-template-columns: 1fr; gap: var(--s-4); padding-block: var(--s-4) var(--s-3); }
+  /* Hidden rather than stacked: a decorative photograph above the products
+     is exactly the height that pushed them off the fold before. */
+  .shophero__art { display: none; }
+  /* The hero was 481px on a 812px screen, which put the first product below
+     the fold on a page whose job is showing products. Tighter type and
+     leading buy that back without losing anything a reader needs. */
+  .shophero__copy { gap: var(--s-2); }
+  .shophero__title { font-size: clamp(1.75rem, 7.4vw, 2.15rem); line-height: 1.12; }
+  .shophero__lede { font-size: var(--fs-sm); line-height: 1.5; }
+  .shophero__trust { font-size: 11px; gap: 6px; }
+  .shophero__disclosure { font-size: 11px; line-height: 1.45; }
+}
+
+/* --- Shop: search, sort, chips --------------------------------------- */
+.shoptools {
+  display: flex; flex-wrap: wrap; gap: var(--s-3);
+  align-items: center; margin-bottom: var(--s-4);
+}
+.shoptools__search { position: relative; flex: 1 1 22rem; min-width: 0; }
+.shoptools__input { width: 100%; padding-right: 2.6rem; }
+.shoptools__clear {
+  position: absolute; right: .5rem; top: 50%; transform: translateY(-50%);
+  width: 1.75rem; height: 1.75rem; border-radius: 50%; cursor: pointer;
+  border: 0; background: var(--sand-2); color: var(--text-soft);
+  font-size: 1.1rem; line-height: 1; display: grid; place-items: center;
+}
+.shoptools__clear:hover { background: var(--sand-3); color: var(--ink); }
+/* display:grid above would otherwise beat the hidden attribute, leaving a
+   clear button sitting in an already-empty search box. */
+.shoptools__clear[hidden] { display: none; }
+.shoptools__sort { flex: 0 0 auto; }
+
+/* Chips scroll rather than wrap on small screens: a filter row that grows
+   to four lines pushes the products it filters off the screen. */
+.shopchips {
+  display: flex; gap: var(--s-2); align-items: center;
+  margin-bottom: var(--s-3); padding-bottom: var(--s-1);
+  overflow-x: auto; scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.shopchips .fchip { white-space: nowrap; flex: 0 0 auto; }
+.fchip__n {
+  display: inline-block; margin-left: .4rem; padding: 0 .35rem;
+  min-width: 1.25rem; border-radius: 999px;
+  background: var(--sand-2); color: var(--text-faint);
+  font-size: 10px; font-weight: 700; line-height: 1.5;
+}
+.fchip.is-on .fchip__n { background: rgba(255, 255, 255, .22); color: var(--white); }
+.shopcount { font-size: var(--fs-xs); margin: 0 0 var(--s-3); min-height: 1.2em; }
+
+/* --- Shop: the header a category gets ---------------------------------
+   A tinted band with the category name and a couple of sentences about
+   choosing one. The same block a standalone /shop/{category}/ page will
+   use, so the two cannot drift apart. */
+.shopcathead {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s-4); align-items: end;
+  background: linear-gradient(120deg, var(--sand-2), var(--sand-3));
+  border: 1px solid var(--teal-line); border-radius: var(--r-md);
+  padding: var(--s-5); margin-bottom: var(--s-4);
+}
+.shopcathead[hidden] { display: none; }
+.shopcathead__copy { display: grid; gap: var(--s-2); }
+.shopcathead__title { margin: 0; }
+.shopcathead__intro {
+  margin: 0; max-width: 68ch; font-size: var(--fs-sm);
+  color: var(--text-soft); line-height: 1.6;
+}
+.shopcathead__n {
+  margin: 0; white-space: nowrap; font-size: var(--fs-xs);
+  font-weight: 600; color: var(--moss);
+}
+@media (max-width: 720px) {
+  .shopcathead { grid-template-columns: 1fr; gap: var(--s-2); padding: var(--s-4); align-items: start; }
+}
+
 /* --- Shop: product cards --------------------------------------------- */
 .prodgrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-4); }
 @media (max-width: 960px) { .prodgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -794,9 +925,43 @@ a.livesession:hover { background: var(--sand-2); }
 .prodcard__cat { color: var(--moss); }
 .prodcard__name { font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
 .prodcard__brand { font-style: normal; font-size: var(--fs-xs); color: var(--text-faint); }
-.prodcard__blurb { font-size: var(--fs-sm); color: var(--text-soft); flex: 1; }
-.prodcard__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin-top: var(--s-3); }
+.prodcard__head { display: grid; gap: 2px; }
+.prodcard__blurb {
+  font-size: var(--fs-sm); color: var(--text-soft); flex: 1;
+  /* Amazon titles run long. Clamp keeps the grid even without truncating
+     the stored text, so a proper blurb written later shows in full. */
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* Keeps a pictureless card the same height as its neighbours. */
+.prodcard__img--none { aspect-ratio: 4 / 3; }
+.prodcard__tag {
+  justify-self: start; font-size: 10px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--moss); background: var(--sand-2);
+  border-radius: 999px; padding: 3px 9px;
+}
+/* Native <details>: keyboard accessible without any script, and closed by
+   default so a grid of cards stays scannable. */
+.prodcard__why { font-size: var(--fs-xs); color: var(--text-soft); }
+.prodcard__why summary {
+  cursor: pointer; font-weight: 600; color: var(--moss);
+  list-style: none; padding: 2px 0;
+}
+.prodcard__why summary::-webkit-details-marker { display: none; }
+.prodcard__why summary::after { content: " +"; font-weight: 700; }
+.prodcard__why[open] summary::after { content: " –"; }
+.prodcard__why summary:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+.prodcard__why p { margin: .4rem 0 0; line-height: 1.5; }
+/* Wraps rather than overflows: price plus a fixed-width CTA is wider than a
+   320px screen once card and page padding are taken out, and a flex row that
+   cannot wrap pushes the whole document sideways instead of stacking. */
+.prodcard__foot {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: var(--s-2) var(--s-3); margin-top: var(--s-3);
+}
 .prodcard__price { font-size: var(--fs-xs); font-weight: 600; color: var(--text-soft); white-space: nowrap; }
+.prodcard__price--none { font-weight: 500; color: var(--text-faint); }
 .shopband__disclosure { margin-top: var(--s-5); font-size: var(--fs-xs); color: var(--text-faint); max-width: 62ch; }
 
 /* --- Branded event artwork ------------------------------------------- */

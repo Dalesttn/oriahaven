@@ -63,6 +63,68 @@ function register(): void {
 					'type'         => 'text',
 					'instructions' => 'Your own words, one sentence — why it belongs in a practice. No health claims.',
 				),
+				/*
+				 * Why we picked it.
+				 *
+				 * The difference between a product feed and curation, and the one
+				 * field that cannot be derived, imported or guessed -- it is the
+				 * editor saying who the thing is for and why it earned a place.
+				 * Left empty it simply does not render; a card never invents one.
+				 */
+				array(
+					'key'          => 'field_oria_prod_note',
+					'name'         => 'editorial_note',
+					'label'        => 'Why we picked it',
+					'type'         => 'textarea',
+					'rows'         => 3,
+					'maxlength'    => 320,
+					'new_lines'    => '',
+					'instructions' => 'Two or three sentences in your own words: who it suits, and what it is good for as an object. Never a claim about health.',
+				),
+				array(
+					'key'           => 'field_oria_prod_bestfor',
+					'name'          => 'best_for',
+					'label'         => 'Best for',
+					'type'          => 'select',
+					'allow_null'    => 1,
+					'ui'            => 1,
+					'choices'       => array(
+						'beginners'    => 'Beginners',
+						'everyday'     => 'Everyday use',
+						'practitioner' => 'Practitioners',
+						'gift'         => 'Gifting',
+					),
+					'wrapper'       => array( 'width' => '50' ),
+					'instructions'  => 'A fixed list on purpose: a filter is only useful when every product answers the same question the same way.',
+				),
+				/*
+				 * Collections are editorial groupings, not categories. A product
+				 * sits in one category and may appear in several collections, or
+				 * none -- an empty collection renders nothing rather than an empty
+				 * shelf.
+				 */
+				array(
+					'key'          => 'field_oria_prod_collections',
+					'name'         => 'collections',
+					'label'        => 'Collections',
+					'type'         => 'checkbox',
+					'choices'      => array(
+						'sound-practice' => 'Start your sound healing practice',
+						'calmer-evening' => 'Create a calmer evening',
+						'meditation-space' => 'Build your meditation space',
+						'movement-recovery' => 'Movement and recovery',
+					),
+					'wrapper'      => array( 'width' => '50' ),
+					'instructions' => 'Optional. Drives the curated shelves on the shop page.',
+				),
+				array(
+					'key'          => 'field_oria_prod_featured',
+					'name'         => 'featured',
+					'label'        => 'Feature as the Oria Haven pick',
+					'type'         => 'true_false',
+					'ui'           => 1,
+					'instructions' => 'One product at a time. The most recently updated featured product wins, so there is no way to leave two fighting.',
+				),
 				array(
 					'key'           => 'field_oria_prod_practices',
 					'name'          => 'practices',
@@ -84,6 +146,47 @@ function register(): void {
 					'return_format' => 'id',
 					'preview_size'  => 'medium',
 					'instructions'  => 'Only images you have the rights to: your own photos, or free-licence stock of the product category. NEVER images saved from Amazon — that breaches the Associates agreement and risks the account. Official Amazon images arrive automatically once PA-API access is unlocked.',
+				),
+			),
+		)
+	);
+
+	/*
+	 * The copy that heads a product category.
+	 *
+	 * Written per category, never generated: a shelf worth having is a shelf
+	 * someone can say something true about. An empty intro renders nothing
+	 * at all rather than a paragraph of filler, which is also the signal that
+	 * the category is not yet ready to be a page of its own.
+	 *
+	 * TGA/AHPRA: this is copy about objects, not outcomes. What the thing is,
+	 * who tends to buy it, what to look for when choosing — never what it
+	 * does to a body. Comparable stores write "1 in 3 Australians have high
+	 * blood pressure"; the directory does not get to make that move.
+	 */
+	acf_add_local_field_group(
+		array(
+			'key'      => 'group_oria_prodcat',
+			'title'    => 'Category page',
+			'location' => array( array( array( 'param' => 'taxonomy', 'operator' => '==', 'value' => Data\TAX ) ) ),
+			'fields'   => array(
+				array(
+					'key'          => 'field_oria_prodcat_heading',
+					'name'         => 'heading',
+					'label'        => 'Heading',
+					'type'         => 'text',
+					'placeholder'  => 'Singing bowls',
+					'instructions' => 'Optional. Overrides the category name at the top of the page — "Singing bowls for meditation" reads better as a heading than a filter label does.',
+				),
+				array(
+					'key'          => 'field_oria_prodcat_intro',
+					'name'         => 'intro',
+					'label'        => 'Introduction',
+					'type'         => 'textarea',
+					'rows'         => 4,
+					'maxlength'    => 600,
+					'new_lines'    => '',
+					'instructions' => 'Two or three sentences: what this kind of product is, the differences worth knowing when choosing one, and who tends to want it. Describe the object, never a health outcome.',
 				),
 			),
 		)

@@ -3267,24 +3267,142 @@
     });
   }
 
-  /* Shop page: category chips over the product grid. */
+  /* Shop page: category chips, search and sort over the product grid.
+     Reads the data the cards already carry, so there is no second copy of
+     the catalogue in the page for the two to disagree about.
+
+     The category lives in the URL (?category=singing-bowls) because that is
+     a view worth sharing and linking. Search and sort do not: they are how
+     one person is looking right now, not what they found. */
   function initShopFilter() {
     var root = document.querySelector("[data-shopfilter]");
     if (!root) return;
+
+    var grid = root.querySelector("[data-shop-grid]");
     var empty = root.querySelector("[data-shop-empty]");
-    $$(".fchip", root).forEach(function (chip) {
-      chip.addEventListener("click", function () {
-        $$(".fchip", root).forEach(function (c) { c.classList.toggle("is-on", c === chip); });
-        var cat = chip.dataset.cat || "";
-        var shown = 0;
-        $$(".prodcard", root).forEach(function (card) {
-          var ok = !cat || card.dataset.oshopCat === cat;
-          card.hidden = !ok;
-          if (ok) shown++;
-        });
-        if (empty) empty.hidden = shown > 0;
+    var count = root.querySelector("[data-shop-count]");
+    var search = root.querySelector("[data-shop-search]");
+    var clear = root.querySelector("[data-shop-clear]");
+    var sort = root.querySelector("[data-shop-sort]");
+    var reset = root.querySelector("[data-shop-reset]");
+    var cards = $$(".prodcard", root);
+    if (!cards.length) return;
+
+    /* Recommended is the order the engine returned: curation order. Keeping
+       it means "recommended" can always be returned to, and never has to be
+       reconstructed from something that only looks like it. */
+    cards.forEach(function (card, i) { card.dataset.oshopOrder = String(i); });
+
+    var state = { cat: "", q: "", sort: "recommended" };
+
+    function num(card, key) { return parseFloat(card.dataset[key] || "0") || 0; }
+
+    function apply() {
+      var q = state.q.trim().toLowerCase();
+      var shown = 0;
+
+      cards.forEach(function (card) {
+        /* Every category the product sits in, not just the one on the card,
+           so a bowl filed under bowls and sound healing answers to both. */
+        var okCat = !state.cat ||
+          (card.dataset.oshopCatslugs || "").indexOf(" " + state.cat + " ") !== -1;
+        var okQ = !q || (card.dataset.oshopSearch || "").indexOf(q) !== -1;
+        var ok = okCat && okQ;
+        card.hidden = !ok;
+        if (ok) shown++;
       });
+
+      if (grid && state.sort !== "recommended") {
+        var visible = cards.filter(function (c) { return !c.hidden; });
+        visible.sort(function (a, b) {
+          if (state.sort === "newest") {
+            return num(b, "oshopProduct") - num(a, "oshopProduct");
+          }
+          var pa = num(a, "oshopAmount");
+          var pb = num(b, "oshopAmount");
+          /* A product with no price has no place in a price order. It sorts
+             last either way rather than pretending to cost nothing. */
+          if (!pa && !pb) return 0;
+          if (!pa) return 1;
+          if (!pb) return -1;
+          return state.sort === "price-asc" ? pa - pb : pb - pa;
+        });
+        visible.forEach(function (c) { grid.appendChild(c); });
+      } else if (grid) {
+        cards.slice().sort(function (a, b) {
+          return num(a, "oshopOrder") - num(b, "oshopOrder");
+        }).forEach(function (c) { grid.appendChild(c); });
+      }
+
+      if (empty) empty.hidden = shown > 0;
+      if (grid) grid.hidden = shown === 0;
+      if (count) {
+        count.textContent = shown === cards.length
+          ? ""
+          : shown + (shown === 1 ? " product" : " products");
+      }
+      if (clear) clear.hidden = !state.q;
+    }
+
+    function writeUrl() {
+      if (!window.history || !window.history.replaceState) return;
+      var url = new URL(window.location.href);
+      if (state.cat) { url.searchParams.set("category", state.cat); }
+      else { url.searchParams.delete("category"); }
+      window.history.replaceState({}, "", url);
+    }
+
+    function selectCat(cat) {
+      state.cat = cat || "";
+      $$(".fchip", root).forEach(function (c) {
+        var on = (c.dataset.cat || "") === state.cat;
+        c.classList.toggle("is-on", on);
+        c.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      /* Reveal this category's header, if an editor has written one. */
+      $$("[data-cat-head]", root).forEach(function (h) {
+        h.hidden = !state.cat || h.dataset.catHead !== state.cat;
+      });
+      writeUrl();
+      apply();
+    }
+
+    $$(".fchip", root).forEach(function (chip) {
+      chip.setAttribute("aria-pressed", chip.classList.contains("is-on") ? "true" : "false");
+      chip.addEventListener("click", function () { selectCat(chip.dataset.cat || ""); });
     });
+
+    if (search) {
+      var t;
+      search.addEventListener("input", function () {
+        clearTimeout(t);
+        t = setTimeout(function () { state.q = search.value; apply(); }, 120);
+      });
+    }
+    if (clear) {
+      clear.addEventListener("click", function () {
+        search.value = ""; state.q = ""; apply(); search.focus();
+      });
+    }
+    if (sort) {
+      sort.addEventListener("change", function () { state.sort = sort.value; apply(); });
+    }
+    if (reset) {
+      reset.addEventListener("click", function () {
+        if (search) search.value = "";
+        state.q = "";
+        selectCat("");
+        if (search) search.focus();
+      });
+    }
+
+    /* An incoming ?category= only wins if a chip actually offers it. */
+    var wanted = new URL(window.location.href).searchParams.get("category") || "";
+    if (wanted && root.querySelector('.fchip[data-cat="' + CSS.escape(wanted) + '"]')) {
+      selectCat(wanted);
+    } else {
+      apply();
+    }
   }
 
   /* Thin progress bar along the top while reading an article. */
