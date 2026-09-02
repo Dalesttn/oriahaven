@@ -70,6 +70,17 @@ if ( $oria_has_shop ) {
 		}
 		$oria_cats[ $oria_slug ]['heading'] = trim( (string) get_term_meta( $oria_term->term_id, 'heading', true ) );
 		$oria_cats[ $oria_slug ]['intro']   = trim( (string) get_term_meta( $oria_term->term_id, 'intro', true ) );
+
+		/*
+		 * A shelf with a written guide behind it links to it. Matched on the
+		 * category slug -- /singing-bowls/ for singing-bowls -- so a hub page
+		 * appears here the moment it is published and nothing has to be
+		 * wired up per category. Categories without one show nothing.
+		 */
+		$oria_guide = get_page_by_path( (string) $oria_slug, OBJECT, 'page' );
+		if ( $oria_guide instanceof WP_Post && 'publish' === $oria_guide->post_status ) {
+			$oria_cats[ $oria_slug ]['guide'] = (string) get_permalink( $oria_guide );
+		}
 	}
 }
 
@@ -191,6 +202,19 @@ $oria_total = count( $oria_products );
 						<?php echo esc_html( '' !== (string) ( $oria_c['heading'] ?? '' ) ? $oria_c['heading'] : $oria_c['name'] ); ?>
 					</h2>
 					<p class="shopcathead__intro"><?php echo esc_html( (string) $oria_c['intro'] ); ?></p>
+					<?php if ( ! empty( $oria_c['guide'] ) ) : ?>
+						<p class="shopcathead__guide">
+							<a href="<?php echo esc_url( (string) $oria_c['guide'] ); ?>">
+								<?php
+								printf(
+									/* translators: %s: category name, e.g. Singing bowls */
+									esc_html__( 'Read the %s guide', 'oria' ),
+									esc_html( strtolower( (string) $oria_c['name'] ) )
+								);
+								?>
+							</a>
+						</p>
+					<?php endif; ?>
 				</div>
 				<p class="shopcathead__n">
 					<?php

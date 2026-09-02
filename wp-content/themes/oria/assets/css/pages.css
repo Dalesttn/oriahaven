@@ -4699,3 +4699,189 @@ article.is-spotlit {
   .jcard--feature .jcard__excerpt { font-size: 1rem; }
   .jout__acts .btn { width: 100%; justify-content: center; }
 }
+
+/* --- /singing-bowls/ hub ---------------------------------------------
+   A guide, so it is set as one: a single measured column of prose with
+   the product grid as the only thing allowed to break out of it. The
+   Caveat eyebrow is the same hand marker the guides and the journal use,
+   which is what tells a reader this is editorial and not a shelf. */
+/* Full-bleed band behind a page or article hero, with the photograph fading
+   away to the left so the headline sits on clean ground.
+
+   The picture lives on the ::before so it can be masked, and the copy sits
+   above it on its own layer. The image itself comes in through
+   --heroband-img, which is how one block serves both a hard-coded page hero
+   and an article using whatever its own featured image happens to be.
+   Without that custom property nothing is painted at all, so a post with no
+   featured image renders the plain header it always did. */
+.heroband { position: relative; isolation: isolate; }
+.heroband > .wrap { position: relative; z-index: 1; }
+
+.sbhero { padding-block: clamp(2rem, 4.5vw, 3.25rem) clamp(1.5rem, 3vw, 2.25rem); }
+.sbhero__eyebrow {
+  display: block; font-family: 'Caveat', var(--font-sans);
+  font-size: 1.5rem; letter-spacing: 0; text-transform: none; color: var(--moss);
+}
+.sbhero__title { margin-top: var(--s-2); max-width: 17ch; }
+.sbhero__lede  { margin-top: var(--s-4); max-width: 40ch; }
+
+.sbwrap { padding-top: var(--s-6); }
+.sb__b  { max-width: 68ch; margin-top: var(--s-6); }
+/* The hero already pays for the space under itself; the first block adding
+   its own margin on top of that left a hole on phones, where the band has
+   no picture filling it. */
+.sbwrap > .sb__b:first-child { margin-top: 0; }
+.sb__b--rule { margin-top: var(--s-7, 3rem); padding-top: var(--s-6); border-top: 1px solid var(--line); }
+.sb__b p { max-width: 62ch; }
+.sb__b > .h3 { margin: 0 0 var(--s-4); }
+.sb__lede { font-size: var(--fs-sm); color: var(--text-soft); }
+
+/* Sub-heads inside a block: the buying questions. Small and uppercase
+   rather than another type size, so the block still reads as one piece of
+   prose instead of five stacked sections. */
+.sb__h {
+  margin: var(--s-5) 0 var(--s-2);
+  font-size: var(--fs-xs); font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--moss);
+}
+.sb__b > .sb__h:first-of-type { margin-top: var(--s-4); }
+
+/* The grid sits inside the reading column rather than the full page, so it
+   cannot keep the shop's four tracks -- two products across four columns
+   left each card about 160px wide. Two here, one on a phone. */
+.sb__b .prodgrid { max-width: none; margin-top: var(--s-5); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 560px) { .sb__b .prodgrid { grid-template-columns: 1fr; } }
+
+.sb__facts {
+  list-style: none; margin: var(--s-5) 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3) var(--s-5);
+  font-size: var(--fs-sm); color: var(--text);
+}
+.sb__facts b { display: block; font-size: var(--fs-xs); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
+@media (max-width: 560px) { .sb__facts { grid-template-columns: 1fr; } }
+
+.sb__cta { margin: var(--s-5) 0 0; display: flex; flex-wrap: wrap; gap: var(--s-3); }
+
+.sb__reads { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); }
+.sb__reads li { display: grid; gap: 0.2rem; }
+.sb__reads a { font-weight: 600; color: var(--deep); text-decoration: none; border-bottom: 1px solid var(--teal-line); justify-self: start; }
+.sb__reads a:hover { border-bottom-color: var(--deep); }
+.sb__reads span { font-size: var(--fs-sm); color: var(--text-soft); }
+
+/* A shop shelf that has a written guide behind it links to it. */
+.shopcathead__guide { margin: var(--s-3) 0 0; font-size: var(--fs-sm); }
+.shopcathead__guide a { font-weight: 600; color: var(--deep); text-decoration: none; border-bottom: 1px solid var(--teal-line); }
+.shopcathead__guide a:hover { border-bottom-color: var(--deep); }
+
+/* The photograph, faded out to the left rather than covered over.
+
+   It gets its own right-anchored box rather than filling the band. Two
+   reasons: stretching a 3:2 photo across a 3.3:1 band magnifies the subject
+   to the point of abstraction, and a mask laid over the full width has to
+   have its stops re-tuned for every viewport, because the percentage the
+   headline ends at moves and the percentage the image starts at does not.
+   Masking the image's own box makes the fade a property of the picture.
+
+   A mask, not a coloured scrim: the left resolves to the real page ground,
+   so this keeps working if --paper is ever retuned. A hard-coded hex would
+   quietly stop matching the day that happened.
+
+   Two masks intersected -- one left, one top-and-bottom -- so the picture
+   dissolves into the page instead of ending on three ruled edges.
+
+   Declared only above the breakpoint that shows it, so a phone never
+   requests the file: below 861px the pseudo-element is not generated and
+   the background is never fetched. Same rule the shop hero follows. */
+@media (min-width: 861px) {
+  .heroband:not(.heroband--bare) { min-height: clamp(320px, 29vw, 420px); display: grid; align-items: center; }
+  .heroband::before {
+    content: ""; position: absolute; z-index: 0; pointer-events: none;
+    top: 0; bottom: 0; right: 0; width: clamp(360px, 50%, 1000px);
+    background-image: var(--heroband-img, none);
+    background-position: right center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, rgba(0,0,0,.28) 30%, rgba(0,0,0,.72) 55%, #000 78%),
+      linear-gradient(to bottom, transparent 0%, #000 14%, #000 84%, transparent 100%);
+    mask-image:
+      linear-gradient(to right, transparent 0%, rgba(0,0,0,.28) 30%, rgba(0,0,0,.72) 55%, #000 78%),
+      linear-gradient(to bottom, transparent 0%, #000 14%, #000 84%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+  /* Nothing supplied, nothing painted -- and no empty box in the way. */
+  .heroband--bare::before { content: none; }
+}
+
+/* The singing bowls hub supplies its picture from the theme rather than
+   from a post, so it names the files here instead of inline. */
+@media (min-width: 861px) {
+  .sbhero-band {
+    --heroband-img: image-set(
+      url("../img/singing-bowls-hero-1280.webp") 1x,
+      url("../img/singing-bowls-hero.webp") 2x
+    );
+  }
+  @supports (background-image: -webkit-image-set(url("../img/singing-bowls-hero-1280.webp") 1x)) {
+    .sbhero-band {
+      --heroband-img: -webkit-image-set(
+        url("../img/singing-bowls-hero-1280.webp") 1x,
+        url("../img/singing-bowls-hero.webp") 2x
+      );
+    }
+  }
+}
+
+/* --- Article hero: the same band, wearing the post's featured image --- */
+
+/* Proportion, not character counts.
+
+   Article headlines are long and the h1 is big, so a ch cap that suited a
+   short page title turned "What is reformer Pilates? The machine, the class
+   and what an hour costs in Perth" into six lines and a 900px hero. Capping
+   the copy and the picture as percentages of the same width means the gap
+   between them holds at every viewport instead of being re-tuned per
+   breakpoint, and the headline takes as many lines as it needs rather than
+   as many as the cap forces. */
+@media (min-width: 861px) {
+  /* Only narrowed when there is actually a picture to make room for. */
+  .heroband:not(.heroband--bare) .pagehead__copy { max-width: min(56rem, 58%); }
+  .heroband--post::before { width: 38%; min-width: 300px; }
+}
+
+/* On a phone the picture drops below the header instead of disappearing.
+
+   A page hero is decoration and a phone is right to skip it, which is why
+   the shop and the singing bowls hub load nothing here. An article's
+   featured image is not decoration -- it is the picture the piece was
+   published with, and it used to render as a figure directly under this
+   header. Hiding it on mobile would have quietly taken that away from every
+   phone reader, so it comes back in the same position, as a short band with
+   its own top-and-bottom fade. Same single source either way: no <img> in
+   the markup means no chance of a desktop double-download. */
+@media (max-width: 860px) {
+  .heroband--post:not(.heroband--bare) { display: grid; }
+  .heroband--post:not(.heroband--bare) > .wrap { order: 1; }
+  .heroband--post:not(.heroband--bare)::before {
+    content: ""; order: 2;
+    height: clamp(170px, 46vw, 260px); margin-top: var(--s-5);
+    background-image: var(--heroband-img, none);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  }
+}
+
+/* Between the breakpoint and about 1200px the picture starts early enough
+   that a 40ch lede runs under it. The copy gives way, not the photograph. */
+@media (min-width: 861px) and (max-width: 1199px) {
+  .sbhero__lede { max-width: 34ch; }
+  .sbhero__title { max-width: 15ch; }
+}
+
+/* Default width for the article header copy, previously an inline style. */
+.pagehead__copy { margin-top: 1rem; max-width: 56rem; }
+.herocap { margin: 0; font-size: var(--fs-sm); color: var(--text-faint); max-width: 62ch; }

@@ -110,6 +110,18 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
 					echo '</ul></li>';
+					/*
+					 * Discover: the written guides, as opposed to Explore, which is
+					 * the directory. One child today. The parent points at that child
+					 * rather than nowhere -- the rule above applies here too, a top
+					 * level item is never a dead end -- and moves to a /discover/
+					 * index the moment there is a second hub to index.
+					 */
+					echo '<li class="menu-item-has-children">';
+					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Discover', 'oria' ) );
+					echo '<ul class="sub-menu">';
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Singing bowls', 'oria' ) );
+					echo '</ul></li>';
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
@@ -187,6 +199,8 @@ if ( ! $oria_has_hero ) {
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Discover', 'oria' ) );
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Singing bowls', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );

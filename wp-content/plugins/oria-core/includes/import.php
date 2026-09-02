@@ -206,13 +206,23 @@ class Command {
 		$about_id   = $this->ensure_page( 'About', 'about', $force, $this->about_sections() );
 		$journal_id = $this->ensure_page( 'Journal', 'journal', $force, null );
 
+		/*
+		 * Topic hubs. Content pages whose body lives entirely in a
+		 * page-{slug}.php template, so they carry no sections -- they exist
+		 * only so the slug resolves and the page is in the menu and the
+		 * sitemap. Seeded here because git carries the template and the
+		 * database carries the page, and without this a deploy ships a
+		 * template that nothing routes to.
+		 */
+		$bowls_id = $this->ensure_page( 'Singing bowls', 'singing-bowls', $force, null );
+
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', $home_id );
 		update_option( 'page_for_posts', $journal_id );
 
 		\WP_CLI::success( sprintf(
-			'Pages ready: Home #%d (front), For practitioners #%d, About #%d, Journal #%d (posts page).',
-			$home_id, $claim_id, $about_id, $journal_id
+			'Pages ready: Home #%d (front), For practitioners #%d, About #%d, Journal #%d (posts page), Singing bowls #%d.',
+			$home_id, $claim_id, $about_id, $journal_id, $bowls_id
 		) );
 	}
 

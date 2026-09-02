@@ -25,6 +25,28 @@ while ( have_posts() ) :
 
 	<div class="readbar" aria-hidden="true"><span class="readbar__fill" data-readbar></span></div>
 
+	<?php
+	/*
+	 * The article hero wears its own featured image, faded out to the left
+	 * so the headline sits on clean ground -- the same band the singing
+	 * bowls hub uses, driven by --heroband-img.
+	 *
+	 * Painted by CSS rather than carried as an <img>, because the picture is
+	 * decorative here: the headline already says what the piece is, and a
+	 * background is not announced to a screen reader or downloaded on a
+	 * phone, which never shows it. It replaces the figure that used to sit
+	 * directly under this header -- none of the featured images carry a
+	 * caption, so nothing was lost by moving the photograph behind the type
+	 * rather than printing it twice in a row.
+	 *
+	 * No featured image means no custom property, which means no picture and
+	 * no reserved height: the header falls back to exactly what it was.
+	 */
+	$oria_hero_id  = get_post_thumbnail_id();
+	$oria_hero_url = $oria_hero_id ? wp_get_attachment_image_url( $oria_hero_id, 'oria-wide' ) : '';
+	?>
+	<div class="heroband heroband--post<?php echo $oria_hero_url ? '' : ' heroband--bare'; ?>"
+		<?php if ( $oria_hero_url ) : ?>style="--heroband-img:url('<?php echo esc_url( $oria_hero_url ); ?>')"<?php endif; ?>>
 	<section class="wrap pagehead">
 		<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
@@ -32,7 +54,7 @@ while ( have_posts() ) :
 			<a href="<?php echo esc_url( home_url( '/journal/' ) ); ?>"><?php esc_html_e( 'Journal', 'oria' ); ?></a>
 			<span aria-hidden="true">/</span><span><?php the_title(); ?></span>
 		</nav>
-		<div style="margin-top:1rem;max-width:56rem">
+		<div class="pagehead__copy">
 			<span class="micro"><?php
 				$oria_cat = get_the_category()[0] ?? null;
 				echo esc_html( implode( ' · ', array_filter( array(
@@ -56,23 +78,20 @@ while ( have_posts() ) :
 			</div>
 		</div>
 	</section>
+	</div>
 
-	<?php if ( has_post_thumbnail() ) : ?>
+	<?php
+	/*
+	 * A caption, where one exists, now that the picture it belongs to is
+	 * behind the headline. None of the articles carry one today; this is
+	 * here so that adding one later does not silently drop it.
+	 */
+	$oria_thumb = $oria_hero_id ? get_post( $oria_hero_id ) : null;
+	$oria_cap   = $oria_thumb ? trim( (string) $oria_thumb->post_excerpt ) : '';
+	?>
+	<?php if ( '' !== $oria_cap ) : ?>
 	<section class="wrap">
-		<?php
-		/*
-		 * A figure, not a div: the caption is part of the picture, and the
-		 * class carries the settle-on-load treatment the design asks for.
-		 */
-		$oria_thumb = get_post( get_post_thumbnail_id() );
-		$oria_cap   = $oria_thumb ? trim( (string) $oria_thumb->post_excerpt ) : '';
-		?>
-		<figure class="herofig">
-			<?php the_post_thumbnail( 'oria-wide' ); ?>
-			<?php if ( '' !== $oria_cap ) : ?>
-				<figcaption><?php echo esc_html( $oria_cap ); ?></figcaption>
-			<?php endif; ?>
-		</figure>
+		<p class="herocap"><?php echo esc_html( $oria_cap ); ?></p>
 	</section>
 	<?php endif; ?>
 
