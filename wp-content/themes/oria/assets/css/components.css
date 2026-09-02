@@ -1208,6 +1208,89 @@ html.has-sheet .cmptray { display: none; }
 }
 .rowlabel:first-child { margin-top: 0; }
 
+/* --- The experience profile ------------------------------------------
+   One editorial panel: good for, cost and place, what it feels like, how
+   it scores, what you can do, why it might suit you. Hairline rules do
+   the separating rather than cards -- a stack of rounded boxes inside an
+   already-rounded page reads as a dashboard, and this is a field guide. */
+.xp { margin-top: var(--s-5); }
+.xp__b { margin-top: var(--s-5); }
+.xp__b--rule { margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid var(--line); }
+.xp .rowlabel { margin-bottom: var(--s-2); }
+
+/* Price leads, distance follows. A line of type, not two more controls. */
+.xp__meta { margin: var(--s-3) 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 0.15rem; }
+.xp__meta-price { font-size: var(--fs-md, 1.0625rem); font-weight: 700; color: var(--ink); }
+.xp__meta-where { font-size: var(--fs-sm); color: var(--text-soft); }
+.xp__dot { margin: 0 0.5rem; color: var(--text-faint); }
+
+/* The statement is the hero of the section: it is what a reader decides
+   on, and everything below it is corroboration. */
+.xp__statement {
+  margin: 0; max-width: 24ch;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.6rem, 3.4vw, 2.35rem);
+  line-height: 1.18; letter-spacing: -0.015em; color: var(--ink);
+}
+.xp__like { margin: var(--s-4) 0 0; font-size: var(--fs-sm); color: var(--text); }
+.xp__like-k {
+  display: inline-block; margin-right: 0.5rem; font-size: var(--fs-xs);
+  font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--moss);
+}
+.xp__like a { color: var(--deep); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--teal-line); }
+.xp__like a:hover { border-bottom-color: var(--deep); }
+.xp__lede { margin: 0 0 var(--s-4); font-size: var(--fs-sm); color: var(--text-soft); max-width: 52ch; }
+
+/* Six bars of what a session is like. Segments rather than the compare
+   page's dots: a bar reads as a measurement at a glance where dots read
+   as a rating, and this is the former. Colour never carries the value on
+   its own -- the word beside each bar and the aria-label do.
+   Two columns on a wide screen: six stacked rows read as a spreadsheet. */
+.dna__bars { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4) var(--s-6); }
+.dna__row { display: grid; gap: 0.3rem; }
+.dna__label { margin: 0; font-size: var(--fs-sm); font-weight: 600; color: var(--ink); }
+.dna__val { margin: 0; display: flex; align-items: center; gap: var(--s-3); min-width: 0; }
+.dna__track { display: inline-flex; gap: 4px; flex: none; }
+.dna__seg {
+  display: block; width: 1.6rem; height: 0.4rem; border-radius: 999px;
+  background: var(--sand-3); border: 1px solid var(--line);
+  transition: background var(--t-med) var(--ease);
+}
+.dna__seg.is-on { background: var(--deep); border-color: var(--deep); }
+.dna__word { font-size: var(--fs-xs); color: var(--text-faint); white-space: nowrap; }
+
+/* The methodology, folded away: readable, but a footnote. */
+.xp__how { margin-top: var(--s-5); font-size: var(--fs-xs); }
+.xp__how summary {
+  cursor: pointer; list-style: none; color: var(--text-soft);
+  font-weight: 600; letter-spacing: .02em; padding: 2px 0;
+}
+.xp__how summary::-webkit-details-marker { display: none; }
+.xp__how summary::after { content: " ▾"; }
+.xp__how[open] summary::after { content: " ▴"; }
+.xp__how summary:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+.xp__how p { margin: .5rem 0 0; max-width: 62ch; line-height: 1.6; color: var(--text-faint); }
+
+/* A chip links only when a page for it exists, so a linked one has to
+   look different from a plain one -- otherwise everything looks clickable
+   and half of it is not. */
+.xp__chips { margin-bottom: 0; }
+.chip--link { text-decoration: none; transition: transform var(--t-fast, .15s) var(--ease), background var(--t-med) var(--ease); }
+.chip--link:hover { background: var(--deep); border-color: var(--deep); color: var(--white); transform: translateY(-1px); }
+.chip--link:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+/* Under the rating, not at the foot of the panel: it answers "is it near
+   me", which gets asked at the same moment as "is it any good". Sized a
+   step up from the faint default — it is an answer here, not a footnote. */
+.profile__where { margin-top: var(--s-3); font-size: var(--fs-sm); color: var(--text-soft); }
+
+@media (max-width: 48rem) {
+  .dna__bars { grid-template-columns: 1fr; gap: var(--s-3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chip--link:hover { transform: none; }
+}
+
 /* The derived "you'll probably like this if" line. Set as prose, not as a
    pill: it is a sentence, and pills would make it look like a claim. */
 .likely {

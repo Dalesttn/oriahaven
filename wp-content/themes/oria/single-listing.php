@@ -269,97 +269,102 @@ while ( have_posts() ) :
 							<?php endif; ?>
 						<?php endif; ?>
 
-							<?php
-							/*
-							 * The want-tags, derived from this practice's own services and
-							 * specialties exactly as the directory cards derive them — the
-							 * same three words a visitor saw on the card that brought them
-							 * here. Nothing is stored per listing and nothing is claimed on
-							 * the practice's behalf: a tag appears only because the business
-							 * genuinely offers what sits behind it.
-							 */
-							$oria_wants = function_exists( '\Oria\Core\GoodFor\for_listing' ) ? \Oria\Core\GoodFor\for_listing( $oria_id ) : array();
-							?>
-							<?php if ( $oria_wants ) : ?>
-								<span class="micro rowlabel"><?php esc_html_e( 'Good for', 'oria' ); ?></span>
-								<div class="profile__wants">
-									<?php foreach ( $oria_wants as $oria_w ) : ?>
-										<span class="pill pill--gf" style="--gf:<?php echo esc_attr( $oria_w['color'] ); ?>"><?php echo esc_html( $oria_w['label'] ); ?></span>
-									<?php endforeach; ?>
-								</div>
-							<?php endif; ?>
-
-							<?php
-							/*
-							 * What to expect. Derived from fields the listing already
-							 * carries -- price, how you book, format, who it is for,
-							 * the next session, and how far it is from its own city.
-							 * Every one is a fact about the visit; none of them says
-							 * what it is supposed to do for you.
-							 *
-							 * The row is not a fixed set of slots. A listing that
-							 * knows its price and nothing else shows one chip, not
-							 * four with three of them blank.
-							 */
-							$oria_expect = function_exists( '\Oria\Theme\expect_chips' )
-								? \Oria\Theme\expect_chips( $oria_id )
-								: array();
-							?>
-							<?php if ( $oria_expect ) : ?>
-								<div class="expect" role="group" aria-label="<?php esc_attr_e( 'What to expect', 'oria' ); ?>">
-									<?php foreach ( $oria_expect as $oria_e ) : ?>
-										<span class="expect__chip expect__chip--<?php echo esc_attr( $oria_e['kind'] ); ?>"><?php echo esc_html( $oria_e['label'] ); ?></span>
-									<?php endforeach; ?>
-								</div>
-							<?php endif; ?>
-
-							<?php
-							/*
-							 * Assembled from stored fields, never written. Empty until a
-							 * listing knows at least two things worth saying, which today
-							 * is a small number of them -- duration_min and group_size are
-							 * new and unfilled. It gets specific as they fill, without
-							 * this template changing.
-							 */
-							$oria_likely = function_exists( '\Oria\Theme\likely_line' ) ? \Oria\Theme\likely_line( $oria_id ) : '';
-							?>
-							<?php if ( '' !== $oria_likely ) : ?>
-								<span class="micro rowlabel"><?php esc_html_e( 'You will probably like this if', 'oria' ); ?></span>
-								<p class="likely"><?php echo esc_html( $oria_likely ); ?></p>
-							<?php endif; ?>
-
-							<?php if ( $oria_address || $oria_region ) : ?>
-							<p class="listing__where" style="font-size:.9375rem;margin-top:.75rem">
+						<?php
+						/*
+						 * Where it is, directly under the name and rating.
+						 *
+						 * "Is it near me" gets asked at the same moment as "is it any
+						 * good", so the answer belongs beside the rating rather than at
+						 * the foot of the experience panel, where it was reading as a
+						 * footnote to the scores.
+						 *
+						 * Still a one-line locator, not a location block: the address,
+						 * the directions link, public transport and parking all have a
+						 * card of their own further down, and two of them would be one
+						 * too many.
+						 */
+						?>
+						<?php if ( $oria_address || $oria_region ) : ?>
+							<p class="listing__where profile__where">
 								<?php echo $oria_pin; // phpcs:ignore ?>
 								<?php echo esc_html( trim( $oria_address . ( $oria_region ? ' · ' . \Oria\Theme\tname( $oria_region ) : '' ), ' ·' ) ); ?>
 							</p>
-							<?php endif; ?>
+						<?php endif; ?>
 
 							<?php
 							/*
-							 * What they do, as chips. Specialties first — they
-							 * are the modality names people search — then the
-							 * format. Audience tags would belong here too and
-							 * are deliberately absent: they sit on 7% of
-							 * listings, and a row that says "Beginners
-							 * welcome" on one page and nothing on the next
-							 * teaches a reader to stop looking at it.
+							 * The experience profile.
+							 *
+							 * One panel answering, in order: what is this good for, what
+							 * does it cost and where is it, what does it FEEL like, how
+							 * does it score, what can you actually do here, and why it
+							 * might suit you. The order is the point -- the feel comes
+							 * before the scores, because a reader decides on the sentence
+							 * and only then checks the bars.
+							 *
+							 * Nothing here is stored per listing and nothing is claimed on
+							 * the practice's behalf. Every block reads fields the listing
+							 * already carries, and any block whose field is empty does not
+							 * render at all rather than showing a blank slot.
 							 */
-							$oria_chips = array();
+
+							// Good for: derived from this practice's own services and
+							// specialties exactly as the directory cards derive them.
+							$oria_wants = function_exists( '\Oria\Core\GoodFor\for_listing' ) ? \Oria\Core\GoodFor\for_listing( $oria_id ) : array();
 
 							/*
-							 * Services first, not specialties. Fremantle Yoga
-							 * Centre carries one specialty — Sound healing —
-							 * and four services: Hatha, Vinyasa, Yin and Yoga.
-							 * Leading with the specialty put "Sound healing"
-							 * alone under the name of a yoga studio.
+							 * What to expect, split in two. Price and distance are the two
+							 * facts a reader checks before anything else, so they lead as a
+							 * plain metadata line; the rest stay chips. Same source, same
+							 * data, read in the order people actually read it.
 							 */
+							$oria_expect = function_exists( '\Oria\Theme\expect_chips' ) ? \Oria\Theme\expect_chips( $oria_id ) : array();
+							$oria_meta   = array();
+							$oria_rest   = array();
+							foreach ( $oria_expect as $oria_e ) {
+								if ( in_array( $oria_e['kind'], array( 'price', 'where' ), true ) ) {
+									$oria_meta[] = $oria_e;
+								} else {
+									$oria_rest[] = $oria_e;
+								}
+							}
+
+							// Assembled from stored fields, never written.
+							$oria_likely = function_exists( '\Oria\Theme\likely_line' ) ? \Oria\Theme\likely_line( $oria_id ) : '';
+
+							/*
+							 * Experience DNA. Six bars read from the Compare registry's
+							 * score for this KIND of session, narrowed by the listing's own
+							 * price band, group size and beginners tag. Renders nothing for
+							 * a listing whose kind is not in the registry -- a consultation
+							 * is not a session -- rather than a guess. See includes/dna.php
+							 * for why there is no "Spiritual".
+							 */
+							$oria_dna  = function_exists( '\Oria\Core\Dna\bars' ) ? \Oria\Core\Dna\bars( $oria_id ) : array();
+							$oria_dnax = $oria_dna && function_exists( '\Oria\Core\Dna\experience_for' ) ? \Oria\Core\Dna\experience_for( $oria_id ) : null;
+							$oria_feel = $oria_dnax ? \Oria\Core\Dna\summary( $oria_dna ) : '';
+							$oria_like = $oria_dnax ? \Oria\Core\Dna\feels_like( $oria_dnax, 3 ) : array();
+
+							/*
+							 * What they do, as chips. Services first, not specialties:
+							 * Fremantle Yoga Centre carries one specialty -- Sound healing
+							 * -- and four services, so leading with the specialty put
+							 * "Sound healing" alone under the name of a yoga studio.
+							 *
+							 * A chip links only when a page for it genuinely exists. The
+							 * name is matched against the specialty taxonomy, whose term
+							 * links are rewritten to /explore/{city}/{category}/{specialty}/;
+							 * a service with no specialty of the same name -- "Restorative
+							 * yoga", "Facials" -- stays plain text rather than pointing at
+							 * the ugly ?taxonomy= form or a page that is not there.
+							 */
+							$oria_chips      = array();
 							$oria_chip_terms = wp_get_post_terms( $oria_id, 'service' );
 							$oria_chip_terms = is_wp_error( $oria_chip_terms ) ? array() : $oria_chip_terms;
 							$oria_spec_terms = wp_get_post_terms( $oria_id, 'specialty' );
 							$oria_chip_terms = array_merge( $oria_chip_terms, is_wp_error( $oria_spec_terms ) ? array() : $oria_spec_terms );
 
-							// A chip repeating the category says nothing new —
+							// A chip repeating the category says nothing new --
 							// "Yoga" under a yoga studio is the page you are on.
 							$oria_chip_skip = array();
 							if ( $oria_practice instanceof WP_Term ) {
@@ -369,7 +374,7 @@ while ( have_posts() ) :
 
 							$oria_seen_chip = array();
 							foreach ( $oria_chip_terms as $oria_ct ) {
-								if ( ! $oria_ct instanceof WP_Term || count( $oria_chips ) >= 4 ) {
+								if ( ! $oria_ct instanceof WP_Term || count( $oria_chips ) >= 6 ) {
 									continue;
 								}
 								$oria_cname = \Oria\Theme\tname( $oria_ct );
@@ -380,22 +385,141 @@ while ( have_posts() ) :
 									continue;
 								}
 								$oria_seen_chip[ $oria_ckey ] = true;
-								$oria_chips[]                 = $oria_cname;
+
+								$oria_curl  = '';
+								$oria_cspec = get_term_by( 'slug', $oria_ct->slug, 'specialty' );
+								if ( $oria_cspec instanceof WP_Term ) {
+									$oria_clink = get_term_link( $oria_cspec );
+									if ( ! is_wp_error( $oria_clink ) ) {
+										$oria_curl = (string) $oria_clink;
+									}
+								}
+								$oria_chips[] = array( 'label' => $oria_cname, 'url' => $oria_curl );
 							}
 							if ( 'in-person' !== $oria_format && '' !== $oria_format ) {
-								$oria_chips[] = $oria_format_label;
+								$oria_chips[] = array( 'label' => $oria_format_label, 'url' => '' );
 							}
 							?>
-							<?php if ( $oria_chips ) : ?>
-								<?php // Named, because a row of dark pills under a row of coloured
-								      // ones reads as decoration until you say what it is. ?>
-								<span class="micro rowlabel"><?php esc_html_e( 'What you can do here', 'oria' ); ?></span>
-								<ul class="chips profile__chips">
-									<?php foreach ( $oria_chips as $oria_chip ) : ?>
-										<li><span class="chip"><?php echo esc_html( $oria_chip ); ?></span></li>
-									<?php endforeach; ?>
-								</ul>
-							<?php endif; ?>
+
+							<div class="xp">
+
+								<?php if ( $oria_wants ) : ?>
+									<div class="xp__b">
+										<span class="micro rowlabel"><?php esc_html_e( 'Good for', 'oria' ); ?></span>
+										<div class="profile__wants">
+											<?php foreach ( $oria_wants as $oria_w ) : ?>
+												<span class="pill pill--gf" style="--gf:<?php echo esc_attr( $oria_w['color'] ); ?>"><?php echo esc_html( $oria_w['label'] ); ?></span>
+											<?php endforeach; ?>
+										</div>
+									</div>
+								<?php endif; ?>
+
+								<?php if ( $oria_meta ) : ?>
+									<p class="xp__meta">
+										<?php foreach ( $oria_meta as $oria_n => $oria_m ) : ?>
+											<?php if ( $oria_n ) : ?><span class="xp__dot" aria-hidden="true">·</span><?php endif; ?>
+											<span class="xp__meta-<?php echo esc_attr( $oria_m['kind'] ); ?>"><?php echo esc_html( $oria_m['label'] ); ?></span>
+										<?php endforeach; ?>
+									</p>
+								<?php endif; ?>
+
+								<?php if ( $oria_rest ) : ?>
+									<div class="expect" role="group" aria-label="<?php esc_attr_e( 'What to expect', 'oria' ); ?>">
+										<?php foreach ( $oria_rest as $oria_e ) : ?>
+											<span class="expect__chip expect__chip--<?php echo esc_attr( $oria_e['kind'] ); ?>"><?php echo esc_html( $oria_e['label'] ); ?></span>
+										<?php endforeach; ?>
+									</div>
+								<?php endif; ?>
+
+								<?php // The feel leads. A reader decides on the sentence and checks the bars afterwards. ?>
+								<?php if ( '' !== $oria_feel || $oria_like ) : ?>
+									<div class="xp__b xp__b--rule">
+										<span class="micro rowlabel"><?php esc_html_e( 'The experience', 'oria' ); ?></span>
+										<?php if ( '' !== $oria_feel ) : ?>
+											<p class="xp__statement"><?php echo esc_html( $oria_feel ); ?></p>
+										<?php endif; ?>
+										<?php if ( $oria_like ) : ?>
+											<p class="xp__like">
+												<span class="xp__like-k"><?php esc_html_e( 'Feels like', 'oria' ); ?></span>
+												<?php foreach ( $oria_like as $oria_n => $oria_l ) : ?>
+													<a href="<?php echo esc_url( $oria_l['url'] ); ?>"><?php echo esc_html( $oria_l['label'] ); ?></a><?php echo $oria_n < count( $oria_like ) - 1 ? '<span class="xp__dot" aria-hidden="true">·</span>' : ''; ?>
+												<?php endforeach; ?>
+											</p>
+										<?php endif; ?>
+									</div>
+								<?php endif; ?>
+
+								<?php if ( $oria_dna ) : ?>
+									<div class="xp__b xp__b--rule">
+										<span class="micro rowlabel"><?php esc_html_e( 'Experience DNA', 'oria' ); ?></span>
+										<p class="xp__lede"><?php esc_html_e( 'A quick feel for what a session here is like.', 'oria' ); ?></p>
+										<dl class="dna__bars">
+											<?php foreach ( $oria_dna as $oria_b ) : ?>
+												<div class="dna__row">
+													<dt class="dna__label"><?php echo esc_html( $oria_b['label'] ); ?></dt>
+													<dd class="dna__val">
+														<span class="dna__track" role="img" aria-label="<?php echo esc_attr( sprintf( /* translators: 1: dimension, 2: score, 3: score in words */ __( '%1$s: %2$d out of 5, %3$s', 'oria' ), $oria_b['label'], $oria_b['score'], $oria_b['word'] ) ); ?>">
+															<?php for ( $oria_i = 1; $oria_i <= 5; $oria_i++ ) : ?>
+																<i class="dna__seg<?php echo $oria_i <= $oria_b['score'] ? ' is-on' : ''; ?>"></i>
+															<?php endfor; ?>
+														</span>
+														<small class="dna__word"><?php echo esc_html( $oria_b['word'] ); ?></small>
+													</dd>
+												</div>
+											<?php endforeach; ?>
+										</dl>
+										<?php
+										/*
+										 * The methodology, folded away. It has to be readable --
+										 * a scored profile with no stated basis is worse than no
+										 * profile -- but it is a footnote, and it was reading as
+										 * a paragraph of the page.
+										 */
+										?>
+										<details class="xp__how">
+											<summary><?php esc_html_e( 'How these ratings work', 'oria' ); ?></summary>
+											<p><?php echo esc_html( sprintf( /* translators: %s: the kind of session, e.g. Reiki & energy work */ __( 'A guide, not a measurement. The bars start from how %s tends to run as a kind of session, then narrow to what this listing itself states about its price and group size. They describe the room — how quiet, how physical, how many people — and never what a session is supposed to do for you.', 'oria' ), (string) $oria_dnax['label'] ) ); ?></p>
+										</details>
+									</div>
+								<?php endif; ?>
+
+								<?php if ( $oria_chips ) : ?>
+									<div class="xp__b xp__b--rule">
+										<?php
+										/*
+										 * Not "What you can do here": the services block
+										 * further down already owns that question, and owns it
+										 * properly -- it lists every service the practice
+										 * states, each one leading on to everywhere else in
+										 * the city that offers it. This is the glance version,
+										 * six terms at most, so it says what is offered rather
+										 * than promising the full account of it.
+										 */
+										?>
+										<span class="micro rowlabel"><?php esc_html_e( 'What they offer', 'oria' ); ?></span>
+										<ul class="chips xp__chips">
+											<?php foreach ( $oria_chips as $oria_chip ) : ?>
+												<li>
+													<?php if ( '' !== $oria_chip['url'] ) : ?>
+														<a class="chip chip--link" href="<?php echo esc_url( $oria_chip['url'] ); ?>"><?php echo esc_html( $oria_chip['label'] ); ?></a>
+													<?php else : ?>
+														<span class="chip"><?php echo esc_html( $oria_chip['label'] ); ?></span>
+													<?php endif; ?>
+												</li>
+											<?php endforeach; ?>
+										</ul>
+									</div>
+								<?php endif; ?>
+
+								<?php // Already assembled above; it is the interpretation, so it closes the panel. ?>
+								<?php if ( '' !== $oria_likely ) : ?>
+									<div class="xp__b xp__b--rule">
+										<span class="micro rowlabel"><?php esc_html_e( 'Why it might suit you', 'oria' ); ?></span>
+										<p class="likely"><?php echo esc_html( $oria_likely ); ?></p>
+									</div>
+								<?php endif; ?>
+
+							</div>
 
 							<?php
 							/*

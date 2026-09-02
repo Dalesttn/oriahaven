@@ -657,6 +657,41 @@ function image_for( array $e, string $size = 'oria-card' ): string {
 	return $url;
 }
 
+/**
+ * The address an experience links to.
+ *
+ * The registry's `url` is a KEY, not a link: listings_for() and image_for()
+ * parse its old /practices/ and /perth/ shape to find the terms it stands
+ * for, and that parsing is what makes the registry work. Rewriting the keys
+ * to /explore/ would break the matcher, so they stay -- and every place a
+ * reader can click resolves through the migration archive instead, the same
+ * table the redirects are served from.
+ *
+ * One entry was never live at its old address and so is not in the
+ * archive; it is pinned here. Anything else unresolvable falls back to the
+ * key itself, which the redirects will catch.
+ */
+function experience_url( array $e ): string {
+	static $archive = null;
+	if ( null === $archive ) {
+		$archive = (array) get_option( 'oria_explore_urls' );
+	}
+	$key = (string) ( $e['url'] ?? '' );
+
+	$pinned = array( '/practices/yoga/hot/' => '/explore/perth/yoga/hot-room/' );
+	if ( isset( $pinned[ $key ] ) ) {
+		return home_url( $pinned[ $key ] );
+	}
+	if ( isset( $archive[ $key ] ) ) {
+		return home_url( (string) $archive[ $key ] );
+	}
+	$alt = (string) preg_replace( '~^/practice/~', '/practices/', $key );
+	if ( isset( $archive[ $alt ] ) ) {
+		return home_url( (string) $archive[ $alt ] );
+	}
+	return home_url( $key );
+}
+
 /** A 1-5 score in words, so a scale never depends on the dots alone. */
 function scale_word( int $n ): string {
 	$words = array(

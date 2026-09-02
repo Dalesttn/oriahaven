@@ -328,7 +328,9 @@ function likely_line( int $post_id ): string {
 	}
 
 	foreach ( (array) get_the_terms( $post_id, 'audience' ) as $term ) {
-		if ( $term instanceof \WP_Term && 'beginner-friendly' === $term->slug ) {
+		// 'beginners' is the audience term's actual slug; 'beginner-friendly'
+		// matched nothing, so this clause had never once fired.
+		if ( $term instanceof \WP_Term && 'beginners' === $term->slug ) {
 			$bits[] = __( 'you have not done this before', 'oria' );
 		}
 	}

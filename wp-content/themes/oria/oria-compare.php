@@ -159,7 +159,7 @@ $oria_dots = static function ( int $n ): string {
 					<?php endif; ?>
 						<div class="bld__hitbody">
 							<h3 class="bld__hitname">
-								<a href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>"><?php echo esc_html( (string) $oria_e['label'] ); ?></a>
+								<a href="<?php echo esc_url( \Oria\Core\Compare\experience_url( $oria_e ) ); ?>"><?php echo esc_html( (string) $oria_e['label'] ); ?></a>
 							</h3>
 							<?php $oria_tr = \Oria\Core\Compare\traits_of( $oria_e ); ?>
 							<?php if ( $oria_tr ) : ?>
@@ -590,7 +590,7 @@ $oria_dots = static function ( int $n ): string {
 					<?php if ( '' !== $oria_note ) : ?>
 						<p class="xp__note"><?php echo esc_html( $oria_note ); ?></p>
 					<?php endif; ?>
-					<a class="xp__explore" href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>">
+					<a class="xp__explore" href="<?php echo esc_url( \Oria\Core\Compare\experience_url( $oria_e ) ); ?>">
 						<?php
 						/* translators: %s: experience name */
 						printf( esc_html__( 'Explore %s', 'oria' ), esc_html( (string) $oria_e['label'] ) );
@@ -669,7 +669,7 @@ $oria_dots = static function ( int $n ): string {
 						<tr>
 							<th scope="col" class="cmpx__corner"><span class="sr-only"><?php esc_html_e( 'Attribute', 'oria' ); ?></span></th>
 							<?php foreach ( $oria_picked as $oria_e ) : ?>
-								<th scope="col" class="cmpx__col xp__gcol"><a href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>"><?php echo esc_html( (string) $oria_e['label'] ); ?></a></th>
+								<th scope="col" class="cmpx__col xp__gcol"><a href="<?php echo esc_url( \Oria\Core\Compare\experience_url( $oria_e ) ); ?>"><?php echo esc_html( (string) $oria_e['label'] ); ?></a></th>
 							<?php endforeach; ?>
 						</tr>
 					</thead>
@@ -726,7 +726,7 @@ $oria_dots = static function ( int $n ): string {
 								<li><?php echo esc_html( $oria_w ); ?></li>
 							<?php endforeach; ?>
 						</ul>
-						<a class="xp__explore xp__explore--sm" href="<?php echo esc_url( home_url( (string) $oria_pf['url'] ) ); ?>">
+						<a class="xp__explore xp__explore--sm" href="<?php echo esc_url( \Oria\Core\Compare\experience_url( $oria_pf ) ); ?>">
 							<?php esc_html_e( 'Explore', 'oria' ); ?>
 							<span class="sr-only"><?php echo esc_html( (string) $oria_pf['label'] ); ?></span>
 							<span class="xp__arrow" aria-hidden="true">&rarr;</span>
@@ -751,7 +751,7 @@ $oria_dots = static function ( int $n ): string {
 		<h2 class="h3 cmp__h"><?php esc_html_e( 'Ready to explore?', 'oria' ); ?></h2>
 		<div class="xp__explores">
 			<?php foreach ( $oria_picked as $oria_e ) : ?>
-				<a class="xp__exptile" href="<?php echo esc_url( home_url( (string) $oria_e['url'] ) ); ?>">
+				<a class="xp__exptile" href="<?php echo esc_url( \Oria\Core\Compare\experience_url( $oria_e ) ); ?>">
 					<span class="xp__exptitle">
 						<?php
 						/* translators: %s: experience name */
