@@ -34,6 +34,49 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 <a class="skip-link" href="#main"><?php esc_html_e( 'Skip to content', 'oria' ); ?></a>
 
 <?php $oria_has_hero = 'hero' === \Oria\Theme\page_first_layout(); ?>
+
+<?php
+/*
+ * The utility bar.
+ *
+ * Sits above everything, on every page including the hero pages — so the
+ * hero begins below it rather than under it. That is a deliberate change to
+ * the full-bleed homepage: the practitioner-facing actions are worth a
+ * permanent strip, and half a header floating over an image while the other
+ * half sits above it reads as a mistake rather than a choice.
+ *
+ * Sticky, and the nav sticks beneath it, which is why both offsets are
+ * driven by --topbar-h rather than by numbers that could drift apart.
+ *
+ * Everything here moved out of the nav pill: search, For practitioners and
+ * List your practice. The pill is now purely what a visitor browses with.
+ */
+?>
+<div class="topbar">
+	<div class="topbar__inner">
+		<p class="topbar__tag"><?php esc_html_e( 'Explore. Feel. Flourish.', 'oria' ); ?></p>
+
+		<div class="topbar__actions">
+			<span class="navsearch navsearch--top">
+				<label class="screen-reader-text" for="navSearch"><?php esc_html_e( 'Search practices', 'oria' ); ?></label>
+				<svg class="navsearch__icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M12.2 12.2 16 16"/></svg>
+				<input id="navSearch" type="text" autocomplete="off"
+					placeholder="<?php esc_attr_e( 'Search…', 'oria' ); ?>"
+					data-oria-search role="combobox" aria-autocomplete="list" aria-expanded="false"
+					aria-controls="navSearchList">
+				<span class="osearch osearch--nav" id="navSearchList" data-oria-search-panel hidden></span>
+			</span>
+
+			<a class="topbar__link" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your business', 'oria' ); ?></a>
+
+			<a class="topbar__cta" href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>">
+				<?php esc_html_e( 'List your practice', 'oria' ); ?>
+				<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 11 3M5 3h6v6"/></svg>
+			</a>
+		</div>
+	</div>
+</div>
+
 <header class="site-head<?php echo $oria_has_hero ? '' : ' site-head--solid'; ?>">
 	<nav class="nav" aria-label="<?php esc_attr_e( 'Main', 'oria' ); ?>">
 		<a class="brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
@@ -77,18 +120,12 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 		?>
 
 		<div class="nav__actions">
-			<?php // Search anywhere, not just the home hero. ?>
-			<span class="navsearch nav__hide">
-				<label class="screen-reader-text" for="navSearch"><?php esc_html_e( 'Search practices', 'oria' ); ?></label>
-				<svg class="navsearch__icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M12.2 12.2 16 16"/></svg>
-				<input id="navSearch" type="text" autocomplete="off"
-					placeholder="<?php esc_attr_e( 'Search…', 'oria' ); ?>"
-					data-oria-search role="combobox" aria-autocomplete="list" aria-expanded="false"
-					aria-controls="navSearchList">
-				<span class="osearch osearch--nav" id="navSearchList" data-oria-search-panel hidden></span>
-			</span>
 			<?php
 			/*
+			 * Search, For practitioners and List your practice now live in the
+			 * utility bar above. What remains is what a visitor uses while
+			 * browsing.
+			 *
 			 * Saved count. Hidden until the device has something in it: a
 			 * counter reading zero is clutter for the many people who have
 			 * never pressed Save, and an invitation to nobody.
@@ -102,8 +139,6 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 				<span class="navsaved__heart" aria-hidden="true">&#9829;</span>
 				<span class="navsaved__count" data-saved-nav-count>0</span>
 			</a>
-			<a class="nav__link nav__hide" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'For practitioners', 'oria' ); ?></a>
-			<a class="btn btn--dark nav__hide" href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>"><?php esc_html_e( 'List your practice', 'oria' ); ?><span class="btn__dot"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg></span></a>
 			<button class="nav__toggle" data-drawer-open aria-label="<?php esc_attr_e( 'Open menu', 'oria' ); ?>" aria-controls="drawer">
 				<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M2 4.5h12M2 11.5h12"/></svg>
 			</button>
@@ -166,6 +201,15 @@ if ( ! $oria_has_hero ) {
 			<span><?php esc_html_e( 'Saved practices', 'oria' ); ?></span>
 			<span class="navsaved__count" data-saved-nav-count>0</span>
 		</a>
+		<?php
+		/*
+		 * The utility bar drops this below 860px and it was never in the
+		 * drawer, so on a phone it had nowhere to be reached from at all —
+		 * true before the bar existed, and worth fixing now that the bar has
+		 * made the practitioner path explicit everywhere else.
+		 */
+		?>
+		<a class="drawer__sub" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your business', 'oria' ); ?></a>
 		<a class="btn btn--light btn--block" href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>"><?php esc_html_e( 'List your practice', 'oria' ); ?><span class="btn__dot"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 11 3M5 3h6v6"/></svg></span></a>
 	</div>
 </div>

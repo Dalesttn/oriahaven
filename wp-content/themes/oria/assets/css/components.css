@@ -419,6 +419,19 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
 .site-head:not(.site-head--solid) .navsearch__icon { color: rgba(255, 255, 255, 0.7); }
 @media (max-width: 1100px) { .navsearch { display: none; } }
 
+/* Search in the utility bar. The dark-nav rules above key off .site-head,
+   which the bar is not inside, so the light treatment is restated here
+   rather than loosened there — the hero nav should keep owning its own. */
+.navsearch--top { display: flex; }
+.navsearch--top input { color: var(--white); width: 9.5rem; }
+.navsearch--top input::placeholder,
+.navsearch--top .navsearch__icon { color: rgba(255, 255, 255, 0.55); }
+.navsearch--top input:focus { width: 13rem; border-bottom-color: rgba(255, 255, 255, 0.45); }
+/* The results panel is a light card on a dark bar; push it clear of it. */
+.navsearch--top .osearch--nav { top: calc(100% + 10px); }
+/* Below this the bar has room for the one action and nothing else. */
+@media (max-width: 860px) { .navsearch--top { display: none; } }
+
 /* --- Modern select (data-nice) --------------------------------------- */
 .nsel { position: relative; display: block; min-width: 0; }
 .nsel__native {
@@ -477,15 +490,82 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
   color: var(--white);
 }
 
+/* --- Utility bar ----------------------------------------------------- */
+/* One height, used by the bar and by both header positions. Two numbers
+   that had to agree would eventually stop agreeing. */
+:root { --topbar-h: 44px; }
+
+.topbar {
+  /* In normal flow, so it is seen at the top of the page and leaves with
+     it. The nav is the thing that follows the reader down; a second pinned
+     band would cost the height without adding a control anyone needs while
+     they are reading. */
+  position: relative; z-index: 70;
+  background: var(--ink);
+  color: rgba(255, 255, 255, 0.82);
+  min-height: var(--topbar-h);
+  display: flex; align-items: center;
+  padding-inline: var(--gutter);
+}
+.topbar__inner {
+  width: 100%; max-width: var(--maxw); margin-inline: auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-4);
+}
+/* Caveat, the same hand-written face the journal uses above its headings.
+   It reads optically smaller than Manrope, hence the step up in size, and
+   script faces are not drawn for tracking or uppercasing so both are off. */
+.topbar__tag {
+  margin: 0;
+  font-family: 'Caveat', var(--font-sans);
+  font-size: 1.25rem; font-weight: 700; line-height: 1;
+  letter-spacing: 0; text-transform: none;
+  color: var(--brand-gold);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.topbar__actions { display: flex; align-items: center; gap: var(--s-3); min-width: 0; }
+.topbar__link {
+  font-size: var(--fs-xs); font-weight: 600; white-space: nowrap;
+  color: rgba(255, 255, 255, 0.82); text-decoration: none;
+}
+.topbar__link:hover { color: var(--white); text-decoration: underline; }
+.topbar__cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: var(--fs-xs); font-weight: 700; white-space: nowrap;
+  color: var(--ink); background: var(--white);
+  border-radius: 999px; padding: 0.32rem 0.8rem; text-decoration: none;
+}
+.topbar__cta svg { width: 11px; height: 11px; }
+.topbar__cta:hover { background: var(--brand-gold); color: var(--ink); }
+.topbar :is(a):focus-visible { outline: 2px solid var(--brand-gold); outline-offset: 3px; border-radius: 4px; }
+
+/* Phones: the tagline and the secondary link go, the one action stays.
+   A strip of links too small to hit is worse than a strip with one. */
+@media (max-width: 860px) {
+  .topbar__inner { justify-content: space-between; }
+  .topbar__link { display: none; }
+  .topbar__tag { font-size: 11px; }
+}
+@media (max-width: 480px) {
+  .topbar__tag { display: none; }
+  .topbar__inner { justify-content: flex-end; }
+}
+
 /* --- Header / nav --------------------------------------------------- */
 .site-head {
   position: absolute;
-  inset-inline: 0; top: 0;
+  inset-inline: 0;
+  /* An absolutely positioned element measures from the initial containing
+     block, NOT from body's padding box — so body's padding-top does not
+     clear the fixed bar for it, and top:0 slid the pill underneath. */
+  top: var(--topbar-h);
   z-index: 60;
   padding: var(--s-5) var(--gutter);
 }
-/* Inner pages keep the same floating glass pill as the home page — it just
-   sticks instead of scrolling away. */
+/* The nav travels with the reader and is the only thing that does.
+   top:0, not --topbar-h: the utility bar has scrolled away by the time the
+   nav pins, so an offset for it would leave a strip of page showing above
+   the pill for the whole of the rest of the scroll. */
 .site-head--solid {
   position: sticky;
   top: 0;
@@ -505,6 +585,17 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
   -webkit-backdrop-filter: blur(26px) saturate(140%);
   box-shadow: 0 8px 40px rgba(4,20,19,.24);
 }
+
+/*
+ * With search and the two practitioner actions moved to the utility bar,
+ * .nav__actions is empty on a desktop — both remaining children are hidden
+ * there — and space-between was holding open 265px of nothing against the
+ * right edge. Pushing the links right instead balances the pill against the
+ * brand, and the actions still sit last for the phone, where the toggle and
+ * the saved count reappear.
+ */
+.nav__links { margin-inline-start: auto; }
+.nav__actions:empty { display: none; }
 
 /* --- See-through nav over the hero -----------------------------------
    White type, because the backdrop here is a dark photograph. */
