@@ -7,6 +7,18 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /*
+   * Every anchor jump stops clear of the sticky nav.
+   *
+   * Set here, on the scroll container, rather than as scroll-margin on the
+   * handful of elements that happen to be link targets today. Those carried
+   * 4rem, which was right when the nav was shorter and left the top 28px of
+   * each section underneath it on a phone, where the pill is 92px tall.
+   *
+   * --head-h is 6.5rem against a 92px nav, so a heading lands just below the
+   * pill rather than touching it.
+   */
+  scroll-padding-top: var(--head-h);
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

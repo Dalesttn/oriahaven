@@ -2641,9 +2641,11 @@ details[open] > .gfsummary { background: var(--ink); border-color: var(--ink); c
 .answer__jump:hover { border-color: var(--ink); }
 .answer__jump svg { width: 13px; height: 13px; flex: none; }
 
-/* The jump lands on the results; without this the sticky header covers the
-   first card and it looks as though nothing happened. */
-#dirResults { scroll-margin-top: calc(var(--head-h) + var(--s-5)); }
+/* The jump lands on the results rather than under the sticky header. The
+   clearance is now html's scroll-padding-top, which does this for every
+   anchor on the site; this only adds the extra breathing room the results
+   wanted, because scroll-margin and scroll-padding add together. */
+#dirResults { scroll-margin-top: var(--s-5); }
 
 
 /* Intent pages: the "this view" bar names what the page has locked. A
@@ -2680,7 +2682,8 @@ details[open] > .gfsummary { background: var(--ink); border-color: var(--ink); c
   .spine__row a { flex: 0 0 auto; }
 }
 
-.floor { scroll-margin-top: 4rem; }
+/* Clearance comes from html's scroll-padding-top now; a scroll-margin here
+   would add to it and drop each section a further 4rem down the page. */
 .floor__label { margin-bottom: var(--s-4); }
 
 /* Floor 1: the answer beside the facts strip. */

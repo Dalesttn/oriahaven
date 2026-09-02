@@ -539,16 +539,22 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
 .topbar__cta:hover { background: var(--brand-gold); color: var(--ink); }
 .topbar :is(a):focus-visible { outline: 2px solid var(--brand-gold); outline-offset: 3px; border-radius: 4px; }
 
-/* Phones: the tagline and the secondary link go, the one action stays.
-   A strip of links too small to hit is worse than a strip with one. */
+/* Phones: the secondary link goes, the tagline and the one action stay.
+   The tagline is the brand's voice and reads on a phone as much as on a
+   desktop, so it keeps its place — it is the link that could not be hit
+   comfortably, not the words. */
 @media (max-width: 860px) {
   .topbar__inner { justify-content: space-between; }
   .topbar__link { display: none; }
-  .topbar__tag { font-size: 11px; }
 }
-@media (max-width: 480px) {
-  .topbar__tag { display: none; }
-  .topbar__inner { justify-content: flex-end; }
+@media (max-width: 560px) {
+  /* Sized to clear the CTA rather than truncate against it: at 375px the
+     pill takes 152px, leaving roughly 165px of the row for the words. */
+  .topbar__tag { font-size: 1.05rem; }
+  .topbar__cta { padding: 0.3rem 0.7rem; }
+}
+@media (max-width: 380px) {
+  .topbar__tag { font-size: 0.95rem; }
 }
 
 /* --- Header / nav --------------------------------------------------- */
