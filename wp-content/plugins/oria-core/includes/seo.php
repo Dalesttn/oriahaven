@@ -51,6 +51,21 @@ function bootstrap(): void {
 	 */
 	add_filter( 'wpseo_opengraph_url', __NAMESPACE__ . '\seo_canonical' );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\seo_robots' );
+	/*
+	 * Decode HTML entities out of the schema graph, last.
+	 *
+	 * JSON has no entities. WordPress's wptexturize turns a plain
+	 * apostrophe into &#8217; on the_title, and Yoast builds the schema from
+	 * the filtered title, so a headline arrives as "A beginner&#8217;s guide"
+	 * -- correct in HTML, meaningless in JSON-LD, where nothing will ever
+	 * decode it. The same happened to every practice name through &amp;.
+	 *
+	 * Priority 50 so it runs after the modules that build nodes of their own;
+	 * it is a final pass over the whole graph rather than a fix at each site
+	 * that writes a string, which is the mistake that produced this class of
+	 * bug in the first place.
+	 */
+	add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\schema_decode_entities', 50 );
 	// Priority 1: verification tags belong near the top of the head, and
 	// some crawlers only read the first few kilobytes of it.
 	add_action( 'wp_head', __NAMESPACE__ . '\verification', 1 );
@@ -941,4 +956,37 @@ function core_title( array $parts ): array {
 		}
 	}
 	return $parts;
+}
+
+
+/**
+ * Walk the schema graph and decode HTML entities in every string.
+ *
+ * Only ever decodes. A string with no entity in it is returned untouched, so
+ * this cannot corrupt a name that legitimately contains an ampersand.
+ *
+ * @param mixed $graph The Yoast schema graph.
+ * @return mixed
+ */
+function schema_decode_entities( $graph ) {
+	if ( ! is_array( $graph ) ) {
+		return $graph;
+	}
+	array_walk_recursive(
+		$graph,
+		static function ( &$value ): void {
+			if ( ! is_string( $value ) || false === strpos( $value, '&' ) ) {
+				return;
+			}
+			// "&amp;amp;" exists in the wild; decode until it settles.
+			for ( $i = 0; $i < 5; $i++ ) {
+				$next = html_entity_decode( $value, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+				if ( $next === $value ) {
+					break;
+				}
+				$value = $next;
+			}
+		}
+	);
+	return $graph;
 }

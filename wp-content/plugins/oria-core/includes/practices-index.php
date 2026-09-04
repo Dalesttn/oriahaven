@@ -1524,18 +1524,6 @@ function schema_graph( $graph ) {
 				$node['itemListElement'] = array_values( $items );
 			}
 
-			/*
-			 * JSON has no HTML entities. Several practice names are stored
-			 * double-encoded ("Spa &amp; Recovery"), which is invisible in
-			 * the title tag because the browser decodes it, and very
-			 * visible in structured data because nothing does.
-			 */
-			foreach ( $node['itemListElement'] as $i => $el ) {
-				if ( is_array( $el ) && isset( $el['name'] ) ) {
-					$node['itemListElement'][ $i ]['name'] =
-						html_entity_decode( (string) $el['name'], ENT_QUOTES | ENT_HTML5, 'UTF-8' );
-				}
-			}
 		}
 	}
 	unset( $node );
