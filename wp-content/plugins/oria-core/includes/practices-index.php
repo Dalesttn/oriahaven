@@ -70,6 +70,13 @@ function bootstrap(): void {
 	add_filter( 'wpseo_title', __NAMESPACE__ . '\title', 25 );
 	add_filter( 'wpseo_metadesc', __NAMESPACE__ . '\description', 25 );
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\canonical', 25 );
+	/*
+	 * og:url followed the main query like the schema did, so a facet page
+	 * advertised itself to anything reading Open Graph as the old
+	 * /practice/{category}/ address -- a URL that is now a 301 and was
+	 * never this page. Same answer as the canonical, from the same source.
+	 */
+	add_filter( 'wpseo_opengraph_url', __NAMESPACE__ . '\canonical', 25 );
 	// Priority 30: after Yoast has built the graph from the main query,
 	// which on a facet page is the parent category rather than this page.
 	add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\schema_graph', 30 );
@@ -1489,12 +1496,45 @@ function schema_graph( $graph ) {
 			$last_name   = is_array( $last ) ? (string) ( $last['name'] ?? '' ) : '';
 			// Only add the step if Yoast has not somehow already ended here.
 			if ( '' !== $label && $last_name !== $label ) {
+				/*
+				 * Give the crumb we are demoting its URL back.
+				 *
+				 * Google lets the FINAL crumb omit `item` -- it is the page
+				 * you are on -- and Yoast relies on that, so the category
+				 * step arrives with a name and nothing else. Appending the
+				 * facet after it turned that into a middle crumb with no
+				 * URL, which is an invalid BreadcrumbList: Search Console
+				 * reported the page's rich results as failing on
+				 * Breadcrumbs. The page indexed fine; the enhancement did
+				 * not. Whoever is no longer last needs an address.
+				 */
+				$k = array_key_last( $items );
+				if ( null !== $k && is_array( $items[ $k ] ) && empty( $items[ $k ]['item'] ) ) {
+					$cat_link = get_term_link( $term );
+					if ( ! is_wp_error( $cat_link ) ) {
+						$items[ $k ]['item'] = (string) $cat_link;
+					}
+				}
+
 				$items[] = array(
 					'@type'    => 'ListItem',
 					'position' => count( $items ) + 1,
 					'name'     => $label,
 				);
 				$node['itemListElement'] = array_values( $items );
+			}
+
+			/*
+			 * JSON has no HTML entities. Several practice names are stored
+			 * double-encoded ("Spa &amp; Recovery"), which is invisible in
+			 * the title tag because the browser decodes it, and very
+			 * visible in structured data because nothing does.
+			 */
+			foreach ( $node['itemListElement'] as $i => $el ) {
+				if ( is_array( $el ) && isset( $el['name'] ) ) {
+					$node['itemListElement'][ $i ]['name'] =
+						html_entity_decode( (string) $el['name'], ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+				}
 			}
 		}
 	}
