@@ -1534,11 +1534,31 @@ function schema_graph( $graph ) {
 	 * worse than the wrong url it replaced.
 	 */
 	if ( '' !== $old && $old !== $url ) {
+		/*
+		 * Repoint by PREFIX, not by exact match.
+		 *
+		 * The page node is not the only thing carrying the old address.
+		 * Yoast hangs fragment ids off it -- #breadcrumb, #webpage,
+		 * #primaryimage -- and the page node then REFERENCES them. Matching
+		 * only the bare id renamed the BreadcrumbList itself while leaving
+		 * CollectionPage.breadcrumb pointing at the old
+		 * ".../{category}/#breadcrumb", which resolves to nothing. Google
+		 * follows that reference, finds a BreadcrumbList with no
+		 * itemListElement, and reports the page's structured data as
+		 * critically broken -- which it was, on every facet page.
+		 */
 		array_walk_recursive(
 			$graph,
 			static function ( &$value, $key ) use ( $old, $url ): void {
-				if ( '@id' === $key && $value === $old ) {
+				if ( '@id' !== $key || ! is_string( $value ) ) {
+					return;
+				}
+				if ( $value === $old ) {
 					$value = $url;
+					return;
+				}
+				if ( 0 === strpos( $value, $old . '#' ) ) {
+					$value = $url . substr( $value, strlen( $old ) );
 				}
 			}
 		);
