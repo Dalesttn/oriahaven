@@ -160,13 +160,32 @@ usort( $oria_top, static fn( array $a, array $b ): int => $b['count'] <=> $a['co
 $oria_top      = array_slice( $oria_top, 0, 8 );
 $oria_top_keys = array_map( static fn( array $f ): string => $f['kind'] . ':' . $f['term']->slug, $oria_top );
 
-$oria_prices = array(
-	'Free' => __( 'Free or by donation', 'oria' ),
-	'$'    => __( 'Under $25', 'oria' ),
-	'$$'   => __( '$25–$60', 'oria' ),
-	'$$$'  => __( '$60–$200', 'oria' ),
-	'$$$$' => __( '$200+', 'oria' ),
-);
+/*
+ * Who a place says it is for, counted across THIS page's set so the number
+ * beside each option is the number of results it would actually leave.
+ *
+ * Price used to be a pill here. It came out because it is not the question
+ * people choose on: the bands are coarse and most listings publish a range
+ * rather than a figure. Price is still on every card and every listing
+ * page -- it stopped being a filter, it did not stop being shown.
+ *
+ * all_with_object_id gives a row per listing-term pair, which is what the
+ * counts need; the default returns each term once and would report every
+ * audience as reaching exactly one place.
+ */
+$oria_auds = array();
+$oria_at   = wp_get_object_terms( $oria_ids, 'audience', array( 'fields' => 'all_with_object_id' ) );
+foreach ( is_wp_error( $oria_at ) ? array() : $oria_at as $oria_a ) {
+	if ( ! isset( $oria_auds[ $oria_a->slug ] ) ) {
+		$oria_auds[ $oria_a->slug ] = array( 'label' => \Oria\Theme\tname( $oria_a ), 'n' => 0 );
+	}
+	++$oria_auds[ $oria_a->slug ]['n'];
+}
+uasort( $oria_auds, static fn( array $a, array $b ): int => $b['n'] <=> $a['n'] );
+// The one most people are actually asking about goes first.
+if ( isset( $oria_auds['beginners'] ) ) {
+	$oria_auds = array( 'beginners' => $oria_auds['beginners'] ) + $oria_auds;
+}
 ?>
 <div class="toolbar" id="dirFilters">
 	<?php
@@ -235,21 +254,23 @@ $oria_prices = array(
 	</details>
 	<?php endif; ?>
 
+	<?php if ( $oria_auds ) : ?>
 	<details class="popover" data-popover>
-		<summary class="btn btn--ghost btn--sm"><?php esc_html_e( 'Price', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
-		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'Price per session', 'oria' ); ?>">
-			<?php foreach ( $oria_prices as $oria_v => $oria_l ) : ?>
-				<label class="check"><input type="checkbox" data-filter="price" value="<?php echo esc_attr( $oria_v ); ?>"><span><?php echo esc_html( $oria_l ); ?></span></label>
+		<summary class="btn btn--ghost btn--sm"><?php esc_html_e( 'Who it suits', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
+		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'Who it suits', 'oria' ); ?>">
+			<?php foreach ( $oria_auds as $oria_aslug => $oria_a ) : ?>
+				<label class="check"><input type="checkbox" data-filter="aud" value="<?php echo esc_attr( (string) $oria_aslug ); ?>"><span><?php echo esc_html( $oria_a['label'] ); ?> <em><?php echo esc_html( (string) $oria_a['n'] ); ?></em></span></label>
 			<?php endforeach; ?>
 			<button type="button" class="popover__done" data-popover-close><?php esc_html_e( 'Done', 'oria' ); ?></button>
 		</div>
 	</details>
+	<?php endif; ?>
 
 	<div class="hinthost hinthost--gf" data-hint-key="goodfor" data-hint-delay="2600">
 	<span class="hintbubble" id="gfHint" role="tooltip"><?php esc_html_e( 'What are you after?', 'oria' ); ?></span>
 	<details class="popover" data-popover>
-		<summary class="btn btn--sm gfsummary" aria-describedby="gfHint"><?php esc_html_e( 'Good for', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
-		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'Good for', 'oria' ); ?>">
+		<summary class="btn btn--sm gfsummary" aria-describedby="gfHint"><?php esc_html_e( 'Wellness goal', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
+		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'Wellness goal', 'oria' ); ?>">
 			<span class="micro" style="display:block;margin:0 0 .5rem"><?php esc_html_e( 'What are you after?', 'oria' ); ?></span>
 			<?php
 			/*

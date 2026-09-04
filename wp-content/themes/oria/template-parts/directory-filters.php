@@ -21,12 +21,23 @@ $oria_specialties = get_terms(
 );
 const ORIA_SPEC_SHOWN = 12;
 
-$oria_prices = array(
-	'Free' => __( 'Free or by donation', 'oria' ),
-	'$'    => __( 'Under $25', 'oria' ),
-	'$$'   => __( '$25–$60', 'oria' ),
-	'$$$'  => __( '$60–$200', 'oria' ),
-	'$$$$' => __( '$200+', 'oria' ),
+/*
+ * Who a place says it is for. "Beginner friendly" is the one most people
+ * are actually asking about, so it leads; the rest follow in the order the
+ * taxonomy gives them.
+ */
+$oria_audiences = get_terms(
+	array(
+		'taxonomy'   => 'audience',
+		'hide_empty' => true,
+		'orderby'    => 'count',
+		'order'      => 'DESC',
+	)
+);
+$oria_audiences = is_wp_error( $oria_audiences ) ? array() : $oria_audiences;
+usort(
+	$oria_audiences,
+	static fn( $a, $b ): int => ( 'beginners' === $b->slug ? 1 : 0 ) <=> ( 'beginners' === $a->slug ? 1 : 0 )
 );
 ?>
 <div class="filters" id="dirFilters">
@@ -116,12 +127,28 @@ $oria_prices = array(
 	</div>
 	<?php endif; ?>
 
-	<div class="filterbox" role="group" aria-labelledby="filt-price-per-session">
-		<span class="filterbox__label" id="filt-price-per-session"><?php esc_html_e( 'Price per session', 'oria' ); ?></span>
-		<?php foreach ( $oria_prices as $oria_value => $oria_label ) : ?>
-			<label class="check"><input type="checkbox" data-filter="price" value="<?php echo esc_attr( $oria_value ); ?>"><span><?php echo esc_html( $oria_label ); ?></span></label>
+	<?php
+	/*
+	 * Price used to sit here. It came out because it is not what people
+	 * choose on: the bands are coarse, most listings publish a range rather
+	 * than a figure, and "what kind of thing is this" and "will they look
+	 * after me if I have never done it" are the two questions that actually
+	 * decide a booking. Both of those are answerable from data already held.
+	 * Price is still on every card and every listing page.
+	 */
+	?>
+
+	<?php if ( $oria_audiences ) : ?>
+	<div class="filterbox" role="group" aria-labelledby="filt-audience">
+		<span class="filterbox__label" id="filt-audience"><?php esc_html_e( 'Who it suits', 'oria' ); ?></span>
+		<?php foreach ( $oria_audiences as $oria_term ) : ?>
+			<label class="check">
+				<input type="checkbox" data-filter="aud" value="<?php echo esc_attr( $oria_term->slug ); ?>">
+				<span><?php echo esc_html( \Oria\Theme\tname( $oria_term ) ); ?> <em><?php echo esc_html( (string) $oria_term->count ); ?></em></span>
+			</label>
 		<?php endforeach; ?>
 	</div>
+	<?php endif; ?>
 
 	<div class="filterbox" role="group" aria-labelledby="filt-format">
 		<span class="filterbox__label" id="filt-format"><?php esc_html_e( 'Format', 'oria' ); ?></span>

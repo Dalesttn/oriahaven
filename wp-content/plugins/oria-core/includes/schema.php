@@ -136,7 +136,7 @@ function organization(): void {
 	}
 
 	echo '<script type="application/ld+json">'
-		. wp_json_encode( $schema, JSON_UNESCAPED_SLASHES )
+		. wp_json_encode( decoded( $schema ), JSON_UNESCAPED_SLASHES )
 		. '</script>' . "\n";
 }
 
@@ -304,6 +304,38 @@ function listing_faq_schema( int $id ): ?array {
 	);
 }
 
+/**
+ * Decode HTML entities on the way into JSON-LD.
+ *
+ * This file builds and echoes its own blocks rather than going through
+ * wpseo_schema_graph, so the decoder registered on that filter never saw
+ * them: a listing FAQ answered "Sauna &amp; ice bath" to Google, which has
+ * no idea what &amp; is. Everything that becomes JSON-LD goes through here.
+ *
+ * Only ever decodes. A string with no entity is returned untouched.
+ *
+ * @param array $data Any structure destined for wp_json_encode().
+ * @return array
+ */
+function decoded( array $data ): array {
+	array_walk_recursive(
+		$data,
+		static function ( &$value ): void {
+			if ( ! is_string( $value ) || false === strpos( $value, '&' ) ) {
+				return;
+			}
+			for ( $i = 0; $i < 5; $i++ ) {
+				$next = html_entity_decode( $value, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+				if ( $next === $value ) {
+					break;
+				}
+				$value = $next;
+			}
+		}
+	);
+	return $data;
+}
+
 function output(): void {
 	$graph = null;
 	if ( is_singular( 'post' ) ) {
@@ -320,7 +352,7 @@ function output(): void {
 	}
 	if ( $graph ) {
 		echo '<script type="application/ld+json">'
-			. wp_json_encode( $graph, JSON_UNESCAPED_SLASHES )
+			. wp_json_encode( decoded( $graph ), JSON_UNESCAPED_SLASHES )
 			. '</script>' . "\n";
 	}
 }
@@ -355,7 +387,7 @@ function output_list(): void {
 		return;
 	}
 	echo '<script type="application/ld+json">'
-		. wp_json_encode( $graph, JSON_UNESCAPED_SLASHES )
+		. wp_json_encode( decoded( $graph ), JSON_UNESCAPED_SLASHES )
 		. '</script>' . "\n";
 }
 
