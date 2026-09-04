@@ -60,6 +60,16 @@ function bootstrap(): void {
 	add_filter( 'wpseo_title', __NAMESPACE__ . '\title', 20 );
 	add_filter( 'wpseo_metadesc', __NAMESPACE__ . '\description', 20 );
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\canonical', 20 );
+	/*
+	 * og:url answers from the same source as the canonical.
+	 *
+	 * Seven modules here override wpseo_canonical to point a custom route
+	 * at its real address. None of them overrode og:url, so Open Graph
+	 * kept answering from the main query -- on a facet page that meant
+	 * advertising the old /practice/{category}/ URL, which is now a 301
+	 * and was never that page. Same question, same answer.
+	 */
+	add_filter( 'wpseo_opengraph_url', __NAMESPACE__ . '\canonical', 20 );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\robots', 20 );
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title', 20 );
 

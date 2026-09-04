@@ -40,6 +40,16 @@ function bootstrap(): void {
 	add_filter( 'wpseo_metadesc', __NAMESPACE__ . '\seo_description' );
 	add_action( 'template_redirect', __NAMESPACE__ . '\retire_city_combo', 6 );
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\seo_canonical' );
+	/*
+	 * og:url answers from the same source as the canonical.
+	 *
+	 * Seven modules here override wpseo_canonical to point a custom route
+	 * at its real address. None of them overrode og:url, so Open Graph
+	 * kept answering from the main query -- on a facet page that meant
+	 * advertising the old /practice/{category}/ URL, which is now a 301
+	 * and was never that page. Same question, same answer.
+	 */
+	add_filter( 'wpseo_opengraph_url', __NAMESPACE__ . '\seo_canonical' );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\seo_robots' );
 	// Priority 1: verification tags belong near the top of the head, and
 	// some crawlers only read the first few kilobytes of it.
