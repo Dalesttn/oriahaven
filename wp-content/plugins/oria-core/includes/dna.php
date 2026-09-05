@@ -209,6 +209,39 @@ function beginner_scale( string $note, bool $tagged ): int {
 	return 0 === strpos( $n, 'none' ) ? 5 : 3;
 }
 
+/**
+ * Whether a listing sits at the spiritual end, for the visitors who ask not
+ * to be sent there.
+ *
+ * This used to read the practice terms alone, and it leaked badly: a
+ * Buddhist centre files under "meditation" and a Brahma Kumaris centre under
+ * "community" and "yoga", so a search that explicitly said "nothing
+ * spiritual" returned both near the top. Neutral terms are the norm, not the
+ * exception -- organisations describe what they run, not what they believe.
+ *
+ * So the name is read too. That is doing by keyword what a field ought to
+ * do properly, and it will still miss places whose name gives nothing away;
+ * the surfaces that offer this filter say it is approximate rather than
+ * implying a guarantee the data cannot back. A real audience or tradition
+ * term would replace all of this.
+ */
+function spiritual( int $post_id ): bool {
+	$hay = strtolower( get_the_title( $post_id ) );
+	foreach ( array( 'practice', 'specialty', 'service' ) as $tax ) {
+		$terms = get_the_terms( $post_id, $tax );
+		foreach ( ( $terms && ! is_wp_error( $terms ) ) ? $terms : array() as $t ) {
+			$hay .= ' ' . strtolower( $t->name . ' ' . $t->slug );
+		}
+	}
+
+	$pattern = '/energy|spirit|conscious|reiki|chakra|aura|crystal|kinesiolog|'
+		. 'shaman|psychic|tarot|astrolog|buddhis|dhamma|dharma|brahma|vedic|'
+		. 'ayurved|ashram|satsang|kirtan|sufi|kabbal|soul|sacred|divine|'
+		. 'vipassana|sangha|\\bzen\\b|\\bsri\\b|\\btemple\\b/';
+
+	return (bool) preg_match( $pattern, $hay );
+}
+
 /** More dollar signs, less affordable. The band is the site's own. */
 function afford_scale( string $band ): int {
 	$map = array(

@@ -5014,3 +5014,487 @@ article.is-spotlit {
 }
 .wmcard .wmtags { margin-top: .35rem; }
 .wmcard .wmtag { font-size: 9px; }
+
+/* --- /plan-my-week/ prototype ---------------------------------------- */
+.planq { display: grid; gap: var(--s-4); margin-bottom: var(--s-5); max-width: 68ch; }
+.planq__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
+.planq__label { min-width: 9rem; font-size: var(--fs-sm); font-weight: 700; color: var(--ink); }
+.planq__row--checks { gap: var(--s-5); }
+.planq__go { justify-self: start; }
+.planner__note { margin: 0 0 var(--s-5); color: var(--moss); font-weight: 700; }
+.planner__foot { margin-top: var(--s-6); color: var(--text-faint); max-width: 74ch; }
+
+.week { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); }
+.day { border: 1px solid var(--line); border-radius: 14px; padding: var(--s-4); background: var(--paper); }
+.day--rest { background: transparent; border-style: dashed; }
+.day__name { margin: 0 0 var(--s-2); font-size: var(--fs-md, 1.0625rem); color: var(--ink); }
+.day__note { margin: var(--s-2) 0 0; font-size: var(--fs-sm); color: var(--text-soft); max-width: 62ch; }
+.day__none { margin: var(--s-3) 0 0; font-size: var(--fs-sm); color: var(--text-faint); }
+.day__picks { list-style: none; margin: var(--s-3) 0 0; padding: 0; display: grid; gap: var(--s-3); }
+.day__picks > li { display: grid; gap: .15rem; padding-left: var(--s-3); border-left: 2px solid var(--teal-line); }
+.day__link { font-weight: 600; color: var(--ink); text-decoration: none; }
+.day__link:hover { color: var(--deep); text-decoration: underline; }
+.day__meta { font-size: var(--fs-xs); color: var(--text-soft); }
+@media (min-width: 861px) { .week { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+
+/* ================================================================== /ask/ ==
+   Oria Haven's front door. A calm room, not a chat window.
+
+   Built on the site's own tokens rather than a second palette: --paper is
+   already the warm off-white the brief asks for and --moss the sage. The
+   only new colours are Oria's own, scoped to .oria, and gold stays out
+   entirely because tokens.css reserves it for ratings, "never decorative".
+
+   Radii come from a small set (10 / 14 / 22 / pill) rather than a pill on
+   everything, and shadows stay soft enough that nothing casts a hard edge.
+   ========================================================================= */
+
+.askhero {
+  --ask-radius: 22px;
+  position: relative;
+  /* Measured, not guessed: at 1280x900 the first draft ran to 1014px and put
+     the input below the fold, which is the one thing this page cannot do. */
+  padding: clamp(var(--s-4), 3.5vw, var(--s-6)) 0 var(--s-5);
+  background:
+    radial-gradient(58% 42% at 50% 0%, rgba(63, 110, 96, .10), transparent 70%),
+    linear-gradient(180deg, var(--sand-3) 0%, var(--paper) 62%);
+  overflow: hidden;
+}
+.askhero__wrap { display: grid; justify-items: center; text-align: center; gap: var(--s-2); }
+.askhero__crumbs { justify-self: start; margin-bottom: var(--s-3); }
+
+/* No narrow cap on the block: 34ch broke the headline over three lines at
+   1280 and made the hero taller than the viewport. The lede sets its own
+   measure below, which is the line that actually needs one. */
+.askhero__copy { max-width: 62rem; display: grid; gap: var(--s-2); }
+.askhero__title {
+  margin: 0;
+  font-size: clamp(2rem, 5.5vw, 3.4rem);
+  line-height: 1.06; letter-spacing: -.02em;
+  color: var(--ink); text-wrap: balance;
+}
+.askhero__lede {
+  margin: 0 auto; max-width: 52ch;
+  font-size: var(--fs-md, 1.0625rem); line-height: 1.55; color: var(--text-soft);
+  text-wrap: pretty;
+}
+
+/* --- the input ---------------------------------------------------------- */
+
+.askbox {
+  width: 100%; max-width: 46rem; margin-top: var(--s-3);
+  display: grid; grid-template-columns: 1fr auto; align-items: end; gap: var(--s-2);
+  padding: var(--s-3); background: var(--paper);
+  border: 1px solid var(--line); border-radius: var(--ask-radius);
+  box-shadow: 0 1px 2px rgba(8, 34, 32, .04), 0 12px 32px -18px rgba(8, 34, 32, .28);
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.askbox:focus-within {
+  border-color: var(--moss);
+  box-shadow: 0 1px 2px rgba(8, 34, 32, .04), 0 16px 40px -18px rgba(8, 34, 32, .34);
+}
+.askbox__input {
+  width: 100%; border: 0; background: transparent; resize: none; overflow: hidden;
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-3);
+  font: inherit; font-size: clamp(1rem, 2.4vw, 1.1875rem); line-height: 1.5;
+  color: var(--text); min-height: 2.75rem;
+}
+.askbox__input::placeholder { color: var(--text-faint); }
+.askbox__input:focus { outline: none; }          /* the wrapper carries focus */
+
+.askbox__go {
+  display: inline-flex; align-items: center; gap: .45rem;
+  border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--deep); color: #fff;
+  font: inherit; font-size: var(--fs-sm); font-weight: 600;
+  padding: .7rem 1.15rem; white-space: nowrap;
+  transition: background .2s ease, transform .12s ease;
+}
+.askbox__go:hover { background: var(--ink); }
+.askbox__go:active { transform: translateY(1px); }
+.askbox__go[disabled] { opacity: .55; cursor: default; }
+.askbox__arrow { width: 18px; height: 18px; flex: 0 0 auto; }
+
+/* --- suggestions -------------------------------------------------------- */
+
+.askex { width: 100%; max-width: 52rem; display: grid; gap: var(--s-2); margin-top: var(--s-2); }
+.askex__label { font-size: var(--fs-sm); color: var(--text-faint); }
+.askex__row { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; }
+.askex__btn {
+  cursor: pointer; font: inherit; font-size: var(--fs-sm); text-align: left;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--paper);
+  color: var(--text-soft); padding: .45rem .9rem;
+  transition: border-color .18s ease, color .18s ease, background .18s ease;
+  animation: ask-rise .5s cubic-bezier(.2, .7, .3, 1) backwards;
+  animation-delay: calc(.28s + var(--i) * .06s);
+}
+.askex__btn:hover { border-color: var(--moss); color: var(--ink); background: #fff; }
+
+.asktrust {
+  margin: var(--s-4) 0 0; max-width: 60ch;
+  font-size: var(--fs-xs); line-height: 1.6; color: var(--text-faint);
+}
+.asktrust__strong { color: var(--text-soft); font-weight: 600; }
+
+/* --- the read ----------------------------------------------------------- */
+
+.askresults { padding-top: var(--s-6); }
+.askread { margin-bottom: var(--s-5); }
+.askread__head { margin: 0 0 .2rem; font-size: var(--fs-md, 1.0625rem); color: var(--ink); }
+.askread__hint { margin: 0 0 var(--s-3); font-size: var(--fs-sm); color: var(--text-faint); }
+.askread__chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+.askchip {
+  cursor: pointer; font: inherit; font-size: var(--fs-sm); white-space: nowrap;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--paper);
+  color: var(--text); padding: .35rem .85rem;
+  transition: border-color .18s ease, background .18s ease, color .18s ease;
+}
+.askchip:hover { border-color: var(--moss); }
+.askchip.is-on { background: var(--deep); border-color: var(--deep); color: #fff; }
+
+/* Not styled as an error: nobody did anything wrong by asking. */
+.askhealth {
+  border: 1px solid var(--teal-line); border-radius: 14px;
+  padding: var(--s-5); margin-bottom: var(--s-5); background: var(--paper);
+  max-width: 72ch;
+}
+.askhealth__title { margin: 0 0 var(--s-3); font-size: var(--fs-md, 1.0625rem); color: var(--ink); }
+.askhealth p { margin: 0 0 var(--s-3); color: var(--text-soft); font-size: var(--fs-sm); line-height: 1.6; }
+.askhealth p:last-child { margin-bottom: 0; }
+.askhealth__note { color: var(--text-faint) !important; }
+
+.askstatus { margin: 0 0 var(--s-4); font-size: var(--fs-sm); font-weight: 600; color: var(--moss); }
+.askfoot {
+  margin-top: var(--s-6); max-width: 78ch;
+  font-size: var(--fs-xs); line-height: 1.65; color: var(--text-faint);
+}
+
+/* --- the places --------------------------------------------------------- */
+
+.asklist { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+.askitem {
+  display: grid; grid-template-columns: 132px 1fr; gap: var(--s-4); align-items: start;
+  border: 1px solid var(--line); border-radius: 14px;
+  padding: var(--s-4); background: var(--paper);
+  transition: border-color .18s ease, box-shadow .18s ease;
+  animation: ask-rise .45s cubic-bezier(.2, .7, .3, 1) backwards;
+  animation-delay: calc(var(--i) * .05s);
+}
+.askitem:hover { border-color: var(--sand-3); box-shadow: 0 10px 30px -22px rgba(8, 34, 32, .5); }
+
+.askitem__media { display: grid; gap: .3rem; }
+.askitem__media img {
+  width: 132px; height: 132px; object-fit: cover;
+  border-radius: 10px; background: var(--sand-3); display: block;
+}
+/* Small, but legible: Google's terms want the photographer named wherever
+   the photo appears, and a credit nobody can read is not a credit. */
+.askitem__credit {
+  font-size: 10px; line-height: 1.25; color: var(--text-faint);
+  max-width: 132px; overflow-wrap: anywhere;
+}
+
+.askitem__body { display: grid; gap: .3rem; justify-items: start; min-width: 0; }
+.askitem__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem var(--s-3); width: 100%; }
+.askitem__link {
+  font-weight: 700; color: var(--ink); text-decoration: none;
+  font-size: var(--fs-md, 1.0625rem); line-height: 1.3;
+}
+.askitem__link:hover { color: var(--deep); text-decoration: underline; }
+.askitem__meta { font-size: var(--fs-xs); color: var(--text-soft); font-variant-numeric: tabular-nums; }
+
+/*
+ * Match strength, in words.
+ *
+ * The brief floated "92% fit". That percentage would be invented: the
+ * ranking is a heuristic sum of attribute checks and a distance penalty, and
+ * two significant figures on it claims an accuracy it does not have. The
+ * band never rides on colour alone either - the word always carries it.
+ */
+.askfit {
+  margin-left: auto; flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: var(--fs-xs); font-weight: 600; color: var(--text-soft); white-space: nowrap;
+}
+.askfit::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%;
+  background: currentColor; opacity: .55;
+}
+.askfit--strong { color: var(--moss); }
+
+/* Facts about the room, never benefits. */
+.askwhy { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .25rem; }
+.askwhy__chip {
+  font-size: 11px; line-height: 1.4; color: var(--text-soft);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: .12rem .55rem; background: #fff;
+}
+
+/* Set apart from the site's voice, because it is not the site's voice. */
+.askquote { margin: var(--s-3) 0 0; padding-left: var(--s-3); border-left: 2px solid var(--teal-line); }
+.askquote__text { margin: 0; font-size: var(--fs-sm); line-height: 1.55; color: var(--text); font-style: italic; max-width: 62ch; }
+.askquote__by { margin-top: .25rem; font-size: 11px; color: var(--text-faint); font-style: normal; }
+
+.askitem__cta {
+  margin-top: var(--s-3); display: inline-flex; align-items: center; gap: .3rem;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--deep); text-decoration: none;
+}
+.askitem__cta:hover { text-decoration: underline; }
+
+@keyframes ask-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* --- breakpoints -------------------------------------------------------- */
+
+@media (max-width: 860px) {
+  .askitem { grid-template-columns: 104px 1fr; gap: var(--s-3); }
+  .askitem__media img { width: 104px; height: 104px; }
+  .askitem__credit { max-width: 104px; }
+}
+
+@media (max-width: 620px) {
+  .askhero { padding-top: var(--s-4); }
+  .askbox { grid-template-columns: 1fr; gap: var(--s-2); padding: var(--s-2); border-radius: 18px; }
+  .askbox__go { justify-self: stretch; justify-content: center; padding: .8rem 1rem; }
+
+  /* One row that scrolls, rather than five stacked pills eating the screen
+     above the fold. Padded so the first and last chip clear the viewport
+     edge, and snapped so a half-visible chip never comes to rest. */
+  .askex__row {
+    flex-wrap: nowrap; justify-content: flex-start;
+    overflow-x: auto; scroll-snap-type: x proximity;
+    margin-inline: calc(var(--s-4) * -1); padding-inline: var(--s-4);
+    padding-bottom: .35rem; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .askex__row::-webkit-scrollbar { display: none; }
+  .askex__btn { flex: 0 0 auto; scroll-snap-align: start; }
+  .askex, .askex__label { text-align: left; }
+
+  .askitem { grid-template-columns: 84px 1fr; padding: var(--s-3); }
+  .askitem__media img { width: 84px; height: 84px; }
+  .askitem__credit { max-width: 84px; }
+  .askfit { margin-left: 0; flex-basis: 100%; }
+}
+
+@media (max-width: 380px) {
+  .askitem { grid-template-columns: 1fr; }
+  .askitem__media img { width: 100%; height: 148px; }
+  .askitem__credit { max-width: none; }
+}
+
+/* ------------------------------------------------------------------ Oria --
+   Inline SVG driven entirely by [data-state] on the wrapper: no library, no
+   sprite sheet, and every expression is a path already in the document that
+   CSS shows or hides.
+
+   Warm ivory core into sage, with a sand glow - the brief's palette, and
+   deliberately not gold. */
+
+.oria {
+  --oria-body:  #7FA48E;
+  --oria-hi:    #F3EADC;
+  --oria-glow:  #C2A48D;
+  --oria-face:  #0E3B38;
+
+  display: flex; align-items: center; gap: var(--s-3);
+}
+.oria--hero { justify-content: center; }
+.oria__svg { width: 72px; height: 72px; flex: 0 0 auto; overflow: visible; }
+.oria--hero .oria__svg { width: clamp(88px, 13vw, 124px); height: clamp(88px, 13vw, 124px); }
+
+.oria__sheen { fill: #fff; opacity: .3; }
+.oria__face > g, .oria__face > path { display: none; }
+.oria__eyes ellipse { fill: var(--oria-face); }
+.oria__eyes path { fill: none; stroke: var(--oria-face); stroke-width: 2.1; stroke-linecap: round; }
+.oria__mouth {
+  fill: none; stroke: var(--oria-face); stroke-width: 2.1;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.oria__sparks circle { fill: var(--oria-glow); opacity: .6; }
+
+.oria__say {
+  margin: 0; min-height: 1.4em;
+  font-size: var(--fs-sm); color: var(--text-soft);
+  transition: opacity .25s ease;
+}
+
+/* --- motion ------------------------------------------------------------- */
+
+@keyframes oria-float { 0%,100% { transform: translateY(0); }  50% { transform: translateY(-4px); } }
+@keyframes oria-pulse { 0%,100% { opacity: .85; transform: scale(1); } 50% { opacity: 1; transform: scale(1.06); } }
+@keyframes oria-blink { 0%,92%,100% { transform: scaleY(1); } 96% { transform: scaleY(.12); } }
+@keyframes oria-spin  { to { transform: rotate(360deg); } }
+@keyframes oria-bob   { 0%,100% { transform: translateY(0); } 30% { transform: translateY(-7px); } 60% { transform: translateY(0); } }
+
+.oria__float  { animation: oria-float 4.5s ease-in-out infinite; transform-origin: 40px 40px; }
+.oria__glow   { animation: oria-pulse 4.5s ease-in-out infinite; transform-origin: 40px 40px; }
+.oria__sparks { animation: oria-spin 22s linear infinite; transform-origin: 40px 40px; }
+.oria__eyes--open { animation: oria-blink 6s ease-in-out infinite; transform-origin: 40px 39px; }
+
+/* --- expressions -------------------------------------------------------- */
+
+.oria[data-state="idle"] .oria__eyes--open,
+.oria[data-state="idle"] .oria__mouth--smile { display: block; }
+
+.oria[data-state="listening"] .oria__eyes--open,
+.oria[data-state="listening"] .oria__mouth--small { display: block; }
+.oria[data-state="listening"] { --oria-glow: #CBA98C; }
+
+.oria[data-state="thinking"] .oria__eyes--up,
+.oria[data-state="thinking"] .oria__mouth--small { display: block; }
+.oria[data-state="thinking"] .oria__float  { animation-duration: 2.2s; }
+.oria[data-state="thinking"] .oria__glow   { animation-duration: 1.5s; }
+.oria[data-state="thinking"] .oria__sparks { animation-duration: 5s; }
+
+.oria[data-state="happy"] .oria__eyes--happy,
+.oria[data-state="happy"] .oria__mouth--wide { display: block; }
+.oria[data-state="happy"] .oria__float {
+  animation: oria-bob .8s ease-out 1, oria-float 4.5s ease-in-out infinite .8s;
+}
+
+.oria[data-state="empty"] .oria__eyes--soft,
+.oria[data-state="empty"] .oria__mouth--flat { display: block; }
+
+/*
+ * quiet - a health disclosure. Everything stops: no float, no sparkles, no
+ * pulse, no smile. A character bobbing cheerfully beside "ask a GP" would
+ * make a joke of the one moment on this page that must not be one.
+ */
+.oria[data-state="quiet"] .oria__eyes--soft,
+.oria[data-state="quiet"] .oria__mouth--flat { display: block; }
+.oria[data-state="quiet"] { --oria-body: #93A099; --oria-hi: #D9DCD6; --oria-glow: #9AA49E; }
+.oria[data-state="quiet"] .oria__float,
+.oria[data-state="quiet"] .oria__glow,
+.oria[data-state="quiet"] .oria__sparks,
+.oria[data-state="quiet"] .oria__eyes--open { animation: none; }
+.oria[data-state="quiet"] .oria__sparks { opacity: 0; }
+
+/* No dark-theme block on purpose: this stylesheet carries no other
+   prefers-color-scheme rule - the site is light only - so a dark palette
+   here would repaint Oria alone on a dark-OS machine while every surface
+   around her stayed light. She follows the site, not the operating system. */
+
+@media (prefers-reduced-motion: reduce) {
+  .oria__float, .oria__glow, .oria__sparks, .oria__eyes--open { animation: none !important; }
+  .askex__btn, .askitem { animation: none !important; }
+}
+
+/* --- phase 2: refine, map, plan ----------------------------------------- */
+
+.askitem__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); margin-top: var(--s-3); }
+.askitem__cta { margin-top: 0; }
+
+.askitem__save {
+  cursor: pointer; font: inherit; font-size: var(--fs-sm); font-weight: 600;
+  border: 1px solid var(--line); border-radius: 999px; background: transparent;
+  color: var(--text-soft); padding: .25rem .8rem;
+  transition: border-color .18s ease, color .18s ease, background .18s ease;
+}
+.askitem__save:hover { border-color: var(--moss); color: var(--ink); }
+/* Never colour alone: the JS swaps the word too. */
+.askitem__save[aria-pressed="true"] { background: var(--deep); border-color: var(--deep); color: #fff; }
+
+.askvibe { margin-top: var(--s-6); }
+.askvibe__head { margin: 0 0 var(--s-3); font-size: var(--fs-md, 1.0625rem); color: var(--ink); }
+.askvibe__row { display: flex; flex-wrap: wrap; gap: .4rem; }
+.askvibe__btn {
+  cursor: pointer; font: inherit; font-size: var(--fs-sm);
+  border: 1px dashed var(--line); border-radius: 999px; background: transparent;
+  color: var(--text-soft); padding: .4rem .9rem;
+  transition: border-color .18s ease, color .18s ease, background .18s ease;
+}
+.askvibe__btn:hover { border-style: solid; border-color: var(--moss); color: var(--ink); background: var(--paper); }
+
+.askvibe__btn[disabled] {
+  cursor: default; opacity: .45; border-style: dotted;
+}
+.askvibe__btn[disabled]:hover { border-style: dotted; border-color: var(--line); color: var(--text-soft); background: transparent; }
+
+.askmap { margin-top: var(--s-6); }
+.askmap__head { margin: 0 0 var(--s-3); font-size: var(--fs-md, 1.0625rem); color: var(--ink); }
+/* Deliberately not full height: the list is the answer and this is the
+   answer opening out, so it gets a band rather than the screen. */
+.askmap__canvas {
+  height: 340px; border-radius: 14px; border: 1px solid var(--line);
+  overflow: hidden; background: var(--sand-3);
+}
+.askmap__note { margin: var(--s-2) 0 0; font-size: 11px; color: var(--text-faint); }
+.askmap__note a { color: inherit; }
+
+.askplan {
+  margin-top: var(--s-6); padding: var(--s-5);
+  border: 1px solid var(--line); border-radius: 14px; background: var(--paper);
+  display: grid; justify-items: start; gap: var(--s-2); max-width: 60ch;
+}
+.askplan__head { margin: 0; font-size: var(--fs-md, 1.0625rem); color: var(--ink); }
+.askplan__copy { margin: 0; font-size: var(--fs-sm); line-height: 1.6; color: var(--text-soft); }
+.askplan__go { margin-top: var(--s-2); }
+
+@media (max-width: 620px) {
+  .askmap__canvas { height: 260px; }
+  .askplan { padding: var(--s-4); }
+  .askitem__actions { gap: var(--s-2); }
+
+  /* 44px minimum on touch. Measured at 390px the save pill came out 34px
+     tall, which is a thumb target only in theory. */
+  .askitem__save { padding: .6rem 1rem; min-height: 44px; }
+  .askitem__cta { min-height: 44px; align-items: center; }
+  .askvibe__btn { padding: .6rem 1rem; min-height: 44px; }
+  .asknoidea { padding: .6rem .2rem; min-height: 44px; }
+}
+
+/* --- phase 2: guided mode ----------------------------------------------- */
+
+.asknoidea {
+  cursor: pointer; font: inherit; font-size: var(--fs-sm);
+  border: 0; background: transparent; color: var(--text-faint);
+  padding: .3rem .2rem; text-decoration: underline; text-underline-offset: 3px;
+  transition: color .18s ease;
+}
+.asknoidea:hover { color: var(--deep); }
+
+.askguide {
+  width: 100%; max-width: 46rem; margin-top: var(--s-3);
+  padding: var(--s-5); text-align: left;
+  border: 1px solid var(--line); border-radius: var(--ask-radius);
+  background: var(--paper);
+  box-shadow: 0 1px 2px rgba(8, 34, 32, .04), 0 12px 32px -20px rgba(8, 34, 32, .3);
+  animation: ask-rise .4s cubic-bezier(.2, .7, .3, 1);
+}
+.askguide__intro { margin: 0 0 var(--s-3); font-size: var(--fs-sm); color: var(--text-soft); }
+.askguide__intro:empty { display: none; }
+.askguide__q { margin: 0 0 var(--s-4); font-size: 1.25rem; line-height: 1.25; color: var(--ink); }
+
+/* One question at a time, so the options can be full-width and generous
+   rather than a grid of small targets. */
+.askguide__opts { display: grid; gap: .5rem; }
+.askguide__opt {
+  cursor: pointer; font: inherit; text-align: left;
+  display: grid; gap: .1rem;
+  border: 1px solid var(--line); border-radius: 12px; background: transparent;
+  padding: var(--s-3) var(--s-4);
+  transition: border-color .18s ease, background .18s ease, transform .12s ease;
+}
+.askguide__opt:hover { border-color: var(--moss); background: #fff; }
+.askguide__opt:active { transform: translateY(1px); }
+.askguide__optlabel { font-weight: 700; color: var(--ink); font-size: var(--fs-md, 1.0625rem); }
+.askguide__optnote { font-size: var(--fs-sm); color: var(--text-soft); }
+
+.askguide__back {
+  margin-top: var(--s-4); cursor: pointer; font: inherit; font-size: var(--fs-sm);
+  border: 0; background: transparent; color: var(--text-faint);
+  padding: .2rem 0; text-decoration: underline; text-underline-offset: 3px;
+}
+.askguide__back:hover { color: var(--deep); }
+
+@media (max-width: 620px) {
+  .askguide { padding: var(--s-4); border-radius: 18px; }
+  .askguide__q { font-size: 1.125rem; }
+  .askguide__opt { padding: var(--s-3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .askguide { animation: none !important; }
+}

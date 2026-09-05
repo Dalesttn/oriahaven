@@ -91,7 +91,8 @@ add_action(
 		if ( get_query_var( 'oria_practice_v2' )
 			|| ( function_exists( '\Oria\Core\PracticesIndex\mode' ) && '' !== \Oria\Core\PracticesIndex\mode() && is_post_type_archive( 'listing' ) && ! is_search() )
 			|| is_tax( 'specialty' )
-			|| is_page( 'wellness-map' ) ) {
+			|| is_page( 'wellness-map' )
+			|| is_page( 'ask' ) ) {
 			wp_enqueue_style( 'oria-leaflet', "{$uri}/assets/vendor/leaflet/leaflet.css", array(), '1.9.4' );
 			wp_enqueue_script( 'oria-leaflet', "{$uri}/assets/vendor/leaflet/leaflet.js", array(), '1.9.4', array( 'in_footer' => true ) );
 		}
@@ -105,6 +106,36 @@ add_action(
 				array( 'oria-leaflet' ),
 				filemtime( get_theme_file_path( 'assets/js/wellness-map.js' ) ),
 				array( 'in_footer' => true )
+			);
+		}
+
+		// The week planner needs no map, so it does not pull Leaflet in.
+		if ( is_page( 'plan-my-week' ) ) {
+			wp_enqueue_script(
+				'oria-plan-week',
+				"{$uri}/assets/js/plan-week.js",
+				array(),
+				filemtime( get_theme_file_path( 'assets/js/plan-week.js' ) ),
+				array( 'in_footer' => true )
+			);
+		}
+
+		if ( is_page( 'ask' ) ) {
+			wp_enqueue_script(
+				'oria-ask',
+				"{$uri}/assets/js/ask-oria.js",
+				array( 'oria-leaflet' ),
+				filemtime( get_theme_file_path( 'assets/js/ask-oria.js' ) ),
+				array( 'in_footer' => true )
+			);
+			/* Without this the REST call is anonymous even for a logged-in
+			   admin: WordPress only honours the auth cookie on a REST route
+			   when the request also carries a wp_rest nonce. The daily cap's
+			   admin exemption depends on it. */
+			wp_localize_script(
+				'oria-ask',
+				'ORIA_ASK',
+				array( 'nonce' => wp_create_nonce( 'wp_rest' ) )
 			);
 		}
 
