@@ -5052,7 +5052,7 @@ article.is-spotlit {
 
 .askhero {
   --ask-radius: 22px;
-  position: relative;
+  position: relative; isolation: isolate;
   /* Measured, not guessed: at 1280x900 the first draft ran to 1014px and put
      the input below the fold, which is the one thing this page cannot do. */
   padding: clamp(var(--s-4), 3.5vw, var(--s-6)) 0 var(--s-5);
@@ -5061,7 +5061,76 @@ article.is-spotlit {
     linear-gradient(180deg, var(--sand-3) 0%, var(--paper) 62%);
   overflow: hidden;
 }
-.askhero__wrap { display: grid; justify-items: center; text-align: center; gap: var(--s-2); }
+.askhero__wrap { position: relative; z-index: 1; display: grid; justify-items: center; text-align: center; gap: var(--s-2); }
+
+/*
+ * The picture behind the hero.
+ *
+ * Same technique as .heroband -- a mask, never a coloured scrim, so the
+ * image resolves into the real page ground instead of onto a tinted panel
+ * that only matches on one background. Different geometry, though: .heroband
+ * is a right-hand panel built for left-aligned text, and this hero is
+ * centred, so the band sits across the top and fades downward.
+ *
+ * It stops well above the input. Everything below the headline -- the box,
+ * the chips, the trust line -- stays on clean paper, which is the only way
+ * small faint text over a photograph is ever safe.
+ *
+ * Declared only inside this media query, so phones never download it.
+ */
+@media (min-width: 861px) {
+  .askhero {
+    --heroband-img: image-set(
+      url("../img/ask-hero-1280.webp") 1x,
+      url("../img/ask-hero.webp") 2x
+    );
+  }
+  @supports (background-image: -webkit-image-set(url("../img/ask-hero-1280.webp") 1x)) {
+    .askhero {
+      --heroband-img: -webkit-image-set(
+        url("../img/ask-hero-1280.webp") 1x,
+        url("../img/ask-hero.webp") 2x
+      );
+    }
+  }
+
+  /*
+   * Secondary text, darkened 10%, only where the picture is.
+   *
+   * Measured: over the composited sky the stock --text-soft (#4A5F5B) came
+   * out at 4.09-4.31:1 on the crumbs, the lede and Oria's line -- under the
+   * 4.5:1 AA floor for body text. The headline was never in danger; the
+   * small grey type was. This is the smallest change that clears it (4.67:1
+   * on the worst pixel), and it is scoped to the hero and to the breakpoint
+   * that paints the image, so nothing else on the site shifts.
+   */
+  .askhero { --text-soft: #435652; }
+
+  .askhero::before {
+    content: ""; position: absolute; z-index: 0; pointer-events: none;
+    top: 0; left: 0; right: 0; height: 60%;
+    background-image: var(--heroband-img, none);
+    background-size: cover;
+    /* Positioned so the dark shoreline sits low in the band, under the
+       headline rather than through it. */
+    background-position: center 78%;
+    background-repeat: no-repeat;
+    /*
+     * The alpha never reaches 1 -- this sits behind type, it does not compete
+     * with it -- but it stays roughly level rather than fading fast, so the
+     * shoreline is legible as a shoreline. An earlier draft faded out by 78%
+     * and the result was indistinguishable from a CSS gradient: 31KB of
+     * photograph doing a job two colour stops already did.
+     *
+     * The image is cropped so the horizon lands behind the input card, which
+     * is opaque. The box floats on the water and no text crosses the line.
+     */
+    -webkit-mask-image:
+      linear-gradient(to bottom, rgba(0,0,0,.58) 0%, rgba(0,0,0,.52) 50%, rgba(0,0,0,.44) 82%, transparent 100%);
+    mask-image:
+      linear-gradient(to bottom, rgba(0,0,0,.58) 0%, rgba(0,0,0,.52) 50%, rgba(0,0,0,.44) 82%, transparent 100%);
+  }
+}
 .askhero__crumbs { justify-self: start; margin-bottom: var(--s-3); }
 
 /* No narrow cap on the block: 34ch broke the headline over three lines at
