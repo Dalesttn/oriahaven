@@ -5637,3 +5637,39 @@ article.is-spotlit {
   .askcard__input { min-height: 48px; }
   .askcard__go { width: 44px; height: 44px; }
 }
+
+/* --- featured cards: rating and "good for" over the photo --------------- */
+
+.mediacard__rating {
+  display: flex; align-items: center; gap: .3rem;
+  margin-top: .35rem; font-size: var(--fs-xs); color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.mediacard__rating .rating__star { width: 13px; height: 13px; color: #E8C874; flex: 0 0 auto; }
+.mediacard__rating b { font-weight: 700; }
+.mediacard__rating span { color: rgba(255, 255, 255, .78); }
+
+.mediacard__tags { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .4rem; }
+
+/*
+ * Not .wmtag. That one paints the goal colour as the TEXT colour, which is
+ * right on paper and unreadable on a photograph -- several of the thirteen
+ * goal colours are mid-tone and would vanish into a dark image.
+ *
+ * So the chip is glass with white text, and the goal colour rides in a dot.
+ * Colour is decoration here and the word carries the meaning, which is the
+ * same rule the match-strength badge follows.
+ */
+.mediacard__tag {
+  display: inline-flex; align-items: center; gap: .25rem;
+  font-size: 10px; font-weight: 700; letter-spacing: .03em;
+  padding: .15rem .45rem; border-radius: 999px;
+  color: #fff; background: rgba(255, 255, 255, .16);
+  border: 1px solid rgba(255, 255, 255, .26);
+  white-space: nowrap; backdrop-filter: blur(4px);
+}
+.mediacard__tag::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gf, #fff); flex: 0 0 auto;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .35);
+}
