@@ -165,7 +165,6 @@ foreach ( get_posts(
 		<span aria-hidden="true">/</span><span><?php esc_html_e( 'Plan my week', 'oria' ); ?></span>
 	</nav>
 	<div class="pagehead__copy">
-		<span class="micro"><?php esc_html_e( 'Prototype', 'oria' ); ?></span>
 		<h1 class="h1 pagehead__title"><?php printf( esc_html__( 'A week in %s, built around you', 'oria' ), esc_html( $oria_cname ) ); ?></h1>
 		<p class="lede pagehead__lede"><?php esc_html_e( 'Tell us what you want the week to be like — how much effort, how much company, what you want to spend. We will put a week together from real places, and you can throw out any day you do not fancy.', 'oria' ); ?></p>
 	</div>

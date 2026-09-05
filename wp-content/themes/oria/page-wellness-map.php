@@ -209,7 +209,6 @@ foreach ( $oria_goals_all as $oria_g ) {
 		<span aria-hidden="true">/</span><span><?php esc_html_e( 'Wellness map', 'oria' ); ?></span>
 	</nav>
 	<div class="pagehead__copy">
-		<span class="micro"><?php esc_html_e( 'Prototype', 'oria' ); ?></span>
 		<h1 class="h1 pagehead__title"><?php printf( esc_html__( 'What do you want to do in %s?', 'oria' ), esc_html( $oria_cname ) ); ?></h1>
 		<p class="lede pagehead__lede"><?php esc_html_e( 'Pick what you are after, not what the industry calls it. Everything below is a real place with a real address — the map only shows what matches.', 'oria' ); ?></p>
 
@@ -336,15 +335,8 @@ foreach ( $oria_goals_all as $oria_g ) {
 	</div>
 
 	<p class="wmap__note micro">
-		<?php
-		printf(
-			/* translators: 1: listings with coordinates, 2: with a goal, 3: with DNA scores */
-			esc_html__( 'Prototype notes: %1$d places have coordinates, %2$d carry a wellness goal, %3$d have experience scores. A place with no scores still appears — it just cannot be ordered by how quiet or social it is.', 'oria' ),
-			count( $oria_rows ),
-			count( array_filter( $oria_rows, static fn( array $r ): bool => (bool) $r['g'] ) ),
-			count( array_filter( $oria_rows, static fn( array $r ): bool => null !== $r['q'] ) )
-		);
-		?>
+		<?php esc_html_e( 'A place with no experience scores still appears here '
+			. '— it just cannot be ordered by how quiet or social it is.', 'oria' ); ?>
 	</p>
 
 	<?php
