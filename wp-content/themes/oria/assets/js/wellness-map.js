@@ -39,6 +39,47 @@
   function labelOf(slug) { return (GOALS[slug] && GOALS[slug].label) || ""; }
   function colourOf(slug) { return (GOALS[slug] && GOALS[slug].colour) || "#54707E"; }
 
+  /* Rows store goal labels; the palette is keyed by slug. One reverse map
+     rather than a lookup loop every time a tag is drawn. */
+  var BY_LABEL = {};
+  Object.keys(GOALS).forEach(function (slug) {
+    BY_LABEL[GOALS[slug].label] = { slug: slug, colour: GOALS[slug].colour };
+  });
+
+  /* Which goals to show against a place.
+     A listing answers to as many as thirteen, and printing all of them is
+     noise wearing a rainbow. When something is selected these are the goals
+     that ARE the answer -- the same ones that decide the pin's colour, so a
+     tag and its pin always agree. With nothing selected the row still has to
+     say something, so it shows the first couple it happens to carry. */
+  function tagsFor(r, max) {
+    var out = [];
+    if (state.goals.length) {
+      state.goals.forEach(function (slug) {
+        if (r.g.indexOf(labelOf(slug)) > -1) out.push(labelOf(slug));
+      });
+    } else {
+      out = r.g.slice(0, 2);
+    }
+    return out.slice(0, max || 3);
+  }
+
+  function tagRow(r, max) {
+    var labels = tagsFor(r, max);
+    if (!labels.length) return null;
+    var wrap = document.createElement("span");
+    wrap.className = "wmtags";
+    labels.forEach(function (lab) {
+      var meta = BY_LABEL[lab];
+      var t = document.createElement("span");
+      t.className = "wmtag";
+      t.style.setProperty("--gf", meta ? meta.colour : "#54707E");
+      t.textContent = lab;
+      wrap.appendChild(t);
+    });
+    return wrap;
+  }
+
   function wantedGoals() {
     return state.goals.map(labelOf).filter(Boolean);
   }
@@ -93,6 +134,8 @@
   var hovered = -1;
   var hits = [];             // what the filters currently allow
   var hideTimer = null;      // grace period before a card closes
+  var popupOpen = false;     // a card is on screen
+  var listDirty = false;     // the view moved while it was
 
   var PIN = { r: 6, w: 2 };
   var PIN_ON = { r: 10, w: 3 };
@@ -131,6 +174,9 @@
     meta.textContent = bits.join("  \u00b7  ");
     body.appendChild(meta);
 
+    var tags = tagRow(r, 2);
+    if (tags) body.appendChild(tags);
+
     var a = document.createElement("a");
     a.className = "wmcard__view";
     a.href = r.u;
@@ -161,11 +207,27 @@
     layer = L.layerGroup().addTo(map);
     map.setView([-31.9523, 115.8613], 11);
 
-    /* Panning and zooming re-list. Not on every frame -- moveend fires once
-       the gesture settles, which is when the answer is worth recomputing. */
+    /* Panning and zooming re-list -- but not while a card is open.
+       On a phone you open a card, then drag the map to see where the place
+       actually is. Re-listing mid-drag rebuilds the panel and closes the
+       card you were reading, so the map fights the person using it. The move
+       is remembered instead and applied the moment the card is dismissed.
+       moveend, not move: once the gesture settles is when the answer is
+       worth recomputing. */
     map.on("moveend zoomend", function () {
-      clearHighlight();
+      if (popupOpen) { listDirty = true; return; }
       renderList();
+    });
+
+    map.on("popupopen", function () { popupOpen = true; });
+
+    map.on("popupclose", function () {
+      popupOpen = false;
+      resetPin();
+      if (listDirty) {
+        listDirty = false;
+        renderList();
+      }
     });
   }
 
@@ -174,6 +236,8 @@
     layer.clearLayers();
     markers = [];
     hovered = -1;
+    popupOpen = false;
+    listDirty = false;
     var pts = [];
 
     rows.forEach(function (r, i) {
@@ -257,17 +321,23 @@
     }
   }
 
+  /* Idempotent, because Leaflet's own popupclose calls it too -- tapping the
+     map background dismisses a card without going through clearHighlight. */
+  function resetPin() {
+    if (hovered < 0) return;
+    var m = markers[hovered];
+    if (m) m.setStyle({ radius: PIN.r, weight: PIN.w });
+    var li = listEl.querySelector('[data-i="' + hovered + '"]');
+    if (li) li.classList.remove("is-hot");
+    hovered = -1;
+  }
+
   function clearHighlight() {
     clearTimeout(hideTimer);
     if (hovered < 0) return;
     var m = markers[hovered];
-    if (m) {
-      m.setStyle({ radius: PIN.r, weight: PIN.w });
-      m.closePopup();
-    }
-    var li = listEl.querySelector('[data-i="' + hovered + '"]');
-    if (li) li.classList.remove("is-hot");
-    hovered = -1;
+    if (m) m.closePopup();     // fires popupclose, which resets the pin
+    resetPin();
   }
 
   /* -------------------------------------------------------------- paint -- */
@@ -363,6 +433,9 @@
       meta.textContent = bits.join("  ·  ");
       li.appendChild(meta);
 
+      var rowTags = tagRow(r, 3);
+      if (rowTags) li.appendChild(rowTags);
+
       if (r.b) {
         var b = document.createElement("span");
         b.className = "wmap__flag";
@@ -417,8 +490,23 @@
       var row = root.querySelector("[data-wmap-goals]");
       if (row) row.classList.toggle("has-choice", state.goals.length > 0);
       paint();
+      revealResults();
     });
   });
+
+  /* On a phone the chips fill the screen and the map is below the fold, so
+     tapping one looks like nothing happened. Bring the answer into view.
+     Only on narrow screens -- on a desktop both are already visible and
+     yanking the page would be rude -- and only when the results are actually
+     off-screen, so a second tap does not re-scroll a map you are looking at. */
+  function revealResults() {
+    if (window.innerWidth > 900) return;
+    if (!countEl) return;
+    var top = countEl.getBoundingClientRect().top;
+    if (top >= 0 && top < window.innerHeight * 0.5) return;
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    countEl.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  }
 
   function segGroup(sel, apply) {
     root.querySelectorAll(sel).forEach(function (btn) {

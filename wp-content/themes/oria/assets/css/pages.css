@@ -4999,3 +4999,18 @@ article.is-spotlit {
 }
 .wmcard__view:hover { border-bottom-color: var(--deep); }
 .wmcard__credit { display: block; margin-top: .3rem; font-size: 10px; color: var(--text-faint); }
+
+/* Goal tags on a result. Same colour as the chip that produced them and as
+   the pin on the map, so the three read as one thing. Outlined rather than
+   filled — a row of solid pills would out-shout the name above it. */
+.wmtags { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .3rem; }
+.wmtag {
+  font-size: 10px; font-weight: 700; letter-spacing: .03em;
+  padding: .1rem .4rem; border-radius: 999px;
+  color: var(--gf, var(--moss));
+  border: 1px solid color-mix(in srgb, var(--gf, var(--moss)) 45%, transparent);
+  background: color-mix(in srgb, var(--gf, var(--moss)) 8%, transparent);
+  white-space: nowrap;
+}
+.wmcard .wmtags { margin-top: .35rem; }
+.wmcard .wmtag { font-size: 9px; }
