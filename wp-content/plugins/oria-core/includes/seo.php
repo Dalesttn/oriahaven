@@ -66,6 +66,8 @@ function bootstrap(): void {
 	 * bug in the first place.
 	 */
 	add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\schema_decode_entities', 50 );
+	// After the decoder, so this has the last word on every @id.
+	add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\schema_own_ids', 60 );
 	// Priority 1: verification tags belong near the top of the head, and
 	// some crawlers only read the first few kilobytes of it.
 	add_action( 'wp_head', __NAMESPACE__ . '\verification', 1 );
@@ -988,5 +990,131 @@ function schema_decode_entities( $graph ) {
 			}
 		}
 	);
+	return $graph;
+}
+
+
+/**
+ * Make every schema @id on a page derive from that page's own canonical.
+ *
+ * WHY THIS EXISTS, AND WHY IT IS GENERIC.
+ *
+ * Six modules in this plugin override `wpseo_canonical` -- compare, explore,
+ * finder, intent-pages, practices-index, websites -- and until now only two
+ * touched `wpseo_schema_graph`. So a page could announce one address in its
+ * canonical tag and a different one in its structured data, which is what
+ * happened: /explore/perth/ carried a BreadcrumbList identified as
+ * `/explore/#breadcrumb`, and /explore/margaret-river/spa/ identified its
+ * breadcrumbs as `/explore/perth/spa/#breadcrumb` -- the same @id the real
+ * Perth page uses. Two pages claiming one entity is not a cosmetic
+ * difference: Google resolves nodes BY @id, so it merges them.
+ *
+ * Fixing each module separately is what produced the problem in the first
+ * place -- a correction applied to the output someone was looking at and not
+ * to its siblings. One filter, at the end, keyed off the canonical the page
+ * actually settled on, cannot drift out of step with them.
+ *
+ * The canonical comes from Yoast's own meta surface rather than a captured
+ * filter value, so this does not depend on `wpseo_canonical` having run
+ * first (it does, but relying on hook order for correctness is how these
+ * things rot).
+ *
+ * Site-level nodes -- #website, #organization -- are rooted at the home page
+ * and are deliberately untouched: they are shared entities, and renaming
+ * them per page would be the collision bug in reverse.
+ */
+function schema_own_ids( $graph ) {
+	if ( ! is_array( $graph ) || ! function_exists( 'YoastSEO' ) ) {
+		return $graph;
+	}
+
+	try {
+		$canonical = (string) YoastSEO()->meta->for_current_page()->canonical;
+	} catch ( \Throwable $e ) {
+		return $graph;   // no canonical to trust, so nothing to correct against
+	}
+	if ( '' === $canonical ) {
+		return $graph;
+	}
+
+	/*
+	 * The page node names the address every other node on the page hangs
+	 * off. Yoast types it as one of the WebPage family; anything else --
+	 * Article, ItemList, the organisation -- keeps its own identity.
+	 */
+	$page_types = array( 'WebPage', 'CollectionPage', 'ItemPage', 'AboutPage',
+		'ContactPage', 'FAQPage', 'ProfilePage', 'SearchResultsPage', 'CheckoutPage' );
+
+	$rename = array();
+
+	foreach ( $graph as $node ) {
+		if ( ! is_array( $node ) || empty( $node['@id'] ) || ! is_string( $node['@id'] ) ) {
+			continue;
+		}
+		$types = (array) ( $node['@type'] ?? '' );
+		$id    = $node['@id'];
+
+		if ( array_intersect( $types, $page_types ) && $id !== $canonical ) {
+			$rename[ $id ] = $canonical;
+		}
+		/*
+		 * Named explicitly rather than left to the prefix pass below. The
+		 * Margaret River page's breadcrumb id did not share a prefix with
+		 * anything on its own page -- it was simply Perth's -- so a
+		 * prefix-only rule would have walked straight past it.
+		 */
+		if ( in_array( 'BreadcrumbList', $types, true ) && $id !== $canonical . '#breadcrumb' ) {
+			$rename[ $id ] = $canonical . '#breadcrumb';
+		}
+	}
+
+	// Page-id fragments, from whichever id the page node used to carry.
+	$old_page = '';
+	foreach ( $rename as $was => $now ) {
+		if ( $now === $canonical ) {
+			$old_page = $was;
+		}
+	}
+	if ( '' !== $old_page ) {
+		foreach ( $graph as $node ) {
+			if ( ! is_array( $node ) || empty( $node['@id'] ) || ! is_string( $node['@id'] ) ) {
+				continue;
+			}
+			$id = $node['@id'];
+			if ( ! isset( $rename[ $id ] ) && 0 === strpos( $id, $old_page . '#' ) ) {
+				$rename[ $id ] = $canonical . substr( $id, strlen( $old_page ) );
+			}
+		}
+	}
+
+	if ( ! $rename ) {
+		return $graph;
+	}
+
+	/*
+	 * Applied to every @id in the graph, not just the nodes -- a bare
+	 * {"@id": "..."} is a REFERENCE, and renaming a node while leaving the
+	 * pointers behind is worse than the wrong address it replaced. That
+	 * exact mistake is what made Google report breadcrumbs with no
+	 * itemListElement on every facet page.
+	 */
+	array_walk_recursive(
+		$graph,
+		static function ( &$value, $key ) use ( $rename ): void {
+			if ( '@id' === $key && is_string( $value ) && isset( $rename[ $value ] ) ) {
+				$value = $rename[ $value ];
+			}
+		}
+	);
+
+	// The page node advertises its address twice; url has to agree with @id.
+	foreach ( $graph as &$node ) {
+		if ( is_array( $node ) && array_intersect( (array) ( $node['@type'] ?? '' ), $page_types )
+			&& isset( $node['url'] ) ) {
+			$node['url'] = $canonical;
+		}
+	}
+	unset( $node );
+
 	return $graph;
 }
