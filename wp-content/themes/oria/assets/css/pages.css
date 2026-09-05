@@ -4885,3 +4885,117 @@ article.is-spotlit {
 /* Default width for the article header copy, previously an inline style. */
 .pagehead__copy { margin-top: 1rem; max-width: 56rem; }
 .herocap { margin: 0; font-size: var(--fs-sm); color: var(--text-faint); max-width: 62ch; }
+
+/* --- /wellness-map/ prototype ----------------------------------------
+   Mood chips lead; the map is the evidence, not the interface. The list
+   stays beside it because a pin is not a decision — people read names. */
+.wmap__controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4); margin-bottom: var(--s-4); }
+.wmap__seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.segbtn {
+  cursor: pointer; border: 0; background: transparent; color: var(--text);
+  padding: .45rem .85rem; font-size: var(--fs-sm); white-space: nowrap;
+}
+.segbtn + .segbtn { border-left: 1px solid var(--line); }
+.segbtn.is-on { background: var(--deep); color: #fff; }
+.wmap__begin { font-size: var(--fs-sm); }
+
+.wmap__count { margin: 0 0 var(--s-4); font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+.wmap__split { display: grid; grid-template-columns: 1.15fr 1fr; gap: var(--s-5); align-items: start; }
+.wmap__map { height: 560px; border-radius: 14px; border: 1px solid var(--line); overflow: hidden; background: var(--sand-3); }
+.wmap__list { list-style: none; margin: 0; padding: 0; max-height: 560px; overflow-y: auto; display: grid; gap: 2px; }
+.wmap__item { display: grid; gap: .1rem; padding: var(--s-3) var(--s-3); border-bottom: 1px solid var(--line); }
+.wmap__link { font-weight: 600; color: var(--ink); text-decoration: none; }
+.wmap__link:hover { color: var(--deep); text-decoration: underline; }
+.wmap__meta { font-size: var(--fs-xs); color: var(--text-soft); }
+.wmap__flag { justify-self: start; margin-top: .2rem; font-size: 11px; color: var(--moss); border: 1px solid var(--teal-line); border-radius: 999px; padding: .1rem .45rem; }
+.wmap__more { padding: var(--s-4) var(--s-3); font-size: var(--fs-sm); color: var(--text-soft); }
+.wmap__note { margin-top: var(--s-5); color: var(--text-faint); max-width: 78ch; }
+
+@media (max-width: 900px) {
+  .wmap__split { grid-template-columns: 1fr; }
+  .wmap__map { height: 380px; }
+  .wmap__list { max-height: none; }
+}
+
+/* The wellness map reuses the directory's goal chips wholesale, so it needs
+   only the count badge and a way to show a chip that would empty the map. */
+.goodfor--wmap { margin-bottom: var(--s-5); }
+.goodfor--wmap .goodfor__row { flex-wrap: wrap; }
+.goodfor__n {
+  margin-left: .45rem; font-style: normal; font-weight: 700;
+  font-size: var(--fs-xs); opacity: .75; font-variant-numeric: tabular-nums;
+}
+.goodfor__chip.is-empty { opacity: .4; }
+
+/* Selected has to read against a chip that is already full-colour, so the
+   ring is ink and offset rather than the chip's own hue — a same-colour ring
+   on a same-colour fill is no ring at all. Once anything is chosen the rest
+   step back, which is what actually makes the choice visible. */
+.goodfor--wmap .goodfor__chip[aria-pressed="true"] {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.goodfor--wmap.has-choice .goodfor__chip[aria-pressed="false"] { opacity: .38; }
+.goodfor--wmap.has-choice .goodfor__chip[aria-pressed="false"]:hover { opacity: .7; }
+
+/* The wellness map's header picture, through the shared .heroband block. */
+@media (min-width: 861px) {
+  .wmhero-band {
+    --heroband-img: image-set(
+      url("../img/wellness-map-hero-1280.webp") 1x,
+      url("../img/wellness-map-hero.webp") 2x
+    );
+  }
+  @supports (background-image: -webkit-image-set(url("../img/wellness-map-hero-1280.webp") 1x)) {
+    .wmhero-band {
+      --heroband-img: -webkit-image-set(
+        url("../img/wellness-map-hero-1280.webp") 1x,
+        url("../img/wellness-map-hero.webp") 2x
+      );
+    }
+  }
+  /* The copy gives way to the picture, as on the other banded pages. */
+  .wmhero-band .pagehead__copy { max-width: min(56rem, 58%); }
+
+  /*
+   * This one shows more of its photograph than the others do.
+   *
+   * The shared band crops to a right-hand box, which suits a picture whose
+   * subject is a bowl or a person. Here the subject is a coastline, and the
+   * quiet half — open water — is exactly what the headline wants to sit on.
+   * So the picture spans the whole band and the fade is longer and gentler,
+   * letting the ocean carry the type while the built-up edge stays where it
+   * was on the right.
+   */
+  .wmhero-band::before {
+    width: 100%;
+    background-position: right center;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, rgba(0,0,0,.10) 14%, rgba(0,0,0,.34) 34%, rgba(0,0,0,.72) 58%, #000 76%),
+      linear-gradient(to bottom, transparent 0%, #000 12%, #000 86%, transparent 100%);
+    mask-image:
+      linear-gradient(to right, transparent 0%, rgba(0,0,0,.10) 14%, rgba(0,0,0,.34) 34%, rgba(0,0,0,.72) 58%, #000 76%),
+      linear-gradient(to bottom, transparent 0%, #000 12%, #000 86%, transparent 100%);
+  }
+}
+
+/* The hover card on the map, and the row it pairs with. */
+.wmap__item.is-hot { background: color-mix(in srgb, var(--deep) 7%, transparent); }
+.wmap__item { transition: background .12s; }
+
+.wmpop .leaflet-popup-content-wrapper { padding: 0; overflow: hidden; border-radius: 12px; }
+.wmpop .leaflet-popup-content { margin: 0; width: 220px !important; }
+.wmpop .leaflet-popup-tip { background: #fff; }
+.wmcard { display: grid; }
+.wmcard__img { display: block; width: 100%; height: 110px; object-fit: cover; background: var(--sand-3); }
+.wmcard__body { display: grid; gap: .2rem; padding: .6rem .7rem .7rem; }
+.wmcard__name { font-size: var(--fs-sm); line-height: 1.25; color: var(--ink); }
+.wmcard__meta { font-size: 11px; color: var(--text-soft); }
+.wmcard__view {
+  justify-self: start; margin-top: .35rem; font-size: 11px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--deep);
+  text-decoration: none; border-bottom: 1px solid var(--teal-line);
+}
+.wmcard__view:hover { border-bottom-color: var(--deep); }
+.wmcard__credit { display: block; margin-top: .3rem; font-size: 10px; color: var(--text-faint); }

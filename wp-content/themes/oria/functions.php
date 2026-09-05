@@ -90,9 +90,22 @@ add_action(
 		 */
 		if ( get_query_var( 'oria_practice_v2' )
 			|| ( function_exists( '\Oria\Core\PracticesIndex\mode' ) && '' !== \Oria\Core\PracticesIndex\mode() && is_post_type_archive( 'listing' ) && ! is_search() )
-			|| is_tax( 'specialty' ) ) {
+			|| is_tax( 'specialty' )
+			|| is_page( 'wellness-map' ) ) {
 			wp_enqueue_style( 'oria-leaflet', "{$uri}/assets/vendor/leaflet/leaflet.css", array(), '1.9.4' );
 			wp_enqueue_script( 'oria-leaflet', "{$uri}/assets/vendor/leaflet/leaflet.js", array(), '1.9.4', array( 'in_footer' => true ) );
+		}
+
+		// The mood-map prototype drives its own map, so it ships its own
+		// script rather than growing app.js for a page that may not survive.
+		if ( is_page( 'wellness-map' ) ) {
+			wp_enqueue_script(
+				'oria-wellness-map',
+				"{$uri}/assets/js/wellness-map.js",
+				array( 'oria-leaflet' ),
+				filemtime( get_theme_file_path( 'assets/js/wellness-map.js' ) ),
+				array( 'in_footer' => true )
+			);
 		}
 
 		wp_enqueue_script(
