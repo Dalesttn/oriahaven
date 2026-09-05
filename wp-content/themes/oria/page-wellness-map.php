@@ -212,6 +212,34 @@ foreach ( $oria_goals_all as $oria_g ) {
 		<span class="micro"><?php esc_html_e( 'Prototype', 'oria' ); ?></span>
 		<h1 class="h1 pagehead__title"><?php printf( esc_html__( 'What do you want to do in %s?', 'oria' ), esc_html( $oria_cname ) ); ?></h1>
 		<p class="lede pagehead__lede"><?php esc_html_e( 'Pick what you are after, not what the industry calls it. Everything below is a real place with a real address — the map only shows what matches.', 'oria' ); ?></p>
+
+		<?php
+		/*
+		 * Written, not generated. The page needs prose a reader gets
+		 * something from -- what the goals mean, what the map is for -- and
+		 * a page with one heading and a hundred words of its own was never
+		 * going to rank for anything, however good the tool on it is.
+		 *
+		 * Room language throughout: how quiet, how busy, how far. Nothing
+		 * here says a session helps, eases or improves anything.
+		 */
+		?>
+		<div class="pagehead__intro">
+			<p>
+				<?php
+				printf(
+					/* translators: 1: number of places, 2: city name, 3: number of goals. */
+					esc_html__( 'Every one of the %1$d places on this map is somewhere in %2$s you can actually walk into. Choose from %3$d things you might want an hour to be — quiet, hands-on, physical, social — and the map keeps only the places that answer to it.', 'oria' ),
+					count( $oria_rows ),
+					esc_html( $oria_cname ),
+					count( $oria_goals_all )
+				);
+				?>
+			</p>
+			<p>
+				<?php esc_html_e( 'The wants are the visitor\'s, and the matching is done on what a place offers: its services, its specialties, how large the room usually is and what it costs. A studio is not tagged as calming or restorative anywhere on this site, because a directory that has never been through the door does not get to say so.', 'oria' ); ?>
+			</p>
+		</div>
 	</div>
 </section>
 </div>
@@ -263,9 +291,48 @@ foreach ( $oria_goals_all as $oria_g ) {
 
 	<p class="wmap__count" data-wmap-count aria-live="polite"></p>
 
+	<h2 class="wmap__h2">
+		<?php
+		printf(
+			/* translators: 1: number of places, 2: city name. */
+			esc_html__( 'All %1$d wellness places in %2$s', 'oria' ),
+			count( $oria_rows ),
+			esc_html( $oria_cname )
+		);
+		?>
+	</h2>
+
 	<div class="wmap__split">
 		<div class="wmap__map" data-wmap-map role="application" aria-label="<?php esc_attr_e( 'Map of matching places', 'oria' ); ?>"></div>
-		<ol class="wmap__list" data-wmap-list></ol>
+		<ol class="wmap__list" data-wmap-list>
+			<?php
+			/*
+			 * Rendered on the server, not left empty for the script to fill.
+			 *
+			 * This page had ZERO impressions in 28 days and Search Console
+			 * reported the URL as unknown to Google. Part of that was
+			 * discovery -- nothing linked here -- but the rest was this: the
+			 * whole page was 364 words, most of them navigation, and exactly
+			 * one internal link in <main>. Every one of these places lived in
+			 * a JSON blob a crawler has no reason to read.
+			 *
+			 * wellness-map.js clears this list with textContent = "" before
+			 * its first paint, so nothing is duplicated and nothing is stale:
+			 * a visitor with JavaScript sees the interactive version, and a
+			 * crawler -- or anybody without it -- sees the real list.
+			 */
+			foreach ( $oria_rows as $oria_r ) :
+				$oria_bits = array_filter( array( $oria_r['c'], $oria_r['sb'], $oria_r['pb'] ) );
+				?>
+				<li class="wmap__item">
+					<a class="wmap__link" href="<?php echo esc_url( $oria_r['u'] ); ?>"><?php echo esc_html( $oria_r['t'] ); ?></a>
+					<span class="wmap__meta"><?php echo esc_html( implode( '  ·  ', $oria_bits ) ); ?></span>
+					<?php if ( $oria_r['g'] ) : ?>
+						<span class="wmap__goals"><?php echo esc_html( implode( ', ', array_slice( (array) $oria_r['g'], 0, 3 ) ) ); ?></span>
+					<?php endif; ?>
+				</li>
+			<?php endforeach; ?>
+		</ol>
 	</div>
 
 	<p class="wmap__note micro">
@@ -279,6 +346,44 @@ foreach ( $oria_goals_all as $oria_g ) {
 		);
 		?>
 	</p>
+
+	<?php
+	/*
+	 * ItemList, so the page says what it is holding.
+	 *
+	 * Positions and names only, each pointing at the listing's own URL --
+	 * the detail lives there and is described by that page's own schema.
+	 * Repeating a business's address and rating here would be two sources
+	 * for one fact, and the one further from the business is the one that
+	 * goes stale.
+	 *
+	 * Not emitted through wpseo_schema_graph: this is a page template, and
+	 * the graph filter fires for the whole site. seo.php decodes entities
+	 * across every graph it sees, which is why the names are decoded here
+	 * before encoding -- JSON has no entities.
+	 */
+	$oria_ld = array(
+		'@context'        => 'https://schema.org',
+		'@type'           => 'ItemList',
+		'name'            => sprintf(
+			/* translators: %s: city name. */
+			__( 'Wellness places in %s', 'oria' ),
+			$oria_cname
+		),
+		'numberOfItems'   => count( $oria_rows ),
+		'itemListOrder'   => 'https://schema.org/ItemListUnordered',
+		'itemListElement' => array(),
+	);
+	foreach ( array_values( $oria_rows ) as $oria_i => $oria_r ) {
+		$oria_ld['itemListElement'][] = array(
+			'@type'    => 'ListItem',
+			'position' => $oria_i + 1,
+			'name'     => html_entity_decode( (string) $oria_r['t'], ENT_QUOTES, 'UTF-8' ),
+			'url'      => (string) $oria_r['u'],
+		);
+	}
+	?>
+	<script type="application/ld+json"><?php echo wp_json_encode( $oria_ld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
 
 	<script type="application/json" data-wmap-data><?php echo wp_json_encode( $oria_rows, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
 	<script type="application/json" data-wmap-centre><?php echo wp_json_encode( $oria_cname ); ?></script>

@@ -5673,3 +5673,15 @@ article.is-spotlit {
   background: var(--gf, #fff); flex: 0 0 auto;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, .35);
 }
+
+/* --- wellness map: the crawlable layer ---------------------------------- */
+
+.pagehead__intro { max-width: 62ch; margin-top: var(--s-4); display: grid; gap: var(--s-3); }
+.pagehead__intro p { margin: 0; font-size: var(--fs-sm); line-height: 1.65; color: var(--text-soft); }
+
+.wmap__h2 { margin: 0 0 var(--s-3); font-size: var(--fs-md, 1.0625rem); color: var(--ink); }
+
+/* The server-rendered rows carry a little more than the scripted ones --
+   the goals as plain words, so the list reads on its own. The script
+   replaces all of this on first paint. */
+.wmap__goals { display: block; font-size: 11px; color: var(--text-faint); margin-top: .1rem; }

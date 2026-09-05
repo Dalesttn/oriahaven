@@ -337,6 +337,20 @@ function page_defaults(): array {
 				'title' => 'Acupuncture in Perth: Costs & What to Expect | ' . get_bloginfo( 'name' ),
 				'desc'  => 'Thinking about acupuncture in Perth? Registration, typical costs, what a first session involves, and verified Perth clinics — no booking fees.',
 			),
+			/*
+			 * The map. Its Yoast title was "Wellness Map - Oria Haven", which
+			 * names the furniture rather than the thing: nobody searches for a
+			 * wellness map, they search for what they want and where. The page
+			 * had zero impressions in 28 days and Google had never crawled it.
+			 */
+			'wellness-map'         => array(
+				'title' => 'Wellness Near You in Perth: Browse the Map | ' . get_bloginfo( 'name' ),
+				'desc'  => 'Massage, yoga, saunas, breathwork and quiet rooms across Perth on one map. Pick what you are after — relax, recover, wind down — and see what is near you.',
+			),
+			'ask'                  => array(
+				'title' => 'Describe What You Want, Find It in Perth | ' . get_bloginfo( 'name' ),
+				'desc'  => 'Say what kind of session you are after in your own words — how quiet, how much effort, what to spend — and see real Perth places that match.',
+			),
 			'list-your-practice'   => array(
 				'title' => 'List Your Wellness Practice in Perth | ' . get_bloginfo( 'name' ),
 				'desc'  => "Run a wellness practice in Perth? List it free on Oria Haven's hand-checked directory — no pay-to-win rankings, no booking fees, real client enquiries.",
