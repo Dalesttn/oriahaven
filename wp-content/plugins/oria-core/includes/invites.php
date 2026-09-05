@@ -1226,7 +1226,7 @@ function accept( int $listing_id ): void {
 				'user_login'   => $username,
 				'user_email'   => $email,
 				'user_pass'    => wp_generate_password( 24 ),
-				'display_name' => get_the_title( $listing_id ),
+				'display_name' => html_entity_decode( get_the_title( $listing_id ), ENT_QUOTES, 'UTF-8' ),
 				'role'         => \Oria\Core\Ownership\ROLE,
 			)
 		);

@@ -82,7 +82,19 @@ $oria_class = 'goodfor' . ( ! empty( $args['class'] ) ? ' ' . $args['class'] : '
 		<?php endforeach; ?>
 	</div>
 	<?php if ( $oria_links ) : ?>
-		<p class="hint goodfor__hint"><?php esc_html_e( 'Each one opens the directory, already narrowed to what you picked.', 'oria' ); ?></p>
+		<p class="hint goodfor__hint">
+			<?php esc_html_e( 'Each one opens the directory, already narrowed to what you picked.', 'oria' ); ?>
+			<?php
+			/*
+			 * The same wants, plotted. Links mode is the front page, and the
+			 * map is the other question these chips answer -- not "what kind
+			 * of thing" but "what is near me". A link rather than an embedded
+			 * map: Leaflet plus four hundred coordinates is not a price the
+			 * home page should pay for something most visitors never open.
+			 */
+			?>
+			<a class="goodfor__maplink" href="<?php echo esc_url( home_url( '/wellness-map/' ) ); ?>"><?php esc_html_e( 'Or see what is near you on the map', 'oria' ); ?> &rarr;</a>
+		</p>
 	<?php else : ?>
 	<p class="hint goodfor__hint"><?php esc_html_e( 'Each one picks a set of experience types below — the same filters, chosen for you. Un-tick anything that isn\'t what you meant.', 'oria' ); ?></p>
 	<?php endif; ?>

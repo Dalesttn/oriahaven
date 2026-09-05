@@ -1958,9 +1958,10 @@ details[open] > .gfsummary { background: var(--ink); border-color: var(--ink); c
 .matchcard .btn { margin-top: var(--s-2); }
 @media (max-width: 620px) { .matchcard { width: 100%; } }
 
-@media (min-width: 901px) {
-  .matchband-section { display: none; }
-}
+/* Shown at every width now. It used to hide above 901px because the hero
+   card carried the only [data-match-open] trigger and opened the dialog
+   instead; Oria has that slot, so this band IS the way to the matching
+   service on desktop rather than a mobile fallback for it. */
 
 .matchdialog {
   border: none;
@@ -5566,4 +5567,73 @@ article.is-spotlit {
 
 @media (prefers-reduced-motion: reduce) {
   .askguide { animation: none !important; }
+}
+
+/* The way through to the map, under the front page's chip row. */
+.goodfor__maplink {
+  display: inline-block; margin-left: .4rem;
+  color: var(--deep); font-weight: 600; text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.goodfor__maplink:hover { border-bottom-color: currentColor; }
+
+@media (max-width: 620px) {
+  .goodfor__maplink { display: block; margin: .4rem 0 0; min-height: 44px; line-height: 44px; }
+}
+
+/* --- Oria in the hero, where the matching card used to be ---------------
+   Inherits .glass .trustcard, so the frosted treatment and the 320px width
+   come for free; this only adds what is hers. */
+
+.askcard__head { display: flex; align-items: center; gap: var(--s-2); margin-top: var(--s-3); }
+
+/* On the frosted card she needs a lighter body than she wears on paper --
+   the sage that reads as "soft" against off-white goes muddy over a dark
+   photograph. Ivory core, brighter rim, and a warmer glow to lift her off
+   the glass. */
+.askcard .oria { --oria-body: #9EC0AB; --oria-hi: #F6EFE3; --oria-glow: #D8BCA0; }
+.askcard .oria__svg { width: 52px; height: 52px; flex: 0 0 auto; }
+
+.askcard__title {
+  margin: 0;
+  font-family: var(--font-sans); font-weight: 500;
+  font-size: 1.1875rem; line-height: 1.25; letter-spacing: -0.015em;
+  color: #fff; text-wrap: balance;
+}
+
+/*
+ * One row, with the submit inside the field.
+ *
+ * A stacked input and full-width button made the card 344px tall, and the
+ * hero search bar starts 281px below the card's top -- so the card sat over
+ * the Search button. The arrow costs 63px less and the card clears it.
+ */
+.askcard__form { margin-top: var(--s-3); position: relative; }
+
+/* Not the site's .input: that is built for paper. This one sits on glass. */
+.askcard__input {
+  width: 100%; min-width: 0; box-sizing: border-box;
+  padding: .7rem 3rem .7rem .85rem; border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, .3);
+  background: rgba(255, 255, 255, .12);
+  color: #fff; font: inherit; font-size: var(--fs-sm);
+}
+.askcard__input::placeholder { color: rgba(255, 255, 255, .62); }
+.askcard__input:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, .85); outline-offset: 1px;
+  background: rgba(255, 255, 255, .18); border-color: rgba(255, 255, 255, .5);
+}
+.askcard__go {
+  position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
+  width: 38px; height: 38px; display: grid; place-items: center;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: #fff; color: var(--ink);
+  transition: background .18s ease;
+}
+.askcard__go svg { width: 18px; height: 18px; }
+.askcard__go:hover { background: var(--sand-3); }
+
+@media (max-width: 620px) {
+  .askcard__input { min-height: 48px; }
+  .askcard__go { width: 44px; height: 44px; }
 }

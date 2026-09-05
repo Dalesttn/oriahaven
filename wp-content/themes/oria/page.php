@@ -20,6 +20,25 @@ while ( have_posts() ) :
 			if ( '' === $oria_layout ) {
 				continue;
 			}
+
+			/*
+			 * The region map is parked, not deleted.
+			 *
+			 * It emitted no crawlable links -- the panel is built by script
+			 * on hover, so a crawler saw a decorative SVG and nothing else --
+			 * and the links it did build still pointed at /directory/?region=,
+			 * which 301s to /explore/. For 1,263px of a very long page that
+			 * was a poor trade.
+			 *
+			 * Skipped here rather than removed from the page's ACF sections,
+			 * so the decision travels with the code instead of living in a
+			 * database row that would have to be repeated on production. The
+			 * section template, its CSS and its data are all untouched:
+			 * delete these three lines and it is back.
+			 */
+			if ( is_front_page() && 'stillness_map' === $oria_layout ) {
+				continue;
+			}
 			get_template_part(
 				'template-parts/sections/' . str_replace( '_', '-', $oria_layout ),
 				null,
@@ -39,6 +58,7 @@ while ( have_posts() ) :
 			if ( is_front_page() && 'practice_tiles' === $oria_layout ) {
 				get_template_part( 'template-parts/sections/get-matched' );
 			}
+
 		}
 	} else {
 		?>

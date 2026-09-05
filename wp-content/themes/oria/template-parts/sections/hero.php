@@ -185,37 +185,57 @@ $oria_practices = is_wp_error( $oria_practices ) ? array() : $oria_practices;
 			 * JS) it falls through to the in-page band at #enquire.
 			 */
 			?>
-			<?php if ( $oria_show_trust && function_exists( '\Oria\Core\Leads\bootstrap' ) ) : ?>
-			<div class="glass trustcard hero__trust matchcard">
+			<?php if ( $oria_show_trust ) : ?>
+			<?php
+			/*
+			 * Oria, above the fold.
+			 *
+			 * This slot used to hold the "free matching service" card, whose
+			 * button was the ONLY [data-match-open] trigger on the page -- and
+			 * .matchband-section is display:none above 901px, so removing the
+			 * card without doing anything else would have left the lead form
+			 * unreachable on desktop. The band is now shown at every width
+			 * instead (see pages.css), which demotes that funnel down the page
+			 * rather than deleting it.
+			 *
+			 * A plain GET form, exactly as on the front page band: it carries
+			 * the sentence to /ask/ and does no reading of its own, so nobody
+			 * can spend their three daily readings before they arrive.
+			 */
+			?>
+			<div class="glass trustcard hero__trust askcard">
 				<div class="trustcard__top">
-					<span class="micro"><?php esc_html_e( 'Free matching service', 'oria' ); ?></span>
+					<span class="micro"><?php esc_html_e( 'Ask Oria', 'oria' ); ?></span>
 					<span class="pill pill--glass"><?php esc_html_e( 'Checked by hand', 'oria' ); ?></span>
 				</div>
-				<p class="matchcard__title"><?php esc_html_e( "Tell us what you're after. We'll introduce you.", 'oria' ); ?></p>
+
+				<div class="askcard__head">
+					<?php get_template_part( 'template-parts/oria-orb', null, array( 'uid' => 'hero' ) ); ?>
+					<p class="askcard__title"><?php esc_html_e( 'Not sure what to search for?', 'oria' ); ?></p>
+				</div>
+
 				<p>
 					<?php
 					echo esc_html(
 						$oria_avg > 0
-							/*
-							 * The rating and the hand-checking used to sit
-							 * either side of a comma, which asserted a third
-							 * thing nobody can stand behind: that we checked
-							 * the ratings. We did not. 273 of the 314
-							 * published ratings carry rating_src "google" —
-							 * they are Google's, reproduced. What IS checked
-							 * by hand is the listing itself: a person writes
-							 * the description and verifies the details.
-							 *
-							 * So the sentence now names who did the rating,
-							 * and keeps the hand-checking attached to the
-							 * thing it is actually true of.
-							 */
-							? sprintf( __( 'We introduce you to up to three practices that fit — each one written and checked by a person, and rated %s on average by their own Google reviewers.', 'oria' ), number_format_i18n( $oria_avg, 1 ) )
-							: __( 'We introduce you to up to three practices that fit — each one written and checked by a person.', 'oria' )
+							/* translators: %s: average Google rating across the directory. */
+							? sprintf( __( 'Describe it and we will find real places, rated %s by their own Google reviewers.', 'oria' ), number_format_i18n( $oria_avg, 1 ) )
+							: __( 'Describe it and we will find real places across Perth.', 'oria' )
 					);
 					?>
 				</p>
-				<a class="btn btn--light btn--block" href="#enquire" data-match-open><?php esc_html_e( 'Find my match', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
+
+				<form class="askcard__form" action="<?php echo esc_url( home_url( '/ask/' ) ); ?>" method="get">
+					<label class="sr-only" for="askcard-q"><?php esc_html_e( 'Describe what you are looking for', 'oria' ); ?></label>
+					<input class="askcard__input" type="text" id="askcard-q" name="q" maxlength="400" autocomplete="off"
+						placeholder="<?php esc_attr_e( 'Quiet, hands-on, near the city…', 'oria' ); ?>">
+					<button class="askcard__go" type="submit" aria-label="<?php esc_attr_e( 'Ask Oria', 'oria' ); ?>">
+						<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+							<path d="M3 10h13M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.9"
+								stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</button>
+				</form>
 			</div>
 			<?php elseif ( $oria_show_trust && $oria_avg > 0 ) : ?>
 			<div class="glass trustcard hero__trust">

@@ -156,7 +156,9 @@ foreach ( get_posts(
 	}
 
 	$oria_rows[] = array(
-		't'  => get_the_title( $oria_id ),
+		// Decoded: JSON has no entities, and the map draws these with
+		// textContent, so a curly apostrophe would show as &#8217;.
+		't'  => html_entity_decode( get_the_title( $oria_id ), ENT_QUOTES, 'UTF-8' ),
 		'u'  => get_permalink( $oria_id ),
 		'la' => round( (float) $oria_geo['lat'], 5 ),
 		'lo' => round( (float) $oria_geo['lng'], 5 ),

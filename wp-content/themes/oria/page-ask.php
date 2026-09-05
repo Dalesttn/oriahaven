@@ -65,73 +65,7 @@ $oria_examples = array(
 			<span aria-hidden="true">/</span><span><?php esc_html_e( 'Ask', 'oria' ); ?></span>
 		</nav>
 
-		<!--
-			Oria. A presence, not an adviser.
-
-			She reacts to what the PAGE is doing — reading, finding, coming up
-			empty — and never says anything about a listing. The state worth
-			reading the CSS for is "quiet": on a health disclosure the float
-			stops, the sparkles vanish, the glow flattens and the smile becomes
-			a level line. A cheerful mascot bobbing beside "that sounds like a
-			health question, ask a GP" would make a joke of the one moment on
-			this page that must not be one.
-
-			aria-hidden, because the announced information is the status line
-			under the results. Two live regions talking over each other reads
-			worse than a character a screen reader never mentions.
-		-->
-		<div class="oria oria--hero" data-oria data-state="idle" aria-hidden="true">
-			<svg class="oria__svg" viewBox="0 0 80 80" focusable="false">
-				<defs>
-					<radialGradient id="oria-glow-g" cx="50%" cy="50%" r="50%">
-						<stop offset="0%" stop-color="var(--oria-glow)" stop-opacity=".5" />
-						<stop offset="55%" stop-color="var(--oria-glow)" stop-opacity=".15" />
-						<stop offset="100%" stop-color="var(--oria-glow)" stop-opacity="0" />
-					</radialGradient>
-					<radialGradient id="oria-body-g" cx="34%" cy="26%" r="80%">
-						<stop offset="0%" stop-color="var(--oria-hi)" />
-						<stop offset="100%" stop-color="var(--oria-body)" />
-					</radialGradient>
-				</defs>
-
-				<circle class="oria__glow" cx="40" cy="40" r="39" fill="url(#oria-glow-g)" />
-
-				<g class="oria__float">
-					<g class="oria__sparks">
-						<circle cx="40" cy="13" r="1.7" />
-						<circle cx="65" cy="47" r="1.2" />
-						<circle cx="15" cy="49" r="1.4" />
-					</g>
-
-					<circle class="oria__body" cx="40" cy="40" r="21" fill="url(#oria-body-g)" />
-					<ellipse class="oria__sheen" cx="32" cy="30" rx="7.5" ry="5" />
-
-					<g class="oria__face">
-						<g class="oria__eyes oria__eyes--open">
-							<ellipse cx="33" cy="39" rx="2.6" ry="3.4" />
-							<ellipse cx="47" cy="39" rx="2.6" ry="3.4" />
-						</g>
-						<g class="oria__eyes oria__eyes--happy">
-							<path d="M30.2 40.4q2.8-3.6 5.6 0" />
-							<path d="M44.2 40.4q2.8-3.6 5.6 0" />
-						</g>
-						<g class="oria__eyes oria__eyes--soft">
-							<path d="M30.2 39.2q2.8 2.8 5.6 0" />
-							<path d="M44.2 39.2q2.8 2.8 5.6 0" />
-						</g>
-						<g class="oria__eyes oria__eyes--up">
-							<ellipse cx="33" cy="37.4" rx="2.5" ry="3.2" />
-							<ellipse cx="47" cy="37.4" rx="2.5" ry="3.2" />
-						</g>
-
-						<path class="oria__mouth oria__mouth--smile" d="M35.5 46q4.5 4 9 0" />
-						<path class="oria__mouth oria__mouth--wide" d="M34 45.4q6 6 12 0" />
-						<path class="oria__mouth oria__mouth--flat" d="M36 47.4h8" />
-						<path class="oria__mouth oria__mouth--small" d="M37.6 46.8q2.4 2 4.8 0" />
-					</g>
-				</g>
-			</svg>
-		</div>
+		<?php get_template_part( 'template-parts/oria-orb', null, array( 'class' => 'oria--hero', 'uid' => 'ask' ) ); ?>
 
 		<div class="askhero__copy">
 			<h1 class="askhero__title"><?php esc_html_e( 'What do you need right now?', 'oria' ); ?></h1>

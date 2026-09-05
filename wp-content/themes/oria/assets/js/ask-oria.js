@@ -664,6 +664,26 @@
 
   feel("idle");
 
+  /*
+   * Arriving from the front page band, which is a plain GET form carrying
+   * the sentence and nothing else. The reading happens here, once — that is
+   * the whole point of handing the text over rather than extracting it
+   * there, where it would have spent one of the visitor's three daily
+   * readings before they ever saw this page.
+   *
+   * The value is put in the box first so the visitor can see what was
+   * carried across and edit it, rather than watching results appear for a
+   * sentence they can no longer read.
+   */
+  (function seedFromUrl() {
+    var q;
+    try { q = new URLSearchParams(window.location.search).get("q"); } catch (e) { return; }
+    if (!q) return;
+    input.value = q.slice(0, 400);
+    autogrow();
+    ask(input.value);
+  })();
+
   input.addEventListener("keydown", function (e) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();

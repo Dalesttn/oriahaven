@@ -873,10 +873,20 @@ function combo_counts( string $cat ): array {
  * "&" into the numeric entity &#038;, so escaping the filtered title double
  * encodes it into visible text. Decode first, escape once at output.
  *
+ * html_entity_decode, NOT wp_specialchars_decode. The latter knows only
+ * &amp; &lt; &gt; &quot; and &#039;, which covered the ampersand this was
+ * written for and nothing else -- so wptexturize's curly apostrophe came
+ * through untouched and a directory card read "The Men&#8217;s Table (WA)"
+ * in full view. Accented letters (&#233;) and dashes (&#8212;) had the same
+ * problem waiting.
+ *
+ * Every caller escapes on output -- esc_html, esc_attr, or wp_json_encode --
+ * which is the contract that makes decoding here safe.
+ *
  * @param int|\WP_Post|null $post
  */
 function ptitle( $post = null ): string {
-	return wp_specialchars_decode( get_the_title( $post ), ENT_QUOTES );
+	return html_entity_decode( get_the_title( $post ), ENT_QUOTES, 'UTF-8' );
 }
 
 /**
@@ -889,7 +899,9 @@ function ptitle( $post = null ): string {
  */
 function tname( $term ): string {
 	$name = $term instanceof \WP_Term ? $term->name : (string) ( $term ?? '' );
-	return wp_specialchars_decode( $name, ENT_QUOTES );
+	// Same widening as ptitle(): a term is as entitled to an apostrophe as a
+	// post title is, and wp_specialchars_decode would leave it visible.
+	return html_entity_decode( $name, ENT_QUOTES, 'UTF-8' );
 }
 
 /**

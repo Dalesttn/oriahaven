@@ -1310,7 +1310,7 @@ function place_header( array $posts ): array {
 
 		$out[] = array(
 			'id'        => $id,
-			'name'      => get_the_title( $p ),
+			'name'      => html_entity_decode( get_the_title( $p ), ENT_QUOTES, 'UTF-8' ),
 			'url'       => (string) get_permalink( $p ),
 			'image'     => function_exists( '\Oria\Theme\listing_image' ) ? (string) \Oria\Theme\listing_image( $id ) : '',
 			'area'      => ( ! is_wp_error( $areas ) && $areas ) ? (string) $areas[0] : '',
@@ -1507,7 +1507,7 @@ function place_reasons( array $posts ): array {
 		}
 
 		$out[] = array(
-			'name' => get_the_title( $p ),
+			'name' => html_entity_decode( get_the_title( $p ), ENT_QUOTES, 'UTF-8' ),
 			'url'  => (string) get_permalink( $p ),
 			'line' => $line,
 		);
