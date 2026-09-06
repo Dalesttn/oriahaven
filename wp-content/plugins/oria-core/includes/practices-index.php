@@ -31,6 +31,7 @@ const PATH      = 'practices';
 const FACET_MIN = 3; // listings a facet page needs before it may be indexed
 const SITEMAP   = 'facet'; // /facet-sitemap.xml — the indexable facet pages
 const SITEMAP_CACHE = 'oria_facet_sitemap'; // built list; walking it live is a timeout
+const SPEC_SITEMAP_CACHE = 'oria_specialty_gated'; // specialty terms whose facet is under the floor
 const TILE_LINKS = 5; // links a Practices-index tile lists beneath its blurb
 
 /* Share of a category's listings a style must appear on to be offered
@@ -81,6 +82,12 @@ function bootstrap(): void {
 	// which on a facet page is the parent category rather than this page.
 	add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\schema_graph', 30 );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\robots', 25 );
+	/*
+	 * Yoast builds its taxonomy sitemaps from stored term data and never runs
+	 * the robots filter above, so without this the specialty sitemap
+	 * advertises the twenty pages that filter noindexes.
+	 */
+	add_filter( 'wpseo_exclude_from_sitemap_by_term_ids', __NAMESPACE__ . '\exclude_thin_specialties' );
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title', 25 );
 
 	// 101 facet pages were live, indexable and in no sitemap: nothing but a
@@ -1182,6 +1189,8 @@ function flush_sitemap_cache( $post_id = 0 ): void {
 		return;
 	}
 	delete_transient( SITEMAP_CACHE );
+	// The same listing moving is what changes a facet's count either way.
+	delete_transient( SPEC_SITEMAP_CACHE );
 }
 
 /** @param int $object_id */
@@ -1615,4 +1624,82 @@ function core_title( array $parts ): array {
 		$parts['title'] = facet()['label'];
 	}
 	return $parts;
+}
+
+/**
+ * Specialty terms whose page is gated, so Yoast stops advertising them.
+ *
+ * A specialty's address is not its own archive: specialty_link() rewrites it
+ * to /explore/{city}/{home category}/{specialty}/, which is a facet page and
+ * therefore subject to the FACET_MIN floor above. Twenty of the eighty-seven
+ * URLs in specialty-sitemap.xml resolve to a facet with one or two listings
+ * behind it, so the site was submitting them to Google and then telling
+ * Google not to index them -- the "Excluded by 'noindex' tag" report.
+ *
+ * The floor is not re-derived here. It is the same resolve_facet() and the
+ * same facet_ids() count robots() applies, asked one page earlier, so the
+ * sitemap and the meta tag cannot drift apart.
+ *
+ * area-depth.php has done exactly this for suburbs since it was written,
+ * which is why the area sitemap has none of these and this one had twenty:
+ * the rule existed and was applied to one taxonomy and not its sibling.
+ *
+ * @return list<int>
+ */
+function thin_specialty_ids(): array {
+	$cached = get_transient( SPEC_SITEMAP_CACHE );
+	if ( is_array( $cached ) ) {
+		return $cached;
+	}
+
+	$out   = array();
+	$terms = get_terms(
+		array(
+			'taxonomy'   => Taxonomies\SPECIALTY,
+			'hide_empty' => false,
+		)
+	);
+
+	foreach ( is_wp_error( $terms ) ? array() : $terms as $term ) {
+		if ( ! $term instanceof \WP_Term ) {
+			continue;
+		}
+
+		$home = specialty_home( $term->slug );
+		if ( '' === $home ) {
+			continue; // No home declared: still on its flat archive, not a facet.
+		}
+		if ( $home === $term->slug ) {
+			continue; // It IS the category page; three specialties answer there.
+		}
+
+		$practice = get_term_by( 'slug', $home, Taxonomies\PRACTICE );
+		if ( ! $practice instanceof \WP_Term ) {
+			$out[] = (int) $term->term_id; // Home names a category that is gone.
+			continue;
+		}
+
+		// The slug the router sees, which specialty_link() put in the URL.
+		$facet = resolve_facet( $practice, specialty_slug( $term->slug ) );
+		if ( null === $facet ) {
+			$out[] = (int) $term->term_id; // Nothing answers at that address.
+			continue;
+		}
+
+		if ( count( facet_ids( $practice, $facet ) ) < FACET_MIN ) {
+			$out[] = (int) $term->term_id;
+		}
+	}
+
+	set_transient( SPEC_SITEMAP_CACHE, $out, DAY_IN_SECONDS );
+	return $out;
+}
+
+/**
+ * @param mixed $ids
+ * @return array<int, int>
+ */
+function exclude_thin_specialties( $ids ): array {
+	$ids = is_array( $ids ) ? $ids : array();
+	return array_values( array_unique( array_map( 'intval', array_merge( $ids, thin_specialty_ids() ) ) ) );
 }

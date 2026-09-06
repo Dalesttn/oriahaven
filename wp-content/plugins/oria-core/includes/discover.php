@@ -13,9 +13,11 @@
  * looking for the bowl guide should find it wherever they ask, which is the
  * same line Journeys draws for the same reason.
  *
- * The one place they are not hidden is their own category archive. Filtering
- * a term out of the archive FOR that term would leave an empty page with a
- * heading on it.
+ * They are not hidden from any category or tag archive -- filtering a term
+ * out of an archive somebody explicitly asked for leaves an empty page with
+ * a heading on it, and a term count that disagrees with what is shown. Only
+ * the undirected feed hides them: the journal index, and the date and author
+ * slices of it.
  */
 
 declare(strict_types=1);
@@ -66,20 +68,29 @@ function term_id(): int {
 }
 
 /**
- * Out of the journal index and its archives, and nowhere else.
+ * Out of the journal FEED, and nowhere else.
  *
- * Search is deliberately not on this list. Neither is the feed of a single
- * tag when that tag is how somebody arrived at the subject.
+ * NOT out of a category or tag archive. That was the original rule and it
+ * was wrong: a reader on /category/wellness-journey/ has asked for that
+ * category, and a post filed in it belongs there whatever else it is also
+ * filed under. Hiding it made WordPress's own term count disagree with the
+ * page -- the admin listed one post, the archive said "Nothing here yet."
+ * and Google indexed the empty result.
+ *
+ * The note at the top of this file already had the principle right --
+ * "filtering a term out of the archive FOR that term would leave an empty
+ * page with a heading on it" -- and it was applied to the Discover archive
+ * alone, when it holds for every term a visitor explicitly asks for.
+ *
+ * What is left is the undirected feed: the journal index, and the date and
+ * author archives that are the same feed sliced differently. Search stays
+ * off the list too; somebody looking for the bowl guide should find it.
  */
 function exclude_from_journal( \WP_Query $q ): void {
 	if ( is_admin() || ! $q->is_main_query() ) {
 		return;
 	}
-	if ( ! ( $q->is_home() || $q->is_category() || $q->is_tag() || $q->is_date() || $q->is_author() ) ) {
-		return;
-	}
-	// Its own archive is where a Discover piece is supposed to be.
-	if ( $q->is_category( SLUG ) ) {
+	if ( ! ( $q->is_home() || $q->is_date() || $q->is_author() ) ) {
 		return;
 	}
 	$id = term_id();
