@@ -104,11 +104,21 @@ $oria_ev_ids    = get_posts(
 		),
 	)
 );
+/*
+ * One query for every event's terms, instead of one per event.
+ *
+ * 'fields' => 'ids' above means WP_Query primed nothing, so each
+ * wp_get_post_terms() below went to the database -- and wp_get_post_terms()
+ * ignores the object term cache even when it IS primed. Priming once and
+ * reading through the cache turns sixty queries into one.
+ */
+update_object_term_cache( array_map( 'intval', $oria_ev_ids ), 'event' );
+
 foreach ( $oria_ev_ids as $oria_eid ) {
 	if ( ! $oria_eid ) {
 		continue; // a broken row can never become a card
 	}
-	foreach ( wp_get_post_terms( (int) $oria_eid, 'practice' ) as $oria_et ) {
+	foreach ( \Oria\Theme\oria_terms_of( (int) $oria_eid, 'practice' ) as $oria_et ) {
 		$oria_ev_by_cat[ $oria_et->slug ][] = (int) $oria_eid;
 	}
 }

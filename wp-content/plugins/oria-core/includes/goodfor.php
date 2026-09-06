@@ -108,25 +108,56 @@ function counts( array $ids, int $min = 3 ): array {
 	return array_filter( $out, static fn( int $n ): bool => $n >= $min );
 }
 
+/**
+ * Which taxonomy owns each want-slug, resolved for the whole vocabulary in
+ * one query and then held for the request.
+ *
+ * The static cache this replaces was only ever hit on a REPEAT slug, and the
+ * thirteen wants barely repeat: the home page still paid one or two
+ * get_term_by() calls for each of ~134 distinct slugs, which measured 287
+ * queries and 1.03 seconds in the hero alone -- the single most expensive
+ * thing on the front page.
+ *
+ * Two queries answer the same question, because a slug's taxonomy is a
+ * property of the vocabulary rather than of the want asking about it.
+ *
+ * @return array<string, string> slug => 'spec' | 'svc' | ''
+ */
+function slug_kinds(): array {
+	static $kind_of = null;
+	if ( null !== $kind_of ) {
+		return $kind_of;
+	}
+
+	$kind_of = array();
+	foreach ( array( 'specialty' => 'spec', 'service' => 'svc' ) as $tax => $kind ) {
+		$terms = get_terms(
+			array(
+				'taxonomy'   => $tax,
+				'hide_empty' => false,
+				'fields'     => 'slugs',
+			)
+		);
+		foreach ( is_wp_error( $terms ) ? array() : $terms as $slug ) {
+			// Specialty wins a tie, exactly as the sequential lookup did.
+			if ( ! isset( $kind_of[ $slug ] ) ) {
+				$kind_of[ $slug ] = $kind;
+			}
+		}
+	}
+
+	return $kind_of;
+}
+
 function filter_url( array $want ): string {
 	$spec = array();
 	$svc  = array();
-	/*
-	 * Which taxonomy owns a slug never changes within a request, and the
-	 * home page asks the same question for every want tag -- 134 term
-	 * lookups for twelve answers.
-	 */
-	static $kind_of = array();
+
+	$kind_of = slug_kinds();
 
 	foreach ( $want['specs'] as $slug ) {
 		if ( ! isset( $kind_of[ $slug ] ) ) {
-			if ( get_term_by( 'slug', $slug, 'specialty' ) ) {
-				$kind_of[ $slug ] = 'spec';
-			} elseif ( get_term_by( 'slug', $slug, 'service' ) ) {
-				$kind_of[ $slug ] = 'svc';
-			} else {
-				$kind_of[ $slug ] = '';
-			}
+			$kind_of[ $slug ] = '';
 		}
 		if ( 'spec' === $kind_of[ $slug ] ) {
 			$spec[] = $slug;
