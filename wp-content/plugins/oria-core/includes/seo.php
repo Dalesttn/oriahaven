@@ -904,7 +904,17 @@ function seo_robots( $robots ) {
  * left alone: the listings linked from a filtered view are the point of it.
  */
 function wp_robots_filtered( array $r ): array {
-	if ( is_filtered_view() ) {
+	/*
+	 * All three rules, not just the filtered view.
+	 *
+	 * The note above promises this survives Yoast "failing on a missing
+	 * table" -- and it mirrored only one of the three things seo_robots()
+	 * guards, so an empty archive lost its noindex entirely in exactly the
+	 * situation this was written for. It is not hypothetical: the local
+	 * install has no wp_yoast_indexable table and emits no robots tag at
+	 * all.
+	 */
+	if ( is_filtered_view() || empty_term_archive() || ( combo_area() && 0 === combo_count() ) ) {
 		$r['noindex'] = true;
 		unset( $r['nofollow'] );
 	}
@@ -912,19 +922,29 @@ function wp_robots_filtered( array $r ): array {
 }
 
 /**
- * A practice, specialty or area archive with nothing in it.
+ * A term archive with nothing in it — practice, specialty, area, or a plain
+ * post category or tag.
  *
- * Combos have been guarded since they were built, but the terms
- * themselves were not: a category added ahead of the listings that will
- * fill it is a live, indexable page with no content on it, and it stays
- * that way until somebody remembers to import. Nothing is in that state
- * today — this is the guard, not a repair.
+ * Combos have been guarded since they were built, but the terms themselves
+ * were not: a term added ahead of the content that will fill it is a live,
+ * indexable page with nothing on it, and it stays that way until somebody
+ * remembers to import.
+ *
+ * THE POST CATEGORY WAS THE HOLE.
+ *
+ * is_tax() answers only for CUSTOM taxonomies; WordPress's built-in category
+ * and post_tag need is_category() and is_tag(). So this guard covered the
+ * three taxonomies it named and quietly let every empty post category
+ * through -- which is how /category/wellness-journey/ came to be crawled,
+ * indexed and listed in the category sitemap while rendering nothing but
+ * "Nothing here yet."
  *
  * `count` rather than the main query, because the directory renders its
  * results from a JSON payload and the loop here says nothing useful.
  */
 function empty_term_archive(): bool {
-	if ( ! is_tax( array( Taxonomies\PRACTICE, Taxonomies\SPECIALTY, Taxonomies\AREA ) ) ) {
+	$is_custom = is_tax( array( Taxonomies\PRACTICE, Taxonomies\SPECIALTY, Taxonomies\AREA ) );
+	if ( ! $is_custom && ! is_category() && ! is_tag() ) {
 		return false;
 	}
 	$term = get_queried_object();
