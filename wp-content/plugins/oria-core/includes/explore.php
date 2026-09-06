@@ -41,6 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /** The root segment. */
 const PATH = 'explore';
+const SITEMAP = 'explore'; // /explore-sitemap.xml -- the city hubs
 
 /** Bumped when the rules change, so they re-flush without a manual step. */
 const VERSION_OPTION = 'oria_explore_rules_v';
@@ -68,6 +69,16 @@ function bootstrap(): void {
 	// /explore/ forms are matched before the shorter city forms are tried.
 	add_action( 'init', __NAMESPACE__ . '\route', 7 );
 	add_action( 'init', __NAMESPACE__ . '\maybe_flush', 20 );
+	/*
+	 * The city hubs had no sitemap of their own and belonged to nobody
+	 * else's: Yoast builds one per taxonomy and per post type, and
+	 * /explore/perth/ is neither. Twelve sitemaps, 912 URLs, and the top of
+	 * the whole new address structure was in none of them -- Search Console
+	 * reported /explore/perth/ as "URL is unknown to Google" five days after
+	 * the migration.
+	 */
+	add_action( 'init', __NAMESPACE__ . '\register_sitemap', 20 );
+	add_filter( 'wpseo_sitemap_index', __NAMESPACE__ . '\sitemap_index' );
 }
 
 function route(): void {
@@ -330,4 +341,63 @@ function is_explore(): bool {
 	$path = (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH );
 
 	return (bool) preg_match( '~^/' . PATH . '(/|$)~', $path );
+}
+
+
+/* ---------------------------------------------------------------- sitemap */
+
+/**
+ * The addresses this module owns: the directory root and one hub per city.
+ *
+ * Everything below them is already covered -- the category pages ride
+ * Yoast's practice sitemap, the facets have their own -- so this is a short
+ * list of the parents those all hang off.
+ *
+ * @return list<array{loc: string}>
+ */
+function sitemap_entries(): array {
+	$out = array( array( 'loc' => home_url( '/' . PATH . '/' ) ) );
+
+	foreach ( Cities\all() as $city ) {
+		if ( '' === (string) ( $city['slug'] ?? '' ) ) {
+			continue;
+		}
+		$loc = base_url( $city );
+		if ( ! in_array( $loc, array_column( $out, 'loc' ), true ) ) {
+			$out[] = array( 'loc' => $loc );
+		}
+	}
+
+	return $out;
+}
+
+function register_sitemap(): void {
+	if ( ! isset( $GLOBALS['wpseo_sitemaps'] ) || ! method_exists( $GLOBALS['wpseo_sitemaps'], 'register_sitemap' ) ) {
+		return;
+	}
+	$GLOBALS['wpseo_sitemaps']->register_sitemap( SITEMAP, __NAMESPACE__ . '\build_sitemap' );
+}
+
+function build_sitemap(): void {
+	$sm = $GLOBALS['wpseo_sitemaps'] ?? null;
+	if ( ! $sm || ! isset( $sm->renderer ) ) {
+		return;
+	}
+	$links = array();
+	foreach ( sitemap_entries() as $e ) {
+		$links[] = array( 'loc' => $e['loc'], 'mod' => gmdate( 'c' ) );
+	}
+	$sm->set_sitemap( $sm->renderer->get_sitemap( $links, SITEMAP, 1 ) );
+}
+
+/** Only advertise the sitemap when it has something in it. */
+function sitemap_index( $xml ) {
+	if ( ! sitemap_entries() ) {
+		return $xml;
+	}
+	return $xml . sprintf(
+		"<sitemap><loc>%s</loc><lastmod>%s</lastmod></sitemap>\n",
+		esc_url( home_url( '/' . SITEMAP . '-sitemap.xml' ) ),
+		esc_html( gmdate( 'c' ) )
+	);
 }
