@@ -45,7 +45,20 @@ if ( count( $oria_chips ) < 2 ) {
 /*
  * Two modes. On a page with the results engine the chips are buttons that
  * drive the filters; anywhere else (the homepage) they are plain links
- * into the directory, pre-filtered. Links need no JS and are crawlable.
+ * into the directory, pre-filtered. Links need no JS and work without it.
+ *
+ * They carry rel="nofollow", because their destination cannot be indexed:
+ * /explore/?spec=... is a filtered view, and seo.php's is_filtered_view()
+ * returns 'noindex, follow' for every one of them. Thirteen followed links
+ * from the front page bought thirteen crawls that could never produce an
+ * indexed page -- real waste on a site whose whole problem is crawl budget.
+ * Six days after the migration, 364 of 891 submitted URLs had still never
+ * been crawled at all. nofollow keeps that budget for the 28 clean category
+ * paths alongside them, which can rank.
+ *
+ * Nothing is orphaned by this. Everything a filtered view lists is a
+ * listing, and listings are reachable from listing-sitemap.xml and from
+ * their own category pages.
  */
 $oria_links = ! empty( $args['links'] );
 $oria_class = 'goodfor' . ( ! empty( $args['class'] ) ? ' ' . $args['class'] : '' );
@@ -59,6 +72,7 @@ $oria_class = 'goodfor' . ( ! empty( $args['class'] ) ? ' ' . $args['class'] : '
 					class="goodfor__chip"
 					style="--gf:<?php echo esc_attr( $oria_c['color'] ); ?>"
 					href="<?php echo esc_url( function_exists( '\Oria\Core\GoodFor\filter_url' ) ? \Oria\Core\GoodFor\filter_url( $oria_c ) : home_url( '/directory/' ) ); ?>"
+					rel="nofollow"
 					title="<?php echo esc_attr( $oria_c['line'] ); ?>"
 				>
 					<img class="goodfor__icon" src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/goodfor/' . $oria_c['slug'] . '.webp' ); ?>" alt="" width="64" height="64" loading="lazy" decoding="async">
