@@ -1001,6 +1001,52 @@ function facet_owner( string $service ): string {
 }
 
 /**
+ * The city an area facet belongs to, or null when the facet is not an area.
+ *
+ * Only the sitemap needs this. At runtime Cities\current() reads the city out
+ * of the URL being served, so /explore/margaret-river/spa/margaret-river-town/
+ * canonicalises to itself correctly. A sitemap is built with no request behind
+ * it, current() falls back to the default city, and every Margaret River area
+ * facet was therefore advertised as /explore/perth/{category}/{area}/ -- twelve
+ * URLs in facet-sitemap.xml, all of them 404, on a site with no crawl budget to
+ * spare. The pages themselves were fine the whole time and live at the
+ * Margaret River address.
+ *
+ * A city is a root area term whose slug Cities knows, so walking to the top of
+ * the hierarchy answers it for a city, a region or a suburb alike.
+ *
+ * @return array<string, mixed>|null
+ */
+function facet_city( array $facet ): ?array {
+	if ( 'area' !== ( $facet['key'] ?? '' ) ) {
+		return null;
+	}
+	if ( ! function_exists( '\Oria\Core\Cities\get' ) ) {
+		return null;
+	}
+
+	$term = get_term_by( 'slug', (string) $facet['value'], Taxonomies\AREA );
+	if ( ! $term instanceof \WP_Term ) {
+		return null;
+	}
+
+	$top = $term;
+	$anc = (array) get_ancestors( $term->term_id, Taxonomies\AREA, 'taxonomy' );
+	if ( $anc ) {
+		// get_ancestors runs parent-first, so the last entry is the root.
+		$root = get_term( (int) end( $anc ), Taxonomies\AREA );
+		if ( $root instanceof \WP_Term ) {
+			$top = $root;
+		}
+	}
+	if ( 0 !== (int) $top->parent ) {
+		return null;
+	}
+
+	return \Oria\Core\Cities\get( $top->slug );
+}
+
+/**
  * Where a facet page's canonical should point: itself, or the owning
  * category's copy of the same facet.
  *
@@ -1008,8 +1054,8 @@ function facet_owner( string $service ): string {
  * — pointing a live page at one robots() would noindex is worse than the
  * duplication it set out to fix.
  */
-function facet_canonical_url( \WP_Term $practice, array $facet ): string {
-	$self = category_url( $practice ) . $facet['slug'] . '/';
+function facet_canonical_url( \WP_Term $practice, array $facet, ?array $city = null ): string {
+	$self = category_url( $practice, $city ) . $facet['slug'] . '/';
 
 	/*
 	 * A modality has one home, and it is not inside a category.
@@ -1165,8 +1211,10 @@ function sitemap_entries(): array {
 			if ( count( facet_ids( $practice, $f ) ) < FACET_MIN ) {
 				continue; // robots() would noindex it
 			}
-			$loc = facet_canonical_url( $practice, $f );
-			if ( $loc !== category_url( $practice ) . $f['slug'] . '/' ) {
+			// An area facet answers under its own city, not the default one.
+			$fcity = facet_city( $f );
+			$loc   = facet_canonical_url( $practice, $f, $fcity );
+			if ( $loc !== category_url( $practice, $fcity ) . $f['slug'] . '/' ) {
 				continue; // a non-owner copy; the owner's entry covers it
 			}
 			$out[] = array( 'loc' => $loc );
