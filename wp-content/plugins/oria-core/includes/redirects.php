@@ -130,11 +130,73 @@ function maybe_redirect(): void {
 		return;
 	}
 
+	// A 301 into a 404 is worse than the 404 alone; land on the parent.
+	$to = survivable( $to );
+
 	$query = (string) wp_parse_url( $uri, PHP_URL_QUERY );
 	$dest  = home_url( $to ) . ( '' !== $query ? '?' . $query : '' );
 
 	wp_safe_redirect( $dest, 301 );
 	exit;
+}
+
+/**
+ * The mapped destination, or its category parent when the destination is a
+ * combination that no longer answers.
+ *
+ * The migration rewrote every old address into its new-format equivalent by
+ * pattern, which is the only thing it could do -- but a category-by-suburb
+ * page exists only while a listing sits in both, and facet_404() returns a
+ * genuine 404 when none does. So /practice/retreats/east-victoria-park/ was
+ * redirecting to /explore/perth/retreats/east-victoria-park/, which correctly
+ * refuses to exist. Semrush found those by crawling the pre-migration URLs it
+ * still had on file.
+ *
+ * A 301 into a 404 spends a crawl, strands the visitor and throws away
+ * whatever the old URL had earned. The category page is the honest
+ * destination: what the person asked for, minus a suburb holding nothing.
+ *
+ * Checked live rather than pruned out of the stored map, so the day a listing
+ * opens in East Victoria Park the redirect lands on the suburb page again with
+ * nothing to re-run. The cost is one term read and one query, and only on
+ * requests that were already being redirected.
+ */
+function survivable( string $to ): string {
+	$seg = explode( '/', trim( (string) wp_parse_url( $to, PHP_URL_PATH ), '/' ) );
+
+	// Only the four-segment combination can empty out: explore/city/cat/tail.
+	if ( 4 !== count( $seg ) || 'explore' !== $seg[0] ) {
+		return $to;
+	}
+	if ( ! function_exists( '\Oria\Core\Cities\get' )
+		|| ! function_exists( '\Oria\Core\PracticesIndex\resolve_facet' ) ) {
+		return $to;
+	}
+
+	$city = \Oria\Core\Cities\get( $seg[1] );
+	if ( ! $city ) {
+		return $to;
+	}
+
+	$parent   = '/' . $seg[0] . '/' . $seg[1] . '/' . $seg[2] . '/';
+	$practice = get_term_by( 'slug', $seg[2], \Oria\Core\Taxonomies\PRACTICE );
+	if ( ! $practice instanceof \WP_Term ) {
+		return $parent;
+	}
+
+	$facet = \Oria\Core\PracticesIndex\resolve_facet( $practice, $seg[3] );
+	if ( null === $facet ) {
+		return $parent;
+	}
+
+	// The same count facet_404() applies: listings in this combination, in
+	// this city. Anything above zero still answers, indexable or not.
+	$rows = \Oria\Core\PracticesIndex\facet_ids( $practice, $facet );
+	if ( $rows && function_exists( '\Oria\Core\Cities\filter_ids' ) ) {
+		$rows = \Oria\Core\Cities\filter_ids( $rows, $city );
+	}
+
+	return count( $rows ) > 0 ? $to : $parent;
 }
 
 /* ------------------------------------------------------------------ admin */
