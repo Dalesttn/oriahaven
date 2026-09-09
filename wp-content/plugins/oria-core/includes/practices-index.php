@@ -872,7 +872,37 @@ function retire_old_category(): void {
 		 */
 		$f = resolve_facet( $term, $combo->slug );
 		if ( null !== $f && 'area' === ( $f['key'] ?? '' ) ) {
-			wp_safe_redirect( category_url( $term ) . $f['slug'] . '/', 301 );
+			/*
+			 * Two things the old form of this got wrong, both of which sent
+			 * a 301 somewhere that answers 404.
+			 *
+			 * The city: category_url() with no city falls back to the default
+			 * one, so /practice/spa/margaret-river-town/ was moving to
+			 * /explore/perth/spa/margaret-river-town/ -- a Perth address for a
+			 * southern suburb, and no such page.
+			 *
+			 * The count: a combination page exists only while a listing sits
+			 * in both halves of it, and facet_404() answers 404 when none
+			 * does. Retreats has nothing in East Victoria Park, so the
+			 * redirect landed on a page that is supposed to be gone. Semrush
+			 * found those by crawling the pre-migration URLs it still holds.
+			 *
+			 * Same pair of faults, and the same repair, as Redirects\
+			 * survivable() makes for the stored 301 map -- this branch is the
+			 * other way into the identical destination and was missed. The
+			 * count is facet_404()'s own so the two cannot disagree.
+			 */
+			$city = facet_city( $f );
+			$rows = facet_ids( $term, $f );
+			if ( $rows && function_exists( '\Oria\Core\Cities\filter_ids' ) ) {
+				$rows = \Oria\Core\Cities\filter_ids( $rows, $city );
+			}
+
+			$target = count( $rows ) > 0
+				? category_url( $term, $city ) . $f['slug'] . '/'
+				: category_url( $term, $city );
+
+			wp_safe_redirect( $target, 301 );
 			exit;
 		}
 		return;
