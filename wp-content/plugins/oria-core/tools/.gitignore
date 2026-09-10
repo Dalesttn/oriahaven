@@ -1,0 +1,4 @@
+# Who has been emailed, and who asked not to be. Server state, not source:
+# the live send log must never be overwritten by a deploy.
+outreach-sent.csv
+ARMED
