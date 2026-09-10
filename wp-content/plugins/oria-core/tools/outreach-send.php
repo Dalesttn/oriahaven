@@ -57,10 +57,31 @@ $argvv  = $argv ?? array();
 $send   = in_array( '--send', $argvv, true );
 $status = in_array( '--status', $argvv, true );
 $limit  = OUTREACH_DEFAULT;
+$testTo = '';
 foreach ( $argvv as $a ) {
 	if ( preg_match( '/^--limit=(\d+)$/', $a, $m ) ) {
 		$limit = max( 1, (int) $m[1] );
 	}
+	if ( preg_match( '/^--to=(.+)$/', $a, $m ) ) {
+		$testTo = trim( $m[1] );
+	}
+}
+
+/*
+ * --to sends one real message to somewhere you control instead of to a
+ * business, and does not write the send log. It exists for mail-tester.com
+ * and the like: 195 emails is an expensive way to discover that SPF, DKIM or
+ * the From address is subtly wrong, and a spam score costs one message.
+ *
+ * The recipient is the only thing that changes. Same wording, same headers,
+ * same route out, so the score is the score the real batch would get.
+ */
+if ( '' !== $testTo ) {
+	if ( ! is_email( $testTo ) ) {
+		fwrite( STDERR, "--to is not a valid address\n" );
+		exit( 1 );
+	}
+	$limit = 1;
 }
 
 /* --------------------------------------------------------------- helpers */
@@ -238,13 +259,21 @@ foreach ( $batch as $i => $row ) {
 	$imp = (int) ( $impressions[ $row['slug'] ] ?? 0 );
 	list( $subject, $body ) = outreach_message( $row, $imp );
 
+	$to = '' !== $testTo ? $testTo : $row['email'];
+
 	if ( ! $send ) {
-		printf( "[dry] %-38s tier %d  %s\n", $row['email'], $imp > 0 ? 1 : 2, $row['name'] );
+		printf( "[dry] %-38s tier %d  %s\n", $to, $imp > 0 ? 1 : 2, $row['name'] );
 		printf( "      %s\n", $subject );
 		continue;
 	}
 
-	$ok = wp_mail( $row['email'], $subject, $body );
+	$ok = wp_mail( $to, $subject, $body );
+
+	if ( '' !== $testTo ) {
+		// A test send proves the route, not that this business was contacted.
+		printf( $ok ? "test sent to %s (nothing logged)\n" : "test FAILED to %s\n", $testTo );
+		break;
+	}
 
 	if ( $ok ) {
 		$new = ! file_exists( $log );
