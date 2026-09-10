@@ -786,6 +786,11 @@ function verification_tags(): array {
 		'oria_verification_tags',
 		array(
 			'commission-factory-verification' => '463061dbe63d4140abaa230e927e24f8',
+			// Bing Webmaster Tools. Worth having beyond Bing's own traffic:
+			// Microsoft Copilot cites out of the Bing index, and Bing is the
+			// one place a site this new can read its own backlink profile
+			// while Search Console still answers "processing data".
+			'msvalidate.01'                   => 'C32D19DDC03E8D9031160A28A140428A',
 		)
 	);
 }
