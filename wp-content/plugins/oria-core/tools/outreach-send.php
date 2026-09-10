@@ -66,6 +66,20 @@ foreach ( $argvv as $a ) {
 		$testTo = trim( $m[1] );
 	}
 }
+$debug = in_array( '--debug', $argvv, true );
+
+/*
+ * wp_mail() answers true or false and keeps the reason to itself. A silent
+ * false is useless when the whole question is why the mail server said no, so
+ * the reason is captured here and printed with the failure.
+ */
+$GLOBALS['oria_mail_error'] = '';
+add_action(
+	'wp_mail_failed',
+	static function ( $err ): void {
+		$GLOBALS['oria_mail_error'] = $err instanceof WP_Error ? $err->get_error_message() : (string) $err;
+	}
+);
 
 /*
  * --to sends one real message to somewhere you control instead of to a
@@ -212,6 +226,16 @@ if ( $status ) {
 	printf( "already sent    : %d\n", count( $all ) - count( $pending ) );
 	printf( "remaining       : %d\n", count( $pending ) );
 	printf( "armed           : %s\n", file_exists( $armed ) ? 'yes' : 'NO — cron will not send' );
+	printf(
+		"smtp user       : %s\n",
+		defined( 'ORIA_SMTP_USER' ) && ORIA_SMTP_USER ? (string) ORIA_SMTP_USER : 'NOT DEFINED in wp-config.php'
+	);
+	printf(
+		"smtp pass       : %s\n",
+		defined( 'ORIA_SMTP_PASS' ) && ORIA_SMTP_PASS
+			? sprintf( 'set (%d characters)', strlen( (string) ORIA_SMTP_PASS ) )
+			: 'NOT DEFINED in wp-config.php'
+	);
 	exit( 0 );
 }
 
@@ -237,6 +261,8 @@ if ( $send && ( '' === $user || '' === $pass ) ) {
  * authorises _spf.mail.hostinger.com; a message handed to the web server's
  * local sendmail is not covered by it and lands in spam.
  */
+$GLOBALS['oria_smtp_debug'] = $debug;
+
 if ( $send ) {
 	add_action(
 		'phpmailer_init',
@@ -250,6 +276,16 @@ if ( $send ) {
 			$phpmailer->Password   = $pass;
 			$phpmailer->setFrom( $user, 'Dale — Oria Haven', false );
 			$phpmailer->addReplyTo( $user, 'Dale — Oria Haven' );
+
+			if ( $GLOBALS['oria_smtp_debug'] ?? false ) {
+				// 2 = the full conversation with the server, which is the only
+				// thing that says whether it refused the login, the port or
+				// the sender.
+				$phpmailer->SMTPDebug   = 2;
+				$phpmailer->Debugoutput = static function ( $str, $level ): void {
+					fwrite( STDERR, '  smtp: ' . rtrim( (string) $str ) . "\n" );
+				};
+			}
 		}
 	);
 }
@@ -286,7 +322,15 @@ foreach ( $batch as $i => $row ) {
 		$sent++;
 		printf( "sent %-38s tier %d  %s\n", $row['email'], $imp > 0 ? 1 : 2, $row['name'] );
 	} else {
-		fwrite( STDERR, sprintf( "FAILED %s (%s) — stopping\n", $row['email'], $row['name'] ) );
+		fwrite(
+			STDERR,
+			sprintf(
+				"FAILED %s (%s) — stopping\n  reason: %s\n",
+				$row['email'],
+				$row['name'],
+				$GLOBALS['oria_mail_error'] ?: 'wp_mail() gave no reason; re-run with --debug for the SMTP conversation'
+			)
+		);
 		break; // a broken mailbox should not burn the rest of the batch
 	}
 
