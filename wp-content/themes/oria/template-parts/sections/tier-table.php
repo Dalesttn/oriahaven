@@ -43,7 +43,13 @@ $oria_num = static fn( int $n ): string => 0 === $n
  * where a practice arriving from a claim email starts.
  */
 $oria_rows = array(
-	// --- what every listing has, paid or not ---------------------------
+	/*
+	 * The three groups are the three gates, not a tidy-up: everything above
+	 * the first heading is what an unpaid listing already does, and each
+	 * heading marks the point where a plan starts paying for itself. A flat
+	 * list of nineteen ticks hides exactly that.
+	 */
+	array( 'group', __( 'In every listing, free', 'oria' ) ),
 	array( __( 'Listed in the directory', 'oria' ), $oria_yes, $oria_yes, $oria_yes ),
 	array( __( 'Claim it as yours', 'oria' ), $oria_yes, $oria_yes, $oria_yes ),
 	array( __( 'Found in search and on category pages', 'oria' ), $oria_yes, $oria_yes, $oria_yes ),
@@ -53,7 +59,7 @@ $oria_rows = array(
 	// TEAM_LIMITS
 	array( __( 'Practitioner profiles', 'oria' ), $oria_num( (int) $oria_free_team ), $oria_num( (int) $oria_claim_team ), $oria_num( (int) $oria_feat_team ) ),
 
-	// --- what the first paid step adds ---------------------------------
+	array( 'group', __( 'Added by Claimed', 'oria' ) ),
 	// FEATURES['manage']
 	array( __( 'Edit every field yourself', 'oria' ), $oria_no, $oria_yes, $oria_yes ),
 	// shows_email()
@@ -72,7 +78,7 @@ $oria_rows = array(
 	array( __( 'Performance analytics', 'oria' ), $oria_no, $oria_yes, $oria_yes ),
 	array( __( 'Verified badge and date', 'oria' ), $oria_no, $oria_yes, $oria_yes ),
 
-	// --- what the top plan adds ----------------------------------------
+	array( 'group', __( 'Added by Featured', 'oria' ) ),
 	// FEATURES['events']
 	array( __( 'Publish workshops and events', 'oria' ), $oria_no, $oria_no, $oria_yes ),
 	// FEATURES['priority']
@@ -99,6 +105,7 @@ $oria_rows = array(
 						<span class="tiers__price"><?php esc_html_e( '$0', 'oria' ); ?></span>
 					</th>
 					<th scope="col" class="tiers__col--pick">
+						<span class="tiers__flag"><?php esc_html_e( 'Most start here', 'oria' ); ?></span>
 						<span class="tiers__plan"><?php esc_html_e( 'Claimed', 'oria' ); ?></span>
 						<span class="tiers__price"><?php echo esc_html( '$' . Tiers\PRICES[ Tiers\CLAIMED ] . '/mo' ); ?></span>
 					</th>
@@ -110,12 +117,18 @@ $oria_rows = array(
 			</thead>
 			<tbody>
 				<?php foreach ( $oria_rows as $oria_row ) : ?>
-					<tr>
-						<th scope="row"><?php echo esc_html( (string) $oria_row[0] ); ?></th>
-						<td><?php echo wp_kses_post( (string) $oria_row[1] ); ?></td>
-						<td class="tiers__col--pick"><?php echo wp_kses_post( (string) $oria_row[2] ); ?></td>
-						<td><?php echo wp_kses_post( (string) $oria_row[3] ); ?></td>
-					</tr>
+					<?php if ( 'group' === $oria_row[0] ) : ?>
+						<tr class="tiers__group">
+							<th scope="colgroup" colspan="4"><?php echo esc_html( (string) $oria_row[1] ); ?></th>
+						</tr>
+					<?php else : ?>
+						<tr>
+							<th scope="row"><?php echo esc_html( (string) $oria_row[0] ); ?></th>
+							<td><?php echo wp_kses_post( (string) $oria_row[1] ); ?></td>
+							<td class="tiers__col--pick"><?php echo wp_kses_post( (string) $oria_row[2] ); ?></td>
+							<td><?php echo wp_kses_post( (string) $oria_row[3] ); ?></td>
+						</tr>
+					<?php endif; ?>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
