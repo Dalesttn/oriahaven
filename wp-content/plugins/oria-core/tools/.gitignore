@@ -2,3 +2,6 @@
 # the live send log must never be overwritten by a deploy.
 outreach-sent.csv
 ARMED
+
+# ...but the deny rule itself has to deploy.
+!.htaccess

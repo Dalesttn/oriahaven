@@ -1,0 +1,22 @@
+# Nothing in this directory is a web resource.
+#
+# outreach-sent.csv holds the email address of every business contacted, and
+# it was downloadable from the open web: a plugin folder is inside the
+# document root, and only the .php file was refused -- by the PHP handler,
+# not by any rule of ours. So the one file here that is actually sensitive
+# was the one being served.
+#
+# Deny everything rather than name the files. A later tool dropping a log
+# beside these should be covered by default, not by someone remembering to
+# come back and add a line.
+
+<IfModule mod_authz_core.c>
+	# Apache 2.4
+	Require all denied
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+	# Apache 2.2
+	Order allow,deny
+	Deny from all
+</IfModule>
