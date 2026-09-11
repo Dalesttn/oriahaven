@@ -86,6 +86,23 @@ function data_for( int $post_id, bool $may_fetch = true ): ?array {
 	if ( is_array( $cache )
 		&& isset( $cache['ts'], $cache['names'] )
 		&& ( time() - (int) $cache['ts'] ) < CACHE_DAYS * DAY_IN_SECONDS ) {
+
+		/*
+		 * A record written before the match check existed can still be the
+		 * wrong business. Once it carries a place_name -- which every record
+		 * does after one refresh -- it can be judged, and a mismatch is
+		 * withheld rather than shown.
+		 *
+		 * Records with no place_name pass through: that is absence of
+		 * evidence, and suppressing 338 listings' photos on a field that was
+		 * never populated would be the larger fault.
+		 */
+		$claimed = (string) ( $cache['place_name'] ?? '' );
+		if ( '' !== $claimed
+			&& ! name_matches( (string) get_post_field( 'post_title', $post_id, 'raw' ), $claimed ) ) {
+			return null;
+		}
+
 		return $cache;
 	}
 
@@ -271,29 +288,76 @@ function fetch( int $post_id, string $place_id ): ?array {
 				'headers' => array(
 					'Content-Type'     => 'application/json',
 					'X-Goog-Api-Key'   => $key,
-					'X-Goog-FieldMask' => 'places.id,places.photos,places.rating,places.userRatingCount,places.googleMapsUri,places.reviews,places.regularOpeningHours',
+					// displayName is the point of this change: without it the
+					// response never says which business was matched.
+					'X-Goog-FieldMask' => 'places.id,places.displayName,places.photos,places.rating,places.userRatingCount,places.googleMapsUri,places.reviews,places.regularOpeningHours',
 				),
 				'body'    => (string) wp_json_encode(
 					array(
 						'textQuery'  => $query,
 						'regionCode' => 'AU',
-						'pageSize'   => 1,
+						// Five, not one. The right business is often behind a
+						// larger neighbour at the same address rather than
+						// absent, and one candidate leaves nothing to choose.
+						'pageSize'   => 5,
 					)
 				),
 			)
 		);
 
 		$body = decode( $response );
-		if ( null === $body || empty( $body['places'][0]['id'] ) ) {
+		if ( null === $body || empty( $body['places'] ) ) {
 			return null;
 		}
 
-		$place_id = (string) $body['places'][0]['id'];
+		/*
+		 * The first candidate whose name plausibly matches, rather than simply
+		 * the first. No match means no record: an empty profile is a smaller
+		 * fault than a confident one describing somebody else.
+		 */
+		$title = (string) get_post_field( 'post_title', $post_id, 'raw' );
+		$match = null;
+		foreach ( (array) $body['places'] as $candidate ) {
+			if ( empty( $candidate['id'] ) ) {
+				continue;
+			}
+			if ( name_matches( $title, (string) ( $candidate['displayName']['text'] ?? '' ) ) ) {
+				$match = (array) $candidate;
+				break;
+			}
+		}
+
+		if ( null === $match ) {
+			/*
+			 * Back off rather than retry on every view, and leave the field
+			 * empty so a human can set the right ID. The names that were
+			 * rejected are logged, because "why has this listing no photos"
+			 * is otherwise unanswerable.
+			 */
+			set_transient( 'oria_places_backoff_' . $post_id, 1, DAY_IN_SECONDS );
+			$seen = array();
+			foreach ( (array) $body['places'] as $candidate ) {
+				$seen[] = (string) ( $candidate['displayName']['text'] ?? '?' );
+			}
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+					sprintf(
+						'[oria places] no name match for "%s" (#%d); Google offered: %s',
+						$title,
+						$post_id,
+						implode( ' | ', $seen )
+					)
+				);
+			}
+			return null;
+		}
+
+		$place_id = (string) $match['id'];
 		if ( function_exists( 'update_field' ) ) {
 			update_field( 'google_place_id', $place_id, $post_id );
 		}
 
-		return with_uris( pack( (array) $body['places'][0] ), $key );
+		return with_uris( pack( $match ), $key );
 	}
 
 	// Known place ID: details call.
@@ -303,7 +367,10 @@ function fetch( int $post_id, string $place_id ): ?array {
 			'timeout' => 8,
 			'headers' => array(
 				'X-Goog-Api-Key'   => $key,
-				'X-Goog-FieldMask' => 'photos,rating,userRatingCount,googleMapsUri,reviews,regularOpeningHours',
+				// displayName here too: the warm() job refreshes forty records a
+				// day through this path, so every existing record picks up a
+				// name within ten days and becomes checkable.
+				'X-Goog-FieldMask' => 'displayName,photos,rating,userRatingCount,googleMapsUri,reviews,regularOpeningHours',
 			),
 		)
 	);
@@ -343,6 +410,69 @@ function decode( $response ): ?array {
  *
  * @return array{names: string[], attributions: array<int, array{name: string, uri: string}>, rating: float, count: int, maps_uri: string, ts: int}
  */
+/**
+ * Does this Google place plausibly name the business we asked about?
+ *
+ * The text search is given "{title}, {address}" and, until now, was handed
+ * pageSize 1 and a field mask with no displayName in it -- so the code took
+ * result one and never learned what it had matched. Where a business shares
+ * a street address with a larger neighbour, Google returns the neighbour.
+ * Hyper O2, a hyperbaric oxygen studio, carried Kelso Medical Group's three
+ * stars and seventy-two reviews about doctors running late, until the owner
+ * wrote in.
+ *
+ * Matching on words rather than the whole string, because the two forms are
+ * rarely identical: "Yoga Lab" against "YOGALAB Fremantle" is the same place,
+ * "Hyper O2" against "Kelso Medical Group" is not. One shared distinctive
+ * word is enough; the words that would make everything match are dropped.
+ *
+ * Deliberately permissive. A false reject costs a listing its photos until
+ * somebody sets the ID by hand, which is visible and recoverable. A false
+ * accept publishes another business's reputation, which is neither.
+ */
+function name_words( string $s ): array {
+	static $stop = array(
+		'the','and','for','with','wa','au','perth','australia','pty','ltd','inc',
+		'group','centre','center','clinic','studio','wellness','health','therapy',
+		'therapies','co','company','services','service','australia','of','at','in',
+	);
+	$s = strtolower( (string) preg_replace( '/[^a-z0-9 ]/i', ' ', $s ) );
+	$w = preg_split( '/\s+/', $s, -1, PREG_SPLIT_NO_EMPTY );
+
+	return array_values(
+		array_filter(
+			(array) $w,
+			static fn( string $x ): bool => strlen( $x ) > 2 && ! in_array( $x, $stop, true )
+		)
+	);
+}
+
+function name_matches( string $listing, string $place ): bool {
+	if ( '' === trim( $place ) ) {
+		return true; // Nothing to judge on; the old behaviour, not a new reject.
+	}
+
+	$a = name_words( $listing );
+	$b = name_words( $place );
+	if ( ! $a || ! $b ) {
+		return true;
+	}
+	if ( array_intersect( $a, $b ) ) {
+		return true;
+	}
+
+	/*
+	 * Spacing differs more often than spelling -- "Rec Lab" and "Reclab" are
+	 * one business -- so compare the letters with the gaps taken out before
+	 * deciding two names have nothing in common.
+	 */
+	$ja = str_replace( ' ', '', implode( ' ', $a ) );
+	$jb = str_replace( ' ', '', implode( ' ', $b ) );
+
+	return '' !== $ja && '' !== $jb
+		&& ( false !== strpos( $ja, $jb ) || false !== strpos( $jb, $ja ) );
+}
+
 function pack( array $place ): array {
 	$names = array();
 	$attr  = array();
@@ -381,6 +511,10 @@ function pack( array $place ): array {
 
 	return array(
 		'names'        => $names,
+		// What Google thinks this place is called. Stored so a record can be
+		// audited later without another API call, and so data_for() can
+		// refuse a mismatch it inherited from before this check existed.
+		'place_name'   => (string) ( $place['displayName']['text'] ?? '' ),
 		'attributions' => array_values( $attr ),
 		'hours'        => array_values( array_map( 'strval', (array) ( $place['regularOpeningHours']['weekdayDescriptions'] ?? array() ) ) ),
 		'periods'      => array_values( (array) ( $place['regularOpeningHours']['periods'] ?? array() ) ),
