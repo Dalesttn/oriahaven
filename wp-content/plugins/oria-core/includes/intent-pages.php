@@ -541,14 +541,47 @@ function legacy_redirect(): void {
 /* ---------------------------------------------------------------- sitemap */
 
 /** @return list<array{loc: string}> */
+/**
+ * The address an intent page actually answers on today.
+ *
+ * url() still builds the pre-migration /practices/{practice}/{intent}/ form,
+ * and three of its four callers want that -- the canonical filter, the row
+ * rewriter and the legacy redirect all reason about the old shape, and
+ * PracticesIndex overrides the canonical afterwards anyway. Only the sitemap
+ * needs the live one.
+ *
+ * category_url() rather than a hand-built path, so the city segment comes
+ * from the same place every other sitemap gets it.
+ */
+function public_url( string $practice, string $intent ): string {
+	if ( function_exists( '\Oria\Core\PracticesIndex\category_url' ) ) {
+		$term = get_term_by( 'slug', $practice, Taxonomies\PRACTICE );
+		if ( $term instanceof \WP_Term ) {
+			return \Oria\Core\PracticesIndex\category_url( $term ) . $intent . '/';
+		}
+	}
+	return url( $practice, $intent );
+}
+
 function sitemap_entries(): array {
 	$out = array();
-	// publishable already folds in live-or-previewing, the count floor and
-	// the audience gate — the same decision robots() makes, so the sitemap
-	// and the meta tag can never disagree.
+	/*
+	 * publishable already folds in live-or-previewing, the count floor and
+	 * the audience gate — the same decision robots() makes, so the sitemap
+	 * and the meta tag can never disagree.
+	 *
+	 * The address, though, was left behind by the migration. This sitemap
+	 * kept publishing /practices/{practice}/{intent}/ while the other four
+	 * were updated, so all seventeen entries 301'd and the addresses that
+	 * actually answer appeared in no sitemap at all. facet-sitemap.xml skips
+	 * intent-backed facets on purpose -- they are this file's to publish --
+	 * so /explore/perth/fitness/reformer/, sixteen studios behind it, was
+	 * reachable only through a single link on /directory/ and sat at
+	 * "Discovered - currently not indexed, never crawled".
+	 */
 	foreach ( registry()['pages'] as $p ) {
 		if ( facts( $p )['publishable'] ) {
-			$out[] = array( 'loc' => url( $p['practice'], $p['intent'] ) );
+			$out[] = array( 'loc' => public_url( $p['practice'], $p['intent'] ) );
 		}
 	}
 	return $out;
