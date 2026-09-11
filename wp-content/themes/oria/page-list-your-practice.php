@@ -57,6 +57,7 @@ $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 	</div>
 </section>
 
+
 <?php
 /*
  * What a listing costs, read from the tier registry rather than typed here.
@@ -132,6 +133,8 @@ $oria_plans = array(
 		<a href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your listing', 'oria' ); ?></a>
 	</p>
 </section>
+
+<?php get_template_part( 'template-parts/sections/tier-table' ); ?>
 
 <section class="wrap section section--top-flush">
 	<?php if ( $oria_done ) : ?>
