@@ -199,6 +199,37 @@ function current_days(): int {
 	return in_array( $d, WINDOWS, true ) ? $d : 30;
 }
 
+/**
+ * The search term, matched against the listing name and its categories.
+ *
+ * Three hundred and fifty-seven rows is past the point where scrolling is a
+ * way of finding one business, and the window switcher and the sort links
+ * both have to carry the term or a click silently drops it.
+ */
+function current_search(): string {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
+	return isset( $_GET['s'] ) ? trim( sanitize_text_field( wp_unslash( (string) $_GET['s'] ) ) ) : '';
+}
+
+/**
+ * @param array<int, array<string, mixed>> $rows
+ * @return array<int, array<string, mixed>>
+ */
+function filter_rows( array $rows, string $term ): array {
+	if ( '' === $term ) {
+		return $rows;
+	}
+	return array_values(
+		array_filter(
+			$rows,
+			static function ( array $r ) use ( $term ): bool {
+				return false !== stripos( (string) $r['title'], $term )
+					|| false !== stripos( (string) $r['category'], $term );
+			}
+		)
+	);
+}
+
 function current_order(): string {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
 	$o = isset( $_GET['order'] ) ? sanitize_key( wp_unslash( (string) $_GET['order'] ) ) : 'clicks';
@@ -212,9 +243,15 @@ function render(): void {
 
 	$days   = current_days();
 	$order  = current_order();
-	$rows   = rows( $days, $order );
+	$term   = current_search();
+	$all_rows = rows( $days, $order );
+	$rows   = filter_rows( $all_rows, $term );
 	$labels = labels();
 	$base   = admin_url( 'edit.php?post_type=' . PostTypes\LISTING . '&page=' . SLUG );
+
+	// Every link on the page keeps the search, or clicking a window or a
+	// column heading throws the term away without saying so.
+	$keep = '' !== $term ? array( 's' => $term ) : array();
 
 	$sum = array_fill_keys( Analytics\TYPES, 0 );
 	$all = 0;
@@ -236,16 +273,67 @@ function render(): void {
 	foreach ( WINDOWS as $w ) {
 		printf(
 			'<a href="%s" class="nav-tab%s">%s</a>',
-			esc_url( add_query_arg( array( 'days' => $w, 'order' => $order ), $base ) ),
+			esc_url( add_query_arg( array_merge( array( 'days' => $w, 'order' => $order ), $keep ), $base ) ),
 			$w === $days ? ' nav-tab-active' : '',
 			esc_html( sprintf( /* translators: %d: number of days */ __( 'Last %d days', 'oria' ), $w ) )
 		);
 	}
 	echo '</h2>';
 
+	// --- search ----------------------------------------------------------
+	// Printed before the early return below, so a search that matches nothing
+	// still leaves you a box to correct the term in rather than a dead end.
+	printf(
+		'<form method="get" style="margin:1.5em 0 0">'
+		. '<input type="hidden" name="post_type" value="%s">'
+		. '<input type="hidden" name="page" value="%s">'
+		. '<input type="hidden" name="days" value="%d">'
+		. '<input type="hidden" name="order" value="%s">'
+		. '<label class="screen-reader-text" for="oria-click-search">%s</label>'
+		. '<input type="search" id="oria-click-search" name="s" value="%s" placeholder="%s" style="width:22em;max-width:100%%">'
+		. ' <button type="submit" class="button">%s</button>'
+		. '%s'
+		. '</form>',
+		esc_attr( PostTypes\LISTING ),
+		esc_attr( SLUG ),
+		(int) $days,
+		esc_attr( $order ),
+		esc_html__( 'Search listings', 'oria' ),
+		esc_attr( $term ),
+		esc_attr__( 'Search a practice or category…', 'oria' ),
+		esc_html__( 'Search', 'oria' ),
+		'' !== $term
+			? ' <a href="' . esc_url( add_query_arg( array( 'days' => $days, 'order' => $order ), $base ) ) . '" class="button-link">'
+				. esc_html__( 'Clear', 'oria' ) . '</a>'
+			: ''
+	);
+
+	if ( '' !== $term ) {
+		printf(
+			'<p class="description" style="margin:.6em 0 0">%s</p>',
+			esc_html(
+				sprintf(
+					/* translators: 1: matches, 2: total listings with activity, 3: search term */
+					__( 'Showing %1$s of %2$s listings with activity, matching “%3$s”. The figures below count only what is shown.', 'oria' ),
+					number_format_i18n( count( $rows ) ),
+					number_format_i18n( count( $all_rows ) ),
+					$term
+				)
+			)
+		);
+	}
+
 	if ( ! $rows ) {
 		echo '<div class="notice notice-info inline" style="margin-top:1em"><p>'
-			. esc_html__( 'Nothing recorded in this window yet. Counts start the first time somebody opens a listing — if the site has only just gone live, come back in a few days.', 'oria' )
+			. esc_html(
+				'' !== $term
+					? sprintf(
+						/* translators: %s: search term */
+						__( 'No listing matches “%s” in this window. Try a shorter term, or widen the window above.', 'oria' ),
+						$term
+					)
+					: __( 'Nothing recorded in this window yet. Counts start the first time somebody opens a listing — if the site has only just gone live, come back in a few days.', 'oria' )
+			)
 			. '</p></div></div>';
 		return;
 	}
@@ -279,7 +367,7 @@ function render(): void {
 		$on = ( $order === $t );
 		printf(
 			'<th style="text-align:right"><a href="%s"%s>%s%s</a></th>',
-			esc_url( add_query_arg( array( 'days' => $days, 'order' => $t ), $base ) ),
+			esc_url( add_query_arg( array_merge( array( 'days' => $days, 'order' => $t ), $keep ), $base ) ),
 			$on ? ' style="text-decoration:underline"' : '',
 			esc_html( $labels[ $t ] ?? $t ),
 			$on ? ' ↓' : ''
@@ -287,7 +375,7 @@ function render(): void {
 	}
 	printf(
 		'<th style="text-align:right"><a href="%s"%s>%s%s</a></th>',
-		esc_url( add_query_arg( array( 'days' => $days, 'order' => 'clicks' ), $base ) ),
+		esc_url( add_query_arg( array_merge( array( 'days' => $days, 'order' => 'clicks' ), $keep ), $base ) ),
 		'clicks' === $order ? ' style="text-decoration:underline"' : '',
 		esc_html__( 'All clicks', 'oria' ),
 		'clicks' === $order ? ' ↓' : ''
