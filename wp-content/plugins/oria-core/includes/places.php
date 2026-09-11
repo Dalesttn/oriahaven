@@ -77,10 +77,12 @@ function data_for( int $post_id, bool $may_fetch = true ): ?array {
 		return null;
 	}
 
-	$place_id = function_exists( 'get_field' ) ? trim( (string) get_field( 'google_place_id', $post_id ) ) : '';
-	if ( 'off' === strtolower( $place_id ) ) {
+	if ( hidden( $post_id ) ) {
 		return null;
 	}
+
+	$place_id = function_exists( 'get_field' ) ? trim( (string) get_field( 'google_place_id', $post_id ) ) : '';
+
 
 	$cache = get_post_meta( $post_id, META_CACHE, true );
 	if ( is_array( $cache )
@@ -537,6 +539,9 @@ function pack( array $place ): array {
  */
 function bootstrap(): void {
 	add_action( 'oria_places_warm', __NAMESPACE__ . '\\warm' );
+	add_filter( 'post_row_actions', __NAMESPACE__ . '\row_actions', 10, 2 );
+	add_action( 'admin_post_oria_places_toggle', __NAMESPACE__ . '\toggle' );
+	add_action( 'admin_notices', __NAMESPACE__ . '\toggle_notice' );
 	add_action( 'init', static function (): void {
 		if ( enabled() && ! wp_next_scheduled( 'oria_places_warm' ) ) {
 			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', 'oria_places_warm' );
@@ -581,3 +586,117 @@ function warm( int $budget = 40 ): array {
 	return array( 'fetched' => $fresh, 'fresh' => $had + $fresh );
 }
 
+
+/* ------------------------------------------------------- turning it off */
+
+/**
+ * Has somebody said this listing should show no Google data?
+ *
+ * Two ways of saying it, because the first one was a secret. The only switch
+ * used to be the word "off" typed into the place ID box -- undiscoverable,
+ * and worse, the obvious alternative of CLEARING that box does nothing: an
+ * empty value falls through to whatever was cached last. Both of us got that
+ * wrong on the same listing on the same afternoon.
+ *
+ * The checkbox is the switch now. The string still answers, so nothing set by
+ * hand before today quietly turns itself back on.
+ */
+function hidden( int $post_id ): bool {
+	if ( ! function_exists( 'get_field' ) ) {
+		return false;
+	}
+	if ( (bool) get_field( 'places_hide', $post_id ) ) {
+		return true;
+	}
+
+	return 'off' === strtolower( trim( (string) get_field( 'google_place_id', $post_id ) ) );
+}
+
+/**
+ * The same switch from the listings list, because discovering that a rating
+ * belongs to somebody else happens in batches: an owner writes in, and then
+ * you want to check the eight others that look like it. Opening each listing,
+ * finding the Google tab and saving is four steps too many once the answer is
+ * already known.
+ *
+ * @param array<string, string> $actions
+ * @param mixed                 $post
+ * @return array<string, string>
+ */
+function row_actions( $actions, $post ) {
+	if ( ! $post instanceof \WP_Post || \Oria\Core\PostTypes\LISTING !== $post->post_type ) {
+		return $actions;
+	}
+	if ( ! current_user_can( 'edit_post', $post->ID ) ) {
+		return $actions;
+	}
+
+	$url = wp_nonce_url(
+		admin_url( 'admin-post.php?action=oria_places_toggle&post=' . (int) $post->ID ),
+		'oria_places_toggle_' . (int) $post->ID
+	);
+
+	$actions['oria_places'] = sprintf(
+		'<a href="%s">%s</a>',
+		esc_url( $url ),
+		hidden( (int) $post->ID )
+			? esc_html__( 'Show Google data', 'oria' )
+			: esc_html__( 'Hide Google data', 'oria' )
+	);
+
+	return $actions;
+}
+
+function toggle(): void {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- verified below.
+	$post_id = isset( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+
+	if ( ! $post_id
+		|| ! current_user_can( 'edit_post', $post_id )
+		|| ! isset( $_GET['_wpnonce'] )
+		|| ! wp_verify_nonce( sanitize_key( wp_unslash( (string) $_GET['_wpnonce'] ) ), 'oria_places_toggle_' . $post_id ) ) {
+		wp_die(
+			esc_html__( 'That link has expired. Go back to the listings and try again.', 'oria' ),
+			'',
+			array( 'response' => 403 )
+		);
+	}
+
+	$now = ! hidden( $post_id );
+	if ( function_exists( 'update_field' ) ) {
+		update_field( 'places_hide', $now, $post_id );
+		/*
+		 * Switching it back on has to clear the legacy string too, or the
+		 * checkbox reads "showing" while hidden() still answers true and the
+		 * page stays blank with nothing on screen to explain why.
+		 */
+		if ( ! $now && 'off' === strtolower( trim( (string) get_field( 'google_place_id', $post_id ) ) ) ) {
+			update_field( 'google_place_id', '', $post_id );
+		}
+	}
+
+	wp_safe_redirect(
+		add_query_arg(
+			'oria_places',
+			$now ? 'hidden' : 'shown',
+			wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=' . \Oria\Core\PostTypes\LISTING )
+		)
+	);
+	exit;
+}
+
+function toggle_notice(): void {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+	$state = isset( $_GET['oria_places'] ) ? sanitize_key( wp_unslash( (string) $_GET['oria_places'] ) ) : '';
+	if ( 'hidden' !== $state && 'shown' !== $state ) {
+		return;
+	}
+	printf(
+		'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+		esc_html(
+			'hidden' === $state
+				? __( 'Google reviews and photos removed from that listing. Everything else on it is untouched.', 'oria' )
+				: __( 'Google reviews and photos switched back on for that listing.', 'oria' )
+		)
+	);
+}

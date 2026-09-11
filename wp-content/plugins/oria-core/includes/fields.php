@@ -836,11 +836,19 @@ function register_listing_fields(): void {
 					'placement' => 'left',
 				),
 				array(
+					'key'          => 'field_oria_places_hide',
+					'name'         => 'places_hide',
+					'label'        => 'Do not show Google reviews or photos here',
+					'type'         => 'true_false',
+					'ui'           => 1,
+					'instructions' => 'Tick this when the rating on the page is not this business\'s own — because it shares an address with a larger neighbour, or because the listing is a group that meets at a venue and picked up the venue\'s reviews. The listing keeps everything else; only the Google rating, reviews and photos come off.',
+				),
+				array(
 					'key'          => 'field_oria_google_place_id',
 					'name'         => 'google_place_id',
 					'label'        => 'Google place ID',
 					'type'         => 'text',
-					'instructions' => 'Filled automatically the first time Places photos are fetched. If the wrong venue matched, paste the correct place ID here. Enter "off" to disable Places photos for this listing.',
+					'instructions' => 'Filled automatically the first time Places photos are fetched. If the wrong venue matched, paste the correct place ID here — the business\'s own Google Maps share link contains it. To show nothing at all, use the switch above rather than clearing this box: an empty box falls back to whatever was fetched last.',
 				),
 			),
 		)
