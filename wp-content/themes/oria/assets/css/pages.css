@@ -5685,3 +5685,132 @@ article.is-spotlit {
    the goals as plain words, so the list reads on its own. The script
    replaces all of this on first paint. */
 .wmap__goals { display: block; font-size: 11px; color: var(--text-faint); margin-top: .1rem; }
+
+/* ==========================================================================
+   Plan comparison table — /list-your-practice/
+   Nineteen rows of ticks is a reference, not a pitch: the plan cards above
+   do the selling. So this is built to be scanned down a column and across a
+   row, and everything else gets out of the way.
+   ========================================================================== */
+
+.tiers__scroll {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	border: 1px solid var(--line);
+	border-radius: var(--r-md);
+	background: var(--surface);
+	box-shadow: var(--sh-1);
+}
+
+.tiers {
+	border-collapse: collapse;
+	width: 100%;
+	/* The feature names are the long part; below this the columns collide,
+	   so the box scrolls rather than the page. */
+	min-width: 40rem;
+	font-size: var(--fs-sm);
+	line-height: 1.4;
+}
+
+.tiers th,
+.tiers td { padding: var(--s-3) var(--s-4); text-align: center; }
+
+/* --- head ---------------------------------------------------------- */
+.tiers thead th {
+	vertical-align: bottom;
+	padding-top: var(--s-5);
+	padding-bottom: var(--s-4);
+	border-bottom: 1px solid var(--line-strong);
+	font-weight: 500;
+}
+.tiers thead th:first-child {
+	text-align: left;
+	font-size: var(--fs-micro);
+	letter-spacing: var(--tr-micro);
+	text-transform: uppercase;
+	color: var(--text-faint);
+	font-weight: 600;
+}
+.tiers__plan {
+	display: block;
+	font-size: var(--fs-h4);
+	font-weight: 700;
+	letter-spacing: var(--tr-head);
+	color: var(--ink);
+}
+.tiers__price {
+	display: block;
+	margin-top: 2px;
+	font-size: var(--fs-xs);
+	color: var(--text-soft);
+	font-variant-numeric: tabular-nums;
+}
+/* Same flag as the card above it, so the two read as one recommendation
+   rather than two opinions. */
+.tiers__flag {
+	display: inline-block;
+	margin-bottom: var(--s-2);
+	padding: 3px 10px;
+	border-radius: var(--r-pill);
+	background: var(--deep);
+	color: var(--mist-2);
+	font-size: var(--fs-micro);
+	letter-spacing: var(--tr-micro);
+	text-transform: uppercase;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+/* --- body ---------------------------------------------------------- */
+.tiers tbody th[scope="row"] {
+	text-align: left;
+	font-weight: 400;
+	color: var(--text);
+	/* The feature name is the anchor for the whole row; let it have room
+	   and let it wrap rather than truncating. */
+	min-width: 16rem;
+}
+.tiers tbody tr:not(.tiers__group) + tr:not(.tiers__group) th,
+.tiers tbody tr:not(.tiers__group) + tr:not(.tiers__group) td {
+	border-top: 1px solid var(--line);
+}
+.tiers tbody tr:not(.tiers__group):hover th,
+.tiers tbody tr:not(.tiers__group):hover td { background: rgba(8, 34, 32, .022); }
+
+/* Group headings are the three gates, so they carry weight rather than
+   sitting as another row. */
+.tiers__group th {
+	text-align: left;
+	padding-top: var(--s-5);
+	padding-bottom: var(--s-2);
+	border-top: 1px solid var(--line-strong);
+	font-size: var(--fs-micro);
+	letter-spacing: var(--tr-micro);
+	text-transform: uppercase;
+	font-weight: 700;
+	color: var(--moss);
+	background: transparent;
+}
+.tiers tbody tr.tiers__group:first-child th { border-top: 0; padding-top: var(--s-4); }
+
+/* --- marks ---------------------------------------------------------- */
+.tiers__yes { color: var(--claimed); font-size: 1.05rem; font-weight: 700; }
+.tiers__no  { color: var(--line-strong); }
+.tiers__num {
+	font-variant-numeric: tabular-nums;
+	font-weight: 600;
+	color: var(--ink);
+}
+
+/* --- the recommended column ----------------------------------------- */
+/* Washed, not outlined: a border around one column of a table reads as an
+   error state rather than a recommendation. */
+.tiers__col--pick { background: var(--sand-2); }
+.tiers thead .tiers__col--pick { border-radius: var(--r-sm) var(--r-sm) 0 0; }
+.tiers tbody tr:not(.tiers__group):hover .tiers__col--pick { background: var(--sand-3); }
+
+@media (max-width: 640px) {
+	.tiers { font-size: var(--fs-xs); }
+	.tiers th, .tiers td { padding: var(--s-2) var(--s-3); }
+	.tiers tbody th[scope="row"] { min-width: 13rem; }
+}
