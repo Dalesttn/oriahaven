@@ -63,6 +63,7 @@ while ( have_posts() ) :
 			// code-injected, low on the page, and silent until one is published.
 			if ( is_front_page() && 'journal_latest' === $oria_layout ) {
 				get_template_part( 'template-parts/sections/best-of' );
+				get_template_part( 'template-parts/sections/my-oria' );
 			}
 
 		}

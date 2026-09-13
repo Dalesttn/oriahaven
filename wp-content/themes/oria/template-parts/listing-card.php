@@ -56,6 +56,17 @@ $oria_badges = array(
 		<?php if ( isset( $oria_badges[ $oria_status ] ) ) : ?>
 			<div class="listing__flag"><?php echo $oria_badges[ $oria_status ]; // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 		<?php endif; ?>
+		<?php
+		/*
+		 * The heart, as on the JS-built card. Rendered unsaved and corrected
+		 * by app.js on load, which knows the device's or the account's list.
+		 */
+		?>
+		<div class="listing__quick">
+			<button class="qact" type="button" data-card-save="<?php echo esc_attr( (string) get_post_field( 'post_name', $oria_id ) ); ?>" aria-pressed="false" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: practice name */ __( 'Save %s', 'oria' ), \Oria\Theme\ptitle( $oria_id ) ) ); ?>" title="<?php esc_attr_e( 'Save', 'oria' ); ?>">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 8.6a4.9 4.9 0 0 0-8.8-3A4.9 4.9 0 0 0 3.2 8.6c0 4.9 8.8 10.2 8.8 10.2s8.8-5.3 8.8-10.2Z"/></svg>
+			</button>
+		</div>
 	</div>
 	<div class="listing__body">
 		<?php
