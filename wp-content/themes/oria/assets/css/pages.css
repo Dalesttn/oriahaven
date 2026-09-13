@@ -6966,6 +6966,207 @@ article.is-spotlit {
    version is four times more pixels than the screen can show. */
 @media (max-width: 860px) {
   .appshero-band { --heroband-img: url("../img/apps-hero-1280.webp"); }
+/* ======================================================================
+   My Oria -- the member area at /my-oria/ and its buttons elsewhere.
+   Prefix my-; the passport uses pass-/pbadge. Calm, editorial, no score.
+   ====================================================================== */
+.myhead { padding-bottom: var(--s-4); }
+.mynav {
+  display: flex; gap: var(--s-2); align-items: center;
+  margin-top: var(--s-5); padding-bottom: 2px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.mynav::-webkit-scrollbar { display: none; }
+.mynav__tab {
+  flex: none; padding: .55rem 1rem; border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong); font-size: var(--fs-sm); font-weight: 600;
+  color: var(--ink); text-decoration: none; white-space: nowrap;
+}
+.mynav__tab:hover { border-color: var(--ink); }
+.mynav__tab.is-active { background: var(--ink); border-color: var(--ink); color: var(--white); }
+.mynav__out { flex: none; margin-left: auto; font-size: var(--fs-xs); color: var(--text-faint); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.mynav__out:hover { color: var(--ink); }
+
+.mynotice { margin-top: var(--s-4); display: block; }
+.notice--err { border-color: #C9A24B; background: #FBF4E4; color: #6A4A0A; }
+.notice--ok  { border-color: rgba(47,125,98,.3); }
+
+.my { padding-block: clamp(1.4rem, 3vw, 2.2rem); }
+.my--last { padding-bottom: clamp(3rem, 6vw, 5rem); }
+.my__hello .h1 { margin-top: var(--s-3); max-width: 18ch; }
+.my__hello .lede { margin-top: var(--s-4); max-width: 52ch; }
+
+.mystats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); margin-top: clamp(1.5rem, 3vw, 2.5rem); }
+.mystat {
+  display: flex; flex-direction: column; gap: .3rem;
+  padding: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-lg);
+  color: inherit; text-decoration: none; background: var(--surface);
+  transition: border-color .15s var(--ease);
+}
+.mystat:hover { border-color: var(--ink); }
+.mystat__n { font-size: clamp(1.9rem, 3vw, 2.6rem); font-weight: 600; line-height: 1; letter-spacing: -0.03em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.mystat__l { font-size: var(--fs-sm); color: var(--text-soft); }
+
+.mygrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5); }
+.myplace { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); }
+.myplace__media { display: block; aspect-ratio: 4 / 3; background: var(--sand-2); }
+.myplace__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.myplace__body { display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-4) var(--s-5) var(--s-5); }
+.myplace__meta { font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--moss); }
+.myplace__name { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.018em; line-height: 1.2; }
+.myplace__name a { color: var(--ink); text-decoration: none; }
+.myplace__name a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.myplace__tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 1.2rem; }
+.myplace__when { font-size: var(--fs-xs); color: var(--text-faint); }
+.myplace__acts { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-2); }
+.myplace__remove { color: var(--text-faint); }
+
+.myempty { padding: var(--s-7) var(--s-5); text-align: center; border: 1px dashed var(--line-strong); border-radius: var(--r-lg); }
+.myempty p { color: var(--text-soft); max-width: 44ch; margin: .5rem auto var(--s-4); }
+
+/* Passport strip on the dashboard */
+.mypass {
+  display: flex; justify-content: space-between; align-items: center; gap: var(--s-5); flex-wrap: wrap;
+  padding: clamp(1.5rem, 3vw, 2.5rem); border-radius: var(--r-xl);
+  background: var(--deep); color: var(--text-on-deep);
+}
+.mypass .micro { color: var(--mist); display: block; margin-bottom: var(--s-3); }
+.mypass__line { font-family: var(--font-edit); font-size: 1.125rem; line-height: 1.5; max-width: 46ch; }
+.mypass__next { margin-top: var(--s-3); font-size: var(--fs-sm); color: var(--mist); }
+.mypass__next span { color: var(--white); font-weight: 600; }
+.mydots { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: flex; gap: 8px; }
+.mydots li { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid currentColor; opacity: .45; }
+.mydots li.is-on { background: var(--brand-gold); border-color: var(--brand-gold); opacity: 1; }
+
+/* Interests, as chips */
+.myprefs { padding: clamp(1.25rem, 3vw, 2rem); background: var(--sand-2); border-radius: var(--r-xl); display: grid; gap: var(--s-5); }
+.myprefs .micro { display: block; margin-bottom: var(--s-2); }
+.myprefs__acts { display: flex; align-items: center; gap: var(--s-4); flex-wrap: wrap; }
+.mychips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--s-3); }
+.mychip { position: relative; cursor: pointer; }
+.mychip input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+.mychip span {
+  display: inline-block; padding: .5rem .95rem; border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong); background: var(--surface);
+  font-size: var(--fs-sm); font-weight: 600; color: var(--ink);
+}
+.mychip input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--white); }
+.mychip input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mycheck { display: flex; gap: var(--s-3); align-items: flex-start; font-size: var(--fs-sm); color: var(--text-soft); }
+.mycheck input { margin-top: .3rem; flex: none; }
+.mycheck a { color: var(--ink); }
+
+/* Forms */
+.myform { display: grid; gap: clamp(1.5rem, 3vw, 2.25rem); max-width: 40rem; margin-top: clamp(1.5rem, 3vw, 2.5rem); }
+.myform__group { border: 0; padding: 0; margin: 0; display: grid; gap: var(--s-4); }
+.myform__group legend { padding: 0; margin-bottom: var(--s-2); }
+.myform__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
+.myform__acts { display: flex; gap: var(--s-3); flex-wrap: wrap; }
+.myform .field { display: grid; gap: .4rem; }
+.myform .hint { font-size: var(--fs-xs); color: var(--text-faint); }
+.field--trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.mydata { margin-top: clamp(2rem, 4vw, 3rem); padding-top: var(--s-5); border-top: 1px solid var(--line); max-width: 40rem; }
+.mydata .micro { display: block; margin-bottom: var(--s-2); }
+.mydata__link { display: inline-block; margin-top: var(--s-3); font-size: var(--fs-sm); color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+/* Sign-in pages */
+.myauth { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+.myauth__text .h1 { margin-top: var(--s-3); max-width: 14ch; }
+.myauth__text .lede { margin-top: var(--s-4); max-width: 40ch; }
+.myauth__list { list-style: none; margin: var(--s-5) 0 0; padding: 0; display: grid; gap: .6rem; color: var(--text-soft); }
+.myauth__list span { color: var(--brand-gold); margin-right: .35rem; }
+.myform--auth { margin-top: 0; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: var(--r-xl); background: var(--surface); gap: var(--s-4); }
+.myauth__or { display: flex; align-items: center; gap: var(--s-3); color: var(--text-faint); font-size: var(--fs-xs); }
+.myauth__or::before, .myauth__or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.myauth__links { font-size: var(--fs-sm); color: var(--text-soft); display: flex; gap: .5rem; flex-wrap: wrap; }
+.myauth__links a { color: var(--ink); }
+
+/* Passport page */
+.passhead__eyebrow { display: block; font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--moss); }
+.passhead__title { margin-top: var(--s-3); max-width: 16ch; }
+.passhead__motto { margin-top: var(--s-3); font-family: "Caveat", var(--font-sans); font-size: clamp(1.4rem, 2.6vw, 1.8rem); color: var(--brand-gold); line-height: 1; }
+.passhead .lede { margin-top: var(--s-4); max-width: 50ch; }
+.passprog {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4);
+  margin-top: clamp(1.5rem, 3vw, 2.5rem); padding: clamp(1.25rem, 3vw, 2rem);
+  background: var(--sand-2); border-radius: var(--r-xl); position: relative;
+}
+.passprog__n { display: flex; flex-direction: column; gap: .3rem; }
+.passprog__n b { font-size: clamp(1.9rem, 3vw, 2.6rem); font-weight: 600; line-height: 1; letter-spacing: -0.03em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.passprog__n span { font-size: var(--fs-sm); color: var(--text-soft); }
+.passprog__dots { grid-column: 1 / -1; color: var(--deep); margin-top: var(--s-2); }
+
+.pbadges { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+.pbadges--row { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.pbadge {
+  display: flex; gap: var(--s-4); align-items: flex-start;
+  padding: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface);
+}
+.pbadge__icon {
+  flex: none; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--sand-2); color: var(--text-faint);
+}
+.pbadge__icon svg { width: 26px; height: 26px; }
+.pbadge.is-earned .pbadge__icon { background: var(--deep); color: var(--brand-gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+.pbadge__text { display: grid; gap: .25rem; min-width: 0; }
+.pbadge__name { font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+.pbadge.is-locked .pbadge__name { color: var(--text-soft); }
+.pbadge__desc { font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.5; }
+.pbadge__state { font-size: var(--fs-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.pbadge.is-earned .pbadge__state { color: var(--moss); font-weight: 600; }
+.pbadge--compact { padding: var(--s-4); }
+.pbadge--compact .pbadge__icon { width: 44px; height: 44px; }
+.pbadge--compact .pbadge__icon svg { width: 20px; height: 20px; }
+
+/* "I have tried this" beside Save on a profile, and on saved cards */
+.triedbtn { gap: .45rem; }
+.triedbtn__mark { color: var(--text-faint); }
+.triedbtn[aria-pressed="true"] { border-color: var(--moss); color: var(--moss); }
+.triedbtn[aria-pressed="true"] .triedbtn__mark { color: var(--moss); }
+
+/* Guest prompt after a save */
+.mymodal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: var(--s-5); }
+.mymodal__veil { position: absolute; inset: 0; background: rgba(8,34,32,.45); animation: veilin .18s ease both; }
+.mymodal__box {
+  position: relative; width: min(100%, 26rem); padding: clamp(1.5rem, 4vw, 2.25rem);
+  background: var(--paper); border-radius: var(--r-xl); box-shadow: var(--sh-3);
+}
+.mymodal__box p { margin-top: var(--s-3); color: var(--text-soft); line-height: 1.55; }
+.mymodal__acts { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-5); }
+.mymodal__close { position: absolute; top: .9rem; right: .9rem; width: 34px; height: 34px; border: 0; border-radius: 50%; background: var(--sand-2); color: var(--ink); display: grid; place-items: center; cursor: pointer; }
+.mymodal__close svg { width: 12px; height: 12px; }
+.mymodal__close:focus-visible, .mymodal__acts a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.mytoast {
+  position: fixed; left: 50%; bottom: 1.5rem; transform: translate(-50%, 1rem); z-index: 90;
+  padding: .8rem 1.2rem; border-radius: var(--r-pill);
+  background: var(--deep); color: var(--white); font-weight: 600; font-size: var(--fs-sm);
+  box-shadow: var(--sh-2); opacity: 0; transition: opacity .25s var(--ease), transform .25s var(--ease);
+}
+.mytoast.is-in { opacity: 1; transform: translate(-50%, 0); }
+
+/* Home page */
+.myhome { padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid var(--line); border-radius: var(--r-xl); background: var(--sand-2); }
+.myhome__text .h2 { margin-top: var(--s-3); max-width: 16ch; }
+.myhome__text .lede { margin-top: var(--s-4); max-width: 46ch; }
+.myhome__facts { display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-6); margin-top: var(--s-5); font-size: var(--fs-sm); color: var(--text-soft); }
+.myhome__facts > span > span { color: var(--brand-gold); margin-right: .3rem; }
+.myhome__acts { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-5); }
+
+/* PHP-rendered cards now carry the heart too; the anchor needs a frame. */
+.bopick__media { position: relative; }
+
+@media (max-width: 960px) {
+  .mygrid, .pbadges { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .myauth { grid-template-columns: 1fr; }
+  .mystats, .passprog { grid-template-columns: 1fr; }
+  .passprog__dots { grid-column: auto; }
+}
+@media (max-width: 600px) {
+  .mygrid, .pbadges { grid-template-columns: 1fr; }
+  .myform__row { grid-template-columns: 1fr; }
 }
 
 /* ==========================================================================

@@ -1845,6 +1845,7 @@
         $$('[data-card-save="' + id + '"]').forEach(function (b) {
           b.setAttribute("aria-pressed", at > -1 ? "false" : "true");
         });
+        if (at < 0) meNudge("save");
         pushEvent(at > -1 ? "listing_unsave" : "listing_save", { listing_id: id });
         return;
       }
@@ -3993,7 +3994,16 @@
      clear the browser and the list goes with it. */
   var SAVE_KEY = "oria_saved";
 
-  function savedIds() {
+  /* --- My Oria ---------------------------------------------------------
+     window.ORIA_ME is printed by the plugin on every page: whether anyone
+     is signed in and, if so, the slugs they have saved and tried. Signed
+     in, the account is the source of truth and every change is posted to
+     it; signed out, the device keeps the list exactly as before, and a
+     save is followed once per session by an invitation to keep it. */
+  var ME = window.ORIA_ME || {};
+  function meOn() { return !!ME.loggedIn; }
+
+  function deviceSavedIds() {
     try {
       var raw = window.localStorage.getItem(SAVE_KEY);
       var arr = raw ? JSON.parse(raw) : [];
@@ -4004,7 +4014,19 @@
     }
   }
 
+  function savedIds() {
+    return meOn() ? (ME.saved || []).map(String) : deviceSavedIds();
+  }
+
   function writeSaved(ids) {
+    if (meOn()) {
+      var before = (ME.saved || []).map(String);
+      ME.saved = ids.map(String);
+      ids.forEach(function (id) { if (before.indexOf(id) < 0) meActivity(id, "saved", true); });
+      before.forEach(function (id) { if (ids.indexOf(id) < 0) meActivity(id, "saved", false); });
+      paintSavedNav();
+      return true;
+    }
     try {
       window.localStorage.setItem(SAVE_KEY, JSON.stringify(ids));
       paintSavedNav();
@@ -4012,6 +4034,175 @@
     } catch (e) {
       return false;
     }
+  }
+
+  /* Every write is numbered, and only the newest one's answer is painted.
+     Two clicks in quick succession -- save, then tried -- are two requests
+     the server may finish in either order, and the state in the earlier
+     one is already stale by the time it lands. */
+  var meSeq = 0;
+  function mePost(path, body) {
+    var seq = ++meSeq;
+    return fetch(ME.api + path, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json", "X-WP-Nonce": ME.nonce },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (state) { if (state) state._seq = seq; return state; })
+      .catch(function () { return null; });
+  }
+
+  /* The server answers every write with the whole state; paint from that
+     rather than from what the click assumed. */
+  function meApply(state) {
+    if (!state || !state.saved) return;
+    if (state._seq && state._seq < meSeq) {
+      /* A newer request is in flight or already painted; its answer
+         supersedes this one, but a badge earned here is still news. */
+      (state.new_badges || []).forEach(function (b) { meToast("Badge earned: " + b.label + " ✦"); });
+      return;
+    }
+    ME.saved = state.saved.map(String);
+    ME.tried = (state.tried || []).map(String);
+    paintSavedNav();
+    paintTried();
+    /* Hearts drawn before the answer -- or before the device list joined
+       the account -- catch up here. */
+    $$("[data-card-save]").forEach(function (b) {
+      b.setAttribute("aria-pressed", ME.saved.indexOf(String(b.dataset.cardSave)) > -1 ? "true" : "false");
+    });
+    $$("[data-save]").forEach(function (b) {
+      var on = ME.saved.indexOf(String(b.dataset.save)) > -1;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      var label = b.querySelector(".savebtn__label");
+      if (label) label.textContent = on ? "Saved" : "Save";
+    });
+    var counts = state.counts || {};
+    $$("[data-my-count]").forEach(function (el) {
+      var k = el.dataset.myCount;
+      var n = k === "badges" ? state.badges : counts[k];
+      if (typeof n === "number") el.textContent = String(n);
+    });
+    (state.new_badges || []).forEach(function (b) {
+      meToast("Badge earned: " + b.label + " ✦");
+      pushEvent("oria_badge_earned", { badge: b.slug });
+    });
+  }
+
+  function meActivity(slug, type, on) {
+    if (!meOn()) return Promise.resolve(null);
+    pushEvent(
+      type === "tried" ? (on ? "oria_mark_tried" : "oria_remove_tried") : (on ? "oria_save_listing" : "oria_unsave_listing"),
+      { listing_id: slug }
+    );
+    return mePost("activity", { slug: slug, type: type, on: !!on }).then(function (state) {
+      meApply(state);
+      return state;
+    });
+  }
+
+  /* Whatever the device saved before there was an account joins it, once,
+     and the device copy is retired so the two can never disagree. */
+  function meSync() {
+    if (!meOn()) return;
+    var local = deviceSavedIds();
+    if (!local.length) return;
+    var extra = local.filter(function (id) { return (ME.saved || []).indexOf(id) < 0; });
+    var done = function () { try { window.localStorage.removeItem(SAVE_KEY); } catch (e) {} };
+    if (!extra.length) { done(); return; }
+    mePost("sync", { saved: extra }).then(function (state) { meApply(state); done(); });
+  }
+
+  function paintTried() {
+    var tried = (ME.tried || []).map(String);
+    $$("[data-tried], [data-my-tried]").forEach(function (b) {
+      var slug = String(b.dataset.tried || b.dataset.myTried);
+      var on = tried.indexOf(slug) > -1;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      var label = b.querySelector(".triedbtn__label");
+      if (label) label.textContent = on ? "In your passport" : "I've tried this";
+    });
+  }
+
+  function meToast(text) {
+    var t = document.createElement("div");
+    t.className = "mytoast";
+    t.setAttribute("role", "status");
+    t.textContent = text;
+    document.body.appendChild(t);
+    requestAnimationFrame(function () { t.classList.add("is-in"); });
+    setTimeout(function () {
+      t.classList.remove("is-in");
+      setTimeout(function () { t.remove(); }, 300);
+    }, 4200);
+  }
+
+  /* The invitation a guest sees after saving: once per session, and never
+     in the way of the save itself, which has already happened on the
+     device. A "tried" has nowhere to go without an account, so that one
+     asks every time. */
+  function meNudge(kind) {
+    if (meOn() || !ME.registerUrl) return;
+    var key = "oria_me_nudged";
+    try {
+      if (kind !== "tried" && window.sessionStorage.getItem(key)) return;
+      window.sessionStorage.setItem(key, "1");
+    } catch (e) {}
+    var back = encodeURIComponent(window.location.href);
+    var title = kind === "tried" ? "Add this to your Wellness Passport" : "Saved to this device";
+    var body = kind === "tried"
+      ? "Create a free My Oria account to mark places you have tried and collect passport badges as you explore."
+      : "Create a free My Oria account to keep your saved places on every device and build your Wellness Passport.";
+    var m = document.createElement("div");
+    m.className = "mymodal";
+    m.innerHTML =
+      '<div class="mymodal__veil" data-me-close></div>' +
+      '<div class="mymodal__box" role="dialog" aria-modal="true" aria-labelledby="meModalTitle">' +
+        '<h2 class="h3" id="meModalTitle">' + esc(title) + "</h2>" +
+        "<p>" + esc(body) + "</p>" +
+        '<div class="mymodal__acts">' +
+          '<a class="btn btn--dark" href="' + esc(ME.registerUrl) + "?redirect_to=" + back + '">Create My Oria</a>' +
+          '<a class="btn btn--ghost" href="' + esc(ME.loginUrl) + "?redirect_to=" + back + '">Log in</a>' +
+        "</div>" +
+        '<button class="mymodal__close" type="button" data-me-close aria-label="Not now">' + ICON.x + "</button>" +
+      "</div>";
+    document.body.appendChild(m);
+    var first = m.querySelector(".btn");
+    if (first) first.focus();
+    function close() { m.remove(); document.removeEventListener("keydown", onKey); }
+    function onKey(e) { if (e.key === "Escape") close(); }
+    m.addEventListener("click", function (e) { if (e.target.closest("[data-me-close]")) close(); });
+    document.addEventListener("keydown", onKey);
+  }
+
+  function initMe() {
+    meSync();
+    paintTried();
+    document.addEventListener("click", function (e) {
+      var t = e.target.closest && e.target.closest("[data-tried], [data-my-tried]");
+      if (t) {
+        if (!meOn()) { meNudge("tried"); return; }
+        var slug = String(t.dataset.tried || t.dataset.myTried);
+        var on = t.getAttribute("aria-pressed") !== "true";
+        t.setAttribute("aria-pressed", on ? "true" : "false");
+        var label = t.querySelector(".triedbtn__label");
+        if (label) label.textContent = on ? "Added to your passport" : "I've tried this";
+        meActivity(slug, "tried", on);
+        return;
+      }
+      var r = e.target.closest && e.target.closest("[data-my-remove]");
+      if (r && meOn()) {
+        var card = r.closest("[data-my-place]");
+        r.disabled = true;
+        meActivity(String(r.dataset.slug), r.dataset.myRemove, false).then(function () {
+          if (card) card.remove();
+          var list = document.querySelector("[data-my-list]");
+          var empty = document.querySelector("[data-my-empty]");
+          if (empty && list && !list.querySelector("[data-my-place]")) empty.hidden = false;
+        });
+      }
+    });
   }
 
   /* The count in the nav, and its twin in the drawer.
@@ -4060,6 +4251,7 @@
           return;
         }
         paint();
+        if (at < 0) meNudge("save");
         pushEvent(at > -1 ? "listing_unsave" : "listing_save", { listing_id: id });
       });
     });
@@ -5110,6 +5302,7 @@
     initGuideToc();
     initSavedPage();
     paintSavedNav();
+    initMe();
     /* Another tab is the same shortlist. Without this the count goes stale
        the moment somebody browses in two windows, which on a directory is
        ordinary behaviour rather than an edge case. */

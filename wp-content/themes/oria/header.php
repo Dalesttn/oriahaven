@@ -146,6 +146,9 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
+					// My Oria: the account. A guest is sent to sign in; the page
+					// cache only ever holds the guest version, which is correct.
+					printf( '<li><a class="nav__link nav__me" href="%s">%s</a></li>', esc_url( is_user_logged_in() ? home_url( '/my-oria/' ) : home_url( '/my-oria/login/' ) ), esc_html__( 'My Oria', 'oria' ) );
 					echo '</ul>';
 				},
 			)
@@ -168,7 +171,7 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 			 * likely to have been built.
 			 */
 			?>
-			<a class="navsaved" href="<?php echo esc_url( home_url( '/saved/' ) ); ?>" data-saved-nav hidden>
+			<a class="navsaved" href="<?php echo esc_url( is_user_logged_in() ? home_url( '/my-oria/saved/' ) : home_url( '/saved/' ) ); ?>" data-saved-nav hidden>
 				<span class="navsaved__heart" aria-hidden="true">&#9829;</span>
 				<span class="navsaved__count" data-saved-nav-count>0</span>
 			</a>
@@ -232,13 +235,14 @@ if ( ! $oria_has_hero ) {
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( is_user_logged_in() ? home_url( '/my-oria/' ) : home_url( '/my-oria/login/' ) ), esc_html__( 'My Oria', 'oria' ) );
 				echo '</div>';
 			},
 		)
 	);
 	?>
 	<div class="drawer__foot">
-		<a class="drawer__saved" href="<?php echo esc_url( home_url( '/saved/' ) ); ?>" data-saved-nav hidden>
+		<a class="drawer__saved" href="<?php echo esc_url( is_user_logged_in() ? home_url( '/my-oria/saved/' ) : home_url( '/saved/' ) ); ?>" data-saved-nav hidden>
 			<span aria-hidden="true">&#9829;</span>
 			<span><?php esc_html_e( 'Saved practices', 'oria' ); ?></span>
 			<span class="navsaved__count" data-saved-nav-count>0</span>
