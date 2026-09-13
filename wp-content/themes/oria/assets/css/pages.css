@@ -5814,3 +5814,25 @@ article.is-spotlit {
 	.tiers th, .tiers td { padding: var(--s-2) var(--s-3); }
 	.tiers tbody th[scope="row"] { min-width: 13rem; }
 }
+
+/* --- Event scenes: the stand-in for events without a photo -------------- */
+/* Pulled slightly back in saturation so a scene sits beside real event
+   banners without competing with them. The time pill already has its own
+   dark backing, so the card needs no extra overlay. */
+.wkrow__scene { filter: saturate(.88); }
+
+.evart--scene { display: block; }
+.evart--scene .evart__scene {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  filter: saturate(.88);
+}
+/* A floor of shade under the label, not a wash over the whole picture. */
+.evart--scene::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(6, 26, 25, .62), rgba(6, 26, 25, 0) 55%);
+}
+.evart--scene .evart__label {
+  position: absolute; left: var(--s-5); bottom: var(--s-4); z-index: 1;
+  color: var(--white);
+}

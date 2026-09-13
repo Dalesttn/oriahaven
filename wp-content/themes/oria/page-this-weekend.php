@@ -127,7 +127,7 @@ $oria_row = static function ( \WP_Post $oria_ev, int $oria_ts, bool $oria_with_d
 			<?php if ( has_post_thumbnail( $oria_ev ) ) : ?>
 				<?php echo get_the_post_thumbnail( $oria_ev, 'thumbnail', array( 'loading' => 'lazy', 'alt' => '' ) ); ?>
 			<?php else : ?>
-				<i><?php echo esc_html( $oria_mark ); ?></i>
+				<img class="wkrow__scene" src="<?php echo esc_url( \Oria\Theme\event_scene( $oria_ev->ID ) ); ?>" alt="" loading="lazy" decoding="async">
 			<?php endif; ?>
 		</span>
 		<time class="wkrow__time"><?php echo esc_html( $oria_when ); ?></time>

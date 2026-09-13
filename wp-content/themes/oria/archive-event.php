@@ -205,7 +205,7 @@ $oria_row = static function ( array $r ): void {
 				echo get_the_post_thumbnail( $oria_ev, 'medium_large', array( 'loading' => 'lazy', 'alt' => '' ) );
 				?>
 			<?php else : ?>
-				<i><?php echo esc_html( \Oria\Theme\event_mark( $oria_ev->ID ) ); ?></i>
+				<img class="wkrow__scene" src="<?php echo esc_url( \Oria\Theme\event_scene( $oria_ev->ID ) ); ?>" alt="" loading="lazy" decoding="async">
 			<?php endif; ?>
 			<time class="wkrow__time"><?php echo esc_html( $oria_t ); ?></time>
 		</span>

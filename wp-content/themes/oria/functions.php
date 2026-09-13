@@ -1855,6 +1855,68 @@ function event_mark( int $event_id ): string {
 	}
 	return $term && isset( $marks[ $term->slug ] ) ? $marks[ $term->slug ] : '◦';
 }
+/**
+ * A photograph to stand in for an event that has none of its own.
+ *
+ * Aggregated finds and member events awaiting an upload used to show an emoji
+ * over a dark gradient, or a bare "◦" when the event had no type -- the cards
+ * in the week strip looked broken next to the ones with a real banner. These
+ * are the same calm scenes the listing cards already use, so an untyped event
+ * reads as part of the site rather than a gap in it.
+ *
+ * Each type gets a small set rather than one picture, chosen by post ID, so a
+ * week of five meditation classes is not five copies of the same photograph.
+ * The Perth skyline is left out: a night shot promises an evening event.
+ */
+function event_scene( int $event_id ): string {
+	$by_type = array(
+		'yoga'                 => array( 'scene-studio', 'scene-coast' ),
+		'fitness'              => array( 'scene-studio', 'scene-hills' ),
+		'meditation'           => array( 'scene-hall', 'scene-still-water', 'scene-dawn-ridge' ),
+		'mindfulness'          => array( 'scene-dawn-ridge', 'scene-coast', 'scene-scrub' ),
+		'breathwork'           => array( 'scene-swan-bend', 'scene-scrub', 'scene-dawn-ridge' ),
+		'sound-healing'        => array( 'scene-room', 'scene-hall' ),
+		'sound'                => array( 'scene-room', 'scene-hall' ),
+		'relaxation'           => array( 'scene-room', 'scene-garden' ),
+		'sauna'                => array( 'scene-room' ),
+		'spa'                  => array( 'scene-room' ),
+		'recovery'             => array( 'scene-room', 'scene-still-water' ),
+		'cold-plunge'          => array( 'scene-still-water' ),
+		'beaches-swims'        => array( 'scene-still-water' ),
+		'retreat'              => array( 'scene-canopy', 'scene-hills' ),
+		'retreats'             => array( 'scene-canopy', 'scene-hills' ),
+		'experiences'          => array( 'scene-hills', 'scene-canopy' ),
+		'nature'               => array( 'scene-canopy', 'scene-hills' ),
+		'walks-lookouts'       => array( 'scene-canopy', 'scene-hills' ),
+		'womens-circle'        => array( 'scene-hills', 'scene-dusk-ridge' ),
+		'mens-group'           => array( 'scene-garden', 'scene-dusk-ridge' ),
+		'community'            => array( 'scene-dusk-ridge', 'scene-hills' ),
+		'family'               => array( 'scene-dusk-ridge', 'scene-hills' ),
+		'seniors'              => array( 'scene-garden', 'scene-dusk-ridge' ),
+		'wellness-workshop'    => array( 'scene-hall', 'scene-coast' ),
+		'creative'             => array( 'scene-hall', 'scene-coast' ),
+		'personal-development' => array( 'scene-scrub', 'scene-swan-bend' ),
+		'mind'                 => array( 'scene-coast', 'scene-swan-bend' ),
+		'spiritual'            => array( 'scene-dawn-ridge', 'scene-still-water' ),
+		'energy'               => array( 'scene-dawn-ridge', 'scene-still-water' ),
+		'nutrition'            => array( 'scene-garden', 'scene-coast' ),
+	);
+
+	// Untyped: a neutral scene, still varied by ID.
+	$pick = array( 'scene-coast', 'scene-dawn-ridge', 'scene-still-water', 'scene-hills', 'scene-canopy' );
+	foreach ( array( 'event_type', 'practice' ) as $tax ) {
+		$slugs = wp_get_post_terms( $event_id, $tax, array( 'fields' => 'slugs' ) );
+		foreach ( is_wp_error( $slugs ) ? array() : $slugs as $slug ) {
+			if ( isset( $by_type[ $slug ] ) ) {
+				$pick = $by_type[ $slug ];
+				break 2;
+			}
+		}
+	}
+
+	$scene = $pick[ $event_id % count( $pick ) ];
+	return get_template_directory_uri() . "/assets/img/{$scene}.webp";
+}
 
 /** The arrow-in-a-dot SVG every button uses. */
 function arrow(): string {
