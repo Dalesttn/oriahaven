@@ -1,0 +1,152 @@
+{
+ "pages": [
+  {
+   "slug": "claim",
+   "sections": [
+    {
+     "layout": "page_head",
+     "match": "Claim your listing. It stays free.",
+     "set": {
+      "heading": "Claiming your listing is free.",
+      "lede": "We've written profiles for practices across Perth and Margaret River from public information. Claim yours at no cost, keep your details current and receive the enquiries."
+     }
+    },
+    {
+     "layout": "steps_split",
+     "match": "Four steps, four minutes.",
+     "rows": {
+      "steps": {
+       "3": {
+        "title": "Keep your details right",
+        "text": "Update your address, phone, website and prices on the free plan. The Claimed plan opens up the description, timetable, photos and booking link."
+       },
+       "4": {
+        "title": "Receive the enquiries",
+        "text": "Enquiries come straight to your inbox. The Claimed plan also shows how many people viewed your profile, called, or clicked through to your site."
+       }
+      }
+     }
+    },
+    {
+     "layout": "pricing",
+     "match": "Free to be listed. Paid to make it yours.",
+     "set": {
+      "heading": "Claiming is free. The paid plans add what you can do with it.",
+      "sub": "Every practice gets a free listing, written and checked by us. Claim it at no cost to keep your details current and receive enquiries. The Claimed and Featured plans add editing, photos, analytics and reach. Cancel any time — your listing returns to the free plan with everything you added kept."
+     },
+     "rows": {
+      "tiers": {
+       "1": {
+        "tier_label": "Free",
+        "amount": "$0",
+        "suffix": "/ forever",
+        "blurb": "Written and checked by us. Claim it at no cost.",
+        "features": "Profile written and checked by us\nClaim it and keep your address, phone and prices current\nEnquiries straight to your inbox\nGoogle rating and reviews\nFound in every search and category page\nOne practitioner profile",
+        "cta_label": "Find your listing",
+        "cta_url": "/directory/",
+        "style": "default"
+       },
+       "2": {
+        "tier_label": "Claimed plan",
+        "amount": "$29",
+        "suffix": "/ month",
+        "blurb": "Everything free, plus full control of your profile.",
+        "features": "Edit every field yourself\nBooking link, timetable and packages\nUp to 4 gallery photos\nYour email shown on your profile\nSpecial offers on your profile and cards\nOpening hours and social links\nPerformance analytics\nVerified badge and date",
+        "cta_label": "Start your claim",
+        "cta_url": "#claimform",
+        "style": "now"
+       },
+       "3": {
+        "tier_label": "Featured plan",
+        "amount": "$79",
+        "suffix": "/ month",
+        "blurb": "Grow with the directory.",
+        "features": "Everything in the Claimed plan\nRun workshops & events — photos and booking links\nUnlimited gallery photos\nGold Featured badge\nPriority placement in directory and categories\nFeatured spots on the home and workshops pages",
+        "cta_label": "Claim, then upgrade",
+        "cta_url": "#claimform",
+        "style": "default"
+       }
+      }
+     }
+    },
+    {
+     "layout": "faq",
+     "match": "Before you ask.",
+     "rows": {
+      "items": {
+       "2": {
+        "answer": "No. The free listing stays free, and so does claiming it. The paid plans are optional and add editing, photos, analytics and placement on top."
+       }
+      }
+     },
+     "add_rows": {
+      "items": [
+       {
+        "question": "Does claiming my listing cost anything?",
+        "answer": "No. Claiming is free and always will be. A claimed listing on the free plan lets you keep your address, phone, website and prices current and receive enquiries. The Claimed plan, $29 a month, is optional and adds full editing, photos and analytics."
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "slug": "about",
+   "sections": [
+    {
+     "layout": "page_head",
+     "match": "A directory built the slow way.",
+     "set": {
+      "lede": "Oria Haven is an independent guide to meditation and wellness practice in Perth and Margaret River. No franchise, no aggregator, no scraped content."
+     }
+    },
+    {
+     "layout": "prose",
+     "set": {
+      "content": "<p>This started with a genuinely annoying evening. Trying to find a beginners’ meditation class in Perth meant six tabs, three studios that had closed, two timetables from 2019 and a directory whose top result was a physiotherapist in Adelaide.</p>\n<p>Perth has a real practice community — small, mostly sole traders, largely word of mouth. What it didn’t have was one honest place to find them. So we built one: every listing written by a person, every detail checked, and paid placement labelled as paid placement.</p>\n<p>Today Oria Haven lists more than 400 practices across Perth and Margaret River, from saunas and massage to breathwork, yoga and community groups, alongside a calendar of workshops and events.</p>\n<p>It’s run by Dale. If something on a listing is wrong, or you’d like yours removed, write to <a href=\"mailto:hello@oriahaven.com.au\">hello@oriahaven.com.au</a>.</p>\n"
+     }
+    },
+    {
+     "layout": "roadmap",
+     "match": "Where we're up to",
+     "rows": {
+      "phases": {
+       "1": {
+        "title": "The directory",
+        "text": "More than 400 checked listings across Perth and Margaret River, in every category.",
+        "current": false
+       },
+       "2": {
+        "title": "Events and matching",
+        "text": "A calendar of workshops and events, updated daily, and matching that introduces you to up to three practices.",
+        "current": false
+       },
+       "3": {
+        "title": "Opening claims",
+        "text": "Practitioners are taking over their profiles now. Claiming is free.",
+        "current": true
+       },
+       "4": {
+        "title": "More ways to be found",
+        "text": "Paid Claimed and Featured plans are live. Next: more Featured placements as the traffic grows.",
+        "current": false
+       }
+      }
+     }
+    },
+    {
+     "layout": "card_grid",
+     "match": "Before a listing goes live",
+     "rows": {
+      "cards": {
+       "2": {
+        "title": "The location is right",
+        "text": "Suburb confirmed, and the street address wherever the practice publishes one — not just “Perth”."
+       }
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

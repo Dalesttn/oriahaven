@@ -371,8 +371,8 @@ class Command {
 			array(
 				'acf_fc_layout' => 'page_head',
 				'eyebrow'       => 'For practitioners',
-				'heading'       => 'Claim your listing. It stays free.',
-				'lede'          => "We've written profiles for practices across Perth from public information. Take yours over, fix what we got wrong, and keep the enquiries.",
+				'heading'       => "Claiming your listing is free.",
+				'lede'          => "We've written profiles for practices across Perth and Margaret River from public information. Claim yours at no cost, keep your details current and receive the enquiries.",
 			),
 			array(
 				'acf_fc_layout' => 'steps_split',
@@ -382,8 +382,8 @@ class Command {
 				'steps'         => array(
 					array( 'title' => 'Find your profile', 'text' => 'Search your business name in the directory. Unclaimed profiles carry a grey badge.' ),
 					array( 'title' => "Verify it's you", 'text' => 'We email the address published on your own website, or call the number on your Google Business Profile.' ),
-					array( 'title' => 'Fix anything we got wrong', 'text' => 'Description, timetable, prices, photos, booking link. Edits are reviewed the same working day.' ),
-					array( 'title' => 'Watch the enquiries', 'text' => 'Every enquiry, phone tap and click through to your site is counted.' ),
+					array( 'title' => "Keep your details right", 'text' => "Update your address, phone, website and prices on the free plan. The Claimed plan opens up the description, timetable, photos and booking link." ),
+					array( 'title' => "Receive the enquiries", 'text' => "Enquiries come straight to your inbox. The Claimed plan also shows how many people viewed your profile, called, or clicked through to your site." ),
 				),
 			),
 			array(
@@ -396,12 +396,12 @@ class Command {
 				'acf_fc_layout' => 'pricing',
 				'background'    => 'sand',
 				'eyebrow'       => 'What it costs',
-				'heading'       => 'Free to be listed. Paid to make it yours.',
-				'sub'           => 'Every practice gets a full free listing, built from public information. Claiming unlocks control; Featured grows your reach. Cancel any time — the listing simply returns to its free form.',
+				'heading'       => "Claiming is free. The paid plans add what you can do with it.",
+				'sub'           => "Every practice gets a free listing, written and checked by us. Claim it at no cost to keep your details current and receive enquiries. The Claimed and Featured plans add editing, photos, analytics and reach. Cancel any time — your listing returns to the free plan with everything you added kept.",
 				'tiers'         => array(
-					array( 'tier_label' => 'Free listing', 'amount' => '$0', 'suffix' => '/ forever', 'blurb' => 'Built and maintained by us.', 'features' => "Full profile with services and timetable\nGoogle rating and reviews\nFound in every search and category page\nCorrections fixed within a day", 'cta_label' => 'Find your listing', 'cta_url' => '/directory/', 'style' => 'default' ),
-					array( 'tier_label' => 'Claimed', 'amount' => '$29', 'suffix' => '/ month', 'blurb' => 'Own your profile.', 'features' => "Edit every detail yourself\nVerified badge and date\nUp to 4 gallery photos\nSpecial offers on your profile and cards\nOpening hours and social links\nPerformance analytics", 'cta_label' => 'Claim your listing', 'cta_url' => '#claimform', 'style' => 'now' ),
-					array( 'tier_label' => 'Featured', 'amount' => '$79', 'suffix' => '/ month', 'blurb' => 'Grow with the directory.', 'features' => "Everything in Claimed\nRun workshops & events — photos and booking links\nUnlimited gallery photos\nGold Featured badge\nPriority placement in directory and categories\nFeatured spots on the home and workshops pages", 'cta_label' => 'Claim, then upgrade', 'cta_url' => '#claimform', 'style' => 'default' ),
+					array( 'tier_label' => "Free", 'amount' => "\$0", 'suffix' => "/ forever", 'blurb' => "Written and checked by us. Claim it at no cost.", 'features' => "Profile written and checked by us\nClaim it and keep your address, phone and prices current\nEnquiries straight to your inbox\nGoogle rating and reviews\nFound in every search and category page\nOne practitioner profile", 'cta_label' => "Find your listing", 'cta_url' => "/directory/", 'style' => "default" ),
+					array( 'tier_label' => "Claimed plan", 'amount' => "\$29", 'suffix' => "/ month", 'blurb' => "Everything free, plus full control of your profile.", 'features' => "Edit every field yourself\nBooking link, timetable and packages\nUp to 4 gallery photos\nYour email shown on your profile\nSpecial offers on your profile and cards\nOpening hours and social links\nPerformance analytics\nVerified badge and date", 'cta_label' => "Start your claim", 'cta_url' => "#claimform", 'style' => "now" ),
+					array( 'tier_label' => "Featured plan", 'amount' => "\$79", 'suffix' => "/ month", 'blurb' => "Grow with the directory.", 'features' => "Everything in the Claimed plan\nRun workshops & events — photos and booking links\nUnlimited gallery photos\nGold Featured badge\nPriority placement in directory and categories\nFeatured spots on the home and workshops pages", 'cta_label' => "Claim, then upgrade", 'cta_url' => "#claimform", 'style' => "default" ),
 				),
 			),
 			array(
@@ -423,7 +423,8 @@ class Command {
 				'heading'       => 'Before you ask.',
 				'items'         => array(
 					array( 'question' => 'Why is my practice listed without me agreeing to it?', 'answer' => "Because a directory with nothing in it helps nobody. We build listings from information you've already made public, write an original description, and mark it unclaimed until you take it over. One email removes it the same day." ),
-					array( 'question' => 'Will you ever charge for the free listing?', 'answer' => 'No. The free listing stays free. Paid tiers only ever add placement and presentation on top.' ),
+					array( 'question' => 'Will you ever charge for the free listing?', 'answer' => "No. The free listing stays free, and so does claiming it. The paid plans are optional and add editing, photos, analytics and placement on top." ),
+					array( 'question' => "Does claiming my listing cost anything?", 'answer' => "No. Claiming is free and always will be. A claimed listing on the free plan lets you keep your address, phone, website and prices current and receive enquiries. The Claimed plan, \$29 a month, is optional and adds full editing, photos and analytics." ),
 					array( 'question' => 'Do you take a cut of bookings?', 'answer' => 'No. We link out to your own booking system and take nothing.' ),
 				),
 			),
@@ -436,20 +437,20 @@ class Command {
 				'acf_fc_layout' => 'page_head',
 				'eyebrow'       => 'About',
 				'heading'       => 'A directory built the slow way.',
-				'lede'          => 'Oria Haven is an independent guide to meditation and wellness practice in Perth. No franchise, no aggregator, no scraped content.',
+				'lede'          => "Oria Haven is an independent guide to meditation and wellness practice in Perth and Margaret River. No franchise, no aggregator, no scraped content.",
 			),
 			array(
 				'acf_fc_layout' => 'prose',
-				'content'       => "<p>This started with a genuinely annoying evening. Trying to find a beginners' meditation class in Perth meant six tabs, three studios that had closed, two timetables from 2019 and a directory whose top result was a physiotherapist in Adelaide.</p><p>Perth has a real practice community — small, mostly sole traders, largely word of mouth. What it doesn't have is one honest place to find them. So we're building one: every listing written by a person, every detail checked, and the paid placement labelled as paid placement.</p>",
+				'content'       => "<p>This started with a genuinely annoying evening. Trying to find a beginners’ meditation class in Perth meant six tabs, three studios that had closed, two timetables from 2019 and a directory whose top result was a physiotherapist in Adelaide.</p>\n<p>Perth has a real practice community — small, mostly sole traders, largely word of mouth. What it didn’t have was one honest place to find them. So we built one: every listing written by a person, every detail checked, and paid placement labelled as paid placement.</p>\n<p>Today Oria Haven lists more than 400 practices across Perth and Margaret River, from saunas and massage to breathwork, yoga and community groups, alongside a calendar of workshops and events.</p>\n<p>It’s run by Dale. If something on a listing is wrong, or you’d like yours removed, write to <a href=\"mailto:hello@oriahaven.com.au\">hello@oriahaven.com.au</a>.</p>\n",
 			),
 			array(
 				'acf_fc_layout' => 'roadmap',
 				'heading'       => "Where we're up to",
 				'phases'        => array(
-					array( 'title' => 'Seeding the directory', 'text' => 'Building 80–150 checked listings across every category and region.', 'current' => 1 ),
-					array( 'title' => 'Opening claims', 'text' => 'Inviting practitioners to take over their profiles, free.', 'current' => 0 ),
-					array( 'title' => 'Featured listings', 'text' => 'Optional paid placement, once we can show the traffic that justifies it.', 'current' => 0 ),
-					array( 'title' => 'Events and matching', 'text' => 'A proper events calendar, then "get matched" enquiries.', 'current' => 0 ),
+					array( 'title' => "The directory", 'text' => "More than 400 checked listings across Perth and Margaret River, in every category.", 'current' => 0 ),
+					array( 'title' => "Events and matching", 'text' => "A calendar of workshops and events, updated daily, and matching that introduces you to up to three practices.", 'current' => 0 ),
+					array( 'title' => "Opening claims", 'text' => "Practitioners are taking over their profiles now. Claiming is free.", 'current' => 1 ),
+					array( 'title' => "More ways to be found", 'text' => "Paid Claimed and Featured plans are live. Next: more Featured placements as the traffic grows.", 'current' => 0 ),
 				),
 			),
 			array(
@@ -459,7 +460,7 @@ class Command {
 				'heading'       => 'Before a listing goes live',
 				'cards'         => array(
 					array( 'title' => 'The practice still exists', 'text' => 'Trading in the last three months, with a working phone or email.' ),
-					array( 'title' => 'The address is right', 'text' => 'Street address and suburb confirmed, not just "Perth".' ),
+					array( 'title' => "The location is right", 'text' => "Suburb confirmed, and the street address wherever the practice publishes one — not just “Perth”." ),
 					array( 'title' => 'The timetable is current', 'text' => "Days and times taken from the practitioner's own source, with the date we checked." ),
 					array( 'title' => 'The price is stated', 'text' => 'A real number, or "free", or "by donation".' ),
 					array( 'title' => 'The description is ours', 'text' => 'Written here, in our words.' ),
