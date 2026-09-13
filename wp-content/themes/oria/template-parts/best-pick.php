@@ -36,6 +36,10 @@ $oria_rate = \Oria\Theme\effective_rating( $oria_id );
 			onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_id ) ); ?>'">
 	</a>
 	<div class="bopick__body">
+		<?php $oria_seal = BestOf\seal_url( $oria_e['award'] ); ?>
+		<?php if ( $oria_seal ) : ?>
+			<img class="bopick__seal" src="<?php echo esc_url( $oria_seal ); ?>" alt="" width="320" height="320" loading="lazy">
+		<?php endif; ?>
 		<div class="bopick__top">
 			<?php if ( $oria_rank ) : ?>
 				<span class="bopick__rank" aria-hidden="true"><?php echo esc_html( str_pad( (string) $oria_rank, 2, '0', STR_PAD_LEFT ) ); ?></span>

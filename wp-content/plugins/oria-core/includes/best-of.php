@@ -310,6 +310,17 @@ function badge_html( string $label, string $url = '', string $extra_class = '' )
 	return '<a class="' . esc_attr( $class ) . '" href="' . esc_url( $url ) . '" title="' . esc_attr__( 'See the Best Of guide this comes from', 'oria' ) . '">' . $inner . '</a>';
 }
 
+/**
+ * The award's seal: the emblem in the theme's assets/img/badges, one per
+ * award slug. An override label still shows its base award's seal.
+ * 'webp' for the page, 'png' (1000px) for a practice to download.
+ */
+function seal_url( string $award, string $ext = 'webp' ): string {
+	$award = isset( AWARDS[ $award ] ) ? $award : 'oria_pick';
+	$rel   = "assets/img/badges/{$award}.{$ext}";
+	return file_exists( get_template_directory() . '/' . $rel ) ? get_template_directory_uri() . '/' . $rel : '';
+}
+
 /** Every badge a listing holds, linked to its guide -- for the profile. */
 function badges_html( int $listing ): string {
 	$out = '';

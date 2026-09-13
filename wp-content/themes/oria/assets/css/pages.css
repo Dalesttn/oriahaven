@@ -6082,3 +6082,24 @@ article.is-spotlit {
 @media (max-width: 600px) {
   .bogrid--3 { grid-template-columns: 1fr; }
 }
+
+/* --- Best Of seals ------------------------------------------------------
+   The award as an emblem, beside the words. Small on a pick, larger on a
+   profile; the PNG behind the download link is the same seal at 1000px for
+   a practice to put on its own site. */
+.bopick__body { position: relative; }
+.bopick__seal {
+  position: absolute; top: 0; right: 0;
+  width: clamp(64px, 8vw, 88px); height: auto;
+}
+.bopick__top, .bopick__name { padding-right: clamp(72px, 9vw, 100px); }
+.bofeatin__item { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: var(--s-4); align-items: start; }
+.bofeatin__seal { width: 96px; height: 96px; }
+.bofeatin__get { display: inline-block; margin-top: var(--s-2); font-size: var(--fs-xs); color: var(--text-faint); text-decoration: underline; text-underline-offset: 3px; }
+.bofeatin__get:hover { color: var(--ink); }
+@media (max-width: 600px) {
+  .bopick__seal { width: 56px; }
+  .bopick__top, .bopick__name { padding-right: 64px; }
+  .bofeatin__item { grid-template-columns: 64px minmax(0, 1fr); }
+  .bofeatin__seal { width: 64px; height: 64px; }
+}

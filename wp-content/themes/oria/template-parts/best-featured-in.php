@@ -24,14 +24,30 @@ if ( ! $oria_in ) {
 	<h2 class="h3 bofeatin__title"><?php echo esc_html( _n( 'This practice appears in our Best Of guide', 'This practice appears in our Best Of guides', count( $oria_in ), 'oria' ) ); ?></h2>
 	<ul class="bofeatin__list">
 		<?php foreach ( $oria_in as $oria_row ) : ?>
+			<?php $oria_seal = BestOf\seal_url( $oria_row['award'] ); ?>
 			<li class="bofeatin__item">
-				<div class="bofeatin__head">
-					<?php echo BestOf\badge_html( $oria_row['label'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
-					<a class="bofeatin__guide" href="<?php echo esc_url( (string) get_permalink( $oria_row['guide'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_row['guide'] ) ) ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
-				</div>
-				<?php if ( $oria_row['reason'] ) : ?>
-					<p class="bofeatin__why"><span><?php esc_html_e( 'Why we selected it:', 'oria' ); ?></span> <?php echo esc_html( $oria_row['reason'] ); ?></p>
+				<?php if ( $oria_seal ) : ?>
+					<img class="bofeatin__seal" src="<?php echo esc_url( $oria_seal ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: award label */ __( 'Oria Haven Best of Perth seal: %s', 'oria' ), $oria_row['label'] ) ); ?>" width="320" height="320" loading="lazy">
 				<?php endif; ?>
+				<div>
+					<div class="bofeatin__head">
+						<?php echo BestOf\badge_html( $oria_row['label'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+						<a class="bofeatin__guide" href="<?php echo esc_url( (string) get_permalink( $oria_row['guide'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_row['guide'] ) ) ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
+					</div>
+					<?php if ( $oria_row['reason'] ) : ?>
+						<p class="bofeatin__why"><span><?php esc_html_e( 'Why we selected it:', 'oria' ); ?></span> <?php echo esc_html( $oria_row['reason'] ); ?></p>
+					<?php endif; ?>
+					<?php
+					/*
+					 * The seal is the practice's to use. A practice that puts
+					 * it on its own site tends to link the guide it came from,
+					 * which is the one kind of link this directory cannot buy.
+					 */
+					?>
+					<?php if ( BestOf\seal_url( $oria_row['award'], 'png' ) ) : ?>
+						<a class="bofeatin__get" href="<?php echo esc_url( BestOf\seal_url( $oria_row['award'], 'png' ) ); ?>" download><?php esc_html_e( 'Run this practice? Download the seal for your website', 'oria' ); ?></a>
+					<?php endif; ?>
+				</div>
 			</li>
 		<?php endforeach; ?>
 	</ul>
