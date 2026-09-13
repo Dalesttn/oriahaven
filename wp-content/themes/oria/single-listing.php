@@ -217,6 +217,11 @@ while ( have_posts() ) :
 								<?php if ( 'unclaimed' !== $oria_status ) : ?>
 									<span class="verified" title="<?php echo esc_attr( $oria_verified ? sprintf( __( 'Details verified by the owner on %s', 'oria' ), mysql2date( 'j F Y', $oria_verified ) ) : __( 'Details verified by the owner', 'oria' ) ); ?>"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="verified__seal" d="M12 1.7l2.4 1.8 2.9-.5 1.1 2.8 2.8 1.1-.5 2.9L22.5 12l-1.8 2.4.5 2.9-2.8 1.1-1.1 2.8-2.9-.5L12 22.3l-2.4-1.8-2.9.5-1.1-2.8-2.8-1.1.5-2.9L1.5 12l1.8-2.4-.5-2.9 2.8-1.1 1.1-2.8 2.9.5z"/><path class="verified__tick" d="M8.3 12.2l2.4 2.4 4.9-5"/></svg><?php esc_html_e( 'Verified', 'oria' ); ?></span>
 								<?php endif; ?>
+								<?php
+								// Best Of awards, each linked to its guide. Editorial, so a
+								// different shape from the Featured/Claimed pair beside them.
+								echo \Oria\Core\BestOf\badges_html( $oria_id ); // phpcs:ignore WordPress.Security.EscapeOutput
+								?>
 							</div>
 							<h1 class="h1"><?php the_title(); ?></h1>
 
@@ -700,6 +705,10 @@ while ( have_posts() ) :
 						<?php echo $oria_body ? wp_kses_post( $oria_body ) : '<p>' . esc_html( get_the_excerpt() ) . '</p>'; // phpcs:ignore ?>
 					</div>
 				</div>
+
+				<!-- Featured by Oria Haven: the Best Of guides that picked this
+				     practice, and why. Renders nothing for a listing in none. -->
+				<?php get_template_part( 'template-parts/best-featured-in', null, array( 'listing_id' => $oria_id ) ); ?>
 
 				<!-- What they're good at: the good_for field, in its own section.
 				     Renders nothing when empty — most listings haven't been asked

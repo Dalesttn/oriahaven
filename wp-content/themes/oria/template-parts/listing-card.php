@@ -94,6 +94,17 @@ $oria_badges = array(
 				<?php endforeach; ?>
 			</div>
 		<?php endif; ?>
+		<?php
+		/*
+		 * One editorial badge at most, linked to the guide that awarded it.
+		 * Read from the Best Of guides, never stored here -- see BestOf\index().
+		 * Mirrors the `best` branch in app.js card().
+		 */
+		$oria_best = function_exists( '\Oria\Core\BestOf\card_badge' ) ? \Oria\Core\BestOf\card_badge( $oria_id ) : null;
+		?>
+		<?php if ( $oria_best ) : ?>
+			<div class="listing__best"><?php echo \Oria\Core\BestOf\badge_html( $oria_best['label'], $oria_best['url'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+		<?php endif; ?>
 		<div class="listing__head">
 			<div>
 				<h3 class="listing__name"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>

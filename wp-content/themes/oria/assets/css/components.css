@@ -1300,3 +1300,18 @@ html.has-sheet .cmptray { display: none; }
   line-height: 1.5;
   color: var(--ink);
 }
+
+/* Editorial badge: a Best Of award. Deliberately not the Featured family --
+   sentence case on sand with a gold mark, where Featured is paid and sits
+   uppercase on deep green. A reader must never take one for the other. */
+.badge--best {
+  background: var(--sand-2); color: var(--deep);
+  border: 1px solid rgba(14, 59, 56, .14);
+  text-transform: none; letter-spacing: 0;
+  font-size: var(--fs-xs); font-weight: 600;
+  padding: .3rem .62rem .3rem .5rem; gap: 5px;
+  text-decoration: none;
+}
+.badge--best__mark { color: var(--brand-gold); font-size: .9em; line-height: 1; }
+a.badge--best:hover { border-color: var(--deep); background: var(--white); color: var(--deep); }
+.listing__best { display: flex; }

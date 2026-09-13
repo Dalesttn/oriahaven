@@ -1,6 +1,6 @@
 <?php
 /**
- * Post types: listing and event.
+ * Post types: listing, event and Best Of guide.
  */
 
 declare(strict_types=1);
@@ -13,10 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const LISTING = 'listing';
 const EVENT   = 'event';
+const BEST_OF = 'best_of';
 
 function register(): void {
 	register_listing();
 	register_event();
+	register_best_of();
 }
 
 /**
@@ -119,6 +121,52 @@ function register_event(): void {
 			),
 			'show_in_rest'  => true,
 			'rest_base'     => 'events',
+		)
+	);
+}
+
+/**
+ * A Best Of guide: an editor's curated shortlist of listings for one need --
+ * "Best yoga for beginners in Perth", "Best saunas in Perth".
+ *
+ * Its own type rather than a journal post because it is a list, not an
+ * article: the picks live in structured fields that also drive the badges
+ * on the chosen listings, and the hub at /best/ is built from them. Standard
+ * post capabilities, which keeps it to editors -- the Member role carries
+ * only `read`, so a practitioner cannot award themselves a badge.
+ */
+function register_best_of(): void {
+	register_post_type(
+		BEST_OF,
+		array(
+			'labels'        => array(
+				'name'               => __( 'Best Of guides', 'oria' ),
+				'singular_name'      => __( 'Best Of guide', 'oria' ),
+				'menu_name'          => __( 'Best Of', 'oria' ),
+				'add_new'            => __( 'Add guide', 'oria' ),
+				'add_new_item'       => __( 'Add Best Of guide', 'oria' ),
+				'edit_item'          => __( 'Edit Best Of guide', 'oria' ),
+				'view_item'          => __( 'View guide', 'oria' ),
+				'search_items'       => __( 'Search guides', 'oria' ),
+				'not_found'          => __( 'No guides yet', 'oria' ),
+				'not_found_in_trash' => __( 'No guides in the bin', 'oria' ),
+				'featured_image'     => __( 'Cover image', 'oria' ),
+				'archives'           => __( 'Best Of', 'oria' ),
+			),
+			'public'        => true,
+			'menu_position' => 22,
+			'menu_icon'     => 'dashicons-awards',
+			// No editor: the intro, picks and methodology are ACF fields, and
+			// the excerpt is the card text. Free prose would only compete.
+			'supports'      => array( 'title', 'excerpt', 'thumbnail', 'revisions' ),
+			// The hub is the archive; single guides sit directly beneath it.
+			'has_archive'   => 'best',
+			'rewrite'       => array(
+				'slug'       => 'best',
+				'with_front' => false,
+			),
+			'show_in_rest'  => true,
+			'rest_base'     => 'best-of',
 		)
 	);
 }

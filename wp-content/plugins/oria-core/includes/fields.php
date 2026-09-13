@@ -22,6 +22,7 @@ function bootstrap(): void {
 	add_action( 'acf/init', __NAMESPACE__ . '\register_event_fields' );
 	add_action( 'acf/init', __NAMESPACE__ . '\register_journal_fields' );
 	add_action( 'acf/init', __NAMESPACE__ . '\register_author_fields' );
+	add_action( 'acf/init', __NAMESPACE__ . '\register_best_of_fields' );
 }
 
 function json_path( string $path ): string {
@@ -1134,6 +1135,253 @@ function register_author_fields(): void {
 					'return_format' => 'id',
 					'preview_size'  => 'thumbnail',
 					'instructions'  => 'A square photo works best. Without one, articles show your initials instead.',
+				),
+			),
+		)
+	);
+}
+
+/**
+ * A Best Of guide: intro, category, the picks, how they were chosen.
+ *
+ * The picks repeater is the only place a badge is ever recorded. Its rows are
+ * dragged into order -- that IS the ranking -- and BestOf\entries() reads
+ * them in that order, so there is no rank number to fall out of step.
+ */
+function register_best_of_fields(): void {
+	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+		return;
+	}
+
+	acf_add_local_field_group(
+		array(
+			'key'      => 'group_oria_best_of',
+			'title'    => 'Best Of guide',
+			'location' => array(
+				array(
+					array(
+						'param'    => 'post_type',
+						'operator' => '==',
+						'value'    => \Oria\Core\PostTypes\BEST_OF,
+					),
+				),
+			),
+			'position' => 'normal',
+			'fields'   => array(
+				array(
+					'key'   => 'field_oria_bo_tab_guide',
+					'label' => 'Guide',
+					'type'  => 'tab',
+				),
+				array(
+					'key'          => 'field_oria_bo_intro',
+					'name'         => 'guide_intro',
+					'label'        => 'Introduction',
+					'type'         => 'textarea',
+					'rows'         => 4,
+					'new_lines'    => '',
+					'instructions' => 'Two or three sentences under the title: who this guide is for and what it narrows down. The Excerpt (right-hand column) is the shorter text used on cards.',
+				),
+				array(
+					'key'           => 'field_oria_bo_category',
+					'name'          => 'guide_category',
+					'label'         => 'Guide category',
+					'type'          => 'select',
+					'choices'       => \Oria\Core\BestOf\CATEGORIES,
+					'default_value' => 'beginners',
+					'return_format' => 'value',
+					'instructions'  => 'Groups the guide on the /best/ hub and picks its "You might also like" neighbours.',
+					'wrapper'       => array( 'width' => '40' ),
+				),
+				array(
+					'key'           => 'field_oria_bo_practice',
+					'name'          => 'guide_practice',
+					'label'         => 'Directory category',
+					'type'          => 'taxonomy',
+					'taxonomy'      => 'practice',
+					'field_type'    => 'select',
+					'allow_null'    => 1,
+					'return_format' => 'id',
+					'add_term'      => false,
+					'save_terms'    => false,
+					'load_terms'    => false,
+					'instructions'  => 'The category these picks come from, e.g. Yoga. Adds an "Explore all yoga in Perth" link to the guide.',
+					'wrapper'       => array( 'width' => '40' ),
+				),
+				array(
+					'key'          => 'field_oria_bo_featured',
+					'name'         => 'featured_guide',
+					'label'        => 'Feature on the hub',
+					'type'         => 'true_false',
+					'ui'           => 1,
+					'instructions' => 'Large card at the top of /best/.',
+					'wrapper'      => array( 'width' => '20' ),
+				),
+
+				array(
+					'key'   => 'field_oria_bo_tab_picks',
+					'label' => 'Picks',
+					'type'  => 'tab',
+				),
+				array(
+					'key'          => 'field_oria_bo_entries',
+					'name'         => 'best_of_entries',
+					'label'        => 'Recommended practices',
+					'type'         => 'repeater',
+					'button_label' => 'Add a pick',
+					'layout'       => 'block',
+					'collapsed'    => 'field_oria_bo_entry_listing',
+					'instructions' => 'Drag rows to order them; the first row is your top pick. Each pick gives the practice a badge on its profile and cards, linked back to this guide, for as long as it stays in the list.',
+					'sub_fields'   => array(
+						array(
+							'key'           => 'field_oria_bo_entry_listing',
+							'name'          => 'listing',
+							'label'         => 'Practice',
+							'type'          => 'post_object',
+							'post_type'     => array( 'listing' ),
+							'post_status'   => array( 'publish' ),
+							'return_format' => 'id',
+							'ui'            => 1,
+							'required'      => 1,
+							'wrapper'       => array( 'width' => '40' ),
+						),
+						array(
+							'key'           => 'field_oria_bo_entry_award',
+							'name'          => 'award',
+							'label'         => 'Award',
+							'type'          => 'select',
+							'choices'       => \Oria\Core\BestOf\AWARDS,
+							'default_value' => 'best_for_beginners',
+							'return_format' => 'value',
+							'wrapper'       => array( 'width' => '30' ),
+						),
+						array(
+							'key'          => 'field_oria_bo_entry_label',
+							'name'         => 'award_label',
+							'label'        => 'Badge wording (optional)',
+							'type'         => 'text',
+							'maxlength'    => 32,
+							'placeholder'  => 'Best infrared sauna',
+							'instructions' => "Replaces the award's standard label on this badge only.",
+							'wrapper'      => array( 'width' => '30' ),
+						),
+						array(
+							'key'          => 'field_oria_bo_entry_reason',
+							'name'         => 'reason',
+							'label'        => 'Why we chose it',
+							'type'         => 'textarea',
+							'rows'         => 3,
+							'new_lines'    => '',
+							'required'     => 1,
+							'instructions' => 'One or two sentences a reader can act on. Say what the practice offers a beginner, not how good it is.',
+						),
+						array(
+							'key'          => 'field_oria_bo_entry_best_for',
+							'name'         => 'best_for',
+							'label'        => 'Best for',
+							'type'         => 'text',
+							'maxlength'    => 40,
+							'placeholder'  => 'First timers',
+							'instructions' => 'A few words for the comparison table.',
+							'wrapper'      => array( 'width' => '30' ),
+						),
+						array(
+							'key'          => 'field_oria_bo_entry_highlights',
+							'name'         => 'highlights',
+							'label'        => 'Highlights',
+							'type'         => 'text',
+							'placeholder'  => 'Beginner classes, Equipment supplied, Intro offer',
+							'instructions' => 'Up to four, separated by commas. Shown under the reason and in the table.',
+							'wrapper'      => array( 'width' => '50' ),
+						),
+						array(
+							'key'          => 'field_oria_bo_entry_lead',
+							'name'         => 'lead_badge',
+							'label'        => 'Lead badge',
+							'type'         => 'true_false',
+							'ui'           => 1,
+							'instructions' => 'A card shows one badge. If this practice is in several guides, tick here to make this the one.',
+							'wrapper'      => array( 'width' => '20' ),
+						),
+					),
+				),
+
+				array(
+					'key'   => 'field_oria_bo_tab_method',
+					'label' => 'How we chose',
+					'type'  => 'tab',
+				),
+				array(
+					'key'          => 'field_oria_bo_method',
+					'name'         => 'methodology',
+					'label'        => 'How we chose',
+					'type'         => 'textarea',
+					'rows'         => 4,
+					'new_lines'    => 'br',
+					'placeholder'  => 'We looked for studios offering dedicated beginner classes, supportive instruction, clear class descriptions and an easy way for a first-time visitor to book.',
+					'instructions' => 'Say what was considered: selected, reviewed, shortlisted. Only say a place was visited or tested if it was.',
+				),
+				array(
+					'key'          => 'field_oria_bo_note',
+					'name'         => 'editor_note',
+					'label'        => "Editor's note (optional)",
+					'type'         => 'textarea',
+					'rows'         => 2,
+					'new_lines'    => '',
+					'instructions' => 'A short aside shown beside the picks, e.g. what to bring or how to read the prices.',
+				),
+				array(
+					'key'          => 'field_oria_bo_faq',
+					'name'         => 'guide_faq',
+					'label'        => 'Questions',
+					'type'         => 'repeater',
+					'button_label' => 'Add a question',
+					'layout'       => 'block',
+					'collapsed'    => 'field_oria_bo_faq_q',
+					'instructions' => 'Shown as an accordion and, from two questions up, as FAQ structured data.',
+					'sub_fields'   => array(
+						array(
+							'key'      => 'field_oria_bo_faq_q',
+							'name'     => 'question',
+							'label'    => 'Question',
+							'type'     => 'text',
+							'required' => 1,
+						),
+						array(
+							'key'       => 'field_oria_bo_faq_a',
+							'name'      => 'answer',
+							'label'     => 'Answer',
+							'type'      => 'textarea',
+							'rows'      => 3,
+							'new_lines' => '',
+							'required'  => 1,
+						),
+					),
+				),
+				array(
+					'key'          => 'field_oria_bo_links',
+					'name'         => 'guide_links',
+					'label'        => 'Keep exploring',
+					'type'         => 'repeater',
+					'button_label' => 'Add a link',
+					'layout'       => 'table',
+					'instructions' => 'Related pages on this site: a comparison, a journal guide, a journey. The directory category link is added automatically.',
+					'sub_fields'   => array(
+						array(
+							'key'     => 'field_oria_bo_links_label',
+							'name'    => 'label',
+							'label'   => 'Label',
+							'type'    => 'text',
+							'wrapper' => array( 'width' => '45' ),
+						),
+						array(
+							'key'     => 'field_oria_bo_links_url',
+							'name'    => 'url',
+							'label'   => 'Link',
+							'type'    => 'url',
+							'wrapper' => array( 'width' => '55' ),
+						),
+					),
 				),
 			),
 		)

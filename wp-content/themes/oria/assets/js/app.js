@@ -1626,6 +1626,13 @@
                 "</div>"
               : "";
           })() +
+          /* One editorial Best Of badge, linked to its guide. Same rule and
+             markup as listing-card.php; the server picks which one. */
+          (l.best && l.best.label
+            ? '<div class="listing__best"><a class="badge badge--best" href="' + esc(l.best.url) +
+              '" title="See the Best Of guide this comes from"><span class="badge--best__mark" aria-hidden="true">&#10022;</span>' +
+              esc(l.best.label) + "</a></div>"
+            : "") +
           '<div class="listing__head">' +
             "<div>" +
               '<h3 class="listing__name"><a href="' + esc(l.url || '#') + '">' + esc(l.name) + "</a></h3>" +

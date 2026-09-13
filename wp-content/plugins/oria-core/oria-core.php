@@ -98,6 +98,7 @@ require_once ORIA_CORE_DIR . 'includes/classes.php';
 require_once ORIA_CORE_DIR . 'includes/guide-blocks.php';
 require_once ORIA_CORE_DIR . 'includes/journeys.php';
 require_once ORIA_CORE_DIR . 'includes/journal-archives.php';
+require_once ORIA_CORE_DIR . 'includes/best-of.php';
 require_once ORIA_CORE_DIR . 'includes/post-urls.php';
 require_once ORIA_CORE_DIR . 'includes/tiles.php';
 require_once ORIA_CORE_DIR . 'includes/ask.php';
@@ -163,6 +164,7 @@ Team\bootstrap();
 ComeFor\bootstrap();
 Journeys\bootstrap();
 JournalArchives\bootstrap();
+BestOf\bootstrap();
 PostUrls\bootstrap();
 Ask\bootstrap();
 

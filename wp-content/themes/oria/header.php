@@ -133,6 +133,9 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					echo '<ul class="sub-menu">';
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Singing bowls', 'oria' ) );
 					echo '</ul></li>';
+					// Best Of: the editors' shortlists. A hub, not a dropdown, until
+					// there are enough guides for a second level to earn its place.
+					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Best Of', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
@@ -214,6 +217,7 @@ if ( ! $oria_has_hero ) {
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Discover', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Singing bowls', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Best Of', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );

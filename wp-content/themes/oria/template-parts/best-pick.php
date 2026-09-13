@@ -1,0 +1,72 @@
+<?php
+/**
+ * One recommended practice on a Best Of guide.
+ *
+ * Bigger than a directory card because it has more to say: the badge names
+ * the award, the reason says why, the highlights say what a first visit
+ * gets. Name, suburb, photo and price are read from the listing at render,
+ * so a guide cannot quietly go stale.
+ *
+ * $args: entry (from BestOf\entries()), rank (int, 1-based)
+ */
+
+declare(strict_types=1);
+
+use Oria\Core\BestOf;
+
+$oria_e = isset( $args['entry'] ) && is_array( $args['entry'] ) ? $args['entry'] : null;
+if ( ! $oria_e || empty( $oria_e['listing'] ) ) {
+	return;
+}
+$oria_id   = (int) $oria_e['listing'];
+$oria_rank = (int) ( $args['rank'] ?? 0 );
+$oria_url  = (string) get_permalink( $oria_id );
+$oria_web  = (string) get_field( 'website', $oria_id );
+$oria_book = (string) get_field( 'booking_url', $oria_id );
+$oria_out  = $oria_book ?: $oria_web;
+$oria_cats = function_exists( '\Oria\Core\Categories\top_for' ) ? \Oria\Core\Categories\top_for( $oria_id ) : array();
+$oria_cat  = $oria_cats ? \Oria\Theme\tname( $oria_cats[0]['term'] ) : '';
+$oria_sub  = BestOf\suburb( $oria_id );
+$oria_from = BestOf\price_from( $oria_id );
+$oria_rate = \Oria\Theme\effective_rating( $oria_id );
+?>
+<li class="bopick reveal" id="pick-<?php echo esc_attr( (string) $oria_rank ); ?>">
+	<a class="bopick__media" href="<?php echo esc_url( $oria_url ); ?>" tabindex="-1" aria-hidden="true">
+		<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_id, 'oria-card' ) ); ?>" alt="" loading="lazy"
+			onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_id ) ); ?>'">
+	</a>
+	<div class="bopick__body">
+		<div class="bopick__top">
+			<?php if ( $oria_rank ) : ?>
+				<span class="bopick__rank" aria-hidden="true"><?php echo esc_html( str_pad( (string) $oria_rank, 2, '0', STR_PAD_LEFT ) ); ?></span>
+			<?php endif; ?>
+			<?php echo BestOf\badge_html( $oria_e['label'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+		</div>
+		<h3 class="bopick__name"><a href="<?php echo esc_url( $oria_url ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_id ) ) ); ?></a></h3>
+		<p class="bopick__where">
+			<?php echo esc_html( implode( ' · ', array_filter( array( $oria_sub, $oria_cat ) ) ) ); ?>
+			<?php if ( $oria_rate['rating'] > 0 ) : ?>
+				<span class="rating"><svg class="rating__star" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg><?php echo esc_html( number_format_i18n( $oria_rate['rating'], 1 ) ); ?><?php if ( 'google' === $oria_rate['source'] ) : ?><span class="rating__count"><?php esc_html_e( 'Google', 'oria' ); ?></span><?php endif; ?></span>
+			<?php endif; ?>
+		</p>
+		<?php if ( $oria_e['reason'] ) : ?>
+			<p class="bopick__why"><?php echo esc_html( $oria_e['reason'] ); ?></p>
+		<?php endif; ?>
+		<?php if ( $oria_e['highlights'] ) : ?>
+			<ul class="bopick__facts">
+				<?php foreach ( $oria_e['highlights'] as $oria_h ) : ?>
+					<li><?php echo esc_html( $oria_h ); ?></li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+		<div class="bopick__foot">
+			<span class="bopick__price"><?php echo $oria_from ? esc_html( sprintf( /* translators: %s: price */ __( 'From %s', 'oria' ), $oria_from ) ) : ''; ?></span>
+			<span class="bopick__acts">
+				<a class="btn btn--sm btn--dark" href="<?php echo esc_url( $oria_url ); ?>"><?php esc_html_e( 'View practice', 'oria' ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
+				<?php if ( $oria_out ) : ?>
+					<a class="btn btn--sm btn--ghost" href="<?php echo esc_url( \Oria\Theme\outbound( $oria_out, 'best-of' ) ); ?>" rel="nofollow noopener" target="_blank"><?php echo $oria_book ? esc_html__( 'Book', 'oria' ) : esc_html__( 'Visit website', 'oria' ); ?></a>
+				<?php endif; ?>
+			</span>
+		</div>
+	</div>
+</li>

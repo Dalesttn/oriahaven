@@ -627,6 +627,8 @@ function listing_data(): array {
 			'image_fb'   => listing_scene( $post->ID ),
 			'next'       => (string) get_field( 'next_session', $post->ID ),
 			'offer'      => null !== active_offer( $post->ID ),
+			// The one Best Of badge a card may carry: {label, url} or null.
+			'best'       => function_exists( '\Oria\Core\BestOf\card_badge' ) ? \Oria\Core\BestOf\card_badge( $post->ID ) : null,
 		);
 	}
 

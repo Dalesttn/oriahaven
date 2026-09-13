@@ -59,6 +59,12 @@ while ( have_posts() ) :
 				get_template_part( 'template-parts/sections/get-matched' );
 			}
 
+			// The Best Of guides follow the journal for the same reason:
+			// code-injected, low on the page, and silent until one is published.
+			if ( is_front_page() && 'journal_latest' === $oria_layout ) {
+				get_template_part( 'template-parts/sections/best-of' );
+			}
+
 		}
 	} else {
 		?>

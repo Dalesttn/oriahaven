@@ -5836,3 +5836,249 @@ article.is-spotlit {
   position: absolute; left: var(--s-5); bottom: var(--s-4); z-index: 1;
   color: var(--white);
 }
+
+
+/* ======================================================================
+   Best Of -- curated shortlists at /best/.
+   Built to the journal's editorial language (the same hero measure, the
+   same serif lede) rather than the directory grid: a guide is read, not
+   filtered. Prefix bo-.
+   ====================================================================== */
+.bohero { padding-block: clamp(2rem, 5vw, 3.4rem) clamp(1.6rem, 3vw, 2.4rem); }
+.bohero__eyebrow {
+  display: block; margin-top: var(--s-5);
+  font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  color: var(--moss);
+}
+.bohero__title {
+  font-size: clamp(2.4rem, 5.5vw, 4rem);
+  font-weight: 600; line-height: 1.04; letter-spacing: -0.03em;
+  color: var(--ink); max-width: 18ch; text-wrap: balance;
+  margin-top: .6rem;
+}
+.bohero__lede {
+  font-family: var(--font-edit);
+  font-size: clamp(1.125rem, 1.6vw, 1.3125rem);
+  line-height: 1.62; color: var(--text-soft);
+  max-width: 52ch; margin-top: var(--s-5);
+}
+.bohero__meta {
+  font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  color: var(--text-faint); margin-top: var(--s-5);
+  font-variant-numeric: tabular-nums;
+}
+
+.bosection { padding-block: clamp(1.4rem, 3vw, 2.2rem); }
+.bosection--last { padding-bottom: clamp(3rem, 6vw, 5rem); }
+
+/* --- Guide cards: hub, related, home ---------------------------------- */
+.bogrid { display: grid; gap: clamp(1.25rem, 3vw, 2rem); }
+.bogrid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.bogroup + .bogroup { margin-top: clamp(2rem, 4vw, 3rem); }
+.bogroup__title {
+  font-size: var(--fs-h4); font-weight: 700; letter-spacing: -0.01em;
+  color: var(--ink); margin-bottom: var(--s-4);
+  padding-bottom: var(--s-3); border-bottom: 1px solid var(--line);
+}
+
+.bocard {
+  display: block; color: inherit; text-decoration: none;
+  transition: transform .24s var(--ease);
+}
+.bocard__img {
+  aspect-ratio: 4 / 3; border-radius: var(--r-lg); overflow: hidden;
+  background: var(--sand-2);
+}
+.bocard__img img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform var(--t-slow) var(--ease-out);
+}
+.bocard__img--empty { background: linear-gradient(150deg, var(--sand-2), var(--mist-2)); }
+.bocard__body { padding-top: var(--s-4); }
+.bocard__meta {
+  display: block;
+  font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  color: var(--moss); font-variant-numeric: tabular-nums;
+}
+.bocard__title {
+  font-size: 1.35rem; font-weight: 600; line-height: 1.2;
+  letter-spacing: -0.02em; color: var(--ink);
+  margin-top: .45rem; text-wrap: balance;
+}
+.bocard__excerpt {
+  margin-top: .55rem; color: var(--text-soft);
+  font-size: var(--fs-sm); line-height: 1.6;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bocard__go {
+  display: inline-flex; align-items: center; gap: .4rem;
+  margin-top: var(--s-4);
+  font-size: var(--fs-sm); font-weight: 600; color: var(--deep);
+}
+.bocard__go svg { transition: transform .22s var(--ease); }
+.bocard:hover .bocard__title { text-decoration: underline; text-underline-offset: 4px; }
+
+.bocard--feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(1.6rem, 4vw, 3.2rem);
+  align-items: center;
+}
+.bocard--feature .bocard__img { aspect-ratio: 3 / 2; }
+.bocard--feature .bocard__body { padding-top: 0; max-width: 34rem; }
+.bocard--feature .bocard__title { font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; }
+.bocard--feature .bocard__excerpt {
+  font-family: var(--font-edit);
+  font-size: 1.0625rem; line-height: 1.65; -webkit-line-clamp: 4;
+  margin-top: .8rem;
+}
+
+/* --- The picks ---------------------------------------------------------
+   Photo left, words right, a hairline between picks. The rank is a serif
+   numeral because the list IS ranked: the editor dragged it into order. */
+.bopicks-head {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: var(--s-5); flex-wrap: wrap;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+.bopicks-head .micro { display: block; margin-bottom: var(--s-3); }
+.boednote {
+  max-width: 34ch; padding: var(--s-4) var(--s-5);
+  background: var(--sand-2); border-radius: var(--r-md);
+  font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.55;
+}
+.boednote .micro { display: block; margin-bottom: var(--s-2); }
+
+.bopicks { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); }
+.bopick {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: start;
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  border-top: 1px solid var(--line);
+}
+.bopick:first-child { border-top: 0; padding-top: 0; }
+.bopick__media {
+  display: block; border-radius: var(--r-lg); overflow: hidden;
+  background: var(--sand-2); aspect-ratio: 4 / 3;
+}
+.bopick__media img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform var(--t-slow) var(--ease-out);
+}
+.bopick__top { display: flex; align-items: center; gap: var(--s-3); }
+.bopick__rank {
+  font-family: var(--font-edit); font-size: 1.5rem; font-weight: 500;
+  line-height: 1; color: var(--text-faint); font-variant-numeric: tabular-nums;
+}
+.bopick__name {
+  font-size: clamp(1.4rem, 2.2vw, 1.85rem); font-weight: 600;
+  line-height: 1.15; letter-spacing: -0.022em;
+  margin-top: var(--s-3); text-wrap: balance;
+}
+.bopick__name a { color: var(--ink); text-decoration: none; }
+.bopick__name a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.bopick__where {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3);
+  margin-top: var(--s-2); font-size: var(--fs-sm); color: var(--text-faint);
+}
+.bopick__why {
+  margin-top: var(--s-4);
+  font-family: var(--font-edit); font-size: 1.0625rem; line-height: 1.62;
+  color: var(--text-soft); max-width: 52ch;
+}
+.bopick__facts { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.bopick__facts li {
+  font-size: var(--fs-xs); font-weight: 600; color: var(--deep);
+  background: var(--sand-2); border-radius: var(--r-pill); padding: .32rem .7rem;
+}
+.bopick__foot {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: var(--s-4); flex-wrap: wrap; margin-top: var(--s-5);
+}
+.bopick__price { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.bopick__acts { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+
+/* --- How we chose ------------------------------------------------------ */
+.bohow {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: clamp(1.25rem, 3vw, 3rem);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  background: var(--sand-2); border-radius: var(--r-xl);
+}
+.bohow .micro { display: block; margin-bottom: var(--s-3); }
+.bohow__text p { color: var(--text-soft); line-height: 1.62; max-width: 58ch; }
+.bohow__fine { margin-top: var(--s-4); font-size: var(--fs-xs); color: var(--text-faint); }
+
+/* --- Comparison table -------------------------------------------------- */
+.botable-wrap {
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+}
+.botable { width: 100%; min-width: 640px; border-collapse: collapse; font-size: var(--fs-sm); }
+.botable th, .botable td { text-align: left; padding: .85rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.botable th {
+  font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  color: var(--text-faint); background: var(--sand-2);
+}
+.botable tbody tr:last-child td { border-bottom: 0; }
+.botable td:first-child a { font-weight: 600; color: var(--ink); }
+.botable td:nth-child(4) { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* --- Keep exploring ---------------------------------------------------- */
+.bolinks .micro { display: block; margin-bottom: var(--s-3); }
+.bolinks__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.bolinks__list a {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .55rem .95rem;
+  border: 1px solid var(--line-strong); border-radius: var(--r-pill);
+  font-size: var(--fs-sm); font-weight: 600; color: var(--ink); text-decoration: none;
+}
+.bolinks__list a:hover { border-color: var(--ink); }
+
+/* --- How the hub works ------------------------------------------------- */
+.bonote { padding: clamp(1.5rem, 3vw, 2.5rem); background: var(--sand-2); border-radius: var(--r-xl); }
+.bonote .micro { display: block; margin-bottom: var(--s-4); }
+.bonote__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.25rem, 3vw, 2.5rem); margin: 0; }
+.bonote__list dt { font-weight: 700; color: var(--ink); }
+.bonote__list dd { margin: .4rem 0 0; color: var(--text-soft); font-size: var(--fs-sm); line-height: 1.6; }
+
+/* --- On a listing profile: "Featured by Oria Haven" -------------------- */
+.bofeatin { padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.bofeatin .micro { display: block; margin-bottom: var(--s-2); color: var(--moss); }
+.bofeatin__title { margin-bottom: var(--s-4); }
+.bofeatin__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); }
+.bofeatin__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
+.bofeatin__guide { display: inline-flex; align-items: center; gap: .4rem; font-weight: 600; color: var(--deep); text-decoration: none; }
+.bofeatin__guide:hover { text-decoration: underline; text-underline-offset: 3px; }
+.bofeatin__why { margin-top: var(--s-2); color: var(--text-soft); font-size: var(--fs-sm); line-height: 1.6; }
+.bofeatin__why span { font-weight: 600; color: var(--ink); }
+.bofeatin__fine { margin-top: var(--s-4); font-size: var(--fs-xs); color: var(--text-faint); }
+
+.bohome__more { margin-top: clamp(1.5rem, 3vw, 2.5rem); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .bocard:hover { transform: translateY(-4px); }
+  .bocard:hover .bocard__img img { transform: scale(1.03); }
+  .bocard:hover .bocard__go svg { transform: translateX(3px); }
+  .bopick:hover .bopick__media img { transform: scale(1.03); }
+}
+@media (max-width: 960px) {
+  .bogrid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .bocard--feature { grid-template-columns: 1fr; }
+  .bocard--feature .bocard__body { padding-top: var(--s-4); }
+  .bopick { grid-template-columns: 1fr; gap: var(--s-4); }
+  .bopick__media { aspect-ratio: 3 / 2; }
+  .bohow, .bonote__list { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .bogrid--3 { grid-template-columns: 1fr; }
+}
