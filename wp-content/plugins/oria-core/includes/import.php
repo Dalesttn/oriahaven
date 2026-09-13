@@ -314,7 +314,7 @@ class Command {
 				'acf_fc_layout'   => 'steps_split',
 				'eyebrow'         => 'For practitioners',
 				'heading'         => "You're probably already listed.",
-				'intro'           => "We've built profiles for meditation teachers, studios and coaches across the metro from public information. Claiming yours is free, takes about four minutes, and puts you in control of what it says.",
+				'intro'           => "We've written profiles for practices across Perth and Margaret River from public information. Claiming yours is free and lets you keep your details current.",
 				'primary_label'   => 'Claim your listing',
 				'primary_url'     => home_url( '/claim/' ),
 				'secondary_label' => 'What it costs',
@@ -322,8 +322,8 @@ class Command {
 				'steps'           => array(
 					array( 'title' => 'Find your profile', 'text' => "Search your business name. If it's here, it'll be marked unclaimed." ),
 					array( 'title' => "Verify it's you", 'text' => 'We email the address on your website, or call the number on your Google listing.' ),
-					array( 'title' => 'Fix anything we got wrong', 'text' => 'Edit your description, timetable, prices and photos. Changes go live the same day.' ),
-					array( 'title' => 'Get the enquiries', 'text' => 'Every message and click through to your site is tracked, and you see the numbers. Free, permanently.' ),
+					array( 'title' => "Keep your details right", 'text' => "Update your address, phone, website and prices on the free plan. The Claimed plan opens up the description, timetable, photos and booking link." ),
+					array( 'title' => "Receive the enquiries", 'text' => "Enquiries come straight to your inbox. The Claimed plan also shows how many people viewed your profile, called, or clicked through to your site." ),
 				),
 			),
 			array(
@@ -337,21 +337,10 @@ class Command {
 				'eyebrow'       => 'Common questions',
 				'heading'       => 'Before you ask.',
 				'items'         => array(
-					array( 'question' => 'Does it cost anything to use?', 'answer' => 'No. Browsing, searching and contacting a practice is free and always will be. Practitioners can also claim and run a full listing for free — we only charge for optional featured placement.' ),
+					array( 'question' => 'Does it cost anything to use?', 'answer' => "No. Browsing, searching and contacting a practice is free and always will be. Practitioners can claim their listing for free too. The Claimed plan (\$29 a month) and Featured plan (\$79 a month) are optional and add editing, photos, analytics and placement." ),
 					array( 'question' => 'How do listings get here in the first place?', 'answer' => 'We build them from publicly available information and write an original description. The listing is marked unclaimed until the practitioner takes it over.' ),
 					array( 'question' => "I'm listed and I'd rather not be.", 'answer' => "Email us and we'll remove the listing the same day, no questions and no follow-up." ),
-					array( 'question' => 'Is this only for Perth?', 'answer' => 'For now, yes — Perth and the surrounding WA metro. The platform is built to add other cities later.' ),
-				),
-			),
-			array(
-				'acf_fc_layout' => 'reviews',
-				'background'    => 'sand',
-				'eyebrow'       => 'From people who used it',
-				'heading'       => 'Found a class, turned up, went back.',
-				'items'         => array(
-					array( 'title' => 'Finally, times that exist', 'quote' => "I'd been trying to find a beginners' class for months and kept landing on studios that hadn't updated since 2019. Found a 6.30am sit ten minutes from work, and I've been every week since.", 'name' => 'Jess M.', 'where' => 'Highgate' ),
-					array( 'title' => 'Worth it for the map alone', 'quote' => "We'd just moved to Perth and had no idea what was near us. Clicked the hills on the map, found a sound bath fifteen minutes up the road.", 'name' => 'Tom & Steph', 'where' => 'Darlington' ),
-					array( 'title' => 'Enquiries in the first fortnight', 'quote' => 'I claimed my listing not expecting much. Six enquiries in two weeks, and every one of them mentioned they found me here.', 'name' => 'Rachel K.', 'where' => 'Breathwork facilitator, Bicton' ),
+					array( 'question' => 'Is this only for Perth?', 'answer' => "Perth and Margaret River, for now. The platform is built to add other places later." ),
 				),
 			),
 			array(

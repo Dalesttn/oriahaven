@@ -147,6 +147,50 @@
      }
     }
    ]
+  },
+  {
+   "slug": "home",
+   "sections": [
+    {
+     "layout": "steps_split",
+     "match": "You're probably already listed.",
+     "set": {
+      "intro": "We've written profiles for practices across Perth and Margaret River from public information. Claiming yours is free and lets you keep your details current."
+     },
+     "rows": {
+      "steps": {
+       "3": {
+        "title": "Keep your details right",
+        "text": "Update your address, phone, website and prices on the free plan. The Claimed plan opens up the description, timetable, photos and booking link."
+       },
+       "4": {
+        "title": "Receive the enquiries",
+        "text": "Enquiries come straight to your inbox. The Claimed plan also shows how many people viewed your profile, called, or clicked through to your site."
+       }
+      }
+     }
+    },
+    {
+     "layout": "faq",
+     "match": "Before you ask.",
+     "rows": {
+      "items": {
+       "1": {
+        "answer": "No. Browsing, searching and contacting a practice is free and always will be. Practitioners can claim their listing for free too. The Claimed plan ($29 a month) and Featured plan ($79 a month) are optional and add editing, photos, analytics and placement."
+       },
+       "4": {
+        "answer": "Perth and Margaret River, for now. The platform is built to add other places later."
+       }
+      }
+     }
+    },
+    {
+     "layout": "reviews",
+     "match": "Found a class, turned up, went back.",
+     "remove": true,
+     "reason": "the three quotes were written as placeholders, not said by real people"
+    }
+   ]
   }
  ]
 }

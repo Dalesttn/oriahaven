@@ -68,6 +68,7 @@ foreach ( $data['pages'] as $page ) {
 
 	$sections = get_field( 'sections', $post->ID );
 	$sections = is_array( $sections ) ? array_values( $sections ) : array();
+	$removals = array(); // row numbers, deleted after every other edit so indexes stay valid
 
 	foreach ( (array) ( $page['sections'] ?? array() ) as $edit ) {
 		$layout = (string) $edit['layout'];
@@ -91,6 +92,13 @@ foreach ( $data['pages'] as $page ) {
 		}
 		$n    = $i + 1;             // ACF selectors count rows from 1
 		$meta = "sections_{$i}_";   // meta keys count from 0
+
+		if ( ! empty( $edit['remove'] ) ) {
+			$changes++;
+			$removals[] = $n;
+			printf( "  %-12s REMOVE section \"%s\"%s\n", $layout, $want, empty( $edit['reason'] ) ? '' : ' — ' . $edit['reason'] );
+			continue;
+		}
 
 		// --- plain fields on the section ---------------------------------
 		foreach ( (array) ( $edit['set'] ?? array() ) as $field => $value ) {
@@ -150,6 +158,11 @@ foreach ( $data['pages'] as $page ) {
 	}
 
 	if ( $apply ) {
+		// Highest row first, so deleting one never renumbers another still queued.
+		rsort( $removals );
+		foreach ( $removals as $row_no ) {
+			delete_row( 'sections', $row_no, $post->ID );
+		}
 		clean_post_cache( $post->ID );
 	}
 	echo "\n";
