@@ -1,0 +1,17 @@
+[
+ {
+  "slug": "melt-sauna-cold-plunge-subiaco",
+  "requested_by": "Rushton Taylor, Melt Team, by email 13 Sep 2026",
+  "excerpt": "A Forrest Street room in Subiaco running sauna and cold plunge in thirty or sixty minute blocks, with availability deliberately capped so the space stays quiet rather than filled. A thirty-minute session is $25 and an hour is $35, with early sessions at 5am, 6am and 7am for $7, $14 and $21. The timetable also carries yoga classes, and drinks afterwards are complimentary. Showers and change rooms are on site.",
+  "fields": {
+   "price_from": 7,
+   "price_band": "$"
+  },
+  "services": ["Traditional sauna", "Ice bath"],
+  "terms": {
+   "specialty": { "remove": ["lymphatic-drainage", "massage", "pilates"] },
+   "service":   { "remove": ["lymphatic-drainage", "pilates"] },
+   "practice":  { "remove": ["bodywork"] }
+  }
+ }
+]
