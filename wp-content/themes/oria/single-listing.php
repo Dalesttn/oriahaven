@@ -582,6 +582,20 @@ while ( have_posts() ) :
 									<span class="savebtn__on" aria-hidden="true">&#9829;</span><span class="savebtn__off" aria-hidden="true">&#9825;</span>
 									<span class="savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
 								</button>
+								<?php
+								/*
+								 * "I've tried this": a stamp in the member's
+								 * Wellness Passport. Painted by initMe() in
+								 * app.js; a guest is invited to create an
+								 * account, since a tick has nowhere else to go.
+								 */
+								?>
+								<button class="btn btn--ghost btn--plain triedbtn" type="button"
+									data-tried="<?php echo esc_attr( (string) get_post_field( 'post_name', $oria_id ) ); ?>"
+									aria-pressed="false">
+									<span class="triedbtn__mark" aria-hidden="true">&#10003;</span>
+									<span class="triedbtn__label"><?php esc_html_e( "I've tried this", 'oria' ); ?></span>
+								</button>
 							</div>
 						</div>
 					</div>
