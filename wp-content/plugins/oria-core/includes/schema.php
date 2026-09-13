@@ -622,6 +622,68 @@ function reviews_schema( int $id ): array {
 	);
 }
 
+/**
+ * The picture an event's structured data should carry.
+ *
+ * Search Console flagged Event markup "missing image". The schema only ever
+ * looked at the featured image, while the event page itself falls back to the
+ * gallery's lead photo -- so an event could show a picture to a visitor and
+ * claim to have none to Google. Same order as the page, then the host
+ * listing's own photo, then a branded card drawn on this server.
+ *
+ * Never a photograph lifted from somewhere else: the card is ours, which is
+ * why it is the last resort rather than a scraped image.
+ */
+function event_image( int $id, string $name, string $suburb, string $start ): string {
+	if ( has_post_thumbnail( $id ) ) {
+		return (string) get_the_post_thumbnail_url( $id, 'large' );
+	}
+
+	$gallery = array_values( array_filter( array_map( 'intval', (array) get_field( 'event_gallery', $id ) ) ) );
+	if ( $gallery ) {
+		$url = wp_get_attachment_image_url( $gallery[0], 'large' );
+		if ( $url ) {
+			return (string) $url;
+		}
+	}
+
+	$listing = (int) get_field( 'listing', $id );
+	if ( $listing && has_post_thumbnail( $listing ) ) {
+		return (string) get_the_post_thumbnail_url( $listing, 'large' );
+	}
+
+	if ( function_exists( '\Oria\Core\Share\generic_card_url' ) ) {
+		$ts   = strtotime( $start );
+		$meta = trim( ( $ts ? wp_date( 'j F Y', $ts ) : '' ) . ( '' !== $suburb ? ' · ' . $suburb : '' ), ' ·' );
+		return \Oria\Core\Share\generic_card_url(
+			'event-' . $id,
+			array( 'name' => $name, 'meta' => $meta ),
+			__( 'Perth wellness event', 'oria' )
+		);
+	}
+
+	return '';
+}
+
+/**
+ * A URL for an organiser known only by name.
+ *
+ * Events gathered by the ingest record who runs them but not their website,
+ * and Search Console flagged the result "missing url in organizer". The page
+ * the event was found on -- the organiser's own listing on Humanitix or
+ * Eventbrite -- is where that organiser publishes it, and the nearest thing
+ * to their address this site holds. A Google URL is never an organiser.
+ */
+function event_organiser_url( int $id ): string {
+	foreach ( array( (string) get_post_meta( $id, '_oria_src_url', true ), (string) get_field( 'booking_url', $id ) ) as $url ) {
+		$host = (string) wp_parse_url( $url, PHP_URL_HOST );
+		if ( '' !== $host && ! preg_match( '/(^|\.)google\./i', $host ) ) {
+			return esc_url_raw( $url );
+		}
+	}
+	return '';
+}
+
 /** @return array<string, mixed>|null */
 function event_schema( int $id ): ?array {
 	$start = (string) get_field( 'event_start', $id );
@@ -675,8 +737,9 @@ function event_schema( int $id ): ?array {
 		$out['description'] = $desc;
 	}
 
-	if ( has_post_thumbnail( $id ) ) {
-		$out['image'] = get_the_post_thumbnail_url( $id, 'large' );
+	$image = event_image( $id, (string) $out['name'], $suburb, $start );
+	if ( '' !== $image ) {
+		$out['image'] = $image;
 	}
 
 	$price = (string) get_field( 'price', $id );
@@ -699,7 +762,7 @@ function event_schema( int $id ): ?array {
 			array(
 				'@type' => 'Organization',
 				'name'  => wp_specialchars_decode( $org ),
-				'url'   => $listing ? get_permalink( $listing ) : '',
+				'url'   => $listing ? get_permalink( $listing ) : event_organiser_url( $id ),
 			)
 		);
 	}
