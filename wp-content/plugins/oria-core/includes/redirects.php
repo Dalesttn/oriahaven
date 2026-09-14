@@ -130,6 +130,9 @@ function maybe_redirect(): void {
 		return;
 	}
 
+	// A service that is another name for a specialty lands on the specialty.
+	$to = twin_target( $path, $to );
+
 	// A 301 into a 404 is worse than the 404 alone; land on the parent.
 	$to = survivable( $to );
 
@@ -138,6 +141,60 @@ function maybe_redirect(): void {
 
 	wp_safe_redirect( $dest, 301 );
 	exit;
+}
+
+/**
+ * The specialty page for an old address whose last segment is a service
+ * that is another name for a specialty.
+ *
+ * "ice-bath" is a service term; "cold-plunge" is the specialty it means, and
+ * PracticesIndex\specialty_twin() says so. The migration built the stored
+ * map by pattern and had no home category for a service, so every
+ * /practices/{category}/ice-bath/ and /{city}/ice-bath/ was written down as
+ * a redirect to the bare city hub -- 25 impressions a day, in August, for
+ * "ice bath perth" searches, landing on a page about everything.
+ *
+ * Corrected here at redirect time rather than by rewriting the map, so the
+ * stored option is untouched and the fix travels with the code. Only an
+ * old address ending in a twinned service is changed; everything else
+ * passes straight through.
+ */
+function twin_target( string $from, string $to ): string {
+	if ( ! function_exists( '\Oria\Core\PracticesIndex\specialty_twin' )
+		|| ! function_exists( '\Oria\Core\PracticesIndex\specialty_home_term' )
+		|| ! function_exists( '\Oria\Core\Cities\get' ) ) {
+		return $to;
+	}
+	$seg  = explode( '/', trim( $from, '/' ) );
+	$tail = (string) end( $seg );
+	if ( count( $seg ) < 2 || '' === $tail ) {
+		return $to;
+	}
+	$twin = \Oria\Core\PracticesIndex\specialty_twin( $tail );
+	if ( $twin === $tail ) {
+		return $to;
+	}
+	$home = \Oria\Core\PracticesIndex\specialty_home_term( $twin );
+	if ( ! $home instanceof \WP_Term ) {
+		return $to;
+	}
+
+	// The city: the one the old address named, else the one the map chose,
+	// else the default.
+	$city = '';
+	if ( \Oria\Core\Cities\get( $seg[0] ) ) {
+		$city = $seg[0];
+	} else {
+		$dest = explode( '/', trim( $to, '/' ) );
+		if ( 'explore' === ( $dest[0] ?? '' ) && ! empty( $dest[1] ) && \Oria\Core\Cities\get( $dest[1] ) ) {
+			$city = $dest[1];
+		}
+	}
+	if ( '' === $city ) {
+		$city = (string) ( \Oria\Core\Cities\default_city()['slug'] ?? 'perth' );
+	}
+
+	return '/explore/' . $city . '/' . $home->slug . '/' . $twin . '/';
 }
 
 /**
