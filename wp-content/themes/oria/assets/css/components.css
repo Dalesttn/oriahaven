@@ -991,6 +991,11 @@ html.has-sheet .cmptray { display: none; }
 .foot__legal { display: block; margin-top: .5rem; }
 .foot__legal a { text-decoration: underline; text-underline-offset: 3px; }
 
+/* The studio credit: the smallest type on the page, under the legal line. */
+.foot__credit { margin-top: var(--s-4); font-size: var(--fs-micro); color: var(--mist); letter-spacing: .02em; }
+.foot__credit a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.foot__credit a:hover { color: var(--white); }
+
 /* --- Saved count in the nav ---------------------------------------------
    A shortlist behaves like a basket, so it reads like one: a heart and a
    number, top right, going to /saved/. It carries no state of its own --

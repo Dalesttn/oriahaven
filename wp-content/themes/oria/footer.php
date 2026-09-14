@@ -159,6 +159,10 @@ $oria_suburbs   = function_exists( '\Oria\Core\AreaDepth\popular' )
 				<span class="foot__legal"><?php echo implode( ' · ', $oria_links ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
 			<?php endif; ?>
 		</div>
+		<p class="foot__credit">
+			<?php esc_html_e( 'Website powered by', 'oria' ); ?>
+			<a href="https://oriadigital.com.au/" rel="noopener" target="_blank">oriadigital.com.au</a>
+		</p>
 	</div>
 </footer>
 
