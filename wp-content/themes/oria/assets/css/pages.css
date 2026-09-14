@@ -5988,9 +5988,11 @@ article.is-spotlit {
   margin-top: var(--s-2); font-size: var(--fs-sm); color: var(--text-faint);
 }
 .bopick__why {
+  /* Same voice as a listing card's description: the site's sans, not the
+     serif -- a reason is information, not a pull quote. */
   margin-top: var(--s-4);
-  font-family: var(--font-edit); font-size: 1.0625rem; line-height: 1.62;
-  color: var(--text-soft); max-width: 52ch;
+  font-size: var(--fs-body); line-height: var(--lh-body);
+  color: var(--text-soft); max-width: 58ch;
 }
 .bopick__facts { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .bopick__facts li {
@@ -6124,7 +6126,7 @@ article.is-spotlit {
 .bochoose { padding: clamp(1.5rem, 3vw, 2.5rem); border: 1px solid var(--line); border-radius: var(--r-xl); }
 .bochoose .micro { display: block; margin-bottom: var(--s-3); }
 .bochoose__list { list-style: none; margin: var(--s-5) 0 0; padding: 0; display: grid; gap: var(--s-3); }
-.bochoose__list li { font-family: var(--font-edit); font-size: 1.0625rem; line-height: 1.55; color: var(--text-soft); padding-left: 1.2rem; position: relative; }
+.bochoose__list li { font-size: var(--fs-body); line-height: 1.55; color: var(--text-soft); padding-left: 1.2rem; position: relative; }
 .bochoose__list li::before { content: "\2726"; position: absolute; left: 0; color: var(--brand-gold); font-size: .8em; top: .3em; }
 .bochoose__list a { color: var(--ink); font-weight: 600; }
 @media (max-width: 760px) { .bospots { grid-template-columns: 1fr; } }
