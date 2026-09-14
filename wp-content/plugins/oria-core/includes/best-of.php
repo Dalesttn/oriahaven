@@ -441,11 +441,24 @@ function seal_url( string $award, string $ext = 'webp' ): string {
 	return file_exists( get_template_directory() . '/' . $rel ) ? get_template_directory_uri() . '/' . $rel : '';
 }
 
-/** Every badge a listing holds, linked to its guide -- for the profile. */
+/**
+ * Every DISTINCT badge a listing holds, linked to its guide -- for the profile.
+ *
+ * A practice in three guides that each called it "Best value" holds one
+ * badge, not three; the repeat says nothing a reader can use. The first
+ * guide to award a label carries the link, and the Featured-by block
+ * underneath still names every guide.
+ */
 function badges_html( int $listing ): string {
-	$out = '';
+	$out  = '';
+	$seen = array();
 	foreach ( guides_for_listing( $listing ) as $row ) {
-		$out .= badge_html( $row['label'], (string) get_permalink( $row['guide'] ) );
+		$key = strtolower( trim( $row['label'] ) );
+		if ( isset( $seen[ $key ] ) ) {
+			continue;
+		}
+		$seen[ $key ] = true;
+		$out         .= badge_html( $row['label'], (string) get_permalink( $row['guide'] ) );
 	}
 	return $out;
 }
