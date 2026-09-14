@@ -3282,13 +3282,16 @@
     });
   }
 
-  /* Shop page: category chips, search and sort over the product grid.
+  /* Shop page: intentions, category chips, search, sort, the finder and the
+     quick view, all over the one product grid.
+
      Reads the data the cards already carry, so there is no second copy of
      the catalogue in the page for the two to disagree about.
 
-     The category lives in the URL (?category=singing-bowls) because that is
-     a view worth sharing and linking. Search and sort do not: they are how
-     one person is looking right now, not what they found. */
+     Category and intention live in the URL (?category=singing-bowls,
+     ?intent=relax) because those are views worth sharing and linking.
+     Search, sort and the finder's other answers do not: they are how one
+     person is looking right now, not what they found. */
   function initShopFilter() {
     var root = document.querySelector("[data-shopfilter]");
     if (!root) return;
@@ -3300,7 +3303,12 @@
     var clear = root.querySelector("[data-shop-clear]");
     var sort = root.querySelector("[data-shop-sort]");
     var reset = root.querySelector("[data-shop-reset]");
-    var cards = $$(".prodcard", root);
+    var finder = root.querySelector("[data-shop-finder]");
+    var products = document.getElementById("products");
+    /* Only the main grid filters. Shelf cards are a fixed selection: a
+       collection that emptied itself when a chip was pressed would be a
+       second, confusing copy of the filter. */
+    var cards = grid ? $$(".prodcard", grid) : [];
     if (!cards.length) return;
 
     /* Recommended is the order the engine returned: curation order. Keeping
@@ -3308,9 +3316,32 @@
        reconstructed from something that only looks like it. */
     cards.forEach(function (card, i) { card.dataset.oshopOrder = String(i); });
 
-    var state = { cat: "", q: "", sort: "recommended" };
+    var state = { cat: "", intent: "", best: "", band: "", q: "", sort: "recommended" };
+    var LABELS = {};
+    $$("[data-intent]", root).forEach(function (t) {
+      var l = t.querySelector(".intile__label");
+      LABELS[t.dataset.intent] = l ? l.textContent.trim() : t.dataset.intent;
+    });
+    var CATS = {};
+    $$(".fchip[data-cat]", root).forEach(function (c) {
+      CATS[c.dataset.cat || ""] = (c.firstChild && c.firstChild.textContent || "").trim();
+    });
 
     function num(card, key) { return parseFloat(card.dataset[key] || "0") || 0; }
+    function has(card, key, val) {
+      return !val || (card.dataset[key] || "").indexOf(" " + val + " ") !== -1;
+    }
+
+    function describe(shown) {
+      var bits = [];
+      if (state.intent && LABELS[state.intent]) bits.push(LABELS[state.intent]);
+      if (state.cat && CATS[state.cat]) bits.push(CATS[state.cat]);
+      if (state.best) bits.push({ beginners: "good for beginners", everyday: "everyday use", practitioner: "for practitioners", gift: "makes a gift" }[state.best] || state.best);
+      if (state.band) bits.push({ "under-50": "under $50", "50-100": "$50 to $100", "100-250": "$100 to $250", "250-plus": "over $250" }[state.band] || state.band);
+      if (state.q.trim()) bits.push("matching “" + state.q.trim() + "”");
+      var n = shown + (shown === 1 ? " product" : " products");
+      return bits.length ? n + " · " + bits.join(" · ") : "";
+    }
 
     function apply() {
       var q = state.q.trim().toLowerCase();
@@ -3319,10 +3350,11 @@
       cards.forEach(function (card) {
         /* Every category the product sits in, not just the one on the card,
            so a bowl filed under bowls and sound healing answers to both. */
-        var okCat = !state.cat ||
-          (card.dataset.oshopCatslugs || "").indexOf(" " + state.cat + " ") !== -1;
-        var okQ = !q || (card.dataset.oshopSearch || "").indexOf(q) !== -1;
-        var ok = okCat && okQ;
+        var ok = has(card, "oshopCatslugs", state.cat) &&
+          has(card, "oshopIntents", state.intent) &&
+          (!state.best || card.dataset.oshopBest === state.best) &&
+          (!state.band || card.dataset.oshopBand === state.band) &&
+          (!q || (card.dataset.oshopSearch || "").indexOf(q) !== -1);
         card.hidden = !ok;
         if (ok) shown++;
       });
@@ -3351,11 +3383,7 @@
 
       if (empty) empty.hidden = shown > 0;
       if (grid) grid.hidden = shown === 0;
-      if (count) {
-        count.textContent = shown === cards.length
-          ? ""
-          : shown + (shown === 1 ? " product" : " products");
-      }
+      if (count) count.textContent = shown === cards.length ? "" : describe(shown);
       if (clear) clear.hidden = !state.q;
     }
 
@@ -3364,34 +3392,109 @@
       var url = new URL(window.location.href);
       if (state.cat) { url.searchParams.set("category", state.cat); }
       else { url.searchParams.delete("category"); }
+      if (state.intent) { url.searchParams.set("intent", state.intent); }
+      else { url.searchParams.delete("intent"); }
+      /* The finder's other answers arrive in the URL only from a no-script
+         submit; once read they are not kept. */
+      url.searchParams.delete("best");
+      url.searchParams.delete("band");
       window.history.replaceState({}, "", url);
     }
 
-    function selectCat(cat) {
-      state.cat = cat || "";
-      $$(".fchip", root).forEach(function (c) {
+    function paint() {
+      $$(".fchip[data-cat]", root).forEach(function (c) {
         var on = (c.dataset.cat || "") === state.cat;
         c.classList.toggle("is-on", on);
         c.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      $$("[data-intent]", root).forEach(function (t) {
+        var on = t.dataset.intent === state.intent;
+        t.classList.toggle("is-on", on);
+        t.setAttribute("aria-pressed", on ? "true" : "false");
       });
       /* Reveal this category's header, if an editor has written one. */
       $$("[data-cat-head]", root).forEach(function (h) {
         h.hidden = !state.cat || h.dataset.catHead !== state.cat;
       });
+      if (finder) {
+        var fi = finder.elements.intent, fb = finder.elements.best, fd = finder.elements.band;
+        if (fi) fi.value = state.intent;
+        if (fb) fb.value = state.best;
+        if (fd) fd.value = state.band;
+      }
+    }
+
+    function scrollToProducts() {
+      if (!products) return;
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var top = products.getBoundingClientRect().top + window.pageYOffset - (chromeTop() + 12);
+      window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+    }
+
+    /* A category and an intention are two answers to the same question,
+       so choosing one lets go of the other. The finder's answers stay: they
+       narrow whichever is chosen. */
+    function selectCat(cat) {
+      state.cat = cat || "";
+      if (state.cat) state.intent = "";
+      paint();
       writeUrl();
       apply();
     }
 
-    $$(".fchip", root).forEach(function (chip) {
+    function selectIntent(intent, scroll) {
+      state.intent = (intent && state.intent !== intent) ? intent : "";
+      if (state.intent) state.cat = "";
+      paint();
+      writeUrl();
+      apply();
+      if (scroll && state.intent) scrollToProducts();
+    }
+
+    function clearAll() {
+      state.cat = ""; state.intent = ""; state.best = ""; state.band = ""; state.q = "";
+      if (search) search.value = "";
+      paint();
+      writeUrl();
+      apply();
+    }
+
+    $$(".fchip[data-cat]", root).forEach(function (chip) {
       chip.setAttribute("aria-pressed", chip.classList.contains("is-on") ? "true" : "false");
-      chip.addEventListener("click", function () { selectCat(chip.dataset.cat || ""); });
+      chip.addEventListener("click", function () {
+        selectCat(chip.dataset.cat || "");
+        pushEvent("shop_category", { shop_category: chip.dataset.cat || "all" });
+      });
+    });
+
+    $$("[data-intent]", root).forEach(function (tile) {
+      tile.addEventListener("click", function () {
+        selectIntent(tile.dataset.intent, true);
+        pushEvent("shop_intent", { shop_intent: state.intent || "cleared" });
+      });
+    });
+
+    $$("[data-shop-intent-go]", root).forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        state.intent = "";
+        selectIntent(btn.dataset.shopIntentGo, true);
+        pushEvent("shop_collection", { shop_collection: btn.dataset.shopCollection || "", shop_intent: state.intent });
+      });
     });
 
     if (search) {
-      var t;
+      var t, lastQ = "";
       search.addEventListener("input", function () {
         clearTimeout(t);
-        t = setTimeout(function () { state.q = search.value; apply(); }, 120);
+        t = setTimeout(function () {
+          state.q = search.value;
+          apply();
+          var q = state.q.trim();
+          if (q.length >= 3 && q !== lastQ) {
+            lastQ = q;
+            pushEvent("shop_search", { shop_query: q.toLowerCase() });
+          }
+        }, 160);
       });
     }
     if (clear) {
@@ -3400,24 +3503,123 @@
       });
     }
     if (sort) {
-      sort.addEventListener("change", function () { state.sort = sort.value; apply(); });
+      sort.addEventListener("change", function () {
+        state.sort = sort.value;
+        apply();
+        pushEvent("shop_sort", { shop_sort: state.sort });
+      });
     }
     if (reset) {
       reset.addEventListener("click", function () {
-        if (search) search.value = "";
-        state.q = "";
-        selectCat("");
+        clearAll();
         if (search) search.focus();
       });
     }
 
-    /* An incoming ?category= only wins if a chip actually offers it. */
-    var wanted = new URL(window.location.href).searchParams.get("category") || "";
-    if (wanted && root.querySelector('.fchip[data-cat="' + CSS.escape(wanted) + '"]')) {
-      selectCat(wanted);
-    } else {
-      apply();
+    if (finder) {
+      finder.addEventListener("submit", function (e) {
+        e.preventDefault();
+        state.intent = (finder.elements.intent && finder.elements.intent.value) || "";
+        state.best = (finder.elements.best && finder.elements.best.value) || "";
+        state.band = (finder.elements.band && finder.elements.band.value) || "";
+        if (state.intent) state.cat = "";
+        paint();
+        writeUrl();
+        apply();
+        scrollToProducts();
+        pushEvent("shop_finder_submit", { shop_intent: state.intent || "any", shop_best: state.best || "any", shop_band: state.band || "any" });
+      });
     }
+
+    /* Goes-well-with links: the shop handing somebody back to the directory
+       is the click worth knowing about. */
+    root.addEventListener("click", function (e) {
+      var a = e.target.closest("[data-oshop-exp]");
+      if (!a) return;
+      var card = a.closest(".prodcard");
+      pushEvent("shop_experience", { shop_experience: a.textContent.trim(), shop_product: card ? card.dataset.oshopName || "" : "" });
+    });
+
+    /* Quick view: one <dialog>, filled from whichever card asked for it. */
+    var dialog = root.querySelector("[data-shop-qv]");
+    if (dialog && typeof dialog.showModal === "function") {
+      var opener = null;
+      var f = function (sel) { return dialog.querySelector(sel); };
+      $$("[data-oshop-qv]", root).forEach(function (b) { b.hidden = false; });
+
+      function fill(card) {
+        var d = card.dataset;
+        var img = f("[data-qv-img]");
+        if (img) {
+          img.hidden = !d.oshopImg;
+          img.src = d.oshopImg || "";
+          img.alt = d.oshopImg ? (d.oshopName || "") : "";
+        }
+        f("[data-qv-cat]").textContent = d.oshopCatname || "";
+        f("[data-qv-name]").textContent = d.oshopName || "";
+        var brand = f("[data-qv-brand]");
+        brand.hidden = !d.oshopBrand; brand.textContent = d.oshopBrand || "";
+        var tag = f("[data-qv-tag]");
+        tag.hidden = !d.oshopBestlabel; tag.textContent = d.oshopBestlabel || "";
+        var why = f("[data-qv-why]");
+        why.hidden = !d.oshopNote; f("[data-qv-note]").textContent = d.oshopNote || "";
+        var goes = f("[data-qv-goes]");
+        var links = f("[data-qv-goes-links]");
+        var list = [];
+        try { list = JSON.parse(d.oshopGoes || "[]"); } catch (err) { list = []; }
+        links.textContent = "";
+        list.forEach(function (g, i) {
+          if (i) links.appendChild(document.createTextNode(" · "));
+          var a = document.createElement("a");
+          a.href = g.url; a.textContent = g.name; a.setAttribute("data-oshop-exp", "");
+          links.appendChild(a);
+        });
+        goes.hidden = !list.length;
+        var price = f("[data-qv-price]");
+        price.textContent = d.oshopPrice ? "Approx. " + d.oshopPrice : "Check current price on Amazon";
+        price.classList.toggle("prodcard__price--none", !d.oshopPrice);
+        var buy = f("[data-qv-buy]");
+        buy.href = d.oshopUrl || "#";
+        buy.setAttribute("data-oshop-click", d.oshopProduct || "");
+      }
+
+      root.addEventListener("click", function (e) {
+        var b = e.target.closest("[data-oshop-qv]");
+        if (!b) return;
+        var card = b.closest(".prodcard");
+        if (!card) return;
+        opener = b;
+        fill(card);
+        dialog.showModal();
+        var close = f("[data-shop-qv-close]");
+        if (close) close.focus();
+        pushEvent("shop_quickview", { shop_product: card.dataset.oshopName || "", shop_category: card.dataset.oshopCatslug || "" });
+      });
+      var closeBtn = f("[data-shop-qv-close]");
+      if (closeBtn) closeBtn.addEventListener("click", function () { dialog.close(); });
+      /* A click on the backdrop lands on the <dialog> itself. */
+      dialog.addEventListener("click", function (e) { if (e.target === dialog) dialog.close(); });
+      dialog.addEventListener("close", function () {
+        if (opener && document.contains(opener)) opener.focus();
+        opener = null;
+      });
+    }
+
+    /* An incoming address only wins if the page actually offers it: a
+       category chip, an intention tile, a finder answer. The category
+       address (/shop/singing-bowls/) arrives as the initial category. */
+    var params = new URL(window.location.href).searchParams;
+    var wantedCat = root.dataset.shopInitialCat || params.get("category") || "";
+    var wantedIntent = params.get("intent") || "";
+    var wantedBest = params.get("best") || "";
+    var wantedBand = params.get("band") || "";
+    if (wantedCat && root.querySelector('.fchip[data-cat="' + CSS.escape(wantedCat) + '"]')) state.cat = wantedCat;
+    if (!state.cat && wantedIntent && LABELS[wantedIntent]) state.intent = wantedIntent;
+    if (finder && wantedBest && finder.elements.best && finder.elements.best.querySelector('option[value="' + CSS.escape(wantedBest) + '"]')) state.best = wantedBest;
+    if (finder && wantedBand && finder.elements.band && finder.elements.band.querySelector('option[value="' + CSS.escape(wantedBand) + '"]')) state.band = wantedBand;
+    paint();
+    if (wantedBest || wantedBand) writeUrl();
+    apply();
   }
 
   /* Thin progress bar along the top while reading an article. */

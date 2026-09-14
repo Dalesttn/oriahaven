@@ -162,6 +162,7 @@ function build_rows( array $posts, int $limit, array &$seen ): array {
 
 		$terms = wp_get_post_terms( $p->ID, Data\TAX );
 		$terms = is_wp_error( $terms ) ? array() : $terms;
+		$slugs = array_map( 'strval', wp_list_pluck( $terms, 'slug' ) );
 
 		/*
 		 * The first term names the card; ALL of them make it findable.
@@ -176,12 +177,12 @@ function build_rows( array $posts, int $limit, array &$seen ): array {
 			'image'     => $image ?: (string) get_post_meta( $p->ID, '_oshop_image', true ),
 			'title'     => \Oria\Theme\ptitle( $p ),
 			'asin'      => $asin,
-			'price'     => (string) get_post_meta( $p->ID, 'price', true ),
+			'price'     => price_label( (string) get_post_meta( $p->ID, 'price', true ) ),
 			'brand'     => (string) get_post_meta( $p->ID, 'brand', true ),
 			'blurb'     => (string) get_post_meta( $p->ID, 'blurb', true ),
 			'category'  => $terms ? $terms[0]->name : '',
 			'cat_slug'  => $terms ? $terms[0]->slug : '',
-			'cat_slugs' => wp_list_pluck( $terms, 'slug' ),
+			'cat_slugs' => $slugs,
 			'cat_names' => wp_list_pluck( $terms, 'name' ),
 			'url'       => affiliate_url( $asin ),
 			// Curation, not catalogue: written by an editor or absent.
@@ -191,6 +192,10 @@ function build_rows( array $posts, int $limit, array &$seen ): array {
 			'collections' => array_values( array_filter( (array) get_post_meta( $p->ID, 'collections', true ) ) ),
 			// Derived, never asked for: one number cannot disagree with itself.
 			'amount'   => price_amount( (string) get_post_meta( $p->ID, 'price', true ) ),
+			// Intentions and the practices it goes with: from the category
+			// maps, plus whatever the editor ticked on the product.
+			'intents'   => intents_for( $slugs, (array) get_post_meta( $p->ID, 'intents', true ) ),
+			'practices' => practices_for( $slugs ),
 		);
 		if ( count( $rows ) >= $limit ) {
 			break;
@@ -238,9 +243,152 @@ function budget_band( float $amount ): string {
 	return '250-plus';
 }
 
+/**
+ * A price as the card says it. Editors type "49.95", "$49.95" or "around
+ * $50"; a bare number gets its dollar sign, anything else is left as typed.
+ */
+function price_label( string $price ): string {
+	$price = trim( $price );
+	return preg_match( '/^\d+(?:\.\d{1,2})?$/', $price ) ? '$' . $price : $price;
+}
+
 /** The outbound URL: marketplace product page carrying the Associate tag. */
 function affiliate_url( string $asin ): string {
 	$url = 'https://' . Data\marketplace() . '/dp/' . rawurlencode( $asin );
 	$tag = Data\tag();
 	return '' === $tag ? $url : $url . '?tag=' . rawurlencode( $tag );
+}
+
+/* ------------------------------------------------- intentions, shelves */
+
+/**
+ * The intentions a product answers to: those its categories map to, plus
+ * any the editor ticked on the product itself.
+ *
+ * @param list<string> $cat_slugs
+ * @param list<string> $ticked
+ * @return list<string>
+ */
+function intents_for( array $cat_slugs, array $ticked = array() ): array {
+	$out = array();
+	foreach ( $ticked as $t ) {
+		if ( isset( Data\INTENTS[ (string) $t ] ) ) {
+			$out[] = (string) $t;
+		}
+	}
+	foreach ( Data\INTENTS as $slug => $intent ) {
+		if ( array_intersect( $cat_slugs, $intent['cats'] ) ) {
+			$out[] = $slug;
+		}
+	}
+	return array_values( array_unique( $out ) );
+}
+
+/**
+ * The directory practices a product goes with, as links. Only practices
+ * that exist and hold listings: a link to an empty category is not a link.
+ *
+ * @param list<string> $cat_slugs
+ * @return list<array{name:string, url:string}>
+ */
+function practices_for( array $cat_slugs, int $limit = 3 ): array {
+	static $memo = array();
+	$key = implode( ',', $cat_slugs );
+	if ( isset( $memo[ $key ] ) ) {
+		return $memo[ $key ];
+	}
+	$wanted = array();
+	foreach ( $cat_slugs as $c ) {
+		foreach ( Data\CAT_PRACTICES[ $c ] ?? array() as $practice ) {
+			$wanted[ $practice ] = true;
+		}
+	}
+	$out = array();
+	foreach ( array_keys( $wanted ) as $slug ) {
+		$term = get_term_by( 'slug', $slug, 'practice' );
+		if ( ! $term instanceof \WP_Term || (int) $term->count < 1 ) {
+			continue;
+		}
+		$url = get_term_link( $term );
+		if ( is_wp_error( $url ) ) {
+			continue;
+		}
+		$out[] = array(
+			'name' => function_exists( '\Oria\Theme\tname' ) ? \Oria\Theme\tname( $term ) : $term->name,
+			'url'  => (string) $url,
+		);
+		if ( count( $out ) >= $limit ) {
+			break;
+		}
+	}
+	return $memo[ $key ] = $out;
+}
+
+/**
+ * What sits on a curated shelf: products an editor ticked into it first,
+ * then products from the shelf's categories, up to the limit.
+ *
+ * @param list<array<string,mixed>> $rows every product on the page
+ * @return list<array<string,mixed>>
+ */
+function collection_rows( string $slug, array $rows, int $limit = 5 ): array {
+	$def = Data\COLLECTIONS[ $slug ] ?? null;
+	if ( ! $def ) {
+		return array();
+	}
+	$picked = array();
+	$seen   = array();
+	foreach ( $rows as $r ) {
+		if ( in_array( $slug, (array) ( $r['collections'] ?? array() ), true ) ) {
+			$picked[]         = $r;
+			$seen[ $r['id'] ] = true;
+		}
+	}
+	foreach ( $rows as $r ) {
+		if ( count( $picked ) >= $limit ) {
+			break;
+		}
+		if ( isset( $seen[ $r['id'] ] ) || ! array_intersect( (array) $r['cat_slugs'], $def['cats'] ) ) {
+			continue;
+		}
+		$picked[]         = $r;
+		$seen[ $r['id'] ] = true;
+	}
+	return array_slice( $picked, 0, $limit );
+}
+
+/** The one featured product -- the most recently updated with the tick -- or null. */
+function featured_row( array $rows ): ?array {
+	$best = null;
+	$when = 0;
+	foreach ( $rows as $r ) {
+		if ( empty( $r['featured'] ) ) {
+			continue;
+		}
+		$m = (int) get_post_modified_time( 'U', true, (int) $r['id'] );
+		if ( $m >= $when ) {
+			$when = $m;
+			$best = $r;
+		}
+	}
+	return $best;
+}
+
+/**
+ * Journal posts that have something to say about what the shop sells --
+ * the ones the engine can already map products to.
+ *
+ * @return list<\WP_Post>
+ */
+function learn_more( int $n = 4 ): array {
+	$out = array();
+	foreach ( get_posts( array( 'posts_per_page' => 40, 'post_status' => 'publish' ) ) as $p ) {
+		if ( categories_for_post( (int) $p->ID ) ) {
+			$out[] = $p;
+			if ( count( $out ) >= $n ) {
+				break;
+			}
+		}
+	}
+	return $out;
 }

@@ -30,6 +30,7 @@ require ORIA_SHOP_DIR . 'includes/track.php';
 require ORIA_SHOP_DIR . 'includes/admin.php';
 require ORIA_SHOP_DIR . 'includes/import.php';
 require ORIA_SHOP_DIR . 'includes/providers/amazon.php';
+require ORIA_SHOP_DIR . 'includes/pages.php';
 
 Data\bootstrap();
 Fields\bootstrap();
@@ -38,6 +39,7 @@ Track\bootstrap();
 Admin\bootstrap();
 Import\bootstrap();
 Providers\Amazon\bootstrap();
+Pages\bootstrap();
 
 register_deactivation_hook(
 	__FILE__,

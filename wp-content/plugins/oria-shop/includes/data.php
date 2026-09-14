@@ -93,6 +93,72 @@ const TAG_MAP = array(
 	'beginners'  => array( 'meditation-books', 'yoga-mats', 'journals' ),
 );
 
+/**
+ * Shop by intention: what a reader wants, mapped to the shelves that answer
+ * it. slug => label, a line, the categories. This map is the floor -- a
+ * product can add itself to an intention through its own `intents` field.
+ * The slugs include both the seeded categories and the ones an editor
+ * created since; a slug with no products simply matches nothing.
+ */
+const INTENTS = array(
+	'relax'    => array( 'label' => 'Relax', 'line' => 'Massage tools, masks, sound and scent', 'cats' => array( 'massage-tools', 'massage-balls', 'massage-and-relaxation', 'sleep-masks', 'diffusers', 'singing-bowls', 'chimes', 'sound-healing', 'beauty' ) ),
+	'sleep'    => array( 'label' => 'Sleep better', 'line' => 'Masks, sound and a slower evening', 'cats' => array( 'sleep-masks', 'white-noise', 'sleep-books', 'diffusers', 'meditation-cards', 'beauty' ) ),
+	'meditate' => array( 'label' => 'Meditate', 'line' => 'Cushions, timers, cards and bowls', 'cats' => array( 'meditation-cushions', 'meditation-benches', 'meditation-timers', 'meditation-books', 'meditation-cards', 'mindfulness-books', 'singing-bowls', 'chimes', 'headphones' ) ),
+	'sound'    => array( 'label' => 'Explore sound healing', 'line' => 'Singing bowls, chimes and handpans', 'cats' => array( 'singing-bowls', 'chimes', 'sound-healing', 'sound-healing-books' ) ),
+	'yoga'     => array( 'label' => 'Practise yoga', 'line' => 'Mats, blocks, straps and bolsters', 'cats' => array( 'yoga-mats', 'yoga-blocks', 'yoga-straps', 'yoga-bolsters' ) ),
+	'recover'  => array( 'label' => 'Recover', 'line' => 'Massage guns, balls and rollers', 'cats' => array( 'massage-tools', 'massage-balls', 'foam-rollers', 'recovery-products', 'massage-and-relaxation' ) ),
+	'move'     => array( 'label' => 'Move', 'line' => 'Mats, rollers and the bottle you forget', 'cats' => array( 'yoga-mats', 'foam-rollers', 'massage-balls', 'water-bottles' ) ),
+	'home'     => array( 'label' => 'Create a calmer home', 'line' => 'Scent, sound, a cushion, a journal', 'cats' => array( 'diffusers', 'chimes', 'singing-bowls', 'journals', 'meditation-cushions', 'meditation-cards' ) ),
+);
+
+/**
+ * Curated shelves on the shop page. A product an editor ticked into the
+ * collection leads; the categories fill the rest of the shelf, so a shelf
+ * has something on it the day the shop opens and gets better as editors
+ * choose. `intent` is the intention the shelf's CTA opens.
+ */
+const COLLECTIONS = array(
+	'sound-practice'    => array( 'label' => 'Start your sound healing practice', 'line' => 'A bowl, something to strike it with, and a book to make sense of it.', 'cats' => array( 'singing-bowls', 'chimes', 'sound-healing', 'sound-healing-books' ), 'intent' => 'sound' ),
+	'calmer-evening'    => array( 'label' => 'Create a calmer evening', 'line' => 'The small things that mark the end of a day.', 'cats' => array( 'sleep-masks', 'beauty', 'meditation-cards', 'massage-tools', 'massage-and-relaxation', 'diffusers', 'meditation-books' ), 'intent' => 'sleep' ),
+	'meditation-space'  => array( 'label' => 'Build your meditation space', 'line' => 'A corner of a room, made for sitting still.', 'cats' => array( 'meditation-cushions', 'meditation-benches', 'singing-bowls', 'meditation-cards', 'meditation-books', 'chimes', 'meditation-timers' ), 'intent' => 'meditate' ),
+	'movement-recovery' => array( 'label' => 'Movement and recovery', 'line' => 'For the days you train, and the days after.', 'cats' => array( 'yoga-mats', 'massage-balls', 'massage-tools', 'foam-rollers', 'recovery-products' ), 'intent' => 'recover' ),
+);
+
+/**
+ * Product category => the directory practices it goes with. "Goes well
+ * with" on a card links here, which is the shop's way back into the
+ * directory: a bowl to a sound bath, a mat to a class.
+ */
+const CAT_PRACTICES = array(
+	'singing-bowls'          => array( 'sound', 'meditation' ),
+	'chimes'                 => array( 'sound', 'meditation' ),
+	'sound-healing'          => array( 'sound' ),
+	'sound-healing-books'    => array( 'sound' ),
+	'meditation-cushions'    => array( 'meditation' ),
+	'meditation-benches'     => array( 'meditation' ),
+	'meditation-timers'      => array( 'meditation' ),
+	'meditation-books'       => array( 'meditation', 'mindfulness' ),
+	'meditation-cards'       => array( 'meditation', 'mindfulness' ),
+	'mindfulness-books'      => array( 'mindfulness' ),
+	'headphones'             => array( 'meditation' ),
+	'breathwork-books'       => array( 'breathwork' ),
+	'yoga-mats'              => array( 'yoga' ),
+	'yoga-blocks'            => array( 'yoga' ),
+	'yoga-straps'            => array( 'yoga' ),
+	'yoga-bolsters'          => array( 'yoga' ),
+	'massage-tools'          => array( 'bodywork', 'recovery' ),
+	'massage-balls'          => array( 'bodywork', 'recovery', 'fitness' ),
+	'massage-and-relaxation' => array( 'bodywork' ),
+	'foam-rollers'           => array( 'recovery', 'fitness' ),
+	'recovery-products'      => array( 'recovery' ),
+	'sleep-masks'            => array( 'recovery' ),
+	'white-noise'            => array( 'recovery' ),
+	'diffusers'              => array( 'natural' ),
+	'beauty'                 => array( 'beauty' ),
+	'journals'               => array( 'mindfulness' ),
+	'water-bottles'          => array( 'fitness' ),
+);
+
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\register', 6 );
 }

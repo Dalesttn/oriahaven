@@ -187,7 +187,22 @@ function card( array $p ): string {
 	$out .= ' data-oshop-catslugs=" ' . esc_attr( implode( ' ', (array) ( $p['cat_slugs'] ?? array() ) ) ) . ' "';
 	$out .= ' data-oshop-amount="' . esc_attr( (string) $amount ) . '"';
 	$out .= ' data-oshop-band="' . esc_attr( $band ) . '"';
-	$out .= ' data-oshop-search="' . esc_attr( $haystack ) . '">';
+	$out .= ' data-oshop-search="' . esc_attr( $haystack ) . '"';
+	// Intentions, best-for and collections, for the tiles, shelves and the
+	// finder. Space-padded like the category slugs so a lookup is one indexOf.
+	$out .= ' data-oshop-intents=" ' . esc_attr( implode( ' ', (array) ( $p['intents'] ?? array() ) ) ) . ' "';
+	$out .= ' data-oshop-best="' . esc_attr( $best ) . '"';
+	$out .= ' data-oshop-collections=" ' . esc_attr( implode( ' ', (array) ( $p['collections'] ?? array() ) ) ) . ' "';
+	// Everything the quick view shows, so it never has to scrape the card.
+	$out .= ' data-oshop-name="' . esc_attr( (string) $p['title'] ) . '"';
+	$out .= ' data-oshop-brand="' . esc_attr( (string) ( $p['brand'] ?? '' ) ) . '"';
+	$out .= ' data-oshop-catname="' . esc_attr( (string) $p['category'] ) . '"';
+	$out .= ' data-oshop-price="' . esc_attr( (string) ( $p['price'] ?? '' ) ) . '"';
+	$out .= ' data-oshop-note="' . esc_attr( (string) ( $p['note'] ?? '' ) ) . '"';
+	$out .= ' data-oshop-bestlabel="' . esc_attr( (string) ( $best_labels[ $best ] ?? '' ) ) . '"';
+	$out .= ' data-oshop-url="' . esc_url( $p['url'] ) . '"';
+	$out .= ' data-oshop-img="' . esc_url( (string) ( $p['image'] ?? '' ) ) . '"';
+	$out .= ' data-oshop-goes="' . esc_attr( (string) wp_json_encode( (array) ( $p['practices'] ?? array() ) ) ) . '">';
 
 	if ( '' !== ( $p['image'] ?? '' ) ) {
 		// Only ever an API-provided or owner-uploaded URL — never a scraped one.
@@ -220,6 +235,20 @@ function card( array $p ): string {
 	}
 
 	/*
+	 * Goes well with: the directory practices this product belongs beside.
+	 * The shop's way back into the site -- a bowl to the sound baths, a mat
+	 * to the yoga studios -- and real links, so search sees them too.
+	 */
+	$goes = (array) ( $p['practices'] ?? array() );
+	if ( $goes ) {
+		$links = array();
+		foreach ( $goes as $g ) {
+			$links[] = '<a href="' . esc_url( (string) $g['url'] ) . '" data-oshop-exp>' . esc_html( (string) $g['name'] ) . '</a>';
+		}
+		$out .= '<p class="prodcard__goes"><span>' . esc_html__( 'Goes well with', 'oria' ) . '</span> ' . implode( ' <i aria-hidden="true">&middot;</i> ', $links ) . '</p>';
+	}
+
+	/*
 	 * A native disclosure: keyboard accessible for free, closed by default so
 	 * the grid stays scannable, and no JavaScript to go wrong.
 	 */
@@ -233,14 +262,18 @@ function card( array $p ): string {
 	$out .= '<div class="prodcard__foot">';
 	if ( '' !== $p['price'] ) {
 		/* translators: %s: approximate price */
-		$out .= '<span class="prodcard__price">' . esc_html( sprintf( __( 'around %s', 'oria' ), $p['price'] ) ) . '</span>';
+		$out .= '<span class="prodcard__price">' . esc_html( sprintf( __( 'Approx. %s', 'oria' ), $p['price'] ) ) . '</span>';
 	} else {
 		// Never invent a price. Say where the real one lives.
-		$out .= '<span class="prodcard__price prodcard__price--none">' . esc_html__( 'Price on Amazon', 'oria' ) . '</span>';
+		$out .= '<span class="prodcard__price prodcard__price--none">' . esc_html__( 'Check current price on Amazon', 'oria' ) . '</span>';
 	}
+	$out .= '<span class="prodcard__acts">';
+	// Revealed by script: without it there is no dialog to open.
+	$out .= '<button class="prodcard__qv" type="button" hidden data-oshop-qv aria-haspopup="dialog">' . esc_html__( 'Quick view', 'oria' ) . '</button>';
 	$out .= '<a class="btn btn--dark btn--sm" href="' . esc_url( $p['url'] ) . '" target="_blank" rel="sponsored nofollow noopener" data-oshop-click="' . esc_attr( $p['id'] ) . '">'
 		. esc_html__( 'View on Amazon', 'oria' ) . ' ' . \Oria\Theme\arrow()
 		. '<span class="sr-only"> ' . esc_html__( '(opens on Amazon)', 'oria' ) . '</span></a>';
+	$out .= '</span>';
 	$out .= '</div></article>';
 
 	return $out;

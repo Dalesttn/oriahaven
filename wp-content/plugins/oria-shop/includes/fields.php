@@ -97,6 +97,15 @@ function register(): void {
 					'wrapper'       => array( 'width' => '50' ),
 					'instructions'  => 'A fixed list on purpose: a filter is only useful when every product answers the same question the same way.',
 				),
+				array(
+					'key'          => 'field_oria_prod_intents',
+					'name'         => 'intents',
+					'label'        => 'Also show under',
+					'type'         => 'checkbox',
+					'choices'      => array_map( static fn( array $i ): string => $i['label'], Data\INTENTS ),
+					'wrapper'      => array( 'width' => '50' ),
+					'instructions' => 'Optional. The "shop by intention" tiles pick products by category on their own; tick here to add this product to an intention its category would not reach.',
+				),
 				/*
 				 * Collections are editorial groupings, not categories. A product
 				 * sits in one category and may appear in several collections, or
