@@ -25,6 +25,7 @@ $oria_meta    = array_filter(
 			_n( '%s place', '%s places', $oria_n, 'oria' ),
 			number_format_i18n( $oria_n )
 		) : '',
+		BestOf\reviewed_month( $oria_g->ID ),
 	)
 );
 ?>

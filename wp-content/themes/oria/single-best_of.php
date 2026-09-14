@@ -24,6 +24,9 @@ $oria_note    = trim( (string) get_field( 'editor_note', $oria_id ) );
 $oria_faq     = array_values( array_filter( (array) get_field( 'guide_faq', $oria_id ), static fn( $r ) => ! empty( $r['question'] ) && ! empty( $r['answer'] ) ) );
 $oria_links   = array_values( array_filter( (array) get_field( 'guide_links', $oria_id ), static fn( $r ) => ! empty( $r['label'] ) && ! empty( $r['url'] ) ) );
 $oria_related = BestOf\related( $oria_id, 3 );
+$oria_qa      = BestOf\quick_answer( $oria_id );
+$oria_spots   = BestOf\spotlights( $oria_entries );
+$oria_choose  = BestOf\choose( $oria_id );
 ?>
 
 <article>
@@ -52,6 +55,35 @@ $oria_related = BestOf\related( $oria_id, 3 );
 		?>
 	</p>
 </section>
+
+<?php if ( $oria_qa || $oria_spots ) : ?>
+	<section class="wrap bosection">
+		<?php if ( $oria_qa ) : ?>
+			<?php
+			/*
+			 * The quick answer: the guide in three sentences, for somebody
+			 * (or something) that will not read the rest. It names the picks,
+			 * so it is useful on its own and never a teaser.
+			 */
+			?>
+			<div class="boqa reveal">
+				<span class="micro"><?php esc_html_e( 'Quick answer', 'oria' ); ?></span>
+				<p><?php echo esc_html( $oria_qa ); ?></p>
+			</div>
+		<?php endif; ?>
+		<?php if ( $oria_spots ) : ?>
+			<ul class="bospots reveal">
+				<?php foreach ( $oria_spots as $oria_s ) : ?>
+					<li class="bospot">
+						<span class="bospot__label"><?php echo esc_html( $oria_s['spotlight'] ); ?></span>
+						<a class="bospot__name" href="<?php echo esc_url( (string) get_permalink( $oria_s['listing'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_s['listing'] ) ) ); ?></a>
+						<span class="bospot__where"><?php echo esc_html( BestOf\suburb( $oria_s['listing'] ) ); ?></span>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+	</section>
+<?php endif; ?>
 
 <section class="wrap bosection" id="picks">
 	<div class="bopicks-head reveal">
@@ -111,6 +143,7 @@ $oria_related = BestOf\related( $oria_id, 3 );
 						<th scope="col"><?php esc_html_e( 'Suburb', 'oria' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Best for', 'oria' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'From', 'oria' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Time', 'oria' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Highlights', 'oria' ); ?></th>
 					</tr>
 				</thead>
@@ -120,12 +153,31 @@ $oria_related = BestOf\related( $oria_id, 3 );
 							<td><a href="<?php echo esc_url( (string) get_permalink( $oria_e['listing'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_e['listing'] ) ) ); ?></a></td>
 							<td><?php echo esc_html( BestOf\suburb( $oria_e['listing'] ) ?: '—' ); ?></td>
 							<td><?php echo esc_html( $oria_e['best_for'] ?: $oria_e['label'] ); ?></td>
-							<td><?php echo esc_html( BestOf\price_from( $oria_e['listing'] ) ?: '—' ); ?></td>
+							<td><?php echo esc_html( '' !== $oria_e['price_note'] ? $oria_e['price_note'] : ( BestOf\price_from( $oria_e['listing'] ) ?: '—' ) ); ?></td>
+							<td><?php echo esc_html( BestOf\duration( $oria_e['listing'] ) ?: '—' ); ?></td>
 							<td><?php echo esc_html( $oria_e['highlights'] ? implode( ' · ', $oria_e['highlights'] ) : '—' ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
 			</table>
+		</div>
+	</section>
+<?php endif; ?>
+
+<?php if ( $oria_choose ) : ?>
+	<section class="wrap bosection">
+		<div class="bochoose reveal">
+			<span class="micro"><?php esc_html_e( 'Which one should you choose?', 'oria' ); ?></span>
+			<h2 class="h2"><?php esc_html_e( 'Pick by your situation', 'oria' ); ?></h2>
+			<ul class="bochoose__list">
+				<?php foreach ( $oria_choose as $oria_c ) : ?>
+					<li>
+						<?php esc_html_e( 'Choose', 'oria' ); ?>
+						<a href="<?php echo esc_url( (string) get_permalink( $oria_c['listing'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_c['listing'] ) ) ); ?></a>
+						<?php echo esc_html( sprintf( /* translators: %s: condition */ __( 'if %s', 'oria' ), rtrim( $oria_c['when'], '.' ) ) ); ?>.
+					</li>
+				<?php endforeach; ?>
+			</ul>
 		</div>
 	</section>
 <?php endif; ?>

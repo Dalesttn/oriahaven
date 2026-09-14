@@ -35,18 +35,31 @@ const INDEX_KEY = 'oria_best_of_index';
 
 /** Award slug => label. Add here, not in the field, so labels stay one list. */
 const AWARDS = array(
-	'best_for_beginners' => 'Best for beginners',
-	'beginner_friendly'  => 'Beginner friendly',
-	'best_sauna'         => 'Best sauna',
-	'best_for_recovery'  => 'Best for recovery',
-	'best_value'         => 'Best value',
-	'oria_pick'          => 'Oria Haven pick',
+	'best_for_beginners'   => 'Best for beginners',
+	'beginner_friendly'    => 'Beginner friendly',
+	'best_sauna'           => 'Best sauna',
+	'best_ice_bath'        => 'Best ice bath',
+	'best_sauna_ice_bath'  => 'Best sauna + ice bath',
+	'best_sound_bath'      => 'Best sound bath',
+	'best_breathwork'      => 'Best breathwork',
+	'best_for_recovery'    => 'Best for recovery',
+	'best_for_relaxation'  => 'Best for relaxation',
+	'best_quiet_escape'    => 'Best quiet escape',
+	'best_sunday_reset'    => 'Best Sunday reset',
+	'best_for_couples'     => 'Best for couples',
+	'best_small_group'     => 'Best small group',
+	'best_private_session' => 'Best private session',
+	'best_value'           => 'Best value',
+	'best_budget_pick'     => 'Best budget pick',
+	'oria_pick'            => 'Oria Haven pick',
 );
 
-/** Guide category slug => label; the hub groups by these. */
+/** Guide category slug => label, in hub order; the hub groups by these. */
 const CATEGORIES = array(
+	'relax'       => 'Relax & reset',
+	'recovery'    => 'Recovery',
 	'beginners'   => 'Beginner friendly',
-	'relax'       => 'Relax & recover',
+	'budget'      => 'By budget',
 	'move'        => 'Move',
 	'social'      => 'Social',
 	'experiences' => 'Special experiences',
@@ -152,13 +165,83 @@ function intro( int $guide ): string {
 	return '' !== $i ? $i : trim( (string) get_post_field( 'post_excerpt', $guide ) );
 }
 
-/** "Updated September 2026" -- the month the guide was last saved. */
+/**
+ * The month an editor last reviewed the guide, else the month it was last
+ * saved. The two are different claims: a review date is typed on purpose,
+ * a save date is whatever WordPress did.
+ */
+function reviewed_month( int $guide ): string {
+	$raw = trim( (string) get_field( 'editorially_reviewed_date', $guide ) );
+	$ts  = '' !== $raw ? strtotime( $raw ) : false;
+	return $ts ? wp_date( 'F Y', $ts ) : (string) get_the_modified_date( 'F Y', $guide );
+}
+
+/** "Reviewed September 2026", or "Updated …" when nobody has said they reviewed it. */
 function updated( int $guide ): string {
-	return sprintf(
-		/* translators: %s: month and year */
-		__( 'Updated %s', 'oria' ),
-		get_the_modified_date( 'F Y', $guide )
-	);
+	$reviewed = '' !== trim( (string) get_field( 'editorially_reviewed_date', $guide ) );
+	/* translators: %s: month and year */
+	return sprintf( $reviewed ? __( 'Reviewed %s', 'oria' ) : __( 'Updated %s', 'oria' ), reviewed_month( $guide ) );
+}
+
+/** The 40-80 word answer near the top, for a reader (or a machine) in a hurry. */
+function quick_answer( int $guide ): string {
+	return trim( (string) get_field( 'quick_answer', $guide ) );
+}
+
+/**
+ * "Choose X if …" -- the decision block. Rows name a listing and a
+ * condition; the listing must be published or the row is dropped.
+ *
+ * @return list<array{listing:int, when:string}>
+ */
+function choose( int $guide ): array {
+	$out = array();
+	foreach ( (array) get_field( 'guide_choose', $guide ) as $row ) {
+		$id   = (int) ( $row['listing'] ?? 0 );
+		$when = trim( (string) ( $row['when'] ?? '' ) );
+		if ( $id && '' !== $when && 'publish' === get_post_status( $id ) ) {
+			$out[] = array( 'listing' => $id, 'when' => $when );
+		}
+	}
+	return $out;
+}
+
+/**
+ * The editor's highlighted picks -- "Best overall", "Best value" -- at most
+ * three, in list order. Only entries the editor labelled; never forced.
+ *
+ * @param list<array> $entries from entries()
+ * @return list<array>
+ */
+function spotlights( array $entries ): array {
+	$out = array();
+	foreach ( $entries as $e ) {
+		if ( '' !== $e['spotlight'] ) {
+			$out[] = $e;
+		}
+	}
+	return array_slice( $out, 0, 3 );
+}
+
+/**
+ * What a pick costs, in words. The editor's note wins ("From $35 — price
+ * checked September 2026"); else the listing's own price_from; else an
+ * honest "Check current pricing". Never a number nobody typed.
+ */
+function price_line( array $entry ): string {
+	if ( '' !== $entry['price_note'] ) {
+		return $entry['price_note'];
+	}
+	$from = price_from( (int) $entry['listing'] );
+	/* translators: %s: price */
+	return '' !== $from ? sprintf( __( 'From %s', 'oria' ), $from ) : __( 'Check current pricing', 'oria' );
+}
+
+/** "60 min", from the listing's typical session, or ''. */
+function duration( int $listing ): string {
+	$m = (int) get_field( 'duration_min', $listing );
+	/* translators: %d: minutes */
+	return $m > 0 ? sprintf( __( '%d min', 'oria' ), $m ) : '';
 }
 
 /**
@@ -186,6 +269,9 @@ function entries( int $guide ): array {
 			'reason'     => trim( (string) ( $row['reason'] ?? '' ) ),
 			'highlights' => highlights( (string) ( $row['highlights'] ?? '' ) ),
 			'lead'       => ! empty( $row['lead_badge'] ),
+			'spotlight'  => trim( (string) ( $row['spotlight'] ?? '' ) ),
+			'price_note' => trim( (string) ( $row['price_note'] ?? '' ) ),
+			'fact'       => trim( (string) ( $row['fact_label'] ?? '' ) ),
 		);
 	}
 	return $cache[ $guide ] = $out;

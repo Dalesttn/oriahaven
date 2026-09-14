@@ -45,6 +45,10 @@ $oria_rate = \Oria\Theme\effective_rating( $oria_id );
 				<span class="bopick__rank" aria-hidden="true"><?php echo esc_html( str_pad( (string) $oria_rank, 2, '0', STR_PAD_LEFT ) ); ?></span>
 			<?php endif; ?>
 			<?php echo BestOf\badge_html( $oria_e['label'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+			<?php if ( '' !== $oria_e['fact'] ) : ?>
+				<?php // A fact, not an award: a grey pill, never the badge shape. ?>
+				<span class="pill bopick__fact"><?php echo esc_html( $oria_e['fact'] ); ?></span>
+			<?php endif; ?>
 		</div>
 		<h3 class="bopick__name"><a href="<?php echo esc_url( $oria_url ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_id ) ) ); ?></a></h3>
 		<p class="bopick__where">
@@ -64,7 +68,12 @@ $oria_rate = \Oria\Theme\effective_rating( $oria_id );
 			</ul>
 		<?php endif; ?>
 		<div class="bopick__foot">
-			<span class="bopick__price"><?php echo $oria_from ? esc_html( sprintf( /* translators: %s: price */ __( 'From %s', 'oria' ), $oria_from ) ) : ''; ?></span>
+			<span class="bopick__price">
+				<?php echo esc_html( BestOf\price_line( $oria_e ) ); ?>
+				<?php if ( BestOf\duration( $oria_id ) ) : ?>
+					<span class="bopick__time">&middot; <?php echo esc_html( BestOf\duration( $oria_id ) ); ?></span>
+				<?php endif; ?>
+			</span>
 			<span class="bopick__acts">
 				<a class="btn btn--sm btn--dark" href="<?php echo esc_url( $oria_url ); ?>"><?php esc_html_e( 'View practice', 'oria' ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
 				<?php if ( $oria_out ) : ?>

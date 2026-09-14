@@ -76,6 +76,9 @@ foreach ( $data['guides'] as $g ) {
 			'best_for'    => (string) ( $p['best_for'] ?? '' ),
 			'highlights'  => (string) ( $p['highlights'] ?? '' ),
 			'lead_badge'  => empty( $p['lead_badge'] ) ? 0 : 1,
+			'price_note'  => (string) ( $p['price_note'] ?? '' ),
+			'fact_label'  => (string) ( $p['fact'] ?? '' ),
+			'spotlight'   => (string) ( $p['spotlight'] ?? '' ),
 		);
 		printf(
 			"  %d. %-40s %s%s\n",
@@ -99,8 +102,31 @@ foreach ( $data['guides'] as $g ) {
 		printf( "  %d listing(s) not found; the guide would be written without them\n", $missing );
 	}
 
+	// Guide-level fields that name listings (the decision block) or that the
+	// picks file is the tidiest place for (category, quick answer).
+	$choose = array();
+	foreach ( (array) ( $g['choose'] ?? array() ) as $c ) {
+		$l = get_page_by_path( (string) ( $c['listing'] ?? '' ), OBJECT, 'listing' );
+		if ( $l instanceof WP_Post && '' !== trim( (string) ( $c['when'] ?? '' ) ) ) {
+			$choose[] = array( 'listing' => $l->ID, 'when' => (string) $c['when'] );
+		}
+	}
+	if ( $choose ) {
+		printf( "  choose: %d line(s)
+", count( $choose ) );
+	}
+
 	if ( $apply ) {
 		update_field( 'best_of_entries', $rows, $guide->ID );
+		if ( $choose ) {
+			update_field( 'guide_choose', $choose, $guide->ID );
+		}
+		if ( ! empty( $g['category'] ) && isset( \Oria\Core\BestOf\CATEGORIES[ $g['category'] ] ) ) {
+			update_field( 'guide_category', $g['category'], $guide->ID );
+		}
+		if ( ! empty( $g['quick_answer'] ) ) {
+			update_field( 'quick_answer', (string) $g['quick_answer'], $guide->ID );
+		}
 		delete_transient( \Oria\Core\BestOf\INDEX_KEY );
 		if ( $publish && 'publish' !== $guide->post_status ) {
 			wp_update_post( array( 'ID' => $guide->ID, 'post_status' => 'publish' ) );
