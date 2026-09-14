@@ -1018,6 +1018,8 @@ a.livesession:hover { background: var(--sand-2); }
   border: 1px solid var(--teal-line); border-radius: var(--r-lg);
   padding: var(--s-6);
 }
+.shopfeat--noimg { grid-template-columns: 1fr; }
+.shopfeat--noimg .shopfeat__why { max-width: 70ch; }
 .shopfeat__media {
   background: var(--white); border-radius: var(--r-md); overflow: hidden;
   aspect-ratio: 4 / 3; display: grid; place-items: center;

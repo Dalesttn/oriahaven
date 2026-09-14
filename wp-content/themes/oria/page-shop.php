@@ -248,12 +248,13 @@ foreach ( Data\INTENTS as $oria_slug => $oria_in ) {
 ?>
 <?php if ( $oria_featured && ! $oria_landing ) : ?>
 	<section class="wrap section section--top-flush">
-		<article class="shopfeat reveal">
-			<div class="shopfeat__media">
-				<?php if ( ! empty( $oria_featured['image'] ) ) : ?>
+		<?php // Without an API image there is no picture; the copy takes the width rather than sitting beside a blank. ?>
+		<article class="shopfeat reveal<?php echo empty( $oria_featured['image'] ) ? ' shopfeat--noimg' : ''; ?>">
+			<?php if ( ! empty( $oria_featured['image'] ) ) : ?>
+				<div class="shopfeat__media">
 					<img src="<?php echo esc_url( (string) $oria_featured['image'] ); ?>" alt="<?php echo esc_attr( (string) $oria_featured['title'] ); ?>" loading="lazy" width="600" height="450">
-				<?php endif; ?>
-			</div>
+				</div>
+			<?php endif; ?>
 			<div class="shopfeat__body">
 				<span class="micro shopfeat__eyebrow"><?php esc_html_e( 'Oria Haven pick', 'oria' ); ?></span>
 				<h2 class="h2 shopfeat__title"><?php echo esc_html( (string) $oria_featured['title'] ); ?></h2>
