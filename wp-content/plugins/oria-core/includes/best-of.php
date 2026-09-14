@@ -51,13 +51,30 @@ const AWARDS = array(
 	'best_private_session' => 'Best private session',
 	'best_value'           => 'Best value',
 	'best_budget_pick'     => 'Best budget pick',
+	'best_remedial_massage' => 'Best remedial massage',
+	'best_sports_active'   => 'Best for sports & active',
+	'best_evening'         => 'Best evening appointments',
+	'best_weekend'         => 'Best weekend option',
 	'oria_pick'            => 'Oria Haven pick',
+);
+
+/**
+ * Private-health rebate status a pick can carry. Only what the listing
+ * itself says: "confirmed" means the practice states it, never that we
+ * checked with a fund. The footnote under the table says the rest.
+ */
+const REBATES = array(
+	'confirmed' => 'Private health rebates available*',
+	'provider'  => 'Check with provider',
+	'not_listed' => 'Not listed',
+	'none'      => 'Not available',
 );
 
 /** Guide category slug => label, in hub order; the hub groups by these. */
 const CATEGORIES = array(
 	'relax'       => 'Relax & reset',
 	'recovery'    => 'Recovery',
+	'hands-on'    => 'Hands-on care',
 	'beginners'   => 'Beginner friendly',
 	'budget'      => 'By budget',
 	'move'        => 'Move',
@@ -237,6 +254,21 @@ function price_line( array $entry ): string {
 	return '' !== $from ? sprintf( __( 'From %s', 'oria' ), $from ) : __( 'Check current pricing', 'oria' );
 }
 
+/** The rebate label for a pick, or '' when the editor said nothing. */
+function rebate_label( array $entry ): string {
+	return REBATES[ $entry['rebate'] ] ?? '';
+}
+
+/** Does any pick in the list carry a rebate status? Decides the table column. */
+function any_rebate( array $entries ): bool {
+	foreach ( $entries as $e ) {
+		if ( '' !== $e['rebate'] ) {
+			return true;
+		}
+	}
+	return false;
+}
+
 /** "60 min", from the listing's typical session, or ''. */
 function duration( int $listing ): string {
 	$m = (int) get_field( 'duration_min', $listing );
@@ -272,6 +304,8 @@ function entries( int $guide ): array {
 			'spotlight'  => trim( (string) ( $row['spotlight'] ?? '' ) ),
 			'price_note' => trim( (string) ( $row['price_note'] ?? '' ) ),
 			'fact'       => trim( (string) ( $row['fact_label'] ?? '' ) ),
+			'sessions'   => trim( (string) ( $row['sessions'] ?? '' ) ),
+			'rebate'     => isset( REBATES[ (string) ( $row['rebate'] ?? '' ) ] ) ? (string) $row['rebate'] : '',
 		);
 	}
 	return $cache[ $guide ] = $out;

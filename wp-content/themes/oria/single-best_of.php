@@ -144,6 +144,9 @@ $oria_choose  = BestOf\choose( $oria_id );
 						<th scope="col"><?php esc_html_e( 'Best for', 'oria' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'From', 'oria' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Time', 'oria' ); ?></th>
+						<?php if ( BestOf\any_rebate( $oria_entries ) ) : ?>
+							<th scope="col"><?php esc_html_e( 'Private health*', 'oria' ); ?></th>
+						<?php endif; ?>
 						<th scope="col"><?php esc_html_e( 'Highlights', 'oria' ); ?></th>
 					</tr>
 				</thead>
@@ -154,13 +157,19 @@ $oria_choose  = BestOf\choose( $oria_id );
 							<td><?php echo esc_html( BestOf\suburb( $oria_e['listing'] ) ?: '—' ); ?></td>
 							<td><?php echo esc_html( $oria_e['best_for'] ?: $oria_e['label'] ); ?></td>
 							<td><?php echo esc_html( '' !== $oria_e['price_note'] ? $oria_e['price_note'] : ( BestOf\price_from( $oria_e['listing'] ) ?: '—' ) ); ?></td>
-							<td><?php echo esc_html( BestOf\duration( $oria_e['listing'] ) ?: '—' ); ?></td>
+							<td><?php echo esc_html( '' !== $oria_e['sessions'] ? $oria_e['sessions'] : ( BestOf\duration( $oria_e['listing'] ) ?: '—' ) ); ?></td>
+							<?php if ( BestOf\any_rebate( $oria_entries ) ) : ?>
+								<td><?php echo esc_html( BestOf\rebate_label( $oria_e ) ?: '—' ); ?></td>
+							<?php endif; ?>
 							<td><?php echo esc_html( $oria_e['highlights'] ? implode( ' · ', $oria_e['highlights'] ) : '—' ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
 			</table>
 		</div>
+		<?php if ( BestOf\any_rebate( $oria_entries ) ) : ?>
+			<p class="botable__note"><?php esc_html_e( '* Private-health rebates depend on the provider, the practitioner and your extras policy. "Available" means the practice says so on its own site; confirm eligibility with the clinic and your insurer before booking.', 'oria' ); ?></p>
+		<?php endif; ?>
 	</section>
 <?php endif; ?>
 

@@ -79,6 +79,8 @@ foreach ( $data['guides'] as $g ) {
 			'price_note'  => (string) ( $p['price_note'] ?? '' ),
 			'fact_label'  => (string) ( $p['fact'] ?? '' ),
 			'spotlight'   => (string) ( $p['spotlight'] ?? '' ),
+			'sessions'    => (string) ( $p['sessions'] ?? '' ),
+			'rebate'      => (string) ( $p['rebate'] ?? '' ),
 		);
 		printf(
 			"  %d. %-40s %s%s\n",

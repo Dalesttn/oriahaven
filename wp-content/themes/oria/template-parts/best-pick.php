@@ -67,6 +67,16 @@ $oria_rate = \Oria\Theme\effective_rating( $oria_id );
 				<?php endforeach; ?>
 			</ul>
 		<?php endif; ?>
+		<?php if ( '' !== $oria_e['sessions'] || '' !== $oria_e['rebate'] ) : ?>
+			<dl class="bopick__details">
+				<?php if ( '' !== $oria_e['sessions'] ) : ?>
+					<div><dt><?php esc_html_e( 'Sessions', 'oria' ); ?></dt><dd><?php echo esc_html( $oria_e['sessions'] ); ?></dd></div>
+				<?php endif; ?>
+				<?php if ( '' !== $oria_e['rebate'] ) : ?>
+					<div><dt><?php esc_html_e( 'Private health', 'oria' ); ?></dt><dd><?php echo esc_html( BestOf\rebate_label( $oria_e ) ); ?></dd></div>
+				<?php endif; ?>
+			</dl>
+		<?php endif; ?>
 		<div class="bopick__foot">
 			<span class="bopick__price">
 				<?php echo esc_html( BestOf\price_line( $oria_e ) ); ?>

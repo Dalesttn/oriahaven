@@ -249,6 +249,45 @@ $guides = array(
 		),
 		'find'         => array( 'specialty' => array( 'cold-plunge' ) ),
 	),
+	array(
+		'slug'         => 'remedial-massage-perth',
+		'title'        => 'Best remedial massage in Perth',
+		'excerpt'      => 'Compare remedial massage clinics across Perth by suburb, session length, price, evening and weekend hours, and what each says about private-health claiming.',
+		'intro'        => "Looking for remedial massage in Perth? This guide compares standout remedial massage clinics and practitioners across the city on the things that decide a booking: where they are, which session lengths they run, what they charge, whether they open evenings or Saturdays, and what they themselves say about private-health claiming. Whether you want a clinic near work, a sports-focused session, a longer ninety minutes or somewhere closer to home, the differences are laid out so you can choose.",
+		'quick_answer' => "For a large team with on-the-spot health-fund claiming, Life Wellness Massage Therapy runs six rooms on Hay Street, Subiaco. For a first visit, Your Local Healing Choice opens every appointment with an assessment across its Wembley, Subiaco and Nedlands rooms. For after work, Mount Lawley Physiotherapy & Podiatry takes massage bookings to 7pm on weekdays and Saturday mornings. Prices where published start at $129 an hour; several clinics ask you to check current pricing.",
+		'category'     => 'hands-on',
+		'practice'     => 'bodywork',
+		'featured'     => false,
+		'award'        => 'best_remedial_massage',
+		'reviewed'     => '2026-09-14',
+		'method'       => "We considered how clearly each practice describes its remedial work and its practitioners, the range of session lengths, whether booking is online, evening and weekend hours, location and parking, published prices, and what the practice itself states about health-fund claiming. We describe what each clinic offers; we make no claims about what massage does for any condition, and we have not visited them.",
+		'faq'          => array(
+			array( 'question' => 'What is remedial massage?', 'answer' => 'A hands-on massage approach focused on muscles and soft tissue. Practitioners usually assess first and tailor pressure and technique to the areas you ask about, which is what separates it from a general relaxation massage.' ),
+			array( 'question' => 'How much does remedial massage cost in Perth?', 'answer' => 'Prices vary by clinic and appointment length. Among the clinics on this page that publish prices, an hour starts from $129 in Fremantle and $115 in Jandakot; several others ask you to check current pricing when booking. Prices shown were checked in September 2026.' ),
+			array( 'question' => 'Can I claim remedial massage through private health insurance?', 'answer' => 'Some Australian extras policies rebate eligible remedial massage, but it depends on your policy, the practitioner and whether the fund recognises the provider. Where a clinic on this page states that it processes rebates, we say so; confirm with the clinic and your insurer before booking.' ),
+			array( 'question' => 'What is the difference between remedial and relaxation massage?', 'answer' => 'Relaxation massage is generally a calming full-body experience. Remedial massage is more targeted: the practitioner usually assesses first and works on particular muscle groups or areas of tension you have asked about.' ),
+			array( 'question' => 'How long is a remedial massage appointment?', 'answer' => 'The clinics here offer 45, 60 and 90-minute sessions, and Tara Massage in the city runs sittings from one to two hours. An hour is the most common first booking.' ),
+			array( 'question' => 'What should I wear to a remedial massage appointment?', 'answer' => 'Whatever is comfortable to get changed out of. You undress to your comfort level and are draped with a towel or sheet; arrive a few minutes early for the assessment.' ),
+			array( 'question' => 'Are there remedial massage clinics open on weekends in Perth?', 'answer' => 'Yes. Mount Lawley Physiotherapy & Podiatry and Wellbeing Physiotherapy in West Leederville both take Saturday bookings, and MyoFix in Cannington is open seven days, 10am to 8pm.' ),
+			array( 'question' => 'Where can I find remedial massage near Perth CBD?', 'answer' => 'Tara Massage Therapy on Stirling Street sits on the Northbridge edge of the city; Life Wellness in Subiaco, Wellbeing Physiotherapy in West Leederville and the Mount Lawley clinic are each a short trip from the centre.' ),
+		),
+		'links'        => array(
+			array( 'label' => 'All massage and bodywork in Perth', 'url' => home_url( '/explore/perth/bodywork/' ) ),
+			array( 'label' => 'Best places to relax in Perth', 'url' => home_url( '/best/places-to-relax-perth/' ) ),
+			array( 'label' => 'Best saunas in Perth', 'url' => home_url( '/best/saunas-perth/' ) ),
+			array( 'label' => 'Wellness under $50 in Perth', 'url' => home_url( '/best/wellness-under-50-perth/' ) ),
+			array( 'label' => 'Sauna, ice bath or float?', 'url' => home_url( '/sauna-ice-bath-or-float/' ) ),
+			// By area: the category's suburb pages, which list every massage
+			// practice there, not only the picks above.
+			array( 'label' => 'Massage in Perth CBD', 'url' => home_url( '/explore/perth/bodywork/perth-cbd/' ) ),
+			array( 'label' => 'Massage in Subiaco', 'url' => home_url( '/explore/perth/bodywork/subiaco/' ) ),
+			array( 'label' => 'Massage in Fremantle', 'url' => home_url( '/explore/perth/bodywork/fremantle/' ) ),
+			array( 'label' => 'Massage in Mount Lawley', 'url' => home_url( '/explore/perth/bodywork/mount-lawley/' ) ),
+			array( 'label' => 'Massage in Joondalup', 'url' => home_url( '/explore/perth/bodywork/joondalup/' ) ),
+			array( 'label' => 'Massage in Cannington', 'url' => home_url( '/explore/perth/bodywork/cannington/' ) ),
+		),
+		'find'         => array( 'specialty' => array( 'remedial-massage' ) ),
+	),
 );
 
 /* ------------------------------------------------------------- candidates */

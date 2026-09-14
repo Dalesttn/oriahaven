@@ -6128,3 +6128,10 @@ article.is-spotlit {
 .bochoose__list li::before { content: "\2726"; position: absolute; left: 0; color: var(--brand-gold); font-size: .8em; top: .3em; }
 .bochoose__list a { color: var(--ink); font-weight: 600; }
 @media (max-width: 760px) { .bospots { grid-template-columns: 1fr; } }
+
+/* Best Of: per-pick details (session lengths, private health) and the table footnote */
+.bopick__details { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); margin: var(--s-4) 0 0; font-size: var(--fs-sm); }
+.bopick__details div { display: flex; gap: .4rem; }
+.bopick__details dt { color: var(--text-faint); }
+.bopick__details dd { margin: 0; color: var(--ink); font-weight: 600; }
+.botable__note { margin-top: var(--s-3); font-size: var(--fs-xs); color: var(--text-faint); max-width: 70ch; }
