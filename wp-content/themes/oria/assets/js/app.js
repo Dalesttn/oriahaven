@@ -3550,10 +3550,14 @@
       function fill(card) {
         var d = card.dataset;
         var img = f("[data-qv-img]");
+        var note = f("[data-qv-artnote]");
         if (img) {
-          img.hidden = !d.oshopImg;
-          img.src = d.oshopImg || "";
+          var pic = d.oshopImg || d.oshopArt || "";
+          img.hidden = !pic;
+          img.src = pic;
           img.alt = d.oshopImg ? (d.oshopName || "") : "";
+          if (note) note.hidden = !!d.oshopImg || !pic;
+          img.parentNode.classList.toggle("shopqv__media--art", !d.oshopImg && !!pic);
         }
         f("[data-qv-cat]").textContent = d.oshopCatname || "";
         f("[data-qv-name]").textContent = d.oshopName || "";

@@ -248,11 +248,17 @@ foreach ( Data\INTENTS as $oria_slug => $oria_in ) {
 ?>
 <?php if ( $oria_featured && ! $oria_landing ) : ?>
 	<section class="wrap section section--top-flush">
-		<?php // Without an API image there is no picture; the copy takes the width rather than sitting beside a blank. ?>
-		<article class="shopfeat reveal<?php echo empty( $oria_featured['image'] ) ? ' shopfeat--noimg' : ''; ?>">
-			<?php if ( ! empty( $oria_featured['image'] ) ) : ?>
-				<div class="shopfeat__media">
-					<img src="<?php echo esc_url( (string) $oria_featured['image'] ); ?>" alt="<?php echo esc_attr( (string) $oria_featured['title'] ); ?>" loading="lazy" width="600" height="450">
+		<?php
+		// The photograph if the API has supplied one, the category's
+		// illustration if not, and the copy alone if neither.
+		$oria_feat_pic = (string) ( $oria_featured['image'] ?: ( $oria_featured['art'] ?? '' ) );
+		$oria_feat_art = '' === (string) $oria_featured['image'] && '' !== $oria_feat_pic;
+		?>
+		<article class="shopfeat reveal<?php echo '' === $oria_feat_pic ? ' shopfeat--noimg' : ''; ?>">
+			<?php if ( '' !== $oria_feat_pic ) : ?>
+				<div class="shopfeat__media<?php echo $oria_feat_art ? ' shopfeat__media--art' : ''; ?>">
+					<img src="<?php echo esc_url( $oria_feat_pic ); ?>" alt="<?php echo $oria_feat_art ? '' : esc_attr( (string) $oria_featured['title'] ); ?>" loading="lazy" width="600" height="450">
+					<?php if ( $oria_feat_art ) : ?><span class="prodcard__artnote"><?php esc_html_e( 'Illustration', 'oria' ); ?></span><?php endif; ?>
 				</div>
 			<?php endif; ?>
 			<div class="shopfeat__body">
@@ -592,7 +598,7 @@ foreach ( $oria_cats as $oria_slug => $oria_c ) {
 <dialog class="shopqv" data-shop-qv aria-labelledby="shopqv-title">
 	<div class="shopqv__inner">
 		<button class="shopqv__close" type="button" data-shop-qv-close aria-label="<?php esc_attr_e( 'Close', 'oria' ); ?>">&times;</button>
-		<div class="shopqv__media"><img src="" alt="" data-qv-img hidden></div>
+		<div class="shopqv__media"><img src="" alt="" data-qv-img hidden><span class="prodcard__artnote" data-qv-artnote hidden><?php esc_html_e( 'Illustration', 'oria' ); ?></span></div>
 		<div class="shopqv__body">
 			<span class="micro prodcard__cat" data-qv-cat></span>
 			<h2 class="h3 shopqv__title" id="shopqv-title" data-qv-name></h2>

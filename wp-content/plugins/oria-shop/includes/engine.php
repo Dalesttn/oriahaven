@@ -196,6 +196,7 @@ function build_rows( array $posts, int $limit, array &$seen ): array {
 			// maps, plus whatever the editor ticked on the product.
 			'intents'   => intents_for( $slugs, (array) get_post_meta( $p->ID, 'intents', true ) ),
 			'practices' => practices_for( $slugs ),
+			'art'       => Data\art_url( $slugs ),
 		);
 		if ( count( $rows ) >= $limit ) {
 			break;

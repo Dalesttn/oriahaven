@@ -202,6 +202,7 @@ function card( array $p ): string {
 	$out .= ' data-oshop-bestlabel="' . esc_attr( (string) ( $best_labels[ $best ] ?? '' ) ) . '"';
 	$out .= ' data-oshop-url="' . esc_url( $p['url'] ) . '"';
 	$out .= ' data-oshop-img="' . esc_url( (string) ( $p['image'] ?? '' ) ) . '"';
+	$out .= ' data-oshop-art="' . esc_url( (string) ( $p['art'] ?? '' ) ) . '"';
 	$out .= ' data-oshop-goes="' . esc_attr( (string) wp_json_encode( (array) ( $p['practices'] ?? array() ) ) ) . '">';
 
 	if ( '' !== ( $p['image'] ?? '' ) ) {
@@ -211,6 +212,12 @@ function card( array $p ): string {
 		$out .= '<span class="prodcard__img"><img src="' . esc_url( $p['image'] ) . '"'
 			. ' alt="' . esc_attr( $alt ) . '" loading="lazy" decoding="async"'
 			. ' width="400" height="300"></span>';
+	} elseif ( '' !== (string) ( $p['art'] ?? '' ) ) {
+		// No photograph yet: the category's illustration, and it says so.
+		// alt is empty because the name beside it already says what this is.
+		$out .= '<span class="prodcard__img prodcard__img--art"><img src="' . esc_url( (string) $p['art'] ) . '"'
+			. ' alt="" loading="lazy" decoding="async" width="400" height="300">'
+			. '<span class="prodcard__artnote">' . esc_html__( 'Illustration', 'oria' ) . '</span></span>';
 	} else {
 		// A card with no picture keeps the grid even rather than collapsing.
 		$out .= '<span class="prodcard__img prodcard__img--none" aria-hidden="true"></span>';

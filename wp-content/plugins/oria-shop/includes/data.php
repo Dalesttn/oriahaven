@@ -159,6 +159,53 @@ const CAT_PRACTICES = array(
 	'water-bottles'          => array( 'fitness' ),
 );
 
+/**
+ * Illustrative artwork per category, shown on a card until the Amazon API
+ * supplies the product's own photograph. Drawn in the site's style and
+ * labelled as an illustration on the card: it says what kind of thing this
+ * is, never what this particular one looks like. Files live in the theme at
+ * assets/img/shop/{key}.webp.
+ */
+const CATEGORY_ART = array(
+	'singing-bowls'          => 'bowl',
+	'chimes'                 => 'chime',
+	'sound-healing'          => 'handpan',
+	'meditation-cushions'    => 'cushion',
+	'meditation-benches'     => 'cushion',
+	'yoga-bolsters'          => 'bolster',
+	'yoga-blocks'            => 'yoga-props',
+	'yoga-straps'            => 'yoga-props',
+	'yoga-mats'              => 'mat',
+	'foam-rollers'           => 'roller',
+	'recovery-products'      => 'roller',
+	'massage-tools'          => 'massage',
+	'massage-balls'          => 'massage',
+	'massage-and-relaxation' => 'massage',
+	'sleep-masks'            => 'sleep',
+	'beauty'                 => 'sleep',
+	'white-noise'            => 'sound-machine',
+	'meditation-timers'      => 'sound-machine',
+	'headphones'             => 'sound-machine',
+	'meditation-books'       => 'book',
+	'mindfulness-books'      => 'book',
+	'breathwork-books'       => 'book',
+	'sound-healing-books'    => 'book',
+	'sleep-books'            => 'book',
+	'wellness-books'         => 'book',
+	'journals'               => 'book',
+	'meditation-cards'       => 'book',
+);
+
+/** The illustration for a product's categories: the first category that has one, or none. */
+function art_url( array $cat_slugs ): string {
+	foreach ( $cat_slugs as $slug ) {
+		if ( isset( CATEGORY_ART[ (string) $slug ] ) ) {
+			return get_theme_file_uri( 'assets/img/shop/' . CATEGORY_ART[ (string) $slug ] . '.webp' );
+		}
+	}
+	return '';
+}
+
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\register', 6 );
 }
