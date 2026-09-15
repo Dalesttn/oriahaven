@@ -34,6 +34,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Specialties and services that make a listing a clinic rather than a
+ * session.
+ *
+ * An acupuncturist, a physiotherapist or a chiropractor offers a
+ * consultation with a registered practitioner, and the registry has no
+ * kind of session that describes one. Before this list, a Chinese medicine
+ * clinic that also offers remedial massage was scored as a massage, and
+ * its "Feels like" line named day spas, reiki and infrared sauna -- none of
+ * which it offers. The owner wrote in, rightly. A clinic now gets no
+ * profile, which is what the rule at the top of this file always promised
+ * for a kind of session the registry has not characterised.
+ */
+const CLINICAL = array(
+	'acupuncture',
+	'chinese-medicine',
+	'herbal-medicine',
+	'physiotherapy',
+	'osteopathy',
+	'chiropractic',
+	'exercise-physiology',
+	'podiatry',
+	'occupational-therapy',
+	'naturopathy',
+	'homeopathy',
+);
+
+/** The listing's own opt-out, set on its edit screen. */
+const HIDE_FIELD = 'hide_experience';
+
 /** The registry dimensions a "feels like" distance is measured over. */
 const VECTOR = array( 'intensity', 'movement', 'quiet', 'guidance', 'social' );
 
@@ -135,6 +165,11 @@ function experience_for( int $post_id ): ?array {
 	$facets = array_flip( array_merge( $slugs( 'specialty' ), $slugs( 'service' ) ) );
 	$cats   = array_flip( $slugs( 'practice' ) );
 
+	// A clinic is not a session, and an editor can opt any listing out.
+	if ( array_intersect_key( $facets, array_flip( CLINICAL ) ) || opted_out( $post_id ) ) {
+		return $memo[ $post_id ] = null;
+	}
+
 	$cat_match    = null;   // the experience keyed by one of the listing's categories
 	$cat_slug     = '';
 	$facet_matches = array();
@@ -164,6 +199,40 @@ function experience_for( int $post_id ): ?array {
 		}
 	}
 	return $memo[ $post_id ] = $facet_matches[0] ?? null;
+}
+
+/** Whether an editor has switched the profile off for this one listing. */
+function opted_out( int $post_id ): bool {
+	return function_exists( 'get_field' )
+		? (bool) get_field( HIDE_FIELD, $post_id )
+		: (bool) get_post_meta( $post_id, HIDE_FIELD, true );
+}
+
+/**
+ * The two site-wide switches, from Site settings.
+ *
+ * Both default to on: an install where the settings screen has never been
+ * saved should look exactly as it did before the switches existed. They
+ * govern what the listing page SHOWS. The scoring behind the planner and
+ * the matching tool is unaffected, since turning off a sentence on a
+ * profile is not a reason to stop matching people to a kind of session.
+ */
+function setting_on( string $name ): bool {
+	if ( ! function_exists( 'get_field' ) ) {
+		return true;
+	}
+	$v = get_field( $name, 'option' );
+	return null === $v || '' === $v ? true : (bool) $v;
+}
+
+/** Show the Experience DNA bars and the one-line summary on listing pages. */
+function profile_enabled(): bool {
+	return setting_on( 'listing_show_experience' );
+}
+
+/** Show the "Feels like" suggestions on listing pages. */
+function feels_like_enabled(): bool {
+	return profile_enabled() && setting_on( 'listing_show_feels_like' );
 }
 
 /* --------------------------------------------------- text -> 1..5 scales */

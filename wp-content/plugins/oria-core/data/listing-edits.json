@@ -7,11 +7,58 @@
    "price_from": 7,
    "price_band": "$"
   },
-  "services": ["Traditional sauna", "Ice bath"],
+  "services": [
+   "Traditional sauna",
+   "Ice bath"
+  ],
   "terms": {
-   "specialty": { "remove": ["lymphatic-drainage", "massage", "pilates"] },
-   "service":   { "remove": ["lymphatic-drainage", "pilates"] },
-   "practice":  { "remove": ["bodywork"] }
+   "specialty": {
+    "remove": [
+     "lymphatic-drainage",
+     "massage",
+     "pilates"
+    ]
+   },
+   "service": {
+    "remove": [
+     "lymphatic-drainage",
+     "pilates"
+    ]
+   },
+   "practice": {
+    "remove": [
+     "bodywork"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "baolin-acupuncture-chinese-medicine",
+  "requested_by": "Joshua Xu, Baolin Acupuncture & Chinese Medicine Centre, by email 15 Sep 2026",
+  "services": [
+   "Acupuncture",
+   "Traditional Chinese medicine",
+   "Chinese herbal medicine",
+   "Cupping",
+   "Remedial massage"
+  ],
+  "terms": {
+   "practice": {
+    "remove": [
+     "bodywork"
+    ],
+    "add": [
+     "natural"
+    ]
+   },
+   "specialty": {
+    "remove": [
+     "massage"
+    ]
+   }
+  },
+  "fields": {
+   "hide_experience": 1
   }
  }
 ]

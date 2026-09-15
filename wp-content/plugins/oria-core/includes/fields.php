@@ -91,6 +91,15 @@ function register_listing_fields(): void {
 					'instructions'  => 'Puts this listing in every Featured placement — home page, hero cards, category bands, priority sorting, gold badge — without touching its plan. The listing stays claimable, and paid Featured still comes only from the claim status above.',
 				),
 				array(
+					'key'           => 'field_oria_hide_experience',
+					'name'          => 'hide_experience',
+					'label'         => 'Hide the experience profile',
+					'type'          => 'true_false',
+					'ui'            => 1,
+					'default_value' => 0,
+					'instructions'  => 'Removes "The experience", "Feels like" and the Experience DNA bars from this listing, and keeps it out of the profile-based matching. Use it when a practice says the profile misdescribes them. Clinics are already excluded automatically.',
+				),
+				array(
 					'key'          => 'field_oria_verified_at',
 					'name'         => 'verified_at',
 					'label'        => 'Details last verified',

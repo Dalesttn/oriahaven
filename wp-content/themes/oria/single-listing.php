@@ -345,10 +345,14 @@ while ( have_posts() ) :
 							 * is not a session -- rather than a guess. See includes/dna.php
 							 * for why there is no "Spiritual".
 							 */
-							$oria_dna  = function_exists( '\Oria\Core\Dna\bars' ) ? \Oria\Core\Dna\bars( $oria_id ) : array();
+							// Both switches live in Site settings; a clinic or an opted-out
+							// listing has no profile at all (see Dna\experience_for()).
+							$oria_dna_on  = ! function_exists( '\Oria\Core\Dna\profile_enabled' ) || \Oria\Core\Dna\profile_enabled();
+							$oria_like_on = ! function_exists( '\Oria\Core\Dna\feels_like_enabled' ) || \Oria\Core\Dna\feels_like_enabled();
+							$oria_dna  = $oria_dna_on && function_exists( '\Oria\Core\Dna\bars' ) ? \Oria\Core\Dna\bars( $oria_id ) : array();
 							$oria_dnax = $oria_dna && function_exists( '\Oria\Core\Dna\experience_for' ) ? \Oria\Core\Dna\experience_for( $oria_id ) : null;
 							$oria_feel = $oria_dnax ? \Oria\Core\Dna\summary( $oria_dna ) : '';
-							$oria_like = $oria_dnax ? \Oria\Core\Dna\feels_like( $oria_dnax, 3 ) : array();
+							$oria_like = $oria_dnax && $oria_like_on ? \Oria\Core\Dna\feels_like( $oria_dnax, 3 ) : array();
 
 							/*
 							 * What they do, as chips. Services first, not specialties:
@@ -384,12 +388,17 @@ while ( have_posts() ) :
 								}
 								$oria_cname = \Oria\Theme\tname( $oria_ct );
 								$oria_ckey  = strtolower( $oria_cname );
+								// By slug as well as name: a service and a specialty can be
+								// the same thing under two names -- "Traditional Chinese
+								// medicine" and "Chinese medicine" -- and showed twice.
 								if ( isset( $oria_seen_chip[ $oria_ckey ] )
+									|| isset( $oria_seen_chip[ 'slug:' . $oria_ct->slug ] )
 									|| in_array( $oria_ckey, $oria_chip_skip, true )
 									|| in_array( $oria_ct->slug, $oria_chip_skip, true ) ) {
 									continue;
 								}
-								$oria_seen_chip[ $oria_ckey ] = true;
+								$oria_seen_chip[ $oria_ckey ]                 = true;
+								$oria_seen_chip[ 'slug:' . $oria_ct->slug ] = true;
 
 								$oria_curl  = '';
 								$oria_cspec = get_term_by( 'slug', $oria_ct->slug, 'specialty' );
