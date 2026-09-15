@@ -198,11 +198,11 @@ function handle_decision(): void {
 		exit;
 	}
 
-	$user = get_user_by( 'email', $email );
+	$user        = get_user_by( 'email', $email );
+	$new_account = false;
 	if ( $user instanceof \WP_User ) {
 		$user->add_role( Ownership\ROLE );
 		$user_id = (int) $user->ID;
-		send_approved( $email, $listing_id, $name );
 	} else {
 		$username = sanitize_user( (string) strstr( $email, '@', true ), true );
 		if ( '' === $username || username_exists( $username ) ) {
@@ -223,12 +223,19 @@ function handle_decision(): void {
 		}
 		// Core's notification carries the set-password link.
 		wp_new_user_notification( (int) $user_id, null, 'user' );
+		$new_account = true;
 	}
 
-	// Approval links the owner to the listing. With Stripe configured the
-	// listing only goes live when payment lands (the webhook stamps status
-	// and the verified date); without billing — dev and free mode — approval
-	// itself activates, and approval is verification.
+	/*
+	 * Approval links the owner to the listing, and costs nothing.
+	 *
+	 * With billing configured the owner lands on the free plan: claimed_by
+	 * is theirs and tiers.php decides what that lets them edit -- address,
+	 * contact details, prices, format. A paid tier switches on only when a
+	 * payment lands (the webhook stamps status and the verified date).
+	 * Without billing -- dev and free mode -- approval itself activates the
+	 * Claimed tier, and approval is verification.
+	 */
 	$today = current_time( 'Y-m-d' );
 	$free  = ! \Oria\Core\Billing\configured();
 	if ( function_exists( 'update_field' ) ) {
@@ -245,41 +252,17 @@ function handle_decision(): void {
 		}
 	}
 
-	if ( ! $free ) {
-		$claimed  = \Oria\Core\Tiers\summary( 'claimed' );
-		$featured = \Oria\Core\Tiers\summary( 'featured' );
-		$bullets  = static fn( array $t ): string => '• ' . implode( "\n• ", $t['features'] );
-
-		\Oria\Core\Billing\owner_mail(
-			$listing_id,
-			__( 'Choose your plan — Oria Haven', 'oria' ),
-			sprintf(
-				/* translators: 1 name, 2 listing, 3-5 claimed plan, 6-8 featured plan */
-				__( "Hi %1\$s,\n\nYour claim on \"%2\$s\" is approved — one step left. Choose a plan and the listing unlocks the moment payment goes through.\n\nCLAIMED — %3\$s/month\n%4\$s\nActivate: %5\$s\n\nFEATURED — %6\$s/month\n%7\$s\nActivate: %8\$s\n\nUntil then the listing stays live in its free form. Cancel any time — the listing simply returns to its free state, and everything you've added is kept.", 'oria' ),
-				$name,
-				get_post_field( 'post_title', $listing_id, 'raw' ),
-				$claimed['price'],
-				$bullets( $claimed ),
-				\Oria\Core\Billing\pay_url( 'claimed', $listing_id, $email ),
-				$featured['price'],
-				$bullets( $featured ),
-				\Oria\Core\Billing\pay_url( 'featured', $listing_id, $email )
-			) . \Oria\Core\Share\email_block( $listing_id )
-		);
-	} else {
-		// Without billing configured the claim is simply approved, so this
-		// is the only email they get — the share kit still belongs in it.
-		\Oria\Core\Billing\owner_mail(
-			$listing_id,
-			__( 'Your claim is approved — Oria Haven', 'oria' ),
-			sprintf(
-				/* translators: 1 name, 2 listing name */
-				__( "Hi %1\$s,\n\nYour claim on \"%2\$s\" is approved. The listing is yours to edit now — sign in and you can keep every detail current.", 'oria' ),
-				$name,
-				get_post_field( 'post_title', $listing_id, 'raw' )
-			) . \Oria\Core\Share\email_block( $listing_id )
-		);
-	}
+	/*
+	 * One email, and it says the claim is free.
+	 *
+	 * With billing on, this used to be headed "Choose your plan" and open
+	 * with "one step left", which read as a paywall to an owner who had
+	 * been told claiming costs nothing. An owner with an existing account
+	 * also got a second, separate approval email promising photos and hours
+	 * that the free plan does not include. The paid plans are still
+	 * offered, after everything else and marked optional.
+	 */
+	send_approved( $email, $listing_id, $name, $new_account );
 
 	update_post_meta( $request_id, '_status', 'approved' );
 	update_post_meta( $request_id, '_approved_user', (int) $user_id );
@@ -298,22 +281,46 @@ function handle_decision(): void {
  * And a body builder with nothing else attached can be rendered on the
  * email preview screen without approving anybody's claim to look at it.
  */
-function approved_body( int $listing_id, string $name ): string {
-	return sprintf(
-		/* translators: 1 name, 2 listing, 3 login url */
-		__( "Hi %1\$s,\n\nYour claim on \"%2\$s\" has been approved — the listing is yours to manage.\n\nLog in with your existing account to edit it:\n%3\$s\n\nYou can change your description, hours, photos and contact details whenever you like. If anything looks wrong, reply to this email and I'll sort it out.", 'oria' ),
+function approved_body( int $listing_id, string $name, bool $new_account = false, ?bool $billing = null ): string {
+	$billing = null === $billing ? \Oria\Core\Billing\configured() : $billing;
+	$title   = wp_specialchars_decode( (string) get_post_field( 'post_title', $listing_id, 'raw' ) );
+
+	$body = sprintf(
+		/* translators: 1 name, 2 listing name */
+		__( "Hi %1\$s,\n\nYour claim on \"%2\$s\" is approved, and it's free. There's no monthly fee and no card needed. The listing is yours to look after for as long as you like, and it no longer shows as Unclaimed.", 'oria' ),
 		$name,
-		wp_specialchars_decode( (string) get_post_field( 'post_title', $listing_id, 'raw' ) ),
-		wp_login_url()
+		$title
 	);
+
+	$body .= $new_account
+		/* translators: %s: login url */
+		? sprintf( __( "\n\nWe've sent you a separate email with a link to set your password. Once that's done, sign in here:\n%s", 'oria' ), wp_login_url() )
+		/* translators: %s: login url */
+		: sprintf( __( "\n\nSign in with your existing account to manage it:\n%s", 'oria' ), wp_login_url() );
+
+	$body .= $billing
+		? __( "\n\nOn the free plan you can keep your address, phone, email, website, prices and session format up to date yourself. If anything else on the listing looks wrong, reply to this email and we'll fix it for you.", 'oria' )
+		: __( "\n\nYou can edit your description, services, photos, hours and contact details whenever you like. If anything looks wrong, reply to this email and we'll sort it out.", 'oria' );
+
+	if ( function_exists( '\Oria\Core\Share\email_block' ) ) {
+		$body .= \Oria\Core\Share\email_block( $listing_id );
+	}
+
+	// The paid plans, only where they exist, and only after the free
+	// claim has been stated in full. The block itself says "optional".
+	if ( $billing && function_exists( '\Oria\Core\Signup\upgrade_block' ) ) {
+		$body .= \Oria\Core\Signup\upgrade_block( $listing_id, '' );
+	}
+
+	return $body;
 }
 
-function send_approved( string $email, int $listing_id, string $name ): void {
+function send_approved( string $email, int $listing_id, string $name, bool $new_account = false ): void {
 	\Oria\Core\Signup\send(
 		$email,
-		__( 'Your listing on Oria Haven is ready to manage', 'oria' ),
+		__( "Your claim is approved, and it's free", 'oria' ),
 		__( 'Your claim is approved', 'oria' ),
-		approved_body( $listing_id, $name )
+		approved_body( $listing_id, $name, $new_account )
 	);
 }
 
