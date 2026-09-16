@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const VERSION = 1;
+const VERSION = 3;
 const OPTION  = 'oria_db_version';
 
 function bootstrap(): void {
@@ -61,6 +61,69 @@ function review_log(): string {
 }
 
 /* --------------------------------------------------------------- install */
+
+/**
+ * Give a primary key back its AUTO_INCREMENT.
+ *
+ * dbDelta creates a table exactly as written, but it never ALTERs an
+ * existing column to add AUTO_INCREMENT -- so a table created by an older
+ * schema keeps a plain bigint primary key forever, however the CREATE
+ * TABLE above is written. Every insert then supplies 0, the first row
+ * takes it, and every row after that is rejected as a duplicate key.
+ *
+ * It is silent, because $wpdb->insert() returns false and nobody checks.
+ * On this site it meant the review moderation log -- the evidence that a
+ * negative review was not quietly deleted -- held exactly one row and had
+ * been refusing writes ever since.
+ *
+ * Existing rows are renumbered first: MySQL will not add AUTO_INCREMENT
+ * over duplicate zeros, and a table that has been swallowing writes has at
+ * least one. Returns true when it changed something.
+ */
+function ensure_auto_increment( string $table, string $column ): bool {
+	global $wpdb;
+
+	// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	if ( ! $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) ) {
+		return false;
+	}
+
+	$col = $wpdb->get_row( $wpdb->prepare( "SHOW COLUMNS FROM `{$table}` LIKE %s", $column ) );
+	if ( ! $col || str_contains( strtolower( (string) $col->Extra ), 'auto_increment' ) ) {
+		return false;
+	}
+
+	/*
+	 * Renumber from 1, in two passes.
+	 *
+	 * One pass collides: a table holding 0 and 1 renumbers 0 to 1 while 1 is
+	 * still there, and MySQL rejects the duplicate. So first lift every row
+	 * clear of the range, highest first so each step lands on empty ground,
+	 * then number them from 1 in order. Nothing is lost and no two rows ever
+	 * share a key mid-flight.
+	 */
+	$max = (int) $wpdb->get_var( "SELECT IFNULL(MAX(`{$column}`), 0) FROM `{$table}`" );
+	$wpdb->query( "UPDATE `{$table}` SET `{$column}` = `{$column}` + " . ( $max + 1 ) . " ORDER BY `{$column}` DESC" );
+	$wpdb->query( 'SET @oria_row := 0' );
+	$wpdb->query( "UPDATE `{$table}` SET `{$column}` = (@oria_row := @oria_row + 1) ORDER BY `{$column}` ASC" );
+
+	$wpdb->query( "ALTER TABLE `{$table}` MODIFY `{$column}` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT" );
+
+	$next = (int) $wpdb->get_var( "SELECT IFNULL(MAX(`{$column}`), 0) + 1 FROM `{$table}`" );
+	$wpdb->query( "ALTER TABLE `{$table}` AUTO_INCREMENT = {$next}" );
+	// phpcs:enable
+
+	return true;
+}
+
+/** Every table here, and the key that has to number itself. */
+function keyed_tables(): array {
+	return array(
+		members()       => 'member_id',
+		member_tokens() => 'token_id',
+		review_log()    => 'log_id',
+	);
+}
 
 function maybe_install(): void {
 	if ( (int) get_option( OPTION, 0 ) >= VERSION ) {
@@ -151,6 +214,21 @@ function install(): void {
 
 	foreach ( $sql as $statement ) {
 		dbDelta( $statement );
+	}
+
+	/*
+	 * After dbDelta, never instead of it: this repairs what dbDelta cannot
+	 * reach on a table an older schema already created.
+	 *
+	 * tools/repair-db-keys.php defines ORIA_SKIP_DB_REPAIR so that its dry
+	 * run is genuinely dry: without it, merely loading WordPress would
+	 * repair the tables the run is meant to be reporting on.
+	 */
+	if ( defined( 'ORIA_SKIP_DB_REPAIR' ) && ORIA_SKIP_DB_REPAIR ) {
+		return;
+	}
+	foreach ( keyed_tables() as $table => $column ) {
+		ensure_auto_increment( (string) $table, (string) $column );
 	}
 
 	update_option( OPTION, VERSION, false );
