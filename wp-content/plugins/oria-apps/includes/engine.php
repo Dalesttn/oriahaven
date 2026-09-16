@@ -74,24 +74,23 @@ function row( int $id ): array {
 	);
 }
 
-/** @return list<string> */
+/**
+ * The rows of a repeater.
+ *
+ * ACF stores the row COUNT in the parent key and each row under
+ * {field}_{i}_{sub}. Casting that count to an array, as the first version
+ * did, produces a single-element array and reads exactly one row -- so an
+ * app with four features showed one, silently and on every surface.
+ *
+ * @return list<string>
+ */
 function rows_of( int $id, string $field, string $sub ): array {
-	$out = array();
-	foreach ( (array) get_post_meta( $id, $field, true ) as $i => $ignored ) {
+	$count = (int) get_post_meta( $id, $field, true );
+	$out   = array();
+	for ( $i = 0; $i < $count; $i++ ) {
 		$text = (string) get_post_meta( $id, $field . '_' . $i . '_' . $sub, true );
 		if ( '' !== trim( $text ) ) {
 			$out[] = $text;
-		}
-	}
-	// ACF stores a repeater's count in the parent key; when the field was
-	// written by a seed script rather than the editor, read it directly.
-	if ( ! $out ) {
-		$count = (int) get_post_meta( $id, $field, true );
-		for ( $i = 0; $i < $count; $i++ ) {
-			$text = (string) get_post_meta( $id, $field . '_' . $i . '_' . $sub, true );
-			if ( '' !== trim( $text ) ) {
-				$out[] = $text;
-			}
 		}
 	}
 	return $out;

@@ -784,4 +784,25 @@ if ( $oria_facet ) {
 <?php endif; ?>
 
 <?php
+/*
+ * Wellness apps, at the very foot of the page.
+ *
+ * This is the template the /explore/ category pages actually render
+ * through -- taxonomy-practice.php serves the old addresses, which now
+ * redirect -- so the band belongs here as well.
+ *
+ * Skipped on a suburb page: somebody who has narrowed to Fremantle wants
+ * a room, not an app. Render\for_practice() returns nothing unless at
+ * least two apps genuinely map to this practice, so no category gets a
+ * band built out of one loosely related app.
+ */
+$oria_appband = ( ! $oria_area && $oria_term instanceof WP_Term && function_exists( '\Oria\Apps\Render\for_practice' ) )
+	? \Oria\Apps\Render\for_practice( $oria_term )
+	: '';
+?>
+<?php if ( $oria_appband ) : ?>
+	<?php echo $oria_appband; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+<?php endif; ?>
+
+<?php
 get_footer();

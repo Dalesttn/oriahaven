@@ -1,0 +1,387 @@
+{
+ "_note": "The first ten apps. Every factual field is taken from the app's own website and its Apple and Google listings, checked on 16 September 2026, and the sources are recorded per app. Editorial fields — tagline, take, what we like, things to consider — are ours and say who an app suits rather than what it will do for anybody. Prices are deliberately sparse: an app that publishes no price gets an empty field and 'see the app for pricing' on the card, because a wrong price is worse than none. Everything imports as a draft for review.",
+ "_checked": "2026-09-16",
+ "apps": [
+  {
+   "slug": "calm",
+   "title": "Calm",
+   "tagline": "Sleep stories, meditations and background sound, in one calm-feeling app.",
+   "excerpt": "One of the two best-known meditation apps, built as much around sleep as around meditation. Guided sessions sit alongside Sleep Stories read by well-known voices, breathing exercises and a large library of ambient sound. It is a polished, gentle place to start, and most of it sits behind a subscription.",
+   "developer": "Calm.com, Inc.",
+   "website": "https://www.calm.com",
+   "ios": "https://apps.apple.com/au/app/calm-sleep-meditation/id571800810",
+   "android": "https://play.google.com/store/apps/details?id=com.calm.android",
+   "categories": ["meditation", "sleep", "stress-relaxation", "mindfulness"],
+   "best_for": ["better-sleep", "relaxation", "beginners"],
+   "pricing_model": "subscription",
+   "free_version": false,
+   "free_trial": "",
+   "pricing_notes": "Free to download, with a subscription for most content. Calm does not publish its Australian price on its own site, so check the price in the app store before subscribing.",
+   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "take": "Calm suits someone who wants the wind-down more than the discipline: sleep stories, sound and short guided sessions in an app that is genuinely nice to open at night. If you want a structured course that teaches you to meditate, Headspace is the better fit.",
+   "features": [
+    "Guided meditations for sleep, stress and focus",
+    "Sleep Stories read by well-known narrators",
+    "Breathing exercises and ambient soundscapes",
+    "Short daily sessions for building a habit"
+   ],
+   "pros": [
+    "The sleep content is the strongest of any mainstream meditation app",
+    "Calm, uncluttered design that suits people new to this",
+    "Sessions short enough to fit into an ordinary evening"
+   ],
+   "cons": [
+    "Most of the library needs a subscription",
+    "Less structured than a course-based app if you want to learn technique"
+   ],
+   "faq": [
+    {"question": "Is Calm free?", "answer": "The app is free to download and includes some free content, but the bulk of the library, including most Sleep Stories, requires a subscription."},
+    {"question": "Is Calm good for sleep?", "answer": "Sleep is what it is best known for. Sleep Stories, ambient sound and wind-down sessions are all designed to be used at bedtime, and many people use it for nothing else."}
+   ],
+   "sources": ["https://apps.apple.com/au/app/calm-sleep-meditation/id571800810", "https://www.calm.com"]
+  },
+  {
+   "slug": "headspace",
+   "title": "Headspace",
+   "tagline": "Structured meditation courses for people who want to be taught, not just guided.",
+   "excerpt": "Headspace teaches meditation as a skill, through courses that build in order rather than a library you browse. Alongside the meditation it carries sleepcasts and wind-downs, short mindfulness exercises for the middle of a working day, and in some markets coaching and therapy. Everything beyond the trial needs a subscription.",
+   "developer": "Headspace Inc.",
+   "website": "https://www.headspace.com/",
+   "ios": "https://apps.apple.com/au/app/headspace-sleep-meditation/id493145008",
+   "android": "https://play.google.com/store/apps/details?id=com.getsomeheadspace.android",
+   "categories": ["meditation", "mindfulness", "sleep", "stress-relaxation"],
+   "best_for": ["beginners", "meditation", "focus"],
+   "pricing_model": "subscription",
+   "free_version": false,
+   "free_trial": "14 days",
+   "pricing_notes": "Headspace advertises a 14-day free trial, then monthly or annual billing, with student and family plans. The Australian price is not published on its site; check in the app store.",
+   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "take": "The one to choose if you have tried meditating and bounced off it. The courses are ordered, the instruction is plain, and the sessions are short enough that starting is not a decision. Less useful if you already have a practice and just want a big library to wander through.",
+   "features": [
+    "Ordered courses that teach meditation from the beginning",
+    "Sleepcasts and wind-down audio for bedtime",
+    "Short exercises for focus during the day",
+    "Over a thousand expert-led sessions"
+   ],
+   "pros": [
+    "The clearest teaching of any of the mainstream apps",
+    "Short sessions make a daily habit realistic",
+    "Sleep content included rather than sold separately"
+   ],
+   "cons": [
+    "No free tier beyond the trial",
+    "The structure that helps beginners can feel restrictive once you have a practice"
+   ],
+   "faq": [
+    {"question": "Is Headspace free?", "answer": "No. There is a 14-day free trial, after which it is a paid subscription. A handful of sessions stay available outside the trial."},
+    {"question": "Is Headspace good for beginners?", "answer": "It is the most beginner-oriented of the well-known apps. The courses run in order and explain what you are doing and why, rather than handing you a library to sort through."}
+   ],
+   "sources": ["https://www.headspace.com/", "https://apps.apple.com/au/app/headspace-sleep-meditation/id493145008"]
+  },
+  {
+   "slug": "insight-timer",
+   "title": "Insight Timer",
+   "tagline": "An enormous free library of guided meditation, and a timer for practising on your own.",
+   "excerpt": "Insight Timer is the opposite of a course: hundreds of thousands of free tracks from thousands of teachers, including a number of Australian ones, plus live sessions and a plain meditation timer with interval bells. The free tier is unusually generous, which makes it the natural first app to try.",
+   "developer": "Insight Network Inc",
+   "website": "https://insighttimer.com/",
+   "ios": "https://apps.apple.com/au/app/insight-timer-meditate-sleep/id337472899",
+   "android": "https://play.google.com/store/apps/details?id=com.spotlightsix.zentimerlite2",
+   "categories": ["meditation", "mindfulness", "sleep", "breathwork"],
+   "best_for": ["free", "meditation", "mindfulness"],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "The library is free. A paid membership adds courses and offline listening; the price is not published on the site, so check in the app store.",
+   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "take": "If you are not sure meditation is for you, start here rather than paying for anything. The free library is vast and the timer is genuinely useful once you practise on your own. The other side of that size is that browsing can become its own form of procrastination.",
+   "features": [
+    "A very large free library of guided meditations",
+    "Meditation timer with interval bells for unguided practice",
+    "Live sessions and teacher-led events",
+    "Sleep audio, music and yoga nidra"
+   ],
+   "pros": [
+    "The most generous free tier of any meditation app",
+    "Australian teachers among the thousands on the platform",
+    "The timer suits people who already know how to sit"
+   ],
+   "cons": [
+    "Quality varies from teacher to teacher, because anyone can publish",
+    "The size of the library can be its own obstacle when starting out"
+   ],
+   "faq": [
+    {"question": "Is Insight Timer really free?", "answer": "The main library is free to use. A paid membership adds features such as courses and offline listening, but the meditations themselves do not sit behind it."},
+    {"question": "What is the timer for?", "answer": "It is for meditating without guidance: you set a length and interval bells, and the app stays out of the way. It is the feature experienced meditators tend to use most."}
+   ],
+   "sources": ["https://insighttimer.com/", "https://apps.apple.com/au/app/insight-timer-meditate-sleep/id337472899"]
+  },
+  {
+   "slug": "smiling-mind",
+   "title": "Smiling Mind",
+   "tagline": "An Australian not-for-profit mindfulness app, free for everyone, including programs for children.",
+   "excerpt": "Smiling Mind is made by an Australian not-for-profit and has stayed free for individuals and families for over a decade. It runs as ordered programs rather than a library, with pathways for adults and separate ones written for children, and a schools program behind it.",
+   "developer": "Smiling Mind",
+   "website": "https://www.smilingmind.com.au/smiling-mind-app",
+   "ios": "https://apps.apple.com/au/app/smiling-mind-mental-wellbeing/id560442518",
+   "android": "https://play.google.com/store/apps/details?id=com.smilingmind.app",
+   "categories": ["meditation", "mindfulness", "mental-wellness"],
+   "best_for": ["free", "beginners", "mindfulness"],
+   "pricing_model": "free",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Free. Smiling Mind is a not-for-profit and states the app has remained free for individuals and families for over twelve years.",
+   "platforms": ["available_ios", "available_android"],
+   "take": "The one to recommend to a family. It is Australian, it is free with nothing held back, and the children's pathways are written for children rather than being adult sessions with a softer voice. For an adult wanting depth, the library is smaller than the paid apps.",
+   "features": [
+    "Over 700 sessions across 90 collections and pathways",
+    "Separate programs for children, teenagers and adults",
+    "Routines and progress tracking",
+    "Content on sleep, stress and managing emotions"
+   ],
+   "pros": [
+    "Genuinely free, from a not-for-profit, with no upsell",
+    "Made in Australia, including a widely used schools program",
+    "Among the few mindfulness apps written properly for children"
+   ],
+   "cons": [
+    "A smaller library than the large subscription apps",
+    "Less polished than Calm or Headspace in places"
+   ],
+   "faq": [
+    {"question": "Is Smiling Mind free?", "answer": "Yes. It is run by an Australian not-for-profit and has been free for individuals and families for more than twelve years."},
+    {"question": "Is Smiling Mind suitable for children?", "answer": "Yes. It has pathways written specifically for children and teenagers, and the same organisation runs a mindfulness program used in Australian schools."}
+   ],
+   "sources": ["https://www.smilingmind.com.au/smiling-mind-app", "https://apps.apple.com/au/app/smiling-mind-mental-wellbeing/id560442518"]
+  },
+  {
+   "slug": "bettersleep",
+   "title": "BetterSleep",
+   "tagline": "Mix your own sleep soundscape, with stories and wind-down audio alongside.",
+   "excerpt": "BetterSleep, formerly Relax Melodies, is built around sound: you layer rain, fans, white noise and instruments into a mix of your own, and it plays as you fall asleep. Around that sit narrated sleep stories, meditations and breathing exercises. The app is free to use, with a good deal of the content behind a subscription.",
+   "developer": "Ipnos Software Inc.",
+   "website": "https://www.bettersleep.com/",
+   "ios": "https://apps.apple.com/au/app/bettersleep-relax-and-sleep/id314498713",
+   "android": "https://play.google.com/store/apps/details?id=ipnossoft.rma.free",
+   "categories": ["sleep", "stress-relaxation"],
+   "best_for": ["better-sleep", "relaxation"],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Free to download and use, with much of the content requiring the Premium plan. The Australian price is not published on the site; check in the app store.",
+   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "take": "The one for people who sleep better with sound. Being able to build the mix yourself, rather than picking from fixed tracks, is what makes it different from the meditation apps that bolt sleep audio on the side.",
+   "features": [
+    "Custom sound mixing from a large library of sounds",
+    "Narrated sleep stories",
+    "Sleep meditations and breathing exercises",
+    "Binaural beats and ASMR content"
+   ],
+   "pros": [
+    "The sound mixing is genuinely better than its rivals",
+    "Usable free, unlike the big subscription apps",
+    "Good for shift workers and light sleepers who need masking sound"
+   ],
+   "cons": [
+    "The best content sits behind the Premium plan",
+    "Sound all night affects phone battery unless it is charging"
+   ],
+   "faq": [
+    {"question": "Is BetterSleep free?", "answer": "The app is free to download and use, but not all content is available without the Premium plan."},
+    {"question": "What happened to Relax Melodies?", "answer": "It was renamed. BetterSleep is the same app with the same sound library."}
+   ],
+   "sources": ["https://www.bettersleep.com/", "https://apps.apple.com/au/app/bettersleep-relax-and-sleep/id314498713"]
+  },
+  {
+   "slug": "sleep-cycle",
+   "title": "Sleep Cycle",
+   "tagline": "Tracks your sleep by sound and wakes you at a lighter point in the cycle.",
+   "excerpt": "A Swedish app that listens rather than needing a wearable: it analyses sound through the night, scores your sleep on duration, quality and consistency, and wakes you inside a window rather than at an exact minute. It suits people who want to see patterns over months rather than fiddle with settings.",
+   "developer": "Sleep Cycle AB",
+   "website": "https://www.sleepcycle.com/",
+   "ios": "https://apps.apple.com/au/app/sleep-cycle-sleep-tracker/id320606217",
+   "android": "https://play.google.com/store/apps/details?id=com.northcube.sleepcycle",
+   "categories": ["sleep", "habit-building"],
+   "best_for": ["better-sleep", "building-habits"],
+   "pricing_model": "subscription",
+   "free_version": false,
+   "free_trial": "",
+   "pricing_notes": "Sleep Cycle advertises a free trial, but its own site shows two different lengths in different places, and no Australian price. Check both the trial length and the price in the app store before subscribing.",
+   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "take": "Useful if you suspect your sleep is worse than it feels and want evidence over time. It needs no watch, which is the practical advantage. Treat the score as a trend line rather than a measurement, and do not let checking it become the thing that keeps you awake.",
+   "features": [
+    "Sleep tracking by sound analysis, no wearable needed",
+    "Smart alarm that wakes you within a chosen window",
+    "A nightly sleep score from duration, quality and routine",
+    "Long-run trends and statistics"
+   ],
+   "pros": [
+    "Works with just a phone beside the bed",
+    "Long history makes patterns visible over months",
+    "The waking window is gentler than a fixed alarm"
+   ],
+   "cons": [
+    "The trial length is advertised inconsistently on their own site",
+    "Sleep scores can become something to worry about rather than act on"
+   ],
+   "faq": [
+    {"question": "Does Sleep Cycle need a smartwatch?", "answer": "No. It analyses sound with the phone beside the bed, which is the main practical difference from wearable-based trackers."},
+    {"question": "Is Sleep Cycle free?", "answer": "There is a free trial, then a subscription. The site advertises different trial lengths in different places, so check before you sign up."}
+   ],
+   "sources": ["https://www.sleepcycle.com/", "https://apps.apple.com/au/app/sleep-cycle-sleep-tracker/id320606217"]
+  },
+  {
+   "slug": "fiton",
+   "title": "FitOn",
+   "tagline": "Free workout videos across cardio, strength, yoga and pilates.",
+   "excerpt": "FitOn offers unlimited free workout videos, which is unusual in fitness apps: cardio, strength, pilates, yoga, toning and meditation, with programs you can follow rather than one-off sessions. A paid tier adds meal plans and extra content, but the workouts themselves are free.",
+   "developer": "FitOn Inc.",
+   "website": "https://fitonapp.com",
+   "ios": "https://apps.apple.com/au/app/fiton-workouts-fitness-plans/id1442473191",
+   "android": "https://play.google.com/store/apps/details?id=com.fiton.android",
+   "categories": ["fitness", "yoga", "recovery"],
+   "best_for": ["home-workouts", "free", "getting-active"],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "The workout library is free. A paid tier adds meal plans and extra content; the price is not published on the site, so check in the app store.",
+   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "take": "The obvious first stop if you want to train at home without paying anything. The range is broad rather than deep, which suits someone building a habit more than someone chasing a specific programme.",
+   "features": [
+    "Free workout videos across cardio, strength, pilates and yoga",
+    "Multi-week programs rather than only single sessions",
+    "Meditation and recovery content alongside the workouts",
+    "Challenges and social features for motivation"
+   ],
+   "pros": [
+    "A genuinely free workout library, which is rare",
+    "Enough variety to keep a home routine interesting",
+    "Short sessions for days when a full workout will not happen"
+   ],
+   "cons": [
+    "Meal plans and some content need the paid tier",
+    "Less specialised than a dedicated strength or running app"
+   ],
+   "faq": [
+    {"question": "Is FitOn free?", "answer": "The workout library is free and unlimited. A paid tier adds meal plans and extra content."},
+    {"question": "Do I need equipment?", "answer": "Many of the workouts are bodyweight only, with equipment-based sessions marked so you can filter them out."}
+   ],
+   "sources": ["https://fitonapp.com/", "https://apps.apple.com/au/app/fiton-workouts-fitness-plans/id1442473191"]
+  },
+  {
+   "slug": "nike-training-club",
+   "title": "Nike Training Club",
+   "tagline": "Over 200 workouts from Nike trainers, free, from five minutes to fifty.",
+   "excerpt": "Nike Training Club gives away what used to be a paid library: more than 200 workouts led by Nike trainers, covering strength, HIIT, yoga, cardio and mobility, with multi-week programs for people who want structure. Sessions run from five to fifty minutes, so it fits days when there is no time as well as days when there is.",
+   "developer": "Nike, Inc",
+   "website": "https://www.nike.com/au/ntc-app",
+   "ios": "https://apps.apple.com/au/app/nike-training-club/id301521403",
+   "android": "https://play.google.com/store/apps/details?id=com.nike.ntc",
+   "categories": ["fitness", "yoga", "recovery"],
+   "best_for": ["home-workouts", "free", "getting-active"],
+   "pricing_model": "free",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Free to download and use. Nike states the workouts and programs are free.",
+   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "take": "The best-produced free workout app there is, and the five-minute mobility sessions do more for most people than the hard ones. Worth having installed even if you train elsewhere.",
+   "features": [
+    "More than 200 free workouts led by Nike trainers",
+    "Four to six week programs for structure",
+    "Strength, HIIT, yoga, cardio and mobility",
+    "Apple Watch support and progress tracking"
+   ],
+   "pros": [
+    "Free, with no tier held back",
+    "Production and coaching quality above most paid apps",
+    "Short sessions make it usable on a bad week"
+   ],
+   "cons": [
+    "Workout planning tools are richer on iPhone than on Android",
+    "Built around Nike, so expect the brand throughout"
+   ],
+   "faq": [
+    {"question": "Is Nike Training Club free?", "answer": "Yes. Nike makes the workouts and programs free to download and use."},
+    {"question": "Is it only for people who already train?", "answer": "No. Sessions start at five minutes and include mobility and beginner strength, though it assumes you can follow a video without hands-on correction."}
+   ],
+   "sources": ["https://www.nike.com/au/ntc-app", "https://apps.apple.com/au/app/nike-training-club/id301521403"]
+  },
+  {
+   "slug": "strava",
+   "title": "Strava",
+   "tagline": "Records your runs, rides and walks, and makes them social.",
+   "excerpt": "Strava tracks activity by GPS and turns it into something shared: routes, segments, clubs and challenges, with friends able to see and respond to what you did. For a lot of people the social side is the point, and it is what keeps them going out. The core is free, with a subscription for the deeper analysis.",
+   "developer": "Strava, Inc.",
+   "website": "https://www.strava.com/",
+   "ios": "https://apps.apple.com/au/app/strava-run-bike-walk/id426826309",
+   "android": "https://play.google.com/store/apps/details?id=com.strava",
+   "categories": ["running", "walking", "fitness", "social-wellness"],
+   "best_for": ["running", "social", "getting-active"],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Free to join and use, with a paid subscription for extra analysis and route features. The Australian price is not published on the site; check in the app store.",
+   "platforms": ["available_ios", "available_android", "available_web", "available_apple_watch"],
+   "take": "Worth it for the accountability more than the data. If seeing that a friend went out this morning is what gets you out the door, this is the app that does it. If comparing yourself to other people is not motivating for you, it is the wrong one.",
+   "features": [
+    "GPS tracking for running, riding, walking and thirty other sports",
+    "Segments and routes for exploring",
+    "Clubs and challenges",
+    "Beacon, which shares your live location with a safety contact"
+   ],
+   "pros": [
+    "The social side is genuinely motivating for a lot of people",
+    "Works with most GPS watches rather than locking you in",
+    "Beacon is a real safety feature for running alone"
+   ],
+   "cons": [
+    "The comparison and leaderboards do not suit everyone",
+    "Some analysis is subscription-only",
+    "Worth checking your privacy settings before recording from home"
+   ],
+   "faq": [
+    {"question": "Is Strava free?", "answer": "Yes, it is free to join and record activities. A subscription adds deeper analysis and route planning."},
+    {"question": "Is Strava only for runners and cyclists?", "answer": "No. It records walking, hiking, swimming, yoga and more than thirty other activities, though running and cycling are where its features are deepest."}
+   ],
+   "sources": ["https://www.strava.com/", "https://apps.apple.com/au/app/strava-run-bike-walk/id426826309"]
+  },
+  {
+   "slug": "alltrails",
+   "title": "AllTrails",
+   "tagline": "Finds walks and trails near you, with maps that work without reception.",
+   "excerpt": "AllTrails is a map of walking, hiking and running trails, with reviews and photographs from people who have been. Downloadable maps mean navigation keeps working where there is no phone reception, which in the hills around Perth is the feature that matters. The basics are free, with a paid tier for offline maps.",
+   "developer": "AllTrails, Inc.",
+   "website": "https://www.alltrails.com/",
+   "ios": "https://apps.apple.com/au/app/alltrails-hike-bike-run/id405075943",
+   "android": "https://play.google.com/store/apps/details?id=com.alltrails.alltrails",
+   "categories": ["walking", "outdoor-wellness", "fitness"],
+   "best_for": ["walking-outdoors", "getting-active"],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Free to browse and record. Offline maps and some navigation features need the paid tier; the Australian price is not published on the site, so check in the app store.",
+   "platforms": ["available_ios", "available_android", "available_web", "available_apple_watch"],
+   "take": "The easiest way to find a walk you have not done before, and the reviews are honest about what a trail is actually like underfoot. If you walk in the hills or anywhere past reception, the offline maps are the reason to pay.",
+   "features": [
+    "Trail maps with reviews and photographs from walkers",
+    "Live tracking and activity recaps",
+    "Offline map downloads for areas without reception",
+    "Custom route building"
+   ],
+   "pros": [
+    "Finds walks near you that you would not otherwise know about",
+    "Reviews are specific about conditions and difficulty",
+    "Offline maps are a genuine safety feature outside reception"
+   ],
+   "cons": [
+    "Offline maps sit behind the paid tier",
+    "Trail information is community-written, so conditions can be out of date"
+   ],
+   "faq": [
+    {"question": "Is AllTrails free?", "answer": "Browsing trails and recording walks is free. Offline maps and some navigation features require the paid tier."},
+    {"question": "Does it work where there is no reception?", "answer": "Only if you download the map before you go, which requires the paid tier. Without that, navigation needs a signal."}
+   ],
+   "sources": ["https://www.alltrails.com/", "https://apps.apple.com/au/app/alltrails-hike-bike-run/id405075943"]
+  }
+ ]
+}
