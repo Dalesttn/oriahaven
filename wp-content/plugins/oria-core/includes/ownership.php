@@ -424,17 +424,50 @@ function admin_only_fields( $field ) {
 		$field['instructions'] = 'Managed by Oria Haven — links your listing to its Google Business Profile.';
 	}
 
-	// Plan gating: on the free plan only location and contact stay
-	// editable; every paid field is shown greyed with an upgrade note.
+	/*
+	 * Plan gating. A free owner can now put their listing right -- services,
+	 * hours, amenities, parking, who it suits -- and what stays locked is
+	 * what would give them an advantage.
+	 *
+	 * The lock says what the field would DO for them and links to the
+	 * checkout, because a padlock and the word "upgrade" tells somebody they
+	 * are being charged without telling them what for. The sell belongs here,
+	 * at the moment they reached for the thing, rather than only in a banner
+	 * above the fold that they scrolled past.
+	 */
 	$listing = owned_listing( get_current_user_id() );
 	if ( $listing && ! \Oria\Core\Tiers\field_editable( $listing, $name ) ) {
 		$field                     = lock( $field );
 		$field['wrapper']['class'] = trim( ( $field['wrapper']['class'] ?? '' ) . ' oria-locked' );
-		$field['instructions']       = 'booking_url' === $name
-			? __( 'Booking links are part of the Claimed plan — upgrade to add yours.', 'oria' )
-			: __( 'Included in the Claimed plan — upgrade to edit.', 'oria' );
+		$field['instructions']     = upgrade_note( $name, $listing );
 	}
 	return $field;
+}
+
+/**
+ * The note under a locked field: what it would do, and a way to get it.
+ *
+ * Falls back to naming the plan where no benefit line is written, so a
+ * newly gated field is still explained rather than silently padlocked.
+ */
+function upgrade_note( string $name, int $listing ): string {
+    $sell = \Oria\Core\Tiers\field_sell( $name );
+    $note = '' !== $sell
+        ? $sell
+        : __( 'Part of the Claimed plan.', 'oria' );
+
+    if ( ! function_exists( '\Oria\Core\Billing\pay_url' ) || ! \Oria\Core\Billing\configured() ) {
+        return $note;
+    }
+
+    $email = (string) ( wp_get_current_user()->user_email ?? '' );
+
+    return sprintf(
+        '%s <a href="%s">%s</a>',
+        esc_html( $note ),
+        esc_url( \Oria\Core\Billing\pay_url( 'claimed', $listing, $email ) ),
+        esc_html__( 'Unlock it with Claimed, $29/month', 'oria' )
+    );
 }
 
 /**

@@ -450,7 +450,7 @@ function activation_notice(): void {
 
 	echo $wrap_open // phpcs:ignore WordPress.Security.EscapeOutput
 		. '<h2 style="margin:0 0 4px;color:#FFFFFF;font-size:22px;letter-spacing:-0.3px;">' . esc_html__( 'Your claim is approved — choose a plan to unlock everything.', 'oria' ) . '</h2>'
-		. '<p style="margin:0 0 18px;color:#A9C2B7;font-size:13px;">' . esc_html__( 'On the free plan you can keep your location and contact details up to date. A plan unlocks the rest the moment payment goes through — and everything you add is kept, even if you cancel.', 'oria' ) . '</p>'
+		. '<p style="margin:0 0 18px;color:#A9C2B7;font-size:13px;">' . esc_html__( 'Your listing is yours to correct for nothing — your services, hours, prices, amenities, parking and contact details. A plan is for what happens next: a booking link, photos, offers and the numbers behind it. Everything you add is kept, even if you cancel.', 'oria' ) . '</p>'
 		. '<div style="display:flex;gap:16px;flex-wrap:wrap;">'
 
 		. '<div style="' . $card . '">'

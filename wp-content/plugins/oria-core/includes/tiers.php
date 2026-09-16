@@ -73,9 +73,28 @@ const FEATURES = array(
 );
 
 /**
- * Field-level gating for the listing edit screen. An approved owner on the
- * free plan may keep their location and contact details current; every
- * paid field is visible but locked until they subscribe.
+ * Field-level gating for the listing edit screen.
+ *
+ * The line is: FREE MAKES IT RIGHT, PAID MAKES IT WORK.
+ *
+ * Anything that decides whether the listing is CORRECT is free — what you
+ * offer, when you are open, where to park, what the room has in it. Wrong
+ * information is Oria Haven's problem before it is the practice's: a
+ * directory nobody can trust is worth nothing, and we do not get to charge
+ * a business $29 a month for the privilege of fixing what we got wrong
+ * about them. Baolin Acupuncture emailed to say we had them down for Reiki
+ * and infrared sauna, neither of which they offer. Under the old gating,
+ * claiming their listing for free would not have let them correct it.
+ *
+ * Anything that gives the practice an ADVANTAGE is paid — a booking link,
+ * photographs, offers, their email published, the class timetable, the
+ * badge, the analytics, the placement. That is a straight trade and it is
+ * easy to explain on a pricing page.
+ *
+ * The commercial argument runs the same way. An owner who can finish their
+ * listing comes back, sees what it is doing, and has a reason to want more
+ * of it. An owner who meets a wall of padlocks on their first visit closes
+ * the tab, and nobody has ever upgraded from a closed tab.
  *
  * field name => minimum tier ('free' means any approved owner).
  */
@@ -84,8 +103,12 @@ const FIELD_TIERS = array(
 	'phone'         => 'free',
 	'email'         => 'free',
 	'website'       => 'free',
+	// The conversion path, and the one thing on this list a practice would
+	// miss most. Kept paid on purpose: it is the clearest thing $29 buys.
 	'booking_url'   => CLAIMED,
-	'services'      => CLAIMED,
+	// What you actually do. Free, because a service list we researched and
+	// got wrong is worse for us than for them -- see the note above.
+	'services'      => 'free',
 	'price_from'    => 'free',
 	'price_band'    => 'free',
 	'format'        => 'free',
@@ -104,18 +127,53 @@ const FIELD_TIERS = array(
 	'offer_until'   => CLAIMED,
 	'gallery'       => CLAIMED,
 	'next_session'  => CLAIMED,
-	'good_for'      => CLAIMED,
-	'opening_hours' => CLAIMED,
-	'transit'       => CLAIMED,
-	'parking'       => CLAIMED,
+	// Who a place suits, when it opens, how to get there and what is in the
+	// building. All four are plain facts about the practice, all four are
+	// things a reader is annoyed to find wrong, and none of them are worth
+	// holding hostage. Opening hours especially: stale hours are the single
+	// most common way a directory wastes somebody's trip.
+	'good_for'      => 'free',
+	'opening_hours' => 'free',
+	'transit'       => 'free',
+	'parking'       => 'free',
 	// Nobody researches amenities — the only source is the business ticking
-	// a box about its own premises, which is exactly what claiming makes
-	// possible. Until then the field is present, empty, and shows nothing.
-	'amenities'     => CLAIMED,
+	// a box about its own premises. That is an argument for asking them, not
+	// for charging them; an empty field still shows nothing.
+	'amenities'     => 'free',
 	// Editable on any plan; how many of them publish is what the tier
 	// decides — see TEAM_LIMITS.
 	'team'          => 'free',
 );
+
+/**
+ * What a locked field would actually do for the practice.
+ *
+ * A padlock and the word "upgrade" tells somebody they are being charged
+ * without telling them what for. These lines go on the field itself, so
+ * the sell happens where the want is -- at the moment they reached for the
+ * thing -- rather than in a banner they scrolled past.
+ *
+ * Written as the benefit, never as the feature: "so people can book you
+ * without ringing", not "booking URL field".
+ */
+const FIELD_SELLS = array(
+	'booking_url'   => 'Let people book you straight from your profile, without ringing first.',
+	'gallery'       => 'Show the room. Listings with photos get opened far more often than listings without.',
+	'offer_title'   => 'Run an offer on your profile and on every card your listing appears in.',
+	'offer_text'    => 'Run an offer on your profile and on every card your listing appears in.',
+	'offer_until'   => 'Run an offer on your profile and on every card your listing appears in.',
+	'instagram_url' => 'Send the people who find you here to your Instagram.',
+	'facebook_url'  => 'Send the people who find you here to your Facebook page.',
+	'classes'       => 'Publish your timetable so people know what runs and when.',
+	'packages'      => 'Publish your packages and passes, so the price question is answered before they ring.',
+	'faq'           => 'Answer the questions you get asked on the phone, on the page instead.',
+	'next_session'  => 'Show what is on next, so somebody ready today can act today.',
+);
+
+/** The benefit line for a locked field, or '' where there is nothing to say. */
+function field_sell( string $field_name ): string {
+	return (string) ( FIELD_SELLS[ $field_name ] ?? '' );
+}
 
 /** Whether this listing's plan lets its owner edit a given field. */
 function field_editable( int $listing_id, string $field_name ): bool {
@@ -194,7 +252,9 @@ function summary( string $tier ): array {
 		'label'    => __( 'Claimed', 'oria' ),
 		'price'    => '$' . PRICES[ CLAIMED ],
 		'features' => array(
-			__( 'Edit every detail of your listing', 'oria' ),
+			// No longer "edit every detail" -- a free owner already can edit
+			// the details. What Claimed sells is what the listing then does.
+			__( 'A booking link, so people can book you from your profile', 'oria' ),
 			// Free listings take enquiries through the form instead, so this
 			// is a real difference rather than a line on a chart. Selling it
 			// only works if it is written down somewhere they read.
