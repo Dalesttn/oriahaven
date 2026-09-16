@@ -5,181 +5,1250 @@
    "slug": "yoga-for-beginners-perth",
    "category": "beginners",
    "choose": [
-    { "listing": "yogahub-perth", "when": "you want a structured course rather than a drop-in" },
-    { "listing": "the-yoga-space-west-perth", "when": "you'd like to try a few styles before committing" },
-    { "listing": "flow-hot-yoga-pilates-wangara", "when": "you're in the northern suburbs" },
-    { "listing": "the-yoga-garage", "when": "you want to try hot yoga cheaply" }
+    {
+     "listing": "yogahub-perth",
+     "when": "you want a structured course rather than a drop-in"
+    },
+    {
+     "listing": "the-yoga-space-west-perth",
+     "when": "you'd like to try a few styles before committing"
+    },
+    {
+     "listing": "flow-hot-yoga-pilates-wangara",
+     "when": "you're in the northern suburbs"
+    },
+    {
+     "listing": "the-yoga-garage",
+     "when": "you want to try hot yoga cheaply"
+    }
    ],
    "picks": [
-    { "listing": "yogahub-perth", "award": "best_for_beginners", "spotlight": "Best overall", "best_for": "A structured start", "reason": "The six-week Beginners Foundations course is the most structured way in on this list: one class a week that builds the basics in order, rather than dropping you into a mixed-level room. Once you're through it, there are more than thirty-six classes a week to choose from, seven days.", "highlights": "Six-week beginners course, 36+ classes a week, Seven days, Mount Hawthorn", "lead_badge": true },
-    { "listing": "the-yoga-space-west-perth", "award": "best_for_beginners", "spotlight": "Best intro pass", "best_for": "Trying it before committing", "reason": "A three-week unlimited introduction lets you try Ashtanga, Vinyasa and Yin across the timetable before deciding whether a regular practice fits your week. Classes also run online, so a missed week isn't a lost one. Teaching here since 2005.", "highlights": "Three-week unlimited intro, Ashtanga Vinyasa and Yin, Online classes, West Perth", "lead_badge": true },
-    { "listing": "flow-hot-yoga-pilates-wangara", "award": "best_for_beginners", "best_for": "Northern suburbs", "reason": "Beginners' yoga runs as its own class here rather than as a modification of someone else's, and the studio says outright that flexibility, strength and balance are not entry requirements. Heated and unheated classes both on the timetable, so you can choose the temperature you start at.", "highlights": "Dedicated beginners class, Heated and unheated options, No experience expected, Wangara", "lead_badge": true },
-    { "listing": "the-yoga-garage", "award": "best_for_beginners", "spotlight": "Best value", "best_for": "Hot yoga first-timers", "price_note": "14 days unlimited $39 — price checked September 2026", "reason": "Fourteen days unlimited for $39 is the cheapest way on this list to find out whether a warm room suits you. The timetable pairs Bikram and hot vinyasa with a yin class to balance the heat, fifteen minutes up the coast from the city.", "highlights": "14 days unlimited $39, Bikram and hot vinyasa, Yin to balance the heat, Scarborough", "lead_badge": true },
-    { "listing": "bodyscape-wellness-spa", "award": "beginner_friendly", "best_for": "Western suburbs", "reason": "Foundation classes sit on the timetable alongside vinyasa, yin and prenatal, in a Stirling Highway studio open seven days around class times. Private sessions are available if a group room isn't how you want to start, and there's a spa downstairs for afterwards.", "highlights": "Foundation classes, Private sessions, Open seven days, Nedlands", "lead_badge": false }
+    {
+     "listing": "yogahub-perth",
+     "award": "best_for_beginners",
+     "spotlight": "Best overall",
+     "best_for": "A structured start",
+     "reason": "The six-week Beginners Foundations course is the most structured way in on this list: one class a week that builds the basics in order, rather than dropping you into a mixed-level room. Once you're through it, there are more than thirty-six classes a week to choose from, seven days.",
+     "highlights": "Six-week beginners course, 36+ classes a week, Seven days, Mount Hawthorn",
+     "lead_badge": true
+    },
+    {
+     "listing": "the-yoga-space-west-perth",
+     "award": "best_for_beginners",
+     "spotlight": "Best intro pass",
+     "best_for": "Trying it before committing",
+     "reason": "A three-week unlimited introduction lets you try Ashtanga, Vinyasa and Yin across the timetable before deciding whether a regular practice fits your week. Classes also run online, so a missed week isn't a lost one. Teaching here since 2005.",
+     "highlights": "Three-week unlimited intro, Ashtanga Vinyasa and Yin, Online classes, West Perth",
+     "lead_badge": true
+    },
+    {
+     "listing": "flow-hot-yoga-pilates-wangara",
+     "award": "best_for_beginners",
+     "best_for": "Northern suburbs",
+     "reason": "Beginners' yoga runs as its own class here rather than as a modification of someone else's, and the studio says outright that flexibility, strength and balance are not entry requirements. Heated and unheated classes both on the timetable, so you can choose the temperature you start at.",
+     "highlights": "Dedicated beginners class, Heated and unheated options, No experience expected, Wangara",
+     "lead_badge": true
+    },
+    {
+     "listing": "the-yoga-garage",
+     "award": "best_for_beginners",
+     "spotlight": "Best value",
+     "best_for": "Hot yoga first-timers",
+     "price_note": "14 days unlimited $39 — price checked September 2026",
+     "reason": "Fourteen days unlimited for $39 is the cheapest way on this list to find out whether a warm room suits you. The timetable pairs Bikram and hot vinyasa with a yin class to balance the heat, fifteen minutes up the coast from the city.",
+     "highlights": "14 days unlimited $39, Bikram and hot vinyasa, Yin to balance the heat, Scarborough",
+     "lead_badge": true
+    },
+    {
+     "listing": "bodyscape-wellness-spa",
+     "award": "beginner_friendly",
+     "best_for": "Western suburbs",
+     "reason": "Foundation classes sit on the timetable alongside vinyasa, yin and prenatal, in a Stirling Highway studio open seven days around class times. Private sessions are available if a group room isn't how you want to start, and there's a spa downstairs for afterwards.",
+     "highlights": "Foundation classes, Private sessions, Open seven days, Nedlands",
+     "lead_badge": false
+    }
    ]
   },
   {
    "slug": "saunas-perth",
    "category": "recovery",
    "choose": [
-    { "listing": "ember-bath-house", "when": "you want the full circuit of sauna, steam, hot bath and ice bath" },
-    { "listing": "reclab-wembley", "when": "hot-and-cold contrast is the point" },
-    { "listing": "melt-sauna-cold-plunge-subiaco", "when": "you want the cheapest session, especially early morning" },
-    { "listing": "bodyscape-wellness-spa", "when": "you'd rather an infrared room than a Finnish one" }
+    {
+     "listing": "ember-bath-house",
+     "when": "you want the full circuit of sauna, steam, hot bath and ice bath"
+    },
+    {
+     "listing": "reclab-wembley",
+     "when": "hot-and-cold contrast is the point"
+    },
+    {
+     "listing": "melt-sauna-cold-plunge-subiaco",
+     "when": "you want the cheapest session, especially early morning"
+    },
+    {
+     "listing": "bodyscape-wellness-spa",
+     "when": "you'd rather an infrared room than a Finnish one"
+    }
    ],
    "picks": [
-    { "listing": "ember-bath-house", "award": "best_sauna", "spotlight": "Best overall", "best_for": "The full circuit", "reason": "A Finnish sauna, steam room, hot mineral bath and ice bath, taken as a circuit on a single day pass. Open seven days, from 6am on Thursdays and Fridays and until 8pm most nights, with massage and treatments bookable alongside. All-gender, 18-plus, swimwear required.", "highlights": "Finnish sauna and steam, Hot mineral bath and ice bath, Day pass, Open from 6am Thu–Fri", "lead_badge": true },
-    { "listing": "reclab-wembley", "award": "best_for_recovery", "best_for": "Contrast sessions", "reason": "Built for hot-and-cold rather than heat alone: a Finnish sauna and steam room next to cold plunge pools and a magnesium hot plunge, so a contrast circuit is the default here. Casual dips are available as well as memberships, and red light and compression boots are on the menu for afterwards.", "highlights": "Finnish sauna and steam, Cold and hot plunge, Casual sessions, Wembley", "lead_badge": true },
-    { "listing": "melt-sauna-cold-plunge-subiaco", "award": "best_value", "spotlight": "Best value", "best_for": "Early and affordable", "price_note": "$25 for 30 min, $35 for 60 — price checked September 2026", "reason": "Sauna and cold plunge in thirty- or sixty-minute blocks, $25 and $35, with availability capped so the room stays quiet. The 5am, 6am and 7am sessions are $7, $14 and $21, which makes it the cheapest sauna on this list if you can get there before work. Showers, change rooms and a drink afterwards.", "highlights": "30 min $25 or 60 min $35, Early sessions from $7, Capped numbers, Subiaco", "lead_badge": true },
-    { "listing": "swan-valley-retreat", "award": "best_sauna", "award_label": "Best sauna day out", "best_for": "Making a day of it", "reason": "The Oasis — sauna, ice bath and spa sessions — sits inside a day spa with floatation, hydrotherapy, massage and facials, so a sauna can be one part of a longer afternoon. Day visitors are welcome six days a week, with Oasis and float sessions running Sundays too.", "highlights": "Sauna and ice bath sessions, Float and hydrotherapy on site, Day visitors welcome, Swan Valley", "lead_badge": true },
-    { "listing": "bodyscape-wellness-spa", "award": "best_sauna", "award_label": "Best infrared sauna", "best_for": "Infrared, western suburbs", "price_note": "Infrared sauna 45 min $50 — price checked September 2026", "reason": "A 45-minute infrared session at $50, in a Nedlands spa where it can be paired with massage or a facial in the same visit. Infrared runs at a lower air temperature than a traditional sauna, which suits people who find a Finnish room too much.", "highlights": "Infrared sauna 45 min $50, Massage and facials on site, Open seven days, Nedlands", "lead_badge": false },
-    { "listing": "emerson-floatation-spa", "award": "best_sauna", "award_label": "Best sauna and float", "best_for": "South-east, sauna plus float", "reason": "An infrared sauna alongside float rooms and massage, so the two can be stacked in one visit. One of the only sauna-and-float options in the south-eastern corridor, which saves Kelmscott and Armadale the drive north.", "highlights": "Infrared sauna, Float rooms, Massage on site, Kelmscott", "lead_badge": true }
+    {
+     "listing": "ember-bath-house",
+     "award": "best_sauna",
+     "spotlight": "Best overall",
+     "best_for": "The full circuit",
+     "reason": "A Finnish sauna, steam room, hot mineral bath and ice bath, taken as a circuit on a single day pass. Open seven days, from 6am on Thursdays and Fridays and until 8pm most nights, with massage and treatments bookable alongside. All-gender, 18-plus, swimwear required.",
+     "highlights": "Finnish sauna and steam, Hot mineral bath and ice bath, Day pass, Open from 6am Thu–Fri",
+     "lead_badge": true
+    },
+    {
+     "listing": "reclab-wembley",
+     "award": "best_for_recovery",
+     "best_for": "Contrast sessions",
+     "reason": "Built for hot-and-cold rather than heat alone: a Finnish sauna and steam room next to cold plunge pools and a magnesium hot plunge, so a contrast circuit is the default here. Casual dips are available as well as memberships, and red light and compression boots are on the menu for afterwards.",
+     "highlights": "Finnish sauna and steam, Cold and hot plunge, Casual sessions, Wembley",
+     "lead_badge": true
+    },
+    {
+     "listing": "melt-sauna-cold-plunge-subiaco",
+     "award": "best_value",
+     "spotlight": "Best value",
+     "best_for": "Early and affordable",
+     "price_note": "$25 for 30 min, $35 for 60 — price checked September 2026",
+     "reason": "Sauna and cold plunge in thirty- or sixty-minute blocks, $25 and $35, with availability capped so the room stays quiet. The 5am, 6am and 7am sessions are $7, $14 and $21, which makes it the cheapest sauna on this list if you can get there before work. Showers, change rooms and a drink afterwards.",
+     "highlights": "30 min $25 or 60 min $35, Early sessions from $7, Capped numbers, Subiaco",
+     "lead_badge": true
+    },
+    {
+     "listing": "swan-valley-retreat",
+     "award": "best_sauna",
+     "award_label": "Best sauna day out",
+     "best_for": "Making a day of it",
+     "reason": "The Oasis — sauna, ice bath and spa sessions — sits inside a day spa with floatation, hydrotherapy, massage and facials, so a sauna can be one part of a longer afternoon. Day visitors are welcome six days a week, with Oasis and float sessions running Sundays too.",
+     "highlights": "Sauna and ice bath sessions, Float and hydrotherapy on site, Day visitors welcome, Swan Valley",
+     "lead_badge": true
+    },
+    {
+     "listing": "bodyscape-wellness-spa",
+     "award": "best_sauna",
+     "award_label": "Best infrared sauna",
+     "best_for": "Infrared, western suburbs",
+     "price_note": "Infrared sauna 45 min $50 — price checked September 2026",
+     "reason": "A 45-minute infrared session at $50, in a Nedlands spa where it can be paired with massage or a facial in the same visit. Infrared runs at a lower air temperature than a traditional sauna, which suits people who find a Finnish room too much.",
+     "highlights": "Infrared sauna 45 min $50, Massage and facials on site, Open seven days, Nedlands",
+     "lead_badge": false
+    },
+    {
+     "listing": "emerson-floatation-spa",
+     "award": "best_sauna",
+     "award_label": "Best sauna and float",
+     "best_for": "South-east, sauna plus float",
+     "reason": "An infrared sauna alongside float rooms and massage, so the two can be stacked in one visit. One of the only sauna-and-float options in the south-eastern corridor, which saves Kelmscott and Armadale the drive north.",
+     "highlights": "Infrared sauna, Float rooms, Massage on site, Kelmscott",
+     "lead_badge": true
+    }
    ]
   },
   {
    "slug": "pilates-for-beginners-perth",
    "category": "beginners",
    "choose": [
-    { "listing": "essence-pilates-south-perth", "when": "you want mat and reformer under one roof" },
-    { "listing": "the-studio-perth", "when": "you want a long, cheap intro pass" },
-    { "listing": "flow-hot-yoga-pilates-wangara", "when": "you're in the northern suburbs" },
-    { "listing": "loop-yoga-north-fremantle", "when": "you'd rather drop in than sign up" }
+    {
+     "listing": "essence-pilates-south-perth",
+     "when": "you want mat and reformer under one roof"
+    },
+    {
+     "listing": "the-studio-perth",
+     "when": "you want a long, cheap intro pass"
+    },
+    {
+     "listing": "flow-hot-yoga-pilates-wangara",
+     "when": "you're in the northern suburbs"
+    },
+    {
+     "listing": "loop-yoga-north-fremantle",
+     "when": "you'd rather drop in than sign up"
+    }
    ],
    "picks": [
-    { "listing": "essence-pilates-south-perth", "award": "best_for_beginners", "spotlight": "Best overall", "best_for": "Reformer and mat under one roof", "reason": "Reformer, matwork and barre on one timetable, so you can start on the mat and move to the machine when you're ready — or the other way round. The studio says plainly that no dance background is expected; its own test is whether you can hold a barre.", "highlights": "Reformer and mat classes, Barre, No dance background needed, South Perth", "lead_badge": true },
-    { "listing": "the-studio-perth", "award": "best_value", "award_label": "Best value intro", "spotlight": "Best value", "best_for": "An intro pass", "price_note": "20-day unlimited intro $89 — price checked September 2026", "reason": "The Joondalup and Butler studios run an $89 twenty-day unlimited introduction across reformer and mat classes, which is the longest first-timer pass on this list. Hot yoga and yin share the timetable, and there's a third room in East Victoria Park.", "highlights": "20-day unlimited intro $89, Reformer and mat, Three locations, Joondalup and Butler", "lead_badge": true },
-    { "listing": "flow-hot-yoga-pilates-wangara", "award": "best_for_beginners", "best_for": "Northern suburbs", "reason": "Reformer Pilates in a Wangara studio that states flexibility, strength and balance are not entry requirements. Yoga and meditation classes run in the same rooms, so a beginner can mix the reformer with something slower in the same week.", "highlights": "Reformer Pilates, No experience expected, Yoga on the same timetable, Wangara", "lead_badge": false },
-    { "listing": "loop-yoga-north-fremantle", "award": "beginner_friendly", "best_for": "Drop-in, Fremantle side", "price_note": "Drop-in $32 — price checked September 2026", "reason": "Sculpt Pilates classes on a timetable that also runs down to yin and restorative, with $32 drop-ins and memberships from $39 a week, so there's no course to sign up for before a first class. Sessions run around 45 minutes.", "highlights": "Pilates classes, Drop-in $32, 45-minute sessions, North Fremantle", "lead_badge": true },
-    { "listing": "the-yoga-garage", "award": "beginner_friendly", "best_for": "Hot-room Pilates", "reason": "Hot core Pilates in Scarborough's warm-room studio, covered by the same fourteen-day unlimited $39 pass as its yoga classes. A way to try Pilates and hot yoga on one ticket before choosing either.", "highlights": "Hot core Pilates, 14 days unlimited $39, Yin to balance the heat, Scarborough", "lead_badge": false }
+    {
+     "listing": "essence-pilates-south-perth",
+     "award": "best_for_beginners",
+     "spotlight": "Best overall",
+     "best_for": "Reformer and mat under one roof",
+     "reason": "Reformer, matwork and barre on one timetable, so you can start on the mat and move to the machine when you're ready — or the other way round. The studio says plainly that no dance background is expected; its own test is whether you can hold a barre.",
+     "highlights": "Reformer and mat classes, Barre, No dance background needed, South Perth",
+     "lead_badge": true
+    },
+    {
+     "listing": "the-studio-perth",
+     "award": "best_value",
+     "award_label": "Best value intro",
+     "spotlight": "Best value",
+     "best_for": "An intro pass",
+     "price_note": "20-day unlimited intro $89 — price checked September 2026",
+     "reason": "The Joondalup and Butler studios run an $89 twenty-day unlimited introduction across reformer and mat classes, which is the longest first-timer pass on this list. Hot yoga and yin share the timetable, and there's a third room in East Victoria Park.",
+     "highlights": "20-day unlimited intro $89, Reformer and mat, Three locations, Joondalup and Butler",
+     "lead_badge": true
+    },
+    {
+     "listing": "flow-hot-yoga-pilates-wangara",
+     "award": "best_for_beginners",
+     "best_for": "Northern suburbs",
+     "reason": "Reformer Pilates in a Wangara studio that states flexibility, strength and balance are not entry requirements. Yoga and meditation classes run in the same rooms, so a beginner can mix the reformer with something slower in the same week.",
+     "highlights": "Reformer Pilates, No experience expected, Yoga on the same timetable, Wangara",
+     "lead_badge": false
+    },
+    {
+     "listing": "loop-yoga-north-fremantle",
+     "award": "beginner_friendly",
+     "best_for": "Drop-in, Fremantle side",
+     "price_note": "Drop-in $32 — price checked September 2026",
+     "reason": "Sculpt Pilates classes on a timetable that also runs down to yin and restorative, with $32 drop-ins and memberships from $39 a week, so there's no course to sign up for before a first class. Sessions run around 45 minutes.",
+     "highlights": "Pilates classes, Drop-in $32, 45-minute sessions, North Fremantle",
+     "lead_badge": true
+    },
+    {
+     "listing": "the-yoga-garage",
+     "award": "beginner_friendly",
+     "best_for": "Hot-room Pilates",
+     "reason": "Hot core Pilates in Scarborough's warm-room studio, covered by the same fourteen-day unlimited $39 pass as its yoga classes. A way to try Pilates and hot yoga on one ticket before choosing either.",
+     "highlights": "Hot core Pilates, 14 days unlimited $39, Yin to balance the heat, Scarborough",
+     "lead_badge": false
+    }
    ]
   },
   {
    "slug": "sound-baths-perth",
    "category": "relax",
    "choose": [
-    { "listing": "sound-healing-perth", "when": "you're completely new to sound baths" },
-    { "listing": "holistic-bliss-booragoon", "when": "you prefer a small room" },
-    { "listing": "loop-yoga-north-fremantle", "when": "you'd like some yoga before the sound" },
-    { "listing": "perth-hills-pilates", "when": "you're in the Perth Hills" },
-    { "listing": "horizon-yoga-cottesloe", "when": "you want sound paired with yin, on the coast" }
+    {
+     "listing": "sound-healing-perth",
+     "when": "you're completely new to sound baths"
+    },
+    {
+     "listing": "holistic-bliss-booragoon",
+     "when": "you prefer a small room"
+    },
+    {
+     "listing": "loop-yoga-north-fremantle",
+     "when": "you'd like some yoga before the sound"
+    },
+    {
+     "listing": "perth-hills-pilates",
+     "when": "you're in the Perth Hills"
+    },
+    {
+     "listing": "horizon-yoga-cottesloe",
+     "when": "you want sound paired with yin, on the coast"
+    }
    ],
    "picks": [
-    { "listing": "sound-healing-perth", "award": "best_sound_bath", "spotlight": "Best overall", "best_for": "First timers", "price_note": "$44 casual — price checked September 2026", "reason": "Weekly crystal-bowl sound journeys at three venues — Trigg by the beach midweek and Sunday, Fremantle and Victoria Park on Sundays — so there's a session most days somewhere in the metro. Each opens with a guided meditation before the bowls take over, casual visits are $44, and a three-session intro pack takes the edge off deciding.", "highlights": "Weekly sessions, Three venues, Intro 3-pack, Guided meditation to open", "lead_badge": true },
-    { "listing": "loop-yoga-north-fremantle", "award": "best_for_beginners", "spotlight": "Best for beginners", "best_for": "Sound with some yoga first", "price_note": "Drop-in $32 — price checked September 2026", "reason": "A yoga nidra class held inside live crystal-bowl sound healing: the guided yogic-sleep practice, lying down, with the room resonating. At 45 minutes and $32 it is the shortest and cheapest way on this list to try sound, and the timetable runs from power yoga down to yin if you want more.", "highlights": "Yoga nidra with live bowls, 45 minutes, Drop-in $32, North Fremantle", "lead_badge": false },
-    { "listing": "tamara-yoga-claremont", "award": "beginner_friendly", "best_for": "A regular practice", "price_note": "Unlimited $49 a week, three-week intro — price checked September 2026", "reason": "Soundbath classes that settle into yoga nidra, on a timetable that also carries vinyasa, yin and meditation across Claremont, Bibra Lake and online. A three-week unlimited introduction lets a newcomer try the sound classes alongside everything else before committing to the $49-a-week membership.", "highlights": "Soundbath into yoga nidra, Three-week intro, Two studios and online, Claremont", "lead_badge": false },
-    { "listing": "holistic-bliss-booragoon", "award": "best_small_group", "spotlight": "Best small group", "best_for": "A small room", "reason": "Monthly group healing sessions capped at ten people, in a home clinic in Booragoon that also runs sound healing one-to-one alongside reiki and kinesiology. Open Tuesday to Thursday and Saturdays by appointment, with evening slots on request, which suits anyone who finds a big hall too much.", "highlights": "Groups capped at ten, One-to-one sessions, Evenings on request, Booragoon", "lead_badge": true },
-    { "listing": "horizon-yoga-cottesloe", "award": "best_for_relaxation", "award_label": "Best paired with yin", "best_for": "Sound and slow yoga together", "reason": "Sound healing runs as its own session and paired with yin across two coastal rooms, Railway Street in Cottesloe and the Swanbourne Surf Club. With more than thirty classes a week between them, the slow end of the timetable — yin, restorative, myofascial release — is unusually deep for a studio this size.", "highlights": "Sound healing on its own or with yin, Two coastal rooms, 30+ classes a week, Cottesloe", "lead_badge": false },
-    { "listing": "perth-hills-pilates", "award": "oria_pick", "award_label": "Best in the Perth Hills", "best_for": "Sound in the hills", "reason": "Sound baths and breathwork sit on the timetable alongside reformer and restorative classes in Mahogany Creek and Kalamunda, and the Mahogany Creek studio adds a sauna and cold plunge for afterwards. The hills' option for a sound session without the drive to the coast.", "highlights": "Sound baths and breathwork, Sauna and cold plunge on site, Two hills studios, Mahogany Creek", "lead_badge": false }
+    {
+     "listing": "sound-healing-perth",
+     "award": "best_sound_bath",
+     "spotlight": "Best overall",
+     "best_for": "First timers",
+     "price_note": "$44 casual — price checked September 2026",
+     "reason": "Weekly crystal-bowl sound journeys at three venues — Trigg by the beach midweek and Sunday, Fremantle and Victoria Park on Sundays — so there's a session most days somewhere in the metro. Each opens with a guided meditation before the bowls take over, casual visits are $44, and a three-session intro pack takes the edge off deciding.",
+     "highlights": "Weekly sessions, Three venues, Intro 3-pack, Guided meditation to open",
+     "lead_badge": true
+    },
+    {
+     "listing": "loop-yoga-north-fremantle",
+     "award": "best_for_beginners",
+     "spotlight": "Best for beginners",
+     "best_for": "Sound with some yoga first",
+     "price_note": "Drop-in $32 — price checked September 2026",
+     "reason": "A yoga nidra class held inside live crystal-bowl sound healing: the guided yogic-sleep practice, lying down, with the room resonating. At 45 minutes and $32 it is the shortest and cheapest way on this list to try sound, and the timetable runs from power yoga down to yin if you want more.",
+     "highlights": "Yoga nidra with live bowls, 45 minutes, Drop-in $32, North Fremantle",
+     "lead_badge": false
+    },
+    {
+     "listing": "tamara-yoga-claremont",
+     "award": "beginner_friendly",
+     "best_for": "A regular practice",
+     "price_note": "Unlimited $49 a week, three-week intro — price checked September 2026",
+     "reason": "Soundbath classes that settle into yoga nidra, on a timetable that also carries vinyasa, yin and meditation across Claremont, Bibra Lake and online. A three-week unlimited introduction lets a newcomer try the sound classes alongside everything else before committing to the $49-a-week membership.",
+     "highlights": "Soundbath into yoga nidra, Three-week intro, Two studios and online, Claremont",
+     "lead_badge": false
+    },
+    {
+     "listing": "holistic-bliss-booragoon",
+     "award": "best_small_group",
+     "spotlight": "Best small group",
+     "best_for": "A small room",
+     "reason": "Monthly group healing sessions capped at ten people, in a home clinic in Booragoon that also runs sound healing one-to-one alongside reiki and kinesiology. Open Tuesday to Thursday and Saturdays by appointment, with evening slots on request, which suits anyone who finds a big hall too much.",
+     "highlights": "Groups capped at ten, One-to-one sessions, Evenings on request, Booragoon",
+     "lead_badge": true
+    },
+    {
+     "listing": "horizon-yoga-cottesloe",
+     "award": "best_for_relaxation",
+     "award_label": "Best paired with yin",
+     "best_for": "Sound and slow yoga together",
+     "reason": "Sound healing runs as its own session and paired with yin across two coastal rooms, Railway Street in Cottesloe and the Swanbourne Surf Club. With more than thirty classes a week between them, the slow end of the timetable — yin, restorative, myofascial release — is unusually deep for a studio this size.",
+     "highlights": "Sound healing on its own or with yin, Two coastal rooms, 30+ classes a week, Cottesloe",
+     "lead_badge": false
+    },
+    {
+     "listing": "perth-hills-pilates",
+     "award": "oria_pick",
+     "award_label": "Best in the Perth Hills",
+     "best_for": "Sound in the hills",
+     "reason": "Sound baths and breathwork sit on the timetable alongside reformer and restorative classes in Mahogany Creek and Kalamunda, and the Mahogany Creek studio adds a sauna and cold plunge for afterwards. The hills' option for a sound session without the drive to the coast.",
+     "highlights": "Sound baths and breathwork, Sauna and cold plunge on site, Two hills studios, Mahogany Creek",
+     "lead_badge": false
+    }
    ]
   },
   {
    "slug": "wellness-under-50-perth",
    "category": "budget",
    "choose": [
-    { "listing": "dhammaloka-buddhist-centre", "when": "you want to spend nothing" },
-    { "listing": "kadampa-meditation-centre-perth", "when": "you want a drop-in class with no booking" },
-    { "listing": "alchemy-saunas-perth", "when": "you want a sauna by the beach" },
-    { "listing": "melt-sauna-cold-plunge-subiaco", "when": "you want sauna and cold plunge together" },
-    { "listing": "loop-yoga-north-fremantle", "when": "you want a class that ends in sound" },
-    { "listing": "the-yoga-garage", "when": "you want two weeks of unlimited classes" }
+    {
+     "listing": "dhammaloka-buddhist-centre",
+     "when": "you want to spend nothing"
+    },
+    {
+     "listing": "kadampa-meditation-centre-perth",
+     "when": "you want a drop-in class with no booking"
+    },
+    {
+     "listing": "alchemy-saunas-perth",
+     "when": "you want a sauna by the beach"
+    },
+    {
+     "listing": "melt-sauna-cold-plunge-subiaco",
+     "when": "you want sauna and cold plunge together"
+    },
+    {
+     "listing": "loop-yoga-north-fremantle",
+     "when": "you want a class that ends in sound"
+    },
+    {
+     "listing": "the-yoga-garage",
+     "when": "you want two weeks of unlimited classes"
+    }
    ],
    "picks": [
-    { "listing": "dhammaloka-buddhist-centre", "award": "best_value", "award_label": "Best free option", "spotlight": "Best free option", "fact": "Free", "best_for": "Spending nothing", "price_note": "Free — price checked September 2026", "reason": "Free guided meditation several times a week at the Buddhist Society of WA's centre in Nollamara, fifteen minutes north of the CBD, with Friday dhamma talks and a four-week introduction course starting the first Saturday of each month. Newcomers are expected rather than tolerated.", "highlights": "Free guided meditation, Four-week intro course, Several sessions a week, Nollamara", "lead_badge": true },
-    { "listing": "kadampa-meditation-centre-perth", "award": "best_budget_pick", "fact": "Under $20", "best_for": "Drop-in, no booking", "price_note": "Drop-in $15, free WA Museum lunchtime class — price checked September 2026", "reason": "Weekly drop-in meditation classes across the metro — East Fremantle, Joondalup, Kingsley, Bayswater and Baldivis — at $15, with no booking and no background assumed, plus free lunchtime sessions at the WA Museum. The cheapest way in this guide to try a class with a teacher in the room.", "highlights": "Drop-in $15, Free WA Museum sessions, Five suburbs, No booking", "lead_badge": true },
-    { "listing": "alchemy-saunas-perth", "award": "best_budget_pick", "award_label": "Best budget sauna", "fact": "Under $25", "best_for": "A sauna by the water", "price_note": "From $20 — price checked September 2026", "reason": "Twelve sauna venues across Perth, most within sight of water — Scarborough Beach, City Beach, Cottesloe, Port Beach and Point Walter among them — with sessions from $20. A sauna followed by the ocean, for less than most studios charge for the sauna alone.", "highlights": "From $20, Twelve beach venues, Ocean for the cold, Scarborough to Point Walter", "lead_badge": true },
-    { "listing": "melt-sauna-cold-plunge-subiaco", "award": "best_value", "spotlight": "Best value", "fact": "Under $30", "best_for": "Sauna and cold plunge", "price_note": "$25 for 30 min, early sessions from $7 — price checked September 2026", "reason": "Thirty minutes of sauna and cold plunge for $25, an hour for $35, and the 5am, 6am and 7am sessions at $7, $14 and $21. Numbers are capped so the Subiaco room stays quiet, and showers, change rooms and a drink afterwards are included.", "highlights": "30 min $25, Early sessions from $7, Sauna and cold plunge, Subiaco", "lead_badge": false },
-    { "listing": "zen-zone-perth", "award": "best_budget_pick", "award_label": "Best budget ice bath", "fact": "Under $30", "best_for": "Contrast, north", "price_note": "From $25 — price checked September 2026", "reason": "An infrared sauna and an ice bath in a suburban Beldon set-up, taken singly or alternated, from $25 for an hour-long appointment. The cheapest contrast session in the northern suburbs on the directory.", "highlights": "Infrared sauna and ice bath, From $25, 60-minute sessions, Beldon", "lead_badge": false },
-    { "listing": "loop-yoga-north-fremantle", "award": "beginner_friendly", "fact": "Under $35", "best_for": "A class that ends in sound", "price_note": "Drop-in $32 — price checked September 2026", "reason": "A $32 drop-in buys a yoga nidra class held inside live crystal-bowl sound healing — a sound bath and a yoga class in one 45-minute sitting — with memberships from $39 a week for anyone who comes back.", "highlights": "Drop-in $32, Yoga nidra with live bowls, 45 minutes, North Fremantle", "lead_badge": false },
-    { "listing": "sound-healing-perth", "award": "oria_pick", "award_label": "Best sound bath under $50", "fact": "Under $45", "best_for": "A sound journey", "price_note": "$44 casual — price checked September 2026", "reason": "Weekly crystal-bowl sound journeys in Trigg, Fremantle and Victoria Park at $44 casual, each opening with a guided meditation, with a three-session intro pack for anyone who wants to go back.", "highlights": "$44 casual, Three venues, Intro 3-pack, Weekly", "lead_badge": false },
-    { "listing": "the-yoga-garage", "award": "best_for_beginners", "award_label": "Best intro pass", "spotlight": "Best intro pass", "fact": "Under $40", "best_for": "Two weeks of classes", "price_note": "14 days unlimited $39 — price checked September 2026", "reason": "Fourteen days of unlimited classes for $39 — Bikram, hot vinyasa, hot core Pilates and yin — which works out to a few dollars a class if you go often. The best-value way on this list to find out whether a warm room suits you.", "highlights": "14 days unlimited $39, Four class styles, Hot room, Scarborough", "lead_badge": false },
-    { "listing": "beatty-park-aqua", "award": "oria_pick", "award_label": "Best for a swim and a class", "fact": "Under $15", "best_for": "Movement in the water", "price_note": "Aqua classes from $12 — price checked September 2026", "reason": "The City of Vincent's pool runs one of Perth's biggest aqua timetables — Aqua 4 All, Aqua Balance, Aqua Cardio, Aqua HIIT and Aqua Zumba — with 45-minute classes from $12 and the pools to use afterwards. Gentle on joints and the cheapest instructed class in this guide.", "highlights": "Aqua classes from $12, 45 minutes, Big timetable, North Perth", "lead_badge": true }
+    {
+     "listing": "dhammaloka-buddhist-centre",
+     "award": "best_value",
+     "award_label": "Best free option",
+     "spotlight": "Best free option",
+     "fact": "Free",
+     "best_for": "Spending nothing",
+     "price_note": "Free — price checked September 2026",
+     "reason": "Free guided meditation several times a week at the Buddhist Society of WA's centre in Nollamara, fifteen minutes north of the CBD, with Friday dhamma talks and a four-week introduction course starting the first Saturday of each month. Newcomers are expected rather than tolerated.",
+     "highlights": "Free guided meditation, Four-week intro course, Several sessions a week, Nollamara",
+     "lead_badge": true
+    },
+    {
+     "listing": "kadampa-meditation-centre-perth",
+     "award": "best_budget_pick",
+     "fact": "Under $20",
+     "best_for": "Drop-in, no booking",
+     "price_note": "Drop-in $15, free WA Museum lunchtime class — price checked September 2026",
+     "reason": "Weekly drop-in meditation classes across the metro — East Fremantle, Joondalup, Kingsley, Bayswater and Baldivis — at $15, with no booking and no background assumed, plus free lunchtime sessions at the WA Museum. The cheapest way in this guide to try a class with a teacher in the room.",
+     "highlights": "Drop-in $15, Free WA Museum sessions, Five suburbs, No booking",
+     "lead_badge": true
+    },
+    {
+     "listing": "alchemy-saunas-perth",
+     "award": "best_budget_pick",
+     "award_label": "Best budget sauna",
+     "fact": "Under $25",
+     "best_for": "A sauna by the water",
+     "price_note": "From $20 — price checked September 2026",
+     "reason": "Twelve sauna venues across Perth, most within sight of water — Scarborough Beach, City Beach, Cottesloe, Port Beach and Point Walter among them — with sessions from $20. A sauna followed by the ocean, for less than most studios charge for the sauna alone.",
+     "highlights": "From $20, Twelve beach venues, Ocean for the cold, Scarborough to Point Walter",
+     "lead_badge": true
+    },
+    {
+     "listing": "melt-sauna-cold-plunge-subiaco",
+     "award": "best_value",
+     "spotlight": "Best value",
+     "fact": "Under $30",
+     "best_for": "Sauna and cold plunge",
+     "price_note": "$25 for 30 min, early sessions from $7 — price checked September 2026",
+     "reason": "Thirty minutes of sauna and cold plunge for $25, an hour for $35, and the 5am, 6am and 7am sessions at $7, $14 and $21. Numbers are capped so the Subiaco room stays quiet, and showers, change rooms and a drink afterwards are included.",
+     "highlights": "30 min $25, Early sessions from $7, Sauna and cold plunge, Subiaco",
+     "lead_badge": false
+    },
+    {
+     "listing": "zen-zone-perth",
+     "award": "best_budget_pick",
+     "award_label": "Best budget ice bath",
+     "fact": "Under $30",
+     "best_for": "Contrast, north",
+     "price_note": "From $25 — price checked September 2026",
+     "reason": "An infrared sauna and an ice bath in a suburban Beldon set-up, taken singly or alternated, from $25 for an hour-long appointment. The cheapest contrast session in the northern suburbs on the directory.",
+     "highlights": "Infrared sauna and ice bath, From $25, 60-minute sessions, Beldon",
+     "lead_badge": false
+    },
+    {
+     "listing": "loop-yoga-north-fremantle",
+     "award": "beginner_friendly",
+     "fact": "Under $35",
+     "best_for": "A class that ends in sound",
+     "price_note": "Drop-in $32 — price checked September 2026",
+     "reason": "A $32 drop-in buys a yoga nidra class held inside live crystal-bowl sound healing — a sound bath and a yoga class in one 45-minute sitting — with memberships from $39 a week for anyone who comes back.",
+     "highlights": "Drop-in $32, Yoga nidra with live bowls, 45 minutes, North Fremantle",
+     "lead_badge": false
+    },
+    {
+     "listing": "sound-healing-perth",
+     "award": "oria_pick",
+     "award_label": "Best sound bath under $50",
+     "fact": "Under $45",
+     "best_for": "A sound journey",
+     "price_note": "$44 casual — price checked September 2026",
+     "reason": "Weekly crystal-bowl sound journeys in Trigg, Fremantle and Victoria Park at $44 casual, each opening with a guided meditation, with a three-session intro pack for anyone who wants to go back.",
+     "highlights": "$44 casual, Three venues, Intro 3-pack, Weekly",
+     "lead_badge": false
+    },
+    {
+     "listing": "the-yoga-garage",
+     "award": "best_for_beginners",
+     "award_label": "Best intro pass",
+     "spotlight": "Best intro pass",
+     "fact": "Under $40",
+     "best_for": "Two weeks of classes",
+     "price_note": "14 days unlimited $39 — price checked September 2026",
+     "reason": "Fourteen days of unlimited classes for $39 — Bikram, hot vinyasa, hot core Pilates and yin — which works out to a few dollars a class if you go often. The best-value way on this list to find out whether a warm room suits you.",
+     "highlights": "14 days unlimited $39, Four class styles, Hot room, Scarborough",
+     "lead_badge": false
+    },
+    {
+     "listing": "beatty-park-aqua",
+     "award": "oria_pick",
+     "award_label": "Best for a swim and a class",
+     "fact": "Under $15",
+     "best_for": "Movement in the water",
+     "price_note": "Aqua classes from $12 — price checked September 2026",
+     "reason": "The City of Vincent's pool runs one of Perth's biggest aqua timetables — Aqua 4 All, Aqua Balance, Aqua Cardio, Aqua HIIT and Aqua Zumba — with 45-minute classes from $12 and the pools to use afterwards. Gentle on joints and the cheapest instructed class in this guide.",
+     "highlights": "Aqua classes from $12, 45 minutes, Big timetable, North Perth",
+     "lead_badge": true
+    }
    ]
   },
   {
    "slug": "breathwork-perth",
    "category": "relax",
    "choose": [
-    { "listing": "unearth-remedy-fremantle", "when": "it's your first session" },
-    { "listing": "paula-flinn-breathwork", "when": "you want a room of six, not sixty" },
-    { "listing": "graeme-salvetti-breathwork", "when": "you want one-to-one or couples work" },
-    { "listing": "breathwork-with-shanie", "when": "you'd rather join from home" },
-    { "listing": "breathe-9d", "when": "you want an immersive session with layered sound" }
+    {
+     "listing": "unearth-remedy-fremantle",
+     "when": "it's your first session"
+    },
+    {
+     "listing": "paula-flinn-breathwork",
+     "when": "you want a room of six, not sixty"
+    },
+    {
+     "listing": "graeme-salvetti-breathwork",
+     "when": "you want one-to-one or couples work"
+    },
+    {
+     "listing": "breathwork-with-shanie",
+     "when": "you'd rather join from home"
+    },
+    {
+     "listing": "breathe-9d",
+     "when": "you want an immersive session with layered sound"
+    }
    ],
    "picks": [
-    { "listing": "unearth-remedy-fremantle", "award": "best_breathwork", "spotlight": "Best overall", "best_for": "A first session", "price_note": "$79 — price checked September 2026", "reason": "Monthly two-hour conscious connected breathwork in a warm room at Spanda Yoga, capped at ten people. The session pairs the guided breathing with plain-science explanation and a follow-up email the next day, which is more aftercare than most group breathwork offers. Mats, bolsters and blankets provided.", "highlights": "Monthly group of ten, Mats and blankets provided, Follow-up email, Fremantle", "lead_badge": true },
-    { "listing": "paula-flinn-breathwork", "award": "best_small_group", "spotlight": "Best small group", "best_for": "A small room", "reason": "Conscious connected breathwork in a small Fremantle studio deliberately kept intimate: group sessions cap at six people, on the first Friday evening of each month, with private one-to-one work alongside. For anyone who finds a large group the hard part.", "highlights": "Groups capped at six, First Friday of the month, Private sessions, Fremantle", "lead_badge": true },
-    { "listing": "graeme-salvetti-breathwork", "award": "best_private_session", "spotlight": "Best private session", "best_for": "One-to-one or couples", "price_note": "$80 Sunday group, $65 online, $180 private — price checked September 2026", "reason": "Sixteen years of facilitating breathwork and a degree in psychotherapy and counselling behind it. Weekly Sunday-afternoon groups in South Fremantle at $80, online group journeys most Thursday evenings at $65, and two-hour private sessions for individuals or couples at $180, plus men's groups. The prices are published, which not every practice manages.", "highlights": "Two-hour private sessions, Sunday group $80, Online $65, South Fremantle", "lead_badge": true },
-    { "listing": "energetics-institute", "award": "oria_pick", "award_label": "Best long-standing practice", "best_for": "Experience in the room", "reason": "More than twenty years in a Federation home in Inglewood, with both facilitators professional members of the Australian Breathwork Association. Private sessions in the rooms or online, and group sessions that fold in sound, open weekdays to 7pm and Saturday mornings.", "highlights": "20+ years, Australian Breathwork Association members, Group with sound, Inglewood", "lead_badge": true },
-    { "listing": "breathwork-with-shanie", "award": "oria_pick", "award_label": "Best online option", "best_for": "Joining from home", "reason": "Ninety-minute sessions from Bayswater, in person or online — longer than a typical class, with room for the slow build, the peak and a proper wind-down in one sitting. The one to choose if getting to Fremantle on a Friday night is the obstacle.", "highlights": "90-minute sessions, In person or online, Bayswater", "lead_badge": true },
-    { "listing": "breathe-9d", "award": "oria_pick", "award_label": "Best immersive journey", "best_for": "Sound and breath together", "reason": "9D breathwork in the city: conscious breathing set against layered sound, live vocals and chants, across twelve themed journey formats. Sessions book through Eventbrite, so you can see dates and prices before committing.", "highlights": "9D format with layered sound, Twelve themed journeys, Eventbrite booking, Perth CBD", "lead_badge": true }
+    {
+     "listing": "unearth-remedy-fremantle",
+     "award": "best_breathwork",
+     "spotlight": "Best overall",
+     "best_for": "A first session",
+     "price_note": "$79 — price checked September 2026",
+     "reason": "Monthly two-hour conscious connected breathwork in a warm room at Spanda Yoga, capped at ten people. The session pairs the guided breathing with plain-science explanation and a follow-up email the next day, which is more aftercare than most group breathwork offers. Mats, bolsters and blankets provided.",
+     "highlights": "Monthly group of ten, Mats and blankets provided, Follow-up email, Fremantle",
+     "lead_badge": true
+    },
+    {
+     "listing": "paula-flinn-breathwork",
+     "award": "best_small_group",
+     "spotlight": "Best small group",
+     "best_for": "A small room",
+     "reason": "Conscious connected breathwork in a small Fremantle studio deliberately kept intimate: group sessions cap at six people, on the first Friday evening of each month, with private one-to-one work alongside. For anyone who finds a large group the hard part.",
+     "highlights": "Groups capped at six, First Friday of the month, Private sessions, Fremantle",
+     "lead_badge": true
+    },
+    {
+     "listing": "graeme-salvetti-breathwork",
+     "award": "best_private_session",
+     "spotlight": "Best private session",
+     "best_for": "One-to-one or couples",
+     "price_note": "$80 Sunday group, $65 online, $180 private — price checked September 2026",
+     "reason": "Sixteen years of facilitating breathwork and a degree in psychotherapy and counselling behind it. Weekly Sunday-afternoon groups in South Fremantle at $80, online group journeys most Thursday evenings at $65, and two-hour private sessions for individuals or couples at $180, plus men's groups. The prices are published, which not every practice manages.",
+     "highlights": "Two-hour private sessions, Sunday group $80, Online $65, South Fremantle",
+     "lead_badge": true
+    },
+    {
+     "listing": "energetics-institute",
+     "award": "oria_pick",
+     "award_label": "Best long-standing practice",
+     "best_for": "Experience in the room",
+     "reason": "More than twenty years in a Federation home in Inglewood, with both facilitators professional members of the Australian Breathwork Association. Private sessions in the rooms or online, and group sessions that fold in sound, open weekdays to 7pm and Saturday mornings.",
+     "highlights": "20+ years, Australian Breathwork Association members, Group with sound, Inglewood",
+     "lead_badge": true
+    },
+    {
+     "listing": "breathwork-with-shanie",
+     "award": "oria_pick",
+     "award_label": "Best online option",
+     "best_for": "Joining from home",
+     "reason": "Ninety-minute sessions from Bayswater, in person or online — longer than a typical class, with room for the slow build, the peak and a proper wind-down in one sitting. The one to choose if getting to Fremantle on a Friday night is the obstacle.",
+     "highlights": "90-minute sessions, In person or online, Bayswater",
+     "lead_badge": true
+    },
+    {
+     "listing": "breathe-9d",
+     "award": "oria_pick",
+     "award_label": "Best immersive journey",
+     "best_for": "Sound and breath together",
+     "reason": "9D breathwork in the city: conscious breathing set against layered sound, live vocals and chants, across twelve themed journey formats. Sessions book through Eventbrite, so you can see dates and prices before committing.",
+     "highlights": "9D format with layered sound, Twelve themed journeys, Eventbrite booking, Perth CBD",
+     "lead_badge": true
+    }
    ]
   },
   {
    "slug": "places-to-relax-perth",
    "category": "relax",
    "choose": [
-    { "listing": "beyond-rest-east-perth", "when": "you have an hour to yourself" },
-    { "listing": "swan-valley-retreat", "when": "you have a whole Sunday" },
-    { "listing": "ganesha-wellness-spa", "when": "there are two of you" },
-    { "listing": "ember-bath-house", "when": "it's after work" },
-    { "listing": "kookaburra-yoga", "when": "you want silence and the bush" },
-    { "listing": "dhammaloka-buddhist-centre", "when": "you want to spend nothing" }
+    {
+     "listing": "beyond-rest-east-perth",
+     "when": "you have an hour to yourself"
+    },
+    {
+     "listing": "swan-valley-retreat",
+     "when": "you have a whole Sunday"
+    },
+    {
+     "listing": "ganesha-wellness-spa",
+     "when": "there are two of you"
+    },
+    {
+     "listing": "ember-bath-house",
+     "when": "it's after work"
+    },
+    {
+     "listing": "kookaburra-yoga",
+     "when": "you want silence and the bush"
+    },
+    {
+     "listing": "dhammaloka-buddhist-centre",
+     "when": "you want to spend nothing"
+    }
    ],
    "picks": [
-    { "listing": "beyond-rest-east-perth", "award": "best_for_relaxation", "spotlight": "Best for an hour to yourself", "best_for": "An hour to yourself", "price_note": "Intro three-pack brings a float under $60 — price checked September 2026", "reason": "An hour in a float tank on Edward Street: no light, no sound, warm salt water. The quietest sixty minutes available in the inner city, with infrared sauna, red light and contrast therapy in the same building, and an intro three-pack that brings a first float under sixty dollars.", "highlights": "One-hour float, Intro three-pack, Infrared sauna on site, East Perth", "lead_badge": true },
-    { "listing": "swan-valley-retreat", "award": "best_sunday_reset", "spotlight": "Best Sunday reset", "best_for": "A whole Sunday", "reason": "The Oasis — sauna, ice bath and spa sessions — inside a day spa with floatation, hydrotherapy, massage and facials, so a sauna can be one part of a long afternoon. Day visitors are welcome six days a week and Oasis and float sessions run Sundays, in the Swan Valley, forty minutes from town.", "highlights": "Sauna and ice bath sessions, Floats and massage, Runs Sundays, Swan Valley", "lead_badge": false },
-    { "listing": "ganesha-wellness-spa", "award": "best_for_couples", "spotlight": "Best for couples", "best_for": "Two of you", "reason": "A converted house in East Perth with three massage rooms for singles and couples, a cabin with a cedar hot tub and fireplace, and upstairs lounges and a terrace looking back at the city. There's an adults-only bed-and-breakfast upstairs for anyone who wants to make it a night rather than an afternoon.", "highlights": "Couples rooms, Cedar hot tub cabin, City-view terrace, East Perth", "lead_badge": true },
-    { "listing": "ember-bath-house", "award": "oria_pick", "award_label": "Best after work", "best_for": "After work", "reason": "Open until 8pm most nights and from 6am on Thursdays and Fridays, with the sauna, steam room, hot mineral bath and ice bath taken as a circuit on a day pass. A bathhouse that fits around a working day rather than asking you to take one off.", "highlights": "Open until 8pm most nights, Circuit day pass, Massage alongside, Osborne Park", "lead_badge": false },
-    { "listing": "kookaburra-yoga", "award": "best_quiet_escape", "spotlight": "Best quiet escape", "best_for": "Silence and the bush", "price_note": "Classes from $25 — price checked September 2026", "reason": "Ten acres of bushland in the Perth hills with a seasonal creek and an octagonal yoga shala, running a monthly one-day silent retreat alongside weekly classes from $25. Retreat days fold in bush walks on the property, and self-guided personal stays are available for anyone who wants longer.", "highlights": "Monthly one-day silent retreat, Ten acres of bush, Classes from $25, Bedfordale", "lead_badge": true },
-    { "listing": "loop-yoga-north-fremantle", "award": "best_for_relaxation", "award_label": "Best for switching off", "best_for": "Switching off in 45 minutes", "price_note": "Drop-in $32 — price checked September 2026", "reason": "A yoga nidra class held inside live crystal-bowl sound healing — the guided yogic-sleep practice, lying down, with the room resonating — in 45 minutes for $32. The quickest way on this list to go from a working day to lying still.", "highlights": "Yoga nidra with live bowls, 45 minutes, Drop-in $32, North Fremantle", "lead_badge": true },
-    { "listing": "alchemy-saunas-perth", "award": "oria_pick", "award_label": "Best by the water", "best_for": "A sauna and a swim", "price_note": "From $20 — price checked September 2026", "reason": "Twelve sauna venues across Perth, most within sight of water — Scarborough Beach, City Beach, Cottesloe, Port Beach and Point Walter — from $20 a session. Heat, then the ocean, then the beach: the most Perth way to relax on the list.", "highlights": "From $20, Twelve beach venues, Ocean for the cold, Scarborough to Point Walter", "lead_badge": false },
-    { "listing": "dhammaloka-buddhist-centre", "award": "best_value", "award_label": "Best free option", "best_for": "Spending nothing", "price_note": "Free — price checked September 2026", "reason": "Free guided meditation several times a week at the Buddhist Society of WA's Nollamara centre, with a four-week introduction course starting the first Saturday of each month and newcomers expected rather than tolerated. Fifteen minutes north of the CBD.", "highlights": "Free guided meditation, Four-week intro course, Several sessions a week, Nollamara", "lead_badge": false }
+    {
+     "listing": "beyond-rest-east-perth",
+     "award": "best_for_relaxation",
+     "spotlight": "Best for an hour to yourself",
+     "best_for": "An hour to yourself",
+     "price_note": "Intro three-pack brings a float under $60 — price checked September 2026",
+     "reason": "An hour in a float tank on Edward Street: no light, no sound, warm salt water. The quietest sixty minutes available in the inner city, with infrared sauna, red light and contrast therapy in the same building, and an intro three-pack that brings a first float under sixty dollars.",
+     "highlights": "One-hour float, Intro three-pack, Infrared sauna on site, East Perth",
+     "lead_badge": true
+    },
+    {
+     "listing": "swan-valley-retreat",
+     "award": "best_sunday_reset",
+     "spotlight": "Best Sunday reset",
+     "best_for": "A whole Sunday",
+     "reason": "The Oasis — sauna, ice bath and spa sessions — inside a day spa with floatation, hydrotherapy, massage and facials, so a sauna can be one part of a long afternoon. Day visitors are welcome six days a week and Oasis and float sessions run Sundays, in the Swan Valley, forty minutes from town.",
+     "highlights": "Sauna and ice bath sessions, Floats and massage, Runs Sundays, Swan Valley",
+     "lead_badge": false
+    },
+    {
+     "listing": "ganesha-wellness-spa",
+     "award": "best_for_couples",
+     "spotlight": "Best for couples",
+     "best_for": "Two of you",
+     "reason": "A converted house in East Perth with three massage rooms for singles and couples, a cabin with a cedar hot tub and fireplace, and upstairs lounges and a terrace looking back at the city. There's an adults-only bed-and-breakfast upstairs for anyone who wants to make it a night rather than an afternoon.",
+     "highlights": "Couples rooms, Cedar hot tub cabin, City-view terrace, East Perth",
+     "lead_badge": true
+    },
+    {
+     "listing": "ember-bath-house",
+     "award": "oria_pick",
+     "award_label": "Best after work",
+     "best_for": "After work",
+     "reason": "Open until 8pm most nights and from 6am on Thursdays and Fridays, with the sauna, steam room, hot mineral bath and ice bath taken as a circuit on a day pass. A bathhouse that fits around a working day rather than asking you to take one off.",
+     "highlights": "Open until 8pm most nights, Circuit day pass, Massage alongside, Osborne Park",
+     "lead_badge": false
+    },
+    {
+     "listing": "kookaburra-yoga",
+     "award": "best_quiet_escape",
+     "spotlight": "Best quiet escape",
+     "best_for": "Silence and the bush",
+     "price_note": "Classes from $25 — price checked September 2026",
+     "reason": "Ten acres of bushland in the Perth hills with a seasonal creek and an octagonal yoga shala, running a monthly one-day silent retreat alongside weekly classes from $25. Retreat days fold in bush walks on the property, and self-guided personal stays are available for anyone who wants longer.",
+     "highlights": "Monthly one-day silent retreat, Ten acres of bush, Classes from $25, Bedfordale",
+     "lead_badge": true
+    },
+    {
+     "listing": "loop-yoga-north-fremantle",
+     "award": "best_for_relaxation",
+     "award_label": "Best for switching off",
+     "best_for": "Switching off in 45 minutes",
+     "price_note": "Drop-in $32 — price checked September 2026",
+     "reason": "A yoga nidra class held inside live crystal-bowl sound healing — the guided yogic-sleep practice, lying down, with the room resonating — in 45 minutes for $32. The quickest way on this list to go from a working day to lying still.",
+     "highlights": "Yoga nidra with live bowls, 45 minutes, Drop-in $32, North Fremantle",
+     "lead_badge": true
+    },
+    {
+     "listing": "alchemy-saunas-perth",
+     "award": "oria_pick",
+     "award_label": "Best by the water",
+     "best_for": "A sauna and a swim",
+     "price_note": "From $20 — price checked September 2026",
+     "reason": "Twelve sauna venues across Perth, most within sight of water — Scarborough Beach, City Beach, Cottesloe, Port Beach and Point Walter — from $20 a session. Heat, then the ocean, then the beach: the most Perth way to relax on the list.",
+     "highlights": "From $20, Twelve beach venues, Ocean for the cold, Scarborough to Point Walter",
+     "lead_badge": false
+    },
+    {
+     "listing": "dhammaloka-buddhist-centre",
+     "award": "best_value",
+     "award_label": "Best free option",
+     "best_for": "Spending nothing",
+     "price_note": "Free — price checked September 2026",
+     "reason": "Free guided meditation several times a week at the Buddhist Society of WA's Nollamara centre, with a four-week introduction course starting the first Saturday of each month and newcomers expected rather than tolerated. Fifteen minutes north of the CBD.",
+     "highlights": "Free guided meditation, Four-week intro course, Several sessions a week, Nollamara",
+     "lead_badge": false
+    }
    ]
   },
   {
    "slug": "ice-baths-perth",
    "category": "recovery",
    "choose": [
-    { "listing": "reclab-wembley", "when": "you want the most complete recovery set-up" },
-    { "listing": "ember-bath-house", "when": "you want the plunge as part of a bathhouse circuit" },
-    { "listing": "loyly-recovery-stirling", "when": "you'd rather a private room" },
-    { "listing": "melt-sauna-cold-plunge-subiaco", "when": "you want the cheapest session, especially early" },
-    { "listing": "recovery-lab-jolimont", "when": "it's your first time and you want an intro" },
-    { "listing": "zen-zone-perth", "when": "you're in the northern suburbs" },
-    { "listing": "altered-states-wellness", "when": "you're south of the river" }
+    {
+     "listing": "reclab-wembley",
+     "when": "you want the most complete recovery set-up"
+    },
+    {
+     "listing": "ember-bath-house",
+     "when": "you want the plunge as part of a bathhouse circuit"
+    },
+    {
+     "listing": "loyly-recovery-stirling",
+     "when": "you'd rather a private room"
+    },
+    {
+     "listing": "melt-sauna-cold-plunge-subiaco",
+     "when": "you want the cheapest session, especially early"
+    },
+    {
+     "listing": "recovery-lab-jolimont",
+     "when": "it's your first time and you want an intro"
+    },
+    {
+     "listing": "zen-zone-perth",
+     "when": "you're in the northern suburbs"
+    },
+    {
+     "listing": "altered-states-wellness",
+     "when": "you're south of the river"
+    }
    ],
    "picks": [
-    { "listing": "reclab-wembley", "award": "best_ice_bath", "spotlight": "Best overall", "best_for": "The full recovery set-up", "reason": "Perth's first fully dedicated recovery centre: cold plunge pools alongside a magnesium-enriched hot plunge for contrast, a Finnish sauna, steam room, red light therapy and compression boots. Memberships run in two tiers and casual dips are available, which makes it usable for a one-off as well as a routine.", "highlights": "Cold and hot plunge, Finnish sauna and steam, Casual dips, Wembley", "lead_badge": true },
-    { "listing": "ember-bath-house", "award": "best_sauna_ice_bath", "spotlight": "Best sauna + ice bath", "best_for": "A bathhouse circuit", "reason": "A Finnish sauna, steam room, hot mineral bath and ice bath, taken as a circuit on a single day pass in a communal bathhouse on Donovan Street. Open seven days, from 6am on Thursdays and Fridays and until 8pm most nights. All-gender, 18-plus, swimwear required.", "highlights": "Circuit on a day pass, Open from 6am Thu–Fri, All-gender 18+, Osborne Park", "lead_badge": false },
-    { "listing": "loyly-recovery-stirling", "award": "best_private_session", "best_for": "A private room", "reason": "A Finnish sauna house on Erindale Road built around aufguss — a facilitator working steam and scent through the sauna in rounds — with hot and cold magnesium plunge pools alongside, and a separate private room for anyone who would rather do sauna and ice bath alone. Physiotherapy and massage book from the same room.", "highlights": "Private sauna and ice bath room, Hot and cold magnesium pools, Aufguss rounds, Stirling", "lead_badge": true },
-    { "listing": "melt-sauna-cold-plunge-subiaco", "award": "best_value", "spotlight": "Best value", "best_for": "Cheapest, and early", "price_note": "$25 for 30 min, $35 for 60, early sessions from $7 — price checked September 2026", "reason": "Sauna and cold plunge in thirty- or sixty-minute blocks, $25 and $35, with numbers capped so the room stays quiet. The 5am, 6am and 7am sessions are $7, $14 and $21 — the cheapest plunge on this list if you can get there before work. Showers, change rooms and a drink afterwards.", "highlights": "30 min $25, Early sessions from $7, Capped numbers, Subiaco", "lead_badge": false },
-    { "listing": "recovery-lab-jolimont", "award": "best_for_beginners", "best_for": "A first-timer intro", "price_note": "Ten-day intro $79 — price checked September 2026", "reason": "Private infrared sauna suites and ice baths under one Jolimont roof, with compression boots and muscle stimulation alongside, open seven days with evenings to 8pm early in the week. First-timers can take a ten-day recovery experience for $79, which is the only structured introduction on this list.", "highlights": "Ten-day intro $79, Private infrared suites, Open seven days, Jolimont", "lead_badge": true },
-    { "listing": "zen-zone-perth", "award": "oria_pick", "award_label": "Best in the northern suburbs", "best_for": "North of the city", "price_note": "From $25 — price checked September 2026", "reason": "An infrared sauna and an ice bath in a suburban Beldon set-up, taken singly or alternated, in appointment-only hour-long sessions from $25. The northern suburbs' answer to a drive into Wembley.", "highlights": "Infrared sauna and ice bath, From $25, Appointment only, Beldon", "lead_badge": true },
-    { "listing": "altered-states-wellness", "award": "oria_pick", "award_label": "Best south of the river", "best_for": "South-east of the river", "reason": "A long-running float space in Willetton that has grown into a compact recovery studio: float tanks, sauna, cold plunge and red light therapy under one roof, in hour-long sessions. One of the few places south-east of the river to combine a plunge with a float.", "highlights": "Cold plunge and sauna, Float tanks, 60-minute sessions, Willetton", "lead_badge": true }
+    {
+     "listing": "reclab-wembley",
+     "award": "best_ice_bath",
+     "spotlight": "Best overall",
+     "best_for": "The full recovery set-up",
+     "reason": "Perth's first fully dedicated recovery centre: cold plunge pools alongside a magnesium-enriched hot plunge for contrast, a Finnish sauna, steam room, red light therapy and compression boots. Memberships run in two tiers and casual dips are available, which makes it usable for a one-off as well as a routine.",
+     "highlights": "Cold and hot plunge, Finnish sauna and steam, Casual dips, Wembley",
+     "lead_badge": true
+    },
+    {
+     "listing": "ember-bath-house",
+     "award": "best_sauna_ice_bath",
+     "spotlight": "Best sauna + ice bath",
+     "best_for": "A bathhouse circuit",
+     "reason": "A Finnish sauna, steam room, hot mineral bath and ice bath, taken as a circuit on a single day pass in a communal bathhouse on Donovan Street. Open seven days, from 6am on Thursdays and Fridays and until 8pm most nights. All-gender, 18-plus, swimwear required.",
+     "highlights": "Circuit on a day pass, Open from 6am Thu–Fri, All-gender 18+, Osborne Park",
+     "lead_badge": false
+    },
+    {
+     "listing": "loyly-recovery-stirling",
+     "award": "best_private_session",
+     "best_for": "A private room",
+     "reason": "A Finnish sauna house on Erindale Road built around aufguss — a facilitator working steam and scent through the sauna in rounds — with hot and cold magnesium plunge pools alongside, and a separate private room for anyone who would rather do sauna and ice bath alone. Physiotherapy and massage book from the same room.",
+     "highlights": "Private sauna and ice bath room, Hot and cold magnesium pools, Aufguss rounds, Stirling",
+     "lead_badge": true
+    },
+    {
+     "listing": "melt-sauna-cold-plunge-subiaco",
+     "award": "best_value",
+     "spotlight": "Best value",
+     "best_for": "Cheapest, and early",
+     "price_note": "$25 for 30 min, $35 for 60, early sessions from $7 — price checked September 2026",
+     "reason": "Sauna and cold plunge in thirty- or sixty-minute blocks, $25 and $35, with numbers capped so the room stays quiet. The 5am, 6am and 7am sessions are $7, $14 and $21 — the cheapest plunge on this list if you can get there before work. Showers, change rooms and a drink afterwards.",
+     "highlights": "30 min $25, Early sessions from $7, Capped numbers, Subiaco",
+     "lead_badge": false
+    },
+    {
+     "listing": "recovery-lab-jolimont",
+     "award": "best_for_beginners",
+     "best_for": "A first-timer intro",
+     "price_note": "Ten-day intro $79 — price checked September 2026",
+     "reason": "Private infrared sauna suites and ice baths under one Jolimont roof, with compression boots and muscle stimulation alongside, open seven days with evenings to 8pm early in the week. First-timers can take a ten-day recovery experience for $79, which is the only structured introduction on this list.",
+     "highlights": "Ten-day intro $79, Private infrared suites, Open seven days, Jolimont",
+     "lead_badge": true
+    },
+    {
+     "listing": "zen-zone-perth",
+     "award": "oria_pick",
+     "award_label": "Best in the northern suburbs",
+     "best_for": "North of the city",
+     "price_note": "From $25 — price checked September 2026",
+     "reason": "An infrared sauna and an ice bath in a suburban Beldon set-up, taken singly or alternated, in appointment-only hour-long sessions from $25. The northern suburbs' answer to a drive into Wembley.",
+     "highlights": "Infrared sauna and ice bath, From $25, Appointment only, Beldon",
+     "lead_badge": true
+    },
+    {
+     "listing": "altered-states-wellness",
+     "award": "oria_pick",
+     "award_label": "Best south of the river",
+     "best_for": "South-east of the river",
+     "reason": "A long-running float space in Willetton that has grown into a compact recovery studio: float tanks, sauna, cold plunge and red light therapy under one roof, in hour-long sessions. One of the few places south-east of the river to combine a plunge with a float.",
+     "highlights": "Cold plunge and sauna, Float tanks, 60-minute sessions, Willetton",
+     "lead_badge": true
+    }
    ]
   },
   {
    "slug": "remedial-massage-perth",
    "category": "hands-on",
    "choose": [
-    { "listing": "life-wellness-massage-subiaco", "when": "on-the-spot health-fund claiming matters and you want a large team to pick from" },
-    { "listing": "your-local-healing-choice", "when": "it's your first remedial massage and you want an assessment before anything else" },
-    { "listing": "mount-lawley-physio-podiatry-massage", "when": "you need an evening or Saturday-morning appointment" },
-    { "listing": "wellbeing-physiotherapy-west-leederville", "when": "you want a 90-minute session" },
-    { "listing": "victoria-park-sports-massage-acupuncture", "when": "you train and want a sports-focused session" },
-    { "listing": "tara-massage-therapy", "when": "you want somewhere in the city" },
-    { "listing": "clear-mind-studio-fremantle", "when": "you're in Fremantle, or want a membership for regular visits" },
-    { "listing": "myofix-massage-cannington", "when": "you need a seven-day clinic south-east of the river" }
+    {
+     "listing": "life-wellness-massage-subiaco",
+     "when": "on-the-spot health-fund claiming matters and you want a large team to pick from"
+    },
+    {
+     "listing": "your-local-healing-choice",
+     "when": "it's your first remedial massage and you want an assessment before anything else"
+    },
+    {
+     "listing": "mount-lawley-physio-podiatry-massage",
+     "when": "you need an evening or Saturday-morning appointment"
+    },
+    {
+     "listing": "wellbeing-physiotherapy-west-leederville",
+     "when": "you want a 90-minute session"
+    },
+    {
+     "listing": "victoria-park-sports-massage-acupuncture",
+     "when": "you train and want a sports-focused session"
+    },
+    {
+     "listing": "tara-massage-therapy",
+     "when": "you want somewhere in the city"
+    },
+    {
+     "listing": "clear-mind-studio-fremantle",
+     "when": "you're in Fremantle, or want a membership for regular visits"
+    },
+    {
+     "listing": "myofix-massage-cannington",
+     "when": "you need a seven-day clinic south-east of the river"
+    }
    ],
    "picks": [
-    { "listing": "life-wellness-massage-subiaco", "award": "best_remedial_massage", "spotlight": "Best overall", "best_for": "Rebates on the spot, a big team", "rebate": "confirmed", "reason": "A six-room Hay Street studio with a large therapist team across deep tissue, remedial, sports and relaxation massage, plus lymphatic drainage and mobile visits. The studio states it is a registered health provider, so most private funds rebate through HICAPS at the desk, which is the clearest claiming set-up on this list.", "highlights": "Six rooms, Large therapist team, HICAPS on the spot, Mobile visits", "lead_badge": true },
-    { "listing": "your-local-healing-choice", "award": "best_for_beginners", "award_label": "Best for first timers", "spotlight": "Best for first timers", "best_for": "A first remedial massage", "rebate": "not_listed", "reason": "Remedial rooms in Wembley, Subiaco and Nedlands built around assessment-led treatment rather than a fixed routine: the practitioner looks first, then works, adding dry needling or cupping only where they judge it suitable. Three western-suburbs addresses, each booking separately online through Fresha.", "highlights": "Assessment first, Three western-suburbs rooms, Online booking via Fresha, Sports and pregnancy massage", "lead_badge": true },
-    { "listing": "mount-lawley-physio-podiatry-massage", "award": "best_evening", "spotlight": "Best evening appointments", "best_for": "After work, or Saturday morning", "rebate": "confirmed", "reason": "The massage arm of a long-standing Beaufort Street physiotherapy and podiatry practice, with weekday evenings until 7pm and Saturday mornings, so a session fits around a job. Deep tissue, remedial, sports recovery and pregnancy massage are on the menu, and the practice states that health-fund claiming applies to remedial work.", "highlights": "Evenings until 7pm, Saturday mornings, Health-fund claiming stated, Mount Lawley", "lead_badge": true },
-    { "listing": "wellbeing-physiotherapy-west-leederville", "award": "oria_pick", "award_label": "Best for longer sessions", "best_for": "A 90-minute session", "sessions": "45, 60 and 90 min", "rebate": "confirmed", "reason": "Remedial massage inside a physiotherapy practice on Cambridge Street, with therapist Yoko Murai — a Massage & Myotherapy Australia member — working 45, 60 and 90-minute sessions on deeper muscle tension. The practice states health-fund rebates are processed on site, and Saturdays are covered.", "highlights": "45 60 and 90-minute sessions, Rebates processed on site, Saturdays, West Leederville", "lead_badge": true },
-    { "listing": "victoria-park-sports-massage-acupuncture", "award": "best_sports_active", "best_for": "People who train", "rebate": "not_listed", "reason": "Sports and remedial massage alongside acupuncture and dry needling in a medical-centre suite off Orrong Road. A first massage opens with a ten-minute assessment before hands go anywhere, and a mobile service covers people who can't get in — a set-up built for training loads rather than a spa afternoon.", "highlights": "Sports and remedial massage, Ten-minute assessment first, Mobile service, Rivervale", "lead_badge": true },
-    { "listing": "tara-massage-therapy", "award": "oria_pick", "award_label": "Best Perth CBD option", "best_for": "In the city", "sessions": "60 to 120 min", "rebate": "not_listed", "reason": "A Stirling Street studio on the Northbridge edge of the city with remedial and deep tissue alongside a wide Thai and sports menu, in sittings from one to two hours. The one on this list you can walk to from a city office.", "highlights": "Sittings from 60 to 120 min, Remedial and deep tissue, Walkable from the CBD, Northbridge edge", "lead_badge": true },
-    { "listing": "clear-mind-studio-fremantle", "award": "oria_pick", "award_label": "Best Fremantle option", "best_for": "Fremantle, and regulars", "price_note": "From $129 for 60 min — price checked September 2026", "sessions": "60 min", "rebate": "not_listed", "reason": "Remedial, relaxation, pregnancy and hot stone massage with float tanks in the same building. Hour-long sessions are published at $129 to $159, evenings are included most nights, and a membership from $95 a month suits anyone who treats massage as maintenance rather than a treat.", "highlights": "Published prices, Evenings most nights, Membership from $95 a month, Float tanks on site", "lead_badge": false },
-    { "listing": "myofix-massage-cannington", "award": "oria_pick", "award_label": "Best seven-day clinic", "best_for": "South-east, any day", "rebate": "not_listed", "reason": "An evidence-based remedial clinic near Carousel, running since 2017 under an AMT-accredited founder, with cupping and dry needling alongside remedial work, pregnancy massage and reflexology. Open seven days, 10am to 8pm, which no other clinic on this list matches.", "highlights": "Open seven days to 8pm, AMT-accredited founder, Cupping and dry needling, Cannington", "lead_badge": true }
+    {
+     "listing": "life-wellness-massage-subiaco",
+     "award": "best_remedial_massage",
+     "spotlight": "Best overall",
+     "best_for": "Rebates on the spot, a big team",
+     "rebate": "confirmed",
+     "reason": "A six-room Hay Street studio with a large therapist team across deep tissue, remedial, sports and relaxation massage, plus lymphatic drainage and mobile visits. The studio states it is a registered health provider, so most private funds rebate through HICAPS at the desk, which is the clearest claiming set-up on this list.",
+     "highlights": "Six rooms, Large therapist team, HICAPS on the spot, Mobile visits",
+     "lead_badge": true
+    },
+    {
+     "listing": "your-local-healing-choice",
+     "award": "best_for_beginners",
+     "award_label": "Best for first timers",
+     "spotlight": "Best for first timers",
+     "best_for": "A first remedial massage",
+     "rebate": "not_listed",
+     "reason": "Remedial rooms in Wembley, Subiaco and Nedlands built around assessment-led treatment rather than a fixed routine: the practitioner looks first, then works, adding dry needling or cupping only where they judge it suitable. Three western-suburbs addresses, each booking separately online through Fresha.",
+     "highlights": "Assessment first, Three western-suburbs rooms, Online booking via Fresha, Sports and pregnancy massage",
+     "lead_badge": true
+    },
+    {
+     "listing": "mount-lawley-physio-podiatry-massage",
+     "award": "best_evening",
+     "spotlight": "Best evening appointments",
+     "best_for": "After work, or Saturday morning",
+     "rebate": "confirmed",
+     "reason": "The massage arm of a long-standing Beaufort Street physiotherapy and podiatry practice, with weekday evenings until 7pm and Saturday mornings, so a session fits around a job. Deep tissue, remedial, sports recovery and pregnancy massage are on the menu, and the practice states that health-fund claiming applies to remedial work.",
+     "highlights": "Evenings until 7pm, Saturday mornings, Health-fund claiming stated, Mount Lawley",
+     "lead_badge": true
+    },
+    {
+     "listing": "wellbeing-physiotherapy-west-leederville",
+     "award": "oria_pick",
+     "award_label": "Best for longer sessions",
+     "best_for": "A 90-minute session",
+     "sessions": "45, 60 and 90 min",
+     "rebate": "confirmed",
+     "reason": "Remedial massage inside a physiotherapy practice on Cambridge Street, with therapist Yoko Murai — a Massage & Myotherapy Australia member — working 45, 60 and 90-minute sessions on deeper muscle tension. The practice states health-fund rebates are processed on site, and Saturdays are covered.",
+     "highlights": "45 60 and 90-minute sessions, Rebates processed on site, Saturdays, West Leederville",
+     "lead_badge": true
+    },
+    {
+     "listing": "victoria-park-sports-massage-acupuncture",
+     "award": "best_sports_active",
+     "best_for": "People who train",
+     "rebate": "not_listed",
+     "reason": "Sports and remedial massage alongside acupuncture and dry needling in a medical-centre suite off Orrong Road. A first massage opens with a ten-minute assessment before hands go anywhere, and a mobile service covers people who can't get in — a set-up built for training loads rather than a spa afternoon.",
+     "highlights": "Sports and remedial massage, Ten-minute assessment first, Mobile service, Rivervale",
+     "lead_badge": true
+    },
+    {
+     "listing": "tara-massage-therapy",
+     "award": "oria_pick",
+     "award_label": "Best Perth CBD option",
+     "best_for": "In the city",
+     "sessions": "60 to 120 min",
+     "rebate": "not_listed",
+     "reason": "A Stirling Street studio on the Northbridge edge of the city with remedial and deep tissue alongside a wide Thai and sports menu, in sittings from one to two hours. The one on this list you can walk to from a city office.",
+     "highlights": "Sittings from 60 to 120 min, Remedial and deep tissue, Walkable from the CBD, Northbridge edge",
+     "lead_badge": true
+    },
+    {
+     "listing": "clear-mind-studio-fremantle",
+     "award": "oria_pick",
+     "award_label": "Best Fremantle option",
+     "best_for": "Fremantle, and regulars",
+     "price_note": "From $129 for 60 min — price checked September 2026",
+     "sessions": "60 min",
+     "rebate": "not_listed",
+     "reason": "Remedial, relaxation, pregnancy and hot stone massage with float tanks in the same building. Hour-long sessions are published at $129 to $159, evenings are included most nights, and a membership from $95 a month suits anyone who treats massage as maintenance rather than a treat.",
+     "highlights": "Published prices, Evenings most nights, Membership from $95 a month, Float tanks on site",
+     "lead_badge": false
+    },
+    {
+     "listing": "myofix-massage-cannington",
+     "award": "oria_pick",
+     "award_label": "Best seven-day clinic",
+     "best_for": "South-east, any day",
+     "rebate": "not_listed",
+     "reason": "An evidence-based remedial clinic near Carousel, running since 2017 under an AMT-accredited founder, with cupping and dry needling alongside remedial work, pregnancy massage and reflexology. Open seven days, 10am to 8pm, which no other clinic on this list matches.",
+     "highlights": "Open seven days to 8pm, AMT-accredited founder, Cupping and dry needling, Cannington",
+     "lead_badge": true
+    }
+   ]
+  },
+  {
+   "slug": "massage-perth",
+   "category": "hands-on",
+   "choose": [
+    {
+     "listing": "body-riches-wellness",
+     "when": "you want the hour itself, not a treatment plan"
+    },
+    {
+     "listing": "your-local-healing-choice",
+     "when": "something specific has stopped working and you want it assessed"
+    },
+    {
+     "listing": "subiaco-sports-massage-physio",
+     "when": "you can only get there before work or after 6pm"
+    },
+    {
+     "listing": "myofix-massage-cannington",
+     "when": "you are south of the river and want seven-day opening"
+    },
+    {
+     "listing": "myocare-myotherapy-hillarys",
+     "when": "you are in the northern suburbs and want a long appointment"
+    }
+   ],
+   "picks": [
+    {
+     "listing": "body-riches-wellness",
+     "award": "best_relaxation_massage",
+     "spotlight": "Best overall",
+     "best_for": "An hour genuinely off",
+     "reason": "Gay Riches has been doing this on South Terrace for more than twenty years, and the range covers remedial through to hot-stone and pregnancy work. What sets it apart is the Bali-inspired garden room with a private outdoor double spa, which turns a couples booking into an afternoon rather than an appointment. Health-fund rebates apply to eligible treatments.",
+     "highlights": "20+ years, Couples garden room with private outdoor spa, Hot stone and pregnancy massage, South Fremantle",
+     "lead_badge": true
+    },
+    {
+     "listing": "your-local-healing-choice",
+     "award": "best_massage",
+     "spotlight": "Best for a specific problem",
+     "best_for": "Assessment before treatment",
+     "reason": "Built around assessment-led treatment rather than a fixed routine — the practitioner works out what is going on before deciding what to do, and adds dry needling or myofascial cupping only where they judge it suitable. Three rooms across Wembley, Subiaco and Nedlands, each booking separately, so there is usually something available in the western suburbs.",
+     "highlights": "Assessment-led, Three western-suburbs rooms, Remedial sports and pregnancy, Lymphatic drainage",
+     "lead_badge": true
+    },
+    {
+     "listing": "subiaco-sports-massage-physio",
+     "award": "best_sports_active",
+     "spotlight": "Best hours",
+     "best_for": "Before work or after 6pm",
+     "reason": "A Rokeby Road institution that opens early and runs to 8pm on weekdays with weekend hours as well, which solves the problem most people actually have. Sports and remedial massage sit alongside physiotherapy, dry needling and cupping, and there is a South Perth recovery annexe with saunas and cold plunges if you train seriously.",
+     "highlights": "Open early to 8pm weekdays, Weekend hours, Physio and dry needling on site, Recovery annexe in South Perth",
+     "lead_badge": true
+    },
+    {
+     "listing": "myofix-massage-cannington",
+     "award": "best_massage",
+     "best_for": "Seven days, south of the river",
+     "reason": "Running near Carousel since 2017 under AMT-accredited founder Sowol Cheong, and open seven days from 10am to 8pm — unusual enough to matter if your week is awkward. Remedial work with cupping and dry needling, foot reflexology and pregnancy massage, plus acupuncture and moxibustion from the East Asian side of the practice.",
+     "highlights": "Open seven days 10am–8pm, AMT-accredited founder, Pregnancy massage and reflexology, Cannington",
+     "lead_badge": true
+    },
+    {
+     "listing": "myocare-myotherapy-hillarys",
+     "award": "best_massage",
+     "best_for": "Northern suburbs",
+     "reason": "A myotherapy practice inside Westfield Whitford City that books long appointments as standard rather than the short slots a shopping-centre address would suggest. Hands-on work is combined with dry needling, cupping and exercise you take away, which suits somebody who wants to do something about it between visits.",
+     "highlights": "Long appointments as standard, Exercise prescription included, Dry needling and cupping, Hillarys",
+     "lead_badge": false
+    },
+    {
+     "listing": "guildford-wellness",
+     "award": "best_value",
+     "best_for": "Health-fund rebates on the spot",
+     "reason": "A South Guildford practice built around sessions shaped to the body in front of them rather than a menu — deep tissue and sports work as needed — with online booking and HICAPS on site so the rebate comes off at the counter rather than months later.",
+     "highlights": "HICAPS on site, Online booking, Deep tissue and sports, South Guildford",
+     "lead_badge": false
+    }
+   ]
+  },
+  {
+   "slug": "day-spas-perth",
+   "category": "relax",
+   "choose": [
+    {
+     "listing": "crown-spa-perth",
+     "when": "you want a pool, sauna and steam circuit as part of the visit"
+    },
+    {
+     "listing": "annasha-day-spa",
+     "when": "you are booking for two and want to be out of the city"
+    },
+    {
+     "listing": "ganesha-wellness-spa",
+     "when": "you want a private hot tub, or to stay the night"
+    },
+    {
+     "listing": "soothe-massage-dayspa-nedlands",
+     "when": "you want a spa open seven days with easy parking"
+    },
+    {
+     "listing": "swan-valley-retreat",
+     "when": "you want floatation, sauna and ice bath in the same visit"
+    }
+   ],
+   "picks": [
+    {
+     "listing": "crown-spa-perth",
+     "award": "best_day_spa",
+     "spotlight": "Best overall",
+     "best_for": "A full spa circuit",
+     "reason": "The most complete facilities of any spa in the guide: an Aqua Retreat with vitality pool, sauna, steam room and rainforest shower, in separate men's and women's areas, alongside the treatment rooms. Treatments of an hour or more include four hours of valet parking, which quietly removes the most annoying part of a city spa visit. Sixteen and over.",
+     "highlights": "Vitality pool sauna and steam, Subtle Energies and La Prairie, Valet parking with an hour treatment, Burswood",
+     "lead_badge": true
+    },
+    {
+     "listing": "annasha-day-spa",
+     "award": "best_couples_spa",
+     "spotlight": "Best for two",
+     "best_for": "A couples afternoon in the hills",
+     "reason": "Five treatment rooms, three of them built for couples, in the gardens of a Gooseberry Hill property that started life as Kalamunda's first girls' high school. The menu runs from massage and Omnilux facials through to crystal body treatments and prenatal work, arranged into day packages. Tuesday to Saturday.",
+     "highlights": "Three couples rooms, Garden setting in the hills, Omnilux and prenatal treatments, Day packages",
+     "lead_badge": true
+    },
+    {
+     "listing": "ganesha-wellness-spa",
+     "award": "best_luxury",
+     "spotlight": "Best private hire",
+     "best_for": "A hot tub and a night upstairs",
+     "reason": "A converted house on Kensington Street with three massage rooms, a cabin holding a cedar hot tub and a fireplace, and lounges and a terrace upstairs looking back at the city. There is an adults-only bed and breakfast above the spa, which makes it the one place here where the afternoon can simply continue.",
+     "highlights": "Cedar hot tub cabin with fireplace, Couples rooms, Terrace with city views, B&B upstairs",
+     "lead_badge": true
+    },
+    {
+     "listing": "soothe-massage-dayspa-nedlands",
+     "award": "best_day_spa",
+     "best_for": "Open seven days",
+     "reason": "A 240-square-metre spa on Stirling Highway run by a remedial therapist of more than ten years and a skin therapist of fifteen. Open seven days from 9am to 6pm with free parking at the front — the two things that most often decide whether a spa booking actually happens. A German-designed infrared sauna sits alongside the treatment rooms.",
+     "highlights": "Open seven days, Free parking at the front, Infrared sauna, HydroPeptide facials and head spa",
+     "lead_badge": true
+    },
+    {
+     "listing": "swan-valley-retreat",
+     "award": "best_day_spa",
+     "best_for": "Water in every form",
+     "reason": "An unusually broad menu for a day spa: massage, facials and clay treatments alongside hydrotherapy, floatation, and an Oasis of sauna, ice bath and spa. Day visitors are explicitly welcome six days a week, with Oasis and float sessions running Sundays too, and three rooms for anyone who would rather stay over.",
+     "highlights": "Floatation and hydrotherapy, Sauna and ice bath sessions, Day visitors welcome, Henley Brook",
+     "lead_badge": false
+    },
+    {
+     "listing": "urban-retreat-day-spa-rockingham",
+     "award": "best_day_spa",
+     "best_for": "South of the river",
+     "reason": "On Railway Terrace at Rockingham Beach and open since 2007, with massage, facials, skin needling, Dermalux LED, body wraps and a sauna, grouped into packages for one or two. Lift access for wheelchairs, and gift vouchers sold online, by phone or in store — worth knowing if you are buying it as a present.",
+     "highlights": "Open since 2007, Couples packages, Sauna and Dermalux LED, Lift access",
+     "lead_badge": false
+    }
+   ]
+  },
+  {
+   "slug": "reformer-pilates-perth",
+   "category": "move",
+   "choose": [
+    {
+     "listing": "best-body-bassendean",
+     "when": "you want to know exactly what it costs before you walk in"
+    },
+    {
+     "listing": "element-pilates-vic-park",
+     "when": "you want two weeks to decide"
+    },
+    {
+     "listing": "reform-and-restore-studio",
+     "when": "you want a small class and a sauna afterwards"
+    },
+    {
+     "listing": "manna-wellness",
+     "when": "you want the cheapest way to try five classes"
+    },
+    {
+     "listing": "hills-pilates-house",
+     "when": "you are in the hills"
+    }
+   ],
+   "picks": [
+    {
+     "listing": "best-body-bassendean",
+     "award": "best_reformer",
+     "spotlight": "Best overall",
+     "best_for": "Knowing what it costs",
+     "price_note": "Casual $45, weekly memberships from $48 — prices checked September 2026",
+     "reason": "The most transparent pricing of any reformer studio in the directory, and that is not a small thing in an industry that mostly makes you enquire: $45 casual, weekly memberships from $48 for two classes up to $80 for four, and a six-week money-back guarantee attached. Open from 6am on weekdays with parking on site.",
+     "highlights": "Casual $45, Memberships from $48 a week, Six-week money-back guarantee, Open from 6am",
+     "lead_badge": true
+    },
+    {
+     "listing": "element-pilates-vic-park",
+     "award": "best_intro_offer",
+     "spotlight": "Best intro offer",
+     "best_for": "Two weeks to decide",
+     "price_note": "14 days unlimited $69 — price checked September 2026",
+     "reason": "Fourteen days unlimited for $69 is enough time to find out whether you will keep going, which a single class never is. Four class types run on the Albany Highway strip, from a foundational Classic through to a cardio-leaning Sweat and Burn, and there is a twelve-week Mums and Bubs postnatal program on the timetable.",
+     "highlights": "14 days unlimited $69, Four class types, 12-week Mums and Bubs program, Victoria Park",
+     "lead_badge": true
+    },
+    {
+     "listing": "reform-and-restore-studio",
+     "award": "best_small_group",
+     "spotlight": "Best small classes",
+     "best_for": "Six reformers, never more",
+     "price_note": "Two weeks unlimited $59 — price checked September 2026",
+     "reason": "Six reformers in the room and never more, which changes how much correction you actually get. The other half of the studio is a proper recovery wing — full-spectrum infrared sauna, commercial ice baths and structured contrast therapy — so a class and a sauna can be one trip rather than two.",
+     "highlights": "Maximum six in a class, Infrared sauna and ice baths, Two weeks unlimited $59, Scarborough",
+     "lead_badge": true
+    },
+    {
+     "listing": "manna-wellness",
+     "award": "best_value",
+     "spotlight": "Best value",
+     "best_for": "The most classes for the least money",
+     "price_note": "Five classes $55 — price checked September 2026",
+     "reason": "Five classes for $55 is the lowest per-class figure in this guide, and there are more than seventy-five reformer classes a week to use it on. The studio sits inside a multidisciplinary clinic — physiotherapy, clinical Pilates, psychology, remedial massage — with a second site at Darlington, so the hills are covered as well as Guildford.",
+     "highlights": "Five classes $55, 75+ classes a week, Physio and clinical Pilates on site, Guildford and Darlington",
+     "lead_badge": true
+    },
+    {
+     "listing": "hills-pilates-house",
+     "award": "best_reformer",
+     "best_for": "The Perth Hills",
+     "price_note": "Two weeks unlimited $75 — price checked September 2026",
+     "reason": "A boutique studio among the gum trees in central Kalamunda, kept deliberately small, with foundation classes for people still learning the moves alongside classic reformer and mat work. Two weeks unlimited for $75 for new members.",
+     "highlights": "Foundation classes for beginners, Deliberately small classes, Two weeks unlimited $75, Kalamunda",
+     "lead_badge": false
+    },
+    {
+     "listing": "revere-pilates",
+     "award": "beginner_friendly",
+     "best_for": "Form over pace",
+     "reason": "A loft-style studio in East Victoria Park running mat, reformer, arc and barre alongside slower release sessions, with private and duo appointments for anyone who would rather have the equipment to themselves first. The teaching leans form-first, which is the difference between a reformer class you can follow and one you endure.",
+     "highlights": "Form-first teaching, Private and duo sessions, Arc and barre classes, East Victoria Park",
+     "lead_badge": false
+    }
+   ]
+  },
+  {
+   "slug": "wellness-retreats-perth",
+   "category": "experiences",
+   "choose": [
+    {
+     "listing": "kookaburra-yoga",
+     "when": "you want a day of silence without leaving the hills"
+    },
+    {
+     "listing": "awakened-wellness-retreats",
+     "when": "you want a day retreat with lunch and a theme"
+    },
+    {
+     "listing": "spanda-school-retreats",
+     "when": "you are ready for three days or more in silence"
+    },
+    {
+     "listing": "natures-paradise-health-retreat",
+     "when": "you want a residential stay with the facilities on site"
+    },
+    {
+     "listing": "redgum-retreat-dwellingup",
+     "when": "you are booking for a whole group"
+    }
+   ],
+   "picks": [
+    {
+     "listing": "kookaburra-yoga",
+     "award": "best_day_retreat",
+     "spotlight": "Best day retreat",
+     "best_for": "A first day of silence",
+     "reason": "Ten acres of bushland at Bedfordale with a seasonal creek, native forest and an octagonal yoga shala, running a one-day silent retreat every month. Being in the hills rather than the South West means you can do it and be home the same evening, which is what makes a first retreat likely to actually happen. Weekend retreats and self-guided personal stays run through the year.",
+     "highlights": "Monthly one-day silent retreat, Ten bushland acres, Bush walks on the property, Bedfordale",
+     "lead_badge": true
+    },
+    {
+     "listing": "awakened-wellness-retreats",
+     "award": "best_retreat",
+     "spotlight": "Best guided day",
+     "best_for": "A themed day with lunch",
+     "reason": "Mandy Francisty runs day retreats around Perth built from slow-flow and restorative yoga, yoga nidra, meditation, breathwork and journaling, each on a different theme, with a vegan gluten-free lunch included. Her Two Rocks base has a sauna and ice bath and weekly classes, and she takes private bookings for hens, birthdays and teams.",
+     "highlights": "Day retreats around Perth, Lunch included, Weekend retreats further afield, Private group bookings",
+     "lead_badge": true
+    },
+    {
+     "listing": "spanda-school-retreats",
+     "award": "best_retreat",
+     "spotlight": "Best silent retreat",
+     "best_for": "Going properly quiet",
+     "reason": "Structured silent retreats built on non-dual meditation, gentle movement and rest — one-day sittings at the Fremantle school and three- and seven-day residentials at Donnelly Lakes near Pemberton. Two formats run at different depths: a guided version for people newer to silence, and longer unguided sits for experienced meditators. Around a hundred students a year.",
+     "highlights": "One-day sittings in Fremantle, 3 and 7-day residentials, Guided and unguided formats, Donnelly Lakes",
+     "lead_badge": true
+    },
+    {
+     "listing": "natures-paradise-health-retreat",
+     "award": "best_retreat",
+     "best_for": "Staying a few days",
+     "reason": "A small adults-only retreat on a secluded hilltop outside Mundaring, surrounded by state forest and national park, running residential programs since 2013. Day visits through to multi-day stays, with a swim pond, gym, infrared sauna, mineral baths and a library on the property. Airport pick-up is complimentary for retreat guests.",
+     "highlights": "Adults only, Infrared sauna and mineral baths, Day and multi-day programs, Complimentary airport pick-up",
+     "lead_badge": true
+    },
+    {
+     "listing": "redgum-retreat-dwellingup",
+     "award": "best_retreat",
+     "best_for": "Booking the whole house",
+     "reason": "A rammed-earth house purpose-built in 2012 for groups of up to eighteen: eight ensuite bedrooms, a large common room and kitchen, and the Bibbulmun Track at the boundary under a kilometre from Dwellingup. Yoga studios and art teachers hire the whole place for weekends and either self-cater or bring in local caterers, so the shape of the retreat is yours.",
+     "highlights": "Sleeps 18 in ensuite rooms, Whole-house hire, Bibbulmun Track at the boundary, Dwellingup",
+     "lead_badge": false
+    },
+    {
+     "listing": "frieda-yoga-and-hiking",
+     "award": "best_day_retreat",
+     "best_for": "Walking and then lying down",
+     "reason": "Yoga hikes — a four-kilometre walk at Bells Rapids or up to the Golden View lookout above Mundaring Weir, followed by a slow-flow class and afternoon tea. It is the lowest-commitment thing in this guide and the easiest to say yes to, and it suits people who go slightly mad sitting still for a whole day.",
+     "highlights": "Yoga hikes around Perth, Half a day rather than a whole one, Yin and vinyasa classes in Cottesloe, Weekend retreats in Balingup",
+     "lead_badge": false
+    }
+   ]
+  },
+  {
+   "slug": "acupuncture-perth",
+   "category": "hands-on",
+   "choose": [
+    {
+     "listing": "baolin-acupuncture-chinese-medicine",
+     "when": "you want to know the price before you ring"
+    },
+    {
+     "listing": "tao-acupuncture-shenton-park",
+     "when": "you want the most experienced practitioner you can find"
+    },
+    {
+     "listing": "tcm-acupuncture-north-perth",
+     "when": "you need an evening or Saturday appointment"
+    },
+    {
+     "listing": "natures-chinese-medicine-acupuncture",
+     "when": "your health fund matters most"
+    },
+    {
+     "listing": "aligned-centred-acupuncture",
+     "when": "you are going through fertility treatment"
+    }
+   ],
+   "picks": [
+    {
+     "listing": "baolin-acupuncture-chinese-medicine",
+     "award": "best_acupuncture",
+     "spotlight": "Best overall",
+     "best_for": "Published prices",
+     "price_note": "Initial consultation $95, subsequent $75, herbal $50, cupping $40 — prices checked September 2026",
+     "reason": "The only clinic in the directory that publishes a full price list, which in this field is worth saying out loud. Three AHPRA-registered practitioners on Newcastle Street with a second clinic in Subiaco, offering acupuncture, Chinese herbal medicine, cupping and remedial massage, with HICAPS rebates processed on the spot.",
+     "highlights": "Full price list published, Three AHPRA-registered practitioners, HICAPS on the spot, CBD and Subiaco",
+     "lead_badge": true
+    },
+    {
+     "listing": "tao-acupuncture-shenton-park",
+     "award": "best_acupuncture",
+     "spotlight": "Most experienced",
+     "best_for": "Depth of training",
+     "reason": "Qin Wang holds a bachelor, master and PhD in traditional Chinese medicine and has more than thirty years in clinic, practising both Chinese and Japanese acupuncture alongside herbal medicine, cupping and moxibustion. If length of training is the thing you want to compare on, this is the longest in the guide.",
+     "highlights": "PhD in Chinese medicine, 30+ years in clinic, Chinese and Japanese acupuncture, Shenton Park",
+     "lead_badge": true
+    },
+    {
+     "listing": "tcm-health-care-leeming",
+     "award": "best_acupuncture",
+     "spotlight": "Best house rule",
+     "best_for": "Experienced practitioners only",
+     "reason": "Kimberley Zhang's Leeming clinic has run since 2012 with a rule you rarely see published: every practitioner must have at least ten years of clinical experience beyond their degree and registration. Acupuncture, herbal medicine, tui-na meridian massage and cupping, with telehealth consults and HICAPS rebates.",
+     "highlights": "Ten years' experience required of every practitioner, Tui-na meridian massage, Telehealth consults, HICAPS",
+     "lead_badge": true
+    },
+    {
+     "listing": "tcm-acupuncture-north-perth",
+     "award": "best_evening",
+     "best_for": "Evenings and Saturdays",
+     "reason": "Open Tuesday to Saturday with weekday evening slots to 7pm, booked online or by phone — which matters more than most comparison points if you work ordinary hours. Acupuncture, electroacupuncture, cosmetic acupuncture, herbal medicine, cupping and moxibustion, with dietary advice from the TCM frame.",
+     "highlights": "Evenings to 7pm, Open Saturdays, Online booking, Electroacupuncture and cosmetic acupuncture",
+     "lead_badge": true
+    },
+    {
+     "listing": "natures-chinese-medicine-acupuncture",
+     "award": "best_acupuncture",
+     "best_for": "Health-fund cover",
+     "reason": "Established in 1999 and run by two AHPRA-registered practitioners specialising in Master Tung's acupuncture and the Dr Tan Balance Method. More than forty private health funds are accepted with HICAPS rebates on the spot, and Saturday mornings are open — a useful combination if cover and timing are both constraints.",
+     "highlights": "Established 1999, 40+ health funds accepted, Saturday mornings, Belmont",
+     "lead_badge": false
+    },
+    {
+     "listing": "aligned-centred-acupuncture",
+     "award": "best_acupuncture",
+     "best_for": "Fertility and IVF support",
+     "reason": "An Alexander Heights clinic where two acupuncturists work alongside a naturopath and a massage therapist, with practice concentrated on fertility care — during natural conception, through IVF cycles and embryo transfer, in early pregnancy, and for male fertility — plus group fertility sessions. Talk to your fertility specialist about anything you add alongside treatment.",
+     "highlights": "Fertility-focused practice, IVF cycle and transfer support, Naturopath and massage on site, Alexander Heights",
+     "lead_badge": false
+    }
    ]
   }
  ]

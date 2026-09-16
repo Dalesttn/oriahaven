@@ -55,6 +55,17 @@ const AWARDS = array(
 	'best_sports_active'   => 'Best for sports & active',
 	'best_evening'         => 'Best evening appointments',
 	'best_weekend'         => 'Best weekend option',
+	'best_massage'         => 'Best massage',
+	'best_relaxation_massage' => 'Best relaxation massage',
+	'best_pregnancy_massage' => 'Best pregnancy massage',
+	'best_day_spa'         => 'Best day spa',
+	'best_couples_spa'     => 'Best couples spa',
+	'best_luxury'          => 'Best luxury experience',
+	'best_reformer'        => 'Best reformer Pilates',
+	'best_intro_offer'     => 'Best intro offer',
+	'best_retreat'         => 'Best retreat',
+	'best_day_retreat'     => 'Best day retreat',
+	'best_acupuncture'     => 'Best acupuncture',
 	'oria_pick'            => 'Oria Haven pick',
 );
 

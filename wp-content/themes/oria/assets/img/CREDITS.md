@@ -113,6 +113,46 @@ Panels run left to right, and the left one is the one the band fades out.
 | 2 | Armchairs in a quiet reading room | Zhanna Leontyeva | [8609755](https://www.pexels.com/photo/8609755/) |
 | 3 | A warm room with a reading lamp | Ksu&Eli Studio | [8680790](https://www.pexels.com/photo/8680790/) |
 
+**massage-perth**
+
+| Panel | Photograph | Photographer | Pexels |
+|---|---|---|---|
+| 1 | Oils and towels on a shelf | Мария Когутовская | [28321609](https://www.pexels.com/photo/28321609/) |
+| 2 | Oil poured over a draped back | KoolShooters | [6628606](https://www.pexels.com/photo/6628606/) |
+| 3 | Hands working with oil | Alina Zahorulko | [20421579](https://www.pexels.com/photo/20421579/) |
+
+**day-spas-perth**
+
+| Panel | Photograph | Photographer | Pexels |
+|---|---|---|---|
+| 1 | A plunge pool in a stone room | Pavel Danilyuk | [6667423](https://www.pexels.com/photo/6667423/) |
+| 2 | A treatment behind wooden blinds | Anna Tarazevich | [6560310](https://www.pexels.com/photo/6560310/) |
+| 3 | A warm, low-lit treatment room | Tima Miroshnichenko | [6187841](https://www.pexels.com/photo/6187841/) |
+
+**reformer-pilates-perth**
+
+| Panel | Photograph | Photographer | Pexels |
+|---|---|---|---|
+| 1 | A bright studio of reformers | Ahmet Kurt | [25599832](https://www.pexels.com/photo/25599832/) |
+| 2 | A reformer and tower | Ahmet Kurt | [25599824](https://www.pexels.com/photo/25599824/) |
+| 3 | A reformer in use | Ahmet Kurt | [25596680](https://www.pexels.com/photo/25596680/) |
+
+**wellness-retreats-perth**
+
+| Panel | Photograph | Photographer | Pexels |
+|---|---|---|---|
+| 1 | A timber hut in forest | Pat Whelen | [5614642](https://www.pexels.com/photo/5614642/) |
+| 2 | A cabin under open sky | Rachel Claire | [4825751](https://www.pexels.com/photo/4825751/) |
+| 3 | A verandah among the trees | cottonbro studio | [4828036](https://www.pexels.com/photo/4828036/) |
+
+**acupuncture-perth**
+
+| Panel | Photograph | Photographer | Pexels |
+|---|---|---|---|
+| 1 | A small bottle of tincture | ivi nnnnnn | [35079607](https://www.pexels.com/photo/35079607/) |
+| 2 | Herb jars on wooden shelves | CX LEE | [36503380](https://www.pexels.com/photo/36503380/) |
+| 3 | Needles being placed | Antoni Shkraba | [6076104](https://www.pexels.com/photo/6076104/) |
+
 ## App icons
 
 `oria-apps/assets/icons/*.webp` are each app's own icon, fetched from
