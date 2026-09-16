@@ -28,6 +28,20 @@ while ( have_posts() ) :
 	$oria_picks = $oria_guide['picks'];
 	?>
 
+	<?php
+	/*
+	 * The guide wears its own featured image, painted by CSS rather than
+	 * carried as an <img>: the picture is decoration here, the headline
+	 * already says what the page is, and a background is neither announced
+	 * to a screen reader nor downloaded where it is never shown.
+	 *
+	 * No featured image, no custom property, no picture and no reserved
+	 * height -- the header falls back to exactly what it was.
+	 */
+	$oria_hero = get_post_thumbnail_id() ? (string) wp_get_attachment_image_url( get_post_thumbnail_id(), 'oria-wide' ) : '';
+	?>
+	<div class="heroband heroband--stack<?php echo '' !== $oria_hero ? '' : ' heroband--bare'; ?>"
+		<?php if ( '' !== $oria_hero ) : ?>style="--heroband-img:url('<?php echo esc_url( $oria_hero ); ?>')"<?php endif; ?>>
 	<section class="wrap pagehead">
 		<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
@@ -36,23 +50,26 @@ while ( have_posts() ) :
 			<span aria-hidden="true">/</span><span><?php echo esc_html( $oria_guide['title'] ); ?></span>
 		</nav>
 
-		<h1 class="h1"><?php echo esc_html( $oria_guide['title'] ); ?></h1>
-		<?php if ( '' !== $oria_guide['subtitle'] ) : ?>
-			<p class="lede"><?php echo esc_html( $oria_guide['subtitle'] ); ?></p>
-		<?php endif; ?>
+		<div class="pagehead__copy">
+			<h1 class="h1 pagehead__title"><?php echo esc_html( $oria_guide['title'] ); ?></h1>
+			<?php if ( '' !== $oria_guide['subtitle'] ) : ?>
+				<p class="lede pagehead__lede"><?php echo esc_html( $oria_guide['subtitle'] ); ?></p>
+			<?php endif; ?>
 
-		<?php if ( '' !== $oria_guide['checked'] ) : ?>
-			<p class="micro gdchecked">
-				<?php
-				printf(
-					/* translators: %s: a date */
-					esc_html__( 'Last checked %s', 'oria' ),
-					esc_html( date_i18n( 'j F Y', (int) strtotime( $oria_guide['checked'] ) ) )
-				);
-				?>
-			</p>
-		<?php endif; ?>
+			<?php if ( '' !== $oria_guide['checked'] ) : ?>
+				<p class="micro gdchecked">
+					<?php
+					printf(
+						/* translators: %s: a date */
+						esc_html__( 'Last checked %s', 'oria' ),
+						esc_html( date_i18n( 'j F Y', (int) strtotime( $oria_guide['checked'] ) ) )
+					);
+					?>
+				</p>
+			<?php endif; ?>
+		</div>
 	</section>
+	</div>
 
 	<?php if ( '' !== $oria_guide['intro'] ) : ?>
 		<section class="wrap section section--top-flush">

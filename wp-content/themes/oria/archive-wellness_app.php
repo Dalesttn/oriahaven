@@ -42,17 +42,29 @@ uasort( $oria_cats, static fn( array $a, array $b ): int => $b['n'] <=> $a['n'] 
 $oria_picks = Engine\picks( 4 );
 ?>
 
+<?php
+/*
+ * The header picture comes from the stylesheet rather than from a post,
+ * the way the singing bowls hub supplies its own -- a hub has no featured
+ * image to wear. The copy moves into .pagehead__copy because that is the
+ * box the band narrows to make room for the photograph.
+ */
+?>
+<div class="heroband heroband--stack appshero-band">
 <section class="wrap pagehead">
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span><span><?php esc_html_e( 'Apps', 'oria' ); ?></span>
 	</nav>
-	<span class="micro" style="display:block;margin-top:1rem;color:var(--moss)"><?php esc_html_e( 'Wellness at home', 'oria' ); ?></span>
-	<h1 class="h1 pagehead__title" style="margin-top:.4rem"><?php esc_html_e( 'Wellness apps & digital tools', 'oria' ); ?></h1>
-	<p class="lede" style="max-width:56ch;margin-top:1rem">
-		<?php esc_html_e( 'Apps for meditation, sleep, movement and everyday wellbeing — chosen by us, with what each one costs and who it actually suits. A companion to the practices in the directory, not a replacement for them.', 'oria' ); ?>
-	</p>
+	<div class="pagehead__copy">
+		<span class="micro"><?php esc_html_e( 'Wellness at home', 'oria' ); ?></span>
+		<h1 class="h1 pagehead__title"><?php esc_html_e( 'Wellness apps & digital tools', 'oria' ); ?></h1>
+		<p class="lede pagehead__lede">
+			<?php esc_html_e( 'Apps for meditation, sleep, movement and everyday wellbeing — chosen by us, with what each one costs and who it actually suits. A companion to the practices in the directory, not a replacement for them.', 'oria' ); ?>
+		</p>
+	</div>
 </section>
+</div>
 
 <?php if ( ! $oria_apps ) : ?>
 	<section class="wrap section section--top-flush">

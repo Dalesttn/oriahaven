@@ -131,6 +131,11 @@ foreach ( $json['guides'] as $guide ) {
 	update_post_meta( $id, 'guide_checked', $checked );
 	update_post_meta( $id, '_guide_checked', 'field_oria_guide_checked' );
 
+	$hero = hero( $id, $slug );
+	if ( '' !== $hero ) {
+		printf( "      header picture: %s\n", $hero );
+	}
+
 	write_picks( $id, $picks );
 	write_faq( $id, (array) ( $guide['faq'] ?? array() ) );
 
@@ -148,6 +153,80 @@ if ( $apply ) {
 		: "They are drafts. Read one through, then publish.\n";
 } else {
 	printf( "Would create %d, refresh %d, leave alone %d.\n", count( $json['guides'] ) - $skipped, 0, $skipped );
+}
+
+/**
+ * Put the guide's header picture in the media library and set it as the
+ * featured image.
+ *
+ * The file ships in the plugin, so the same picture lands on every
+ * environment without anyone uploading anything -- the same arrangement
+ * the app icons use. Skipped when the guide already has one, because an
+ * editor who replaced it should not have their choice undone by a re-run,
+ * and skipped silently when there is no file, because a guide without a
+ * header picture renders the plain header instead.
+ *
+ * It is already 1920x1080, which is what `oria-wide` crops to, so nothing
+ * is re-cropped on the way in.
+ */
+function hero( int $id, string $slug ): string {
+	if ( has_post_thumbnail( $id ) ) {
+		return '';
+	}
+
+	$file = ORIA_APPS_DIR . 'assets/heroes/' . $slug . '.webp';
+	if ( ! is_readable( $file ) ) {
+		return '';
+	}
+
+	// Imported once on an earlier run: reuse it rather than filling the
+	// library with copies.
+	$existing = get_posts(
+		array(
+			'post_type'      => 'attachment',
+			'post_status'    => 'inherit',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'meta_key'       => '_oria_guide_hero', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value'     => $slug, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+		)
+	);
+	if ( $existing ) {
+		set_post_thumbnail( $id, (int) $existing[0] );
+		return 'reused #' . (int) $existing[0];
+	}
+
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+
+	$uploaded = wp_upload_bits( $slug . '-hero.webp', null, (string) file_get_contents( $file ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	if ( ! empty( $uploaded['error'] ) ) {
+		return 'failed: ' . $uploaded['error'];
+	}
+
+	$attachment = wp_insert_attachment(
+		array(
+			'post_mime_type' => 'image/webp',
+			'post_title'     => get_the_title( $id ) . ' header',
+			'post_status'    => 'inherit',
+		),
+		$uploaded['file'],
+		$id
+	);
+	if ( is_wp_error( $attachment ) || ! $attachment ) {
+		return 'failed to attach';
+	}
+
+	wp_update_attachment_metadata( (int) $attachment, wp_generate_attachment_metadata( (int) $attachment, $uploaded['file'] ) );
+	update_post_meta( (int) $attachment, '_oria_guide_hero', $slug );
+	// Decoration behind a headline that already says what the page is, so
+	// the alt text stays empty rather than describing furniture.
+	update_post_meta( (int) $attachment, '_wp_attachment_image_alt', '' );
+
+	set_post_thumbnail( $id, (int) $attachment );
+
+	return 'imported #' . (int) $attachment;
 }
 
 /**

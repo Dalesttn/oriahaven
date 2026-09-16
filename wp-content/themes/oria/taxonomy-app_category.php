@@ -22,6 +22,17 @@ $oria_name = $oria_term instanceof WP_Term ? wp_specialchars_decode( $oria_term-
 $oria_intro = $oria_term instanceof WP_Term ? trim( (string) get_term_meta( $oria_term->term_id, 'intro', true ) ) : '';
 ?>
 
+<?php
+/*
+ * The hub's own header picture, deliberately the same one.
+ *
+ * A category is a room inside the apps section rather than a place of its
+ * own, and fifteen bespoke headers would be fifteen things to keep in step
+ * for no gain a reader would notice. Sharing the picture is what tells
+ * somebody arriving from the hub that they have not left it.
+ */
+?>
+<div class="heroband heroband--stack appshero-band">
 <section class="wrap pagehead">
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
@@ -29,29 +40,32 @@ $oria_intro = $oria_term instanceof WP_Term ? trim( (string) get_term_meta( $ori
 		<a href="<?php echo esc_url( (string) get_post_type_archive_link( Data\CPT ) ); ?>"><?php esc_html_e( 'Apps', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span><span><?php echo esc_html( $oria_name ); ?></span>
 	</nav>
-	<h1 class="h1 pagehead__title" style="margin-top:1rem">
-		<?php
-		printf(
-			/* translators: %s: category name, e.g. Meditation */
-			esc_html__( '%s apps', 'oria' ),
-			esc_html( $oria_name )
-		);
-		?>
-	</h1>
-	<p class="lede" style="max-width:56ch;margin-top:1rem">
-		<?php
-		echo '' !== $oria_intro
-			? esc_html( $oria_intro )
-			: esc_html(
-				sprintf(
-					/* translators: %s: category name, lowercased */
-					__( 'The %s apps we have reviewed, with what each one costs, who it suits and where to do the same thing in person.', 'oria' ),
-					strtolower( $oria_name )
-				)
+	<div class="pagehead__copy">
+		<h1 class="h1 pagehead__title">
+			<?php
+			printf(
+				/* translators: %s: category name, e.g. Meditation */
+				esc_html__( '%s apps', 'oria' ),
+				esc_html( $oria_name )
 			);
-		?>
-	</p>
+			?>
+		</h1>
+		<p class="lede pagehead__lede">
+			<?php
+			echo '' !== $oria_intro
+				? esc_html( $oria_intro )
+				: esc_html(
+					sprintf(
+						/* translators: %s: category name, lowercased */
+						__( 'The %s apps we have reviewed, with what each one costs, who it suits and where to do the same thing in person.', 'oria' ),
+						strtolower( $oria_name )
+					)
+				);
+			?>
+		</p>
+	</div>
 </section>
+</div>
 
 <?php if ( ! $oria_rows ) : ?>
 	<section class="wrap section section--top-flush">

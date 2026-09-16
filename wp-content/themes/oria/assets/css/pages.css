@@ -5059,6 +5059,28 @@ article.is-spotlit {
   /* Only narrowed when there is actually a picture to make room for. */
   .heroband:not(.heroband--bare) .pagehead__copy { max-width: min(56rem, 58%); }
   .heroband--post::before { width: 38%; min-width: 300px; }
+
+  /* A stack needs more of itself showing than a single photograph does.
+
+     At 38% wide and under the article mask, the leftmost of three panels
+     was cropped to a sliver and then faded to almost nothing -- a
+     three-panel picture that read as two. So the box is wider, and the
+     fade starts later and climbs faster: the left panel arrives at about
+     half strength instead of vanishing, which is what makes the
+     arrangement read as a stack dissolving into the page rather than one
+     photograph with a soft edge.
+
+     The copy is capped well inside this, so nothing is fighting for the
+     same pixels. */
+  .heroband--stack::before {
+    width: 46%; min-width: 340px;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, rgba(0,0,0,.45) 18%, rgba(0,0,0,.85) 42%, #000 62%),
+      linear-gradient(to bottom, transparent 0%, #000 14%, #000 84%, transparent 100%);
+    mask-image:
+      linear-gradient(to right, transparent 0%, rgba(0,0,0,.45) 18%, rgba(0,0,0,.85) 42%, #000 62%),
+      linear-gradient(to bottom, transparent 0%, #000 14%, #000 84%, transparent 100%);
+  }
 }
 
 /* On a phone the picture drops below the header instead of disappearing.
@@ -5072,9 +5094,12 @@ article.is-spotlit {
    its own top-and-bottom fade. Same single source either way: no <img> in
    the markup means no chance of a desktop double-download. */
 @media (max-width: 860px) {
-  .heroband--post:not(.heroband--bare) { display: grid; }
-  .heroband--post:not(.heroband--bare) > .wrap { order: 1; }
-  .heroband--post:not(.heroband--bare)::before {
+  .heroband--post:not(.heroband--bare),
+  .heroband--stack:not(.heroband--bare) { display: grid; }
+  .heroband--post:not(.heroband--bare) > .wrap,
+  .heroband--stack:not(.heroband--bare) > .wrap { order: 1; }
+  .heroband--post:not(.heroband--bare)::before,
+  .heroband--stack:not(.heroband--bare)::before {
     content: ""; order: 2;
     height: clamp(170px, 46vw, 260px); margin-top: var(--s-5);
     background-image: var(--heroband-img, none);
@@ -6577,3 +6602,44 @@ article.is-spotlit {
 .appoffline--light .appoffline__copy .h3 { color: var(--ink); }
 .appoffline--light .appoffline__links .fchip { background: var(--white); border-color: var(--line); color: var(--ink); }
 .appoffline--light .appoffline__links .fchip:hover { border-color: var(--teal-line); color: var(--moss); }
+
+/* --- The app section's header pictures -------------------------------- */
+/* Three photographs stacked as panels in one 16:9 file, which is exactly
+   what `oria-wide` crops to -- so a guide's featured image passes through
+   WordPress untouched and needs no second art direction.
+
+   .heroband--stack is the geometry, shared with the article hero above:
+   anchored right, dissolved to the left, and dropping below the headline on
+   a phone. That last part is the reason the panels are ordered the way they
+   are. On a desktop the leftmost panel is both partly cropped and mostly
+   faded, so the quiet textural photograph goes there; on a phone the band is
+   16:9 and all three are seen in full, which is why each has to stand up
+   alone.
+
+   Photographs from Pexels, free to use. The hub's three, left to right:
+   a coastal boardwalk (Diogo Miranda), reading under a blanket (Atlantic
+   Ambience), stretching on a living room floor (Pavel Danilyuk). Credits for
+   every picture the site ships are in assets/img/CREDITS.md. */
+.appshero-band .pagehead { padding-block: clamp(2rem, 4.5vw, 3.25rem) clamp(1.5rem, 3vw, 2.25rem); }
+
+@media (min-width: 861px) {
+  .appshero-band {
+    --heroband-img: image-set(
+      url("../img/apps-hero-1280.webp") 1x,
+      url("../img/apps-hero.webp") 2x
+    );
+  }
+  @supports (background-image: -webkit-image-set(url("../img/apps-hero-1280.webp") 1x)) {
+    .appshero-band {
+      --heroband-img: -webkit-image-set(
+        url("../img/apps-hero-1280.webp") 1x,
+        url("../img/apps-hero.webp") 2x
+      );
+    }
+  }
+}
+/* The phone gets the smaller file and nothing else: at 390px wide the 1920
+   version is four times more pixels than the screen can show. */
+@media (max-width: 860px) {
+  .appshero-band { --heroband-img: url("../img/apps-hero-1280.webp"); }
+}
