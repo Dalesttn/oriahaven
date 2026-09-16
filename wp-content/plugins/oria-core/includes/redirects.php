@@ -126,12 +126,66 @@ function maybe_redirect(): void {
 	$path = normalise( $uri );
 	$to   = $map[ $path ] ?? '';
 
-	if ( '' === $to || $path === normalise( $to ) ) {
+	/*
+	 * Nothing recorded for this address.
+	 *
+	 * Almost always that is correct and we should keep out of the way. The
+	 * exception is an address that is about to fail anyway: the migration
+	 * recorded /practices/{category}/ice-bath/ but never /perth/ice-bath/,
+	 * and with no rule of ours WordPress resolved that one as the attached
+	 * photograph and Yoast sent it to the JPEG. A page about ice baths in
+	 * Perth answered with an image, and kept its place in the index doing
+	 * it. So: only when the request would 404 or has landed on an
+	 * attachment, and only when the last segment genuinely names a facet.
+	 */
+	if ( '' === $to ) {
+		if ( ! is_404() && ! is_attachment() ) {
+			return;
+		}
+		$to = facet_target( $path );
+		if ( '' === $to ) {
+			return;
+		}
+	}
+
+	/*
+	 * Follow a recorded chain to its end rather than serving the first hop.
+	 * add() repoints existing entries, but two separate migrations can still
+	 * leave A -> B -> C, and /practice/yoga/pregnancy/ was exactly that.
+	 * Each hop is a crawl Google may not spend.
+	 */
+	$hops = 0;
+	while ( $hops < 3 ) {
+		$next = $map[ normalise( $to ) ] ?? '';
+		if ( '' === $next || normalise( $next ) === normalise( $to ) ) {
+			break;
+		}
+		$to = $next;
+		$hops++;
+	}
+
+	if ( $path === normalise( $to ) ) {
 		return;
 	}
 
 	// A service that is another name for a specialty lands on the specialty.
 	$to = twin_target( $path, $to );
+
+	/*
+	 * The migration wrote the bare city hub wherever it could not place a
+	 * facet, and it could not place any whose address is a short alias --
+	 * "pregnancy" is how pregnancy-yoga is addressed, "aqua" how
+	 * aqua-fitness is. /practices/yoga/pregnancy/ still drew 203
+	 * impressions a fortnight after the move, every one of them landing on
+	 * a page about everything in Perth. The facet's own page exists; send
+	 * people there.
+	 */
+	if ( is_city_hub( $to ) ) {
+		$alt = facet_target( $path );
+		if ( '' !== $alt ) {
+			$to = $alt;
+		}
+	}
 
 	// A 301 into a 404 is worse than the 404 alone; land on the parent.
 	$to = survivable( $to );
@@ -141,6 +195,85 @@ function maybe_redirect(): void {
 
 	wp_safe_redirect( $dest, 301 );
 	exit;
+}
+
+/** Whether a destination is a bare city hub -- /explore/perth/ and nothing more. */
+function is_city_hub( string $to ): bool {
+	if ( ! function_exists( '\Oria\Core\Cities\get' ) ) {
+		return false;
+	}
+	$seg = explode( '/', trim( $to, '/' ) );
+	return 2 === count( $seg ) && 'explore' === $seg[0] && null !== \Oria\Core\Cities\get( $seg[1] );
+}
+
+/**
+ * The specialty an old URL segment names, or '' when it names none.
+ *
+ * Three ways a segment can be one: it is the specialty's own slug; it is a
+ * service that is another name for a specialty (ice-bath, cold-plunge); or
+ * it is the shorter address the specialty answers on, which is what
+ * PracticesIndex\specialty_slug() hands out and what the four aliases in
+ * specialty-homes.json record. The migration knew only the first.
+ */
+function specialty_for( string $seg ): string {
+	if ( '' === $seg || ! function_exists( '\Oria\Core\PracticesIndex\specialty_home' ) ) {
+		return '';
+	}
+
+	$twin = function_exists( '\Oria\Core\PracticesIndex\specialty_twin' )
+		? \Oria\Core\PracticesIndex\specialty_twin( $seg )
+		: $seg;
+	if ( '' !== \Oria\Core\PracticesIndex\specialty_home( $twin ) ) {
+		return $twin;
+	}
+
+	if ( ! function_exists( '\Oria\Core\PracticesIndex\specialty_homes' )
+		|| ! function_exists( '\Oria\Core\PracticesIndex\specialty_slug' ) ) {
+		return '';
+	}
+	foreach ( array_keys( \Oria\Core\PracticesIndex\specialty_homes() ) as $spec ) {
+		if ( \Oria\Core\PracticesIndex\specialty_slug( (string) $spec ) === $seg ) {
+			return (string) $spec;
+		}
+	}
+
+	return '';
+}
+
+/**
+ * The canonical /explore/ address for an old path whose last segment names
+ * a facet, or '' when it names none.
+ *
+ * The city is the one the old address named, else the default. The category
+ * is the facet's home, read rather than guessed, and verified to still
+ * exist -- see PracticesIndex\specialty_home_term().
+ */
+function facet_target( string $path ): string {
+	if ( ! function_exists( '\Oria\Core\PracticesIndex\specialty_home_term' )
+		|| ! function_exists( '\Oria\Core\PracticesIndex\specialty_slug' )
+		|| ! function_exists( '\Oria\Core\Cities\get' ) ) {
+		return '';
+	}
+
+	$seg = explode( '/', trim( $path, '/' ) );
+	if ( count( $seg ) < 2 ) {
+		return '';
+	}
+
+	$spec = specialty_for( (string) end( $seg ) );
+	if ( '' === $spec ) {
+		return '';
+	}
+	$home = \Oria\Core\PracticesIndex\specialty_home_term( $spec );
+	if ( ! $home instanceof \WP_Term ) {
+		return '';
+	}
+
+	$city = null !== \Oria\Core\Cities\get( $seg[0] )
+		? $seg[0]
+		: (string) ( \Oria\Core\Cities\default_city()['slug'] ?? 'perth' );
+
+	return '/explore/' . $city . '/' . $home->slug . '/' . \Oria\Core\PracticesIndex\specialty_slug( $spec ) . '/';
 }
 
 /**
