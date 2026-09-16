@@ -318,7 +318,81 @@ function practitioner_submenu(): void {
 	if ( current_user_can( 'edit_oria_events' ) ) {
 		$events = 'edit.php?post_type=' . PostTypes\EVENT;
 		add_submenu_page( $events, __( 'Your workshops/events', 'oria' ), __( 'Your workshops/events', 'oria' ), 'edit_oria_events', $events );
+		return;
 	}
+
+	/*
+	 * Everyone else gets the tab anyway, as a door rather than a wall.
+	 *
+	 * Events are the Featured plan's headline feature and a practitioner
+	 * below it saw no trace of them: no menu item, no mention, nothing to
+	 * be curious about. A feature nobody knows exists cannot be the reason
+	 * anybody upgrades. So the tab is always there — it runs workshops for
+	 * a Featured listing, and for everybody else it explains what it would
+	 * do and sells the plan that does it.
+	 */
+	add_submenu_page(
+		$listings,
+		__( 'Workshops & events', 'oria' ),
+		__( 'Workshops & events', 'oria' ),
+		'edit_oria_listings',
+		'oria-events',
+		__NAMESPACE__ . '\events_upsell_screen'
+	);
+}
+
+/**
+ * The Workshops & events tab for a practitioner whose plan does not include
+ * them: what it does, what it is worth, and one way to get it.
+ *
+ * Deliberately a real page rather than a disabled menu item. Somebody who
+ * clicks it is interested, which is the most useful signal a pricing page
+ * ever gets, and meeting that with a dead link wastes it.
+ */
+function events_upsell_screen(): void {
+	$listing = owned_listing( get_current_user_id() );
+	$email   = (string) ( wp_get_current_user()->user_email ?? '' );
+	$plan    = \Oria\Core\Tiers\summary( \Oria\Core\Tiers\FEATURED );
+
+	echo '<div class="wrap">';
+	echo '<h1>' . esc_html__( 'Workshops & events', 'oria' ) . '</h1>';
+
+	echo '<div style="max-width:760px;margin-top:20px;background:linear-gradient(135deg,#0E3B38 0%,#16544E 100%);border-radius:16px;padding:28px 32px;color:#FFFFFF;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;">';
+
+	echo '<span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#C9A24B;font-weight:700;">'
+		. esc_html( sprintf( __( 'Featured · %s/month', 'oria' ), $plan['price'] ) ) . '</span>';
+
+	echo '<h2 style="margin:8px 0 6px;color:#FFFFFF;font-size:22px;letter-spacing:-0.3px;">'
+		. esc_html__( 'Put your workshops in front of Perth', 'oria' ) . '</h2>';
+
+	echo '<p style="margin:0 0 4px;color:#A9C2B7;font-size:13px;line-height:1.6;max-width:56ch;">'
+		. esc_html__( 'On the Featured plan this tab becomes your own events diary. Anything you publish here goes onto Oria Haven’s What’s On listings alongside the rest of Perth, with its own page, photos and a booking link — and it is tied to your listing, so people who find the workshop find the practice.', 'oria' )
+		. '</p>';
+
+	echo '<p style="margin:14px 0 0;color:#A9C2B7;font-size:13px;">'
+		. esc_html__( 'Featured also includes:', 'oria' ) . '</p>';
+
+	echo '<ul style="margin:8px 0 0;padding:0 0 0 18px;color:#C8D9CF;font-size:13px;line-height:1.9;">';
+	foreach ( (array) $plan['features'] as $line ) {
+		echo '<li>' . esc_html( (string) $line ) . '</li>';
+	}
+	echo '</ul>';
+
+	if ( $listing && function_exists( '\Oria\Core\Billing\pay_url' ) && \Oria\Core\Billing\configured() ) {
+		printf(
+			'<p style="margin:22px 0 0;"><a href="%s" style="display:inline-block;background:#C9A24B;color:#082220;text-decoration:none;font-weight:600;font-size:14px;padding:12px 28px;border-radius:999px;">%s &rarr;</a></p>',
+			esc_url( \Oria\Core\Billing\pay_url( \Oria\Core\Tiers\FEATURED, $listing, $email ) ),
+			esc_html__( 'Go Featured', 'oria' )
+		);
+	}
+
+	echo '</div>';
+
+	echo '<p style="margin-top:16px;max-width:760px;color:#50575e;font-size:13px;">'
+		. esc_html__( 'Nothing about your listing changes if you stay where you are — your details, services, hours and photos are yours to edit either way.', 'oria' )
+		. '</p>';
+
+	echo '</div>';
 }
 
 /** Practitioners see their listing and their profile — nothing else. */
