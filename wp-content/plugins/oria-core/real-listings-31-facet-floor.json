@@ -1,0 +1,331 @@
+{
+ "_note": "Eleven practices, one for each of eleven specialty page sitting on two listings and therefore held below FACET_MIN — noindexed, out of the sitemap, and unable to be submitted. Every field is taken from the practice's own website on 16 September 2026 and nothing is inferred: where a site publishes no price, priceFrom is null rather than a guess. Photographs are never copied; each row names a scene from the theme. Import, then run tools/apply-listing-edits.php to attach the specialty terms the facet pages actually count — the importer sets categories and suburbs only. Tai chi is not here: Perth Tai Chi is already listed (it carries the specialty term but not the service term the page counts), so it is tagged in listing-edits.json instead.",
+ "categories": [],
+ "regions": [],
+ "listings": [
+  {
+   "id": "le-beau-clinic-spa-kardinya",
+   "name": "Le Beau Clinic & Spa",
+   "cat": "spa",
+   "also": [
+    "beauty"
+   ],
+   "suburb": "Kardinya",
+   "region": "freo",
+   "address": "75 Gilbertson Rd, Kardinya WA 6163",
+   "blurb": "A day spa on Gilbertson Road in Kardinya with a long treatment list and its prices published in full. Aromatherapy massage runs 50 or 80 minutes, with couples rooms at both lengths, alongside Swedish, deep tissue, hot stone and Indian head massage, lymphatic drainage, facials and an infrared sauna. Open six days, from 9am on weekdays and 8.30am on Saturdays.",
+   "services": [
+    "Aromatherapy massage",
+    "Swedish massage",
+    "Hot stone massage",
+    "Lymphatic drainage massage",
+    "Facials",
+    "Infrared sauna"
+   ],
+   "priceFrom": 169,
+   "priceBand": "$$$$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-room",
+   "phone": "(08) 9331 1122",
+   "email": "lebeaudayspa@outlook.com",
+   "web": "https://www.day-spa-perth.com.au",
+   "next": "Open Mon–Sat",
+   "_source": "day-spa-perth.com.au — address, phone, email, treatment list, aromatherapy massage prices at 50 and 80 minutes, and opening hours all published on their own site"
+  },
+  {
+   "id": "knowing-hands-bcst",
+   "name": "Knowing Hands Biodynamic Craniosacral Therapy",
+   "cat": "bodywork",
+   "also": [],
+   "suburb": "Shenton Park",
+   "region": "central",
+   "address": "3/324 Onslow Road, Shenton Park WA 6008",
+   "blurb": "A single-practitioner craniosacral room on Onslow Road in Shenton Park, working with adults, children, babies and older clients. An adult session runs an hour at $130; babies and children under twelve are seen for 45 minutes at $95. Both prices are published, and the practice is biodynamic craniosacral work rather than a massage clinic that also offers it.",
+   "services": [
+    "Biodynamic craniosacral therapy",
+    "Craniosacral for babies and children"
+   ],
+   "priceFrom": 95,
+   "priceBand": "$$$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-still-water",
+   "phone": "0474 744 445",
+   "email": "knowinghands.bcst@gmail.com",
+   "web": "https://www.knowinghands-bcst.com",
+   "next": "",
+   "_source": "knowinghands-bcst.com — address, phone, email, who they see, and both session lengths with prices published on their own site"
+  },
+  {
+   "id": "cope-centre-stirling",
+   "name": "Cope Centre",
+   "cat": "creative",
+   "also": [
+    "mind"
+   ],
+   "suburb": "Stirling",
+   "region": "north",
+   "address": "Unit 10/40 Cedric Street, Stirling WA 6021",
+   "blurb": "Arts therapy and psychotherapy from rooms in Stirling, with a second location in West Perth. Sessions use drawing, painting, sculpting, collage, drama, dance and movement, individually or in groups, and are open to NDIS participants on plan-managed, self-managed or agency-managed plans as well as private clients. The arts therapist is registered with ANZACATA and also registered with PACFA as a psychodynamic psychotherapist.",
+   "services": [
+    "Arts therapy",
+    "Group arts therapy",
+    "Psychodynamic psychotherapy",
+    "NDIS arts therapy"
+   ],
+   "priceFrom": null,
+   "priceBand": "$$$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-studio",
+   "phone": "(08) 6556 6460",
+   "email": "",
+   "web": "https://copecentre.org",
+   "next": "",
+   "_source": "copecentre.org/arts-therapy — both addresses, phone, the modalities used, NDIS arrangements and the ANZACATA and PACFA registrations published on their own site; email is obfuscated there so it is left empty"
+  },
+  {
+   "id": "perth-health-and-fertility",
+   "name": "Perth Health & Fertility",
+   "cat": "family",
+   "also": [
+    "natural"
+   ],
+   "suburb": "City Beach",
+   "region": "west",
+   "address": "1 Oban Rd, City Beach WA 6015",
+   "blurb": "A naturopathic clinic on Oban Road in City Beach working with women, men and couples from preconception through to parenthood, with four practitioners on the team. Consultations cover fertility and IVF support, hormone and thyroid health, perimenopause and menopause, gut health, and pregnancy and postpartum care. Appointments are in the rooms or by telehealth anywhere in Australia.",
+   "services": [
+    "Fertility and preconception consultations",
+    "IVF support",
+    "Hormone and thyroid health",
+    "Pregnancy and postpartum care",
+    "Perimenopause and menopause",
+    "Gut health"
+   ],
+   "priceFrom": null,
+   "priceBand": "$$$",
+   "format": "both",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-garden",
+   "phone": "(08) 9285 0998",
+   "email": "",
+   "web": "https://perthhealthfertility.com.au",
+   "next": "",
+   "_source": "perthhealthfertility.com.au — address, phone, the four named practitioners, the consultation areas and telehealth availability published on their own site; no prices published there"
+  },
+  {
+   "id": "amanda-hobley-naturopath",
+   "name": "Amanda Hobley Naturopath",
+   "cat": "natural",
+   "also": [
+    "energy"
+   ],
+   "suburb": "Perth CBD",
+   "region": "central",
+   "address": "137 Edward Street, Perth WA 6000",
+   "blurb": "A naturopath working from the Perth Naturopathic and Herbal Clinic on Edward Street, whose practice leans on Bach flower essences and homeopathy alongside naturopathic consultations. BodyTalk, Reiki and Emotional Resolution sessions are offered as well, and there are short self-paced courses and occasional group sessions and retreats. Bookings can be made online.",
+   "services": [
+    "Bach flower essences",
+    "Homeopathy",
+    "Naturopathic consultations",
+    "BodyTalk",
+    "Reiki"
+   ],
+   "priceFrom": null,
+   "priceBand": "$$",
+   "format": "both",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-garden",
+   "phone": "0405 344 149",
+   "email": "",
+   "web": "https://www.amandahobleynaturopath.com.au",
+   "next": "",
+   "_source": "amandahobleynaturopath.com.au — clinic address, phone, the service list including Bach flowers and homeopathy, and online booking published on their own site"
+  },
+  {
+   "id": "resonate-mens-collective",
+   "name": "Resonate Men's Collective",
+   "cat": "community",
+   "also": [
+    "experiences"
+   ],
+   "suburb": "Fremantle",
+   "region": "freo",
+   "address": "",
+   "blurb": "A Fremantle-based men's collective that meets outdoors rather than in a room: monthly trail hikes in John Forrest National Park and Ellis Brook Valley, beach meetups at Trigg, walks around Lake Monger, and a Brazilian jiu jitsu session they call Warrior Flow. Most events are free, with occasional charity runs taking donations. Joining happens through their WhatsApp group.",
+   "services": [
+    "Men's group meetups",
+    "Trail hikes",
+    "Beach meetups",
+    "Charity runs"
+   ],
+   "priceFrom": 0,
+   "priceBand": "Free",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-scrub",
+   "phone": "",
+   "email": "",
+   "web": "https://www.resonatemenscollective.com",
+   "next": "Monthly hikes",
+   "_source": "resonatemenscollective.com — the meeting places, the kinds of events, that most are free, and the WhatsApp joining route all published on their own site; no address or phone is published"
+  },
+  {
+   "id": "glissando-music-therapy",
+   "name": "Glissando",
+   "cat": "creative",
+   "also": [
+    "mind"
+   ],
+   "suburb": "Subiaco",
+   "region": "central",
+   "address": "Subiaco WA 6008",
+   "blurb": "A Registered Music Therapist working in Subiaco, offering individual and group music therapy to all ages. Music therapy is recognised by the NDIS as a capacity-building therapeutic support, and sessions can be arranged on that basis or privately. Bookings and enquiries go through the therapist directly.",
+   "services": [
+    "Individual music therapy",
+    "Group music therapy",
+    "NDIS music therapy"
+   ],
+   "priceFrom": null,
+   "priceBand": "$$$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-hall",
+   "phone": "0409 050 589",
+   "email": "hello@glissando.com.au",
+   "web": "https://www.glissando.com.au",
+   "next": "",
+   "_source": "glissando.com.au — suburb, phone, email, individual and group services, Registered Music Therapist status and the NDIS note published on their own site; no prices published there"
+  },
+  {
+   "id": "conan-fitness-maylands",
+   "name": "Conan Fitness",
+   "cat": "fitness",
+   "also": [],
+   "suburb": "Maylands",
+   "region": "central",
+   "address": "1/11 Foundry Street, Maylands WA 6051",
+   "blurb": "A Maylands gym whose bootcamp runs indoors and outdoors: high-intensity and cross training, bodyweight drills, boxing and team work. Prices are published — $25 for a casual session, $200 for a ten-session pack with no expiry, $39 a week ongoing with no lock-in, and a $28 two-week trial for new members. Personal training, gym access and corporate programmes are offered alongside.",
+   "services": [
+    "Outdoor bootcamp",
+    "Group fitness",
+    "Boxing",
+    "Personal training"
+   ],
+   "priceFrom": 25,
+   "priceBand": "$$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-scrub",
+   "phone": "0482 071 250",
+   "email": "",
+   "web": "https://conanfitness.com",
+   "next": "",
+   "_source": "conanfitness.com/group/boot-camp — address, phone, the indoor/outdoor bootcamp description and the full price list published on their own site"
+  },
+  {
+   "id": "stretchflex-perth",
+   "name": "StretchFlex",
+   "cat": "fitness",
+   "also": [
+    "bodywork"
+   ],
+   "suburb": "Perth CBD",
+   "region": "central",
+   "address": "111 Trinity Arcade, 72 St Georges Terrace, Perth WA 6000",
+   "blurb": "One-to-one assisted stretching in Trinity Arcade on St Georges Terrace, where a therapist moves you through the range rather than leaving you to hold a position. Sessions are published at $65 for 30 minutes, $95 for 45 and $120 for an hour, with LED red light therapy at $49 and combined stretch-and-light sessions from $120.",
+   "services": [
+    "Assisted stretching",
+    "Mobility sessions",
+    "LED red light therapy"
+   ],
+   "priceFrom": 65,
+   "priceBand": "$$$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-studio",
+   "phone": "0432 569 077",
+   "email": "",
+   "web": "https://stretchflex.au",
+   "next": "",
+   "_source": "stretchflex.au — address, phone, the one-to-one format and every session price and duration published on their own site"
+  },
+  {
+   "id": "fascia-space-fremantle",
+   "name": "Fascia Space",
+   "cat": "bodywork",
+   "also": [],
+   "suburb": "Fremantle",
+   "region": "freo",
+   "address": "181A High Street, Fremantle WA 6160",
+   "blurb": "Structural integration on High Street in Fremantle, worked as a twelve-series rather than one-off appointments, plus active fascial release and breath and gait assessment. The practitioner is a Board Certified Structural Integrator with the International Association of Structural Integration, trained in Anatomy Trains Structural Integration, and holds a Bachelor of Exercise and Health Science from UWA. An initial consultation is $150; sessions run $110 for 45 minutes to $170 for 90.",
+   "services": [
+    "Structural integration twelve-series",
+    "Active fascial release",
+    "Breath and gait assessment",
+    "Face fascia"
+   ],
+   "priceFrom": 110,
+   "priceBand": "$$$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-room",
+   "phone": "0422 562 747",
+   "email": "",
+   "web": "https://fasciaspace.com",
+   "next": "",
+   "_source": "fasciaspace.com — address, phone, the service list, the full price ladder and the IASI board certification and UWA degree published on their own site"
+  },
+  {
+   "id": "rise-and-run-club-cottesloe",
+   "name": "Rise and Run Club",
+   "cat": "community",
+   "also": [
+    "fitness"
+   ],
+   "suburb": "Cottesloe",
+   "region": "west",
+   "address": "Grass area opposite il Lido, Marine Parade, Cottesloe WA 6011",
+   "blurb": "A free morning run and walk club that meets on the grass opposite il Lido at Cottesloe: Fridays at 6am, every second Sunday at 7am, and the last Wednesday of the month at 5.30pm. Groups head out for fifteen to thirty minutes and turn back, so the distance suits whoever turns up, and walkers and dogs are as welcome as runners. The monthly evening session finishes with dinner.",
+   "services": [
+    "Morning run club",
+    "Walking group",
+    "Evening social run"
+   ],
+   "priceFrom": 0,
+   "priceBand": "Free",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-coast",
+   "phone": "",
+   "email": "info@riseandrunclub.com.au",
+   "web": "https://riseandrunclub.com.au",
+   "next": "Fridays 6am",
+   "_source": "riseandrunclub.com.au — meeting place, all three session times, the email, that it is free and that walkers and dogs are welcome published on their own site"
+  }
+ ]
+}

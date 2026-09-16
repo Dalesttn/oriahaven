@@ -60,5 +60,160 @@
   "fields": {
    "hide_experience": 1
   }
+ },
+ {
+  "slug": "le-beau-clinic-spa-kardinya",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor (service tag for aromatherapy deliberately omitted — see note)",
+  "terms": {
+   "specialty": {
+    "add": [
+     "aromatherapy",
+     "infrared-sauna"
+    ]
+   },
+   "service": {
+    "add": [
+     "infrared-sauna"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "knowing-hands-bcst",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor",
+  "terms": {
+   "specialty": {
+    "add": [
+     "craniosacral"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "cope-centre-stirling",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor",
+  "terms": {
+   "specialty": {
+    "add": [
+     "expressive-therapies"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "perth-health-and-fertility",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor",
+  "terms": {
+   "specialty": {
+    "add": [
+     "fertility-support",
+     "naturopathy"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "amanda-hobley-naturopath",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor",
+  "terms": {
+   "specialty": {
+    "add": [
+     "flower-essences",
+     "homeopathy",
+     "naturopathy",
+     "reiki"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "resonate-mens-collective",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor",
+  "terms": {
+   "specialty": {
+    "add": [
+     "mens-groups",
+     "hiking"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "glissando-music-therapy",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor",
+  "terms": {
+   "specialty": {
+    "add": [
+     "music-therapy"
+    ]
+   },
+   "service": {
+    "add": [
+     "music-therapy"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "conan-fitness-maylands",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor",
+  "terms": {
+   "specialty": {
+    "add": [
+     "outdoor-fitness",
+     "personal-training"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "stretchflex-perth",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor",
+  "terms": {
+   "specialty": {
+    "add": [
+     "stretch-therapy",
+     "red-light-therapy"
+    ]
+   },
+   "service": {
+    "add": [
+     "assisted-stretching"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "fascia-space-fremantle",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor",
+  "terms": {
+   "specialty": {
+    "add": [
+     "structural-integration"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "rise-and-run-club-cottesloe",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor",
+  "terms": {
+   "specialty": {
+    "add": [
+     "wellness-meetups"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "perth-tai-chi",
+  "requested_by": "Oria Haven, 16 Sep 2026 — tags the specialty the facet page counts, so the page clears the three-listing floor",
+  "terms": {
+   "service": {
+    "add": [
+     "tai-chi"
+    ]
+   }
+  }
  }
 ]
