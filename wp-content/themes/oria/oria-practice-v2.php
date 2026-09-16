@@ -785,6 +785,26 @@ if ( $oria_facet ) {
 
 <?php
 /*
+ * Product recommendations.
+ *
+ * These were wired into taxonomy-practice.php, which serves the old
+ * /practice/ addresses -- and those now 301 to /explore/, so the band had
+ * quietly stopped rendering anywhere. This is the template the category
+ * pages actually use.
+ *
+ * auto_band() reads the page's own context and returns nothing when no
+ * product genuinely matches, so an unrelated category shows no shelf.
+ */
+$oria_shopband = ( ! $oria_area && function_exists( '\Oria\Shop\Render\auto_band' ) )
+	? \Oria\Shop\Render\auto_band()
+	: '';
+?>
+<?php if ( $oria_shopband ) : ?>
+	<section class="wrap section section--top-flush"><?php echo $oria_shopband; // phpcs:ignore WordPress.Security.EscapeOutput ?></section>
+<?php endif; ?>
+
+<?php
+/*
  * Wellness apps, at the very foot of the page.
  *
  * This is the template the /explore/ category pages actually render
