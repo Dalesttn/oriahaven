@@ -99,6 +99,7 @@ function bootstrap(): void {
 	add_filter( 'user_contactmethods', __NAMESPACE__ . '\no_contact_methods', PHP_INT_MAX, 2 );
 	add_filter( 'wp_is_application_passwords_available_for_user', __NAMESPACE__ . '\no_application_passwords', 10, 2 );
 	add_action( 'admin_bar_menu', __NAMESPACE__ . '\trim_admin_bar', 999 );
+	add_filter( 'screen_options_show_screen', __NAMESPACE__ . '\hide_screen_options' );
 	add_action( 'acf/save_post', __NAMESPACE__ . '\stamp_event_listing', 20 );
 }
 
@@ -414,13 +415,59 @@ function trim_admin_menu(): void {
 	}
 }
 
+/**
+ * The admin bar a practitioner sees: their site, their account, and the
+ * listing they are editing. Nothing else.
+ *
+ * An allow-list rather than a list of things to remove, which is how
+ * trim_admin_menu() handles the sidebar for the same reason. The host
+ * installs its own menu — Hostinger's sits up there for every user — and
+ * so does the occasional plugin, and a deny-list only ever removes the
+ * clutter somebody has already noticed. A practitioner logging in to fix
+ * their opening hours should not be offered their landlord's control
+ * panel.
+ *
+ * Removing a node takes its children with it, so the keep list only names
+ * the top level. my-account has to survive: it holds Log Out.
+ */
 function trim_admin_bar( \WP_Admin_Bar $bar ): void {
 	if ( ! is_practitioner() ) {
 		return;
 	}
-	foreach ( array( 'new-content', 'comments', 'wp-logo', 'customize' ) as $node ) {
-		$bar->remove_node( $node );
+
+	$keep = array(
+		'site-name',   // Visit site / Dashboard
+		'my-account',  // Howdy, and the way back out
+		'menu-toggle', // the sidebar toggle on a phone
+		'view',        // View this listing
+		'edit',        // Edit this listing, from the front end
+		'archive',
+		'preview',
+	);
+
+	foreach ( $bar->get_nodes() ?: array() as $node ) {
+		// Only the top level; children go with their parent.
+		if ( ! in_array( (string) $node->parent, array( '', 'root-default', 'top-secondary' ), true ) ) {
+			continue;
+		}
+		if ( ! in_array( (string) $node->id, $keep, true ) ) {
+			$bar->remove_node( (string) $node->id );
+		}
 	}
+}
+
+/**
+ * No Screen Options tab for practitioners.
+ *
+ * It exists to show and hide metaboxes and to set how many rows a table
+ * lists. A practitioner has one listing and a fixed set of fields, so the
+ * tab offers nothing to configure and quite a lot to break — the first
+ * thing it lets you do is hide the field group you came to edit.
+ *
+ * @param bool $show
+ */
+function hide_screen_options( $show ) {
+	return is_practitioner() ? false : $show;
 }
 
 /** The practitioners' Listings table shows only their own. */
