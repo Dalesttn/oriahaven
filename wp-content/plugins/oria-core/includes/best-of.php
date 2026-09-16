@@ -446,10 +446,36 @@ function badge_html( string $label, string $url = '', string $extra_class = '' )
  * award slug. An override label still shows its base award's seal.
  * 'webp' for the page, 'png' (1000px) for a practice to download.
  */
-function seal_url( string $award, string $ext = 'webp' ): string {
+function seal_url( string $award, string $ext = 'webp', bool $fallback = true ): string {
 	$award = isset( AWARDS[ $award ] ) ? $award : 'oria_pick';
-	$rel   = "assets/img/badges/{$award}.{$ext}";
-	return file_exists( get_template_directory() . '/' . $rel ) ? get_template_directory_uri() . '/' . $rel : '';
+
+	$file = static function ( string $name ) use ( $ext ): string {
+		$rel = "assets/img/badges/{$name}.{$ext}";
+		return file_exists( get_template_directory() . '/' . $rel )
+			? get_template_directory_uri() . '/' . $rel
+			: '';
+	};
+
+	$url = $file( $award );
+	if ( '' !== $url ) {
+		return $url;
+	}
+
+	/*
+	 * A known award whose seal has not been drawn yet. The list of awards
+	 * grows whenever a guide needs a label, and the artwork does not arrive
+	 * in the same commit -- so displaying nothing is the common case, not
+	 * the rare one, and the profile block used to collapse around the gap.
+	 *
+	 * The generic Oria pick seal stands in. It is not a lie: the badge
+	 * beside it still reads "Best acupuncture", and the seal is the
+	 * directory's mark rather than a claim of its own.
+	 *
+	 * $fallback is false where the real file is the point -- the download
+	 * link on a profile, which should offer a practice the seal it actually
+	 * won or offer nothing at all.
+	 */
+	return $fallback ? $file( 'oria_pick' ) : '';
 }
 
 /**

@@ -6331,14 +6331,20 @@ article.is-spotlit {
   width: clamp(64px, 8vw, 88px); height: auto;
 }
 .bopick__top, .bopick__name { padding-right: clamp(72px, 9vw, 100px); }
-.bofeatin__item { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: var(--s-4); align-items: start; }
-.bofeatin__seal { width: 96px; height: 96px; }
+/* Flex, not a two-column grid.
+
+   The grid declared a 96px seal track whether or not there was a seal to
+   put in it, so an award with no artwork drawn yet pushed the words into
+   the seal's column and wrapped them two to a line. Flex has no such
+   opinion: one child fills the row, two sit side by side. */
+.bofeatin__item { display: flex; gap: var(--s-4); align-items: flex-start; }
+.bofeatin__seal { flex: none; width: 96px; height: 96px; }
+.bofeatin__item > div { flex: 1 1 auto; min-width: 0; }
 .bofeatin__get { display: inline-block; margin-top: var(--s-2); font-size: var(--fs-xs); color: var(--text-faint); text-decoration: underline; text-underline-offset: 3px; }
 .bofeatin__get:hover { color: var(--ink); }
 @media (max-width: 600px) {
   .bopick__seal { width: 56px; }
   .bopick__top, .bopick__name { padding-right: 64px; }
-  .bofeatin__item { grid-template-columns: 64px minmax(0, 1fr); }
   .bofeatin__seal { width: 64px; height: 64px; }
 }
 

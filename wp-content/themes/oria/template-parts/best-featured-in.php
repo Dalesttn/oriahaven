@@ -44,8 +44,9 @@ if ( ! $oria_in ) {
 					 * which is the one kind of link this directory cannot buy.
 					 */
 					?>
-					<?php if ( BestOf\seal_url( $oria_row['award'], 'png' ) ) : ?>
-						<a class="bofeatin__get" href="<?php echo esc_url( BestOf\seal_url( $oria_row['award'], 'png' ) ); ?>" download><?php esc_html_e( 'Run this practice? Download the seal for your website', 'oria' ); ?></a>
+					<?php $oria_png = BestOf\seal_url( $oria_row['award'], 'png', false ); ?>
+					<?php if ( $oria_png ) : ?>
+						<a class="bofeatin__get" href="<?php echo esc_url( $oria_png ); ?>" download><?php esc_html_e( 'Run this practice? Download the seal for your website', 'oria' ); ?></a>
 					<?php endif; ?>
 				</div>
 			</li>
