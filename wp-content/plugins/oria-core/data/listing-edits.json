@@ -215,5 +215,13 @@
     ]
    }
   }
+ },
+ {
+  "slug": "body-mind-yoga-mbsr",
+  "requested_by": "Not requested — found while writing outreach, 16 Sep 2026. price_from held the 8-week MBSR course fee, so a $21 class was priced and banded as a $550 one, and the Experience DNA read affordability off the same field.",
+  "fields": {
+   "price_from": 21,
+   "price_band": "$"
+  }
  }
 ]
