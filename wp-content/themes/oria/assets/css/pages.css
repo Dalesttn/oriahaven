@@ -6347,3 +6347,145 @@ article.is-spotlit {
 .bopick__details dt { color: var(--text-faint); }
 .bopick__details dd { margin: 0; color: var(--ink); font-weight: 600; }
 .botable__note { margin-top: var(--s-3); font-size: var(--fs-xs); color: var(--text-faint); max-width: 70ch; }
+
+
+/* =====================================================================
+   Wellness apps
+   The app section borrows every token from the directory -- same radii,
+   same card shadow, same chips -- because an app is another kind of
+   recommendation, not another kind of site. Nothing here invents a colour.
+   ===================================================================== */
+
+.appgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+@media (max-width: 960px) { .appgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .appgrid { grid-template-columns: 1fr; } }
+
+.appcard {
+  display: flex; flex-direction: column; gap: var(--s-2);
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: var(--r-md); padding: var(--s-5);
+  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
+}
+.appcard:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
+.appcard__top { display: flex; align-items: center; gap: var(--s-3); text-decoration: none; color: inherit; }
+.appcard__logo {
+  width: 56px; height: 56px; flex: 0 0 auto; border-radius: 14px;
+  object-fit: cover; background: var(--sand-2); border: 1px solid var(--line);
+}
+.appcard__logo--none { display: block; }
+.appcard__head { display: grid; gap: 2px; min-width: 0; }
+.appcard__cat { color: var(--moss); }
+.appcard__name { font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+.appcard__for { margin: 0; font-size: var(--fs-xs); color: var(--text-faint); }
+.appcard__for span { font-weight: 600; color: var(--text-soft); }
+.appcard__blurb {
+  margin: 0; font-size: var(--fs-sm); color: var(--text-soft); flex: 1; line-height: 1.55;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.appcard__foot {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: var(--s-2) var(--s-3); margin-top: var(--s-2);
+}
+.appcard__price { font-size: var(--fs-xs); font-weight: 600; color: var(--text-soft); }
+
+.appband__intro { margin: var(--s-1) 0 0; color: var(--text-soft); font-size: var(--fs-sm); max-width: 54ch; }
+.appband__disclosure { margin-top: var(--s-4); font-size: var(--fs-xs); color: var(--text-faint); max-width: 66ch; }
+
+/* --- One app -------------------------------------------------------- */
+.apphero {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s-5);
+  align-items: start; padding-block: var(--s-5) var(--s-4);
+}
+.apphero__logo { width: 88px; height: 88px; border-radius: 20px; object-fit: cover; border: 1px solid var(--line); background: var(--sand-2); }
+.apphero__copy { display: grid; gap: var(--s-3); }
+.apphero__title { margin: 0; font-size: clamp(1.9rem, 3.4vw, 2.7rem); line-height: 1.1; }
+.apphero__lede { margin: 0; max-width: 54ch; }
+.apphero__cats { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.apphero__cats .pill { text-decoration: none; }
+.apphero__acts { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-3); align-items: center; }
+.apphero__disclosure { margin: 0; font-size: var(--fs-xs); color: var(--text-faint); max-width: 62ch; }
+@media (max-width: 600px) {
+  .apphero { grid-template-columns: 1fr; gap: var(--s-3); }
+  .apphero__logo { width: 64px; height: 64px; }
+}
+
+.appsnap {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4);
+  margin: 0; padding: var(--s-5);
+  background: linear-gradient(120deg, var(--sand-2), var(--sand-3));
+  border: 1px solid var(--teal-line); border-radius: var(--r-md);
+}
+.appsnap__row { display: grid; gap: 2px; min-width: 0; }
+.appsnap dt { font-size: var(--fs-xs); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--moss); }
+.appsnap dd { margin: 0; font-size: var(--fs-sm); color: var(--ink); line-height: 1.5; }
+@media (max-width: 720px) { .appsnap { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: var(--s-4); gap: var(--s-3); } }
+
+.apptake {
+  border-left: 3px solid var(--moss); padding: var(--s-2) 0 var(--s-2) var(--s-4);
+  display: grid; gap: var(--s-2); max-width: 68ch;
+}
+.apptake__label { color: var(--moss); letter-spacing: .14em; }
+.apptake__text { margin: 0; font-size: 1.125rem; line-height: 1.6; color: var(--ink); }
+
+.appbody { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--s-6); align-items: start; }
+.appbody__main { display: grid; gap: var(--s-3); }
+.appbody__main .h3 { margin: var(--s-4) 0 0; }
+.appbody__main .h3:first-child { margin-top: 0; }
+.appbody__checked { font-size: var(--fs-xs); color: var(--text-faint); }
+@media (max-width: 900px) { .appbody { grid-template-columns: 1fr; gap: var(--s-4); } }
+
+.applist { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s-2); }
+.applist li { position: relative; padding-left: 1.5rem; font-size: var(--fs-body); line-height: var(--lh-body); color: var(--text-soft); }
+.applist li::before { content: ""; position: absolute; left: 0; top: .55em; width: 7px; height: 7px; border-radius: 50%; background: var(--moss); }
+.applist--con li::before { background: var(--gold-soft); border: 1px solid var(--gold, #C4A24C); }
+
+.appsides { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5); margin-top: var(--s-3); }
+.appsides__head { font-size: var(--fs-sm); font-weight: 600; margin: 0 0 var(--s-2); }
+@media (max-width: 600px) { .appsides { grid-template-columns: 1fr; gap: var(--s-4); } }
+
+.appfaq { display: grid; gap: var(--s-2); }
+.appfaq__item { border-bottom: 1px solid var(--line); padding-bottom: var(--s-2); }
+.appfaq__item summary { cursor: pointer; font-weight: 600; padding: var(--s-2) 0; list-style: none; }
+.appfaq__item summary::-webkit-details-marker { display: none; }
+.appfaq__item summary::after { content: " +"; color: var(--moss); font-weight: 700; }
+.appfaq__item[open] summary::after { content: " -"; }
+.appfaq__item summary:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+.appfaq__item p { margin: 0 0 var(--s-2); color: var(--text-soft); line-height: 1.6; }
+
+.appmethod {
+  background: var(--sand-2); border: 1px solid var(--teal-line);
+  border-radius: var(--r-md); padding: var(--s-5); display: grid; gap: var(--s-2);
+}
+.appmethod__head { margin: 0; }
+.appmethod p { margin: 0; font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.6; }
+.appmethod__date { font-weight: 600; color: var(--ink); }
+.appmethod__sources a { color: var(--moss); }
+
+.appoffline {
+  display: grid; gap: var(--s-4);
+  background: var(--deep); color: var(--white);
+  border-radius: var(--r-lg); padding: var(--s-6);
+}
+.appoffline__copy { display: grid; gap: var(--s-1); }
+.appoffline__copy .micro { color: var(--mist); }
+.appoffline__copy .h3 { margin: 0; color: var(--white); }
+.appoffline__copy .muted { margin: 0; color: var(--mist-2); max-width: 60ch; }
+.appoffline__links { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.appoffline__links .fchip { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .22); color: var(--white); text-decoration: none; }
+.appoffline__links .fchip:hover { background: rgba(255, 255, 255, .18); border-color: var(--mist); color: var(--white); }
+@media (max-width: 600px) { .appoffline { padding: var(--s-4); } }
+
+.appgoals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-3); }
+.appgoal {
+  display: grid; gap: 4px; padding: var(--s-4); text-decoration: none; color: var(--ink);
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r-md);
+  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
+}
+.appgoal:hover { transform: translateY(-2px); box-shadow: var(--sh-2); border-color: var(--teal-line); }
+.appgoal__label { font-weight: 600; letter-spacing: -0.01em; }
+.appgoal__n { font-size: 11px; font-weight: 600; color: var(--moss); }
+@media (max-width: 860px) { .appgoals { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 400px) { .appgoals { grid-template-columns: 1fr; } }
+
+.appcats { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.appcats .fchip { text-decoration: none; }

@@ -1,0 +1,243 @@
+<?php
+/**
+ * What search engines are told about app pages.
+ *
+ * Titles and descriptions where Yoast would otherwise invent one, and
+ * schema only where the data is genuinely there. SoftwareApplication is
+ * emitted for an app page because the page really is about a piece of
+ * software, with an offer only when a price is published -- and never an
+ * AggregateRating, because we do not collect ratings and inventing them is
+ * the line between structured data and lying to a crawler.
+ *
+ * A category page is indexable once it has enough apps to be worth
+ * visiting. Below that it carries noindex and points its canonical at the
+ * hub, the same floor the directory's facet pages use.
+ */
+
+declare(strict_types=1);
+
+namespace Oria\Apps\Pages;
+
+use Oria\Apps\Data;
+use Oria\Apps\Engine;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/** Apps a category needs before it is a page rather than a filter. */
+const CATEGORY_MIN = 3;
+
+function bootstrap(): void {
+	add_filter( 'wpseo_title', __NAMESPACE__ . '\title', 20 );
+	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title', 20 );
+	add_filter( 'wpseo_metadesc', __NAMESPACE__ . '\description', 20 );
+	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\canonical', 20 );
+	add_filter( 'wpseo_robots', __NAMESPACE__ . '\yoast_robots', 20 );
+	add_filter( 'wp_robots', __NAMESPACE__ . '\wp_robots' );
+	add_action( 'wp_footer', __NAMESPACE__ . '\schema', 20 );
+}
+
+function hub_url(): string {
+	return (string) get_post_type_archive_link( Data\CPT );
+}
+
+/** How many published apps sit in a category. */
+function category_count( \WP_Term $term ): int {
+	return count( Engine\apps( array( $term->slug ) ) );
+}
+
+function thin_category(): bool {
+	if ( ! is_tax( Data\TAX ) ) {
+		return false;
+	}
+	$term = get_queried_object();
+	return $term instanceof \WP_Term && category_count( $term ) < CATEGORY_MIN;
+}
+
+/* ------------------------------------------------------------------ meta */
+
+function title( $title ) {
+	if ( is_singular( Data\CPT ) && '' === (string) get_post_meta( (int) get_the_ID(), '_yoast_wpseo_title', true ) ) {
+		$row  = Engine\row( (int) get_the_ID() );
+		$cats = array_slice( (array) $row['cat_names'], 0, 2 );
+		$what = $cats ? implode( ' & ', $cats ) : __( 'Wellness app', 'oria' );
+		/* translators: 1: app name, 2: what it is for, 3: site name */
+		return sprintf( __( '%1$s review: %2$s | %3$s', 'oria' ), $row['title'], $what, get_bloginfo( 'name' ) );
+	}
+	if ( is_post_type_archive( Data\CPT ) ) {
+		return __( 'Wellness Apps & Digital Tools | Oria Haven', 'oria' );
+	}
+	if ( is_tax( Data\TAX ) ) {
+		$term = get_queried_object();
+		if ( $term instanceof \WP_Term ) {
+			/* translators: 1: category, 2: site name */
+			return sprintf( __( 'Best %1$s Apps | %2$s', 'oria' ), wp_specialchars_decode( $term->name ), get_bloginfo( 'name' ) );
+		}
+	}
+	return $title;
+}
+
+function core_title( array $parts ): array {
+	if ( is_singular( Data\CPT ) || is_post_type_archive( Data\CPT ) || is_tax( Data\TAX ) ) {
+		$made = title( '' );
+		if ( '' !== $made ) {
+			$parts['title'] = $made;
+			unset( $parts['site'], $parts['tagline'] );
+		}
+	}
+	return $parts;
+}
+
+function description( $desc ) {
+	if ( '' !== (string) $desc ) {
+		return $desc;
+	}
+	if ( is_singular( Data\CPT ) ) {
+		$row = Engine\row( (int) get_the_ID() );
+		if ( '' !== (string) $row['take'] ) {
+			return wp_trim_words( (string) $row['take'], 28, '…' );
+		}
+		if ( '' !== (string) $row['tagline'] ) {
+			/* translators: 1: app name, 2: tagline */
+			return sprintf( __( '%1$s: %2$s Features, pricing, who it suits and what to consider.', 'oria' ), $row['title'], rtrim( (string) $row['tagline'], '.' ) . '.' );
+		}
+	}
+	if ( is_post_type_archive( Data\CPT ) ) {
+		return __( 'Wellness apps for meditation, sleep, movement and everyday wellbeing — reviewed by Oria Haven, with what each one costs and who it suits.', 'oria' );
+	}
+	if ( is_tax( Data\TAX ) ) {
+		$term = get_queried_object();
+		if ( $term instanceof \WP_Term ) {
+			$intro = trim( (string) get_term_meta( $term->term_id, 'intro', true ) );
+			if ( '' !== $intro ) {
+				return wp_trim_words( $intro, 28, '…' );
+			}
+			/* translators: %s: category name, lowercased */
+			return sprintf( __( 'Wellness apps for %s, reviewed by Oria Haven with pricing, platforms and who each one suits.', 'oria' ), strtolower( wp_specialchars_decode( $term->name ) ) );
+		}
+	}
+	return $desc;
+}
+
+function canonical( $url ) {
+	return thin_category() ? hub_url() : $url;
+}
+
+function yoast_robots( $robots ) {
+	return thin_category() ? 'noindex, follow' : $robots;
+}
+
+function wp_robots( array $r ): array {
+	if ( thin_category() ) {
+		$r['noindex'] = true;
+		unset( $r['nofollow'] );
+	}
+	return $r;
+}
+
+/* ---------------------------------------------------------------- schema */
+
+function schema(): void {
+	if ( is_singular( Data\CPT ) ) {
+		app_schema();
+		return;
+	}
+	if ( is_post_type_archive( Data\CPT ) || ( is_tax( Data\TAX ) && ! thin_category() ) ) {
+		list_schema();
+	}
+}
+
+function app_schema(): void {
+	$row = Engine\row( (int) get_the_ID() );
+
+	$node = array(
+		'@context'    => 'https://schema.org',
+		'@type'       => 'SoftwareApplication',
+		'@id'         => $row['url'] . '#app',
+		'name'        => $row['title'],
+		'url'         => $row['url'],
+		'applicationCategory' => 'HealthApplication',
+	);
+	if ( '' !== (string) $row['tagline'] ) {
+		$node['description'] = $row['tagline'];
+	}
+	if ( '' !== (string) $row['developer'] ) {
+		$node['author'] = array( '@type' => 'Organization', 'name' => $row['developer'] );
+	}
+	if ( '' !== (string) $row['logo'] ) {
+		$node['image'] = $row['logo'];
+	}
+	$platforms = array_values( array_filter( array_map(
+		static fn( string $p ): string => (string) ( array( 'available_ios' => 'iOS', 'available_android' => 'Android', 'available_web' => 'Web', 'available_apple_watch' => 'watchOS', 'available_wear_os' => 'Wear OS' )[ $p ] ?? '' ),
+		(array) $row['platforms']
+	) ) );
+	if ( $platforms ) {
+		$node['operatingSystem'] = implode( ', ', $platforms );
+	}
+
+	/*
+	 * An offer only where there is something true to say. A free app is
+	 * price 0; a published price is stated as written; anything else --
+	 * "freemium", "unknown" -- gets no offer node at all rather than a
+	 * fabricated one.
+	 */
+	if ( 'free' === $row['pricing'] ) {
+		$node['offers'] = array( '@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'AUD' );
+	} elseif ( '' !== (string) $row['price'] && preg_match( '/([0-9]+(?:\.[0-9]{1,2})?)/', (string) $row['price'], $m ) ) {
+		$node['offers'] = array( '@type' => 'Offer', 'price' => $m[1], 'priceCurrency' => 'AUD' );
+	}
+
+	$graph = array( $node );
+
+	if ( $row['faq'] ) {
+		$questions = array();
+		foreach ( $row['faq'] as $item ) {
+			$questions[] = array(
+				'@type'          => 'Question',
+				'name'           => $item['question'],
+				'acceptedAnswer' => array( '@type' => 'Answer', 'text' => $item['answer'] ),
+			);
+		}
+		$graph[] = array(
+			'@context'   => 'https://schema.org',
+			'@type'      => 'FAQPage',
+			'@id'        => $row['url'] . '#faq',
+			'mainEntity' => $questions,
+		);
+	}
+
+	foreach ( $graph as $node ) {
+		echo '<script type="application/ld+json">' . wp_json_encode( $node, JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+	}
+}
+
+function list_schema(): void {
+	$term = is_tax( Data\TAX ) ? get_queried_object() : null;
+	$rows = $term instanceof \WP_Term ? Engine\apps( array( $term->slug ) ) : Engine\apps();
+	if ( count( $rows ) < 2 ) {
+		return;
+	}
+
+	$items = array();
+	foreach ( $rows as $i => $row ) {
+		$items[] = array(
+			'@type'    => 'ListItem',
+			'position' => $i + 1,
+			'name'     => $row['title'],
+			'url'      => $row['url'],
+		);
+	}
+
+	echo '<script type="application/ld+json">' . wp_json_encode(
+		array(
+			'@context'        => 'https://schema.org',
+			'@type'           => 'ItemList',
+			'@id'             => ( $term instanceof \WP_Term ? (string) get_term_link( $term ) : hub_url() ) . '#apps',
+			'name'            => $term instanceof \WP_Term ? wp_specialchars_decode( $term->name ) : __( 'Wellness apps', 'oria' ),
+			'numberOfItems'   => count( $items ),
+			'itemListElement' => $items,
+		),
+		JSON_UNESCAPED_SLASHES
+	) . '</script>' . "\n";
+}

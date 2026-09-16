@@ -263,4 +263,22 @@ if ( ! $oria_is_combo && $oria_term instanceof WP_Term ) {
 <?php endif; ?>
 
 <?php
+/*
+ * Wellness apps, low on the page and never on a combo.
+ *
+ * The directory's job is to send people to practices, so this sits below
+ * the listings, the questions and the products, and renders nothing
+ * unless at least two apps genuinely map to this practice. On a
+ * practice-by-suburb page it is skipped entirely: somebody who has
+ * narrowed to Fremantle is looking for a room, not an app.
+ */
+$oria_apps = ( ! $oria_is_combo && $oria_term instanceof WP_Term && function_exists( '\Oria\Apps\Render\for_practice' ) )
+	? \Oria\Apps\Render\for_practice( $oria_term )
+	: '';
+?>
+<?php if ( $oria_apps ) : ?>
+	<?php echo $oria_apps; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+<?php endif; ?>
+
+<?php
 get_footer();

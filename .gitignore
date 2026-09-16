@@ -43,6 +43,7 @@ wp-config-local.php
 !/wp-content/plugins/oria-forms/
 !/wp-content/plugins/oria-ingest/
 !/wp-content/plugins/oria-shop/
+!/wp-content/plugins/oria-apps/
 
 # --- Themes: ours only -------------------------------------------------
 /wp-content/themes/*
