@@ -6500,17 +6500,79 @@ article.is-spotlit {
 .appoffline__links .fchip:hover { background: rgba(255, 255, 255, .18); border-color: var(--mist); color: var(--white); }
 @media (max-width: 600px) { .appoffline { padding: var(--s-4); } }
 
+/* Browse by goal.
+
+   Eight near-identical boxes of two words each is the hardest thing on
+   this page to scan, because nothing distinguishes one from another until
+   you have read it. The drawing is what fixes that: the eye finds a
+   crescent moon faster than it finds the word "sleep", and once you have
+   used the row twice you stop reading the labels at all.
+
+   Three states, and each has to be visible at a glance because this row
+   is also the filter for the list below it: resting, hovered, and chosen.
+   Chosen is the important one -- a filtered page that does not say which
+   filter is on is a page people think is broken. */
 .appgoals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-3); }
+
 .appgoal {
-  display: grid; gap: 4px; padding: var(--s-4); text-decoration: none; color: var(--ink);
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center;
+  gap: var(--s-3); padding: var(--s-3) var(--s-4);
+  text-decoration: none; color: var(--ink);
   background: var(--white); border: 1px solid var(--line); border-radius: var(--r-md);
-  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
+  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease),
+              border-color var(--t-med) var(--ease), background-color var(--t-med) var(--ease);
 }
 .appgoal:hover { transform: translateY(-2px); box-shadow: var(--sh-2); border-color: var(--teal-line); }
+.appgoal:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+/* The drawing sits in a disc so it reads as one object at the size it is
+   actually seen, rather than as a few loose strokes beside a word. */
+.appgoal__mark {
+  display: grid; place-items: center; width: 2.5rem; height: 2.5rem; flex: none;
+  border-radius: 50%; background: var(--sand-2); color: var(--moss);
+  transition: background-color var(--t-med) var(--ease), color var(--t-med) var(--ease);
+}
+.appgoal:hover .appgoal__mark { background: var(--deep); color: var(--white); }
+.appgoal__icon { display: block; }
+/* A goal with no drawing yet: a dot, never a gap. */
+.appgoal__dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+.appgoal__text { display: grid; gap: 1px; min-width: 0; }
 .appgoal__label { font-weight: 600; letter-spacing: -0.01em; }
-.appgoal__n { font-size: 11px; font-weight: 600; color: var(--moss); }
+.appgoal__n { font-size: var(--fs-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+/* The arrow only turns up on the way in, so eight of them are not sitting
+   there shouting at once. */
+.appgoal__go {
+  display: grid; place-items: center; color: var(--moss);
+  opacity: 0; transform: translateX(-4px);
+  transition: opacity var(--t-med) var(--ease), transform var(--t-med) var(--ease);
+}
+.appgoal:hover .appgoal__go,
+.appgoal:focus-visible .appgoal__go { opacity: 1; transform: none; }
+
+.appgoal.is-on {
+  background: var(--sand-2); border-color: var(--deep);
+  box-shadow: inset 0 0 0 1px var(--deep);
+}
+.appgoal.is-on .appgoal__mark { background: var(--deep); color: var(--white); }
+.appgoal.is-on .appgoal__n { color: var(--moss); font-weight: 600; }
+/* Chosen, so the arrow points back out again: this one clears the filter. */
+.appgoal.is-on .appgoal__go { opacity: 1; transform: none; rotate: 180deg; }
+
+@media (prefers-reduced-motion: reduce) {
+  .appgoal, .appgoal__mark, .appgoal__go { transition: none; }
+  .appgoal:hover { transform: none; }
+}
+
 @media (max-width: 860px) { .appgoals { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 400px) { .appgoals { grid-template-columns: 1fr; } }
+/* Two across still works at 360px once the card is a row rather than a
+   stack -- the drawing shrinks the label's measure but never wraps it. */
+@media (max-width: 520px) {
+  .appgoal { padding: var(--s-3); gap: var(--s-2); }
+  .appgoal__mark { width: 2.1rem; height: 2.1rem; }
+  .appgoal__go { display: none; }
+}
 
 .appcats { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .appcats .fchip { text-decoration: none; }

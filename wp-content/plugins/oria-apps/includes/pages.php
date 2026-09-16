@@ -55,6 +55,23 @@ function category_count( \WP_Term $term ): int {
  * while there is a single collection to list, and the collection itself is
  * the page that should rank. It becomes a real page at two.
  */
+/**
+ * The hub narrowed to one goal, e.g. /apps/?for=better-sleep.
+ *
+ * A view of the hub rather than a page: same apps, fewer of them, no
+ * writing of its own. So it points its canonical at the hub and asks not
+ * to be indexed -- sixteen of these in an index would be sixteen thin
+ * duplicates of a page that is already there, which is the exact outcome
+ * "best for" was made a field rather than a taxonomy to avoid.
+ */
+function filtered_hub(): bool {
+	if ( ! is_post_type_archive( Data\CPT ) ) {
+		return false;
+	}
+	$for = isset( $_GET['for'] ) ? sanitize_key( wp_unslash( $_GET['for'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	return '' !== $for && isset( Data\BEST_FOR[ $for ] );
+}
+
 function thin_guide_archive(): bool {
 	return is_post_type_archive( Guides\CPT ) && count( Guides\all() ) < Guides\ARCHIVE_MIN;
 }
@@ -78,6 +95,11 @@ function title( $title ) {
 		return sprintf( __( '%1$s review: %2$s | %3$s', 'oria' ), $row['title'], $what, get_bloginfo( 'name' ) );
 	}
 	if ( is_post_type_archive( Data\CPT ) ) {
+		if ( filtered_hub() ) {
+			$for = sanitize_key( wp_unslash( $_GET['for'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			/* translators: 1: a goal, e.g. better sleep, 2: site name */
+			return sprintf( __( 'Apps for %1$s | %2$s', 'oria' ), strtolower( Data\label( 'best_for', $for ) ), get_bloginfo( 'name' ) );
+		}
 		return __( 'Wellness Apps & Digital Tools | Oria Haven', 'oria' );
 	}
 	if ( is_tax( Data\TAX ) ) {
@@ -155,7 +177,7 @@ function description( $desc ) {
 }
 
 function canonical( $url ) {
-	if ( thin_category() ) {
+	if ( thin_category() || filtered_hub() ) {
 		return hub_url();
 	}
 	// One guide: the archive is a duplicate of it, so it points there.
@@ -167,11 +189,11 @@ function canonical( $url ) {
 }
 
 function yoast_robots( $robots ) {
-	return thin_category() || thin_guide_archive() ? 'noindex, follow' : $robots;
+	return thin_category() || thin_guide_archive() || filtered_hub() ? 'noindex, follow' : $robots;
 }
 
 function wp_robots( array $r ): array {
-	if ( thin_category() || thin_guide_archive() ) {
+	if ( thin_category() || thin_guide_archive() || filtered_hub() ) {
 		$r['noindex'] = true;
 		unset( $r['nofollow'] );
 	}
@@ -187,6 +209,9 @@ function schema(): void {
 	}
 	if ( is_singular( Guides\CPT ) ) {
 		guide_schema();
+		return;
+	}
+	if ( filtered_hub() ) {
 		return;
 	}
 	if ( is_post_type_archive( Data\CPT ) || ( is_tax( Data\TAX ) && ! thin_category() ) ) {

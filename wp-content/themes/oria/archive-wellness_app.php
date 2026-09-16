@@ -40,6 +40,27 @@ foreach ( $oria_apps as $oria_row ) {
 uasort( $oria_cats, static fn( array $a, array $b ): int => $b['n'] <=> $a['n'] );
 
 $oria_picks = Engine\picks( 4 );
+
+/*
+ * The goal a visitor picked, if any.
+ *
+ * A query parameter rather than a URL of its own, and that is the whole
+ * reason "best for" is a field instead of a taxonomy: sixteen of these as
+ * real pages would be sixteen near-identical lists on day one. So the
+ * filter narrows the page in place, and Pages\ tells crawlers to index the
+ * hub rather than the filtered view of it.
+ *
+ * Validated against the vocabulary, so ?for= anything else simply shows
+ * the whole hub rather than an empty page.
+ */
+$oria_for = isset( $_GET['for'] ) ? sanitize_key( wp_unslash( $_GET['for'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+if ( '' !== $oria_for && ! isset( Data\BEST_FOR[ $oria_for ] ) ) {
+	$oria_for = '';
+}
+
+// The goals and categories above keep counting the whole catalogue: they
+// are how you change your mind, so they must not narrow with the page.
+$oria_shown = '' !== $oria_for ? Engine\by_best_for( $oria_for ) : $oria_apps;
 ?>
 
 <?php
@@ -89,16 +110,25 @@ endif;
 		</div>
 		<div class="appgoals">
 			<?php foreach ( array_slice( $oria_goals, 0, 8, true ) as $oria_key => $oria_n ) : ?>
-				<a class="appgoal reveal" href="<?php echo esc_url( add_query_arg( 'for', $oria_key, $oria_hub ) ); ?>">
-					<span class="appgoal__label"><?php echo esc_html( Data\label( 'best_for', (string) $oria_key ) ); ?></span>
-					<span class="appgoal__n">
-						<?php
-						printf(
-							/* translators: %d: number of apps */
-							esc_html( _n( '%d app', '%d apps', (int) $oria_n, 'oria' ) ),
-							(int) $oria_n
-						);
-						?>
+				<?php $oria_on = ( (string) $oria_key === $oria_for ); ?>
+				<a class="appgoal reveal<?php echo $oria_on ? ' is-on' : ''; ?>"
+					href="<?php echo esc_url( $oria_on ? $oria_hub . '#all' : add_query_arg( 'for', $oria_key, $oria_hub ) . '#all' ); ?>"
+					<?php echo $oria_on ? 'aria-current="true"' : ''; ?>>
+					<span class="appgoal__mark"><?php echo Render\goal_icon( (string) $oria_key ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+					<span class="appgoal__text">
+						<span class="appgoal__label"><?php echo esc_html( Data\label( 'best_for', (string) $oria_key ) ); ?></span>
+						<span class="appgoal__n">
+							<?php
+							printf(
+								/* translators: %d: number of apps */
+								esc_html( _n( '%d app', '%d apps', (int) $oria_n, 'oria' ) ),
+								(int) $oria_n
+							);
+							?>
+						</span>
+					</span>
+					<span class="appgoal__go" aria-hidden="true">
+						<svg viewBox="0 0 14 14" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7h9M8 3.5 11.5 7 8 10.5"/></svg>
 					</span>
 				</a>
 			<?php endforeach; ?>
@@ -179,18 +209,42 @@ $oria_guides = function_exists( '\Oria\Apps\Guides\all' ) ? \Oria\Apps\Guides\al
 <section class="wrap section section--top-flush" id="all">
 	<div class="sec-head reveal">
 		<div class="sec-head__text">
-			<span class="micro"><?php esc_html_e( 'Everything we have reviewed', 'oria' ); ?></span>
-			<h2 class="h2"><?php esc_html_e( 'All wellness apps', 'oria' ); ?></h2>
+			<?php if ( '' !== $oria_for ) : ?>
+				<span class="micro"><?php esc_html_e( 'Filtered', 'oria' ); ?></span>
+				<h2 class="h2">
+					<?php
+					printf(
+						/* translators: %s: a goal, e.g. better sleep */
+						esc_html__( 'Apps for %s', 'oria' ),
+						esc_html( strtolower( Data\label( 'best_for', $oria_for ) ) )
+					);
+					?>
+				</h2>
+			<?php else : ?>
+				<span class="micro"><?php esc_html_e( 'Everything we have reviewed', 'oria' ); ?></span>
+				<h2 class="h2"><?php esc_html_e( 'All wellness apps', 'oria' ); ?></h2>
+			<?php endif; ?>
 		</div>
+		<?php if ( '' !== $oria_for ) : ?>
+			<a class="btn btn--ghost" href="<?php echo esc_url( $oria_hub . '#all' ); ?>">
+				<?php
+				printf(
+					/* translators: %d: how many apps there are in total */
+					esc_html__( 'Show all %d', 'oria' ),
+					(int) count( $oria_apps )
+				);
+				?>
+			</a>
+		<?php endif; ?>
 	</div>
 	<div class="appgrid">
 		<?php
-		foreach ( $oria_apps as $oria_row ) {
+		foreach ( $oria_shown as $oria_row ) {
 			echo Render\card( $oria_row ); // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 		?>
 	</div>
-	<?php if ( Render\affiliate_in( $oria_apps ) ) : ?>
+	<?php if ( Render\affiliate_in( $oria_shown ) ) : ?>
 		<p class="appband__disclosure"><?php echo esc_html( Data\disclosure() ); ?></p>
 	<?php endif; ?>
 </section>
