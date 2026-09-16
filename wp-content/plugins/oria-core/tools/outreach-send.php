@@ -17,6 +17,23 @@
  *   Dry run is the default. --send is required to post anything, and even
  *   then it refuses unless ARMED exists. Delete ARMED to stop mid-campaign.
  *
+ * FAILURES
+ *   Two kinds, and they are not the same emergency.
+ *
+ *   A SESSION failure is ours: the login was refused, the server would not
+ *   connect, we have been rate limited. Sending the rest of the batch would
+ *   fail the same way and burn the list, so the run stops.
+ *
+ *   A RECIPIENT failure is theirs: a dead domain, a mailbox that does not
+ *   exist, a full inbox. That says nothing about the next business on the
+ *   list, so it is written to outreach-failed.csv and the run continues.
+ *
+ *   Stopping on both was worse than it looked. A bad address is never
+ *   written to the sent log, so it stays in the queue -- and because the
+ *   queue is sorted by impressions, it stays in the SAME PLACE. Every run
+ *   after it hit the same address, stopped in the same spot, and sent
+ *   nothing. One dead domain could hold up the whole campaign for good.
+ *
  * CREDENTIALS — in wp-config.php on the server, never in this file:
  *
  *     define( 'ORIA_SMTP_USER', 'hello@oriahaven.com.au' );
@@ -26,6 +43,7 @@
  *     php wp-content/plugins/oria-core/tools/outreach-send.php --status
  *     php wp-content/plugins/oria-core/tools/outreach-send.php            # dry run
  *     php wp-content/plugins/oria-core/tools/outreach-send.php --send
+ *     php wp-content/plugins/oria-core/tools/outreach-send.php --failures
  *
  * CRON (hPanel → Advanced → Cron Jobs), daily:
  *     cd ~/domains/oriahaven.com.au/public_html && \
@@ -45,10 +63,19 @@ require $root . '/wp-load.php';
 const OUTREACH_THROTTLE = 20;           // seconds between messages
 const OUTREACH_DEFAULT  = 15;
 
+/*
+ * How many times a temporary failure is worth retrying before the address is
+ * left alone. "Temporary" often is -- a mail server having a bad morning --
+ * but a domain whose DNS has been broken for months reports the same thing
+ * forever, and there is no point asking it every day until somebody notices.
+ */
+const OUTREACH_FAIL_MAX = 3;
+
 $dir    = __DIR__;
 $log    = $dir . '/outreach-sent.csv';
 $unsub  = $dir . '/outreach-unsubscribed.txt';
 $armed  = $dir . '/ARMED';
+$failed = $dir . '/outreach-failed.csv';
 $impMap = ORIA_CORE_DIR . 'data/outreach-impressions.json';
 
 /* ------------------------------------------------------------------ args */
@@ -66,7 +93,8 @@ foreach ( $argvv as $a ) {
 		$testTo = trim( $m[1] );
 	}
 }
-$debug = in_array( '--debug', $argvv, true );
+$debug    = in_array( '--debug', $argvv, true );
+$failList = in_array( '--failures', $argvv, true );
 
 /*
  * wp_mail() answers true or false and keeps the reason to itself. A silent
@@ -121,6 +149,91 @@ function outreach_done( string $log, string $unsub ): array {
 		}
 	}
 	return $done;
+}
+
+/**
+ * Addresses that have failed before.
+ *
+ * @return array<string, array{n:int, done:bool, why:string, at:string, name:string}>
+ */
+function outreach_failures( string $file ): array {
+	$out = array();
+	if ( ! is_readable( $file ) ) {
+		return $out;
+	}
+	$fh = fopen( $file, 'r' );
+	fgetcsv( $fh ); // header
+	while ( ( $r = fgetcsv( $fh ) ) !== false ) {
+		if ( ! isset( $r[1] ) ) {
+			continue;
+		}
+		$out[ strtolower( trim( $r[1] ) ) ] = array(
+			'at'   => (string) ( $r[0] ?? '' ),
+			'name' => (string) ( $r[2] ?? '' ),
+			'n'    => (int) ( $r[3] ?? 1 ),
+			'done' => ( 'yes' === ( $r[4] ?? '' ) ),
+			'why'  => (string) ( $r[5] ?? '' ),
+		);
+	}
+	fclose( $fh );
+	return $out;
+}
+
+/** Rewrite the failure file from the map, newest state per address. */
+function outreach_write_failures( string $file, array $rows ): void {
+	$fh = fopen( $file, 'w' );
+	fputcsv( $fh, array( 'last_at_utc', 'email', 'business', 'attempts', 'given_up', 'reason' ) );
+	foreach ( $rows as $email => $r ) {
+		fputcsv( $fh, array( $r['at'], $email, $r['name'], $r['n'], $r['done'] ? 'yes' : 'no', $r['why'] ) );
+	}
+	fclose( $fh );
+}
+
+/**
+ * Whose fault was this?
+ *
+ * 'session' means the connection or the login, and every message after it
+ * would fail the same way. 'recipient' means this address, and the next one
+ * is unaffected. Anything unrecognised is treated as a session problem,
+ * because stopping a batch costs a day and mis-sending costs a reputation.
+ */
+function outreach_fail_kind( string $error ): string {
+	$e = strtolower( $error );
+
+	foreach ( array( 'could not authenticate', 'smtp connect() failed', 'could not connect', 'authentication failed', 'too many', 'rate limit', 'quota exceeded', 'sending limit' ) as $needle ) {
+		if ( str_contains( $e, $needle ) ) {
+			return 'session';
+		}
+	}
+	foreach ( array( 'recipients failed', 'recipient address rejected', 'user unknown', 'unknown user', 'no such user', 'mailbox unavailable', 'mailbox full', 'over quota', 'does not exist', 'address rejected', 'lookup failure', 'domain not found', 'invalid address' ) as $needle ) {
+		if ( str_contains( $e, $needle ) ) {
+			return 'recipient';
+		}
+	}
+
+	return 'session';
+}
+
+/**
+ * Is there anywhere for mail to this address to go?
+ *
+ * Checked before the message is handed to SMTP, because a bounce costs more
+ * than a lookup: every undeliverable address we try counts against the
+ * sending domain's reputation, and a domain with broken DNS will never
+ * accept anything no matter how many mornings we ask.
+ *
+ * A domain with no MX but a working A record still takes mail by the old
+ * rule, so both count. Only when neither resolves is it hopeless -- and a
+ * resolver that is itself having a bad day returns false here too, which is
+ * why this records an attempt rather than giving up on the first no.
+ */
+function outreach_deliverable( string $email ): bool {
+	$at = strrpos( $email, '@' );
+	if ( false === $at ) {
+		return false;
+	}
+	$domain = substr( $email, $at + 1 );
+	return checkdnsrr( $domain, 'MX' ) || checkdnsrr( $domain, 'A' );
 }
 
 /** Published, contactable, still unclaimed. */
@@ -204,9 +317,27 @@ if ( is_readable( $impMap ) ) {
 	$impressions = (array) json_decode( (string) file_get_contents( $impMap ), true );
 }
 
-$done    = outreach_done( $log, $unsub );
-$all     = outreach_candidates();
-$pending = array_values( array_filter( $all, static fn( $r ) => ! isset( $done[ strtolower( $r['email'] ) ] ) ) );
+$done     = outreach_done( $log, $unsub );
+$failures = outreach_failures( $failed );
+$all      = outreach_candidates();
+
+/*
+ * Anything we have given up on is out of the queue for good; anything that
+ * has failed fewer than OUTREACH_FAIL_MAX times stays in and gets another
+ * go on a later run.
+ */
+$pending = array_values(
+	array_filter(
+		$all,
+		static function ( array $r ) use ( $done, $failures ): bool {
+			$e = strtolower( $r['email'] );
+			if ( isset( $done[ $e ] ) ) {
+				return false;
+			}
+			return ! ( isset( $failures[ $e ] ) && $failures[ $e ]['done'] );
+		}
+	)
+);
 
 /*
  * Best prospects first. A business whose profile Google already shows gets an
@@ -221,10 +352,23 @@ usort(
 	}
 );
 
+if ( $failList ) {
+	if ( ! $failures ) {
+		exit( "No failures recorded.\n" );
+	}
+	printf( "%-38s %-4s %-8s %s\n", 'address', 'n', 'given up', 'reason' );
+	foreach ( $failures as $email => $f ) {
+		printf( "%-38s %-4d %-8s %s\n", $email, $f['n'], $f['done'] ? 'yes' : 'no', substr( $f['why'], 0, 70 ) );
+	}
+	exit( 0 );
+}
+
 if ( $status ) {
+	$given_up = count( array_filter( $failures, static fn( array $f ): bool => $f['done'] ) );
 	printf( "contactable now : %d\n", count( $all ) );
-	printf( "already sent    : %d\n", count( $all ) - count( $pending ) );
+	printf( "already sent    : %d\n", count( $done ) );
 	printf( "remaining       : %d\n", count( $pending ) );
+	printf( "failed          : %d recorded, %d given up on (--failures to list)\n", count( $failures ), $given_up );
 	printf( "armed           : %s\n", file_exists( $armed ) ? 'yes' : 'NO — cron will not send' );
 	printf(
 		"smtp user       : %s\n",
@@ -303,7 +447,27 @@ foreach ( $batch as $i => $row ) {
 		continue;
 	}
 
-	$ok = wp_mail( $to, $subject, $body );
+	/*
+	 * Ask DNS before asking SMTP. A domain that does not resolve cannot
+	 * receive anything, and trying anyway earns a bounce against our own
+	 * sending reputation for no possible gain.
+	 */
+	if ( '' === $testTo && ! outreach_deliverable( $row['email'] ) ) {
+		$why = 'domain does not resolve (no MX or A record)';
+		$n   = (int) ( $failures[ strtolower( $row['email'] ) ]['n'] ?? 0 ) + 1;
+		$failures[ strtolower( $row['email'] ) ] = array(
+			'at'   => gmdate( 'c' ),
+			'name' => $row['name'],
+			'n'    => $n,
+			'done' => $n >= OUTREACH_FAIL_MAX,
+			'why'  => $why,
+		);
+		printf( "skip %-38s %s (%s, attempt %d)\n", $row['email'], $row['name'], $why, $n );
+		continue;
+	}
+
+	$GLOBALS['oria_mail_error'] = '';
+	$ok                         = wp_mail( $to, $subject, $body );
 
 	if ( '' !== $testTo ) {
 		// A test send proves the route, not that this business was contacted.
@@ -322,16 +486,37 @@ foreach ( $batch as $i => $row ) {
 		$sent++;
 		printf( "sent %-38s tier %d  %s\n", $row['email'], $imp > 0 ? 1 : 2, $row['name'] );
 	} else {
+		$why  = $GLOBALS['oria_mail_error'] ?: 'wp_mail() gave no reason; re-run with --debug for the SMTP conversation';
+		$kind = outreach_fail_kind( $why );
+
+		if ( 'session' === $kind ) {
+			// Ours, not theirs: the next message would fail identically.
+			fwrite( STDERR, sprintf( "FAILED %s (%s) — stopping\n  reason: %s\n", $row['email'], $row['name'], $why ) );
+			break;
+		}
+
+		// Theirs: record it, and carry on down the list.
+		$key = strtolower( $row['email'] );
+		$n   = (int) ( $failures[ $key ]['n'] ?? 0 ) + 1;
+		$failures[ $key ] = array(
+			'at'   => gmdate( 'c' ),
+			'name' => $row['name'],
+			'n'    => $n,
+			'done' => $n >= OUTREACH_FAIL_MAX,
+			'why'  => $why,
+		);
 		fwrite(
 			STDERR,
 			sprintf(
-				"FAILED %s (%s) — stopping\n  reason: %s\n",
+				"failed %-38s %s (attempt %d%s)\n  reason: %s\n",
 				$row['email'],
 				$row['name'],
-				$GLOBALS['oria_mail_error'] ?: 'wp_mail() gave no reason; re-run with --debug for the SMTP conversation'
+				$n,
+				$n >= OUTREACH_FAIL_MAX ? ', giving up' : '',
+				$why
 			)
 		);
-		break; // a broken mailbox should not burn the rest of the batch
+		continue;
 	}
 
 	if ( $i < count( $batch ) - 1 ) {
@@ -340,7 +525,13 @@ foreach ( $batch as $i => $row ) {
 }
 
 if ( $send ) {
+	outreach_write_failures( $failed, $failures );
+
+	$skipped = count( array_filter( $failures, static fn( array $f ): bool => $f['at'] >= gmdate( 'c', time() - 3600 ) ) );
 	printf( "\n%d sent. %d remaining.\n", $sent, count( $pending ) - $sent );
+	if ( $skipped ) {
+		printf( "%d address(es) failed this run — see %s\n", $skipped, $failed );
+	}
 } else {
 	printf( "\nDry run — %d message(s) shown, nothing sent.\n", count( $batch ) );
 	printf( "If that's right: touch %s\n", $armed );
