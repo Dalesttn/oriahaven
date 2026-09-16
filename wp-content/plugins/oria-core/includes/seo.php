@@ -541,10 +541,49 @@ function seo_title( $title ) {
 			$name   = decoded_title( get_the_ID() );
 			$suburb = listing_suburb( (int) get_the_ID() );
 			$base   = sprintf( '%s — %s', $name, $context );
+			$brand  = get_bloginfo( 'name' );
 
-			$tries = array( sprintf( '%s | %s', $base, get_bloginfo( 'name' ) ), $base );
-			if ( '' !== $suburb ) {
-				$tries[] = sprintf( '%s — %s', $name, $suburb );
+			/*
+			 * A name that already carries its own suburb.
+			 *
+			 * "Brazilian Butterfly Fremantle" in Fremantle, "Margaret
+			 * River Midwives" in Margaret River: twenty-six listings were
+			 * shipping titles like "Counselling Margaret River — Margaret
+			 * River", which spends twelve characters saying the suburb
+			 * twice and reads as though nobody looked. Those characters buy
+			 * the brand instead — and the suburb is still in the title,
+			 * because it is still in the name.
+			 */
+			$repeats = '' !== $suburb && str_contains( strtolower( $name ), strtolower( $suburb ) );
+
+			/*
+			 * Richest first; the first that fits ships. The order gives up
+			 * the least valuable thing each time, and the suburb outranks
+			 * the brand — except where the name carries the suburb already,
+			 * where dropping the category costs nothing a searcher scans
+			 * for and keeps us recognisable in the results.
+			 */
+			if ( $repeats ) {
+				/*
+				 * Drop the suburb rather than merely deprioritising it: the
+				 * full form often fits inside the cap, so a ladder that
+				 * simply ranked the de-duplicated version lower still
+				 * shipped "Gnarabup Yoga Studio — Yoga in Gnarabup".
+				 */
+				$category = category_name( (int) get_the_ID() );
+				$tries    = array();
+				if ( '' !== $category ) {
+					$tries[] = sprintf( '%s — %s | %s', $name, $category, $brand );
+				}
+				$tries[] = sprintf( '%s | %s', $name, $brand );
+				if ( '' !== $category ) {
+					$tries[] = sprintf( '%s — %s', $name, $category );
+				}
+			} else {
+				$tries = array( sprintf( '%s | %s', $base, $brand ), $base );
+				if ( '' !== $suburb ) {
+					$tries[] = sprintf( '%s — %s', $name, $suburb );
+				}
 			}
 			$tries[] = $name;
 
@@ -593,6 +632,12 @@ function listing_context( int $id ): string {
 	}
 	$name = wp_specialchars_decode( $practice->name );
 	return '' !== $suburb ? sprintf( '%s in %s', $name, $suburb ) : $name;
+}
+
+/** The listing's primary category, plain, or '' — the title ladder's middle rung. */
+function category_name( int $id ): string {
+	$practice = \Oria\Core\Categories\primary_for( $id );
+	return $practice instanceof \WP_Term ? wp_specialchars_decode( $practice->name ) : '';
 }
 
 /** Just the suburb for a listing, for titles too long to carry the category. */
