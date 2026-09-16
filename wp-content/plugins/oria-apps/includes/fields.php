@@ -96,6 +96,17 @@ function register(): void {
 					'instructions' => 'Who this suits. Drives the "best apps for…" collections. Two or three is usually right; ticking everything says nothing.',
 				),
 				array(
+					'key'           => 'field_oria_app_primary_cat',
+					'name'          => 'primary_category',
+					'label'         => 'Main category',
+					'type'          => 'select',
+					'choices'       => Data\CATEGORIES,
+					'allow_null'    => 1,
+					'ui'            => 1,
+					'instructions'  => 'The one category that stands for this app on a card, in the comparison tables and in its page title. Must be one of the categories ticked on the right. Left empty, the first alphabetically is used, which is rarely what you meant.',
+					'wrapper'       => array( 'width' => '50' ),
+				),
+				array(
 					'key'          => 'field_oria_app_oria_take',
 					'name'         => 'oria_take',
 					'label'        => 'Oria take',

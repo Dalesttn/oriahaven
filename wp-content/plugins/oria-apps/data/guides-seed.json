@@ -1,0 +1,87 @@
+{
+  "_note": "Editorial app collections. The order of picks IS the ranking: an editor put each app where it sits, and nothing here is scored or sorted by a number. Facts about each app (features, pricing, platforms, considerations) are NOT repeated here — they are read from the app entry at render time, so they only ever need correcting in one place.",
+  "_checked": "2026-09-16",
+  "guides": [
+    {
+      "slug": "best-wellness-apps-australia",
+      "title": "10 best wellness apps in Australia",
+      "subtitle": "Apps for sleep, meditation, fitness, mindfulness and everyday wellbeing.",
+      "excerpt": "Ten wellness apps worth your time, chosen for what they actually do rather than how they market themselves — with what each one costs and who it suits.",
+      "intro": "There are thousands of wellness apps and most of them are a subscription looking for a reason. These ten are the ones we would actually recommend to someone, and the list is deliberately short for that reason.\n\nThe order below runs from the mind to the body to the outdoors, not from best to worst. Seven of the ten can be used without paying \u2014 two of them free outright \u2014 and we have said plainly where a free tier is a real tier and where it is a trial in disguise. Pricing moves constantly, so each app page carries the date we last checked it.\n\nOne thing worth saying up front: an app is a companion to a practice, not a replacement for one. If a list like this ends with you booking a class instead of downloading anything, that is a good outcome.",
+      "picks": [
+        {
+          "app": "smiling-mind",
+          "best_for": "Starting out, and for families",
+          "blurb": "A not-for-profit out of Melbourne, free with nothing held back behind a plan, and the one we suggest first to anyone who has never meditated. The children's pathways are written for children rather than being adult sessions read more gently, which makes it the rare wellness app a whole household can use. If you only install one thing off this list, make it this."
+        },
+        {
+          "app": "insight-timer",
+          "best_for": "The largest free library",
+          "blurb": "Tens of thousands of guided sessions from thousands of teachers, and the timer on its own is worth the install once you practise unguided. The size is the drawback as much as the appeal — there is no path through it, so you either enjoy browsing or you will want something more structured. Start here before paying for anything, so you find out which of those you are."
+        },
+        {
+          "app": "headspace",
+          "best_for": "Meditation beginners who want structure",
+          "blurb": "The one to choose if you have tried meditating and bounced off it. The courses are ordered, the instruction is plain and the sessions are short enough that starting is not a decision you have to make. It is a subscription with no meaningful free tier, so treat the trial as the way to find out whether the structure is what was missing."
+        },
+        {
+          "app": "calm",
+          "best_for": "Winding down at night",
+          "blurb": "Less a meditation course than a wind-down: sleep stories, soundscapes and short sessions in an app that is pleasant to open at eleven at night. If your problem is getting to sleep rather than learning to meditate, this is the better of the two big subscriptions. If you want to be taught, Headspace is."
+        },
+        {
+          "app": "bettersleep",
+          "best_for": "Building your own sleep sound",
+          "blurb": "For people who sleep better with something playing. Mixing your own sound — rain on a tent, a fan, a low hum — rather than picking from fixed tracks is what separates it from the meditation apps that bolt a sleep section on the side. The free tier is real, and enough to tell whether sound is your answer."
+        },
+        {
+          "app": "sleep-cycle",
+          "best_for": "Seeing your sleep as a trend",
+          "blurb": "Useful if you suspect your sleep is worse than it feels and want something more than an impression. It needs no watch, which is the practical advantage over every wearable, and the alarm that waits for a light phase is the feature people keep it for. Read the nightly score as a trend line over weeks, not as a measurement of last night."
+        },
+        {
+          "app": "nike-training-club",
+          "best_for": "Free workouts, properly made",
+          "blurb": "The best-produced free workout app there is, and it stayed free. The short mobility sessions are the underrated part of it — five or ten minutes that most people will get more out of than the hard classes. Worth having installed even if you train somewhere else."
+        },
+        {
+          "app": "fiton",
+          "best_for": "Variety at home",
+          "blurb": "The obvious first stop if you want to train at home without paying: a broad range of classes, most of them free, from short walks through to strength and yoga. Broad rather than deep, which suits somebody building the habit more than somebody following a specific programme."
+        },
+        {
+          "app": "alltrails",
+          "best_for": "Finding a new walk",
+          "blurb": "The easiest way to find a walk you have not done before, and the reviews are honest about what a trail is like underfoot rather than how it photographs. Perth and the hills are covered well. Offline maps sit behind the paid tier, which is the one upgrade on this list we would call straightforwardly worth it if you walk past reception."
+        },
+        {
+          "app": "strava",
+          "best_for": "Accountability, not data",
+          "blurb": "Keep it for the social side rather than the statistics. If seeing that a friend went out this morning is the thing that gets you out the door, nothing else on this list does that job. If measuring yourself against other people is the thing that puts you off, this is the one to skip."
+        }
+      ],
+      "faq": [
+        {
+          "question": "What is the best free wellness app?",
+          "answer": "Smiling Mind, for most people. It is an Australian not-for-profit, it is free in full rather than free to a point, and it covers meditation and mindfulness for adults and children. Insight Timer is the other genuinely free option and has a far larger library, though no structured path through it."
+        },
+        {
+          "question": "Are any of these apps Australian?",
+          "answer": "Smiling Mind is, built by a Melbourne not-for-profit and used widely in Australian schools. The rest are overseas apps that work normally in Australia; prices shown in the app are usually charged in Australian dollars."
+        },
+        {
+          "question": "Do I need to pay to get anything useful?",
+          "answer": "No. Smiling Mind and Nike Training Club are free outright, and Insight Timer, FitOn, BetterSleep, Strava and AllTrails all have free tiers we would call genuinely usable. Calm, Headspace and Sleep Cycle are subscriptions, and their free trials are the sensible way to test them."
+        },
+        {
+          "question": "Which app is best for sleep?",
+          "answer": "It depends on what is going wrong. BetterSleep suits people who settle more easily with sound; Calm suits people who want to be talked down at the end of the day; Sleep Cycle does not help you sleep at all but shows you patterns over weeks. If sleep is a persistent problem, that is worth raising with a GP rather than an app."
+        },
+        {
+          "question": "How were these apps chosen?",
+          "answer": "An editor picked them on what they offer, what they cost, how much of them is usable free, and who each one genuinely suits. Details are checked against each app's own website and store listing, and every app page carries the date it was last checked. Commercial arrangements play no part in whether an app appears here or where it sits."
+        }
+      ]
+    }
+  ]
+}

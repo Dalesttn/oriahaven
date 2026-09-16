@@ -401,9 +401,15 @@
 
      What a query is matched against, in the order results are grouped:
      specialties (the precise modality — "Cryotherapy"), practice
-     categories, individual practices by name, and suburbs. Everyday
-     wording that isn't in any of those names ("ice bath", "reformer")
-     is mapped onto specialties by ORIA_SEARCH.synonyms. */
+     categories, individual practices by name, wellness apps, and suburbs.
+     Everyday wording that isn't in any of those names ("ice bath",
+     "reformer") is mapped onto specialties by ORIA_SEARCH.synonyms.
+
+     Apps sit below the places on purpose. Somebody typing "meditation"
+     into a Perth directory almost always wants the classes; somebody
+     typing "headspace" gets the app anyway, because nothing else
+     matches, and a name they have typed in full jumps above the
+     practices that merely contain it. */
   function searchIndex() {
     // Directory-ish pages carry the full set; everywhere else gets the
     // slim index, which holds the same fields search actually reads.
@@ -465,6 +471,15 @@
     (D.listings || []).forEach(function (l) {
       if (l.name.toLowerCase().indexOf(q) > -1) {
         out.push({ kind: "Practice", label: l.name, sub: l.suburb, url: l.url, rank: 3 });
+      }
+    });
+    /* Wellness apps, from their own small payload — ORIA_APPS is on every
+       page the search box is, and absent while no app is published. */
+    (window.ORIA_APPS || []).forEach(function (a) {
+      var at = (a.name || "").toLowerCase();
+      if (at.indexOf(q) > -1) {
+        out.push({ kind: "App", label: a.name, sub: a.sub, url: a.url,
+                   rank: at.indexOf(q) === 0 ? 2.5 : 3.5 });
       }
     });
     (D.regions || []).forEach(function (r) {

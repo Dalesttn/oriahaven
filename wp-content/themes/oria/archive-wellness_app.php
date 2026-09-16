@@ -123,6 +123,47 @@ endif;
 	</section>
 <?php endif; ?>
 
+<?php
+/*
+ * The editorial shortlists. Above "all apps" on purpose: somebody who
+ * wanted to browse is already scrolling, and somebody who wanted to be
+ * told which one to get is better served by a list that says so.
+ */
+$oria_guides = function_exists( '\Oria\Apps\Guides\all' ) ? \Oria\Apps\Guides\all( 4 ) : array();
+?>
+<?php if ( $oria_guides ) : ?>
+	<section class="wrap section section--top-flush">
+		<div class="sec-head reveal">
+			<div class="sec-head__text">
+				<span class="micro"><?php esc_html_e( 'Told, not browsed', 'oria' ); ?></span>
+				<h2 class="h2"><?php esc_html_e( 'Best wellness apps', 'oria' ); ?></h2>
+			</div>
+		</div>
+		<div class="gdlist">
+			<?php foreach ( $oria_guides as $oria_gid ) : ?>
+				<?php $oria_g = \Oria\Apps\Guides\guide( (int) $oria_gid ); ?>
+				<article class="gdcard">
+					<a class="gdcard__link" href="<?php echo esc_url( (string) $oria_g['url'] ); ?>">
+						<h3 class="h3 gdcard__title"><?php echo esc_html( (string) $oria_g['title'] ); ?></h3>
+					</a>
+					<?php if ( '' !== (string) $oria_g['subtitle'] ) : ?>
+						<p class="gdcard__sub"><?php echo esc_html( (string) $oria_g['subtitle'] ); ?></p>
+					<?php endif; ?>
+					<p class="micro gdcard__meta">
+						<?php
+						printf(
+							/* translators: %d: how many apps are in the guide */
+							esc_html( _n( '%d app', '%d apps', count( $oria_g['picks'] ), 'oria' ) ),
+							(int) count( $oria_g['picks'] )
+						);
+						?>
+					</p>
+				</article>
+			<?php endforeach; ?>
+		</div>
+	</section>
+<?php endif; ?>
+
 <section class="wrap section section--top-flush" id="all">
 	<div class="sec-head reveal">
 		<div class="sec-head__text">

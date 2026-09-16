@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 use Oria\Apps\Data;
 use Oria\Apps\Engine;
+use Oria\Apps\Guides;
 
 get_header();
 
@@ -232,6 +233,32 @@ while ( have_posts() ) :
 				<div class="appoffline__links">
 					<?php foreach ( $oria_practices as $oria_practice ) : ?>
 						<a class="fchip" href="<?php echo esc_url( $oria_practice['url'] ); ?>"><?php echo esc_html( $oria_practice['name'] ); ?></a>
+					<?php endforeach; ?>
+				</div>
+			</div>
+		</section>
+	<?php endif; ?>
+
+	<?php
+	/*
+	 * The shortlists this app appears in. A link back up to the list that
+	 * recommended it, which is the page a reader comparing two apps
+	 * actually wants -- and the reason neither page is a dead end.
+	 */
+	$oria_in = Guides\holding( $oria_id );
+	?>
+	<?php if ( $oria_in ) : ?>
+		<section class="wrap section section--top-flush">
+			<div class="appoffline appoffline--light reveal">
+				<div class="appoffline__copy">
+					<span class="micro"><?php esc_html_e( 'Also in', 'oria' ); ?></span>
+					<h2 class="h3"><?php esc_html_e( 'Shortlists this app is on', 'oria' ); ?></h2>
+				</div>
+				<div class="appoffline__links">
+					<?php foreach ( $oria_in as $oria_gid ) : ?>
+						<a class="fchip" href="<?php echo esc_url( (string) get_permalink( (int) $oria_gid ) ); ?>">
+							<?php echo esc_html( wp_specialchars_decode( (string) get_the_title( (int) $oria_gid ) ) ); ?>
+						</a>
 					<?php endforeach; ?>
 				</div>
 			</div>

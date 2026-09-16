@@ -20,6 +20,7 @@ namespace Oria\Apps\Pages;
 
 use Oria\Apps\Data;
 use Oria\Apps\Engine;
+use Oria\Apps\Guides;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -45,6 +46,17 @@ function hub_url(): string {
 /** How many published apps sit in a category. */
 function category_count( \WP_Term $term ): int {
 	return count( Engine\apps( array( $term->slug ) ) );
+}
+
+/**
+ * The guides archive with only one guide on it.
+ *
+ * An index page whose whole job is to list collections has nothing to say
+ * while there is a single collection to list, and the collection itself is
+ * the page that should rank. It becomes a real page at two.
+ */
+function thin_guide_archive(): bool {
+	return is_post_type_archive( Guides\CPT ) && count( Guides\all() ) < Guides\ARCHIVE_MIN;
 }
 
 function thin_category(): bool {
@@ -75,11 +87,21 @@ function title( $title ) {
 			return sprintf( __( 'Best %1$s Apps | %2$s', 'oria' ), wp_specialchars_decode( $term->name ), get_bloginfo( 'name' ) );
 		}
 	}
+	// A collection's own title already says what it is -- "10 best wellness
+	// apps in Australia" -- so it only needs the site name after it.
+	if ( is_singular( Guides\CPT ) && '' === (string) get_post_meta( (int) get_the_ID(), '_yoast_wpseo_title', true ) ) {
+		/* translators: 1: guide title, 2: site name */
+		return sprintf( __( '%1$s | %2$s', 'oria' ), wp_specialchars_decode( (string) get_the_title() ), get_bloginfo( 'name' ) );
+	}
+	if ( is_post_type_archive( Guides\CPT ) ) {
+		return __( 'Wellness App Guides | Oria Haven', 'oria' );
+	}
 	return $title;
 }
 
 function core_title( array $parts ): array {
-	if ( is_singular( Data\CPT ) || is_post_type_archive( Data\CPT ) || is_tax( Data\TAX ) ) {
+	if ( is_singular( Data\CPT ) || is_post_type_archive( Data\CPT ) || is_tax( Data\TAX )
+		|| is_singular( Guides\CPT ) || is_post_type_archive( Guides\CPT ) ) {
 		$made = title( '' );
 		if ( '' !== $made ) {
 			$parts['title'] = $made;
@@ -117,19 +139,39 @@ function description( $desc ) {
 			return sprintf( __( 'Wellness apps for %s, reviewed by Oria Haven with pricing, platforms and who each one suits.', 'oria' ), strtolower( wp_specialchars_decode( $term->name ) ) );
 		}
 	}
+	if ( is_singular( Guides\CPT ) ) {
+		$guide = Guides\guide( (int) get_the_ID() );
+		if ( '' !== (string) $guide['subtitle'] ) {
+			return (string) $guide['subtitle'];
+		}
+		if ( '' !== (string) $guide['intro'] ) {
+			return wp_trim_words( (string) $guide['intro'], 28, '…' );
+		}
+	}
+	if ( is_post_type_archive( Guides\CPT ) ) {
+		return __( 'Shortlists of wellness apps worth your time — for sleep, meditation, movement and mindfulness, chosen and checked by Oria Haven.', 'oria' );
+	}
 	return $desc;
 }
 
 function canonical( $url ) {
-	return thin_category() ? hub_url() : $url;
+	if ( thin_category() ) {
+		return hub_url();
+	}
+	// One guide: the archive is a duplicate of it, so it points there.
+	if ( thin_guide_archive() ) {
+		$only = (int) ( Guides\all( 1 )[0] ?? 0 );
+		return $only ? (string) get_permalink( $only ) : $url;
+	}
+	return $url;
 }
 
 function yoast_robots( $robots ) {
-	return thin_category() ? 'noindex, follow' : $robots;
+	return thin_category() || thin_guide_archive() ? 'noindex, follow' : $robots;
 }
 
 function wp_robots( array $r ): array {
-	if ( thin_category() ) {
+	if ( thin_category() || thin_guide_archive() ) {
 		$r['noindex'] = true;
 		unset( $r['nofollow'] );
 	}
@@ -143,8 +185,85 @@ function schema(): void {
 		app_schema();
 		return;
 	}
+	if ( is_singular( Guides\CPT ) ) {
+		guide_schema();
+		return;
+	}
 	if ( is_post_type_archive( Data\CPT ) || ( is_tax( Data\TAX ) && ! thin_category() ) ) {
 		list_schema();
+	}
+}
+
+/**
+ * A collection page: the article, the ranked list, and the questions.
+ *
+ * ItemList carries a position because the order genuinely is the ranking --
+ * an editor put each app where it sits. No AggregateRating and no
+ * reviewRating anywhere: we publish no scores, so there is no number to
+ * hand a crawler, and inventing one is the line this file does not cross.
+ */
+function guide_schema(): void {
+	$guide = Guides\guide( (int) get_the_ID() );
+	if ( count( $guide['picks'] ) < 2 ) {
+		return;
+	}
+
+	$items = array();
+	foreach ( $guide['picks'] as $i => $pick ) {
+		$items[] = array(
+			'@type'    => 'ListItem',
+			'position' => $i + 1,
+			'name'     => $pick['app']['title'],
+			'url'      => $pick['app']['url'],
+		);
+	}
+
+	$article = array(
+		'@context'      => 'https://schema.org',
+		'@type'         => 'Article',
+		'@id'           => $guide['url'] . '#article',
+		'headline'      => $guide['title'],
+		'url'           => $guide['url'],
+		'datePublished' => get_the_date( 'c' ),
+		'dateModified'  => '' !== $guide['checked'] ? gmdate( 'c', (int) strtotime( $guide['checked'] ) ) : get_the_modified_date( 'c' ),
+		'publisher'     => array( '@type' => 'Organization', 'name' => get_bloginfo( 'name' ) ),
+	);
+	if ( '' !== (string) $guide['subtitle'] ) {
+		$article['description'] = $guide['subtitle'];
+	}
+
+	$graph = array(
+		$article,
+		array(
+			'@context'        => 'https://schema.org',
+			'@type'           => 'ItemList',
+			'@id'             => $guide['url'] . '#apps',
+			'name'            => $guide['title'],
+			'numberOfItems'   => count( $items ),
+			'itemListOrder'   => 'https://schema.org/ItemListOrderAscending',
+			'itemListElement' => $items,
+		),
+	);
+
+	if ( $guide['faq'] ) {
+		$questions = array();
+		foreach ( $guide['faq'] as $item ) {
+			$questions[] = array(
+				'@type'          => 'Question',
+				'name'           => $item['question'],
+				'acceptedAnswer' => array( '@type' => 'Answer', 'text' => $item['answer'] ),
+			);
+		}
+		$graph[] = array(
+			'@context'   => 'https://schema.org',
+			'@type'      => 'FAQPage',
+			'@id'        => $guide['url'] . '#faq',
+			'mainEntity' => $questions,
+		);
+	}
+
+	foreach ( $graph as $node ) {
+		echo '<script type="application/ld+json">' . wp_json_encode( $node, JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
 	}
 }
 

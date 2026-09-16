@@ -32,6 +32,7 @@ function row( int $id ): array {
 	$post  = get_post( $id );
 	$terms = wp_get_post_terms( $id, Data\TAX );
 	$terms = is_wp_error( $terms ) ? array() : $terms;
+	$terms = primary_first( $terms, (string) get_post_meta( $id, 'primary_category', true ) );
 	$meta  = static fn( string $k ) => get_post_meta( $id, $k, true );
 
 	$affiliate = (bool) $meta( 'affiliate_available' ) && '' !== (string) $meta( 'affiliate_url' );
@@ -72,6 +73,36 @@ function row( int $id ): array {
 		'sources'     => array_values( array_filter( array( (string) $meta( 'primary_source_url' ), (string) $meta( 'secondary_source_url' ), (string) $meta( 'pricing_source_url' ) ) ) ),
 		'pick'        => (bool) $meta( 'oria_pick' ),
 	);
+}
+
+/**
+ * The app's main category, first.
+ *
+ * Terms come back from WordPress in alphabetical order, which is not what
+ * an app is mainly for: Insight Timer is a meditation app that also does
+ * breathwork, and "Breathwork" is simply what sorts first. Wherever one
+ * category has to stand for the app -- the card, the comparison table's
+ * focus column, the SEO title -- that had it describing the wrong thing.
+ *
+ * The editor's choice wins; without one, alphabetical is what is left.
+ *
+ * @param list<\WP_Term> $terms
+ * @return list<\WP_Term>
+ */
+function primary_first( array $terms, string $primary ): array {
+	if ( '' === $primary ) {
+		return $terms;
+	}
+	$first = array();
+	$rest  = array();
+	foreach ( $terms as $term ) {
+		if ( $term->slug === $primary ) {
+			$first[] = $term;
+		} else {
+			$rest[] = $term;
+		}
+	}
+	return array_merge( $first, $rest );
 }
 
 /**

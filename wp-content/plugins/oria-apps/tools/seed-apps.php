@@ -124,6 +124,14 @@ foreach ( $json['apps'] as $app ) {
 	// Repeaters, written the way ACF stores them: a count on the parent key
 	// and one row per index. Old rows are cleared first so a refresh that
 	// removes a point does not leave it behind.
+	// The first category in the file is the app's main one: the order in
+	// the seed is editorial, where the order WordPress returns is not.
+	$cats = array_values( (array) ( $app['categories'] ?? array() ) );
+	if ( $cats ) {
+		update_post_meta( $id, 'primary_category', (string) $cats[0] );
+		update_post_meta( $id, '_primary_category', 'field_oria_app_primary_cat' );
+	}
+
 	$icon = icon( $id, $slug );
 	if ( '' !== $icon ) {
 		printf( "      icon: %s\n", $icon );

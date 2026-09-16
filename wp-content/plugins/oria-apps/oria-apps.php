@@ -29,15 +29,19 @@ require ORIA_APPS_DIR . 'includes/data.php';
 require ORIA_APPS_DIR . 'includes/types.php';
 require ORIA_APPS_DIR . 'includes/fields.php';
 require ORIA_APPS_DIR . 'includes/engine.php';
+require ORIA_APPS_DIR . 'includes/guides.php';
 require ORIA_APPS_DIR . 'includes/render.php';
+require ORIA_APPS_DIR . 'includes/search.php';
 require ORIA_APPS_DIR . 'includes/track.php';
 require ORIA_APPS_DIR . 'includes/pages.php';
 require ORIA_APPS_DIR . 'includes/admin.php';
 
 Types\bootstrap();
+Guides\bootstrap();
 Fields\bootstrap();
 Render\bootstrap();
 Track\bootstrap();
+Search\bootstrap();
 Pages\bootstrap();
 Admin\bootstrap();
 
@@ -47,3 +51,4 @@ Admin\bootstrap();
  * runs again.
  */
 register_activation_hook( __FILE__, __NAMESPACE__ . '\Types\activate' );
+register_activation_hook( __FILE__, __NAMESPACE__ . '\Guides\activate' );

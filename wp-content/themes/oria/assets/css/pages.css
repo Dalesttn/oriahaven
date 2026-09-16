@@ -6489,3 +6489,91 @@ article.is-spotlit {
 
 .appcats { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .appcats .fchip { text-decoration: none; }
+
+/* --- App guides: the editorial shortlists ----------------------------- */
+/* Reuses the app tokens above: same radii, same lines, same type scale.
+   The only new idea on the page is the comparison table, and it is built
+   to be read on a phone -- the scroller belongs to the table, never the
+   page, so the body never slides sideways. */
+
+.gdchecked { color: var(--text-faint); margin-top: var(--s-2); }
+.gdintro { max-width: 68ch; }
+.gdintro p { color: var(--text-soft); }
+
+.gdtable__scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: var(--s-3); }
+.gdtable {
+  width: 100%; min-width: 46rem; border-collapse: collapse;
+  font-size: var(--fs-sm); background: var(--white);
+  border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden;
+}
+.gdtable th, .gdtable td { padding: var(--s-3); text-align: left; vertical-align: top; }
+.gdtable thead th {
+  font-size: var(--fs-xs); font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-faint); background: var(--sand-2); border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.gdtable tbody tr + tr { border-top: 1px solid var(--line); }
+.gdtable tbody th { font-weight: 600; white-space: nowrap; }
+.gdtable tbody th a { color: var(--ink); text-decoration: none; }
+.gdtable tbody th a:hover { color: var(--moss); text-decoration: underline; }
+.gdtable td { color: var(--text-soft); }
+.gdtable__n {
+  display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; margin-right: var(--s-2);
+  border-radius: 50%; background: var(--sand-2); color: var(--moss);
+  font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.gdtable__go a { color: var(--moss); font-weight: 600; white-space: nowrap; }
+.gddisclosure { margin-top: var(--s-3); font-size: var(--fs-xs); color: var(--text-faint); max-width: 70ch; }
+
+.gdpick { scroll-margin-top: 5rem; }
+.gdpick__head { display: flex; align-items: center; gap: var(--s-3); }
+.gdpick__logo { border-radius: var(--r-sm); flex: none; }
+.gdpick__title { display: grid; gap: 2px; }
+.gdpick__title .h3 { margin: 0; }
+.gdpick__n { color: var(--moss); font-variant-numeric: tabular-nums; }
+.gdpick__for { margin: 0; font-size: var(--fs-sm); color: var(--text-soft); }
+.gdpick__for span { font-weight: 600; color: var(--ink); }
+
+.gdpick__body {
+  display: grid; grid-template-columns: minmax(0, 1fr) 16rem; gap: var(--s-5);
+  margin-top: var(--s-3); align-items: start;
+}
+.gdpick__main { display: grid; gap: var(--s-3); }
+.gdpick__main .prose { max-width: 66ch; }
+.gdpick__sub { font-size: var(--fs-sm); font-weight: 600; margin: 0; }
+
+.gdpick__side {
+  background: var(--sand-2); border: 1px solid var(--line);
+  border-radius: var(--r-md); padding: var(--s-4); display: grid; gap: var(--s-2);
+  position: sticky; top: 5rem;
+}
+.gdpick__price { margin: 0; font-weight: 600; }
+.gdpick__from { margin: 0; color: var(--text-faint); }
+.gdpick__acts { display: grid; gap: var(--s-2); }
+.gdpick__acts .btn { justify-content: center; text-align: center; }
+
+@media (max-width: 860px) {
+  .gdpick__body { grid-template-columns: 1fr; gap: var(--s-4); }
+  .gdpick__side { position: static; }
+}
+
+.appmethod--wide p { max-width: 74ch; }
+
+.gdlist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
+.gdcard {
+  display: grid; gap: var(--s-2); padding: var(--s-5);
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r-md);
+  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
+}
+.gdcard:hover { transform: translateY(-2px); box-shadow: var(--sh-2); border-color: var(--teal-line); }
+.gdcard__link { text-decoration: none; }
+.gdcard__title { margin: 0; color: var(--ink); }
+.gdcard__sub { margin: 0; color: var(--text-soft); font-size: var(--fs-sm); }
+.gdcard__meta { color: var(--text-faint); }
+@media (max-width: 760px) { .gdlist { grid-template-columns: 1fr; } }
+
+.appoffline--light { background: var(--sand-2); color: var(--ink); border: 1px solid var(--line); }
+.appoffline--light .appoffline__copy .micro { color: var(--moss); }
+.appoffline--light .appoffline__copy .h3 { color: var(--ink); }
+.appoffline--light .appoffline__links .fchip { background: var(--white); border-color: var(--line); color: var(--ink); }
+.appoffline--light .appoffline__links .fchip:hover { border-color: var(--teal-line); color: var(--moss); }
