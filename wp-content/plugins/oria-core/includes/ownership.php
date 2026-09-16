@@ -416,11 +416,11 @@ function admin_only_fields( $field ) {
 		return false;
 	}
 	if ( 'verified_at' === $name ) {
-		$field['disabled']     = 1;
+		$field                 = lock( $field );
 		$field['instructions'] = 'Set by Oria Haven when your claim is approved or your details are re-checked.';
 	}
 	if ( 'google_place_id' === $name ) {
-		$field['disabled']     = 1;
+		$field                 = lock( $field );
 		$field['instructions'] = 'Managed by Oria Haven — links your listing to its Google Business Profile.';
 	}
 
@@ -428,12 +428,49 @@ function admin_only_fields( $field ) {
 	// editable; every paid field is shown greyed with an upgrade note.
 	$listing = owned_listing( get_current_user_id() );
 	if ( $listing && ! \Oria\Core\Tiers\field_editable( $listing, $name ) ) {
-		$field['disabled']           = 1;
-		$field['wrapper']['class']   = trim( ( $field['wrapper']['class'] ?? '' ) . ' oria-locked' );
+		$field                     = lock( $field );
+		$field['wrapper']['class'] = trim( ( $field['wrapper']['class'] ?? '' ) . ' oria-locked' );
 		$field['instructions']       = 'booking_url' === $name
 			? __( 'Booking links are part of the Claimed plan — upgrade to add yours.', 'oria' )
 			: __( 'Included in the Claimed plan — upgrade to edit.', 'oria' );
 	}
+	return $field;
+}
+
+/**
+ * Grey a field out, in the form its own field type understands.
+ *
+ * ACF's 'disabled' is not one thing. On an input it is a boolean. On a
+ * field built from choices it is the LIST OF CHOICES to disable, and the
+ * checkbox renderer runs array_map() straight over it -- so the boolean
+ * that works everywhere else is a fatal TypeError there, and it takes the
+ * whole edit screen with it.
+ *
+ * That is what a practitioner on the free plan hit. Amenities is a
+ * checkbox gated to the Claimed plan, so every free-plan owner who opened
+ * their own listing got a white page. Administrators never saw it: this
+ * whole function returns early for anyone who can manage_options.
+ *
+ * So a choice-based field is locked by naming all of its choices, which is
+ * what ACF means by disabled there and renders every box greyed, and
+ * everything else keeps the boolean.
+ *
+ * @param array<string, mixed> $field
+ * @return array<string, mixed>
+ */
+function lock( array $field ): array {
+	$choice_types = array( 'checkbox', 'radio', 'button_group' );
+
+	if ( in_array( $field['type'] ?? '', $choice_types, true ) ) {
+		$choices = (array) ( $field['choices'] ?? array() );
+		// Named choices, never a bare true: an empty list would leave the
+		// field editable, so fall back to the boolean when there are no
+		// choices to name.
+		$field['disabled'] = $choices ? array_keys( $choices ) : 1;
+		return $field;
+	}
+
+	$field['disabled'] = 1;
 	return $field;
 }
 
