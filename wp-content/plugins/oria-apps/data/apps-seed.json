@@ -11,13 +11,27 @@
    "website": "https://www.calm.com",
    "ios": "https://apps.apple.com/au/app/calm-sleep-meditation/id571800810",
    "android": "https://play.google.com/store/apps/details?id=com.calm.android",
-   "categories": ["meditation", "sleep", "stress-relaxation", "mindfulness"],
-   "best_for": ["better-sleep", "relaxation", "beginners"],
+   "categories": [
+    "meditation",
+    "sleep",
+    "stress-relaxation",
+    "mindfulness"
+   ],
+   "best_for": [
+    "better-sleep",
+    "relaxation",
+    "beginners",
+    "stress-support"
+   ],
    "pricing_model": "subscription",
    "free_version": false,
    "free_trial": "",
    "pricing_notes": "Free to download, with a subscription for most content. Calm does not publish its Australian price on its own site, so check the price in the app store before subscribing.",
-   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
    "take": "Calm suits someone who wants the wind-down more than the discipline: sleep stories, sound and short guided sessions in an app that is genuinely nice to open at night. If you want a structured course that teaches you to meditate, Headspace is the better fit.",
    "features": [
     "Guided meditations for sleep, stress and focus",
@@ -35,10 +49,19 @@
     "Less structured than a course-based app if you want to learn technique"
    ],
    "faq": [
-    {"question": "Is Calm free?", "answer": "The app is free to download and includes some free content, but the bulk of the library, including most Sleep Stories, requires a subscription."},
-    {"question": "Is Calm good for sleep?", "answer": "Sleep is what it is best known for. Sleep Stories, ambient sound and wind-down sessions are all designed to be used at bedtime, and many people use it for nothing else."}
+    {
+     "question": "Is Calm free?",
+     "answer": "The app is free to download and includes some free content, but the bulk of the library, including most Sleep Stories, requires a subscription."
+    },
+    {
+     "question": "Is Calm good for sleep?",
+     "answer": "Sleep is what it is best known for. Sleep Stories, ambient sound and wind-down sessions are all designed to be used at bedtime, and many people use it for nothing else."
+    }
    ],
-   "sources": ["https://apps.apple.com/au/app/calm-sleep-meditation/id571800810", "https://www.calm.com"]
+   "sources": [
+    "https://apps.apple.com/au/app/calm-sleep-meditation/id571800810",
+    "https://www.calm.com"
+   ]
   },
   {
    "slug": "headspace",
@@ -49,13 +72,26 @@
    "website": "https://www.headspace.com/",
    "ios": "https://apps.apple.com/au/app/headspace-sleep-meditation/id493145008",
    "android": "https://play.google.com/store/apps/details?id=com.getsomeheadspace.android",
-   "categories": ["meditation", "mindfulness", "sleep", "stress-relaxation"],
-   "best_for": ["beginners", "meditation", "focus"],
+   "categories": [
+    "meditation",
+    "mindfulness",
+    "sleep",
+    "stress-relaxation"
+   ],
+   "best_for": [
+    "beginners",
+    "meditation",
+    "focus"
+   ],
    "pricing_model": "subscription",
    "free_version": false,
    "free_trial": "14 days",
    "pricing_notes": "Headspace advertises a 14-day free trial, then monthly or annual billing, with student and family plans. The Australian price is not published on its site; check in the app store.",
-   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
    "take": "The one to choose if you have tried meditating and bounced off it. The courses are ordered, the instruction is plain, and the sessions are short enough that starting is not a decision. Less useful if you already have a practice and just want a big library to wander through.",
    "features": [
     "Ordered courses that teach meditation from the beginning",
@@ -73,10 +109,19 @@
     "The structure that helps beginners can feel restrictive once you have a practice"
    ],
    "faq": [
-    {"question": "Is Headspace free?", "answer": "No. There is a 14-day free trial, after which it is a paid subscription. A handful of sessions stay available outside the trial."},
-    {"question": "Is Headspace good for beginners?", "answer": "It is the most beginner-oriented of the well-known apps. The courses run in order and explain what you are doing and why, rather than handing you a library to sort through."}
+    {
+     "question": "Is Headspace free?",
+     "answer": "No. There is a 14-day free trial, after which it is a paid subscription. A handful of sessions stay available outside the trial."
+    },
+    {
+     "question": "Is Headspace good for beginners?",
+     "answer": "It is the most beginner-oriented of the well-known apps. The courses run in order and explain what you are doing and why, rather than handing you a library to sort through."
+    }
    ],
-   "sources": ["https://www.headspace.com/", "https://apps.apple.com/au/app/headspace-sleep-meditation/id493145008"]
+   "sources": [
+    "https://www.headspace.com/",
+    "https://apps.apple.com/au/app/headspace-sleep-meditation/id493145008"
+   ]
   },
   {
    "slug": "insight-timer",
@@ -87,13 +132,26 @@
    "website": "https://insighttimer.com/",
    "ios": "https://apps.apple.com/au/app/insight-timer-meditate-sleep/id337472899",
    "android": "https://play.google.com/store/apps/details?id=com.spotlightsix.zentimerlite2",
-   "categories": ["meditation", "mindfulness", "sleep", "breathwork"],
-   "best_for": ["free", "meditation", "mindfulness"],
+   "categories": [
+    "meditation",
+    "mindfulness",
+    "sleep",
+    "breathwork"
+   ],
+   "best_for": [
+    "free",
+    "meditation",
+    "mindfulness"
+   ],
    "pricing_model": "freemium",
    "free_version": true,
    "free_trial": "",
    "pricing_notes": "The library is free. A paid membership adds courses and offline listening; the price is not published on the site, so check in the app store.",
-   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
    "take": "If you are not sure meditation is for you, start here rather than paying for anything. The free library is vast and the timer is genuinely useful once you practise on your own. The other side of that size is that browsing can become its own form of procrastination.",
    "features": [
     "A very large free library of guided meditations",
@@ -111,10 +169,19 @@
     "The size of the library can be its own obstacle when starting out"
    ],
    "faq": [
-    {"question": "Is Insight Timer really free?", "answer": "The main library is free to use. A paid membership adds features such as courses and offline listening, but the meditations themselves do not sit behind it."},
-    {"question": "What is the timer for?", "answer": "It is for meditating without guidance: you set a length and interval bells, and the app stays out of the way. It is the feature experienced meditators tend to use most."}
+    {
+     "question": "Is Insight Timer really free?",
+     "answer": "The main library is free to use. A paid membership adds features such as courses and offline listening, but the meditations themselves do not sit behind it."
+    },
+    {
+     "question": "What is the timer for?",
+     "answer": "It is for meditating without guidance: you set a length and interval bells, and the app stays out of the way. It is the feature experienced meditators tend to use most."
+    }
    ],
-   "sources": ["https://insighttimer.com/", "https://apps.apple.com/au/app/insight-timer-meditate-sleep/id337472899"]
+   "sources": [
+    "https://insighttimer.com/",
+    "https://apps.apple.com/au/app/insight-timer-meditate-sleep/id337472899"
+   ]
   },
   {
    "slug": "smiling-mind",
@@ -125,13 +192,24 @@
    "website": "https://www.smilingmind.com.au/smiling-mind-app",
    "ios": "https://apps.apple.com/au/app/smiling-mind-mental-wellbeing/id560442518",
    "android": "https://play.google.com/store/apps/details?id=com.smilingmind.app",
-   "categories": ["meditation", "mindfulness", "mental-wellness"],
-   "best_for": ["free", "beginners", "mindfulness"],
+   "categories": [
+    "meditation",
+    "mindfulness",
+    "mental-wellness"
+   ],
+   "best_for": [
+    "free",
+    "beginners",
+    "mindfulness"
+   ],
    "pricing_model": "free",
    "free_version": true,
    "free_trial": "",
    "pricing_notes": "Free. Smiling Mind is a not-for-profit and states the app has remained free for individuals and families for over twelve years.",
-   "platforms": ["available_ios", "available_android"],
+   "platforms": [
+    "available_ios",
+    "available_android"
+   ],
    "take": "The one to recommend to a family. It is Australian, it is free with nothing held back, and the children's pathways are written for children rather than being adult sessions with a softer voice. For an adult wanting depth, the library is smaller than the paid apps.",
    "features": [
     "Over 700 sessions across 90 collections and pathways",
@@ -149,10 +227,19 @@
     "Less polished than Calm or Headspace in places"
    ],
    "faq": [
-    {"question": "Is Smiling Mind free?", "answer": "Yes. It is run by an Australian not-for-profit and has been free for individuals and families for more than twelve years."},
-    {"question": "Is Smiling Mind suitable for children?", "answer": "Yes. It has pathways written specifically for children and teenagers, and the same organisation runs a mindfulness program used in Australian schools."}
+    {
+     "question": "Is Smiling Mind free?",
+     "answer": "Yes. It is run by an Australian not-for-profit and has been free for individuals and families for more than twelve years."
+    },
+    {
+     "question": "Is Smiling Mind suitable for children?",
+     "answer": "Yes. It has pathways written specifically for children and teenagers, and the same organisation runs a mindfulness program used in Australian schools."
+    }
    ],
-   "sources": ["https://www.smilingmind.com.au/smiling-mind-app", "https://apps.apple.com/au/app/smiling-mind-mental-wellbeing/id560442518"]
+   "sources": [
+    "https://www.smilingmind.com.au/smiling-mind-app",
+    "https://apps.apple.com/au/app/smiling-mind-mental-wellbeing/id560442518"
+   ]
   },
   {
    "slug": "bettersleep",
@@ -163,13 +250,23 @@
    "website": "https://www.bettersleep.com/",
    "ios": "https://apps.apple.com/au/app/bettersleep-relax-and-sleep/id314498713",
    "android": "https://play.google.com/store/apps/details?id=ipnossoft.rma.free",
-   "categories": ["sleep", "stress-relaxation"],
-   "best_for": ["better-sleep", "relaxation"],
+   "categories": [
+    "sleep",
+    "stress-relaxation"
+   ],
+   "best_for": [
+    "better-sleep",
+    "relaxation"
+   ],
    "pricing_model": "freemium",
    "free_version": true,
    "free_trial": "",
    "pricing_notes": "Free to download and use, with much of the content requiring the Premium plan. The Australian price is not published on the site; check in the app store.",
-   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
    "take": "The one for people who sleep better with sound. Being able to build the mix yourself, rather than picking from fixed tracks, is what makes it different from the meditation apps that bolt sleep audio on the side.",
    "features": [
     "Custom sound mixing from a large library of sounds",
@@ -187,10 +284,19 @@
     "Sound all night affects phone battery unless it is charging"
    ],
    "faq": [
-    {"question": "Is BetterSleep free?", "answer": "The app is free to download and use, but not all content is available without the Premium plan."},
-    {"question": "What happened to Relax Melodies?", "answer": "It was renamed. BetterSleep is the same app with the same sound library."}
+    {
+     "question": "Is BetterSleep free?",
+     "answer": "The app is free to download and use, but not all content is available without the Premium plan."
+    },
+    {
+     "question": "What happened to Relax Melodies?",
+     "answer": "It was renamed. BetterSleep is the same app with the same sound library."
+    }
    ],
-   "sources": ["https://www.bettersleep.com/", "https://apps.apple.com/au/app/bettersleep-relax-and-sleep/id314498713"]
+   "sources": [
+    "https://www.bettersleep.com/",
+    "https://apps.apple.com/au/app/bettersleep-relax-and-sleep/id314498713"
+   ]
   },
   {
    "slug": "sleep-cycle",
@@ -201,13 +307,23 @@
    "website": "https://www.sleepcycle.com/",
    "ios": "https://apps.apple.com/au/app/sleep-cycle-sleep-tracker/id320606217",
    "android": "https://play.google.com/store/apps/details?id=com.northcube.sleepcycle",
-   "categories": ["sleep", "habit-building"],
-   "best_for": ["better-sleep", "building-habits"],
+   "categories": [
+    "sleep",
+    "habit-building"
+   ],
+   "best_for": [
+    "better-sleep",
+    "building-habits"
+   ],
    "pricing_model": "subscription",
    "free_version": false,
    "free_trial": "",
    "pricing_notes": "Sleep Cycle advertises a free trial, but its own site shows two different lengths in different places, and no Australian price. Check both the trial length and the price in the app store before subscribing.",
-   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
    "take": "Useful if you suspect your sleep is worse than it feels and want evidence over time. It needs no watch, which is the practical advantage. Treat the score as a trend line rather than a measurement, and do not let checking it become the thing that keeps you awake.",
    "features": [
     "Sleep tracking by sound analysis, no wearable needed",
@@ -225,10 +341,19 @@
     "Sleep scores can become something to worry about rather than act on"
    ],
    "faq": [
-    {"question": "Does Sleep Cycle need a smartwatch?", "answer": "No. It analyses sound with the phone beside the bed, which is the main practical difference from wearable-based trackers."},
-    {"question": "Is Sleep Cycle free?", "answer": "There is a free trial, then a subscription. The site advertises different trial lengths in different places, so check before you sign up."}
+    {
+     "question": "Does Sleep Cycle need a smartwatch?",
+     "answer": "No. It analyses sound with the phone beside the bed, which is the main practical difference from wearable-based trackers."
+    },
+    {
+     "question": "Is Sleep Cycle free?",
+     "answer": "There is a free trial, then a subscription. The site advertises different trial lengths in different places, so check before you sign up."
+    }
    ],
-   "sources": ["https://www.sleepcycle.com/", "https://apps.apple.com/au/app/sleep-cycle-sleep-tracker/id320606217"]
+   "sources": [
+    "https://www.sleepcycle.com/",
+    "https://apps.apple.com/au/app/sleep-cycle-sleep-tracker/id320606217"
+   ]
   },
   {
    "slug": "fiton",
@@ -239,13 +364,26 @@
    "website": "https://fitonapp.com",
    "ios": "https://apps.apple.com/au/app/fiton-workouts-fitness-plans/id1442473191",
    "android": "https://play.google.com/store/apps/details?id=com.fiton.android",
-   "categories": ["fitness", "yoga", "recovery"],
-   "best_for": ["home-workouts", "free", "getting-active"],
+   "categories": [
+    "fitness",
+    "yoga",
+    "recovery"
+   ],
+   "best_for": [
+    "home-workouts",
+    "free",
+    "getting-active",
+    "recovery"
+   ],
    "pricing_model": "freemium",
    "free_version": true,
    "free_trial": "",
    "pricing_notes": "The workout library is free. A paid tier adds meal plans and extra content; the price is not published on the site, so check in the app store.",
-   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
    "take": "The obvious first stop if you want to train at home without paying anything. The range is broad rather than deep, which suits someone building a habit more than someone chasing a specific programme.",
    "features": [
     "Free workout videos across cardio, strength, pilates and yoga",
@@ -263,10 +401,19 @@
     "Less specialised than a dedicated strength or running app"
    ],
    "faq": [
-    {"question": "Is FitOn free?", "answer": "The workout library is free and unlimited. A paid tier adds meal plans and extra content."},
-    {"question": "Do I need equipment?", "answer": "Many of the workouts are bodyweight only, with equipment-based sessions marked so you can filter them out."}
+    {
+     "question": "Is FitOn free?",
+     "answer": "The workout library is free and unlimited. A paid tier adds meal plans and extra content."
+    },
+    {
+     "question": "Do I need equipment?",
+     "answer": "Many of the workouts are bodyweight only, with equipment-based sessions marked so you can filter them out."
+    }
    ],
-   "sources": ["https://fitonapp.com/", "https://apps.apple.com/au/app/fiton-workouts-fitness-plans/id1442473191"]
+   "sources": [
+    "https://fitonapp.com/",
+    "https://apps.apple.com/au/app/fiton-workouts-fitness-plans/id1442473191"
+   ]
   },
   {
    "slug": "nike-training-club",
@@ -277,13 +424,26 @@
    "website": "https://www.nike.com/au/ntc-app",
    "ios": "https://apps.apple.com/au/app/nike-training-club/id301521403",
    "android": "https://play.google.com/store/apps/details?id=com.nike.ntc",
-   "categories": ["fitness", "yoga", "recovery"],
-   "best_for": ["home-workouts", "free", "getting-active"],
+   "categories": [
+    "fitness",
+    "yoga",
+    "recovery"
+   ],
+   "best_for": [
+    "home-workouts",
+    "free",
+    "getting-active",
+    "recovery"
+   ],
    "pricing_model": "free",
    "free_version": true,
    "free_trial": "",
    "pricing_notes": "Free to download and use. Nike states the workouts and programs are free.",
-   "platforms": ["available_ios", "available_android", "available_apple_watch"],
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
    "take": "The best-produced free workout app there is, and the five-minute mobility sessions do more for most people than the hard ones. Worth having installed even if you train elsewhere.",
    "features": [
     "More than 200 free workouts led by Nike trainers",
@@ -301,10 +461,19 @@
     "Built around Nike, so expect the brand throughout"
    ],
    "faq": [
-    {"question": "Is Nike Training Club free?", "answer": "Yes. Nike makes the workouts and programs free to download and use."},
-    {"question": "Is it only for people who already train?", "answer": "No. Sessions start at five minutes and include mobility and beginner strength, though it assumes you can follow a video without hands-on correction."}
+    {
+     "question": "Is Nike Training Club free?",
+     "answer": "Yes. Nike makes the workouts and programs free to download and use."
+    },
+    {
+     "question": "Is it only for people who already train?",
+     "answer": "No. Sessions start at five minutes and include mobility and beginner strength, though it assumes you can follow a video without hands-on correction."
+    }
    ],
-   "sources": ["https://www.nike.com/au/ntc-app", "https://apps.apple.com/au/app/nike-training-club/id301521403"]
+   "sources": [
+    "https://www.nike.com/au/ntc-app",
+    "https://apps.apple.com/au/app/nike-training-club/id301521403"
+   ]
   },
   {
    "slug": "strava",
@@ -315,13 +484,27 @@
    "website": "https://www.strava.com/",
    "ios": "https://apps.apple.com/au/app/strava-run-bike-walk/id426826309",
    "android": "https://play.google.com/store/apps/details?id=com.strava",
-   "categories": ["running", "walking", "fitness", "social-wellness"],
-   "best_for": ["running", "social", "getting-active"],
+   "categories": [
+    "running",
+    "walking",
+    "fitness",
+    "social-wellness"
+   ],
+   "best_for": [
+    "running",
+    "social",
+    "getting-active"
+   ],
    "pricing_model": "freemium",
    "free_version": true,
    "free_trial": "",
    "pricing_notes": "Free to join and use, with a paid subscription for extra analysis and route features. The Australian price is not published on the site; check in the app store.",
-   "platforms": ["available_ios", "available_android", "available_web", "available_apple_watch"],
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_web",
+    "available_apple_watch"
+   ],
    "take": "Worth it for the accountability more than the data. If seeing that a friend went out this morning is what gets you out the door, this is the app that does it. If comparing yourself to other people is not motivating for you, it is the wrong one.",
    "features": [
     "GPS tracking for running, riding, walking and thirty other sports",
@@ -340,10 +523,19 @@
     "Worth checking your privacy settings before recording from home"
    ],
    "faq": [
-    {"question": "Is Strava free?", "answer": "Yes, it is free to join and record activities. A subscription adds deeper analysis and route planning."},
-    {"question": "Is Strava only for runners and cyclists?", "answer": "No. It records walking, hiking, swimming, yoga and more than thirty other activities, though running and cycling are where its features are deepest."}
+    {
+     "question": "Is Strava free?",
+     "answer": "Yes, it is free to join and record activities. A subscription adds deeper analysis and route planning."
+    },
+    {
+     "question": "Is Strava only for runners and cyclists?",
+     "answer": "No. It records walking, hiking, swimming, yoga and more than thirty other activities, though running and cycling are where its features are deepest."
+    }
    ],
-   "sources": ["https://www.strava.com/", "https://apps.apple.com/au/app/strava-run-bike-walk/id426826309"]
+   "sources": [
+    "https://www.strava.com/",
+    "https://apps.apple.com/au/app/strava-run-bike-walk/id426826309"
+   ]
   },
   {
    "slug": "alltrails",
@@ -354,13 +546,25 @@
    "website": "https://www.alltrails.com/",
    "ios": "https://apps.apple.com/au/app/alltrails-hike-bike-run/id405075943",
    "android": "https://play.google.com/store/apps/details?id=com.alltrails.alltrails",
-   "categories": ["walking", "outdoor-wellness", "fitness"],
-   "best_for": ["walking-outdoors", "getting-active"],
+   "categories": [
+    "walking",
+    "outdoor-wellness",
+    "fitness"
+   ],
+   "best_for": [
+    "walking-outdoors",
+    "getting-active"
+   ],
    "pricing_model": "freemium",
    "free_version": true,
    "free_trial": "",
    "pricing_notes": "Free to browse and record. Offline maps and some navigation features need the paid tier; the Australian price is not published on the site, so check in the app store.",
-   "platforms": ["available_ios", "available_android", "available_web", "available_apple_watch"],
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_web",
+    "available_apple_watch"
+   ],
    "take": "The easiest way to find a walk you have not done before, and the reviews are honest about what a trail is actually like underfoot. If you walk in the hills or anywhere past reception, the offline maps are the reason to pay.",
    "features": [
     "Trail maps with reviews and photographs from walkers",
@@ -378,10 +582,824 @@
     "Trail information is community-written, so conditions can be out of date"
    ],
    "faq": [
-    {"question": "Is AllTrails free?", "answer": "Browsing trails and recording walks is free. Offline maps and some navigation features require the paid tier."},
-    {"question": "Does it work where there is no reception?", "answer": "Only if you download the map before you go, which requires the paid tier. Without that, navigation needs a signal."}
+    {
+     "question": "Is AllTrails free?",
+     "answer": "Browsing trails and recording walks is free. Offline maps and some navigation features require the paid tier."
+    },
+    {
+     "question": "Does it work where there is no reception?",
+     "answer": "Only if you download the map before you go, which requires the paid tier. Without that, navigation needs a signal."
+    }
    ],
-   "sources": ["https://www.alltrails.com/", "https://apps.apple.com/au/app/alltrails-hike-bike-run/id405075943"]
+   "sources": [
+    "https://www.alltrails.com/",
+    "https://apps.apple.com/au/app/alltrails-hike-bike-run/id405075943"
+   ]
+  },
+  {
+   "slug": "down-dog",
+   "title": "Down Dog",
+   "tagline": "Builds a different yoga practice every time, at the level and length you choose.",
+   "excerpt": "Rather than a library of filmed classes, Down Dog generates a new sequence each time you start: you set the style, the level, the pace and how long you have, and it builds the practice around that. It suits people who want to practise often without working through a fixed course, and beginners who would rather not walk into a room first.",
+   "developer": "Yoga Buddhi Co.",
+   "website": "https://www.downdogapp.com/",
+   "ios": "https://apps.apple.com/au/app/yoga-down-dog/id983693694",
+   "android": "https://play.google.com/store/apps/details?id=com.downdogapp",
+   "categories": [
+    "yoga",
+    "fitness"
+   ],
+   "best_for": [
+    "beginners",
+    "home-workouts",
+    "over-50s"
+   ],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "There is a usable free version with fewer options, and a subscription that unlocks the rest. Down Dog also sells a bundle covering its other apps, so check which one you are buying before you subscribe.",
+   "platforms": [
+    "available_ios",
+    "available_android"
+   ],
+   "take": "The one to try if a fixed video course has put you off before. Because it builds a new sequence each time, you can practise daily for months without repeating yourself, and the beginner levels genuinely start at the beginning. It talks you through poses rather than showing a person to copy, which suits some people and not others.",
+   "features": [
+    "A newly generated sequence each session rather than fixed videos",
+    "Over ten styles, including restorative, yin and vinyasa",
+    "Beginner levels that unlock more poses as you go",
+    "Choose the length, pace, voice and focus area before you start"
+   ],
+   "pros": [
+    "Practices never repeat, so it survives daily use",
+    "The beginner setting is genuinely beginner level",
+    "Works offline once a practice is downloaded"
+   ],
+   "cons": [
+    "Generated sequences can feel less considered than a taught class",
+    "The family of Down Dog apps is sold in several ways, which takes reading"
+   ],
+   "faq": [
+    {
+     "question": "Is Down Dog good for beginners?",
+     "answer": "Yes. Beginner 1 assumes no experience and introduces poses gradually as you practise, which is the main reason people pick it over a video library."
+    },
+    {
+     "question": "Is Down Dog free?",
+     "answer": "There is a free version with a smaller set of options. The full range of styles, lengths and boosts needs a subscription."
+    },
+    {
+     "question": "Do I need equipment?",
+     "answer": "A mat is enough for most practices. Some styles suggest blocks or a bolster, and the app offers alternatives where you have none."
+    }
+   ],
+   "sources": [
+    "https://www.downdogapp.com/",
+    "https://apps.apple.com/au/app/yoga-down-dog/id983693694"
+   ]
+  },
+  {
+   "slug": "pacer",
+   "title": "Pacer",
+   "tagline": "Counts your steps from your pocket, without a wearable or a subscription to start.",
+   "excerpt": "A step counter that uses the phone you already carry, with walking groups, challenges and GPS route recording alongside. It suits people who want to walk more and see it add up, rather than people training for anything in particular.",
+   "developer": "Pacer Health, Inc",
+   "website": "https://www.mypacer.com/",
+   "ios": "https://apps.apple.com/au/app/pacer-pedometer-step-counter/id600446812",
+   "android": "https://play.google.com/store/apps/details?id=cc.pacer.androidapp",
+   "categories": [
+    "walking",
+    "habit-building",
+    "outdoor-wellness"
+   ],
+   "best_for": [
+    "walking-outdoors",
+    "getting-active",
+    "over-50s",
+    "building-habits"
+   ],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Step counting, groups and challenges work without paying. Pacer Premium adds plans and deeper statistics; check the price in the app store, as it is not published as an Australian figure on their site.",
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
+   "take": "The easiest first step for somebody who wants to move more and does not want a project. It counts what you were going to do anyway, the free version is genuinely usable, and nothing about it assumes you are training. The group challenges are the part that keeps people going.",
+   "features": [
+    "Counts steps from the phone in your pocket or bag",
+    "Walking groups and challenges with friends or strangers",
+    "GPS recording for walks, with routes and maps",
+    "Syncs with Apple Health and Apple Watch"
+   ],
+   "pros": [
+    "No wearable needed, and no subscription to get started",
+    "Works the same whether your friends are on iPhone or Android",
+    "Simple enough to hand to someone who dislikes apps"
+   ],
+   "cons": [
+    "Phone-based step counts are approximate, not a measurement",
+    "The free version pushes Premium fairly often"
+   ],
+   "faq": [
+    {
+     "question": "Do I need a smartwatch for Pacer?",
+     "answer": "No. It counts steps using the phone's own sensors, whether the phone is in your hand, pocket or bag. It will also sync with an Apple Watch if you have one."
+    },
+    {
+     "question": "Is Pacer free?",
+     "answer": "Yes, for step counting, groups and challenges. A Premium subscription adds guided plans and more detailed statistics."
+    },
+    {
+     "question": "Does it drain the battery?",
+     "answer": "Ordinary step counting uses the phone's low-power motion sensor rather than GPS. Recording a walk with GPS uses considerably more."
+    }
+   ],
+   "sources": [
+    "https://www.mypacer.com/",
+    "https://apps.apple.com/au/app/pacer-pedometer-step-counter/id600446812"
+   ]
+  },
+  {
+   "slug": "runna",
+   "title": "Runna",
+   "tagline": "A structured running plan built around your goal race, week by week.",
+   "excerpt": "Runna writes you a running plan — 5k through to ultra — and tells you what to run each day, with the session on your watch and the results synced to Strava. It suits somebody who has been running without a plan and has stopped improving, more than somebody deciding whether to start.",
+   "developer": "Strava, Inc.",
+   "website": "https://www.runna.com/",
+   "ios": "https://apps.apple.com/au/app/runna-running-plans-coach/id1594204443",
+   "android": "https://play.google.com/store/apps/details?id=com.runbuddy.prod",
+   "categories": [
+    "running",
+    "fitness"
+   ],
+   "best_for": [
+    "running",
+    "getting-active",
+    "building-habits"
+   ],
+   "pricing_model": "subscription",
+   "free_version": false,
+   "free_trial": "Runna advertises a free trial; check the current length in the app store",
+   "pricing_notes": "A subscription with no free tier. Runna was bought by Strava, so a Strava subscription may change what you pay — worth checking both before you sign up to either.",
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
+   "take": "Worth it if you run already and want to be told what to do rather than deciding each morning. The plans adapt, the watch integration means you are not reading your phone mid-run, and it is genuinely good at building toward a date. If you are not sure you will still be running in a month, start with something free.",
+   "features": [
+    "Plans for 5k through to ultra, built around a goal date",
+    "Daily sessions with intervals sent to a running watch",
+    "Plans adjust as your paces change",
+    "Syncs finished runs to Strava"
+   ],
+   "pros": [
+    "Removes the daily decision about what to run",
+    "Watch-first, so the phone stays at home",
+    "Plans genuinely adapt rather than just counting down"
+   ],
+   "cons": [
+    "No free tier at all, so the trial is the only way to judge it",
+    "More structure than a casual runner is likely to want"
+   ],
+   "faq": [
+    {
+     "question": "Is Runna free?",
+     "answer": "No. There is a free trial and then a subscription; there is no ongoing free tier."
+    },
+    {
+     "question": "Do I need a running watch?",
+     "answer": "No, but it is better with one. Sessions can be sent to a watch so you are not looking at a phone during intervals."
+    },
+    {
+     "question": "Does Runna work with Strava?",
+     "answer": "Yes. Completed runs sync to Strava, and Strava now owns Runna, so check whether a subscription to one affects the other."
+    }
+   ],
+   "sources": [
+    "https://www.runna.com/",
+    "https://apps.apple.com/au/app/runna-running-plans-coach/id1594204443"
+   ]
+  },
+  {
+   "slug": "nike-run-club",
+   "title": "Nike Run Club",
+   "tagline": "Free guided runs with a voice in your ear, and a tracker underneath.",
+   "excerpt": "A free running app with several hundred guided runs — a coach talking you through the session as you go — plus training plans, distance tracking and challenges with other people. It suits somebody starting to run, or anybody who finds a voice easier to follow than a watch face.",
+   "developer": "Nike, Inc",
+   "website": "https://www.nike.com/nrc-app",
+   "ios": "https://apps.apple.com/au/app/nike-run-club-running-fitness/id387771637",
+   "android": "https://play.google.com/store/apps/details?id=com.nike.plusgps",
+   "categories": [
+    "running",
+    "fitness",
+    "social-wellness"
+   ],
+   "best_for": [
+    "running",
+    "social",
+    "getting-active",
+    "free"
+   ],
+   "pricing_model": "free",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Free, including the guided runs and training plans. It asks you to create a Nike account, which is also how Nike markets to you.",
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
+   "take": "The best free way to start running, because the guided runs mean somebody is telling you what to do and why while you do it. The first-run sessions are genuinely aimed at people who have never run. Expect the shop to be one tap away — it is a free app because Nike sells shoes.",
+   "features": [
+    "Several hundred guided runs, free, from short first runs upward",
+    "Training plans building toward 5k, 10k or a half marathon",
+    "Distance, pace and route tracking, with an Apple Watch app",
+    "Challenges and leaderboards with friends"
+   ],
+   "pros": [
+    "Free, with no paid tier holding back the good parts",
+    "The guided runs suit absolute beginners better than most paid plans",
+    "Works on the watch without carrying a phone"
+   ],
+   "cons": [
+    "It is marketing as well as an app, and asks for a Nike account",
+    "Less adaptable than a paid plan once you are past the basics"
+   ],
+   "faq": [
+    {
+     "question": "Is Nike Run Club actually free?",
+     "answer": "Yes. The guided runs and training plans are free; you need a Nike account, which also signs you up to their marketing unless you opt out."
+    },
+    {
+     "question": "Is it any good for a complete beginner?",
+     "answer": "It is one of the better options. The first guided runs assume you have never run and talk you through walking and running intervals."
+    },
+    {
+     "question": "Does it work with Apple Watch?",
+     "answer": "Yes, including runs recorded on the watch alone without the phone."
+    }
+   ],
+   "sources": [
+    "https://www.nike.com/nrc-app",
+    "https://apps.apple.com/au/app/nike-run-club-running-fitness/id387771637"
+   ]
+  },
+  {
+   "slug": "komoot",
+   "title": "komoot",
+   "tagline": "Plans walks and rides on real surfaces, and navigates them out loud.",
+   "excerpt": "A route planner that knows the difference between a sealed path and a rough trail, with turn-by-turn voice navigation and offline maps once a region is downloaded. It suits people who want to plan a walk or ride properly before leaving, and follow it without reception.",
+   "developer": "komoot GmbH",
+   "website": "https://www.komoot.com/",
+   "ios": "https://apps.apple.com/au/app/komoot-hike-bike-run/id447374873",
+   "android": "https://play.google.com/store/apps/details?id=de.komoot.android",
+   "categories": [
+    "walking",
+    "outdoor-wellness",
+    "social-wellness"
+   ],
+   "best_for": [
+    "walking-outdoors",
+    "social"
+   ],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Planning and one map region are free; more regions and the premium features are paid. komoot changed hands in 2025 and its pricing has moved since, so check what is included before buying anything.",
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_web",
+    "available_apple_watch"
+   ],
+   "take": "The planner is the reason to have it: you can see before you leave whether a route is gravel, singletrack or footpath, which matters far more on a long walk than the distance does. Offline maps make it the sensible choice once you are past reception. Its pricing has been in flux, so read what you are buying.",
+   "features": [
+    "Route planning by surface and difficulty, not just distance",
+    "Turn-by-turn voice navigation on trails as well as roads",
+    "Offline maps for a downloaded region",
+    "Routes and photos shared by other people who have done them"
+   ],
+   "pros": [
+    "Honest about what a path is actually like underfoot",
+    "Planning on a big screen, walking from the phone",
+    "Community routes are useful in unfamiliar country"
+   ],
+   "cons": [
+    "Pricing has changed since the company was sold, so check before buying",
+    "Australian trail coverage is thinner than in Europe"
+   ],
+   "faq": [
+    {
+     "question": "Is komoot free?",
+     "answer": "Planning routes is free and one map region is included. Further regions and premium features cost extra, and that pricing has changed recently."
+    },
+    {
+     "question": "Does komoot work without phone reception?",
+     "answer": "Yes, once you have downloaded the region and saved the route. That is the main reason people choose it for remote walks."
+    },
+    {
+     "question": "Is it only for cycling?",
+     "answer": "No. It plans walking, running, hiking and cycling, and the surface information is arguably most useful on foot."
+    }
+   ],
+   "sources": [
+    "https://www.komoot.com/",
+    "https://apps.apple.com/au/app/komoot-hike-bike-run/id447374873"
+   ]
+  },
+  {
+   "slug": "bend",
+   "title": "Bend",
+   "tagline": "Short guided stretching routines, with a free set that is enough on its own.",
+   "excerpt": "A stretching app built around short routines — five or ten minutes for the lower back, hips, neck or a full body sequence — with a timer and a diagram for each stretch. It suits people who sit all day, and anyone easing back into movement who wants something gentler than a workout app.",
+   "developer": "Bowery Digital",
+   "website": "https://bend.com/",
+   "ios": "https://apps.apple.com/au/app/stretching-flexibility-bend/id1513988468",
+   "android": "https://play.google.com/store/apps/details?id=com.bowerydigital.bend",
+   "categories": [
+    "recovery",
+    "fitness"
+   ],
+   "best_for": [
+    "recovery",
+    "relaxation",
+    "over-50s",
+    "home-workouts"
+   ],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "A set of routines is free and usable indefinitely. A subscription unlocks the rest and removes the reminders to upgrade; the price is not published as an Australian figure, so check the app store.",
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
+   "take": "The gentlest thing on this list, and the one most likely to actually get used, because five minutes is a low bar. It suits people who are not looking for a workout at all — after a desk day, before bed, or easing back into moving. The free routines are enough to tell whether you will keep it.",
+   "features": [
+    "Short routines by body area — back, hips, neck, full body",
+    "A timer and a diagram for every stretch",
+    "Reminders, if you want them, at a time you choose",
+    "Routines from a few minutes upward"
+   ],
+   "pros": [
+    "Five-minute routines are short enough to do on a bad day",
+    "The free set is genuinely usable rather than a sampler",
+    "No workout framing, which suits people put off by fitness apps"
+   ],
+   "cons": [
+    "Diagrams rather than video, which some people find harder to follow",
+    "The free version prompts you to upgrade fairly regularly"
+   ],
+   "faq": [
+    {
+     "question": "Is Bend free?",
+     "answer": "A set of routines is free and stays free. A subscription unlocks the full library and removes the upgrade prompts."
+    },
+    {
+     "question": "Is it suitable if I am not very flexible?",
+     "answer": "Yes — the routines are built around short, ordinary stretches rather than positions that assume existing flexibility, and each has a diagram and a timer."
+    },
+    {
+     "question": "How long does a routine take?",
+     "answer": "Most are between five and fifteen minutes, and you choose the length before you start."
+    }
+   ],
+   "sources": [
+    "https://bend.com/",
+    "https://apps.apple.com/au/app/stretching-flexibility-bend/id1513988468"
+   ]
+  },
+  {
+   "slug": "breathwrk",
+   "title": "Breathwrk",
+   "tagline": "Guided breathing exercises with a visual, a sound and a haptic to follow.",
+   "excerpt": "A breathing app with short exercises grouped by what you want from them — winding down, waking up, steadying yourself before something — where the phone shows, sounds and vibrates the rhythm so you are not counting. Now owned by Peloton, and included with a Peloton membership.",
+   "developer": "Peloton Interactive, Inc.",
+   "website": "https://www.breathwrk.com/",
+   "ios": "https://apps.apple.com/au/app/breathwrk-breathing-exercises/id1481804500",
+   "android": "https://play.google.com/store/apps/details?id=com.breathwrk.android",
+   "categories": [
+    "breathwork",
+    "stress-relaxation"
+   ],
+   "best_for": [
+    "stress-support",
+    "relaxation",
+    "focus"
+   ],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Some exercises are free; the rest need a subscription. Peloton All Access, Guide and App+ members get it included, so check your existing memberships before paying twice.",
+   "platforms": [
+    "available_ios",
+    "available_android"
+   ],
+   "take": "The useful thing here is the haptic: the phone vibrates the rhythm, so you can put it in a pocket and follow a breathing pattern without counting or watching a screen. Exercises run from about a minute, which is short enough to use before something rather than instead of it. The free set is small.",
+   "features": [
+    "Short exercises grouped by sleep, calm, energy and focus",
+    "A visual, a sound and a haptic to breathe along to",
+    "Exercises from around a minute upward",
+    "Customisable pattern length for people who know what they want"
+   ],
+   "pros": [
+    "The haptic means you can follow it without looking at the screen",
+    "Short enough to use in the moment rather than as a session",
+    "Included at no extra cost for existing Peloton members"
+   ],
+   "cons": [
+    "The free set is limited compared with the subscription",
+    "Peloton's ownership means more cross-promotion than there used to be"
+   ],
+   "faq": [
+    {
+     "question": "Is Breathwrk free?",
+     "answer": "Some exercises are free and a subscription unlocks the rest. Peloton All Access, Guide and App+ members have it included with their membership."
+    },
+    {
+     "question": "How long does an exercise take?",
+     "answer": "Most run from about a minute to a few minutes, which is the point — they are meant to fit into a day rather than be scheduled."
+    },
+    {
+     "question": "Do I need to watch the screen?",
+     "answer": "No. The phone can vibrate the rhythm, so it works in a pocket or with the screen face down."
+    }
+   ],
+   "sources": [
+    "https://www.breathwrk.com/",
+    "https://apps.apple.com/au/app/breathwrk-breathing-exercises/id1481804500"
+   ]
+  },
+  {
+   "slug": "forest",
+   "title": "Forest",
+   "tagline": "Plant a tree that dies if you pick up your phone.",
+   "excerpt": "A focus timer with one idea behind it: start a session and a tree grows on screen, leave the app early and it withers. Sessions build a forest over time, and the company has a partnership that plants real trees. It suits people whose problem is the phone itself rather than the work.",
+   "developer": "SEEKRTECH CO., LTD.",
+   "website": "https://www.forestapp.cc/",
+   "ios": "https://apps.apple.com/au/app/forest-focus-for-productivity/id866450515",
+   "android": "https://play.google.com/store/apps/details?id=cc.forestapp",
+   "categories": [
+    "habit-building",
+    "mental-wellness"
+   ],
+   "best_for": [
+    "focus",
+    "building-habits"
+   ],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Usable without paying, with in-app purchases for extra trees and features. Check the app store for the current cost of the paid extras.",
+   "platforms": [
+    "available_ios",
+    "available_android"
+   ],
+   "take": "A gimmick that works, which is the only test that matters. Not wanting to kill a cartoon tree turns out to be a stronger deterrent than willpower for a lot of people, and the forest you build up is a record of attention rather than of hours. If a plain timer already works for you, you do not need this.",
+   "features": [
+    "A focus timer where leaving the app kills the tree",
+    "A growing record of sessions over weeks and months",
+    "Allow-lists for apps you genuinely need during a session",
+    "A partnership that plants real trees"
+   ],
+   "pros": [
+    "Makes leaving the app feel like a cost, which is the whole trick",
+    "The long view is a record of attention, not just time",
+    "Works without an account or a subscription"
+   ],
+   "cons": [
+    "Does nothing about distraction that is not on your phone",
+    "The gamification wears off for some people after a few weeks"
+   ],
+   "faq": [
+    {
+     "question": "Is Forest free?",
+     "answer": "Yes, with in-app purchases for extra features and tree varieties. The core timer works without paying."
+    },
+    {
+     "question": "Does Forest really plant trees?",
+     "answer": "The company runs a partnership under which coins earned in the app fund real tree planting. The planting is done by the partner organisation, not by Forest."
+    },
+    {
+     "question": "What happens if I need another app mid-session?",
+     "answer": "You can allow specific apps so using them does not kill the tree. Anything outside that list does."
+    }
+   ],
+   "sources": [
+    "https://www.forestapp.cc/",
+    "https://apps.apple.com/au/app/forest-focus-for-productivity/id866450515"
+   ]
+  },
+  {
+   "slug": "endel",
+   "title": "Endel",
+   "tagline": "Generated sound that keeps going, for focus, winding down or sleep.",
+   "excerpt": "Endel makes continuous soundscapes rather than playing tracks, shifting with the time of day and what you have asked it for — focus, relax, sleep or movement. It suits people who work better with sound but find music distracting, and anybody who wants something that does not end.",
+   "developer": "Endel",
+   "website": "https://endel.io/",
+   "ios": "https://apps.apple.com/au/app/endel-focus-sleep-relax/id1346247457",
+   "android": "https://play.google.com/store/apps/details?id=com.endel.endel",
+   "categories": [
+    "sleep",
+    "stress-relaxation",
+    "mental-wellness"
+   ],
+   "best_for": [
+    "focus",
+    "relaxation",
+    "better-sleep",
+    "stress-support"
+   ],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "A limited amount is free and full access is a subscription. Endel does not publish an Australian price on its own site, so check the figure in the app store before subscribing.",
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_apple_watch"
+   ],
+   "take": "Worth trying if music with structure pulls your attention but silence is worse. Because the sound is generated rather than looped, it does not end or repeat in a way you notice, which is the practical difference from a playlist. Whether that is worth a subscription depends entirely on how much of the day you would use it.",
+   "features": [
+    "Continuous generated soundscapes rather than fixed tracks",
+    "Modes for focus, relaxing, sleep and moving",
+    "Shifts with time of day and inputs from the phone",
+    "An Apple Watch app for starting it without the phone"
+   ],
+   "pros": [
+    "Never ends or loops noticeably, unlike a playlist",
+    "Less attention-grabbing than music with structure",
+    "Sleep and focus in one app rather than two subscriptions"
+   ],
+   "cons": [
+    "The free tier is limited enough that the subscription is the real product",
+    "Generated sound is a matter of taste — some people find it sterile"
+   ],
+   "faq": [
+    {
+     "question": "Is Endel free?",
+     "answer": "There is a limited free tier. Full access to the soundscapes is a subscription, and the Australian price is not published on their site, so check the app store."
+    },
+    {
+     "question": "How is it different from a playlist?",
+     "answer": "The sound is generated continuously rather than assembled from tracks, so it does not end, repeat or change abruptly — which is the point if you are using it to concentrate or sleep."
+    },
+    {
+     "question": "Does it work offline?",
+     "answer": "Soundscapes can be used without a connection once the app has what it needs, which matters most for the sleep modes."
+    }
+   ],
+   "sources": [
+    "https://endel.io/",
+    "https://apps.apple.com/au/app/endel-focus-sleep-relax/id1346247457"
+   ]
+  },
+  {
+   "slug": "myfitnesspal",
+   "title": "MyFitnessPal",
+   "tagline": "The largest food database of any tracker, with the trade-offs that brings.",
+   "excerpt": "A food and exercise diary with an enormous database of foods and branded products, macro tracking and syncing with most fitness apps and wearables. It suits somebody who has been told to track what they eat, or who wants to understand their intake for a defined period.",
+   "developer": "MyFitnessPal, Inc.",
+   "website": "https://www.myfitnesspal.com/",
+   "ios": "https://apps.apple.com/au/app/myfitnesspal-calorie-counter/id341232718",
+   "android": "https://play.google.com/store/apps/details?id=com.myfitnesspal.android",
+   "categories": [
+    "nutrition",
+    "habit-building"
+   ],
+   "best_for": [
+    "building-habits"
+   ],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "Premium is advertised with a free trial; check the current terms in the app",
+   "pricing_notes": "Logging works without paying. Several features sit behind Premium, and which ones has changed over the years, so check what is included now rather than going on what you remember.",
+   "platforms": [
+    "available_ios",
+    "available_android",
+    "available_web",
+    "available_apple_watch"
+   ],
+   "take": "The database is why people use it: almost anything you eat in Australia is already in there, including supermarket products. That is also its weakness — much of the data is entered by other users and some of it is wrong. Useful for a defined stretch of paying attention. Daily calorie counting does not suit everybody, and if tracking food has been difficult for you before, this is not the app to start with.",
+   "features": [
+    "A very large food database, including branded and supermarket items",
+    "Barcode scanning for packaged food",
+    "Macro as well as energy tracking",
+    "Syncs with most wearables and fitness apps"
+   ],
+   "pros": [
+    "Almost everything you eat is already in the database",
+    "Works on the web as well as the phone",
+    "Connects to nearly everything else you might already use"
+   ],
+   "cons": [
+    "Much of the database is user-submitted, and some entries are wrong",
+    "Which features are free has changed repeatedly over the years",
+    "Daily calorie counting does not suit everyone, and can become its own preoccupation"
+   ],
+   "faq": [
+    {
+     "question": "Is MyFitnessPal free?",
+     "answer": "Food and exercise logging works on the free tier. A number of features sit behind Premium, and which ones has changed over the years, so check what is included before subscribing."
+    },
+    {
+     "question": "How accurate is the food database?",
+     "answer": "Mixed. Verified entries are reliable; a great many are submitted by other users and are not checked. Prefer entries marked as verified where there is a choice."
+    },
+    {
+     "question": "Is calorie counting right for me?",
+     "answer": "That is a question for you and, if it is relevant, a dietitian or GP. Tracking suits some people for a defined period and suits others not at all."
+    }
+   ],
+   "sources": [
+    "https://www.myfitnesspal.com/",
+    "https://apps.apple.com/au/app/myfitnesspal-calorie-counter/id341232718"
+   ]
+  },
+  {
+   "slug": "easy-diet-diary",
+   "title": "Easy Diet Diary",
+   "tagline": "An Australian food diary, free and without advertising.",
+   "excerpt": "Made in Brisbane by Xyris, with a food database built on Australian nutrient data and local supermarket products rather than American ones. Free, ad-free, and able to share a diary with a dietitian through the company's web tools.",
+   "developer": "Xyris Pty Ltd",
+   "website": "https://www.easydietdiary.com.au/",
+   "ios": "https://apps.apple.com/au/app/easy-diet-diary/id436104108",
+   "android": "https://play.google.com/store/apps/details?id=au.com.xyris.eddflutter",
+   "categories": [
+    "nutrition"
+   ],
+   "best_for": [
+    "free",
+    "building-habits"
+   ],
+   "pricing_model": "free",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Free, with no advertising. Xyris makes its money from professional nutrition software rather than from the app, which is why there is nothing to upgrade to.",
+   "platforms": [
+    "available_ios",
+    "available_android"
+   ],
+   "take": "The obvious choice over an American tracker if you shop in Australian supermarkets, because the database is built on Australian data and local products rather than approximations of them. Free with no ads and nothing to upgrade to, which is rare enough to be worth saying twice. Plainer than the big international apps, which is mostly a virtue.",
+   "features": [
+    "An Australian food database with local branded products",
+    "Barcode scanning for packaged food",
+    "Energy in kilojoules or calories, plus macronutrients",
+    "Shares a diary with a dietitian through Xyris's web tools"
+   ],
+   "pros": [
+    "Australian data rather than converted American figures",
+    "Genuinely free, with no ads and no upgrade",
+    "Used by dietitians here, so a practitioner can work from it"
+   ],
+   "cons": [
+    "Plainer and fewer features than the large international trackers",
+    "Little use if you eat mostly food bought outside Australia"
+   ],
+   "faq": [
+    {
+     "question": "Is Easy Diet Diary really free?",
+     "answer": "Yes — free, with no advertising and no paid tier. Xyris sells professional nutrition software, which is what funds it."
+    },
+    {
+     "question": "Why use it instead of MyFitnessPal?",
+     "answer": "The food database is Australian, so supermarket products and nutrient figures match what you actually buy rather than an American equivalent."
+    },
+    {
+     "question": "Can my dietitian see my diary?",
+     "answer": "Yes, if you choose to share it. That is done through Xyris's web tools, which a number of Australian dietitians already use."
+    }
+   ],
+   "sources": [
+    "https://www.easydietdiary.com.au/",
+    "https://apps.apple.com/au/app/easy-diet-diary/id436104108"
+   ]
+  },
+  {
+   "slug": "yuka",
+   "title": "Yuka",
+   "tagline": "Scan a barcode and get a rating for the product, with an alternative suggested.",
+   "excerpt": "Scans food and cosmetics in the supermarket and gives each product a score out of a hundred, with a short explanation and a suggested alternative where the score is poor. Free, independent, and carries no advertising — and the scoring is its own, not an official standard.",
+   "developer": "Yuca",
+   "website": "https://yuka.io/en/",
+   "ios": "https://apps.apple.com/au/app/yuka-food-cosmetic-scanner/id1092799236",
+   "android": "https://play.google.com/store/apps/details?id=io.yuka.android",
+   "categories": [
+    "nutrition"
+   ],
+   "best_for": [
+    "free"
+   ],
+   "pricing_model": "freemium",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Scanning is free and there is no advertising. An optional paid tier adds offline scanning and history; the company publishes how it makes its money on its own site.",
+   "platforms": [
+    "available_ios",
+    "available_android"
+   ],
+   "take": "Useful as a way of reading a label without reading a label, particularly for additives you would otherwise have to look up in the aisle. Treat the score as one opinion rather than a verdict: the method is Yuka's own, it weighs things in a particular way, and nutritionists disagree with parts of it. Good for noticing what is in something; less good as the only thing you decide with.",
+   "features": [
+    "Barcode scanning for food and personal care products",
+    "A score with a plain-language explanation of why",
+    "Suggested alternatives when a product scores badly",
+    "No advertising, and no brand able to influence a rating"
+   ],
+   "pros": [
+    "Fast way to see what is actually in a packaged product",
+    "Independent of the brands it rates",
+    "Free to use, with the business model published"
+   ],
+   "cons": [
+    "The scoring method is Yuka's own and is not universally agreed with",
+    "Australian product coverage is thinner than in Europe",
+    "A single number can flatten a more complicated picture"
+   ],
+   "faq": [
+    {
+     "question": "Is Yuka free?",
+     "answer": "Yes, for scanning. There is an optional paid tier for offline use and history, and no advertising in the app."
+    },
+    {
+     "question": "Is the score reliable?",
+     "answer": "It is Yuka's own method, weighted its own way, and nutrition professionals disagree with parts of it. It is a useful prompt to read the label rather than a substitute for advice."
+    },
+    {
+     "question": "Does it work on Australian products?",
+     "answer": "Many, but coverage here is thinner than in Europe, where the app started. Unrecognised products can be added by users."
+    }
+   ],
+   "sources": [
+    "https://yuka.io/en/",
+    "https://apps.apple.com/au/app/yuka-food-cosmetic-scanner/id1092799236"
+   ]
+  },
+  {
+   "slug": "oak",
+   "title": "Oak",
+   "tagline": "Free meditation and breathing, with nothing held back and nothing to buy.",
+   "excerpt": "A small, free app with guided and unguided meditation, a few breathing exercises and a streak counter — and no subscription, no account and no upsell. It suits somebody who wants to try meditating without first deciding which subscription to trial.",
+   "developer": "Nyllon",
+   "website": "https://www.oakmeditation.com/",
+   "ios": "https://apps.apple.com/au/app/oak-meditation-breathing/id1210209691",
+   "android": "",
+   "categories": [
+    "meditation",
+    "breathwork",
+    "mindfulness"
+   ],
+   "best_for": [
+    "meditation",
+    "mindfulness",
+    "beginners",
+    "free"
+   ],
+   "pricing_model": "free",
+   "free_version": true,
+   "free_trial": "",
+   "pricing_notes": "Free, with no subscription and nothing held back behind one.",
+   "platforms": [
+    "available_ios"
+   ],
+   "take": "The least demanding way to find out whether meditating suits you: no account, no trial to remember to cancel, and a timer that does not want anything from you. The library is small and that is the trade — if you want a course to follow, this is not it. Worth knowing it is updated less often than the larger apps.",
+   "features": [
+    "Guided mindfulness and loving-kindness meditations",
+    "Unguided sessions with a timer and optional background sound",
+    "Breathing exercises alongside the meditations",
+    "A streak counter, without notifications nagging you"
+   ],
+   "pros": [
+    "Genuinely free with nothing behind a subscription",
+    "No account needed, so nothing to cancel or unsubscribe from",
+    "Small enough not to be overwhelming on the first day"
+   ],
+   "cons": [
+    "iPhone only — there is no Android version",
+    "A small library with no structured course to work through",
+    "Updated less often than the larger meditation apps"
+   ],
+   "faq": [
+    {
+     "question": "Is Oak completely free?",
+     "answer": "Yes. There is no subscription and no paid tier, and you do not need to create an account."
+    },
+    {
+     "question": "Is Oak on Android?",
+     "answer": "No. It is an iPhone app. Smiling Mind and Insight Timer are the closest free alternatives on Android."
+    },
+    {
+     "question": "Is it enough on its own?",
+     "answer": "For finding out whether meditation suits you, yes. If you want a structured course to follow week by week, a larger app will serve you better."
+    }
+   ],
+   "sources": [
+    "https://www.oakmeditation.com/",
+    "https://apps.apple.com/au/app/oak-meditation-breathing/id1210209691"
+   ]
   }
  ]
 }
