@@ -28,10 +28,27 @@ const PRICES = array(
 	FEATURED => 79,
 );
 
-/** How many gallery photos each tier may hold. 0 = unlimited. */
+/**
+ * How many gallery photos each tier may PUBLISH. 0 = unlimited.
+ *
+ * Four on the free plan. A listing with no photograph of the room is the
+ * weakest thing in the directory, and the practice is the only party who
+ * can fix that -- so charging for the first photo costs us more than it
+ * earns. Four is enough to show the space, the practitioner and a detail.
+ *
+ * 'unclaimed' must be listed explicitly. gallery_limit() falls back to 0
+ * for an unknown tier, and 0 means unlimited, so leaving the free plan out
+ * of this list would hand it more photos than Claimed rather than fewer.
+ *
+ * Published, not stored: a listing that drops back to free keeps every
+ * photo it uploaded and simply stops showing the extras, the same rule
+ * TEAM_LIMITS follows. Deleting somebody's photographs because a card
+ * expired would be the wrong way round.
+ */
 const GALLERY_LIMITS = array(
-	CLAIMED  => 4,
-	FEATURED => 0,
+	'unclaimed' => 4,
+	CLAIMED     => 10,
+	FEATURED    => 0,
 );
 
 /**
@@ -125,7 +142,9 @@ const FIELD_TIERS = array(
 	'offer_title'   => CLAIMED,
 	'offer_text'    => CLAIMED,
 	'offer_until'   => CLAIMED,
-	'gallery'       => CLAIMED,
+	// Free, capped at four by GALLERY_LIMITS. The cap is the upgrade, not
+	// the permission: a practice can always show its room.
+	'gallery'       => 'free',
 	'next_session'  => CLAIMED,
 	// Who a place suits, when it opens, how to get there and what is in the
 	// building. All four are plain facts about the practice, all four are
@@ -158,7 +177,6 @@ const FIELD_TIERS = array(
  */
 const FIELD_SELLS = array(
 	'booking_url'   => 'Let people book you straight from your profile, without ringing first.',
-	'gallery'       => 'Show the room. Listings with photos get opened far more often than listings without.',
 	'offer_title'   => 'Run an offer on your profile and on every card your listing appears in.',
 	'offer_text'    => 'Run an offer on your profile and on every card your listing appears in.',
 	'offer_until'   => 'Run an offer on your profile and on every card your listing appears in.',
@@ -229,7 +247,33 @@ function allows( int $listing_id, string $feature ): bool {
 
 /** Gallery photo cap for this listing; 0 means unlimited. */
 function gallery_limit( int $listing_id ): int {
-	return GALLERY_LIMITS[ tier( $listing_id ) ] ?? 0;
+	return GALLERY_LIMITS[ tier( $listing_id ) ] ?? GALLERY_LIMITS['unclaimed'];
+}
+
+/**
+ * The photo allowance, said out loud, for whoever is about to hit it.
+ *
+ * Names what the next step up actually gives rather than only what the
+ * current plan withholds -- the difference between a limit and an offer.
+ */
+function gallery_note( int $listing_id ): string {
+	$limit = gallery_limit( $listing_id );
+	if ( 0 === $limit ) {
+		return '';
+	}
+
+	return CLAIMED === tier( $listing_id )
+		? sprintf(
+			/* translators: %d: photo limit on the Claimed plan */
+			__( 'Claimed publishes %d photos. Featured has no limit.', 'oria' ),
+			$limit
+		)
+		: sprintf(
+			/* translators: 1: free photo limit, 2: Claimed photo limit */
+			__( 'The free plan publishes %1$d photos. Claimed publishes %2$d, and Featured has no limit.', 'oria' ),
+			$limit,
+			GALLERY_LIMITS[ CLAIMED ]
+		);
 }
 
 /** Human summaries for emails, notices and the pricing page. */
@@ -260,7 +304,7 @@ function summary( string $tier ): array {
 			// only works if it is written down somewhere they read.
 			__( 'Your email address published on your profile', 'oria' ),
 			__( 'Verified badge and date', 'oria' ),
-			__( 'Up to 4 gallery photos', 'oria' ),
+			__( 'Up to 10 gallery photos, instead of four', 'oria' ),
 			__( 'Special offers on your profile and cards', 'oria' ),
 			__( 'Opening hours and social links', 'oria' ),
 			__( 'Performance analytics', 'oria' ),

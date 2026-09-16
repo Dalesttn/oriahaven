@@ -604,11 +604,7 @@ function enforce_gallery_limit( $valid, $value, array $field, $input_name ) {
 	$listing = owned_listing( get_current_user_id() );
 	$limit   = $listing ? \Oria\Core\Tiers\gallery_limit( $listing ) : 0;
 	if ( $limit > 0 && count( (array) $value ) > $limit ) {
-		return sprintf(
-			/* translators: %d: photo limit */
-			__( 'Your plan includes %d gallery photos — Featured has no limit.', 'oria' ),
-			$limit
-		);
+		return \Oria\Core\Tiers\gallery_note( $listing );
 	}
 	return $valid;
 }

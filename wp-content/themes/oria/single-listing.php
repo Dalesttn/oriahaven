@@ -93,6 +93,17 @@ while ( have_posts() ) :
 		static fn( $gid ) => wp_get_attachment_image_url( (int) $gid, 'oria-wide' ),
 		\Oria\Theme\rows( 'gallery', array(), $oria_id )
 	) ) );
+	/*
+	 * The plan caps what is PUBLISHED, not what is stored. A listing that
+	 * drops back to the free plan keeps every photo it uploaded and shows
+	 * the first four; they all come back if it subscribes again. Without
+	 * this the cap only existed at save time, so a lapsed subscription went
+	 * on publishing ten photographs indefinitely.
+	 */
+	$oria_gcap = function_exists( '\Oria\Core\Tiers\gallery_limit' ) ? \Oria\Core\Tiers\gallery_limit( $oria_id ) : 0;
+	if ( $oria_gcap > 0 && count( $oria_gallery ) > $oria_gcap ) {
+		$oria_gallery = array_slice( $oria_gallery, 0, $oria_gcap );
+	}
 	if ( ! $oria_gallery && has_post_thumbnail( $oria_id ) ) {
 		$oria_gallery = array( (string) get_the_post_thumbnail_url( $oria_id, 'oria-wide' ) );
 	}

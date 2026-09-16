@@ -257,7 +257,7 @@ function lapse( string $subscription_id ): void {
 		__( 'Your listing subscription has ended — Oria Haven', 'oria' ),
 		sprintf(
 			/* translators: 1: listing title, 2: login url */
-			__( "The subscription for \"%1\$s\" has ended, so the listing is now on the free plan. It still shows as claimed by you, everything you added is kept, and you can keep your location, contact details, prices and description up to date any time.\n\nLog in to manage it — or restart a plan from there to bring back photos, offers, your timetable and the rest:\n%2\$s", 'oria' ),
+			__( "The subscription for \"%1\$s\" has ended, so the listing is now on the free plan. It still shows as claimed by you, everything you added is kept, and nothing you added has been deleted, and you can keep your services, hours, prices, contact details and four photos up to date any time.\n\nLog in to manage it — or restart a plan from there to bring back your booking link, offers, timetable and the rest of your photos:\n%2\$s", 'oria' ),
 			get_post_field( 'post_title', $listing_id, 'raw' ),
 			wp_login_url()
 		)
@@ -450,7 +450,7 @@ function activation_notice(): void {
 
 	echo $wrap_open // phpcs:ignore WordPress.Security.EscapeOutput
 		. '<h2 style="margin:0 0 4px;color:#FFFFFF;font-size:22px;letter-spacing:-0.3px;">' . esc_html__( 'Your claim is approved — choose a plan to unlock everything.', 'oria' ) . '</h2>'
-		. '<p style="margin:0 0 18px;color:#A9C2B7;font-size:13px;">' . esc_html__( 'Your listing is yours to correct for nothing — your services, hours, prices, amenities, parking and contact details. A plan is for what happens next: a booking link, photos, offers and the numbers behind it. Everything you add is kept, even if you cancel.', 'oria' ) . '</p>'
+		. '<p style="margin:0 0 18px;color:#A9C2B7;font-size:13px;">' . esc_html__( 'Your listing is yours to correct for nothing — your services, hours, prices, amenities, parking and contact details. A plan is for what happens next: a booking link, offers, more photos and the numbers behind it. Everything you add is kept, even if you cancel.', 'oria' ) . '</p>'
 		. '<div style="display:flex;gap:16px;flex-wrap:wrap;">'
 
 		. '<div style="' . $card . '">'

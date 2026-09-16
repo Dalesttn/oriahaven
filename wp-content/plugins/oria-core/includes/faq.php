@@ -316,7 +316,7 @@ function site_faq(): array {
 
 	$faqs[] = array(
 		'q' => 'Is it free for a practice to be listed?',
-		'a' => 'Yes. Listing costs nothing and claiming a listing costs nothing — an owner can take over their profile and keep their address, contact details, prices and format current for free. Paid plans add photos, opening hours, offers and visitor stats, and no plan changes where a practice appears or how it is described.',
+		'a' => 'Yes. Listing costs nothing and claiming a listing costs nothing — an owner can take over their profile and keep it accurate for free: services, opening hours, prices, amenities, parking, contact details and up to four photos. Paid plans add a booking link, more photos, offers, a timetable and visitor stats, and no plan changes where a practice appears or how it is described.',
 	);
 
 	$faqs[] = array(
@@ -336,7 +336,7 @@ function site_faq(): array {
 function editorial_faq(): array {
 	return array(
 		'q' => 'How does Oria Haven choose which practices to list?',
-		'a' => 'We build the directory ourselves rather than taking paid submissions, so a practice appears because it exists and serves Perth — not because it paid. Practices can claim their listing to keep it accurate and add photos, offers and booking links. We never take a cut of bookings, and enquiries go straight to the practice.',
+		'a' => 'We build the directory ourselves rather than taking paid submissions, so a practice appears because it exists and serves Perth — not because it paid. Practices can claim their listing for nothing and keep it accurate, photos included. Paid plans add booking links, offers and visitor stats. We never take a cut of bookings, and enquiries go straight to the practice.',
 	);
 }
 
