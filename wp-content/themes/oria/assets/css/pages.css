@@ -5057,7 +5057,8 @@ article.is-spotlit {
    as many as the cap forces. */
 @media (min-width: 861px) {
   /* Only narrowed when there is actually a picture to make room for. */
-  .heroband:not(.heroband--bare) .pagehead__copy { max-width: min(56rem, 58%); }
+  .heroband:not(.heroband--bare) .pagehead__copy,
+  .heroband:not(.heroband--bare) .bohero__copy { max-width: min(56rem, 58%); }
   .heroband--post::before { width: 38%; min-width: 300px; }
 
   /* A stack needs more of itself showing than a single photograph does.

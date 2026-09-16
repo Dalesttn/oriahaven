@@ -30,6 +30,22 @@ $oria_choose  = BestOf\choose( $oria_id );
 ?>
 
 <article>
+<?php
+/*
+ * The guide wears its own featured image, painted by CSS through the
+ * shared .heroband block rather than carried as an <img>: the picture is
+ * decoration, the headline already says what the page is, and a
+ * background is neither announced to a screen reader nor downloaded
+ * where it is never shown.
+ *
+ * No featured image, no custom property, no picture and no reserved
+ * height -- the header falls back to exactly what it was, which is what
+ * every one of these looked like until the pictures were made.
+ */
+$oria_hero = get_post_thumbnail_id( $oria_id ) ? (string) wp_get_attachment_image_url( get_post_thumbnail_id( $oria_id ), 'oria-wide' ) : '';
+?>
+<div class="heroband heroband--stack<?php echo '' !== $oria_hero ? '' : ' heroband--bare'; ?>"
+	<?php if ( '' !== $oria_hero ) : ?>style="--heroband-img:url('<?php echo esc_url( $oria_hero ); ?>')"<?php endif; ?>>
 <section class="wrap bohero">
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
@@ -37,24 +53,27 @@ $oria_choose  = BestOf\choose( $oria_id );
 		<a href="<?php echo esc_url( BestOf\hub_url() ); ?>"><?php esc_html_e( 'Best Of', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span><span><?php the_title(); ?></span>
 	</nav>
-	<span class="bohero__eyebrow"><?php echo esc_html( implode( ' · ', array_filter( array( __( 'Best of Perth', 'oria' ), $oria_cat ) ) ) ); ?></span>
-	<h1 class="bohero__title"><?php the_title(); ?></h1>
-	<?php if ( BestOf\intro( $oria_id ) ) : ?>
-		<p class="bohero__lede"><?php echo esc_html( BestOf\intro( $oria_id ) ); ?></p>
-	<?php endif; ?>
-	<p class="bohero__meta">
-		<?php
-		$oria_bits = array();
-		if ( $oria_n ) {
-			/* translators: %s: number of picks */
-			$oria_bits[] = sprintf( _n( '%s pick', '%s picks', $oria_n, 'oria' ), number_format_i18n( $oria_n ) );
-		}
-		$oria_bits[] = BestOf\updated( $oria_id );
-		$oria_bits[] = __( 'Editorial selection', 'oria' );
-		echo esc_html( implode( ' · ', $oria_bits ) );
-		?>
-	</p>
+	<div class="bohero__copy">
+		<span class="bohero__eyebrow"><?php echo esc_html( implode( ' · ', array_filter( array( __( 'Best of Perth', 'oria' ), $oria_cat ) ) ) ); ?></span>
+		<h1 class="bohero__title"><?php the_title(); ?></h1>
+		<?php if ( BestOf\intro( $oria_id ) ) : ?>
+			<p class="bohero__lede"><?php echo esc_html( BestOf\intro( $oria_id ) ); ?></p>
+		<?php endif; ?>
+		<p class="bohero__meta">
+			<?php
+			$oria_bits = array();
+			if ( $oria_n ) {
+				/* translators: %s: number of picks */
+				$oria_bits[] = sprintf( _n( '%s pick', '%s picks', $oria_n, 'oria' ), number_format_i18n( $oria_n ) );
+			}
+			$oria_bits[] = BestOf\updated( $oria_id );
+			$oria_bits[] = __( 'Editorial selection', 'oria' );
+			echo esc_html( implode( ' · ', $oria_bits ) );
+			?>
+		</p>
+	</div>
 </section>
+</div>
 
 <?php if ( $oria_qa || $oria_spots ) : ?>
 	<section class="wrap bosection">
