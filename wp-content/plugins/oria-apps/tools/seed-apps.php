@@ -6,12 +6,13 @@
  *   php wp-content/plugins/oria-apps/tools/seed-apps.php            # dry run
  *   php wp-content/plugins/oria-apps/tools/seed-apps.php --apply    # creates drafts
  *   php wp-content/plugins/oria-apps/tools/seed-apps.php --apply --update
+ *   php wp-content/plugins/oria-apps/tools/seed-apps.php --apply --publish
  *
- * Drafts, never published: the brief is explicit that app content gets a
- * human read before it goes live, and an app page carries prices and
- * claims about someone else's product. --update refreshes an app this
- * script created before; without it an existing slug is left alone, so a
- * re-run cannot quietly overwrite an editor's changes.
+ * Drafts by default: an app page carries prices and claims about someone
+ * else's product, so the default is that a person reads it first. --publish
+ * says that reading has happened and publishes as it goes. --update
+ * refreshes an app this script created before; without it an existing slug
+ * is left alone, so a re-run cannot quietly overwrite an editor's changes.
  *
  * Dry run is the default and writes nothing.
  */
@@ -27,8 +28,9 @@ require dirname( __DIR__, 4 ) . '/wp-load.php';
 
 use Oria\Apps\Data;
 
-$apply  = in_array( '--apply', $argv ?? array(), true );
-$update = in_array( '--update', $argv ?? array(), true );
+$apply   = in_array( '--apply', $argv ?? array(), true );
+$update  = in_array( '--update', $argv ?? array(), true );
+$publish = in_array( '--publish', $argv ?? array(), true );
 
 $file = ORIA_APPS_DIR . 'data/apps-seed.json';
 $json = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : null; // phpcs:ignore WordPress.WP.AlternativeFunctions
@@ -38,7 +40,11 @@ if ( ! is_array( $json ) || empty( $json['apps'] ) ) {
 	exit( 1 );
 }
 
-echo $apply ? "APPLY — apps are created as drafts\n\n" : "DRY RUN — nothing is written. Add --apply to create.\n\n";
+if ( $apply ) {
+	echo $publish ? "APPLY — apps are created and published\n\n" : "APPLY — apps are created as drafts\n\n";
+} else {
+	echo "DRY RUN — nothing is written. Add --apply to create.\n\n";
+}
 
 $checked = (string) ( $json['_checked'] ?? gmdate( 'Y-m-d' ) );
 $made    = 0;
@@ -71,12 +77,15 @@ foreach ( $json['apps'] as $app ) {
 
 	if ( $existing ) {
 		$post['ID'] = $existing->ID;
-		// Status is left exactly as the editor set it: an app they have
-		// already published must not drop back to draft on a refresh.
+		// Status is otherwise left exactly as the editor set it: an app they
+		// have already published must not drop back to draft on a refresh.
+		if ( $publish ) {
+			$post['post_status'] = 'publish';
+		}
 		$id = wp_update_post( $post, true );
 		$changed++;
 	} else {
-		$post['post_status'] = 'draft';
+		$post['post_status'] = $publish ? 'publish' : 'draft';
 		$id                  = wp_insert_post( $post, true );
 		$made++;
 	}
@@ -115,12 +124,91 @@ foreach ( $json['apps'] as $app ) {
 	// Repeaters, written the way ACF stores them: a count on the parent key
 	// and one row per index. Old rows are cleared first so a refresh that
 	// removes a point does not leave it behind.
+	$icon = icon( $id, $slug );
+	if ( '' !== $icon ) {
+		printf( "      icon: %s\n", $icon );
+	}
+
 	repeater( $id, 'key_features', 'text', (array) ( $app['features'] ?? array() ) );
 	repeater( $id, 'pros', 'text', (array) ( $app['pros'] ?? array() ) );
 	repeater( $id, 'considerations', 'text', (array) ( $app['cons'] ?? array() ) );
 	faq( $id, (array) ( $app['faq'] ?? array() ) );
 
 	printf( "      saved #%d (%s)\n", $id, get_post_status( $id ) );
+}
+
+/**
+ * Put the app's icon in the media library and attach it to the entry.
+ *
+ * The file ships in the plugin, so the same icon lands on every
+ * environment without anyone uploading anything. Skipped when the entry
+ * already has an icon -- an editor who replaced it should not have their
+ * choice overwritten by a re-run -- and skipped silently when the file is
+ * not there, because an app without an icon still renders.
+ *
+ * These are the apps' own icons, stored locally rather than hotlinked, and
+ * used to identify the app being reviewed.
+ */
+function icon( int $id, string $slug ): string {
+	if ( (int) get_post_meta( $id, 'app_logo', true ) ) {
+		return '';
+	}
+
+	$file = ORIA_APPS_DIR . 'assets/icons/' . $slug . '.webp';
+	if ( ! is_readable( $file ) ) {
+		return '';
+	}
+
+	// An icon already imported for this app on an earlier run: reuse it
+	// rather than filling the library with copies.
+	$existing = get_posts(
+		array(
+			'post_type'      => 'attachment',
+			'post_status'    => 'inherit',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'meta_key'       => '_oria_app_icon', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value'     => $slug, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+		)
+	);
+	if ( $existing ) {
+		update_post_meta( $id, 'app_logo', (int) $existing[0] );
+		update_post_meta( $id, '_app_logo', 'field_oria_app_logo' );
+		return 'reused #' . (int) $existing[0];
+	}
+
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+
+	$uploaded = wp_upload_bits( $slug . '-icon.webp', null, (string) file_get_contents( $file ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	if ( ! empty( $uploaded['error'] ) ) {
+		return 'failed: ' . $uploaded['error'];
+	}
+
+	$attachment = wp_insert_attachment(
+		array(
+			'post_mime_type' => 'image/webp',
+			'post_title'     => get_the_title( $id ) . ' icon',
+			'post_status'    => 'inherit',
+		),
+		$uploaded['file'],
+		$id
+	);
+	if ( is_wp_error( $attachment ) || ! $attachment ) {
+		return 'failed to attach';
+	}
+
+	wp_update_attachment_metadata( (int) $attachment, wp_generate_attachment_metadata( (int) $attachment, $uploaded['file'] ) );
+	update_post_meta( (int) $attachment, '_oria_app_icon', $slug );
+	// Decorative next to the app's own name, so the alt text stays empty
+	// rather than repeating it to a screen reader.
+	update_post_meta( (int) $attachment, '_wp_attachment_image_alt', '' );
+
+	update_post_meta( $id, 'app_logo', (int) $attachment );
+	update_post_meta( $id, '_app_logo', 'field_oria_app_logo' );
+
+	return 'imported #' . (int) $attachment;
 }
 
 /**
@@ -180,7 +268,9 @@ function keys_for( string $field ): array {
 echo "\n";
 if ( $apply ) {
 	printf( "Created %d, refreshed %d, left alone %d.\n", $made, $changed, $skipped );
-	echo "They are drafts. Read each one, add an icon, then publish.\n";
+	echo $publish
+		? "They are live. Each one shows the date it was last checked.\n"
+		: "They are drafts. Read each one, then publish.\n";
 } else {
 	printf( "Would create or refresh %d, leave alone %d. Re-run with --apply.\n", count( $json['apps'] ) - $skipped, $skipped );
 }
