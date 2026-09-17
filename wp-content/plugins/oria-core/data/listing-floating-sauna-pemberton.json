@@ -1,0 +1,49 @@
+{
+  "_comment": [
+    "Floating Sauna Pemberton, added 17 Sep 2026.",
+    "",
+    "GEOGRAPHY — READ BEFORE IMPORTING.",
+    "Pemberton is in neither city Oria Haven covers. It is 3.5 hours from",
+    "Perth and 1.5 hours from Margaret River town, roughly 104km away as",
+    "the crow flies, and it sits in the Southern Forests rather than the",
+    "Capes. Filed here under the Margaret River city with Pemberton as its",
+    "own area, which makes the profile read '104 km from Margaret River'.",
+    "That is true, and it is also the profile telling the reader it is not",
+    "really there. The alternative is a third city for one listing, which",
+    "is the thin hub the indexing floors exist to prevent.",
+    "",
+    "The 'pemberton' area term does not exist yet. Create it under the",
+    "Margaret River city before importing, or the importer will warn and",
+    "leave the listing without an area.",
+    "",
+    "Every fact below comes from floatingsauna.com.au and its own Acuity",
+    "booking page, checked 17 September 2026. Nothing here claims a sauna",
+    "treats anything; their own FAQ tells people with a medical condition",
+    "to ask their practitioner first, and that is their line to draw."
+  ],
+  "city": "margaret-river",
+  "listings": [
+    {
+      "slug": "floating-sauna-pemberton",
+      "name": "Floating Sauna Pemberton",
+      "cat": "spa",
+      "also": ["nature"],
+      "suburb": "pemberton",
+      "region": "margaret-river",
+      "address": "Pemberton Pool, Pemberton WA 6260",
+      "email": "pemberton@floatingsauna.com.au",
+      "web": "https://www.floatingsauna.com.au/pemberton-pool",
+      "book": "https://floatingsaunapemberton.as.me/",
+      "priceFrom": 55,
+      "priceBand": "$$",
+      "excerpt": "Two wood-fired saunas floating on Pemberton Pool, each with a floor-to-ceiling window onto the water and the karri forest behind it. The third location of a Tasmanian original and the only one in Western Australia, it opened in August 2026, three and a half hours south of Perth and an hour and a half from Margaret River. Sessions run hourly from 7am to 9pm, seven days: $55 a person to share a sauna with up to five others, or $305 to have one of the two rooms to yourself with a sauna master on hand. It is off-grid, so bring your own towel and water, and the nearest toilet is a ten-minute walk.",
+      "services": [
+        "Shared wood-fired sauna session (1 hour, from $55 per person)",
+        "Private sauna hire (1 hour, $305 for up to six)",
+        "Gift vouchers"
+      ],
+      "format": "group",
+      "status": "unclaimed"
+    }
+  ]
+}
