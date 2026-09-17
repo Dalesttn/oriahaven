@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Oria\Core\Fields;
 
+use Oria\Core\PostTypes;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -23,6 +25,69 @@ function bootstrap(): void {
 	add_action( 'acf/init', __NAMESPACE__ . '\register_journal_fields' );
 	add_action( 'acf/init', __NAMESPACE__ . '\register_author_fields' );
 	add_action( 'acf/init', __NAMESPACE__ . '\register_best_of_fields' );
+
+	// The description field is a view onto the post excerpt, not its own
+	// meta row. Load reads the excerpt; update writes it and stores nothing.
+	add_filter( 'acf/load_value/key=field_oria_description', __NAMESPACE__ . '\load_description', 10, 2 );
+	add_filter( 'acf/update_value/key=field_oria_description', __NAMESPACE__ . '\save_description', 10, 2 );
+
+	// One description, one input. See the note on the About tab.
+	add_action( 'add_meta_boxes', __NAMESPACE__ . '\drop_excerpt_box', 20 );
+}
+
+/**
+ * @param mixed      $value
+ * @param int|string $post_id
+ * @return mixed
+ */
+function load_description( $value, $post_id ) {
+	$id = is_numeric( $post_id ) ? (int) $post_id : 0;
+	return $id ? (string) get_post_field( 'post_excerpt', $id, 'raw' ) : $value;
+}
+
+/**
+ * Write the excerpt and store nothing in postmeta.
+ *
+ * Returning null is what keeps the value out of the meta table: ACF treats
+ * it as "no value" and deletes any row. Without that there would be two
+ * copies of the description and no rule about which one wins.
+ *
+ * wp_update_post() fires save_post, which is what called us, so the static
+ * guard stops the recursion.
+ *
+ * @param mixed      $value
+ * @param int|string $post_id
+ * @return null
+ */
+function save_description( $value, $post_id ) {
+	static $saving = false;
+
+	$id = is_numeric( $post_id ) ? (int) $post_id : 0;
+	if ( $saving || ! $id ) {
+		return null;
+	}
+
+	$new = (string) $value;
+	if ( $new === (string) get_post_field( 'post_excerpt', $id, 'raw' ) ) {
+		return null;
+	}
+
+	$saving = true;
+	wp_update_post( array( 'ID' => $id, 'post_excerpt' => $new ) );
+	$saving = false;
+
+	return null;
+}
+
+/**
+ * Remove WordPress's own Excerpt box from the listing screen.
+ *
+ * The About tab edits the same value. Leaving both would mean whichever
+ * saved last won, and ACF saves after the post — so an edit typed into the
+ * core box would be quietly overwritten by the stale text ACF still held.
+ */
+function drop_excerpt_box(): void {
+	remove_meta_box( 'postexcerpt', PostTypes\LISTING, 'normal' );
 }
 
 function json_path( string $path ): string {
@@ -117,6 +182,38 @@ function register_listing_fields(): void {
 					'return_format' => 'id',
 					'allow_null'    => 1,
 					'instructions'  => 'The practitioner account that manages this listing. Assign after payment; they can then edit this listing (and only this listing) while the status is Claimed or Featured.',
+				),
+
+				/*
+				 * --- About --------------------------------------------------
+				 *
+				 * The description IS the post excerpt. It was only ever
+				 * editable in WordPress's own "Excerpt" box, which sits under
+				 * the editor, is often collapsed, and is called a word no
+				 * practitioner would connect with "the description of my
+				 * practice". So the most important paragraph on the profile
+				 * was the hardest thing on the screen to find.
+				 *
+				 * This field reads and writes that same excerpt — see
+				 * Fields\load_description() — so there is one description, not
+				 * a second one that drifts. The core Excerpt box is removed
+				 * from this screen for the same reason: two inputs for one
+				 * value is how an edit gets silently overwritten.
+				 */
+				array(
+					'key'       => 'field_oria_tab_about',
+					'label'     => 'About',
+					'type'      => 'tab',
+					'placement' => 'left',
+				),
+				array(
+					'key'          => 'field_oria_description',
+					'name'         => 'listing_description',
+					'label'        => 'Description',
+					'type'         => 'textarea',
+					'rows'         => 5,
+					'maxlength'    => 600,
+					'instructions' => 'The paragraph that opens your profile, and the text Google usually shows under your name in search results — so it is worth the five minutes. Say what you do, who it suits and what a first visit is like, in plain language. Two or three sentences is plenty. Avoid claims about treating or curing anything.',
 				),
 
 				// --- Location & contact -------------------------------------

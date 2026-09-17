@@ -116,6 +116,11 @@ const FEATURES = array(
  * field name => minimum tier ('free' means any approved owner).
  */
 const FIELD_TIERS = array(
+	// The description is the profile's opening paragraph and the text
+	// Google shows under the name. Nothing is more clearly theirs to get
+	// right, and it was already ungated -- listed here so it stays that way
+	// on purpose rather than by omission.
+	'listing_description' => 'free',
 	'address'       => 'free',
 	'phone'         => 'free',
 	'email'         => 'free',
