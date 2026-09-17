@@ -19,9 +19,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const STATUSES = array(
 	'unclaimed' => 'Unclaimed',
+	'free'      => 'Free plan',
 	'claimed'   => 'Claimed',
 	'featured'  => 'Featured',
 );
+
+/**
+ * What the Status column should say, which is not what claim_status holds.
+ *
+ * claim_status records what a listing PAYS and knows nothing about who
+ * owns it, so a free-plan owner sits in it as 'unclaimed'. Printed raw,
+ * that column told you a listing nobody had ever replied to and a listing
+ * somebody claimed last week were the same thing -- and the filter above
+ * has distinguished them since it was written, so the table disagreed
+ * with its own dropdown.
+ *
+ * Read with tiers() rather than in place of it: same four words, same
+ * meanings, so filtering by "Free plan" and reading "Free plan" agree.
+ */
+function badge( int $post_id ): string {
+	$status = (string) get_post_meta( $post_id, 'claim_status', true );
+	if ( isset( STATUSES[ $status ] ) && 'unclaimed' !== $status && 'free' !== $status ) {
+		return $status;
+	}
+	return (int) get_post_meta( $post_id, 'claimed_by', true ) ? 'free' : 'unclaimed';
+}
 
 function bootstrap(): void {
 	add_filter( 'manage_listing_posts_columns', __NAMESPACE__ . '\columns' );
@@ -49,12 +71,10 @@ function columns( array $columns ): array {
 
 function column_content( string $column, int $post_id ): void {
 	if ( 'oria_status' === $column ) {
-		$status = get_post_meta( $post_id, 'claim_status', true );
-		$status = isset( STATUSES[ $status ] ) ? $status : 'unclaimed';
 		printf(
 			'<span class="oria-badge oria-badge--%s">%s</span>',
-			esc_attr( $status ),
-			esc_html( STATUSES[ $status ] )
+			esc_attr( badge( $post_id ) ),
+			esc_html( STATUSES[ badge( $post_id ) ] )
 		);
 		return;
 	}
@@ -240,6 +260,7 @@ add_action(
 		echo '<style>
 		.oria-badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600}
 		.oria-badge--unclaimed{background:#f0f0f1;color:#50575e}
+		.oria-badge--free{background:#fcf3e3;color:#8a5a12}
 		.oria-badge--claimed{background:#edf7f0;color:#1a7a3f}
 		.oria-badge--featured{background:#0E3B38;color:#fff}
 		</style>';

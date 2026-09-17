@@ -262,6 +262,16 @@ function handle_decision(): void {
 	 * that the free plan does not include. The paid plans are still
 	 * offered, after everything else and marked optional.
 	 */
+	\Oria\Core\Audit\note(
+		$listing_id,
+		$free
+			/* translators: %s: the new owner's name */
+			? sprintf( __( 'Claim approved. %s owns this listing and holds the Claimed tier, because billing is not configured.', 'oria' ), $name )
+			/* translators: %s: the new owner's name */
+			: sprintf( __( 'Claim approved. %s owns this listing, on the free plan until a payment lands.', 'oria' ), $name ),
+		get_current_user_id()
+	);
+
 	send_approved( $email, $listing_id, $name, $new_account );
 
 	update_post_meta( $request_id, '_status', 'approved' );

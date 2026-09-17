@@ -213,6 +213,12 @@ function activate( array $session ): void {
 		update_field( 'verified_at', current_time( 'Y-m-d' ), $listing_id );
 	}
 
+	\Oria\Core\Audit\note(
+		$listing_id,
+		/* translators: %s: tier name */
+		sprintf( __( 'Payment received. The listing is on the %s plan.', 'oria' ), $tier )
+	);
+
 	owner_mail(
 		$listing_id,
 		__( 'Your listing is live — Oria Haven', 'oria' ),
