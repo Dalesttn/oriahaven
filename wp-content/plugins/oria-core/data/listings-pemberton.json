@@ -1,0 +1,155 @@
+{
+  "_comment": [
+    "Pemberton, added 17 Sep 2026, to put something on the area page beside",
+    "the Floating Sauna.",
+    "",
+    "Six entries: three businesses and three public places. Pemberton has",
+    "about a thousand people, so the commercial pool is genuinely small —",
+    "what the town has instead is water and forest, and the directory",
+    "already lists that kind of place (Cottesloe Beach, Bold Park, Cape",
+    "Peron) with no website and no price, which is the pattern followed",
+    "here.",
+    "",
+    "Every business was checked on its own site today. Two more the",
+    "Pemberton Visitor Centre lists are deliberately absent: Pemberton",
+    "Beauty Skin Wellness has a Facebook page and no site or published",
+    "address, and Springs Valley & Spa could only be found on somebody",
+    "else's blog. A third, Whole Me Remedial Massage, is left out because",
+    "its domain now serves a Wix 'reconnect your domain' page — the same",
+    "dead-site problem that stopped the outreach run last week, and not",
+    "something to publish a link to.",
+    "",
+    "Natural places sourced from DBCA Explore Parks, Tourism WA and the",
+    "Pemberton Visitor Centre. Nothing here claims a sauna, a bath or a",
+    "walk treats anything."
+  ],
+  "city": "margaret-river",
+  "listings": [
+    {
+      "slug": "veska-home-of-banya",
+      "name": "Vëska Home of Banya",
+      "cat": "spa",
+      "also": ["nature"],
+      "suburb": "pemberton",
+      "region": "margaret-river",
+      "address": "174 Browns Road, Pemberton WA 6260",
+      "phone": "(08) 9776 0395",
+      "email": "veskabanya@gmail.com",
+      "web": "https://www.veska.com.au/",
+      "priceFrom": 70,
+      "priceBand": "$$",
+      "excerpt": "A Belarusian banya on a lavender and berry farm outside Pemberton, and the first of its kind in the South West. A session is not a sit in a hot room: a banya master works over you with veniki, bundles of leafy branches, between rounds of steam, cold plunge and rest, and the whole thing runs two and a half to four and a half hours depending on the format. The social sunset session is $70 an adult and $35 for children four to twelve, or $120 and $65 with a meal from the Belarusian kitchen on site. Private sessions for one, two or up to ten are quoted on enquiry, and booking is essential — places are limited and it is by appointment.",
+      "services": [
+        "Social banya at sunset ($70 adult, $35 child)",
+        "Banya with lunch or dinner ($120 adult, $65 child)",
+        "Private banya for one, two or up to ten (on enquiry)",
+        "Veniki therapies, cold plunge and Ivan tea",
+        "Belarusian bistro on site"
+      ],
+      "format": "group",
+      "status": "unclaimed"
+    },
+    {
+      "slug": "secrets-to-serenity-spa-pemberton",
+      "name": "Secrets to Serenity Spa",
+      "cat": "spa",
+      "also": ["bodywork"],
+      "suburb": "pemberton",
+      "region": "margaret-river",
+      "address": "78 Dean Street, Pemberton WA 6260",
+      "phone": "0493 050 475",
+      "email": "serenityhousepemberton@gmail.com",
+      "web": "https://www.serenityhousepemberton.com.au/spa",
+      "priceFrom": 130,
+      "priceBand": "$$$",
+      "excerpt": "The spa at Serenity House on Dean Street, a few minutes' walk from the middle of Pemberton, with treatments named after the forest it sits in. An hour of Swedish or forest relaxation massage is $140 and ninety minutes $190, warm river stone $150, deep recovery $160, and a reiki and energy session $130. Longer packages run two or three hours from $285, with a couples version at $525, and day retreats for groups of three to six priced per person. Booked online, with a discount for going direct rather than through an agent.",
+      "services": [
+        "Swedish and forest relaxation massage (60 min $140, 90 min $190)",
+        "Warm river stone massage ($150)",
+        "Deep recovery massage ($160)",
+        "Botanical facial and hand or foot rituals ($150–$160)",
+        "Energy alignment and reiki ($130)",
+        "Spa packages and couples retreats ($285–$525)",
+        "Forest day retreats for groups of three to six"
+      ],
+      "format": "one-to-one",
+      "status": "unclaimed"
+    },
+    {
+      "slug": "mudstone-spa-retreat",
+      "name": "Mudstone Spa Retreat",
+      "cat": "retreats",
+      "also": ["spa"],
+      "suburb": "pemberton",
+      "region": "margaret-river",
+      "address": "Pemberton WA 6260",
+      "web": "https://www.mudstonesparetreat.com/",
+      "priceBand": "$$$$",
+      "excerpt": "Four adults-only rooms ten minutes out of Pemberton, each built around its own water and heat: the cottage is a century-old rail carriage in the karri with a jacuzzi and sauna of its own, and the executive suite has a light therapy sauna and hot tub on a private deck looking into Warren National Park. There is no shared spa and no treatment menu — the point is that nobody else is using it while you are. Rates are quoted on booking.",
+      "services": [
+        "Spa cottage in a vintage rail carriage, with jacuzzi and sauna",
+        "Executive suite with light therapy sauna and hot tub",
+        "Villa and suites, adults only",
+        "Private decks looking into Warren National Park"
+      ],
+      "format": "private",
+      "status": "unclaimed"
+    },
+    {
+      "slug": "pemberton-pool",
+      "name": "Pemberton Pool",
+      "cat": "beaches-swims",
+      "also": ["nature"],
+      "suburb": "pemberton",
+      "region": "margaret-river",
+      "address": "Pemberton Forest Park, Pemberton WA 6260",
+      "priceBand": "Free",
+      "excerpt": "A swimming pool cut into Lefroy Brook in the late 1920s for the families of the timber workers, and still the place the town swims. Karri trees stand right over the water, which keeps it cold and keeps it dark green, and the Floating Sauna now sits on it. Free, open, and a short walk from the middle of town, with the mountain bike park on the other side of the brook.",
+      "services": [
+        "Free open-air swimming on Lefroy Brook",
+        "Karri forest setting in Pemberton Forest Park",
+        "Walking distance from town"
+      ],
+      "format": "self-guided",
+      "status": "unclaimed"
+    },
+    {
+      "slug": "big-brook-dam",
+      "name": "Big Brook Dam",
+      "cat": "beaches-swims",
+      "also": ["nature", "walks-lookouts"],
+      "suburb": "pemberton",
+      "region": "margaret-river",
+      "address": "Big Brook State Forest, Pemberton WA 6260",
+      "priceBand": "Free",
+      "excerpt": "A dam built in 1986 that has quietly become the town's beach: a sandy edge shallow enough to stand in, ringed by a sealed four-kilometre track that takes a stroller or a wheelchair the whole way round. Picnic tables, shelters and barbecues at the water, fishing platforms built for wheelchair access along the shore, and karri forest on every side. One of the few places in the South West where a swim, a flat walk and a barbecue are the same trip.",
+      "services": [
+        "Sandy swimming beach",
+        "Sealed 4km loop walk, stroller and wheelchair accessible",
+        "Accessible fishing platforms",
+        "Picnic tables, shelters and barbecues"
+      ],
+      "format": "self-guided",
+      "status": "unclaimed"
+    },
+    {
+      "slug": "beedelup-falls",
+      "name": "Beedelup Falls",
+      "cat": "walks-lookouts",
+      "also": ["nature"],
+      "suburb": "pemberton",
+      "region": "margaret-river",
+      "address": "Beedelup National Park, Vasse Highway, Pemberton WA 6260",
+      "priceBand": "Free",
+      "excerpt": "Three hundred metres from the car park and you are on a suspension bridge over the falls, which is about as much walking as a waterfall usually asks for. Winter and early spring are when it actually runs. From the same car park a four and a half kilometre track loops through karri to Karri Valley Resort, and the Walk-Through Karri and Lake Beedelup circuits start here too, so it works as a ten-minute stop or a half-day depending on which way you turn.",
+      "services": [
+        "300m walk to the falls and suspension bridge",
+        "4.5km karri forest loop to Karri Valley Resort",
+        "Walk-Through Karri and Lake Beedelup circuits",
+        "Best flow in winter and early spring"
+      ],
+      "format": "self-guided",
+      "status": "unclaimed"
+    }
+  ]
+}
