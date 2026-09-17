@@ -223,5 +223,26 @@
    "price_from": 21,
    "price_band": "$"
   }
+ },
+ {
+  "slug": "ellenbrook-life-balance",
+  "requested_by": "Oria Haven, 17 Sep 2026 -- the centre runs a Sunlighten SoloCarbon infrared cabin in 30-minute sessions and was never tagged for it, so it was missing from the spa and infrared-sauna pages it belongs on. Its own sauna page makes detox and calorie claims; none of those are repeated here or in the excerpt.",
+  "terms": {
+   "practice": {
+    "add": [
+     "spa"
+    ]
+   },
+   "specialty": {
+    "add": [
+     "infrared-sauna"
+    ]
+   },
+   "service": {
+    "add": [
+     "infrared-sauna"
+    ]
+   }
+  }
  }
 ]
