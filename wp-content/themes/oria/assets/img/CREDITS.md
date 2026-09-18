@@ -33,19 +33,6 @@ sideloads it into the media library as that post's featured image.
 | 3 | Meditating by a window | ROMAN ODINTSOV | [6193613](https://www.pexels.com/photo/a-woman-in-lotus-position-meditating-6193613/) |
 
 
-## The directory hub's header picture
-
-**`explore-hero.webp`** — `/explore/{city}/`. Three photographs in one
-1600×900 file, the same construction as the category headers below. Shown
-on desktop only.
-
-| Panel | Photograph | Photographer | Pexels |
-|---|---|---|---|
-| 1 | White linen curtains in soft light | Cats Coming | [763147](https://www.pexels.com/photo/photo-of-white-curtains-763147/) |
-| 2 | Close-up of eucalyptus leaves | Vie Studio | [6168147](https://www.pexels.com/photo/close-up-shot-of-eucalyptus-leaves-6168147/) |
-| 3 | Calm sea water at dawn | Иван Кузнецов | [8594371](https://www.pexels.com/photo/calm-sea-water-8594371/) |
-
-
 ## The Best Of guides' header pictures
 
 Same construction: three photographs as panels in one 1920×1080 file,
