@@ -2086,6 +2086,31 @@ function arrow(): string {
 }
 
 /**
+ * The header of a supporting section at the foot of a page: title, one line
+ * of context, and the section's "see all" on the same row, right-aligned to
+ * the grid below it. One component so the products and apps sections share
+ * a structure instead of each inventing its own.
+ *
+ * @param array{title:string, desc?:string, url?:string, label?:string, aria?:string, cta?:string, id?:string} $a
+ */
+function support_head( array $a ): string {
+	$id  = (string) ( $a['id'] ?? '' );
+	$out = '<header class="suphead"><div class="suphead__text">';
+	$out .= '<h2 class="suphead__title"' . ( '' !== $id ? ' id="' . esc_attr( $id ) . '"' : '' ) . '>' . esc_html( $a['title'] ) . '</h2>';
+	if ( '' !== (string) ( $a['desc'] ?? '' ) ) {
+		$out .= '<p class="suphead__desc">' . esc_html( (string) $a['desc'] ) . '</p>';
+	}
+	$out .= '</div>';
+	if ( '' !== (string) ( $a['url'] ?? '' ) ) {
+		$out .= '<a class="btn btn--ghost btn--sm suphead__cta" href="' . esc_url( (string) $a['url'] ) . '"'
+			. ( '' !== (string) ( $a['aria'] ?? '' ) ? ' aria-label="' . esc_attr( (string) $a['aria'] ) . '"' : '' )
+			. ( '' !== (string) ( $a['cta'] ?? '' ) ? ' data-sup-cta="' . esc_attr( (string) $a['cta'] ) . '"' : '' )
+			. '>' . esc_html( (string) ( $a['label'] ?? '' ) ) . '<span aria-hidden="true">' . arrow() . '</span></a>';
+	}
+	return $out . '</header>';
+}
+
+/**
  * The first section layout on the current page, if it is a built page.
  * The header uses this: a page that opens with a hero gets the transparent
  * overlay nav; everything else gets the solid sticky nav.

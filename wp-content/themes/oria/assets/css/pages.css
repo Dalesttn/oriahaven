@@ -979,31 +979,90 @@ a.livesession:hover { background: var(--sand-2); }
 .prodcard__price--none { font-weight: 500; color: var(--text-faint); }
 .shopband__disclosure { margin-top: var(--s-5); font-size: var(--fs-xs); color: var(--text-faint); max-width: 62ch; }
 
-/* Category pages: the same cards, shorter. Still four across -- five made
-   them narrow enough that names ran to three lines and the two buttons
-   stacked, so the cards came out taller. The height comes out of the parts
-   instead: a 2:1 image, tighter padding (the image's negative margin has to
-   match it or the picture stops being full-bleed), two lines of blurb.
-   "Goes well with" is dropped here only: it links back to the category the
-   reader is already on. */
-.shopband--compact .prodgrid { gap: var(--s-3); }
-.shopband--compact .prodcard { padding: var(--s-4); gap: 6px; }
-.shopband--compact .prodcard__img { margin: calc(var(--s-4) * -1) calc(var(--s-4) * -1) var(--s-1); }
-.shopband--compact .prodcard__img img,
-.shopband--compact .prodcard__img--none { aspect-ratio: 2 / 1; }
-.shopband--compact .prodcard__img img { padding: var(--s-2); }
-.shopband--compact .prodcard__img--art img { padding: 0; }
-.shopband--compact .prodcard__name { font-size: .95rem; }
-.shopband--compact .prodcard__blurb { -webkit-line-clamp: 2; }
-.shopband--compact .prodcard__goes { display: none; }
-.shopband--compact .shopband__disclosure { margin-top: var(--s-3); }
+/* --- Category pages: products and apps at the foot -------------------
+   Two short recommendations sharing one structure (template-parts/
+   support-bands.php): a header with its "see all" on the same row, three
+   cards across the page's own grid, spacing owned by the section. They
+   replaced two bands that each brought their own header and 115px of
+   bottom padding, with products in four columns for three cards and a
+   48px apps heading wrapped over three lines in a 353px column. */
+.supbands { padding-bottom: clamp(3rem, 6vw, 5rem); }
+.supband + .supband { margin-top: clamp(2.5rem, 5vw, 4.5rem); }
 
-/* Phones: one swipeable row each, the way the guides already work. Stacked,
-   four events and three products were over two thousand pixels of scrolling
-   between the listings and the reading -- more than the listings themselves. */
+.suphead {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  flex-wrap: wrap; gap: var(--s-3) var(--s-5);
+  margin-bottom: clamp(1.25rem, 2vw, 1.75rem);
+}
+.suphead__text { flex: 1 1 26rem; min-width: 0; }
+.suphead__title {
+  margin: 0; font-size: clamp(1.75rem, 3vw, 2.75rem); line-height: 1.1;
+  letter-spacing: var(--tr-head); text-wrap: balance;
+}
+.suphead__desc { margin: var(--s-2) 0 0; font-size: clamp(1rem, .95rem + .2vw, 1.125rem); color: var(--text-soft); max-width: 60ch; }
+.suphead__cta { flex: 0 0 auto; }
+
+.supband .supgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5); }
+
+/* Product cards: a fixed 150px picture area (pack shots contained on the
+   sand ground, never stretched), two lines of blurb, price and button on
+   one foot line pinned to the bottom so a row lines up. "Goes well with"
+   is dropped: it links back to the category the reader is already on. */
+.supband .prodcard { padding: var(--s-4); gap: 6px; }
+.supband .prodcard__img { margin: calc(var(--s-4) * -1) calc(var(--s-4) * -1) var(--s-1); }
+.supband .prodcard__img img,
+.supband .prodcard__img--none { aspect-ratio: auto; height: 150px; }
+.supband .prodcard__img img { padding: var(--s-3); }
+.supband .prodcard__img--art img { padding: 0; }
+.supband .prodcard__name { font-size: 1rem; }
+.supband .prodcard__blurb { -webkit-line-clamp: 2; flex: 0 1 auto; }
+.supband .prodcard__goes { display: none; }
+.supband .prodcard__foot { margin-top: auto; padding-top: var(--s-2); }
+
+.supband .appcard { padding: var(--s-5); }
+.supband .appcard__blurb { -webkit-line-clamp: 2; flex: 0 1 auto; }
+.supband .appcard__foot { margin-top: auto; padding-top: var(--s-2); }
+
+/* Readable, not legal small print, and right under the cards it covers. */
+.supband__disclosure { margin-top: var(--s-4); font-size: var(--fs-sm); color: var(--text-soft); max-width: 72ch; }
+.supband .shopband__disclosure, .supband .appband__disclosure { margin-top: var(--s-4); }
+
+@media (max-width: 64rem) { .supband .supgrid { gap: var(--s-4); } }
+/* Two across; the third card keeps one column rather than stretching. */
+@media (max-width: 56rem) { .supband .supgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Phones: a plain list, the header stacked with its link under the line
+   of context -- nothing left floating at the right of an empty row. The
+   product card turns sideways (picture left) so three of them stay short. */
+@media (max-width: 37.5rem) {
+  .suphead { flex-direction: column; align-items: flex-start; }
+  .suphead__text { flex-basis: auto; }
+  .supband .supgrid { grid-template-columns: 1fr; gap: var(--s-3); }
+  .supband .prodcard {
+    display: grid; grid-template-columns: 88px minmax(0, 1fr);
+    column-gap: var(--s-3); row-gap: 0; align-content: start;
+  }
+  /* Spacing on the items, not row-gap: the picture spans rows that a card
+     without a tag or a "why" leaves empty, and each would add a gap. */
+  .supband .prodcard > * { grid-column: 2; margin-bottom: 4px; }
+  .supband .prodcard > .prodcard__img {
+    grid-column: 1; grid-row: 1 / span 8; align-self: start;
+    margin: 0; border-radius: var(--r-sm, 10px);
+  }
+  .supband .prodcard__img img,
+  .supband .prodcard__img--none { width: 88px; height: 88px; }
+  .supband .prodcard__img img { padding: 6px; }
+  .supband .prodcard__artnote { display: none; }
+  /* Price and button across the whole card: beside an 88px picture the
+     button is wider than the column that is left. */
+  .supband .prodcard > .prodcard__foot { grid-column: 1 / -1; }
+  .supband .appcard { padding: var(--s-4); }
+}
+
+/* Phones: the What's On rows swipe, the way the guides already work.
+   Stacked, four events were a long scroll between the listings and the
+   reading. */
 @media (max-width: 50rem) {
-  .catevents .wkrows,
-  .shopband--compact .prodgrid {
+  .catevents .wkrows {
     display: flex; overflow-x: auto; gap: var(--s-3);
     scroll-snap-type: x mandatory; scrollbar-width: none;
     margin: 0 calc(-1 * var(--gutter, 18px));
@@ -1012,10 +1071,8 @@ a.livesession:hover { background: var(--sand-2); }
        lining up with the page's own margin. */
     scroll-padding-inline: var(--gutter, 18px);
   }
-  .catevents .wkrows::-webkit-scrollbar,
-  .shopband--compact .prodgrid::-webkit-scrollbar { display: none; }
+  .catevents .wkrows::-webkit-scrollbar { display: none; }
   .catevents .wkrow { flex: 0 0 72%; scroll-snap-align: start; }
-  .shopband--compact .prodcard { flex: 0 0 68%; scroll-snap-align: start; }
 }
 
 /* --- Shop: intention tiles --------------------------------------------

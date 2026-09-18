@@ -1599,6 +1599,62 @@
     });
   }
 
+  /* The products and apps sections at the foot of a category page. Every
+     event names the item and its place in the row -- never the outbound
+     URL, which for a product carries the affiliate tag. The category and
+     city ride along through the directory's catEvent where it is running. */
+  function initSupportBands() {
+    var bands = $$(".supband");
+    if (!bands.length) return;
+    function send(name, params) {
+      (DirAPI.catEvent || pushEvent)(name, params);
+    }
+    bands.forEach(function (band) {
+      var section = band.getAttribute("data-sup-section") || "";
+      function place(card) {
+        return $$(section === "apps" ? ".appcard" : ".prodcard", band).indexOf(card) + 1;
+      }
+      band.addEventListener("click", function (e) {
+        var t = e.target;
+        if (!t.closest) return;
+        var cta = t.closest("[data-sup-cta]");
+        if (cta) {
+          send(cta.getAttribute("data-sup-cta") === "all_apps" ? "category_all_apps_click" : "category_shop_all_click",
+            { section: section, destination_type: "internal" });
+          return;
+        }
+        var link = t.closest("a[href]");
+        if (!link) return;
+        var prod = link.closest(".prodcard");
+        if (prod && link.hasAttribute("data-oshop-click")) {
+          send("category_product_click", {
+            item_id: prod.getAttribute("data-oshop-product") || "",
+            position: place(prod), section: section, destination_type: "amazon"
+          });
+          return;
+        }
+        var app = link.closest(".appcard");
+        if (app) {
+          send("category_app_click", {
+            item_id: app.getAttribute("data-oapp") || "",
+            position: place(app), section: section, destination_type: "app_profile"
+          });
+        }
+      });
+      // "Why we picked it" is a native <details>: its toggle is the open.
+      $$(".prodcard__why", band).forEach(function (d) {
+        d.addEventListener("toggle", function () {
+          if (!d.open) return;
+          var prod = d.closest(".prodcard");
+          send("category_product_reason_open", {
+            item_id: prod ? prod.getAttribute("data-oshop-product") || "" : "",
+            position: prod ? place(prod) : 0, section: section
+          });
+        });
+      });
+    });
+  }
+
   /* Card corner actions — delegated, because the engine redraws cards on
      every filter change and per-card listeners would be lost each time. */
   function initCardQuickActions() {
@@ -4864,6 +4920,7 @@
     initDirView();
     initCatMap();
     initCardQuickActions();
+    initSupportBands();
     scrollToFilteredResults();
     initPopoverDone();
     initFilterSheet();

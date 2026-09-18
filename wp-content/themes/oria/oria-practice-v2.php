@@ -989,44 +989,17 @@ if ( $oria_facet ) {
 
 <?php
 /*
- * Product recommendations.
+ * Products, then apps: two short recommendations at the end of the page,
+ * sharing one header and one grid (template-parts/support-bands.php).
  *
- * These were wired into taxonomy-practice.php, which serves the old
- * /practice/ addresses -- and those now 301 to /explore/, so the band had
- * quietly stopped rendering anywhere. This is the template the category
- * pages actually use.
- *
- * auto_band() reads the page's own context and returns nothing when no
- * product genuinely matches, so an unrelated category shows no shelf.
+ * Skipped on a suburb page: somebody who has narrowed to Fremantle wants a
+ * room, not a product or an app. Each section is left out entirely when
+ * nothing genuinely fits the category.
  */
-$oria_shopband = ( ! $oria_area && function_exists( '\Oria\Shop\Render\auto_band' ) )
-	? \Oria\Shop\Render\auto_band()
-	: '';
+if ( ! $oria_area && $oria_term instanceof WP_Term ) {
+	get_template_part( 'template-parts/support', 'bands', array( 'term' => $oria_term ) );
+}
 ?>
-<?php if ( $oria_shopband ) : ?>
-	<section class="wrap section section--top-flush shopband--compact"><?php echo $oria_shopband; // phpcs:ignore WordPress.Security.EscapeOutput ?></section>
-<?php endif; ?>
-
-<?php
-/*
- * Wellness apps, at the very foot of the page.
- *
- * This is the template the /explore/ category pages actually render
- * through -- taxonomy-practice.php serves the old addresses, which now
- * redirect -- so the band belongs here as well.
- *
- * Skipped on a suburb page: somebody who has narrowed to Fremantle wants
- * a room, not an app. Render\for_practice() returns nothing unless at
- * least two apps genuinely map to this practice, so no category gets a
- * band built out of one loosely related app.
- */
-$oria_appband = ( ! $oria_area && $oria_term instanceof WP_Term && function_exists( '\Oria\Apps\Render\for_practice' ) )
-	? \Oria\Apps\Render\for_practice( $oria_term )
-	: '';
-?>
-<?php if ( $oria_appband ) : ?>
-	<?php echo $oria_appband; // phpcs:ignore WordPress.Security.EscapeOutput ?>
-<?php endif; ?>
 
 <?php
 get_footer();
