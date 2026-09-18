@@ -49,6 +49,7 @@ wp-config-local.php
 /wp-content/themes/*
 !/wp-content/themes/oria/
 !/wp-content/themes/oria-v2/
+!/wp-content/themes/oria-v4/
 
 # --- Local dev noise ---------------------------------------------------
 /local-xdebuginfo.php

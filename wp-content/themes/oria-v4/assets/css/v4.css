@@ -1,0 +1,94 @@
+/* ==========================================================================
+   Oria Haven v4 -- "Sunset" tokens and overrides (design test).
+
+   Loads after the parent's tokens/base/components/pages, so anything set
+   here wins. It re-points the parent's own tokens rather than restyling
+   components, so every page picks the palette up at once.
+
+   Contrast, checked on the cream page (#f7f0dc):
+     ink        #1a2a26  14:1+  body text, headings
+     pine       #1d4f45   9.3:1 dark surfaces (white text on it 9.3:1)
+     burnt      #a33d1a   5.6:1 small labels, ratings
+     cta        #c24f26   white text on it 4.7:1: primary buttons
+     sunset     #e8763f   2.9:1 decoration only, never text
+     soft sun   #f5b168   on pine 5:1: the brand mark and accents on dark
+     cream text #f6e7c4   on pine 7.5:1: body text on dark
+   ========================================================================== */
+
+:root {
+  /* Palette */
+  --ink:        #1a2a26;
+  --deep:       #1d4f45;  /* pine teal: primary dark surface */
+  --deep-2:     #133a33;
+  --teal:       #2a5a4f;
+  --teal-line:  #3f7a6c;
+
+  --mist:       #f6e7c4;  /* cream: body text on dark */
+  --mist-2:     #fdf3dc;
+  --moss:       #2d6a5c;
+
+  --sand:       #efe4c8;
+  --sand-2:     #f6ecd4;
+  --sand-3:     #ecdcb9;
+  --paper:      #f7f0dc;  /* butter cream page */
+
+  --brand-gold: #f5b168;  /* the mark on dark surfaces */
+  --gold:       #a33d1a;  /* ratings on light */
+  --gold-soft:  #f6dcc0;  /* apricot */
+
+  --text-soft:  #4e5a55;
+  --text-faint: #56625d;
+
+  --line:        #e3d6b6;
+  --line-strong: #d3c29a;
+  --surface:     #fdf9ec;
+  --surface-sunk: var(--sand-2);
+
+  --focus:         #1d4f45;
+  --focus-on-deep: #f6e7c4;
+
+  --claimed:  #2d6a5c;
+  --featured: #1d4f45;
+
+  /* Type: Nunito Sans throughout, as in the reference */
+  --font-sans: "Nunito Sans", ui-sans-serif, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-edit: "Nunito Sans", ui-sans-serif, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* Bold capitals run wider than Manrope 500, so the big sizes step down */
+  --fs-display: clamp(2.3rem, 4.9vw, 4.1rem);
+  --fs-h1:      clamp(2rem, 3.8vw, 3.05rem);
+  --fs-h2:      clamp(1.65rem, 2.8vw, 2.4rem);
+
+  --tr-display: -0.005em;
+  --tr-head:    0;
+  --tr-micro:   0.14em;
+
+  --sh-1: 0 1px 2px rgba(26, 42, 38, .05), 0 2px 8px rgba(26, 42, 38, .04);
+  --sh-2: 0 2px 6px rgba(26, 42, 38, .06), 0 12px 28px rgba(26, 42, 38, .07);
+  --sh-3: 0 4px 12px rgba(26, 42, 38, .08), 0 26px 60px rgba(26, 42, 38, .12);
+}
+
+body { background: var(--paper); }
+
+/* Headlines: extra-bold capitals, like "BALANCE FITNESS AND MINDFULNESS".
+   .h3 stays sentence case, like the reference's small card headings. */
+.display, .h1, .h2 {
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1.04;
+}
+.h3 { font-weight: 800; }
+.on-deep .display, .on-deep .h1, .on-deep .h2 { color: var(--white); }
+
+/* The editorial accent was Newsreader italic; in v4 it is the same
+   family, italic, so an accent word reads as emphasis, not a new voice. */
+.edit { font-style: italic; font-weight: 800; letter-spacing: 0; }
+
+/* Primary buttons: sunset orange. The reference's lighter orange fails
+   white text, so this is the nearest shade that passes (4.7:1). */
+.btn { font-weight: 700; letter-spacing: 0; }
+.btn--dark { background: #c24f26; color: #fff; }
+.btn--dark .btn__dot { background: #fff; color: #c24f26; }
+.btn--dark:hover { background: #a8421e; }
+
+::selection { background: #e8763f; color: var(--ink); }
