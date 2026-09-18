@@ -162,14 +162,10 @@ function report( int $id, bool $billing ): void {
 	 */
 	if ( $user instanceof WP_User ) {
 		$manages = Ownership\manages( $user->ID, $id );
-		echo "
-";
-		printf( "  Can edit listing %s
-", $owner === $user->ID ? 'yes' : 'NO' );
-		printf( "  Review replies   %s
-", $manages ? 'yes' : 'no (paid feature)' );
-		printf( "  Lands on         #%d at log-in
-", Ownership\owned_listing( $user->ID ) );
+		echo "\n";
+		printf( "  Can edit listing %s\n", $owner === $user->ID ? 'yes' : 'NO' );
+		printf( "  Review replies   %s\n", $manages ? 'yes' : 'no (paid feature)' );
+		printf( "  Lands on         #%d at log-in\n", Ownership\owned_listing( $user->ID ) );
 		if ( ! $manages && 'unclaimed' !== $tier ) {
 			$faults[] = 'The plan is paid but manages() is false -- review replies and events will be refused.';
 		}
