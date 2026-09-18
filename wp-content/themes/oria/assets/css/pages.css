@@ -979,6 +979,16 @@ a.livesession:hover { background: var(--sand-2); }
 .prodcard__price--none { font-weight: 500; color: var(--text-faint); }
 .shopband__disclosure { margin-top: var(--s-5); font-size: var(--fs-xs); color: var(--text-faint); max-width: 62ch; }
 
+/* --- /explore/{city}/: the hub's header picture ----------------------
+   The intro alone sits in the band (the practice grid follows in its own
+   section), one column wide so the picture has the right-hand side the
+   two-column .decide grid used to leave empty. */
+@media (min-width: 861px) {
+  .heroband--explore .pagehead { padding-bottom: var(--s-4); }
+  .heroband--explore .decide { grid-template-columns: minmax(0, 1fr); max-width: min(52rem, 54%); }
+}
+.pagehead--rest { padding-top: 0; }
+
 /* --- Category pages: "Can't find it?" under the pager ------------------
    Ask Oria for whoever the filters did not serve, in the space the section
    already leaves before the guide. A card on the page's grid, sand on
@@ -6922,6 +6932,12 @@ article.is-spotlit {
 @media (max-width: 860px) {
   .heroband--cat { display: block; }
   .heroband--cat::before { content: none !important; }
+  /* And no address to fetch. Hiding the pseudo-element was not enough:
+     the browser still downloaded the picture from the inline
+     --heroband-img (111KB on /nutrition/ at 375px, never shown). An
+     !important rule outranks the inline declaration, so on a phone the
+     variable holds nothing to load. */
+  .heroband--cat { --heroband-img: none !important; }
 }
 /* The hero ends where its content does; the listings follow straight on. */
 #decide.pagehead { padding-bottom: var(--s-4); }

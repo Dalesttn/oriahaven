@@ -102,6 +102,21 @@ if ( $oria_dircity && function_exists( '\Oria\Core\Cities\for_area' ) ) {
 	</div>
 </nav>
 
+<?php
+/*
+ * The header picture, in the .heroband block the category pages, guides
+ * and apps use: three photographs dissolving in from the right -- linen in
+ * soft light, eucalyptus, still water at dawn. Nothing about a practice or
+ * an outcome, just the mood of the place. Decoration only: a background,
+ * so screen readers skip it, and desktop only (.heroband--cat), so a phone
+ * never downloads it and the categories stay near the top there.
+ *
+ * It wraps the intro alone. The practice grid and the map below used to
+ * share this section, and a band sized to all of that would have stretched
+ * the picture a screen and a half down the page.
+ */
+?>
+<div class="heroband heroband--stack heroband--cat heroband--explore" style="--heroband-img:url('<?php echo esc_url( get_theme_file_uri( 'assets/img/explore-hero.webp' ) ); ?>')">
 <!-- Floor 1 — Decide -->
 <section class="wrap pagehead floor" id="decide">
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
@@ -141,6 +156,10 @@ if ( $oria_dircity && function_exists( '\Oria\Core\Cities\for_area' ) ) {
 			<p class="hint" style="margin-top:.6rem"><?php esc_html_e( "Most listings here were built from public information and are waiting for their owner to take them over — each one says so on its own page. We never take a cut of a booking.", 'oria' ); ?></p>
 		</div>
 	</div>
+</section>
+</div>
+
+<section class="wrap pagehead pagehead--rest">
 
 	<?php if ( $oria_cats ) : ?>
 	<div class="dirsw">
