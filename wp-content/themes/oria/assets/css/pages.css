@@ -6905,6 +6905,11 @@ article.is-spotlit {
 .dirmap { margin-top: var(--s-4); }
 .dirmap[hidden] { display: none; }
 .catmap--view { height: min(70vh, 620px); }
+/* While the library is on its way, and if it never arrives. */
+.dirmap[aria-busy="true"] .catmap { background: var(--sand-2) linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent) 0 0 / 40% 100% no-repeat; animation: mapwait 1.2s linear infinite; }
+@keyframes mapwait { from { background-position: -40% 0; } to { background-position: 140% 0; } }
+@media (prefers-reduced-motion: reduce) { .dirmap[aria-busy="true"] .catmap { animation: none; } }
+.catmap__fail { display: grid; place-items: center; height: 100%; margin: 0; padding: 1rem; text-align: center; color: var(--text-soft); font-size: var(--fs-sm); }
 
 /* --- Featured, once --------------------------------------------------------- */
 .featcat {

@@ -88,7 +88,16 @@ add_action(
 		 * map library has no business on every other page. app.js checks
 		 * for window.L before drawing, so the dependency stays one-way.
 		 */
-		if ( get_query_var( 'oria_practice_v2' )
+		/*
+		 * Category pages load it on demand instead: since the UX redesign
+		 * their map sits behind a List | Map switch that most visitors never
+		 * press, so app.js fetches the library the first time the map is
+		 * opened (window.ORIA_LEAFLET, below). 162KB off every category
+		 * page view that does not want a map.
+		 */
+		$oria_lazy_map = (bool) get_query_var( 'oria_practice_v2' );
+
+		if ( ( ! $oria_lazy_map && get_query_var( 'oria_practice_v2' ) )
 			|| ( function_exists( '\Oria\Core\PracticesIndex\mode' ) && '' !== \Oria\Core\PracticesIndex\mode() && is_post_type_archive( 'listing' ) && ! is_search() )
 			|| is_tax( 'specialty' )
 			|| is_page( 'wellness-map' )
@@ -146,6 +155,20 @@ add_action(
 			(string) filemtime( "{$dir}/assets/js/app.js" ),
 			array( 'in_footer' => true )
 		);
+
+		// After oria-app is registered: an inline script needs its handle to exist.
+		if ( $oria_lazy_map ) {
+			wp_add_inline_script(
+				'oria-app',
+				'window.ORIA_LEAFLET = ' . wp_json_encode(
+					array(
+						'css' => "{$uri}/assets/vendor/leaflet/leaflet.css?ver=1.9.4",
+						'js'  => "{$uri}/assets/vendor/leaflet/leaflet.js?ver=1.9.4",
+					)
+				) . ';',
+				'before'
+			);
+		}
 
 		wp_add_inline_script(
 			'oria-app',

@@ -1076,12 +1076,46 @@
     var browse = $("#browse");
     var buttons = $$("[data-view]");
     if (!panel || !browse || !buttons.length) return;
-    if (!window.L) {
+    /* The map library arrives on demand (window.ORIA_LEAFLET, from
+       functions.php): most visitors never open the map, and 162KB of it has
+       no business on their page. No library and no way to fetch one means
+       no switch -- the list is the whole page. */
+    var LF = window.ORIA_LEAFLET || null;
+    if (!window.L && !LF) {
       buttons.forEach(function (b) { b.closest(".viewswitch") && (b.closest(".viewswitch").hidden = true); });
       $$("[data-open-map]").forEach(function (b) { b.hidden = true; });
       return;
     }
     document.body.classList.add("has-catmap"); // shows the cards' pin buttons
+
+    var loading = null;
+    function withLeaflet(cb) {
+      if (window.L) { cb(); return; }
+      if (!loading) {
+        loading = new Promise(function (resolve, reject) {
+          var css = document.createElement("link");
+          css.rel = "stylesheet";
+          css.href = LF.css;
+          document.head.appendChild(css);
+          var js = document.createElement("script");
+          js.src = LF.js;
+          js.onload = resolve;
+          js.onerror = reject;
+          document.head.appendChild(js);
+        });
+        panel.setAttribute("aria-busy", "true");
+      }
+      loading.then(function () {
+        panel.removeAttribute("aria-busy");
+        cb();
+      }, function () {
+        /* It failed to arrive: say so where the map would be, and keep the
+           list fully usable -- the brief's "map unavailable" state. */
+        panel.removeAttribute("aria-busy");
+        var host = $("[data-catmap]", panel);
+        if (host) host.innerHTML = '<p class="catmap__fail">The map could not load just now. Every listing is in the list.</p>';
+      });
+    }
 
     var started = false;
     var realFocus = null;
@@ -1179,17 +1213,25 @@
       if (close && phone.matches) close.focus({ preventScroll: true });
       if (!started) {
         started = true;
-        initCatMap();
-        realFocus = DirAPI.focusOnMap && DirAPI.focusOnMap !== focus ? DirAPI.focusOnMap : null;
-        DirAPI.focusOnMap = focus;
+        withLeaflet(function () {
+          initCatMap();
+          realFocus = DirAPI.focusOnMap && DirAPI.focusOnMap !== focus ? DirAPI.focusOnMap : null;
+          DirAPI.focusOnMap = focus;
+          // A card's pin pressed before the library had arrived.
+          if (pendingFocus && realFocus) { realFocus(pendingFocus); }
+          pendingFocus = null;
+        });
       } else if (DirAPI.mapRefresh) {
         DirAPI.mapRefresh();
       }
       pushEvent("category_map_open", { results_count: (DirAPI.lastUrls || []).length });
     }
+    var pendingFocus = null;
     function focus(url) {
       show("map");
-      return realFocus ? realFocus(url) : false;
+      if (realFocus) return realFocus(url);
+      pendingFocus = url; // the library is still on its way
+      return true;
     }
     DirAPI.focusOnMap = focus;
 
