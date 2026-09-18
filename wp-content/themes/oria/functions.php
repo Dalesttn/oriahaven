@@ -1944,10 +1944,12 @@ function category_events( \WP_Term $term, ?array $city = null ): array {
 		);
 	}
 
-	// Happening now, then the directory's own practices, then soonest.
+	// Featured events first -- the ones the directory's own practices post,
+	// badged "Featured practice" -- then everything by date. An event on now
+	// started earliest, so it still leads its group without a rule of its own.
 	usort(
 		$oria_rows,
-		static fn( array $a, array $b ): int => array( ! $a['now'], ! $a['member'], $a['ts'] ) <=> array( ! $b['now'], ! $b['member'], $b['ts'] )
+		static fn( array $a, array $b ): int => array( ! $a['member'], $a['ts'] ) <=> array( ! $b['member'], $b['ts'] )
 	);
 	return $oria_rows;
 }

@@ -3,10 +3,10 @@
  * What's on in this category: events and workshops happening now or coming
  * up, on the category page beside the places that run them.
  *
- * Same cards as /whats-on-perth/ (the .wkrow family), and the same order:
- * events from the directory's own practices first, then soonest. Aggregated
- * events keep their "via {source}" note, because the source stays the
- * source of truth.
+ * Same cards as /whats-on-perth/ (the .wkrow family). Featured events --
+ * the ones the directory's own practices post -- come first, then the rest
+ * by date. Aggregated events keep their "via {source}" note, because the
+ * source stays the source of truth.
  *
  * Which events count as this category's:
  *
