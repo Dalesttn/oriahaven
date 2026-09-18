@@ -6922,6 +6922,60 @@ article.is-spotlit {
 .featcat__grid { margin-top: 0; }
 
 .results__head { margin: var(--s-6) 0 var(--s-4); }
+
+/* How many options are on inside a filter pill -- visible even when the
+   chips row has scrolled away. Said by a number and a filled pill, never
+   colour alone. */
+.popover > summary.is-active { border-color: var(--deep); color: var(--deep); font-weight: 700; }
+.popover__n {
+  display: inline-grid; place-items: center;
+  min-width: 1.25rem; height: 1.25rem; padding: 0 .3rem; margin-left: .15rem;
+  border-radius: 999px; background: var(--deep); color: var(--white);
+  font-size: .7rem; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+
+/* The floating Map button and the full-screen map exist for phones only;
+   on a desktop the List | Map switch does this job. */
+.mapfab, .dirmap__close { display: none; }
+@media (max-width: 50rem) {
+  .mapfab {
+    display: inline-flex; align-items: center; gap: .4rem;
+    position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 60;
+    min-height: 46px; padding: 0 1.3rem;
+    border: 0; border-radius: var(--r-pill);
+    background: var(--deep); color: var(--white);
+    font: inherit; font-weight: 700;
+    box-shadow: 0 10px 28px rgba(8, 34, 32, .28);
+    transform: translate(-50%, 140%); opacity: 0;
+    transition: transform .25s ease, opacity .2s ease;
+    pointer-events: none;
+  }
+  .mapfab.is-shown:not(.is-away) { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+  .mapfab:focus-visible { outline: 2px solid var(--white); outline-offset: -5px; }
+
+  /* The map, full screen, over everything but its own close button. */
+  body.is-mapfull { overflow: hidden; }
+  body.is-mapfull #catMapView {
+    position: fixed; inset: 0; z-index: 90; margin: 0;
+    background: var(--paper, #F5F4F0);
+  }
+  body.is-mapfull #catMapView .catmap--view { height: 100%; border-radius: 0; border: 0; }
+  body.is-mapfull #catMapView .nearyou { display: none; }
+  .dirmap__close {
+    display: inline-flex; align-items: center;
+    position: absolute; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 1000;
+    transform: translateX(-50%);
+    min-height: 46px; padding: 0 1.3rem;
+    border: 0; border-radius: var(--r-pill);
+    background: var(--deep); color: var(--white);
+    font: inherit; font-weight: 700;
+    box-shadow: 0 10px 28px rgba(8, 34, 32, .28);
+  }
+  body:not(.is-mapfull) .dirmap__close { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mapfab { transition: none; }
+}
 /* "Specialising in yoga" / "Also offering yoga": a full-width row inside
    the card grid, where the two groups meet. */
 .resgroup {

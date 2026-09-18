@@ -797,7 +797,10 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 		?>
 	</div>
 	<?php if ( $oria_map ) : ?>
+		<?php // Phones: the floating way into the full-screen map. ?>
+		<button type="button" class="mapfab" data-view="map" aria-pressed="false"><?php esc_html_e( 'Map', 'oria' ); ?></button>
 		<div class="dirmap" id="catMapView" hidden>
+			<button type="button" class="dirmap__close" data-view="list" aria-pressed="false"><?php esc_html_e( 'Show list', 'oria' ); ?></button>
 			<div class="catmap catmap--view" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of %1$s places across %2$s', 'oria' ), esc_attr( $oria_pname ), esc_attr( $oria_cname ) ); ?>">
 				<div class="catmap__tip" hidden></div>
 			</div>

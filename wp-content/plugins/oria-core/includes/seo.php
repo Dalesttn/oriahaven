@@ -867,7 +867,10 @@ function verification(): void {
  * @return string[]
  */
 function filter_params(): array {
-	return array( 'aud', 'cat', 'format', 'pg', 'price', 'q', 'region', 'spec', 'suburb', 'svc' );
+	// sort, view and rating arrived with the category-page redesign: a
+	// shared link keeps the visitor's order and map, and none of it may
+	// become an indexable page of its own.
+	return array( 'aud', 'cat', 'format', 'pg', 'price', 'q', 'rating', 'region', 'sort', 'spec', 'suburb', 'svc', 'view' );
 }
 
 /**

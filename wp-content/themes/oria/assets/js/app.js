@@ -1085,12 +1085,63 @@
 
     var started = false;
     var realFocus = null;
+    /* On a phone the map is the whole screen, not a box on the page -- the
+       brief's "do not squeeze a desktop map into the page". Opening it
+       remembers where the list was; closing it goes back there. */
+    var phone = window.matchMedia("(max-width: 50rem)");
+    var listY = 0;
+    var fab = $(".mapfab");
+    function writeView(isMap) {
+      try {
+        var u = new URL(window.location.href);
+        if (isMap) u.searchParams.set("view", "map"); else u.searchParams.delete("view");
+        history.replaceState(null, "", u.pathname + (u.search || "") + u.hash);
+      } catch (e) { /* old browsers: the view just is not in the address */ }
+    }
+    /* Hiding or showing the whole list above the rest of the page makes the
+       browser's scroll anchoring "help": it shifts the scroll by the list's
+       height to keep whatever it anchored to in place, which threw a phone
+       from the listings to the foot of the page on closing the map. So
+       anchoring is off for the moment of the swap, and the position is put
+       back explicitly -- twice, a frame apart, because the list's height is
+       only known once it has laid out again. */
+    function pinScroll(y) {
+      var root = document.documentElement;
+      // "instant": the site scrolls smoothly by default, and a restore that
+      // glides from wherever the browser put it is its own small jolt.
+      var jump = function () {
+        try { window.scrollTo({ top: y, left: 0, behavior: "instant" }); } catch (e) { window.scrollTo(0, y); }
+      };
+      root.style.overflowAnchor = "none";
+      jump();
+      requestAnimationFrame(function () {
+        jump();
+        requestAnimationFrame(jump);
+      });
+      // A timer as well as the frames: frames pause in a background tab, and
+      // anchoring must never be left switched off.
+      window.setTimeout(function () { jump(); root.style.overflowAnchor = ""; }, 120);
+    }
     function show(view) {
       var isMap = view === "map";
+      var wasMap = browse.classList.contains("is-map");
+      if (isMap && !wasMap) {
+        listY = window.pageYOffset;
+        document.documentElement.style.overflowAnchor = "none";
+      }
       panel.hidden = !isMap;
       browse.classList.toggle("is-map", isMap);
+      document.body.classList.toggle("is-mapfull", isMap && phone.matches);
       buttons.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-view") === view ? "true" : "false"); });
-      if (!isMap) return;
+      writeView(isMap);
+      if (fab) fab.classList.toggle("is-away", isMap);
+      if (!isMap) {
+        if (wasMap) pinScroll(listY);
+        else document.documentElement.style.overflowAnchor = "";
+        return;
+      }
+      var close = $(".dirmap__close");
+      if (close && phone.matches) close.focus({ preventScroll: true });
       if (!started) {
         started = true;
         initCatMap();
@@ -1110,6 +1161,19 @@
     buttons.forEach(function (b) {
       b.addEventListener("click", function () { show(b.getAttribute("data-view")); });
     });
+    // Escape closes the full-screen map on a phone, like any dialog.
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && document.body.classList.contains("is-mapfull")) show("list");
+    });
+    /* The floating Map button only shows while the listings are on screen:
+       above them it would float over the hero, below them over the guide. */
+    if (fab && "IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { fab.classList.toggle("is-shown", en.isIntersecting); });
+      }, { rootMargin: "-20% 0px -30% 0px" }).observe($("#dirResults") || browse);
+    }
+    // A shared link to the map opens on the map.
+    if (new URLSearchParams(window.location.search).get("view") === "map") show("map");
     $$("[data-open-map]").forEach(function (b) {
       b.addEventListener("click", function () {
         show("map");
@@ -1572,6 +1636,9 @@
     if (params.get("price")) state.price = params.get("price").split(",");
     if (params.get("format")) state.format = params.get("format").split(",");
     if (params.get("pg")) state.page = Math.max(1, parseInt(params.get("pg"), 10) || 1);
+    if (["relevance", "featured", "rating", "price", "name", "near"].indexOf(params.get("sort")) > -1 && params.get("sort") !== "near") {
+      state.sort = params.get("sort");
+    }
 
     // Category and suburb landing pages lock one facet: the page IS the
     // filter, so it never appears as a removable chip and never hits the URL.
@@ -2375,6 +2442,33 @@
       }
 
       chips();
+      if (CAT) {
+        /* The sheet's button says what closing it will show: "Show 31
+           results", live. And each filter pill says how many of its options
+           are on -- once the toolbar is stuck at the top of a phone, the
+           chips row that lists them has scrolled away. */
+        var showTxt = found.length === 1 ? "Show 1 result" : "Show " + found.length + " results";
+        $$(".popover__done").forEach(function (b) { b.textContent = showTxt; });
+        $$("#dirFilters [data-popover]").forEach(function (d) {
+          var panel = d.oriaPanel || d.querySelector(".popover__panel");
+          var sum = d.querySelector("summary");
+          if (!panel || !sum) return;
+          var n = panel.querySelectorAll("input:checked").length;
+          sum.classList.toggle("is-active", n > 0);
+          var badge = sum.querySelector(".popover__n");
+          if (n) {
+            if (!badge) {
+              badge = document.createElement("span");
+              badge.className = "popover__n";
+              sum.insertBefore(badge, sum.lastElementChild);
+            }
+            badge.textContent = String(n);
+            badge.setAttribute("aria-label", n + " selected");
+          } else if (badge) {
+            badge.remove();
+          }
+        });
+      }
       // A search cleared from its chip empties the box too -- but never
       // while somebody is typing in it.
       var qBox = $("#dirQ");
@@ -2436,6 +2530,25 @@
           if (lp.get("pg") !== String(state.page)) { lp.set("pg", String(state.page)); moved = true; }
         } else if (lp.has("pg")) {
           lp.delete("pg"); moved = true;
+        }
+        /* Category pages keep everything a shared link needs: the area and
+           style choices beyond the page's own lock, the search and the sort.
+           All of it is noindexed server-side (Seo\filter_params), so no
+           combination becomes a page of its own. */
+        if (CAT) {
+          var extra = {
+            region: state.regions.filter(function (v) { return v !== locked.region; }).join(","),
+            spec: state.spec.filter(function (v) { return v !== locked.spec; }).join(","),
+            q: state.q || "",
+            sort: state.sort !== "relevance" && state.sort !== "near" ? state.sort : ""
+          };
+          Object.keys(extra).forEach(function (k) {
+            if (extra[k]) {
+              if (lp.get(k) !== extra[k]) { lp.set(k, extra[k]); moved = true; }
+            } else if (lp.has(k)) {
+              lp.delete(k); moved = true;
+            }
+          });
         }
         if (moved) {
           var lqs = lp.toString();
@@ -2601,7 +2714,13 @@
     });
 
     var sortSel = $("#dirSort");
-    if (sortSel) sortSel.addEventListener("change", function () { state.sort = sortSel.value; state.page = 1; render(); });
+    if (sortSel && state.sort !== "relevance") sortSel.value = state.sort;
+    if (sortSel) sortSel.addEventListener("change", function () {
+      state.sort = sortSel.value;
+      state.page = 1;
+      render();
+      pushEvent("category_sort_change", { sort: state.sort, results_count: lastCount });
+    });
 
     /* Free-text search. Redraws a beat after typing stops, and reports only
        once the term has settled -- otherwise "massage" arrives in analytics
