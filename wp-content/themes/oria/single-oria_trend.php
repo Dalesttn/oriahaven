@@ -128,14 +128,14 @@ $oria_section = static function ( string $field, string $heading, string $id = '
 	}
 	if ( $oria_price ) {
 		/* translators: 1: price, 2: month checked */
-		$oria_facts[] = array( __( 'Indicative Perth price', 'oria' ), sprintf( __( '%1$s (checked %2$s)', 'oria' ), $oria_price['text'], $oria_price['checked'] ), '' );
+		$oria_facts[] = array( __( 'Indicative price', 'oria' ), sprintf( __( '%1$s (checked %2$s)', 'oria' ), $oria_price['text'], $oria_price['checked'] ), '' );
 	}
 	if ( $oria_ev ) {
 		$oria_facts[] = array( __( 'Evidence position', 'oria' ), $oria_ev['label'], $oria_ev['explain'] );
 	}
 	if ( $oria_listings ) {
 		/* translators: %s: number of listings */
-		$oria_facts[] = array( __( 'In Perth', 'oria' ), sprintf( _n( '%s place we have confirmed', '%s places we have confirmed', count( $oria_listings ), 'oria' ), number_format_i18n( count( $oria_listings ) ) ), '#where' );
+		$oria_facts[] = array( __( 'Where to try it', 'oria' ), sprintf( _n( '%s place we have confirmed', '%s places we have confirmed', count( $oria_listings ), 'oria' ), number_format_i18n( count( $oria_listings ) ) ), '#where' );
 	}
 	?>
 	<?php if ( $oria_facts ) : ?>
@@ -204,13 +204,16 @@ $oria_section = static function ( string $field, string $heading, string $id = '
 			<?php $oria_pnotes = trim( (string) get_field( 'price_notes', $oria_id ) ); ?>
 			<?php if ( $oria_price || '' !== $oria_dur || '' !== $oria_pnotes ) : ?>
 				<section class="trendsec">
-					<h2 class="trendsec__h"><?php esc_html_e( 'What it typically costs in Perth', 'oria' ); ?></h2>
+					<h2 class="trendsec__h"><?php esc_html_e( 'What it typically costs', 'oria' ); ?></h2>
 					<p>
 						<?php
 						$oria_bits = array();
 						if ( $oria_price ) {
-							/* translators: 1: price range, 2: month */
-							$oria_bits[] = sprintf( __( 'Usually %1$s a session (prices checked %2$s — confirm with the venue).', 'oria' ), $oria_price['text'], $oria_price['checked'] );
+							$oria_bits[] = $oria_price['range']
+								/* translators: 1: price range, 2: month */
+								? sprintf( __( 'Usually %1$s a session (prices checked %2$s — confirm with the venue).', 'oria' ), $oria_price['text'], $oria_price['checked'] )
+								/* translators: 1: e.g. From $55, 2: month */
+								: sprintf( __( '%1$s a session (prices checked %2$s — confirm with the venue).', 'oria' ), $oria_price['text'], $oria_price['checked'] );
 						}
 						if ( '' !== $oria_dur ) {
 							/* translators: %s: duration */
@@ -237,13 +240,13 @@ $oria_section = static function ( string $field, string $heading, string $id = '
 	<section class="trendwhere" id="where">
 		<div class="suphead">
 			<div class="suphead__text">
-				<h2 class="suphead__title"><?php esc_html_e( 'Where to try it around Perth', 'oria' ); ?></h2>
+				<h2 class="suphead__title"><?php esc_html_e( 'Where to try it', 'oria' ); ?></h2>
 				<p class="suphead__desc">
 					<?php
 					echo esc_html(
 						$oria_listings
 							? __( 'Places we have confirmed offer this. Listed in no paid order.', 'oria' )
-							: __( 'We have not confirmed a Perth listing for this yet. These categories are the closest places to look.', 'oria' )
+							: __( 'We have not confirmed a listing for this yet. These categories are the closest places to look.', 'oria' )
 					);
 					?>
 				</p>
@@ -379,7 +382,7 @@ $oria_section = static function ( string $field, string $heading, string $id = '
 		<p class="trendfoot__meta">
 			<?php
 			/* translators: 1: author, 2: date */
-			echo esc_html( sprintf( __( 'Written by %1$s · Reviewed %2$s', 'oria' ), get_the_author(), Trends\reviewed( $oria_id ) ) );
+			echo esc_html( sprintf( __( 'Written by %1$s · Reviewed %2$s', 'oria' ), ( '' !== get_the_author() ? get_the_author() : __( 'the Oria Haven editors', 'oria' ) ), Trends\reviewed( $oria_id ) ) );
 			if ( $oria_affil ) {
 				echo ' · ' . esc_html__( 'This page contains affiliate links; we may earn a commission at no extra cost to you.', 'oria' );
 			}

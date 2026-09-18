@@ -349,7 +349,7 @@ function beginner( int $id ): string {
  * The indicative Perth price, only while it is fresh: a price nobody has
  * checked in a year is not shown at all, rather than shown wrong.
  *
- * @return array{text:string, checked:string}|null
+ * @return array{text:string, checked:string, range:bool}|null
  */
 function price( int $id ): ?array {
 	$from    = (float) get_field( 'typical_perth_price_from', $id );
@@ -363,7 +363,7 @@ function price( int $id ): ?array {
 		? sprintf( '$%s–$%s', number_format_i18n( $from ), number_format_i18n( $to ) )
 		/* translators: %s: price */
 		: sprintf( __( 'From $%s', 'oria' ), number_format_i18n( $from ) );
-	return array( 'text' => $text, 'checked' => date_i18n( 'F Y', $ts ) );
+	return array( 'text' => $text, 'checked' => date_i18n( 'F Y', $ts ), 'range' => $to > $from );
 }
 
 /** @return list<array{title:string,publisher:string,url:string,accessed:string}> */

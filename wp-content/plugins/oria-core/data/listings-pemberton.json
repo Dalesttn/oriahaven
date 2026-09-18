@@ -46,7 +46,7 @@
         "Veniki therapies, cold plunge and Ivan tea",
         "Belarusian bistro on site"
       ],
-      "format": "group",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -72,7 +72,7 @@
         "Spa packages and couples retreats ($285–$525)",
         "Forest day retreats for groups of three to six"
       ],
-      "format": "one-to-one",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -92,7 +92,7 @@
         "Villa and suites, adults only",
         "Private decks looking into Warren National Park"
       ],
-      "format": "private",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -110,7 +110,7 @@
         "Karri forest setting in Pemberton Forest Park",
         "Walking distance from town"
       ],
-      "format": "self-guided",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -129,7 +129,7 @@
         "Accessible fishing platforms",
         "Picnic tables, shelters and barbecues"
       ],
-      "format": "self-guided",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -148,7 +148,7 @@
         "Walk-Through Karri and Lake Beedelup circuits",
         "Best flow in winter and early spring"
       ],
-      "format": "self-guided",
+      "format": "in-person",
       "status": "unclaimed"
     }
   ]

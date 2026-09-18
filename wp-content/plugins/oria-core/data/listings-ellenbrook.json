@@ -55,7 +55,7 @@
         "Infrared sauna",
         "Gift vouchers"
       ],
-      "format": "one-to-one",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -76,7 +76,7 @@
         "Holistic hair and scalp treatments",
         "Precision cuts and styling"
       ],
-      "format": "one-to-one",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -99,7 +99,7 @@
         "Brow shaping and facial treatments",
         "Couples room"
       ],
-      "format": "one-to-one",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -121,7 +121,7 @@
         "Custom foot orthotics",
         "Therapeutic exercise programmes"
       ],
-      "format": "one-to-one",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -143,7 +143,7 @@
         "Waxing, brows and lashes",
         "Spray tanning"
       ],
-      "format": "one-to-one",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -167,7 +167,7 @@
         "Mobilise and release classes",
         "Gym floor access"
       ],
-      "format": "group",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -190,7 +190,7 @@
         "Pregnancy and postnatal packages",
         "Supervised creche, weekday mornings"
       ],
-      "format": "group",
+      "format": "in-person",
       "status": "unclaimed"
     },
     {
@@ -209,7 +209,7 @@
         "Private one-to-one sessions",
         "No membership or lock-in"
       ],
-      "format": "group",
+      "format": "in-person",
       "status": "unclaimed"
     }
   ]
