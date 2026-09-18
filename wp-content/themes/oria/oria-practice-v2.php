@@ -673,9 +673,8 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 		if ( 'featured' !== \Oria\Theme\display_status( (int) $oria_fid ) ) {
 			continue;
 		}
-		$oria_fp = \Oria\Theme\oria_terms_of( (int) $oria_fid, 'practice' );
-		$oria_fp = is_array( $oria_fp ) && $oria_fp ? reset( $oria_fp ) : null;
-		if ( ! $oria_fp instanceof WP_Term || ! in_array( $oria_fp->slug, $oria_family, true ) ) {
+		$oria_fp = function_exists( '\Oria\Core\Primary\of' ) ? \Oria\Core\Primary\of( (int) $oria_fid ) : '';
+		if ( ! in_array( $oria_fp, $oria_family, true ) ) {
 			continue;
 		}
 		$oria_featured[] = (int) $oria_fid;
@@ -725,6 +724,7 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 		id="dirResults"
 		data-mode="category"
 		data-family="<?php echo esc_attr( implode( ' ', $oria_family ) ); ?>"
+		data-label="<?php echo esc_attr( strtolower( $oria_pname ) ); ?>"
 		data-cat="<?php echo esc_attr( $oria_term->slug ); ?>"
 		<?php // The city this page was scoped to, so the script keeps that scope. ?>
 		<?php if ( ! empty( $oria_city['slug'] ) ) : ?>
@@ -764,9 +764,8 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 			// Specialists first, then A to Z -- the same rule the script
 			// sorts by, and never payment (app.js relevance()).
 			$oria_spec = static function ( WP_Post $p ) use ( $oria_family ): int {
-				$t = \Oria\Theme\oria_terms_of( (int) $p->ID, 'practice' );
-				$t = is_array( $t ) && $t ? reset( $t ) : null;
-				return $t instanceof WP_Term && in_array( $t->slug, $oria_family, true ) ? 0 : 1;
+				$t = function_exists( '\Oria\Core\Primary\of' ) ? \Oria\Core\Primary\of( (int) $p->ID ) : '';
+				return in_array( $t, $oria_family, true ) ? 0 : 1;
 			};
 			usort(
 				$oria_posts,

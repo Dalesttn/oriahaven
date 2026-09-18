@@ -6922,6 +6922,17 @@ article.is-spotlit {
 .featcat__grid { margin-top: 0; }
 
 .results__head { margin: var(--s-6) 0 var(--s-4); }
+/* "Specialising in yoga" / "Also offering yoga": a full-width row inside
+   the card grid, where the two groups meet. */
+.resgroup {
+  grid-column: 1 / -1;
+  display: flex; align-items: baseline; gap: .5rem;
+  margin: var(--s-4) 0 0; padding-bottom: .4rem;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-sm); font-weight: 700; color: var(--ink);
+}
+.resgroup:first-child { margin-top: 0; }
+.resgroup__n { font-weight: 600; color: var(--text-faint); font-variant-numeric: tabular-nums; }
 .toolbar__search { flex: 1 1 16rem; max-width: 26rem; }
 .toolbar__search .input { width: 100%; min-height: 44px; }
 @media (max-width: 50rem) { .toolbar__search { flex-basis: 100%; max-width: none; } }

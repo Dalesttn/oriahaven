@@ -1498,6 +1498,15 @@ class Command {
 		}
 		if ( $practice_ids ) {
 			wp_set_object_terms( $post_id, $practice_ids, Taxonomies\PRACTICE );
+			/*
+			 * The primary, kept. wp_set_object_terms() stores no order for
+			 * this taxonomy, so `cat` used to be lost the moment it was
+			 * saved beside the secondaries -- see includes/primary.php.
+			 */
+			$primary = (string) ( $row['cat'] ?? '' );
+			if ( '' !== $primary && get_term_by( 'slug', $primary, Taxonomies\PRACTICE ) ) {
+				update_post_meta( $post_id, \Oria\Core\Primary\META, $primary );
+			}
 		}
 
 		// Area: assign the suburb; the region is implied by ancestry.

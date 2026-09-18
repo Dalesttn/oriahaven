@@ -243,7 +243,7 @@ function profile_context(): array {
 
 	return array(
 		'id'       => $id,
-		'category' => ! is_wp_error( $practices ) && $practices ? $practices[0]->slug : '',
+		'category' => function_exists( '\Oria\Core\Primary\of' ) ? \Oria\Core\Primary\of( (int) $id ) : ( ! is_wp_error( $practices ) && $practices ? $practices[0]->slug : '' ),
 		'suburb'   => $suburb,
 		'plan'     => display_status( $id ),
 	);
@@ -535,8 +535,22 @@ function listing_data(): array {
 			$oria_city  = (string) ( $oria_cinfo['slug'] ?? '' );
 		}
 
-		$primary = $practices[0] ?? null;
-		$also    = array_slice( wp_list_pluck( $practices, 'slug' ), 1 );
+		/*
+		 * The primary is stored, not "whichever came first": get_the_terms()
+		 * returns categories alphabetically, which filed every yoga studio
+		 * that also teaches Pilates under Fitness. See oria-core/includes/
+		 * primary.php. $also starts as every category; the primary is taken
+		 * back out below, after the ancestors go in.
+		 */
+		$oria_pslug = function_exists( '\Oria\Core\Primary\of' ) ? \Oria\Core\Primary\of( (int) $post->ID ) : '';
+		$primary    = null;
+		foreach ( $practices as $oria_pt ) {
+			if ( $oria_pt->slug === $oria_pslug ) {
+				$primary = $oria_pt;
+			}
+		}
+		$primary = $primary ?: ( $practices[0] ?? null );
+		$also    = wp_list_pluck( $practices, 'slug' );
 
 		/*
 		 * Ancestors count as membership. Categories gained parents, so a

@@ -1709,6 +1709,33 @@
       var n = l.reviews || 0;
       return n ? ((l.rating || 0) * n + 4.2 * 8) / (n + 8) : 0;
     }
+    function isSpecialist(l) { return FAMILY.indexOf(l.cat) > -1; }
+
+    /* The page of cards, with the two groups named where they meet. On the
+       default order specialists come first, so a heading at the boundary
+       turns an invisible rule into something a reader can see: the places
+       that ARE this, then the ones that also offer it. Only when both groups
+       have somebody in them, and only on "Most relevant" -- any other sort
+       mixes the two, and a heading would then be lying. */
+    var GROUP_LABEL = root.dataset.label || "";
+    function groupHead(first, n) {
+      var text = first ? "Specialising in " + GROUP_LABEL : "Also offering " + GROUP_LABEL;
+      return '<p class="resgroup" role="heading" aria-level="3">' + esc(text) +
+        ' <span class="resgroup__n">' + n + "</span></p>";
+    }
+    function withGroups(shown, list) {
+      if (!CAT || !GROUP_LABEL || state.sort !== "relevance" || !FAMILY.length) return shown.map(card).join("");
+      var spec = list.filter(isSpecialist).length, other = list.length - spec;
+      if (!spec || !other) return shown.map(card).join("");
+      var out = "", prev = null;
+      shown.forEach(function (l) {
+        var g = isSpecialist(l);
+        if (g !== prev) { out += groupHead(g, g ? spec : other); prev = g; }
+        out += card(l);
+      });
+      return out;
+    }
+
     function relevance(a, b) {
       var pa = FAMILY.indexOf(a.cat) > -1 ? 0 : 1, pb = FAMILY.indexOf(b.cat) > -1 ? 0 : 1;
       return (pa - pb) || (confidence(b) - confidence(a)) || a.name.localeCompare(b.name);
@@ -2262,7 +2289,7 @@
         root.insertAdjacentHTML("beforeend", shown.slice(drawn.count).map(card).join(""));
         drawn.count = shown.length;
       } else {
-        root.innerHTML = shown.map(card).join("");
+        root.innerHTML = CAT ? withGroups(shown, list) : shown.map(card).join("");
         drawn = { key: key, count: shown.length };
       }
 
