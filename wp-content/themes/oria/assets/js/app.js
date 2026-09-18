@@ -1222,13 +1222,15 @@
           pendingFocus = null;
         });
       } else if (DirAPI.mapRefresh) {
-        DirAPI.mapRefresh();
+        DirAPI.mapRefresh(focusing);
       }
       (DirAPI.catEvent || pushEvent)("category_map_open", { results_count: (DirAPI.lastUrls || []).length });
     }
-    var pendingFocus = null;
+    var pendingFocus = null, focusing = false;
     function focus(url) {
+      focusing = true;
       show("map");
+      focusing = false;
       if (realFocus) return realFocus(url);
       pendingFocus = url; // the library is still on its way
       return true;
@@ -1336,38 +1338,132 @@
         if (!host.closest("#catMapView") || !DirAPI.catEvent) return;
         DirAPI.catEvent("category_map_pin_select", { listing_id: String(p.u || "").split("/").filter(Boolean).pop() || "" });
       });
+      mk._oriaPlace = p;
+      mk.on("popupopen", function () { solo = mk; });
+      mk.on("popupclose", function () {
+        if (solo !== mk) return;
+        solo = null;
+        window.setTimeout(recluster, 0); // not from inside Leaflet's own close
+      });
       group.push(mk);
     });
+
+    /* Clusters. Pins closer than CELL pixels on screen fold into one
+       numbered circle, worked out again after every zoom -- a plain grid
+       over the projected points, written here rather than pulled in as a
+       plugin: a few dozen lines against a dependency to keep patched.
+       The whole-of-Perth map carries some 400 pins, and many listings are
+       placed at their suburb's centre (geo "suburb"), so without this they
+       sat exactly on top of each other with only the top one clickable.
+
+       Pressing a cluster zooms to its pins. Where zooming cannot pull them
+       apart -- the same suburb centre, or already close to street level --
+       it lists them instead, each a link to its profile. A pin whose card
+       is open is never folded away (solo), so a card's "show on map" and
+       a popup the visitor is reading both survive a zoom out. */
+    var CELL = 44;
+    var shown = group.slice();   // the pins the list's filters leave
+    var solo = null;
+    var clusters = L.layerGroup().addTo(map);
+
+    function clusterPopup(mks) {
+      var items = mks.slice().sort(function (a, b) {
+        return a._oriaPlace.n.localeCompare(b._oriaPlace.n);
+      }).map(function (mk) {
+        var p = mk._oriaPlace;
+        return '<li><a href="' + esc(p.u) + '">' + esc(p.n) + "</a>" +
+          (p.r > 0 ? ' <span class="catmap__pop-star">★ ' + Number(p.r).toFixed(1) + "</span>" : "") + "</li>";
+      }).join("");
+      var sub = mks[0]._oriaPlace.s || "";
+      return '<div class="catmap__pop catmap__pop--list"><b>' + mks.length + " practices" +
+        (sub ? " in " + esc(sub) : " here") + "</b><ul>" + items + "</ul></div>";
+    }
+
+    function recluster() {
+      if (!map._loaded) return;
+      clusters.clearLayers();
+      var zoom = map.getZoom();
+      var cells = {}, order = [];
+      var want = {};
+      shown.forEach(function (mk) {
+        want[L.stamp(mk)] = 1;
+        var key;
+        if (mk === solo) {
+          key = "solo";
+        } else {
+          var pt = map.project(mk.getLatLng(), zoom);
+          key = Math.floor(pt.x / CELL) + ":" + Math.floor(pt.y / CELL);
+        }
+        if (!cells[key]) { cells[key] = []; order.push(key); }
+        cells[key].push(mk);
+      });
+      // Pins the filters took out.
+      group.forEach(function (mk) {
+        if (!want[L.stamp(mk)] && map.hasLayer(mk)) map.removeLayer(mk);
+      });
+      order.forEach(function (key) {
+        var mks = cells[key];
+        if (mks.length === 1) {
+          if (!map.hasLayer(mks[0])) mks[0].addTo(map);
+          return;
+        }
+        mks.forEach(function (mk) { if (map.hasLayer(mk)) map.removeLayer(mk); });
+        var b = L.latLngBounds(mks.map(function (mk) { return mk.getLatLng(); }));
+        var held = mks.some(function (mk) { return mk._oriaHeld; });
+        var n = mks.length;
+        var size = n < 10 ? 32 : n < 50 ? 38 : 44;
+        var c = L.marker(b.getCenter(), {
+          icon: L.divIcon({
+            className: "catmap__cluster" + (held ? " is-held" : ""),
+            html: "<span>" + n + "</span>",
+            iconSize: [size, size]
+          }),
+          title: n + " practices here",
+          keyboard: true,
+          riseOnHover: true
+        });
+        c.on("click", function () {
+          // Can zooming in separate them? The same spot never separates.
+          var same = b.getNorthEast().equals(b.getSouthWest(), 1e-4);
+          var z = map.getBoundsZoom(b, false, L.point(80, 80));
+          if (same || z <= zoom || zoom >= 16) {
+            c.bindPopup(clusterPopup(mks), { minWidth: 220, maxWidth: 280 }).openPopup();
+            return;
+          }
+          map.fitBounds(b, { padding: [40, 40], maxZoom: 17 });
+        });
+        clusters.addLayer(c);
+      });
+    }
 
     var bounds = L.featureGroup(group).getBounds();
     map.fitBounds(bounds, { padding: [24, 24], maxZoom: 14 });
     host._oriaMap = map;
+    map.on("moveend", recluster); // after zoomend: the grid follows the zoom
+    recluster();
 
     /* The pins follow the list: whatever the filters leave in the list is
        what the map shows, refitted to those pins. Pages that have no list
        engine never send the event, so their maps keep every pin. */
-    function applyResults(urls) {
+    function applyResults(urls, keepView) {
       if (!urls) return;
       var want = {};
       urls.forEach(function (u) { want[u] = 1; });
-      var vis = [];
-      group.forEach(function (mk, i) {
-        var on = !!want[places[i].u];
-        if (on) {
-          if (!map.hasLayer(mk)) mk.addTo(map);
-          vis.push(mk);
-        } else if (map.hasLayer(mk)) {
-          map.removeLayer(mk);
-        }
-      });
-      bounds = vis.length ? L.featureGroup(vis).getBounds() : L.featureGroup(group).getBounds();
-      map.fitBounds(bounds, { padding: [24, 24], maxZoom: 14 });
+      var vis = group.filter(function (mk, i) { return !!want[places[i].u]; });
+      shown = vis.length ? vis : group.slice();
+      if (solo && shown.indexOf(solo) < 0) { solo.closePopup(); solo = null; }
+      bounds = L.featureGroup(shown).getBounds();
+      if (!keepView) map.fitBounds(bounds, { padding: [24, 24], maxZoom: 14 });
+      recluster(); // fitBounds may not move at all, and then sends no moveend
     }
     document.addEventListener("oria:dir-results", function (e) { applyResults(e.detail && e.detail.urls); });
     if (DirAPI.lastUrls) applyResults(DirAPI.lastUrls);
-    DirAPI.mapRefresh = function () {
+    /* keepView: a card's pin is about to zoom somewhere. Refitting to every
+       pin first starts an animated zoom that lands after the pin's own, and
+       the map ends up back at the city view with the popup open off-screen. */
+    DirAPI.mapRefresh = function (keepView) {
       map.invalidateSize();
-      applyResults(DirAPI.lastUrls);
+      applyResults(DirAPI.lastUrls, keepView);
     };
 
     /* Cards' pin buttons jump here: zoom to the marker, open its card,
@@ -1380,7 +1476,9 @@
       if (!mk) return false;
       var top = host.getBoundingClientRect().top + window.pageYOffset - chromeTop() - 16;
       window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      solo = mk;
       map.setView(mk.getLatLng(), Math.max(map.getZoom(), 14));
+      recluster();
       mk.openPopup();
       return true;
     };
@@ -1431,6 +1529,7 @@
 
     function releasePins() {
       group.forEach(function (mk) { mk._oriaHeld = false; mk.setStyle({ fillColor: "#0E3B38" }); });
+      recluster();
     }
     function resetMap() {
       pills.forEach(function (o) { o.classList.remove("is-here"); });
@@ -1452,6 +1551,7 @@
         releasePins();
         mks.forEach(function (mk) { mk._oriaHeld = true; mk.setStyle({ fillColor: "#C9A24B" }); });
         map.fitBounds(L.featureGroup(mks).getBounds(), { padding: [46, 46], maxZoom: 15 });
+        recluster();
         openLink.href = pill.getAttribute("href");
         openLink.textContent = "Open the " + (pill.getAttribute("data-suburb") || "area") + " page →";
         openLink.hidden = false;
@@ -1480,6 +1580,7 @@
       releasePins();
       mks.forEach(function (mk) { mk._oriaHeld = true; mk.setStyle({ fillColor: "#C9A24B" }); });
       map.fitBounds(L.featureGroup(mks).getBounds(), { padding: [46, 46], maxZoom: 15 });
+      recluster();
     };
 
     /* The engine syncs the area once, on init -- and that happens before

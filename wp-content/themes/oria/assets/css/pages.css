@@ -4250,6 +4250,14 @@ html.has-sheet { overflow: hidden; }
 .catmap__pop b { display: block; font-weight: 700; margin-bottom: .1rem; }
 .catmap__pop span { display: block; color: var(--text-soft); font-size: .8125rem; margin-bottom: .35rem; }
 .catmap__pop a { font-weight: 600; color: var(--deep); }
+/* Clusters: pins too close to tell apart, folded into a count. */
+.leaflet-marker-icon.catmap__cluster { display: grid; place-items: center; border-radius: 50%; background: #0E3B38; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.3); color: #fff; font: 700 .8125rem/1 var(--font-sans, system-ui, sans-serif); cursor: pointer; }
+.catmap__cluster.is-held { background: #C9A24B; color: #1d1b16; }
+.catmap__cluster:hover { background: #C9A24B; color: #1d1b16; }
+.catmap__cluster:focus-visible { outline: 3px solid #C9A24B; outline-offset: 2px; }
+.catmap__pop--list ul { list-style: none; margin: .35rem 0 0; padding: 0; max-height: 14rem; overflow-y: auto; }
+.catmap__pop--list li { padding: .3rem 0; border-top: 1px solid var(--line, #e7e1d6); font-size: .875rem; }
+.catmap__pop--list li span { display: inline; margin: 0 0 0 .25rem; }
 
 /* The spotlight a map popup throws on its card in the list below. */
 /* Card corner actions: heart to save, pin to jump the map. The pin only
