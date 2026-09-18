@@ -83,6 +83,16 @@ if ( function_exists( '\Oria\Core\Cities\filter_ids' ) ) {
 	$oria_cname = \Oria\Core\Cities\name( $oria_city );
 }
 
+/*
+ * The Best Of guides behind this page and their picks that are on it:
+ * the "Oria's picks" chip, the shelf under the listings and the line in
+ * the header all read this one answer (Theme\category_best_of).
+ */
+$oria_bo = $oria_term && function_exists( '\Oria\Theme\category_best_of' )
+	? \Oria\Theme\category_best_of( $oria_term, $oria_ids )
+	: array( 'guides' => array(), 'slugs' => array() );
+$oria_bo_lead = $oria_bo['guides'][0] ?? null;
+
 // Facts for the strip, over whichever set the page is about.
 $oria_suburbs = array();
 $oria_claimed = 0;
@@ -448,6 +458,22 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 			printf( esc_html__( 'Every listing hand-checked · Updated %s', 'oria' ), esc_html( $oria_updated ) );
 			?>
 		</p>
+		<?php if ( $oria_bo_lead ) : ?>
+			<p class="cathero__best">
+				<span class="badge--best__mark" aria-hidden="true">&#10022;</span>
+				<a href="<?php echo esc_url( $oria_bo_lead['url'] ); ?>" data-oria-event="category_best_of_guide_click">
+					<?php
+					printf(
+						/* translators: 1: number of picks, 2: guide title */
+						esc_html( _n( '%1$s shortlisted in our %2$s guide', '%1$s shortlisted in our %2$s guide', count( $oria_bo_lead['picks'] ), 'oria' ) ),
+						'<b>' . esc_html( number_format_i18n( count( $oria_bo_lead['picks'] ) ) ) . '</b>',
+						esc_html( $oria_bo_lead['title'] )
+					);
+					?>
+					<span aria-hidden="true">&rarr;</span>
+				</a>
+			</p>
+		<?php endif; ?>
 
 		<?php
 		/*
@@ -629,13 +655,28 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 		<?php
 	};
 	?>
-	<?php if ( $oria_chips ) : ?>
+	<?php if ( $oria_chips || $oria_bo['slugs'] ) : ?>
 		<nav class="quickf" aria-label="<?php esc_attr_e( 'Quick filters', 'oria' ); ?>">
 			<p class="quickf__label">
 				<span class="micro"><?php echo $oria_facet ? esc_html__( 'Or another kind', 'oria' ) : esc_html__( 'Narrow it down', 'oria' ); ?></span>
 				<span class="hint"><?php esc_html_e( 'Each is a filtered view — it counts, it never ranks.', 'oria' ); ?></span>
 			</p>
 			<div class="quickf__row">
+				<?php
+				/*
+				 * "Oria's picks": the places the Best Of guides shortlisted,
+				 * filtered in the list below rather than a page of its own --
+				 * a button, because it changes this list and goes nowhere.
+				 * Gold-sealed like the badges, so it never reads as the paid
+				 * Featured band.
+				 */
+				?>
+				<?php if ( $oria_bo['slugs'] ) : ?>
+					<button type="button" class="quickf__chip quickf__chip--best" data-best-toggle aria-pressed="false">
+						<span class="badge--best__mark" aria-hidden="true">&#10022;</span>
+						<?php esc_html_e( 'Oria’s picks', 'oria' ); ?> <b><?php echo esc_html( number_format_i18n( count( $oria_bo['slugs'] ) ) ); ?></b>
+					</button>
+				<?php endif; ?>
 				<?php foreach ( array_slice( $oria_chips, 0, 6 ) as $oria_c ) { $oria_chip( $oria_c ); } ?>
 			</div>
 			<?php if ( count( $oria_chips ) > 6 ) : ?>
@@ -749,6 +790,9 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 		id="dirResults"
 		data-mode="category"
 		data-family="<?php echo esc_attr( implode( ' ', $oria_family ) ); ?>"
+		<?php if ( $oria_bo['slugs'] ) : ?>
+			data-best-picks="<?php echo esc_attr( implode( ',', $oria_bo['slugs'] ) ); ?>"
+		<?php endif; ?>
 		data-label="<?php echo esc_attr( strtolower( $oria_pname ) ); ?>"
 		data-cat="<?php echo esc_attr( $oria_term->slug ); ?>"
 		<?php // The city this page was scoped to, so the script keeps that scope. ?>
@@ -869,6 +913,11 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 		? sprintf( __( 'e.g. %1$s near %2$s after work', 'oria' ), strtolower( $oria_pname ), $oria_ask_sub )
 		/* translators: %s: category name, lowercased */
 		: sprintf( __( 'e.g. %s near the city after work', 'oria' ), strtolower( $oria_pname ) );
+	?>
+	<?php
+	if ( $oria_bo_lead ) {
+		get_template_part( 'template-parts/category', 'best-of', array( 'bo' => $oria_bo ) );
+	}
 	?>
 	<aside class="askband" aria-labelledby="askband-title">
 		<?php get_template_part( 'template-parts/oria-orb', null, array( 'class' => 'askband__orb', 'uid' => 'band' ) ); ?>

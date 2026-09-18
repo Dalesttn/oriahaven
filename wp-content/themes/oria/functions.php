@@ -2086,6 +2086,78 @@ function arrow(): string {
 }
 
 /**
+ * The Best Of guides that speak for this category page, and their picks on it.
+ *
+ * A guide belongs here when its directory category is this one, a parent of
+ * it, or a child of it (Best saunas, filed under Spa, is relevant on the
+ * infrared sauna page). Then only its picks that are actually on this page
+ * count -- the page's own set, so a suburb or a style shows its own
+ * shortlisted places and never a pick from across town. A guide with fewer
+ * than two picks here is left out: one name is not a shortlist.
+ *
+ * Editorial, and treated that way everywhere it surfaces: a gold-sealed
+ * "shortlisted" look, never the green Featured one, and never an input to
+ * "Most relevant".
+ *
+ * @param list<int> $ids the listings this page shows.
+ * @return array{guides: list<array{id:int, title:string, url:string, picks:list<array>}>, slugs: list<string>}
+ */
+function category_best_of( \WP_Term $term, array $ids ): array {
+	$none = array( 'guides' => array(), 'slugs' => array() );
+	if ( ! function_exists( '\Oria\Core\BestOf\guides' ) || ! $ids ) {
+		return $none;
+	}
+	$on     = array_flip( array_map( 'intval', $ids ) );
+	$guides = array();
+	foreach ( \Oria\Core\BestOf\guides() as $gid ) {
+		$gid = (int) ( $gid instanceof \WP_Post ? $gid->ID : $gid );
+		$p   = \Oria\Core\BestOf\practice( $gid );
+		if ( ! $p || ! ( $p->term_id === $term->term_id
+			|| term_is_ancestor_of( $p, $term, $term->taxonomy )
+			|| term_is_ancestor_of( $term, $p, $term->taxonomy ) ) ) {
+			continue;
+		}
+		$picks = array();
+		foreach ( \Oria\Core\BestOf\entries( $gid ) as $e ) {
+			if ( isset( $on[ (int) $e['listing'] ] ) ) {
+				$e['slug'] = (string) get_post_field( 'post_name', (int) $e['listing'] );
+				$picks[]   = $e;
+			}
+		}
+		if ( count( $picks ) < 2 ) {
+			continue;
+		}
+		$guides[] = array(
+			'id'       => $gid,
+			'title'    => html_entity_decode( get_the_title( $gid ), ENT_QUOTES ),
+			'url'      => (string) get_permalink( $gid ),
+			'picks'    => $picks,
+			'featured' => \Oria\Core\BestOf\is_featured( $gid ),
+			// The guide filed under this exact category leads over a
+			// parent's or a child's.
+			'own'      => $p->term_id === $term->term_id,
+		);
+	}
+	if ( ! $guides ) {
+		return $none;
+	}
+	// The category's own guide leads (Spa shows Best day spas, not Best ice
+	// baths filed under a child); then a featured guide, then the one with
+	// the most picks on this page.
+	usort(
+		$guides,
+		static fn( array $a, array $b ): int => array( $b['own'], $b['featured'], count( $b['picks'] ) ) <=> array( $a['own'], $a['featured'], count( $a['picks'] ) )
+	);
+	$slugs = array();
+	foreach ( $guides as $g ) {
+		foreach ( $g['picks'] as $e ) {
+			$slugs[ $e['slug'] ] = true;
+		}
+	}
+	return array( 'guides' => $guides, 'slugs' => array_keys( $slugs ) );
+}
+
+/**
  * The header of a supporting section at the foot of a page: title, one line
  * of context, and the section's "see all" on the same row, right-aligned to
  * the grid below it. One component so the products and apps sections share

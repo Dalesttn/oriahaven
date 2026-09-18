@@ -994,6 +994,59 @@ a.livesession:hover { background: var(--sand-2); }
 }
 .pagehead--rest { padding-top: 0; }
 
+/* --- Category pages: Best Of ---------------------------------------------
+   The header line and the shelf under the first page of listings. White
+   card, gold seals, sand accents: the editorial family, next to the sand
+   Ask Oria band below it without the two blurring into one block. */
+.cathero__best { margin: 0; font-size: var(--fs-sm); color: var(--text-soft); }
+.cathero__best a { color: var(--deep); font-weight: 600; text-decoration: none; }
+.cathero__best a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.cathero__best b { font-variant-numeric: tabular-nums; }
+
+.bestshelf {
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.25rem, 3vw, 2.25rem);
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r-lg);
+}
+.bestshelf__head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  flex-wrap: wrap; gap: var(--s-3) var(--s-5); margin-bottom: var(--s-5);
+}
+.bestshelf__eyebrow { margin: 0 0 var(--s-1); color: var(--moss); }
+.bestshelf__title { margin: 0; font-size: var(--fs-h3); line-height: 1.2; letter-spacing: -0.014em; font-weight: 600; text-wrap: balance; }
+.bestshelf__lede { margin: var(--s-1) 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
+.bestshelf__cta { flex: 0 0 auto; }
+
+.bestshelf__list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-4) var(--s-5);
+}
+/* Two across rather than three and an orphan. */
+@media (max-width: 64rem) { .bestshelf__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.bestpick { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: var(--s-3); align-items: start; }
+.bestpick__seal { width: 64px; height: 64px; }
+.bestpick__body { display: grid; gap: 2px; min-width: 0; }
+.bestpick__award { font-size: var(--fs-xs); font-weight: 600; color: var(--moss); }
+.bestpick__name { font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.3; }
+.bestpick__name:hover { text-decoration: underline; text-underline-offset: 3px; }
+.bestpick__where { font-size: var(--fs-xs); color: var(--text-faint); }
+.bestpick__why {
+  margin: 4px 0 0; font-size: var(--fs-xs); line-height: 1.5; color: var(--text-soft);
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.bestshelf__more { margin: var(--s-4) 0 0; padding-top: var(--s-3); border-top: 1px solid var(--line); font-size: var(--fs-xs); color: var(--text-soft); }
+.bestshelf__more a { color: var(--moss); font-weight: 600; }
+
+@media (max-width: 37.5rem) {
+  .bestshelf__head { flex-direction: column; align-items: flex-start; }
+  .bestshelf__list { grid-template-columns: 1fr; }
+  /* Three and two lines of reason on a phone: four stacked ran to 845px. */
+  .bestpick:nth-child(n+4) { display: none; }
+  .bestpick__why { -webkit-line-clamp: 2; }
+  .bestpick { grid-template-columns: 52px minmax(0, 1fr); }
+  .bestpick__seal { width: 52px; height: 52px; }
+}
+
 /* --- Category pages: "Can't find it?" under the pager ------------------
    Ask Oria for whoever the filters did not serve, in the space the section
    already leaves before the guide. A card on the page's grid, sand on
@@ -7008,6 +7061,13 @@ article.is-spotlit {
 .quickf__chip.is-current { background: var(--deep); border-color: var(--deep); color: var(--white); }
 .quickf__chip.is-current b { color: rgba(255, 255, 255, .8); }
 .quickf__chip.is-current::before { content: "\2713"; }
+/* "Oria's picks": the Best Of family -- sand with a gold mark, like the
+   badges on the cards -- so it never reads as the deep-green Featured band.
+   On is said three ways: a tick, a darker ground and a border. */
+.quickf__chip--best { background: var(--sand-2); border-color: rgba(14, 59, 56, .18); color: var(--deep); cursor: pointer; font-family: inherit; }
+.quickf__chip--best:hover { background: var(--white); }
+.quickf__chip--best[aria-pressed="true"] { background: var(--sand-3); border-color: var(--deep); }
+.quickf__chip--best[aria-pressed="true"]::before { content: "\2713"; }
 .quickf__more { margin-top: .5rem; }
 .quickf__more summary {
   display: inline-flex; align-items: center; min-height: 44px;

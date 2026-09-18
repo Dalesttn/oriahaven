@@ -1794,7 +1794,7 @@
     });
 
     var PER_PAGE = 10;
-    var state = { cats: [], regions: [], suburbs: [], spec: [], svc: [], aud: [], price: [], format: [], rating: 0, q: "", sort: "relevance", page: 1 };
+    var state = { cats: [], regions: [], suburbs: [], spec: [], svc: [], aud: [], price: [], format: [], rating: 0, q: "", sort: "relevance", page: 1, picks: false };
 
     /* Category pages (oria-practice-v2.php, data-mode="category") switch on
        four things the other directory pages keep off:
@@ -1814,6 +1814,11 @@
     var FAMILY = (root.dataset.family || "").split(" ").filter(Boolean);
     var band = CAT ? $("#featBand") : null;
     var bandIds = band ? (band.dataset.ids || "").split(",").filter(Boolean) : [];
+    /* "Oria's picks": the listings this category's Best Of guides
+       shortlisted (Theme\category_best_of, already cut to this page's own
+       set). A filter like any other -- it narrows, it never reorders, so
+       "Most relevant" stays free of it. */
+    var PICKS = CAT ? (root.dataset.bestPicks || "").split(",").filter(Boolean) : [];
     var reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     /* The want-tags a card leads with, derived from the listing's own
@@ -1875,6 +1880,7 @@
     if (params.get("price")) state.price = params.get("price").split(",");
     if (params.get("format")) state.format = params.get("format").split(",");
     if (params.get("pg")) state.page = Math.max(1, parseInt(params.get("pg"), 10) || 1);
+    if (PICKS.length && params.get("picks") === "1") state.picks = true;
     if (["relevance", "featured", "rating", "price", "name", "near"].indexOf(params.get("sort")) > -1 && params.get("sort") !== "near") {
       state.sort = params.get("sort");
     }
@@ -1933,6 +1939,18 @@
         position: idx < 0 ? 0 : (inBand ? idx + 1 : (state.page - 1) * PER_PAGE + idx + 1),
         featured: inBand
       };
+    }
+
+    if (CAT && PICKS.length) {
+      var pickToggle = $("[data-best-toggle]");
+      if (pickToggle) {
+        pickToggle.addEventListener("click", function () {
+          state.picks = !state.picks;
+          state.page = 1;
+          render();
+          catEvent("category_best_of_filter", { on: state.picks, results_count: lastCount });
+        });
+      }
     }
 
     if (CAT) {
@@ -2009,10 +2027,11 @@
       ["svc", "aud", "price", "format"].forEach(function (k) {
         n += extra(state[k], locked.intentKey === k ? [locked.intentValue] : []);
       });
-      return n + (state.rating ? 1 : 0) + (state.q ? 1 : 0);
+      return n + (state.rating ? 1 : 0) + (state.q ? 1 : 0) + (state.picks ? 1 : 0);
     }
 
     function matches(l) {
+      if (state.picks && PICKS.indexOf(l.id) === -1) return false;
       if (state.cats.length && state.cats.indexOf(l.cat) === -1 &&
           !(l.also || []).some(function (a) { return state.cats.indexOf(a) > -1; })) return false;
       if (state.regions.length && state.regions.indexOf(l.region) === -1) return false;
@@ -2331,7 +2350,12 @@
       state.format.forEach(function (f) { if (!isLockedIntent("format", f)) rest.push(["format", f, f === "online" ? "Online" : "In person"]); });
       if (state.rating) rest.push(["rating", String(state.rating), state.rating + "+ rating"]);
       if (state.q) rest.push(["q", state.q, '"' + state.q + '"']);
+      if (state.picks) kind.unshift(["picks", "1", "Oria\u2019s picks"]);
       var out = kind.concat(area, rest);
+
+      // The quick-filter button says whether it is on.
+      var pickBtn = $("[data-best-toggle]");
+      if (pickBtn) pickBtn.setAttribute("aria-pressed", state.picks ? "true" : "false");
 
       function chipHtml(c, cls) {
         return '<span class="chip' + (cls ? " " + cls : "") + '">' + esc(c[2]) +
@@ -2370,6 +2394,7 @@
         b.addEventListener("click", function () {
           var k = b.dataset.clearKind, v = b.dataset.clearVal;
           if (k === "q") { state.q = ""; }
+          else if (k === "picks") { state.picks = false; }
           else if (k === "rating") { state.rating = 0; }
           else {
             var key = k === "cat" ? "cats" : k === "region" ? "regions" : k;
@@ -2396,7 +2421,7 @@
       state.regions = locked.region ? [locked.region] : [];
       state.spec = locked.spec ? [locked.spec] : [];
       state.svc = []; state.aud = []; state.suburbs = [];
-      state.price = []; state.format = []; state.rating = 0; state.q = "";
+      state.price = []; state.format = []; state.rating = 0; state.q = ""; state.picks = false;
       // Clearing never unlocks the page's own facet.
       if (locked.intentKey && state[locked.intentKey] !== undefined) state[locked.intentKey] = [locked.intentValue];
       var qb = $("#dirQ");
@@ -2894,6 +2919,7 @@
             region: state.regions.filter(function (v) { return v !== locked.region; }).join(","),
             spec: state.spec.filter(function (v) { return v !== locked.spec; }).join(","),
             q: state.q || "",
+            picks: state.picks ? "1" : "",
             sort: state.sort !== "relevance" && state.sort !== "near" ? state.sort : ""
           };
           Object.keys(extra).forEach(function (k) {

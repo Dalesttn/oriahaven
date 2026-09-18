@@ -870,7 +870,7 @@ function filter_params(): array {
 	// sort, view and rating arrived with the category-page redesign: a
 	// shared link keeps the visitor's order and map, and none of it may
 	// become an indexable page of its own.
-	return array( 'aud', 'cat', 'format', 'pg', 'price', 'q', 'rating', 'region', 'sort', 'spec', 'suburb', 'svc', 'view' );
+	return array( 'aud', 'cat', 'format', 'pg', 'picks', 'price', 'q', 'rating', 'region', 'sort', 'spec', 'suburb', 'svc', 'view' );
 }
 
 /**
