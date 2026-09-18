@@ -383,6 +383,13 @@ $oria_section = static function ( string $field, string $heading, string $id = '
 			<?php
 			/* translators: 1: author, 2: date */
 			echo esc_html( sprintf( __( 'Written by %1$s · Reviewed %2$s', 'oria' ), ( '' !== get_the_author() ? get_the_author() : __( 'the Oria Haven editors', 'oria' ) ), Trends\reviewed( $oria_id ) ) );
+			// The cover picture's credit, from its caption: stock or not, a reader should
+			// know the photo is not necessarily the place.
+			$oria_cap = get_post_thumbnail_id( $oria_id ) ? trim( (string) wp_get_attachment_caption( get_post_thumbnail_id( $oria_id ) ) ) : '';
+			if ( '' !== $oria_cap ) {
+				/* translators: %s: photo credit */
+				echo ' · ' . esc_html( sprintf( __( 'Cover photo: %s', 'oria' ), $oria_cap ) );
+			}
 			if ( $oria_affil ) {
 				echo ' · ' . esc_html__( 'This page contains affiliate links; we may earn a commission at no extra cost to you.', 'oria' );
 			}

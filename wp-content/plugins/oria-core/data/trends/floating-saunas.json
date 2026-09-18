@@ -94,6 +94,13 @@
   "related_guides": { "best_of": ["saunas-perth", "ice-baths-perth"] },
   "related_trends": ["sauna-rituals", "cold-plunging"],
 
+  "cover": {
+    "file": "floating-saunas.webp",
+    "alt": "A small wooden sauna at the edge of a still, forest-lined lake",
+    "caption": "illustrative, not the venue. Gundula Vogel / Pexels",
+    "source": "https://www.pexels.com/photo/scenic-lake-with-wooden-sauna-and-forest-reflection-33788302/"
+  },
+
   "is_sponsored": false,
   "contains_affiliate_links": false,
   "editorial_stage": "ready_review",

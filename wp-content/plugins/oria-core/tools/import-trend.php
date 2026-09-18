@@ -49,6 +49,53 @@ if ( ! is_array( $d ) || ( $d['slug'] ?? '' ) !== $slug ) {
 	exit( "The file is not valid JSON, or its slug does not match.\n" );
 }
 
+/**
+ * The cover picture shipped beside the JSON (data/trends/{file}), added to
+ * the media library and set as the featured image -- only where the trend
+ * has none, so a picture an editor chose is never replaced. The caption
+ * carries the credit, which the trend page prints ("Cover photo: …").
+ */
+$set_cover = static function ( int $post_id, array $cover, bool $write ): string {
+	if ( get_post_thumbnail_id( $post_id ) ) {
+		return 'cover: the trend already has a featured image -- left as it is';
+	}
+	$src = dirname( __DIR__ ) . '/data/trends/' . basename( (string) ( $cover['file'] ?? '' ) );
+	if ( empty( $cover['file'] ) || ! is_readable( $src ) ) {
+		return 'cover: no picture file found';
+	}
+	if ( ! $write ) {
+		return 'cover: would add ' . basename( $src );
+	}
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	$tmp = wp_tempnam( basename( $src ) );
+	copy( $src, $tmp );
+	$att = media_handle_sideload( array( 'name' => basename( $src ), 'tmp_name' => $tmp ), $post_id, (string) ( $cover['alt'] ?? '' ) );
+	if ( is_wp_error( $att ) ) {
+		@unlink( $tmp ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+		return 'cover: FAILED -- ' . $att->get_error_message();
+	}
+	update_post_meta( $att, '_wp_attachment_image_alt', (string) ( $cover['alt'] ?? '' ) );
+	wp_update_post( array( 'ID' => $att, 'post_excerpt' => (string) ( $cover['caption'] ?? '' ), 'post_content' => (string) ( $cover['source'] ?? '' ) ) );
+	set_post_thumbnail( $post_id, $att );
+	return 'cover: added #' . $att;
+};
+
+/*
+ * --cover: add the picture only, to a trend that already exists -- the one
+ * change this tool will make to a PUBLISHED trend, because it only ever
+ * fills an empty featured image.
+ */
+if ( in_array( '--cover', $args, true ) ) {
+	$t = $into ? get_post( $into ) : get_page_by_path( $slug, OBJECT, Trends\POST_TYPE );
+	if ( ! $t || Trends\POST_TYPE !== $t->post_type ) {
+		exit( "No trend '{$slug}' to add a cover to. Import it first.\n" );
+	}
+	echo $set_cover( (int) $t->ID, (array) ( $d['cover'] ?? array() ), $apply ) . ( $apply ? '' : ' (dry run: add --apply)' ) . "\n";
+	exit( 0 );
+}
+
 echo "\n" . ( $apply ? "APPLY -- writing the draft.\n" : "DRY RUN -- nothing is written. Add --apply to write.\n" );
 echo str_repeat( '=', 72 ) . "\n";
 
@@ -189,6 +236,9 @@ update_field( 'reel_status', 'unchecked', $id );
 update_field( 'embed_allowed', 0, $id );
 update_field( 'permission_status', '', $id );
 
+if ( ! empty( $d['cover'] ) ) {
+	echo '      ' . $set_cover( (int) $id, (array) $d['cover'], true ) . "\n";
+}
 printf( "      wrote #%d (draft)\n\nStill needed before it can be published:\n", $id );
 foreach ( Trends\missing( (int) $id ) as $m ) {
 	echo "  - {$m}\n";
