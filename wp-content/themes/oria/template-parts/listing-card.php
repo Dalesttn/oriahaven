@@ -60,42 +60,6 @@ $oria_badges = array(
 	<div class="listing__body">
 		<?php
 		/*
-		 * Category first. It answers "what kind of place is this" before the
-		 * name does, which is what somebody scanning a long list is actually
-		 * asking. Attribute pills — online, offer, next session — stay under
-		 * the description: they say what is available rather than what this
-		 * is, and moving all of them up here made a row nobody could scan.
-		 *
-		 * top_for() walks to the top level rather than printing whichever
-		 * practice term came back first. That mattered the moment categories
-		 * gained parents: a meditation studio would have shown "Meditation
-		 * classes" where the sidebar and the URL both say "Mind & Mental
-		 * Wellbeing".
-		 */
-		$oria_cats = function_exists( '\Oria\Core\Categories\top_for' )
-			? \Oria\Core\Categories\top_for( $oria_id )
-			: array();
-		?>
-		<?php
-		// Want-tags lead when the listing's specialties map to any -- the
-		// category pill stays as the fallback. Mirrors gfTags() in app.js.
-		$oria_gf = function_exists( '\Oria\Core\GoodFor\for_listing' ) ? \Oria\Core\GoodFor\for_listing( $oria_id ) : array();
-		?>
-		<?php if ( $oria_gf ) : ?>
-			<div class="listing__cats">
-				<?php foreach ( $oria_gf as $oria_g ) : ?>
-					<span class="pill pill--gf" style="--gf:<?php echo esc_attr( $oria_g['color'] ); ?>"><?php echo esc_html( $oria_g['label'] ); ?></span>
-				<?php endforeach; ?>
-			</div>
-		<?php elseif ( $oria_cats ) : ?>
-			<div class="listing__cats">
-				<?php foreach ( $oria_cats as $oria_cat ) : ?>
-					<a class="pill pill--cat pill--cat-<?php echo esc_attr( $oria_cat['term']->slug ); ?>" href="<?php echo esc_url( (string) get_term_link( $oria_cat['term'] ) ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_cat['term'] ) ); ?></a>
-				<?php endforeach; ?>
-			</div>
-		<?php endif; ?>
-		<?php
-		/*
 		 * One editorial badge at most, linked to the guide that awarded it.
 		 * Read from the Best Of guides, never stored here -- see BestOf\index().
 		 * Mirrors the `best` branch in app.js card().
@@ -147,27 +111,54 @@ $oria_badges = array(
 			<?php endif; ?>
 		</div>
 
-		<p class="listing__desc"><?php echo esc_html( get_the_excerpt() ); ?></p>
+		<?php
+		/*
+		 * At most three tags, practical ones first -- beginner friendly,
+		 * online, free, a live offer -- then the wellness-goal tags, then
+		 * the category as the fallback. Mirrors cardTags() in app.js, which
+		 * redraws every one of these cards on a directory page. The UX audit
+		 * found up to six pills competing with the practice's own name.
+		 */
+		$oria_tags = array();
+		$oria_auds = wp_get_post_terms( $oria_id, 'audience', array( 'fields' => 'slugs' ) );
+		if ( ! is_wp_error( $oria_auds ) && in_array( 'beginners', $oria_auds, true ) ) {
+			$oria_tags[] = '<span class="pill">' . esc_html__( 'Beginner friendly', 'oria' ) . '</span>';
+		}
+		if ( '' !== $oria_format && 'in-person' !== $oria_format ) {
+			$oria_tags[] = '<span class="pill">' . esc_html__( 'Online available', 'oria' ) . '</span>';
+		}
+		if ( 'Free' === (string) get_field( 'price_band', $oria_id ) ) {
+			$oria_tags[] = '<span class="pill">' . esc_html__( 'Free', 'oria' ) . '</span>';
+		}
+		if ( \Oria\Theme\active_offer( $oria_id ) ) {
+			$oria_tags[] = '<span class="pill pill--offer">' . esc_html__( 'Special offer', 'oria' ) . '</span>';
+		}
+		$oria_gf = function_exists( '\Oria\Core\GoodFor\for_listing' ) ? \Oria\Core\GoodFor\for_listing( $oria_id ) : array();
+		foreach ( $oria_gf as $oria_g ) {
+			$oria_tags[] = '<span class="pill pill--gf" style="--gf:' . esc_attr( $oria_g['color'] ) . '">' . esc_html( $oria_g['label'] ) . '</span>';
+		}
+		if ( ! $oria_tags && function_exists( '\Oria\Core\Categories\top_for' ) ) {
+			foreach ( \Oria\Core\Categories\top_for( $oria_id ) as $oria_cat ) {
+				$oria_tags[] = '<a class="pill pill--cat pill--cat-' . esc_attr( $oria_cat['term']->slug ) . '" href="' . esc_url( (string) get_term_link( $oria_cat['term'] ) ) . '">' . esc_html( \Oria\Theme\tname( $oria_cat['term'] ) ) . '</a>';
+			}
+		}
+		?>
+		<?php if ( $oria_tags ) : ?>
+			<div class="listing__tags"><?php echo implode( '', array_slice( $oria_tags, 0, 3 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- built from escaped parts above ?></div>
+		<?php endif; ?>
 
-		<div class="listing__tags">
-			<?php if ( 'in-person' !== $oria_format ) : ?>
-				<span class="pill"><?php esc_html_e( 'Online available', 'oria' ); ?></span>
-			<?php endif; ?>
-			<?php if ( \Oria\Theme\active_offer( $oria_id ) ) : ?>
-				<span class="pill" style="background:var(--gold-soft);border-color:transparent;color:#7A5A12;font-weight:700"><?php esc_html_e( 'Special offer', 'oria' ); ?></span>
-			<?php endif; ?>
-			<?php $oria_next = (string) get_field( 'next_session', $oria_id ); ?>
-			<?php if ( $oria_next ) : ?>
-				<span class="pill"><?php printf( esc_html__( 'Next: %s', 'oria' ), esc_html( $oria_next ) ); ?></span>
-			<?php endif; ?>
-		</div>
+		<p class="listing__desc"><?php echo esc_html( get_the_excerpt() ); ?></p>
 
 		<div class="listing__foot">
 			<span class="listing__price">
 				<?php if ( (int) $oria_price_from > 0 ) : ?>
 					$<?php echo esc_html( (string) (int) $oria_price_from ); ?> <span>/ <?php esc_html_e( 'session', 'oria' ); ?></span>
 				<?php else : ?>
-					&nbsp;
+					<span class="listing__price--none"><?php esc_html_e( 'Price not published', 'oria' ); ?></span>
+				<?php endif; ?>
+				<?php $oria_next = (string) get_field( 'next_session', $oria_id ); ?>
+				<?php if ( $oria_next ) : ?>
+					<span class="listing__next"><?php printf( esc_html__( 'Next: %s', 'oria' ), esc_html( $oria_next ) ); ?></span>
 				<?php endif; ?>
 			</span>
 			<?php

@@ -88,6 +88,8 @@ $oria_suburbs = array();
 $oria_claimed = 0;
 $oria_bands   = array();
 $oria_prices  = array();
+$oria_free    = 0;
+$oria_online  = 0;
 foreach ( $oria_ids as $oria_id ) {
 	foreach ( \Oria\Theme\oria_terms_of( (int) $oria_id, 'area' ) as $oria_a ) {
 		if ( $oria_a->parent ) { $oria_suburbs[ $oria_a->slug ] = true; }
@@ -97,6 +99,8 @@ foreach ( $oria_ids as $oria_id ) {
 	if ( '' !== $oria_b ) { $oria_bands[ $oria_b ] = ( $oria_bands[ $oria_b ] ?? 0 ) + 1; }
 	$oria_pf = get_field( 'price_from', (int) $oria_id );
 	if ( is_numeric( $oria_pf ) && (float) $oria_pf > 0 ) { $oria_prices[] = (float) $oria_pf; }
+	if ( 'Free' === $oria_b ) { ++$oria_free; }
+	if ( 'in-person' !== (string) ( get_field( 'format', (int) $oria_id ) ?: 'in-person' ) ) { ++$oria_online; }
 }
 arsort( $oria_bands );
 $oria_typical = $oria_bands ? (string) array_key_first( $oria_bands ) : '';
@@ -222,24 +226,29 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 <nav class="spine" aria-label="<?php esc_attr_e( 'Page sections', 'oria' ); ?>">
 	<div class="wrap spine__row">
 		<?php
-		// Numbered from what the page actually has, so an optional floor
-		// never leaves a gap in the count.
-		$oria_floors = array( array( '#decide', __( 'Decide', 'oria' ) ) );
-		/* translators: %s: number of listings */
-		$oria_floors[] = array( '#browse', sprintf( __( 'Browse all %s', 'oria' ), number_format_i18n( count( $oria_ids ) ) ) );
+		/*
+		 * Named, not numbered: the UX audit found "1 Decide 2 Browse" read
+		 * as pagination. In the order the page actually runs, and only the
+		 * sections this page has.
+		 */
+		$oria_floors = array(
+			array( '#decide', __( 'Overview', 'oria' ) ),
+			/* translators: %s: number of listings */
+			array( '#browse', sprintf( __( 'Listings (%s)', 'oria' ), number_format_i18n( count( $oria_ids ) ) ) ),
+			array( '#read', __( 'Guide', 'oria' ) ),
+		);
 		if ( $oria_events ) {
 			$oria_floors[] = array( '#events', __( "What's on", 'oria' ) );
 		}
-		$oria_floors[] = array( '#read', __( 'Read up', 'oria' ) );
 		if ( $oria_guides || $oria_latest ) {
-			$oria_floors[] = array( '#guides', __( 'Guides', 'oria' ) );
+			$oria_floors[] = array( '#guides', __( 'Reading', 'oria' ) );
 		}
 		if ( $oria_faqs ) {
-			$oria_floors[] = array( '#faq', __( 'FAQ', 'oria' ) );
+			$oria_floors[] = array( '#faq', __( 'FAQs', 'oria' ) );
 		}
-		foreach ( $oria_floors as $oria_n => $oria_f ) :
+		foreach ( $oria_floors as $oria_f ) :
 			?>
-			<a href="<?php echo esc_attr( $oria_f[0] ); ?>"><b><?php echo (int) $oria_n + 1; ?></b> <?php echo esc_html( $oria_f[1] ); ?></a>
+			<a href="<?php echo esc_attr( $oria_f[0] ); ?>"><?php echo esc_html( $oria_f[1] ); ?></a>
 		<?php endforeach; ?>
 	</div>
 </nav>
@@ -307,238 +316,199 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 		$oria_near = array_slice( $oria_near, 0, 12, true );
 	}
 	?>
-	<div class="decide">
-		<div class="decide__answer">
+	<?php
+	/*
+	 * The map, built here because the hero's "Open map" needs to know
+	 * whether there is one. It is drawn in the Browse floor now, behind the
+	 * List | Map switch -- the UX audit found it filling half the opening
+	 * screen before anybody had asked for it.
+	 */
+	$oria_map = array();
+	foreach ( $oria_ids as $oria_mid ) {
+		$oria_mla = get_post_meta( (int) $oria_mid, 'geo_lat', true );
+		$oria_mlo = get_post_meta( (int) $oria_mid, 'geo_lng', true );
+		if ( ! is_numeric( $oria_mla ) || ! is_numeric( $oria_mlo ) || 0.0 === (float) $oria_mla ) {
+			continue;
+		}
+		$oria_msub = '';
+		foreach ( \Oria\Theme\oria_terms_of( (int) $oria_mid, 'area' ) as $oria_mt ) {
+			if ( $oria_mt->parent ) { $oria_msub = $oria_mt->name; break; }
+		}
+		$oria_map[] = array(
+			'n'  => wp_specialchars_decode( (string) get_post_field( 'post_title', $oria_mid, 'raw' ), ENT_QUOTES ),
+			'u'  => (string) get_permalink( (int) $oria_mid ),
+			'la' => (float) $oria_mla,
+			'lo' => (float) $oria_mlo,
+			's'  => $oria_msub,
+			'i'  => function_exists( '\Oria\Theme\listing_image' ) ? \Oria\Theme\listing_image( (int) $oria_mid ) : '',
+			'r'  => function_exists( '\Oria\Core\Places\rating_for' ) ? round( \Oria\Core\Places\rating_for( (int) $oria_mid, false )['rating'], 1 ) : 0,
+			'o'  => function_exists( '\Oria\Core\Places\open_now' ) ? \Oria\Core\Places\open_now( (int) $oria_mid ) : null,
+		);
+	}
+
+	/*
+	 * The emotional register, one line under the H1. Base view only:
+	 * facet and suburb views are already narrowed to a decision.
+	 */
+	$oria_tag = '';
+	if ( ! $oria_facet && ! $oria_area && function_exists( '\Oria\Core\Categories\tagline_for' ) ) {
+		$oria_tag = \Oria\Core\Categories\tagline_for( (string) $oria_term->slug );
+		if ( '' === $oria_tag && $oria_term->parent ) {
+			$oria_parent = get_term( $oria_term->parent, 'practice' );
+			if ( $oria_parent instanceof WP_Term ) {
+				$oria_tag = \Oria\Core\Categories\tagline_for( (string) $oria_parent->slug );
+			}
+		}
+	}
+
+	/*
+	 * The numbers, as five things you can read at a glance instead of a
+	 * paragraph you have to parse. Every one is counted live from the
+	 * listings on this page; any that has nothing to say is left out.
+	 */
+	$oria_stats = array();
+	$oria_n     = count( $oria_ids );
+	/* translators: %s: number of practices */
+	$oria_stats[] = sprintf( _n( '%s practice', '%s practices', $oria_n, 'oria' ), number_format_i18n( $oria_n ) );
+	if ( count( $oria_suburbs ) > 1 ) {
+		/* translators: %s: number of suburbs */
+		$oria_stats[] = sprintf( __( '%s suburbs', 'oria' ), number_format_i18n( count( $oria_suburbs ) ) );
+	}
+	if ( $oria_prices ) {
+		/* translators: %s: lowest published starting price */
+		$oria_stats[] = sprintf( __( 'From $%s', 'oria' ), number_format_i18n( (float) min( $oria_prices ) ) );
+	}
+	if ( $oria_price > 0 ) {
+		/* translators: %s: median published starting price */
+		$oria_stats[] = sprintf( __( 'Typically $%s', 'oria' ), number_format_i18n( round( $oria_price ) ) );
+	} elseif ( '' !== $oria_typical ) {
+		/* translators: %s: the most common price band, e.g. $$ */
+		$oria_stats[] = sprintf( __( 'Mostly %s', 'oria' ), $oria_typical );
+	}
+	if ( $oria_free ) {
+		/* translators: %s: number of free or by-donation practices */
+		$oria_stats[] = sprintf( __( '%s free or by donation', 'oria' ), number_format_i18n( $oria_free ) );
+	} elseif ( $oria_online ) {
+		/* translators: %s: number of practices offering online sessions */
+		$oria_stats[] = sprintf( __( '%s online', 'oria' ), number_format_i18n( $oria_online ) );
+	}
+	$oria_stats   = array_slice( $oria_stats, 0, 5 );
+	$oria_updated = '' !== (string) ( $oria_answer['updated'] ?? '' ) ? (string) $oria_answer['updated'] : date_i18n( 'j F Y' );
+	?>
+	<div class="cathero">
 		<div class="decide__head">
 			<span class="micro"><?php echo $oria_facet ? esc_html( $oria_pname ) . ' · ' . esc_html__( 'Filtered view', 'oria' ) : esc_html__( 'Explore', 'oria' ); ?></span>
 			<h1 class="h1 pagehead__title"><?php echo esc_html( $oria_h1 ); ?></h1>
-			<?php
-			/*
-			 * The emotional register, one line, before the numbers. Base view
-			 * only: facet and suburb views are already narrowed to a decision,
-			 * and their opener copy does this job.
-			 */
-			$oria_tag = '';
-			if ( ! $oria_facet && ! $oria_area && function_exists( '\Oria\Core\Categories\tagline_for' ) ) {
-				$oria_tag = \Oria\Core\Categories\tagline_for( (string) $oria_term->slug );
-				if ( '' === $oria_tag && $oria_term->parent ) {
-					// Child categories inherit the parent's line — "Meditation
-					// classes" reads under Mind's tagline as naturally as Mind does.
-					$oria_parent = get_term( $oria_term->parent, 'practice' );
-					if ( $oria_parent instanceof WP_Term ) {
-						$oria_tag = \Oria\Core\Categories\tagline_for( (string) $oria_parent->slug );
-					}
-				}
-			}
-			?>
 			<?php if ( '' !== $oria_tag ) : ?>
 				<p class="pagehead__tag"><?php echo esc_html( $oria_tag ); ?></p>
 			<?php endif; ?>
 		</div>
-			<?php if ( $oria_facet ) : ?>
-				<span class="micro"><?php esc_html_e( 'The short answer', 'oria' ); ?></span>
-				<p class="lede" style="margin-top:.5rem;max-width:62ch">
-					<?php
-					printf(
-						/* translators: 1: matching count, 2: category total, 3: category name. */
-						esc_html__( '%1$s of the %2$s %3$s listings in the directory match this view. The count is live, and the order below is members first, then alphabetical — never by rating.', 'oria' ),
-						'<b>' . esc_html( number_format_i18n( count( $oria_ids ) ) ) . '</b>',
-						esc_html( number_format_i18n( count( $oria_all ) ) ),
-						esc_html( strtolower( $oria_pname ) )
-					);
-					?>
-				</p>
-				<?php if ( ! empty( $oria_frame['opener'] ) ) : ?>
-					<p class="hint" style="margin-top:.6rem;max-width:62ch"><?php echo esc_html( $oria_fill( (string) $oria_frame['opener'] ) ); ?></p>
-				<?php endif; ?>
+
+		<?php if ( $oria_facet && ! empty( $oria_frame['opener'] ) ) : ?>
+			<p class="cathero__lede"><?php echo esc_html( $oria_fill( (string) $oria_frame['opener'] ) ); ?></p>
+		<?php elseif ( ! $oria_facet && ! $oria_answer['sentences'] && $oria_term->description ) : ?>
+			<p class="cathero__lede"><?php echo esc_html( $oria_term->description ); ?></p>
+		<?php endif; ?>
+
+		<ul class="catstats" aria-label="<?php esc_attr_e( 'At a glance', 'oria' ); ?>">
+			<?php foreach ( $oria_stats as $oria_st ) : ?>
+				<li><?php echo esc_html( $oria_st ); ?></li>
+			<?php endforeach; ?>
+		</ul>
+
+		<div class="catactions">
+			<button type="button" class="btn btn--dark btn--sm" data-hero-near><?php esc_html_e( 'Find places near me', 'oria' ); ?></button>
+			<a class="btn btn--ghost btn--sm" href="#results">
 				<?php
-				/*
-				 * "Who it suits" — answered by counting what these businesses
-				 * publish, never by asserting anything about the reader. Absent
-				 * until somebody has actually checked, which is the point of it.
-				 */
-				$oria_aud = ( $oria_facet && function_exists( '\Oria\Core\IntentPages\audience_note' ) && ! empty( $oria_facet['page'] ) )
-					? \Oria\Core\IntentPages\audience_note(
-						$oria_facet['page'],
-						array( 'ids' => $oria_ids )
-					)
-					: null;
+				/* translators: %s: number of listings */
+				printf( esc_html__( 'Browse all %s', 'oria' ), esc_html( number_format_i18n( $oria_n ) ) );
 				?>
-				<?php if ( $oria_aud ) : ?>
-					<p class="hint" style="margin-top:.6rem;max-width:62ch">
+			</a>
+			<?php if ( $oria_map ) : ?>
+				<button type="button" class="btn btn--ghost btn--sm" data-open-map><?php esc_html_e( 'Open map', 'oria' ); ?></button>
+			<?php endif; ?>
+		</div>
+
+		<p class="cathero__trust">
+			<?php
+			/* translators: %s: date the figures were last updated */
+			printf( esc_html__( 'Every listing hand-checked · Updated %s', 'oria' ), esc_html( $oria_updated ) );
+			?>
+		</p>
+
+		<?php
+		/*
+		 * The detail behind the numbers, one tap away rather than in the
+		 * way. It stays in the page's HTML either way, so the quotable
+		 * sentences answer engines lift are still there for them.
+		 */
+		$oria_aud = ( $oria_facet && function_exists( '\Oria\Core\IntentPages\audience_note' ) && ! empty( $oria_facet['page'] ) )
+			? \Oria\Core\IntentPages\audience_note( $oria_facet['page'], array( 'ids' => $oria_ids ) )
+			: null;
+		?>
+		<details class="catabout">
+			<summary><?php esc_html_e( 'About these results', 'oria' ); ?></summary>
+			<div class="catabout__body">
+				<?php if ( $oria_facet ) : ?>
+					<p>
 						<?php
-						/*
-						 * Label first, because the audience names are noun
-						 * phrases — "Beginner friendly", "Step-free access",
-						 * "Drop-in welcome" — and none of them sits inside a
-						 * sentence without bending it.
-						 */
 						printf(
-							/* translators: 1: audience name e.g. "Beginner friendly", 2: how many say so, 3: how many on this page. */
-							esc_html__( '%1$s — %2$s of the %3$s here say so on their own website or timetable.', 'oria' ),
-							esc_html( (string) $oria_aud['name'] ),
-							esc_html( number_format_i18n( (int) $oria_aud['yes'] ) ),
-							esc_html( number_format_i18n( (int) $oria_aud['of'] ) )
+							/* translators: 1: matching count, 2: category total, 3: category name. */
+							esc_html__( '%1$s of the %2$s %3$s listings in the directory match this view. The count is live, and the order puts specialists first — paid placement never moves anyone up it.', 'oria' ),
+							'<b>' . esc_html( number_format_i18n( $oria_n ) ) . '</b>',
+							esc_html( number_format_i18n( count( $oria_all ) ) ),
+							esc_html( strtolower( $oria_pname ) )
 						);
 						?>
 					</p>
+					<?php if ( $oria_aud ) : ?>
+						<p>
+							<?php
+							printf(
+								/* translators: 1: audience name, 2: how many say so, 3: how many on this page. */
+								esc_html__( '%1$s — %2$s of the %3$s here say so on their own website or timetable.', 'oria' ),
+								esc_html( (string) $oria_aud['name'] ),
+								esc_html( number_format_i18n( (int) $oria_aud['yes'] ) ),
+								esc_html( number_format_i18n( (int) $oria_aud['of'] ) )
+							);
+							?>
+						</p>
+					<?php endif; ?>
+					<?php if ( $oria_ids && $oria_all ) : ?>
+						<p>
+							<?php
+							if ( $oria_area ) {
+								printf(
+									/* translators: 1: month year, 2: count, 3: total, 4: category, 5: suburb */
+									esc_html__( 'As of %1$s, %2$s of the %3$s %4$s listings on Oria Haven are in %5$s — counted live from the directory.', 'oria' ),
+									esc_html( date_i18n( 'F Y' ) ),
+									esc_html( number_format_i18n( $oria_n ) ),
+									esc_html( number_format_i18n( count( $oria_all ) ) ),
+									esc_html( $oria_pname ),
+									esc_html( \Oria\Theme\tname( $oria_area ) )
+								);
+							} else {
+								printf(
+									/* translators: 1: month year, 2: count, 3: total, 4: category */
+									esc_html__( 'As of %1$s, %2$s of the %3$s %4$s listings on Oria Haven match this page — counted live from the directory.', 'oria' ),
+									esc_html( date_i18n( 'F Y' ) ),
+									esc_html( number_format_i18n( $oria_n ) ),
+									esc_html( number_format_i18n( count( $oria_all ) ) ),
+									esc_html( $oria_pname )
+								);
+							}
+							?>
+						</p>
+					<?php endif; ?>
+				<?php elseif ( $oria_answer['sentences'] ) : ?>
+					<p><?php echo esc_html( implode( ' ', $oria_answer['sentences'] ) ); ?></p>
 				<?php endif; ?>
-			<?php elseif ( $oria_answer['sentences'] ) : ?>
-				<span class="micro"><?php esc_html_e( 'The short answer', 'oria' ); ?></span>
-				<p class="lede" style="margin-top:.5rem;max-width:62ch"><?php echo esc_html( implode( ' ', $oria_answer['sentences'] ) ); ?></p>
-				<p class="hint" style="margin-top:.6rem"><?php printf( esc_html__( 'Every listing hand-checked. Figures live from the directory, last updated %s.', 'oria' ), esc_html( (string) $oria_answer['updated'] ) ); ?></p>
-			<?php elseif ( $oria_term->description ) : ?>
-				<p class="lede" style="max-width:62ch"><?php echo esc_html( $oria_term->description ); ?></p>
-			<?php endif; ?>
-			<?php if ( $oria_facet && $oria_ids && $oria_all ) : ?>
-				<?php
-				/*
-				 * One dated, quotable sentence with real numbers. AI answer
-				 * engines lift exactly this shape -- a count, a place, a
-				 * date -- and a sentence they can quote is a citation the
-				 * site earns. Counts only; nothing about what any of it
-				 * does for anybody.
-				 */
-				?>
-				<p class="hint" style="margin-top:.6rem;max-width:62ch">
-					<?php
-					if ( $oria_area ) {
-						printf(
-							/* translators: 1: month year, 2: count, 3: total, 4: category, 5: suburb */
-							esc_html__( 'As of %1$s, %2$s of the %3$s %4$s listings on Oria Haven are in %5$s — counted live from the directory.', 'oria' ),
-							esc_html( date_i18n( 'F Y' ) ),
-							esc_html( number_format_i18n( count( $oria_ids ) ) ),
-							esc_html( number_format_i18n( count( $oria_all ) ) ),
-							esc_html( $oria_pname ),
-							esc_html( \Oria\Theme\tname( $oria_area ) )
-						);
-					} else {
-						printf(
-							/* translators: 1: month year, 2: count, 3: total, 4: category */
-							esc_html__( 'As of %1$s, %2$s of the %3$s %4$s listings on Oria Haven match this page — counted live from the directory.', 'oria' ),
-							esc_html( date_i18n( 'F Y' ) ),
-							esc_html( number_format_i18n( count( $oria_ids ) ) ),
-							esc_html( number_format_i18n( count( $oria_all ) ) ),
-							esc_html( $oria_pname )
-						);
-					}
-					?>
+				<p class="hint">
+					<?php esc_html_e( 'Most relevant means practices that specialise in this first, then the ones with the most reviews to go on. Paid placements are shown once, in their own band, and never move anyone up the list.', 'oria' ); ?>
 				</p>
-			<?php endif; ?>
-		</div>
-		<?php
-		/*
-		 * The right column is the map: every listing on this page with a
-		 * pin at its real coordinates (coverage is 100% — geo_lat/geo_lng
-		 * are set on import). Hover names the place, click goes to it, and
-		 * the suburb pills beneath drill into the area facet pages. Facet
-		 * and suburb views get the map too — narrowed to their own pins.
-		 */
-		$oria_map = array();
-		foreach ( $oria_ids as $oria_mid ) {
-			$oria_mla = get_post_meta( (int) $oria_mid, 'geo_lat', true );
-			$oria_mlo = get_post_meta( (int) $oria_mid, 'geo_lng', true );
-			if ( ! is_numeric( $oria_mla ) || ! is_numeric( $oria_mlo ) || 0.0 === (float) $oria_mla ) {
-				continue;
-			}
-			$oria_mterms = \Oria\Theme\oria_terms_of( (int) $oria_mid, 'area' );
-			$oria_msub  = '';
-			foreach ( $oria_mterms as $oria_mt ) {
-				if ( $oria_mt->parent ) { $oria_msub = $oria_mt->name; break; }
-			}
-			$oria_map[] = array(
-				'n'  => wp_specialchars_decode( (string) get_post_field( 'post_title', $oria_mid, 'raw' ), ENT_QUOTES ),
-				'u'  => (string) get_permalink( (int) $oria_mid ),
-				'la' => (float) $oria_mla,
-				'lo' => (float) $oria_mlo,
-				's'  => $oria_msub,
-				// Same image the listing card shows, so map and cards agree.
-				'i'  => function_exists( '\Oria\Theme\listing_image' ) ? \Oria\Theme\listing_image( (int) $oria_mid ) : '',
-				'r'  => function_exists( '\Oria\Core\Places\rating_for' ) ? round( \Oria\Core\Places\rating_for( (int) $oria_mid, false )['rating'], 1 ) : 0,
-				'o'  => function_exists( '\Oria\Core\Places\open_now' ) ? \Oria\Core\Places\open_now( (int) $oria_mid ) : null,
-			);
-		}
-		?>
-		<?php if ( $oria_map ) : ?>
-		<div class="decide__map">
-			<div class="catmap" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of %1$s places across %2$s', 'oria' ), esc_attr( $oria_pname ), esc_attr( $oria_cname ) ); ?>">
-				<div class="catmap__tip" hidden></div>
 			</div>
-			<script type="application/json" data-catmap-data><?php echo wp_json_encode( $oria_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data script tag ?></script>
-			<?php if ( $oria_near ) : ?>
-				<div class="nearyou nearyou--map">
-					<h2 class="h4"><?php printf( esc_html__( '%s near you', 'oria' ), esc_html( $oria_pname ) ); ?></h2>
-					<div class="nearyou__pills">
-						<?php foreach ( $oria_near as $oria_nslug => $oria_nrow ) : ?>
-							<a class="pill" data-suburb="<?php echo esc_attr( $oria_nrow['name'] ); ?>" href="<?php echo esc_url( \Oria\Core\PracticesIndex\category_url( $oria_term ) . $oria_nslug . '/' ); ?>">
-								<?php echo esc_html( $oria_nrow['name'] ); ?> <span class="nearyou__n"><?php echo esc_html( number_format_i18n( $oria_nrow['n'] ) ); ?></span>
-							</a>
-						<?php endforeach; ?>
-					</div>
-					<p class="hint" style="margin-top:.5rem"><?php esc_html_e( 'Click a suburb to zoom the map there — click it again to zoom back out.', 'oria' ); ?></p>
-				</div>
-			<?php endif; ?>
-		</div>
-		<?php endif; ?>
+		</details>
 	</div>
-
-	<?php if ( count( $oria_rows ) >= 2 ) : ?>
-		<h2 class="h3 typewrite" style="margin-top:2rem" data-typewrite><?php echo $oria_facet ? esc_html__( 'Or another kind', 'oria' ) : esc_html__( 'Start with what you want to do', 'oria' ); ?></h2>
-		<p class="hint typewrite__after" style="margin:.35rem 0 1rem"><?php printf( esc_html__( 'Each is a filtered view of the %s listings — it counts, it never ranks.', 'oria' ), esc_html( number_format_i18n( count( $oria_all ) ) ) ); ?></p>
-		<div class="intentgrid">
-			<?php if ( $oria_facet ) : ?>
-				<a class="intentcard intentcard--all" href="<?php echo esc_url( $oria_here ); ?>" style="--i:0">
-					<span class="intentcard__label"><?php printf( esc_html__( 'All %s', 'oria' ), esc_html( strtolower( $oria_pname ) ) ); ?></span>
-					<span class="intentcard__count"><?php echo esc_html( number_format_i18n( count( $oria_all ) ) ); ?> <span aria-hidden="true">→</span></span>
-				</a>
-			<?php endif; ?>
-			<?php
-			/*
-			 * The same service across the whole directory rather than just
-			 * this category -- /perth/{specialty}/. Those pages carried two
-			 * internal links each (the /perth/ hub and a stray query string),
-			 * which is why Google crawled them monthly and ranked them in the
-			 * eighties. This is the one contextually right place to link them
-			 * from: the narrow view pointing at the broad one.
-			 */
-			$oria_specpage = null;
-			if ( $oria_facet && in_array( $oria_facet['key'] ?? '', array( 'svc', 'spec' ), true ) ) {
-				$oria_st = get_term_by( 'slug', (string) $oria_facet['slug'], 'specialty' );
-				if ( ! $oria_st instanceof WP_Term ) {
-					$oria_st = get_term_by( 'slug', (string) $oria_facet['value'], 'specialty' );
-				}
-				// Only when it genuinely holds more than this page does --
-				// otherwise the link promises a wider view and delivers this one.
-				if ( $oria_st instanceof WP_Term && (int) $oria_st->count > count( $oria_ids ) ) {
-					$oria_specpage = $oria_st;
-				}
-			}
-			?>
-			<?php if ( $oria_specpage ) : ?>
-				<a class="intentcard intentcard--all" href="<?php echo esc_url( \Oria\Core\PracticesIndex\specialty_url( $oria_specpage ) ); ?>" style="--i:0">
-					<span class="intentcard__label"><?php printf( esc_html__( 'All %1$s in %2$s', 'oria' ), esc_html( strtolower( \Oria\Theme\tname( $oria_specpage ) ) ), esc_html( $oria_cname ) ); ?></span>
-					<span class="intentcard__count"><?php echo esc_html( number_format_i18n( (int) $oria_specpage->count ) ); ?> <span aria-hidden="true">→</span></span>
-				</a>
-			<?php endif; ?>
-			<?php
-			$oria_i = $oria_facet ? 1 : 0; // the "All …" card, when present, takes slot 0
-			foreach ( $oria_rows as $oria_row ) :
-				$oria_href = $oria_row_url( $oria_row );
-				$oria_on   = '' !== $oria_facet_href && untrailingslashit( $oria_href ) === untrailingslashit( $oria_facet_href );
-				?>
-				<a class="intentcard<?php echo $oria_on ? ' is-current' : ''; ?>" href="<?php echo esc_url( $oria_href ); ?>"<?php echo $oria_on ? ' aria-current="page"' : ''; ?> style="--i:<?php echo (int) $oria_i++; ?>">
-					<span class="intentcard__body">
-						<span class="intentcard__label"><?php echo esc_html( (string) $oria_row['label'] ); ?></span>
-						<?php // Only rows backed by an intent page carry one, so the grid degrades to labels. ?>
-						<?php if ( '' !== (string) ( $oria_row['note'] ?? '' ) ) : ?>
-							<span class="intentcard__note"><?php echo esc_html( (string) $oria_row['note'] ); ?></span>
-						<?php endif; ?>
-					</span>
-					<span class="intentcard__count"><?php echo esc_html( number_format_i18n( (int) $oria_row['count'] ) ); ?> <span aria-hidden="true"><?php echo $oria_on ? '✓' : '→'; ?></span></span>
-				</a>
-			<?php endforeach; ?>
-		</div>
-	<?php endif; ?>
 
 	<?php
 	/*
@@ -572,64 +542,175 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 	 * linking to it directly; nothing here points at it any more.
 	 */
 	?>
-	<?php if ( $oria_gcmp ) : ?>
-		<p class="cmpnudge cmpnudge--group">
-			<a href="<?php echo esc_url( $oria_gcmp['url'] ); ?>" data-oria-event="category_compare_group">
-				<?php echo esc_html( $oria_gcmp['label'] ); ?>
-				<span aria-hidden="true">&rarr;</span>
-			</a>
-		</p>
-	<?php endif; ?>
-	<?php if ( $oria_cmp ) : ?>
-		<p class="cmpnudge">
-			<a href="<?php echo esc_url( $oria_cmp['url'] ); ?>" data-oria-event="category_compare">
-				<?php echo esc_html( $oria_cmp['label'] ); ?>
-				<span aria-hidden="true">&rarr;</span>
-			</a>
-		</p>
-	<?php endif; ?>
+	<?php // The compare prompts are drawn at the top of the guide now -- see below. ?>
 </section>
 
-<!-- Floor 2 — Browse -->
+<!-- Floor 2 — Listings -->
 <section class="wrap section section--top-flush floor" id="browse">
-	<h2 class="micro floor__label"><?php esc_html_e( 'Browse', 'oria' ); ?></h2>
 	<?php
 	/*
-	 * The wants this category can actually answer: every service and
-	 * specialty slug carried by the listings on this page.
+	 * Quick filters: the category's own choices -- styles, formats, who it
+	 * suits -- with live counts, straight under the hero. Each is a real
+	 * filtered view at a clean address. Six up front, the rest one tap
+	 * away; the UX audit found the full grid pushing the listings down.
 	 */
-	$oria_wcount = array();
-	if ( function_exists( '\Oria\Core\GoodFor\labels' ) ) {
-		foreach ( $oria_ids as $oria_hid ) {
-			$oria_slugs = array();
-			foreach ( array( 'service', 'specialty' ) as $oria_tax ) {
-				foreach ( \Oria\Theme\oria_terms_of( (int) $oria_hid, $oria_tax ) as $oria_ht ) {
-					$oria_slugs[ $oria_ht->slug ] = true;
-				}
+	$oria_chips = array();
+	if ( count( $oria_rows ) >= 2 ) {
+		if ( $oria_facet ) {
+			/* translators: %s: category name */
+			$oria_chips[] = array( $oria_here, sprintf( __( 'All %s', 'oria' ), strtolower( $oria_pname ) ), count( $oria_all ), false );
+		}
+		$oria_specpage = null;
+		if ( $oria_facet && in_array( $oria_facet['key'] ?? '', array( 'svc', 'spec' ), true ) ) {
+			$oria_st = get_term_by( 'slug', (string) $oria_facet['slug'], 'specialty' );
+			if ( ! $oria_st instanceof WP_Term ) {
+				$oria_st = get_term_by( 'slug', (string) $oria_facet['value'], 'specialty' );
 			}
-			foreach ( \Oria\Core\GoodFor\labels() as $oria_w ) {
-				foreach ( $oria_w['specs'] as $oria_ws ) {
-					if ( isset( $oria_slugs[ $oria_ws ] ) ) {
-						$oria_wcount[ $oria_w['slug'] ] = ( $oria_wcount[ $oria_w['slug'] ] ?? 0 ) + 1;
-						break;
-					}
-				}
+			// Only when it genuinely holds more than this page does --
+			// otherwise the link promises a wider view and delivers this one.
+			if ( $oria_st instanceof WP_Term && (int) $oria_st->count > count( $oria_ids ) ) {
+				$oria_specpage = $oria_st;
 			}
 		}
-		// Three is the directory's own floor for a filtered view worth
-		// offering; below it a chip is a dead end dressed as a choice.
-		$oria_wcount = array_filter( $oria_wcount, static fn( int $oria_n ): bool => $oria_n >= 3 );
-		arsort( $oria_wcount );
+		if ( $oria_specpage ) {
+			/* translators: 1: specialty, 2: city */
+			$oria_chips[] = array( \Oria\Core\PracticesIndex\specialty_url( $oria_specpage ), sprintf( __( 'All %1$s in %2$s', 'oria' ), strtolower( \Oria\Theme\tname( $oria_specpage ) ), $oria_cname ), (int) $oria_specpage->count, false );
+		}
+		foreach ( $oria_rows as $oria_row ) {
+			$oria_href    = $oria_row_url( $oria_row );
+			$oria_on      = '' !== $oria_facet_href && untrailingslashit( $oria_href ) === untrailingslashit( $oria_facet_href );
+			$oria_chips[] = array( $oria_href, (string) $oria_row['label'], (int) $oria_row['count'], $oria_on );
+		}
 	}
-	get_template_part( 'template-parts/directory', 'goodfor', array( 'counts' => $oria_wcount ) );
+	$oria_chip = static function ( array $c ): void {
+		?>
+		<a class="quickf__chip<?php echo $c[3] ? ' is-current' : ''; ?>" href="<?php echo esc_url( $c[0] ); ?>"<?php echo $c[3] ? ' aria-current="page"' : ''; ?>>
+			<?php echo esc_html( $c[1] ); ?> <b><?php echo esc_html( number_format_i18n( $c[2] ) ); ?></b>
+		</a>
+		<?php
+	};
 	?>
-	<?php get_template_part( 'template-parts/directory', 'toolbar', array( 'term' => $oria_term, 'ids' => $oria_ids ) ); ?>
-	<p class="dir__count" id="dirCount" style="margin-top:1rem"></p>
+	<?php if ( $oria_chips ) : ?>
+		<nav class="quickf" aria-label="<?php esc_attr_e( 'Quick filters', 'oria' ); ?>">
+			<p class="quickf__label">
+				<span class="micro"><?php echo $oria_facet ? esc_html__( 'Or another kind', 'oria' ) : esc_html__( 'Narrow it down', 'oria' ); ?></span>
+				<span class="hint"><?php esc_html_e( 'Each is a filtered view — it counts, it never ranks.', 'oria' ); ?></span>
+			</p>
+			<div class="quickf__row">
+				<?php foreach ( array_slice( $oria_chips, 0, 6 ) as $oria_c ) { $oria_chip( $oria_c ); } ?>
+			</div>
+			<?php if ( count( $oria_chips ) > 6 ) : ?>
+				<details class="quickf__more">
+					<summary>
+						<?php
+						/* translators: %d: how many more quick filters */
+						printf( esc_html__( 'See all options (%d more)', 'oria' ), count( $oria_chips ) - 6 );
+						?>
+					</summary>
+					<div class="quickf__row">
+						<?php foreach ( array_slice( $oria_chips, 6 ) as $oria_c ) { $oria_chip( $oria_c ); } ?>
+					</div>
+				</details>
+			<?php endif; ?>
+		</nav>
+	<?php endif; ?>
+	<?php
+	get_template_part(
+		'template-parts/directory',
+		'toolbar',
+		array(
+			'term'        => $oria_term,
+			'ids'         => $oria_ids,
+			'mode'        => 'category',
+			'style_label' => function_exists( '\Oria\Core\Categories\style_label_for' ) ? \Oria\Core\Categories\style_label_for( $oria_term ) : '',
+		)
+	);
+	?>
+	<div class="dirbar">
+		<p class="dir__count" id="dirCount" role="status" aria-live="polite"></p>
+		<?php if ( $oria_map ) : ?>
+			<div class="viewswitch" role="group" aria-label="<?php esc_attr_e( 'Show results as', 'oria' ); ?>">
+				<button type="button" class="viewswitch__btn" data-view="list" aria-pressed="true"><?php esc_html_e( 'List', 'oria' ); ?></button>
+				<button type="button" class="viewswitch__btn" data-view="map" aria-pressed="false"><?php esc_html_e( 'Map', 'oria' ); ?></button>
+			</div>
+		<?php endif; ?>
+	</div>
 	<div class="chips" id="dirChips" style="margin-top:.5rem"></div>
-	<h2 class="sr-only"><?php echo esc_html( $oria_h1 ); ?> — <?php esc_html_e( 'listings', 'oria' ); ?></h2>
+	<?php
+	/*
+	 * Featured practices: paid placements, shown ONCE, in their own labelled
+	 * band above the list -- and taken out of the list while the band shows,
+	 * so nobody appears twice or is counted twice (app.js). The moment the
+	 * visitor filters or re-sorts, the band steps aside and these listings
+	 * sit in the list like anyone else. Only practices whose primary
+	 * category is this one (or one of its own sub-categories) qualify: a
+	 * yoga studio that pays does not get to headline the massage page.
+	 * Up to three, in an order that rotates daily so nobody owns the top.
+	 */
+	$oria_family = array( $oria_term->slug );
+	foreach ( (array) get_term_children( (int) $oria_term->term_id, 'practice' ) as $oria_cid ) {
+		$oria_ct = get_term( (int) $oria_cid, 'practice' );
+		if ( $oria_ct instanceof WP_Term ) {
+			$oria_family[] = $oria_ct->slug;
+		}
+	}
+	$oria_featured = array();
+	foreach ( $oria_ids as $oria_fid ) {
+		if ( 'featured' !== \Oria\Theme\display_status( (int) $oria_fid ) ) {
+			continue;
+		}
+		$oria_fp = \Oria\Theme\oria_terms_of( (int) $oria_fid, 'practice' );
+		$oria_fp = is_array( $oria_fp ) && $oria_fp ? reset( $oria_fp ) : null;
+		if ( ! $oria_fp instanceof WP_Term || ! in_array( $oria_fp->slug, $oria_family, true ) ) {
+			continue;
+		}
+		$oria_featured[] = (int) $oria_fid;
+	}
+	$oria_day = current_time( 'Y-m-d' );
+	usort( $oria_featured, static fn( int $a, int $b ): int => crc32( $oria_day . $a ) <=> crc32( $oria_day . $b ) );
+	$oria_featured = array_slice( $oria_featured, 0, 3 );
+	?>
+	<?php if ( $oria_featured ) : ?>
+		<section class="featcat" id="featBand" aria-labelledby="featBandHead"
+			data-ids="<?php echo esc_attr( implode( ',', array_map( static fn( int $i ): string => (string) get_post_field( 'post_name', $i ), $oria_featured ) ) ); ?>">
+			<div class="featcat__head">
+				<h2 class="h4" id="featBandHead">
+					<?php
+					/* translators: %s: category name, lower case */
+					printf( esc_html__( 'Featured %s', 'oria' ), esc_html( strtolower( $oria_pname ) ) );
+					?>
+				</h2>
+				<a class="featcat__how" href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>"><?php esc_html_e( 'How featuring works', 'oria' ); ?></a>
+			</div>
+			<p class="featcat__note"><?php esc_html_e( 'Paid placements from Oria Haven members. They appear here once, marked Featured, and never move anyone up the list below.', 'oria' ); ?></p>
+			<div class="dir__results dir__results--wide featcat__grid">
+				<?php
+				global $post;
+				foreach ( $oria_featured as $oria_fid ) {
+					$post = get_post( $oria_fid ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+					setup_postdata( $post );
+					get_template_part( 'template-parts/listing', 'card' );
+				}
+				wp_reset_postdata();
+				?>
+			</div>
+		</section>
+	<?php endif; ?>
+	<h2 class="h3 results__head" id="results">
+		<?php
+		if ( $oria_facet || $oria_area ) {
+			echo esc_html( $oria_h1 );
+		} else {
+			/* translators: %s: category name, lower case */
+			printf( esc_html__( 'All %s', 'oria' ), esc_html( strtolower( $oria_pname ) ) );
+		}
+		?>
+	</h2>
 	<div
 		class="dir__results dir__results--wide"
 		id="dirResults"
+		data-mode="category"
+		data-family="<?php echo esc_attr( implode( ' ', $oria_family ) ); ?>"
 		data-cat="<?php echo esc_attr( $oria_term->slug ); ?>"
 		<?php // The city this page was scoped to, so the script keeps that scope. ?>
 		<?php if ( ! empty( $oria_city['slug'] ) ) : ?>
@@ -666,13 +747,16 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 			$oria_posts = $oria_ids
 				? get_posts( array( 'post_type' => 'listing', 'post_status' => 'publish', 'post__in' => array_map( 'intval', $oria_ids ), 'posts_per_page' => 24, 'orderby' => 'title', 'order' => 'ASC' ) )
 				: array();
+			// Specialists first, then A to Z -- the same rule the script
+			// sorts by, and never payment (app.js relevance()).
+			$oria_spec = static function ( WP_Post $p ) use ( $oria_family ): int {
+				$t = \Oria\Theme\oria_terms_of( (int) $p->ID, 'practice' );
+				$t = is_array( $t ) && $t ? reset( $t ) : null;
+				return $t instanceof WP_Term && in_array( $t->slug, $oria_family, true ) ? 0 : 1;
+			};
 			usort(
 				$oria_posts,
-				static function ( WP_Post $a, WP_Post $b ): int {
-					$ma = 'unclaimed' === \Oria\Theme\claim_status( $a->ID ) ? 1 : 0;
-					$mb = 'unclaimed' === \Oria\Theme\claim_status( $b->ID ) ? 1 : 0;
-					return $ma <=> $mb ?: strcasecmp( $a->post_title, $b->post_title );
-				}
+				static fn( WP_Post $a, WP_Post $b ): int => $oria_spec( $a ) <=> $oria_spec( $b ) ?: strcasecmp( $a->post_title, $b->post_title )
 			);
 			global $post;
 			foreach ( $oria_posts as $post ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
@@ -699,17 +783,55 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 		}
 		?>
 	</div>
+	<?php if ( $oria_map ) : ?>
+		<div class="dirmap" id="catMapView" hidden>
+			<div class="catmap catmap--view" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of %1$s places across %2$s', 'oria' ), esc_attr( $oria_pname ), esc_attr( $oria_cname ) ); ?>">
+				<div class="catmap__tip" hidden></div>
+			</div>
+			<script type="application/json" data-catmap-data><?php echo wp_json_encode( $oria_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data script tag ?></script>
+			<?php if ( $oria_near ) : ?>
+				<div class="nearyou nearyou--map">
+					<h2 class="h4"><?php printf( esc_html__( '%s near you', 'oria' ), esc_html( $oria_pname ) ); ?></h2>
+					<div class="nearyou__pills">
+						<?php foreach ( $oria_near as $oria_nslug => $oria_nrow ) : ?>
+							<a class="pill" data-suburb="<?php echo esc_attr( $oria_nrow['name'] ); ?>" href="<?php echo esc_url( \Oria\Core\PracticesIndex\category_url( $oria_term ) . $oria_nslug . '/' ); ?>">
+								<?php echo esc_html( $oria_nrow['name'] ); ?> <span class="nearyou__n"><?php echo esc_html( number_format_i18n( $oria_nrow['n'] ) ); ?></span>
+							</a>
+						<?php endforeach; ?>
+					</div>
+					<p class="hint" style="margin-top:.5rem"><?php esc_html_e( 'Click a suburb to zoom the map there — click it again to zoom back out.', 'oria' ); ?></p>
+				</div>
+			<?php endif; ?>
+		</div>
+	<?php endif; ?>
 </section>
 
-<?php
-if ( $oria_events ) {
-	get_template_part( 'template-parts/category', 'events', array( 'term' => $oria_term, 'city' => $oria_city, 'rows' => $oria_events ) );
-}
-?>
-
-<!-- Floor 3 — Read -->
+<!-- Floor 3 — the guide, straight after the first page of listings -->
 <section class="wrap section floor" id="read">
-	<h2 class="micro floor__label"><?php esc_html_e( 'Read up', 'oria' ); ?></h2>
+	<h2 class="micro floor__label"><?php esc_html_e( 'Guide', 'oria' ); ?></h2>
+	<?php
+	/*
+	 * Choosing between two practices is decision help, so it opens the
+	 * guide rather than sitting in the hero above the listings, where the
+	 * UX audit found it pushing the results down.
+	 */
+	?>
+	<?php if ( $oria_gcmp ) : ?>
+		<p class="cmpnudge cmpnudge--group">
+			<a href="<?php echo esc_url( $oria_gcmp['url'] ); ?>" data-oria-event="category_compare_group">
+				<?php echo esc_html( $oria_gcmp['label'] ); ?>
+				<span aria-hidden="true">&rarr;</span>
+			</a>
+		</p>
+	<?php endif; ?>
+	<?php if ( $oria_cmp ) : ?>
+		<p class="cmpnudge">
+			<a href="<?php echo esc_url( $oria_cmp['url'] ); ?>" data-oria-event="category_compare">
+				<?php echo esc_html( $oria_cmp['label'] ); ?>
+				<span aria-hidden="true">&rarr;</span>
+			</a>
+		</p>
+	<?php endif; ?>
 
 	<?php if ( $oria_facet && ! empty( $oria_frame['worth_knowing'] ) ) : ?>
 		<h2 class="h3" style="margin-bottom:1rem"><?php esc_html_e( 'Worth knowing', 'oria' ); ?></h2>
@@ -724,6 +846,13 @@ if ( $oria_events ) {
 	<?php endif; ?>
 
 </section>
+
+<?php
+// What's on: after the guide, so the guide is one page of listings away.
+if ( $oria_events ) {
+	get_template_part( 'template-parts/category', 'events', array( 'term' => $oria_term, 'city' => $oria_city, 'rows' => $oria_events ) );
+}
+?>
 
 <?php
 // Floor 4 — the guides for this practice, as image cards; the latest from
@@ -807,12 +936,13 @@ if ( $oria_facet ) {
 		</div>
 	<?php endif; ?>
 
-	<?php $oria_feat = \Oria\Theme\featured_listings( 3, $oria_term->slug ); ?>
-	<?php if ( $oria_feat ) : ?>
-		<div style="margin-top:2rem">
-			<?php get_template_part( 'template-parts/featured', 'band', array( 'posts' => $oria_feat, 'heading' => sprintf( __( 'Featured in %s — paid placement', 'oria' ), $oria_pname ) ) ); ?>
-		</div>
-	<?php endif; ?>
+	<?php
+	/*
+	 * The second paid band that sat here is gone: featured practices now
+	 * appear once, in the labelled band above the listings. Showing the
+	 * same paid cards twice was one of the UX audit's findings.
+	 */
+	?>
 </section>
 <?php endif; ?>
 

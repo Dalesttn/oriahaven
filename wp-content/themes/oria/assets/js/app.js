@@ -1065,6 +1065,72 @@
     return bySpec.length >= bySvc.length ? bySpec : bySvc;
   }
 
+  /* --- List | Map, on category pages ------------------------------------ */
+  /* The map used to fill half the opening screen before anybody had asked
+     for it. Now it sits behind a switch above the results, and starts the
+     first time it is opened. Filters are shared state, so switching views
+     never resets them; the hero's "Open map" and each card's pin button
+     come here too. No Leaflet, no switch -- the list is the whole page. */
+  function initDirView() {
+    var panel = $("#catMapView");
+    var browse = $("#browse");
+    var buttons = $$("[data-view]");
+    if (!panel || !browse || !buttons.length) return;
+    if (!window.L) {
+      buttons.forEach(function (b) { b.closest(".viewswitch") && (b.closest(".viewswitch").hidden = true); });
+      $$("[data-open-map]").forEach(function (b) { b.hidden = true; });
+      return;
+    }
+    document.body.classList.add("has-catmap"); // shows the cards' pin buttons
+
+    var started = false;
+    var realFocus = null;
+    function show(view) {
+      var isMap = view === "map";
+      panel.hidden = !isMap;
+      browse.classList.toggle("is-map", isMap);
+      buttons.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-view") === view ? "true" : "false"); });
+      if (!isMap) return;
+      if (!started) {
+        started = true;
+        initCatMap();
+        realFocus = DirAPI.focusOnMap && DirAPI.focusOnMap !== focus ? DirAPI.focusOnMap : null;
+        DirAPI.focusOnMap = focus;
+      } else if (DirAPI.mapRefresh) {
+        DirAPI.mapRefresh();
+      }
+      pushEvent("category_map_open", { results_count: (DirAPI.lastUrls || []).length });
+    }
+    function focus(url) {
+      show("map");
+      return realFocus ? realFocus(url) : false;
+    }
+    DirAPI.focusOnMap = focus;
+
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () { show(b.getAttribute("data-view")); });
+    });
+    $$("[data-open-map]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        show("map");
+        var top = browse.getBoundingClientRect().top + window.pageYOffset - chromeTop() - 12;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      });
+    });
+    /* "Find near me" in the hero is the toolbar's location button, pressed
+       from further up the page -- it only ever asks for location because
+       somebody chose to press it. */
+    $$("[data-hero-near]").forEach(function (b) {
+      var near = $("[data-near]");
+      if (!near) { b.hidden = true; return; }
+      b.addEventListener("click", function () {
+        near.click();
+        var top = browse.getBoundingClientRect().top + window.pageYOffset - chromeTop() - 12;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      });
+    });
+  }
+
   /* --- Category map ---------------------------------------------------- */
   /* A real, interactive map of every listing on a category page — Leaflet
      over CARTO's light basemap, both self-hosted/keyless. Hover names the
@@ -1074,6 +1140,10 @@
     var host = $("[data-catmap]");
     var dataEl = $("[data-catmap-data]");
     if (!host || !dataEl || !window.L) return;
+    /* Behind the List | Map switch the map starts only when it is opened --
+       Leaflet measures its box on creation, and a hidden box measures zero.
+       initDirView() calls this again once the panel is showing. */
+    if (host._oriaMap || host.closest("[hidden]")) return;
     var places;
     try { places = JSON.parse(dataEl.textContent || "[]"); } catch (e) { places = []; }
     places = places.filter(function (p) { return p.la && p.lo; });
@@ -1125,6 +1195,34 @@
 
     var bounds = L.featureGroup(group).getBounds();
     map.fitBounds(bounds, { padding: [24, 24], maxZoom: 14 });
+    host._oriaMap = map;
+
+    /* The pins follow the list: whatever the filters leave in the list is
+       what the map shows, refitted to those pins. Pages that have no list
+       engine never send the event, so their maps keep every pin. */
+    function applyResults(urls) {
+      if (!urls) return;
+      var want = {};
+      urls.forEach(function (u) { want[u] = 1; });
+      var vis = [];
+      group.forEach(function (mk, i) {
+        var on = !!want[places[i].u];
+        if (on) {
+          if (!map.hasLayer(mk)) mk.addTo(map);
+          vis.push(mk);
+        } else if (map.hasLayer(mk)) {
+          map.removeLayer(mk);
+        }
+      });
+      bounds = vis.length ? L.featureGroup(vis).getBounds() : L.featureGroup(group).getBounds();
+      map.fitBounds(bounds, { padding: [24, 24], maxZoom: 14 });
+    }
+    document.addEventListener("oria:dir-results", function (e) { applyResults(e.detail && e.detail.urls); });
+    if (DirAPI.lastUrls) applyResults(DirAPI.lastUrls);
+    DirAPI.mapRefresh = function () {
+      map.invalidateSize();
+      applyResults(DirAPI.lastUrls);
+    };
 
     /* Cards' pin buttons jump here: zoom to the marker, open its card,
        and bring the map into view. Hidden by CSS unless this ran. */
@@ -1157,6 +1255,9 @@
       var link = e.target.closest && e.target.closest("[data-catmap-view]");
       if (!link || !DirAPI.revealCard) return;
       if (!sideBySide.matches) return; // let the link do what it says
+      // Behind the List | Map switch the list is hidden while the map
+      // shows, so the popup's link does what it says: opens the profile.
+      if (host.closest("#catMapView")) return;
       var card = DirAPI.revealCard(link.getAttribute("href"));
       if (!card) return; // filtered out of the list: follow the link
       e.preventDefault();
@@ -1189,6 +1290,8 @@
       pills.forEach(function (o) { o.classList.remove("is-here"); });
       releasePins();
       openLink.hidden = true;
+      // `bounds` tracks the pins the filters leave, so this goes back to
+      // the list's view rather than to every pin on the page.
       map.fitBounds(bounds, { padding: [24, 24], maxZoom: 14 });
     }
     pills.forEach(function (pill) {
@@ -1390,6 +1493,26 @@
     var PER_PAGE = 10;
     var state = { cats: [], regions: [], suburbs: [], spec: [], svc: [], aud: [], price: [], format: [], rating: 0, q: "", sort: "relevance", page: 1 };
 
+    /* Category pages (oria-practice-v2.php, data-mode="category") switch on
+       four things the other directory pages keep off:
+
+         - "Most relevant" never reads payment: specialists in this
+           category first, then the practices with the most to go on;
+         - paid placements appear once, in their own labelled band above
+           the list, and not again inside it;
+         - numbered pages instead of a list that grows, so the guide below
+           the results is always one page of listings away, never ten;
+         - a List | Map switch, with the map showing what the list shows.
+
+       FAMILY is this category and its own sub-categories: a listing whose
+       primary category is in it is a specialist here; one that merely
+       offers it alongside something else is not. */
+    var CAT = root.dataset.mode === "category";
+    var FAMILY = (root.dataset.family || "").split(" ").filter(Boolean);
+    var band = CAT ? $("#featBand") : null;
+    var bandIds = band ? (band.dataset.ids || "").split(",").filter(Boolean) : [];
+    var reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     /* The want-tags a card leads with, derived from the listing's own
        specialties against DATA.goodfor — the most-overlapping wants win.
        Nothing is stored per listing, so retuning goodfor.json retunes
@@ -1473,6 +1596,22 @@
     if (locked.intentKey && state[locked.intentKey] !== undefined) {
       if (locked.intentKey === "spec") { locked.spec = locked.intentValue; }
       state[locked.intentKey] = [locked.intentValue];
+    }
+
+    /* How many filters the VISITOR has added, as opposed to the ones the
+       page itself locks (its category, a facet's style, a suburb). The
+       featured band only shows on the page as it arrived; the moment
+       somebody narrows it, the band steps aside. */
+    function userFilters() {
+      function extra(arr, own) { return arr.filter(function (v) { return own.indexOf(v) === -1; }).length; }
+      var n = extra(state.cats, locked.cat ? [locked.cat] : []) +
+        extra(state.regions, locked.region ? [locked.region] : []) +
+        state.suburbs.length +
+        extra(state.spec, locked.spec ? [locked.spec] : []);
+      ["svc", "aud", "price", "format"].forEach(function (k) {
+        n += extra(state[k], locked.intentKey === k ? [locked.intentValue] : []);
+      });
+      return n + (state.rating ? 1 : 0) + (state.q ? 1 : 0);
     }
 
     function matches(l) {
@@ -1561,6 +1700,20 @@
     }
 
     var rank = { featured: 0, claimed: 1, unclaimed: 2 };
+
+    /* Most relevant, on a category page. Never payment. Specialists first,
+       then how much there is to go on: the Google rating shrunk towards the
+       middle by how few reviews carry it, so one five-star review does not
+       outrank forty at 4.8. Then A to Z. */
+    function confidence(l) {
+      var n = l.reviews || 0;
+      return n ? ((l.rating || 0) * n + 4.2 * 8) / (n + 8) : 0;
+    }
+    function relevance(a, b) {
+      var pa = FAMILY.indexOf(a.cat) > -1 ? 0 : 1, pb = FAMILY.indexOf(b.cat) > -1 ? 0 : 1;
+      return (pa - pb) || (confidence(b) - confidence(a)) || a.name.localeCompare(b.name);
+    }
+
     function sortFn(a, b) {
       switch (state.sort) {
         case "near": {
@@ -1580,8 +1733,34 @@
         case "reviews": return b.reviews - a.reviews;
         case "price": return a.priceFrom - b.priceFrom;
         case "name": return a.name.localeCompare(b.name);
-        default: return (rank[a.status] - rank[b.status]) || (b.rating - a.rating);
+        case "featured": return (rank[a.status] - rank[b.status]) || (b.rating - a.rating);
+        default:
+          if (CAT) return relevance(a, b);
+          return (rank[a.status] - rank[b.status]) || (b.rating - a.rating);
       }
+    }
+
+    /* At most three tags, and the practical ones first -- the UX audit
+       found up to six pills competing with the practice's own name.
+       Beginner friendly, online, free and a live offer are things somebody
+       chooses on; the wellness-goal tags fill whatever room is left, and
+       the category is the fallback for a card with nothing else to say.
+       Mirrors template-parts/listing-card.php exactly. */
+    function cardTags(l) {
+      var out = [];
+      if ((l.aud || []).indexOf("beginners") > -1) out.push('<span class="pill">Beginner friendly</span>');
+      if (l.format && l.format !== "in-person") out.push('<span class="pill">Online available</span>');
+      if (l.priceBand === "Free") out.push('<span class="pill">Free</span>');
+      if (l.offer) out.push('<span class="pill pill--offer">Special offer</span>');
+      gfTags(l).forEach(function (g) {
+        out.push('<span class="pill pill--gf" style="--gf:' + esc(g.color) + '">' + esc(g.label) + "</span>");
+      });
+      if (!out.length) {
+        (l.catTop || []).forEach(function (c) {
+          out.push('<span class="pill pill--cat pill--cat-' + esc(c) + '">' + esc(catNames[c] || c) + "</span>");
+        });
+      }
+      return out.length ? '<div class="listing__tags">' + out.slice(0, 3).join("") + "</div>" : "";
     }
 
     function card(l) {
@@ -1619,28 +1798,6 @@
           "</div>" +
         "</div>" +
         '<div class="listing__body">' +
-          /* Want-tags lead the card (same derivation as the chip row);
-             the top-level category pill is the fallback for listings whose
-             specialties map to no want — see the matching block in
-             template-parts/listing-card.php. */
-          (function () {
-            var tags = gfTags(l);
-            if (tags.length) {
-              return '<div class="listing__cats">' +
-                tags.map(function (g) {
-                  return '<span class="pill pill--gf" style="--gf:' + esc(g.color) + '">' + esc(g.label) + "</span>";
-                }).join("") +
-                "</div>";
-            }
-            return (l.catTop || []).length
-              ? '<div class="listing__cats">' +
-                (l.catTop || []).map(function (c) {
-                  return '<span class="pill pill--cat pill--cat-' + esc(c) + '">' +
-                    esc(catNames[c] || c) + "</span>";
-                }).join("") +
-                "</div>"
-              : "";
-          })() +
           /* One editorial Best Of badge, linked to its guide. Same rule and
              markup as listing-card.php; the server picks which one. */
           (l.best && l.best.label
@@ -1662,15 +1819,14 @@
                   : "") + "</span>"
               : "") +
           "</div>" +
+          cardTags(l) +
           '<p class="listing__desc">' + esc(l.blurb) + "</p>" +
-          '<div class="listing__tags">' +
-            (l.format !== "in-person" ? '<span class="pill">Online available</span>' : "") +
-            (l.offer ? '<span class="pill" style="background:var(--gold-soft);border-color:transparent;color:#7A5A12;font-weight:700">Special offer</span>' : "") +
-            (l.next ? '<span class="pill">Next: ' + esc(l.next) + "</span>" : "") +
-          "</div>" +
           '<div class="listing__foot">' +
             '<span class="listing__price">' +
-              (l.priceFrom > 0 ? "$" + l.priceFrom + ' <span>/ session</span>' : "&nbsp;") +
+              (l.priceFrom > 0
+                ? "$" + l.priceFrom + ' <span>/ session</span>'
+                : '<span class="listing__price--none">Price not published</span>') +
+              (l.next ? '<span class="listing__next">Next: ' + esc(l.next) + "</span>" : "") +
             "</span>" +
             /* Compare toggle, mirroring listing-card.php. The pressed state
                is read from the store rather than carried in the DOM, because
@@ -1786,19 +1942,28 @@
         });
       });
       var all = $("#clearAll");
-      if (all) all.addEventListener("click", function () {
-        GFSel = {};
-        state.cats = locked.cat ? [locked.cat] : [];
-        state.regions = locked.region ? [locked.region] : [];
-        state.spec = locked.spec ? [locked.spec] : [];
-        state.svc = []; state.aud = []; state.suburbs = [];
-        state.price = []; state.format = []; state.rating = 0; state.q = "";
-        // Clearing never unlocks the page's own facet.
-        if (locked.intentKey && state[locked.intentKey] !== undefined) state[locked.intentKey] = [locked.intentValue];
-        syncInputs();
-        state.page = 1;
-        render();
-      });
+      if (all) all.addEventListener("click", resetFilters);
+    }
+
+    /* Back to the page as it arrived: every filter the visitor added goes,
+       the page's own locks (its category, a facet's style, a suburb) stay.
+       Shared by the chip row's "Clear all" and the empty state's button --
+       the chip row only offers "Clear all" from two filters up, so the empty
+       state cannot rely on finding it. */
+    function resetFilters() {
+      GFSel = {};
+      state.cats = locked.cat ? [locked.cat] : [];
+      state.regions = locked.region ? [locked.region] : [];
+      state.spec = locked.spec ? [locked.spec] : [];
+      state.svc = []; state.aud = []; state.suburbs = [];
+      state.price = []; state.format = []; state.rating = 0; state.q = "";
+      // Clearing never unlocks the page's own facet.
+      if (locked.intentKey && state[locked.intentKey] !== undefined) state[locked.intentKey] = [locked.intentValue];
+      var qb = $("#dirQ");
+      if (qb) qb.value = "";
+      syncInputs();
+      state.page = 1;
+      render();
     }
 
     function syncInputs() {
@@ -1964,6 +2129,58 @@
       moreNote.textContent = "Showing " + loaded + " of " + found.length + ".";
     }
 
+    /* Numbered pages, on category pages. A list that grows pushed the guide,
+       the FAQs and everything else further down with every click; a page
+       of ten keeps them where they are. Page changes are always a click,
+       so the scroll back to the top of the results can never surprise
+       anybody. */
+    var pagerBox = null;
+    function pager(list, pages) {
+      moreBox.hidden = true;
+      if (!pagerBox) {
+        pagerBox = document.createElement("nav");
+        pagerBox.className = "pager pager--stack";
+        pagerBox.setAttribute("aria-label", "Listing pages");
+        root.parentNode.insertBefore(pagerBox, moreBox);
+        pagerBox.addEventListener("click", function (e) {
+          var b = e.target.closest && e.target.closest("[data-page]");
+          if (!b || b.disabled) return;
+          state.page = parseInt(b.getAttribute("data-page"), 10) || 1;
+          render();
+          var head = $("#results") || root;
+          var top = head.getBoundingClientRect().top + window.pageYOffset - chromeTop() - 16;
+          window.scrollTo({ top: Math.max(0, top), behavior: reducedMotion ? "auto" : "smooth" });
+          pushEvent("category_page", { page: state.page, results_count: lastCount });
+        });
+      }
+      if (pages <= 1) { pagerBox.hidden = true; pagerBox.innerHTML = ""; return; }
+      pagerBox.hidden = false;
+      var h = '<p class="pager__note">Page ' + state.page + " of " + pages + "</p>" + '<div class="pager__row">' +
+        '<button type="button" class="pager__btn" data-page="' + (state.page - 1) + '"' + (state.page === 1 ? " disabled" : "") + ' aria-label="Previous page">&larr;</button>';
+      for (var i = 1; i <= pages; i++) {
+        // A long run collapses to the first, the last and the pages either
+        // side of this one.
+        if (pages > 7 && i !== 1 && i !== pages && Math.abs(i - state.page) > 1) {
+          if (i === 2 || i === pages - 1) h += '<span class="pager__gap" aria-hidden="true">&hellip;</span>';
+          continue;
+        }
+        h += '<button type="button" class="pager__num' + (i === state.page ? " is-current" : "") + '" data-page="' + i + '"' +
+          (i === state.page ? ' aria-current="page"' : "") + ' aria-label="Page ' + i + '">' + i + "</button>";
+      }
+      h += '<button type="button" class="pager__btn" data-page="' + (state.page + 1) + '"' + (state.page === pages ? " disabled" : "") + ' aria-label="Next page">&rarr;</button></div>';
+      pagerBox.innerHTML = h;
+    }
+
+    root.addEventListener("click", function (e) {
+      var b = e.target.closest && e.target.closest("[data-dir-clear]");
+      if (!b) return;
+      resetFilters();
+      // The button that was focused has just been redrawn away; hand focus
+      // to the results rather than let it fall to the top of the page.
+      root.setAttribute("tabindex", "-1");
+      root.focus({ preventScroll: true });
+    });
+
     /* What the grid currently holds, so a load-more can append the new run
        rather than rebuild three hundred cards to add ten. Any change to the
        filters or the sort changes the signature and forces a rebuild. */
@@ -1983,12 +2200,22 @@
     /* Page the card for this URL into the list and hand it back, or null
        when the current filters exclude that listing. Used by the map. */
     DirAPI.revealCard = function (url) {
-      var found = DATA.listings.filter(matches).sort(sortFn);
+      var found = organic(DATA.listings.filter(matches).sort(sortFn));
       var idx = -1;
       found.forEach(function (l, i) { if (idx === -1 && l.url === url) idx = i; });
-      if (idx === -1) return null;
-      if (idx >= state.page * PER_PAGE) {
-        state.page = Math.ceil((idx + 1) / PER_PAGE);
+      if (idx === -1) {
+        // Not in the list: it may be one of the featured cards above it.
+        var inBand = null;
+        if (band && !band.hidden) {
+          $$(".listing__name a", band).forEach(function (a) {
+            if (!inBand && a.getAttribute("href") === url) inBand = a.closest("article");
+          });
+        }
+        return inBand;
+      }
+      var want = Math.ceil((idx + 1) / PER_PAGE);
+      if (CAT ? want !== state.page : idx >= state.page * PER_PAGE) {
+        state.page = want;
         render();
       }
       var card = null;
@@ -1998,12 +2225,28 @@
       return card;
     };
 
+    /* The organic list: everything matching, minus the featured band while
+       the band is showing, so nobody appears twice. */
+    function bandOn() {
+      return !!(band && bandIds.length && state.sort === "relevance" && !userFilters());
+    }
+    function organic(found) {
+      return bandOn() ? found.filter(function (l) { return bandIds.indexOf(l.id) === -1; }) : found;
+    }
+
     function render() {
       var found = DATA.listings.filter(matches).sort(sortFn);
       lastCount = found.length;
-      var pages = Math.max(1, Math.ceil(found.length / PER_PAGE));
+      // Page one only: paging on through the list should not re-present
+      // the same paid cards on every page. They stay out of the list either
+      // way, so nobody appears twice.
+      if (band) band.hidden = !bandOn() || state.page > 1;
+      var list = organic(found);
+      var pages = Math.max(1, Math.ceil(list.length / PER_PAGE));
       if (state.page > pages) state.page = pages;
-      var shown = found.slice(0, state.page * PER_PAGE);
+      var shown = CAT
+        ? list.slice((state.page - 1) * PER_PAGE, state.page * PER_PAGE)
+        : list.slice(0, state.page * PER_PAGE);
 
       var key = JSON.stringify([state.cats, state.regions, state.spec, state.svc, state.aud,
                                 state.suburbs, state.price, state.format, state.rating,
@@ -2011,9 +2254,11 @@
 
       if (!shown.length) {
         root.innerHTML = '<div class="dir__empty"><h3 class="h3">Nothing matches those filters yet</h3>' +
-          '<p class="muted" style="margin-top:.5rem">Try widening the area, or clear a filter to see more.</p></div>';
+          '<p class="muted" style="margin-top:.5rem">Try widening the area, removing a price limit, or looking at online options.</p>' +
+          (userFilters() ? '<p style="margin-top:1rem"><button type="button" class="btn btn--ghost btn--sm" data-dir-clear>Clear all filters</button></p>' : "") +
+          "</div>";
         drawn = { key: null, count: 0 };
-      } else if (key === drawn.key && shown.length > drawn.count) {
+      } else if (!CAT && key === drawn.key && shown.length > drawn.count) {
         root.insertAdjacentHTML("beforeend", shown.slice(drawn.count).map(card).join(""));
         drawn.count = shown.length;
       } else {
@@ -2103,7 +2348,19 @@
       }
 
       chips();
-      more(found, pages);
+      // A search cleared from its chip empties the box too -- but never
+      // while somebody is typing in it.
+      var qBox = $("#dirQ");
+      if (qBox && document.activeElement !== qBox && qBox.value.trim() !== state.q) qBox.value = state.q;
+      if (CAT) pager(list, pages);
+      else more(found, pages);
+
+      /* The map listens for this, so its pins are always the listings the
+         list is showing -- the same filters, never a second set. */
+      DirAPI.lastUrls = found.map(function (l) { return l.url; });
+      try {
+        document.dispatchEvent(new CustomEvent("oria:dir-results", { detail: { urls: DirAPI.lastUrls } }));
+      } catch (e) { /* very old browsers: the map simply keeps every pin */ }
 
       // Mark the intent row the current filter corresponds to, so the
       // table keeps saying where you are as filters change.
@@ -2223,10 +2480,27 @@
        and a tooltip, shown on every page view once the toolbar is on screen,
        and dismissed for that view the moment the popover opens or after ten
        seconds. Nothing is remembered between views — it comes back on refresh. */
+    /* Now shown ONCE per browser, not on every view, and never left
+       floating over the results: it goes the moment the popover opens, the
+       visitor clicks anywhere, the toolbar scrolls out of view, or ten
+       seconds pass -- and once it has been seen it does not come back.
+       The UX audit found it sitting over the listing count and cards. */
     $$("[data-hint-key]").forEach(function (host) {
       var det = host.querySelector("details");
       if (!det) return;
-      var hide = function () { host.classList.remove("is-hinting"); };
+      var key = "oria_hint_" + host.getAttribute("data-hint-key");
+      var seen = false;
+      try { seen = window.localStorage.getItem(key) === "1"; } catch (e) { seen = false; }
+      if (seen) return;
+      var hide = function () {
+        host.classList.remove("is-hinting");
+        window.removeEventListener("scroll", away);
+        document.removeEventListener("click", hide, true);
+      };
+      var away = function () {
+        var r = host.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > window.innerHeight) hide();
+      };
       det.addEventListener("toggle", function () { if (det.open) hide(); });
       var started = false;
       var inView = function () { var r = host.getBoundingClientRect(); return r.top < window.innerHeight * 0.92 && r.bottom > 0; };
@@ -2238,7 +2512,11 @@
         // on one toolbar take turns instead of bobbing side by side.
         var delay = parseInt(host.getAttribute("data-hint-delay") || "0", 10);
         setTimeout(function () {
+          if (!inView()) return;
+          try { window.localStorage.setItem(key, "1"); } catch (e) { /* private window: shows again next time, harmlessly */ }
           host.classList.add("is-hinting");
+          window.addEventListener("scroll", away, { passive: true });
+          document.addEventListener("click", hide, true);
           setTimeout(hide, 10000);
         }, delay);
       };
@@ -2297,6 +2575,33 @@
 
     var sortSel = $("#dirSort");
     if (sortSel) sortSel.addEventListener("change", function () { state.sort = sortSel.value; state.page = 1; render(); });
+
+    /* Free-text search. Redraws a beat after typing stops, and reports only
+       once the term has settled -- otherwise "massage" arrives in analytics
+       as seven searches, six of which nobody made. The same term is never
+       reported twice running. The engine has always matched names, suburbs,
+       services and synonyms (matches()); until now nothing on a category
+       page fed it. */
+    var qEl = $("#dirQ");
+    if (qEl) {
+      if (state.q) qEl.value = state.q;
+      var qDraw = null, qReport = null, qLast = "";
+      qEl.addEventListener("input", function () {
+        window.clearTimeout(qDraw);
+        window.clearTimeout(qReport);
+        qDraw = window.setTimeout(function () {
+          state.q = qEl.value.trim();
+          state.page = 1;
+          render();
+        }, 180);
+        qReport = window.setTimeout(function () {
+          var term = qEl.value.trim().toLowerCase();
+          if (term.length < 2 || term === qLast) return;
+          qLast = term;
+          pushEvent("category_search", { search_term: term, results_count: lastCount });
+        }, 1200);
+      });
+    }
 
     /* ---- the button ---------------------------------------------------- */
     (function initNearMe() {
@@ -4110,6 +4415,7 @@
     initHomeSearch();
     initDirectory();
     initGoodFor();
+    initDirView();
     initCatMap();
     initCardQuickActions();
     scrollToFilteredResults();

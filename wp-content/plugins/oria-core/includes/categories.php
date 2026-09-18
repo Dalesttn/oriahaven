@@ -451,6 +451,35 @@ function tagline_for( string $slug ): string {
 }
 
 /**
+ * What the style filter is called on this category's page -- "Yoga style",
+ * "Massage type" -- from the same file as the taglines. A child category
+ * without its own label takes its parent's; failing both, "Type".
+ */
+function style_label_for( \WP_Term $term ): string {
+	static $labels = null;
+	if ( null === $labels ) {
+		$labels = array();
+		$path   = ORIA_CORE_DIR . 'data/category-intros.json';
+		if ( is_readable( $path ) ) {
+			$json = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			if ( is_array( $json ) ) {
+				$labels = (array) ( $json['style_labels'] ?? array() );
+			}
+		}
+	}
+	if ( ! empty( $labels[ $term->slug ] ) ) {
+		return (string) $labels[ $term->slug ];
+	}
+	if ( $term->parent ) {
+		$parent = get_term( (int) $term->parent, $term->taxonomy );
+		if ( $parent instanceof \WP_Term && ! empty( $labels[ $parent->slug ] ) ) {
+			return (string) $labels[ $parent->slug ];
+		}
+	}
+	return __( 'Type', 'oria' );
+}
+
+/**
  * The six homepage families over the 23 categories, from data/families.json.
  *
  * Presentation only: every category keeps its own term, URL and count, and

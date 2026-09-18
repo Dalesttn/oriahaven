@@ -6778,3 +6778,165 @@ article.is-spotlit {
 @media (max-width: 860px) {
   .appshero-band { --heroband-img: url("../img/apps-hero-1280.webp"); }
 }
+
+/* ==========================================================================
+   Category pages, UX redesign phase 1 (oria-practice-v2.php)
+
+   From the category-page UX audit: a compact hero whose numbers read at a
+   glance, the category's own quick filters under it, the map behind a
+   List | Map switch instead of in the hero, paid placements once and
+   labelled, and numbered pages so the guide stays near the top.
+   ========================================================================== */
+
+/* --- Hero ---------------------------------------------------------------- */
+.cathero { display: grid; gap: var(--s-3); max-width: 60rem; }
+/* The hero ends where its content does; the listings follow straight on. */
+#decide.pagehead { padding-bottom: var(--s-4); }
+#decide .pagehead__title { font-size: clamp(2.1rem, 4.2vw, 3.4rem); }
+#read .cmpnudge:first-of-type { margin-top: 0; }
+.cathero .decide__head { margin: 0; }
+.cathero__lede { margin: 0; max-width: 62ch; font-size: var(--fs-md); color: var(--text-soft); }
+
+/* The numbers: chips, not a paragraph. They wrap on a desktop and scroll
+   sideways on a phone rather than stacking five lines deep. */
+.catstats {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+  margin: 0; padding: 0; list-style: none;
+}
+.catstats li {
+  padding: .45rem .85rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--white);
+  font-size: var(--fs-sm); font-weight: 600; color: var(--ink);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.catactions { display: flex; flex-wrap: wrap; gap: .6rem; }
+.catactions .btn { min-height: 44px; }
+
+.cathero__trust { margin: 0; font-size: var(--fs-xs); color: var(--text-soft); }
+
+.catabout { max-width: 62ch; }
+.catabout summary {
+  display: inline-flex; align-items: center; gap: .35rem;
+  min-height: 44px; cursor: pointer;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--deep);
+  list-style: none;
+}
+.catabout summary::-webkit-details-marker { display: none; }
+.catabout summary::after { content: "+"; font-weight: 700; }
+.catabout[open] summary::after { content: "\2013"; }
+.catabout summary:focus-visible { outline: 2px solid var(--deep); outline-offset: 3px; border-radius: 4px; }
+.catabout__body { display: grid; gap: .6rem; padding-bottom: .25rem; font-size: var(--fs-sm); color: var(--text-soft); }
+.catabout__body p { margin: 0; }
+
+/* --- Quick filters --------------------------------------------------------- */
+.quickf { margin: 0 0 var(--s-4); }
+.quickf__label { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .75rem; margin: 0 0 .6rem; }
+.quickf__label .hint { margin: 0; }
+.quickf__row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.quickf__chip {
+  display: inline-flex; align-items: center; gap: .45rem;
+  min-height: 44px; padding: .4rem .95rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  background: var(--white);
+  color: var(--ink); font-size: var(--fs-sm); font-weight: 600;
+  text-decoration: none;
+  transition: border-color .15s ease, background .15s ease;
+}
+.quickf__chip b { font-weight: 600; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.quickf__chip:hover { border-color: var(--deep); }
+.quickf__chip:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+/* Selected is said three ways -- fill, weight and a tick -- never colour alone. */
+.quickf__chip.is-current { background: var(--deep); border-color: var(--deep); color: var(--white); }
+.quickf__chip.is-current b { color: rgba(255, 255, 255, .8); }
+.quickf__chip.is-current::before { content: "\2713"; }
+.quickf__more { margin-top: .5rem; }
+.quickf__more summary {
+  display: inline-flex; align-items: center; min-height: 44px;
+  cursor: pointer; list-style: none;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--deep);
+}
+.quickf__more summary::-webkit-details-marker { display: none; }
+.quickf__more[open] summary { margin-bottom: .5rem; }
+
+/* --- Count, and the List | Map switch ------------------------------------- */
+.dirbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1rem; }
+.dirbar .dir__count { margin: 0; }
+.viewswitch {
+  display: inline-flex; padding: 3px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  background: var(--white);
+}
+.viewswitch[hidden] { display: none; }
+.viewswitch__btn {
+  min-width: 64px; min-height: 38px; padding: 0 1rem;
+  border: 0; border-radius: var(--r-pill);
+  background: transparent; color: var(--text-soft);
+  font: inherit; font-size: var(--fs-sm); font-weight: 600;
+  cursor: pointer;
+}
+.viewswitch__btn[aria-pressed="true"] { background: var(--deep); color: var(--white); }
+.viewswitch__btn:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+
+/* In map view the list and everything that belongs to it steps aside; the
+   filters above stay, because they drive both. */
+#browse.is-map #dirResults,
+#browse.is-map .featcat,
+#browse.is-map .pager,
+#browse.is-map #dirMore,
+#browse.is-map .results__head { display: none !important; }
+.dirmap { margin-top: var(--s-4); }
+.dirmap[hidden] { display: none; }
+.catmap--view { height: min(70vh, 620px); }
+
+/* --- Featured, once --------------------------------------------------------- */
+.featcat {
+  margin-top: var(--s-5);
+  padding: var(--s-5);
+  border: 1px solid var(--gold-soft);
+  border-radius: var(--r-lg, 18px);
+  background: linear-gradient(180deg, rgba(242, 228, 198, .28), rgba(242, 228, 198, 0));
+}
+.featcat[hidden] { display: none; }
+.featcat__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem 1rem; }
+.featcat__head .h4 { margin: 0; }
+.featcat__how { font-size: var(--fs-sm); font-weight: 600; color: var(--deep); }
+.featcat__note { margin: .35rem 0 var(--s-4); font-size: var(--fs-xs); color: var(--text-soft); max-width: 62ch; }
+.featcat__grid { margin-top: 0; }
+
+.results__head { margin: var(--s-6) 0 var(--s-4); }
+.toolbar__search { flex: 1 1 16rem; max-width: 26rem; }
+.toolbar__search .input { width: 100%; min-height: 44px; }
+@media (max-width: 50rem) { .toolbar__search { flex-basis: 100%; max-width: none; } }
+
+/* --- Numbered pages ----------------------------------------------------------- */
+.pager--stack { flex-direction: column; gap: .75rem; }
+.pager--stack[hidden] { display: none; }
+.pager__note { margin: 0; font-size: var(--fs-xs); color: var(--text-soft); }
+.pager__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .5rem; }
+.pager__num:focus-visible,
+.pager__btn:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+
+/* --- The card's price line ---------------------------------------------------- */
+.listing__price { display: inline-flex; flex-direction: column; gap: 2px; }
+.listing__price .listing__price--none { font-weight: 500; color: var(--text-soft); font-size: var(--fs-xs); }
+.listing__price .listing__next { font-weight: 600; color: var(--moss); font-size: var(--fs-xs); }
+.pill--offer { background: var(--gold-soft); border-color: transparent; color: #7A5A12; font-weight: 700; }
+
+/* --- Phones ---------------------------------------------------------------------- */
+@media (max-width: 50rem) {
+  /* One scrolling row of numbers rather than five stacked lines. */
+  .catstats { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 calc(-1 * var(--gutter, 18px)); padding: 0 var(--gutter, 18px); }
+  .catstats::-webkit-scrollbar { display: none; }
+  .catactions .btn { flex: 1 1 auto; justify-content: center; }
+  .featcat { padding: var(--s-4); }
+  .catmap--view { height: 72vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quickf__chip { transition: none; }
+}

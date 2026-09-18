@@ -20,6 +20,19 @@
 declare(strict_types=1);
 
 $oria_term = $args['term'] ?? null;
+
+/*
+ * 'category' is the /explore/ category page: its style filter carries the
+ * category's own name ("Yoga style"), price and a "More filters" drawer
+ * join the row, the wellness goals move into that drawer instead of
+ * sitting beside the filters they duplicate, and the sort offers an honest
+ * "Most relevant" beside an explicit "Featured first". Every other page
+ * that uses this toolbar keeps it exactly as it was.
+ */
+$oria_mode  = (string) ( $args['mode'] ?? '' );
+$oria_cat   = 'category' === $oria_mode;
+$oria_style = (string) ( $args['style_label'] ?? '' );
+$oria_style = '' !== $oria_style ? $oria_style : __( 'Style & specialty', 'oria' );
 $oria_ids  = isset( $args['ids'] ) && is_array( $args['ids'] )
 	? array_map( 'intval', $args['ids'] )
 	: get_posts( array( 'post_type' => 'listing', 'post_status' => 'publish', 'numberposts' => -1, 'fields' => 'ids' ) );
@@ -182,12 +195,45 @@ foreach ( is_wp_error( $oria_at ) ? array() : $oria_at as $oria_a ) {
 	++$oria_auds[ $oria_a->slug ]['n'];
 }
 uasort( $oria_auds, static fn( array $a, array $b ): int => $b['n'] <=> $a['n'] );
+
+// Price bands and online availability, counted over this view, for the
+// category toolbar. Only bands somebody here actually publishes appear.
+$oria_band_labels = array(
+	'Free' => __( 'Free or by donation', 'oria' ),
+	'$'    => __( 'Under $25', 'oria' ),
+	'$$'   => __( '$25–60', 'oria' ),
+	'$$$'  => __( '$60–200', 'oria' ),
+	'$$$$' => __( '$200 and over', 'oria' ),
+);
+$oria_band_n = array();
+$oria_online = 0;
+if ( $oria_cat ) {
+	foreach ( $oria_ids as $oria_lid ) {
+		$oria_b = (string) get_field( 'price_band', (int) $oria_lid );
+		if ( isset( $oria_band_labels[ $oria_b ] ) ) {
+			$oria_band_n[ $oria_b ] = ( $oria_band_n[ $oria_b ] ?? 0 ) + 1;
+		}
+		if ( 'in-person' !== (string) ( get_field( 'format', (int) $oria_lid ) ?: 'in-person' ) ) {
+			++$oria_online;
+		}
+	}
+}
 // The one most people are actually asking about goes first.
 if ( isset( $oria_auds['beginners'] ) ) {
 	$oria_auds = array( 'beginners' => $oria_auds['beginners'] ) + $oria_auds;
 }
 ?>
 <div class="toolbar" id="dirFilters">
+	<?php if ( $oria_cat ) : ?>
+		<?php
+		// Search first, as the UX audit's toolbar has it: a name somebody
+		// already knows, a suburb, or a style, without opening a popover.
+		?>
+		<div class="toolbar__search">
+			<label class="sr-only" for="dirQ"><?php esc_html_e( 'Search these listings', 'oria' ); ?></label>
+			<input class="input input--sm" id="dirQ" type="search" autocomplete="off" placeholder="<?php esc_attr_e( 'Search by name, suburb or style', 'oria' ); ?>">
+		</div>
+	<?php endif; ?>
 	<?php
 	/*
 	 * The style facet is the one people miss, so it gets a nudge: a pulsing
@@ -200,7 +246,7 @@ if ( isset( $oria_auds['beginners'] ) ) {
 	<div class="hinthost" data-hint-key="style">
 	<span class="hintbubble" id="styleHint" role="tooltip"><?php esc_html_e( 'Find more options here', 'oria' ); ?></span>
 	<details class="popover" data-popover>
-		<summary class="btn btn--ghost btn--sm" aria-describedby="styleHint"><?php esc_html_e( 'Style & specialty', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
+		<summary class="btn btn--ghost btn--sm" aria-describedby="styleHint"><?php echo esc_html( $oria_style ); ?> <span aria-hidden="true">▾</span></summary>
 		<div class="popover__panel popover__panel--wide">
 			<?php $oria_rest = count( $oria_facets ) - count( $oria_top ); ?>
 			<?php if ( $oria_rest > 0 ) : ?>
@@ -254,6 +300,20 @@ if ( isset( $oria_auds['beginners'] ) ) {
 	</details>
 	<?php endif; ?>
 
+	<?php if ( $oria_cat && $oria_band_n ) : ?>
+	<details class="popover" data-popover>
+		<summary class="btn btn--ghost btn--sm"><?php esc_html_e( 'Price', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
+		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'Price', 'oria' ); ?>">
+			<p class="hint" style="margin:0 0 .6rem"><?php esc_html_e( 'The starting price each practice publishes.', 'oria' ); ?></p>
+			<?php foreach ( $oria_band_labels as $oria_bk => $oria_bl ) : ?>
+				<?php if ( empty( $oria_band_n[ $oria_bk ] ) ) { continue; } ?>
+				<label class="check"><input type="checkbox" data-filter="price" value="<?php echo esc_attr( $oria_bk ); ?>"><span><?php echo esc_html( $oria_bl ); ?> <em><?php echo esc_html( (string) $oria_band_n[ $oria_bk ] ); ?></em></span></label>
+			<?php endforeach; ?>
+			<button type="button" class="popover__done" data-popover-close><?php esc_html_e( 'Done', 'oria' ); ?></button>
+		</div>
+	</details>
+	<?php endif; ?>
+
 	<?php if ( $oria_auds ) : ?>
 	<details class="popover" data-popover>
 		<summary class="btn btn--ghost btn--sm"><?php esc_html_e( 'Who it suits', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
@@ -266,6 +326,33 @@ if ( isset( $oria_auds['beginners'] ) ) {
 	</details>
 	<?php endif; ?>
 
+	<?php if ( $oria_cat ) : ?>
+	<?php
+	/*
+	 * More filters: the wellness goals and online availability. On a
+	 * category page the goals overlapped the category's own choices -- a
+	 * row of "Relax / Reset / Wind down" above a filter doing the same job
+	 * -- so they live here, one tap away, instead of in the way.
+	 */
+	$oria_gf_all = function_exists( '\Oria\Core\GoodFor\labels' ) ? \Oria\Core\GoodFor\labels() : array();
+	?>
+	<details class="popover" data-popover>
+		<summary class="btn btn--ghost btn--sm"><?php esc_html_e( 'More filters', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
+		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'More filters', 'oria' ); ?>">
+			<?php if ( $oria_online ) : ?>
+				<span class="micro" style="display:block;margin:0 0 .5rem"><?php esc_html_e( 'How it runs', 'oria' ); ?></span>
+				<label class="check"><input type="checkbox" data-filter="format" value="online"><span><?php esc_html_e( 'Online available', 'oria' ); ?> <em><?php echo esc_html( (string) $oria_online ); ?></em></span></label>
+			<?php endif; ?>
+			<?php if ( $oria_gf_all ) : ?>
+				<span class="micro" style="display:block;margin:<?php echo $oria_online ? '.9rem' : '0'; ?> 0 .5rem"><?php esc_html_e( 'Wellness goal', 'oria' ); ?></span>
+				<?php foreach ( $oria_gf_all as $oria_g ) : ?>
+					<label class="check"><input type="checkbox" data-goodfor-opt data-slug="<?php echo esc_attr( $oria_g['slug'] ); ?>" data-specs="<?php echo esc_attr( (string) wp_json_encode( $oria_g['specs'] ) ); ?>"><span><span class="gfdot" style="--gf:<?php echo esc_attr( $oria_g['color'] ); ?>"></span><?php echo esc_html( $oria_g['label'] ); ?></span></label>
+				<?php endforeach; ?>
+			<?php endif; ?>
+			<button type="button" class="popover__done" data-popover-close><?php esc_html_e( 'Done', 'oria' ); ?></button>
+		</div>
+	</details>
+	<?php else : ?>
 	<div class="hinthost hinthost--gf" data-hint-key="goodfor" data-hint-delay="2600">
 	<span class="hintbubble" id="gfHint" role="tooltip"><?php esc_html_e( 'What are you after?', 'oria' ); ?></span>
 	<details class="popover" data-popover>
@@ -289,6 +376,7 @@ if ( isset( $oria_auds['beginners'] ) ) {
 		</div>
 	</details>
 	</div>
+	<?php endif; ?>
 
 	</div>
 
@@ -316,9 +404,19 @@ if ( isset( $oria_auds['beginners'] ) ) {
 	<div class="toolbar__sort">
 		<label class="sr-only" for="dirSort"><?php esc_html_e( 'Sort by', 'oria' ); ?></label>
 		<select class="select" id="dirSort">
-			<option value="relevance"><?php esc_html_e( 'Sort: Members first', 'oria' ); ?></option>
+			<?php if ( $oria_cat ) : ?>
+				<?php
+				// Relevance here never reads payment: specialists first, then
+				// the practices with the most to go on. Paid placement has its
+				// own labelled band above the list, and its own sort option.
+				?>
+				<option value="relevance"><?php esc_html_e( 'Sort: Most relevant', 'oria' ); ?></option>
+				<option value="featured"><?php esc_html_e( 'Sort: Featured first', 'oria' ); ?></option>
+			<?php else : ?>
+				<option value="relevance"><?php esc_html_e( 'Sort: Members first', 'oria' ); ?></option>
+			<?php endif; ?>
 			<option value="rating"><?php esc_html_e( 'Sort: Highest rated', 'oria' ); ?></option>
-			<option value="price"><?php esc_html_e( 'Sort: Lowest price', 'oria' ); ?></option>
+			<option value="price"><?php echo $oria_cat ? esc_html__( 'Sort: Lowest published price', 'oria' ) : esc_html__( 'Sort: Lowest price', 'oria' ); ?></option>
 			<option value="name"><?php esc_html_e( 'Sort: A–Z', 'oria' ); ?></option>
 		</select>
 	</div>

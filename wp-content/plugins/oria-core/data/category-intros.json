@@ -26,5 +26,31 @@
     "beauty": "The looking-after-yourself hour.",
     "seniors": "Classes that respect your knees.",
     "longevity": "Numbers, protocols and cold mornings."
+  },
+  "_style_labels_note": "What the toolbar's style filter is called on each category page -- 'Yoga style', 'Massage type' -- instead of the generic 'Style & specialty'. Read by Categories\\style_label_for(); a child category without its own falls back to its parent's, and anything missing gets 'Type'.",
+  "style_labels": {
+    "yoga": "Yoga style",
+    "fitness": "Class type",
+    "bodywork": "Massage type",
+    "mind": "Practice type",
+    "meditation": "Meditation type",
+    "mindfulness": "Practice type",
+    "breathwork": "Breathwork style",
+    "natural": "Therapy type",
+    "nutrition": "Service type",
+    "spa": "Treatment type",
+    "recovery": "Recovery type",
+    "sound": "Session type",
+    "family": "Service type",
+    "energy": "Practice type",
+    "experiences": "Experience type",
+    "nature": "Place type",
+    "retreats": "Retreat type",
+    "allied": "Service type",
+    "creative": "Therapy type",
+    "community": "Group type",
+    "beauty": "Treatment type",
+    "seniors": "Class type",
+    "longevity": "Treatment type"
   }
 }
