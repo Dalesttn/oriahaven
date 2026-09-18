@@ -1,0 +1,28 @@
+/* ==========================================================================
+   Oria Haven v2 -- design tokens and overrides (design test).
+
+   Loads after the parent's tokens/base/components/pages, so anything set
+   here wins. Start with tokens only; components come once the homepage
+   prototype is agreed.
+
+   The moodboard palette, checked for contrast on limestone (#f2eee5):
+     forest #0b3029  12.4:1  text, headings, primary buttons
+     ink    #17211e  14.3:1  body text
+     ocean  #567b82   4.0:1  NOT for body text (fails AA 4.5); large text,
+                              icons and borders only
+     sage   #91a18d   2.4:1  decoration only, never text
+     amber  #c28a45   2.6:1  decoration only, never text
+     sand   #d7c7a9   1.4:1  surfaces only
+   ========================================================================== */
+
+:root {
+  --oria-forest: #0b3029;
+  --oria-deep-forest: #071f1b;
+  --oria-limestone: #f2eee5;
+  --oria-warm-white: #fbf8f1;
+  --oria-sand: #d7c7a9;
+  --oria-sage: #91a18d;
+  --oria-ocean: #567b82;
+  --oria-amber: #c28a45;
+  --oria-ink: #17211e;
+}
