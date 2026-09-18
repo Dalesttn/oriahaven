@@ -1655,6 +1655,157 @@
     });
   }
 
+  /* Oria Reel Recommendation (template-parts/reel-card.php).
+
+     Nothing from Instagram loads with the page. "Watch Reel" builds
+     Instagram's own embed from the validated address and loads Instagram's
+     script -- once per page however many frames there are, then asks it to
+     process the new embed. Ten seconds with no player (removed, private,
+     blocked by an extension) and the frame shows its fallback text and the
+     link out instead: never a blank box or a broken iframe. The frame's
+     height is reserved in CSS, and any growth after this follows the
+     visitor's own press, so it is not counted as layout shift. */
+  var igLoading = null;
+  function loadInstagram() {
+    if (window.instgrm && window.instgrm.Embeds) return Promise.resolve();
+    if (igLoading) return igLoading;
+    igLoading = new Promise(function (resolve, reject) {
+      var sc = document.createElement("script");
+      sc.src = "https://www.instagram.com/embed.js";
+      sc.async = true;
+      sc.onload = function () { resolve(); };
+      sc.onerror = function () { igLoading = null; reject(); };
+      document.body.appendChild(sc);
+    });
+    return igLoading;
+  }
+
+  function initReels() {
+    var frames = $$("[data-reel]");
+    if (!frames.length) return;
+    frames.forEach(function (frame) {
+      var btn = $("[data-reel-load]", frame);
+      var fallback = $("[data-reel-fallback]", frame);
+      var params = { trend_slug: frame.getAttribute("data-reel-trend") || "", reel_location: frame.getAttribute("data-reel-where") || "" };
+      function fail() {
+        var q = $(".instagram-media", frame);
+        if (q) q.parentNode.removeChild(q);
+        var ph = $(".reelrec__placeholder", frame);
+        if (ph) ph.hidden = true;
+        frame.classList.remove("is-loading");
+        if (fallback) fallback.hidden = false;
+      }
+      if (btn) {
+        btn.addEventListener("click", function () {
+          var url = frame.getAttribute("data-reel-url") || "";
+          if (!url) { fail(); return; }
+          frame.classList.add("is-loading");
+          btn.disabled = true;
+          // Instagram's own embed markup, built from the stored address --
+          // never HTML an editor pasted.
+          var q = document.createElement("blockquote");
+          q.className = "instagram-media";
+          q.setAttribute("data-instgrm-permalink", url);
+          q.setAttribute("data-instgrm-version", "14");
+          var a = document.createElement("a");
+          a.href = url;
+          a.textContent = "View this Reel on Instagram";
+          a.target = "_blank";
+          a.rel = "noopener nofollow";
+          q.appendChild(a);
+          frame.appendChild(q);
+          pushEvent("reel_load", params);
+          loadInstagram().then(function () {
+            try { window.instgrm.Embeds.process(); } catch (e) { fail(); return; }
+            var waited = 0;
+            var t = window.setInterval(function () {
+              waited += 500;
+              var iframe = $("iframe", frame);
+              if (iframe) {
+                window.clearInterval(t);
+                iframe.setAttribute("title", "Instagram Reel" + (btn.textContent ? ": " + btn.textContent.trim().replace(/^Watch /, "") : ""));
+                var ph = $(".reelrec__placeholder", frame);
+                if (ph) ph.hidden = true;
+                frame.classList.remove("is-loading");
+                frame.classList.add("is-loaded");
+              } else if (waited >= 10000) {
+                window.clearInterval(t);
+                fail();
+              }
+            }, 500);
+          }, fail);
+        });
+      }
+      frame.addEventListener("click", function (e) {
+        if (e.target.closest && e.target.closest("[data-reel-out]")) pushEvent("reel_external_open", params);
+      });
+    });
+  }
+
+  /* Trend pages and the /trends/ hub: which next step people take, and the
+     hub's goal chips and "What have you seen online?" box, which filter the
+     cards in place. The box's text never goes to analytics -- what somebody
+     saw online can be about their health. */
+  function initTrends() {
+    var page = $("[data-trend-page]");
+    var slug = page ? page.getAttribute("data-trend-page") : "";
+    if (page) pushEvent("trend_view", { trend_slug: slug });
+
+    var NAMES = { listing: "trend_listing_click", compare: "trend_compare_click", product: "trend_product_click", related: "trend_related_click" };
+    document.addEventListener("click", function (e) {
+      var t = e.target;
+      if (!t.closest) return;
+      var a = t.closest("[data-trend-cta]");
+      var kind, where;
+      if (a) {
+        kind = a.getAttribute("data-trend-cta");
+        where = a.getAttribute("data-trend-where") || "";
+      } else {
+        var wrap = t.closest("[data-trend-cta-wrap]");
+        if (!wrap || !t.closest("a[href]")) return;
+        kind = wrap.getAttribute("data-trend-cta-wrap");
+        where = "where";
+      }
+      pushEvent(NAMES[kind] || "trend_cta_click", {
+        trend_slug: slug, cta_location: where, destination_type: kind
+      });
+    });
+
+    var grid = $("[data-trend-grid]");
+    if (!grid) return;
+    var cards = $$(".trendcard", grid);
+    var chips = $$("[data-trend-goal]");
+    var box = $("[data-trend-search]");
+    var none = $("[data-trend-none]");
+    var goal = "";
+    function apply() {
+      var q = box ? box.value.trim().toLowerCase() : "";
+      var shown = 0;
+      cards.forEach(function (c) {
+        var ok = (!goal || (c.getAttribute("data-trend-goals") || "").indexOf(" " + goal + " ") > -1) &&
+          (!q || (c.getAttribute("data-trend-search") || "").indexOf(q) > -1);
+        c.hidden = !ok;
+        if (ok) shown++;
+      });
+      if (none) none.hidden = shown > 0;
+    }
+    chips.forEach(function (b) {
+      b.addEventListener("click", function () {
+        var g = b.getAttribute("data-trend-goal");
+        goal = goal === g ? "" : g;
+        chips.forEach(function (o) { o.setAttribute("aria-pressed", o.getAttribute("data-trend-goal") === goal ? "true" : "false"); });
+        apply();
+        if (goal) pushEvent("trend_goal_filter", { goal: goal });
+      });
+    });
+    if (box) {
+      // The search looks across the featured card too.
+      var feat = $(".trendcard--feature");
+      if (feat) cards.push(feat);
+      box.addEventListener("input", apply);
+    }
+  }
+
   /* Card corner actions — delegated, because the engine redraws cards on
      every filter change and per-card listeners would be lost each time. */
   function initCardQuickActions() {
@@ -4947,6 +5098,8 @@
     initCatMap();
     initCardQuickActions();
     initSupportBands();
+    initReels();
+    initTrends();
     scrollToFilteredResults();
     initPopoverDone();
     initFilterSheet();

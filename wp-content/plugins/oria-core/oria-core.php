@@ -106,6 +106,7 @@ require_once ORIA_CORE_DIR . 'includes/best-of.php';
 require_once ORIA_CORE_DIR . 'includes/post-urls.php';
 require_once ORIA_CORE_DIR . 'includes/tiles.php';
 require_once ORIA_CORE_DIR . 'includes/ask.php';
+require_once ORIA_CORE_DIR . 'includes/trends.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
@@ -175,6 +176,7 @@ JournalArchives\bootstrap();
 BestOf\bootstrap();
 PostUrls\bootstrap();
 Ask\bootstrap();
+Trends\bootstrap();
 
 /**
  * Rewrite rules are only rebuilt on activation and deactivation. Flushing on

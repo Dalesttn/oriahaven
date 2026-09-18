@@ -14,11 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 const LISTING = 'listing';
 const EVENT   = 'event';
 const BEST_OF = 'best_of';
+const TREND   = 'oria_trend';
 
 function register(): void {
 	register_listing();
 	register_event();
 	register_best_of();
+	register_trend();
 }
 
 /**
@@ -167,6 +169,51 @@ function register_best_of(): void {
 			),
 			'show_in_rest'  => true,
 			'rest_base'     => 'best-of',
+		)
+	);
+}
+
+/**
+ * A Trend to Try: a wellness trend people meet on Instagram, explained --
+ * what it is, what to expect, what the evidence does and does not say, and
+ * where to try it around Perth. See includes/trends.php.
+ *
+ * Its own type rather than a journal post for the same reason as Best Of:
+ * the page is built from structured fields (the Reel and its permission,
+ * evidence position, safety, prices with the date they were checked) that
+ * a publishing checklist reads, and the hub at /trends/ is built from them.
+ * Standard post capabilities: editors only.
+ */
+function register_trend(): void {
+	register_post_type(
+		TREND,
+		array(
+			'labels'        => array(
+				'name'               => __( 'Trends', 'oria' ),
+				'singular_name'      => __( 'Trend', 'oria' ),
+				'menu_name'          => __( 'Trends to Try', 'oria' ),
+				'add_new'            => __( 'Add trend', 'oria' ),
+				'add_new_item'       => __( 'Add trend', 'oria' ),
+				'edit_item'          => __( 'Edit trend', 'oria' ),
+				'view_item'          => __( 'View trend', 'oria' ),
+				'search_items'       => __( 'Search trends', 'oria' ),
+				'not_found'          => __( 'No trends yet', 'oria' ),
+				'not_found_in_trash' => __( 'No trends in the bin', 'oria' ),
+				'featured_image'     => __( 'Cover image (Oria-owned only)', 'oria' ),
+				'archives'           => __( 'Trends to Try', 'oria' ),
+			),
+			'public'        => true,
+			'menu_position' => 23,
+			'menu_icon'     => 'dashicons-video-alt3',
+			// No editor: every section is a field the checklist can read.
+			'supports'      => array( 'title', 'excerpt', 'thumbnail', 'revisions', 'author' ),
+			'has_archive'   => 'trends',
+			'rewrite'       => array(
+				'slug'       => 'trends',
+				'with_front' => false,
+			),
+			'show_in_rest'  => true,
+			'rest_base'     => 'trends',
 		)
 	);
 }

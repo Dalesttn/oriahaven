@@ -7224,3 +7224,166 @@ article.is-spotlit {
 @media (prefers-reduced-motion: reduce) {
   .quickf__chip { transition: none; }
 }
+
+/* ==========================================================================
+   Trends to Try (/trends/, single-oria_trend.php, reel-card, trend-card)
+
+   Editorial and calm: the site's paper, sand and deep green, the Best Of
+   header, and no social-wall styling anywhere. Evidence labels are words
+   first -- the tint only repeats what the word says.
+   ========================================================================== */
+
+/* --- cards ----------------------------------------------------------------- */
+.trendgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.25rem, 3vw, 2rem); }
+@media (max-width: 60rem) { .trendgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 37.5rem) { .trendgrid { grid-template-columns: 1fr; } }
+.trendcard {
+  position: relative; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r-md);
+  transition: box-shadow var(--t-med) var(--ease), transform var(--t-med) var(--ease);
+}
+.trendcard:hover { box-shadow: var(--sh-2); transform: translateY(-2px); }
+.trendcard[hidden] { display: none; }
+.trendcard:focus-within { outline: 2px solid var(--deep); outline-offset: 3px; }
+.trendcard__media { display: block; aspect-ratio: 4 / 3; background: var(--sand-2); }
+.trendcard__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.trendcard__blank { display: grid; place-items: center; height: 100%; color: var(--brand-gold); font-size: 2rem; }
+.trendcard__body { display: grid; gap: var(--s-2); padding: var(--s-4) var(--s-5) var(--s-5); flex: 1; align-content: start; }
+.trendcard__goals { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.trendcard__goals li {
+  font-size: 11px; font-weight: 600; letter-spacing: .02em; padding: 2px 9px; border-radius: 999px;
+  color: var(--deep); background: color-mix(in srgb, var(--gf, #E7E0D3) 16%, white);
+  border: 1px solid color-mix(in srgb, var(--gf, #C6C2B6) 35%, white);
+}
+.trendcard__title { margin: 0; font-size: 1.2rem; line-height: 1.25; letter-spacing: -0.012em; font-weight: 600; }
+.trendcard__title a { color: var(--ink); text-decoration: none; }
+/* The whole card opens the trend; the title is the one real link. */
+.trendcard__title a::after { content: ""; position: absolute; inset: 0; }
+.trendcard__title a:focus-visible { outline: none; }
+.trendcard__line { margin: 0; font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.55; }
+.trendcard__meta { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0; font-size: var(--fs-xs); color: var(--text-soft); }
+.trendcard__cta { margin-top: auto; padding-top: var(--s-2); font-size: var(--fs-sm); font-weight: 600; color: var(--moss); }
+.trendcard--feature { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+.trendcard--feature .trendcard__media { aspect-ratio: auto; min-height: 320px; }
+.trendcard--feature .trendcard__body { padding: clamp(1.5rem, 3vw, 2.5rem); align-content: center; }
+.trendcard--feature .trendcard__title { font-size: clamp(1.5rem, 2.6vw, 2.1rem); }
+@media (max-width: 50rem) {
+  .trendcard--feature { grid-template-columns: 1fr; }
+  .trendcard--feature .trendcard__media { min-height: 0; aspect-ratio: 16 / 9; }
+}
+
+/* Evidence position: the word is the signal; the tint only repeats it. */
+.evpill { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: var(--deep); cursor: help; }
+.evpill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .55; }
+.evpill--well_supported { color: #2E6B52; }
+.evpill--promising { color: #3F6E60; }
+.evpill--experiential { color: #6B5B2E; }
+.evpill--caution { color: #8A3B12; }
+
+/* --- hub ------------------------------------------------------------------- */
+.trendhub__search { display: grid; gap: var(--s-2); margin-top: var(--s-5); max-width: 34rem; }
+.trendhub__input {
+  min-height: 48px; padding: 0 1rem; font: inherit; font-size: var(--fs-sm); color: var(--ink);
+  background: var(--white); border: 1px solid var(--line-strong); border-radius: 999px;
+}
+.trendhub__input:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.trendgoals { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); margin-bottom: var(--s-5); }
+.trendgoals .micro { margin-right: var(--s-2); }
+.trendgoals .quickf__chip { cursor: pointer; font-family: inherit; }
+.trendgoals .quickf__chip[aria-pressed="true"] { background: var(--deep); border-color: var(--deep); color: var(--white); }
+.trendgoals .quickf__chip[aria-pressed="true"]::before { content: "\2713"; }
+.trendgrid__none { margin-top: var(--s-4); color: var(--text-soft); }
+.trendgrid__none[hidden] { display: none; }
+.trendnote { max-width: 70ch; padding-top: var(--s-5); border-top: 1px solid var(--line); }
+.trendnote__h { margin: 0 0 var(--s-2); font-size: var(--fs-h3); font-weight: 600; }
+.trendnote p { margin: 0; color: var(--text-soft); line-height: 1.65; }
+
+/* --- the Reel recommendation ----------------------------------------------- */
+.reelrec {
+  display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: start; margin-block: clamp(1.5rem, 4vw, 2.5rem);
+  padding: clamp(1rem, 2.5vw, 1.75rem); background: var(--sand-2); border: 1px solid var(--line); border-radius: var(--r-lg);
+}
+/* The frame's space is reserved before anything loads, so nothing below it
+   moves; Instagram's player grows it only after the visitor presses play. */
+.reelrec__frame { position: relative; min-height: 560px; border-radius: var(--r-md); background: var(--white); overflow: hidden; }
+.reelrec__frame .instagram-media { margin: 0 !important; min-width: 0 !important; width: 100% !important; }
+.reelrec__placeholder {
+  position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: var(--s-3);
+  padding: var(--s-5); text-align: center;
+  background: linear-gradient(rgba(8, 34, 32, .28), rgba(8, 34, 32, .55)), var(--reel-cover, none) center / cover no-repeat, var(--deep);
+  color: var(--white);
+}
+.reelrec__placeholder[hidden] { display: none; }
+.reelrec__play {
+  display: inline-flex; align-items: center; gap: var(--s-2); min-height: 48px; max-width: 100%;
+  padding: .6rem 1.2rem .6rem .7rem; font: inherit; font-weight: 600; text-align: left;
+  color: var(--ink); background: var(--white); border: 0; border-radius: 999px; cursor: pointer;
+}
+.reelrec__play:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 3px; }
+.reelrec__play:disabled { opacity: .7; cursor: progress; }
+.reelrec__playicon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--deep); color: var(--white); flex: 0 0 auto; }
+.reelrec__note { margin: 0; max-width: 26ch; font-size: var(--fs-xs); color: rgba(255, 255, 255, .9); }
+.reelrec__fallback { padding: var(--s-5); display: grid; gap: var(--s-2); align-content: center; min-height: 560px; }
+.reelrec__fallback[hidden] { display: none; }
+.reelrec__fallback p { margin: 0; line-height: 1.6; color: var(--text-soft); }
+.reelrec__out { font-weight: 600; color: var(--moss); }
+.reelrec__text { display: grid; gap: var(--s-2); align-content: start; }
+.reelrec__eyebrow { margin: 0; color: var(--moss); }
+.reelrec__title { margin: 0; font-size: var(--fs-h3); line-height: 1.2; font-weight: 600; letter-spacing: -0.014em; text-wrap: balance; }
+.reelrec__title a { color: inherit; text-decoration: none; }
+.reelrec__credit { margin: 0; font-size: var(--fs-sm); color: var(--text-soft); overflow-wrap: anywhere; }
+.reelrec__credit a, .reelrec__credit b { color: var(--deep); font-weight: 600; }
+.reelrec__handle { color: var(--text-faint); }
+.reelrec__attr { margin: 0; font-size: var(--fs-xs); color: var(--text-faint); }
+.reelrec__reason { margin: var(--s-1) 0 0; font-family: var(--font-edit); font-size: 1.1rem; line-height: 1.55; color: var(--ink); }
+.reelrec__takeaways { margin: var(--s-1) 0 var(--s-2); padding-left: 1.2rem; display: grid; gap: 6px; font-size: var(--fs-sm); line-height: 1.55; }
+.reelrec__text .btn { justify-self: start; }
+.reelrec__disclaim { margin: var(--s-2) 0 0; font-size: var(--fs-xs); color: var(--text-faint); }
+.reelrec--compact { grid-template-columns: minmax(0, 220px) minmax(0, 1fr); }
+.reelrec--compact .reelrec__frame, .reelrec--compact .reelrec__fallback { min-height: 380px; }
+@media (max-width: 45rem) {
+  .reelrec, .reelrec--compact { grid-template-columns: 1fr; }
+  .reelrec__frame { width: 100%; max-width: 420px; justify-self: center; min-height: 520px; }
+  .reelrec__fallback { min-height: 0; }
+  .reelrec__frame:has(> .reelrec__fallback:not([hidden])) { min-height: 0; }
+}
+
+/* --- the trend page -------------------------------------------------------- */
+.trendbody { padding-bottom: clamp(3rem, 6vw, 5rem); }
+.trenddisclose { margin: 0 0 var(--s-5); padding: var(--s-3) var(--s-4); font-size: var(--fs-sm); background: var(--sand-2); border-left: 3px solid var(--brand-gold); border-radius: 6px; }
+.trendanswer { max-width: 72ch; }
+.trendfacts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1px; margin: var(--s-6) 0 0;
+  background: var(--line); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden;
+}
+.trendfacts__row { background: var(--white); padding: var(--s-3) var(--s-4); }
+.trendfacts dt { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
+.trendfacts dd { margin: 4px 0 0; font-weight: 600; color: var(--ink); }
+.trendfacts__note { display: block; margin-top: 4px; font-size: var(--fs-xs); font-weight: 400; color: var(--text-soft); }
+.trendfacts__note a { color: var(--moss); }
+.trendmain { max-width: 72ch; }
+.trendsec { margin-top: clamp(2rem, 4vw, 2.75rem); }
+.trendsec__h { margin: 0 0 var(--s-3); font-size: var(--fs-h3); line-height: 1.25; font-weight: 600; letter-spacing: -0.014em; }
+.trendsec__body { line-height: 1.7; }
+.trendtips, .trendasks { margin: 0; padding-left: 1.3rem; display: grid; gap: var(--s-2); line-height: 1.6; }
+.trendsafety { padding: var(--s-5); background: var(--white); border: 1px solid var(--line); border-left: 3px solid var(--moss); border-radius: var(--r-md); }
+.trendsafety__h3 { margin: var(--s-5) 0 var(--s-2); font-size: 1.05rem; font-weight: 600; }
+.trendwhere { margin-top: clamp(2.5rem, 5vw, 3.5rem); }
+.trendwhere__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: var(--s-5); }
+.trendwhere__more { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: var(--s-4) 0 0; }
+.trendwhere__h3 { margin: var(--s-6) 0 var(--s-2); font-size: 1.05rem; font-weight: 600; }
+.trendevents, .trendreadnext { margin: 0; padding-left: 1.2rem; display: grid; gap: 6px; }
+.trendevents a, .trendreadnext a { color: var(--deep); font-weight: 600; }
+.trendverdict { margin-top: clamp(2rem, 4vw, 2.75rem); padding: var(--s-5); background: var(--sand-2); border-radius: var(--r-md); }
+.trendverdict .micro { margin: 0 0 var(--s-2); color: var(--moss); }
+.trendverdict p:last-child { margin: 0; font-family: var(--font-edit); font-size: 1.15rem; line-height: 1.6; }
+.trendrelated { margin-top: clamp(2.5rem, 5vw, 3.5rem); }
+.trendfoot { margin-top: clamp(2.5rem, 5vw, 3.5rem); padding-top: var(--s-5); border-top: 1px solid var(--line); max-width: 80ch; }
+.trendsources { margin: 0 0 var(--s-5); padding-left: 1.3rem; display: grid; gap: 6px; font-size: var(--fs-sm); }
+.trendsources a { color: var(--deep); }
+.trendfoot__how, .trendfoot__meta { font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.6; }
+.trendfoot__meta { font-size: var(--fs-xs); }
+@media (prefers-reduced-motion: reduce) {
+  .trendcard, .trendcard:hover { transition: none; transform: none; }
+}
