@@ -517,7 +517,7 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 					<p><?php echo esc_html( implode( ' ', $oria_answer['sentences'] ) ); ?></p>
 				<?php endif; ?>
 				<p class="hint">
-					<?php esc_html_e( 'Most relevant means practices that specialise in this first, then the ones with the most reviews to go on. Paid placements are shown once, in their own band, and never move anyone up the list.', 'oria' ); ?>
+					<?php esc_html_e( 'Most relevant means practices that specialise in this first, then the ones with the most reviews to go on. A listing that publishes its price, describes itself and names its services gets a small nudge, never more than a quarter of a star, because you can decide on it without ringing. Paid placements are shown once, in their own band, and never move anyone up the list.', 'oria' ); ?>
 				</p>
 			</div>
 		</details>

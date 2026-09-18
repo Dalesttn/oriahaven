@@ -1950,6 +1950,20 @@
       var n = l.reviews || 0;
       return n ? ((l.rating || 0) * n + 4.2 * 8) / (n + 8) : 0;
     }
+    /* How much a visitor can decide on without ringing: a published price,
+       a real description, more than one service named. Only fields every
+       owner can fill in on the free plan (oria-core tiers.php FIELD_TIERS)
+       -- next_session, packages and the timetable are paid, so they are
+       left out, or the ranking would be selling places after all. Each is
+       worth a twelfth of a star, a quarter at most: enough to settle a near
+       tie between two ratings, never enough to lift a bare listing over a
+       well-reviewed one. "About these results" says so in words. */
+    function completeness(l) {
+      return ((l.priceFrom > 0 || l.priceBand) ? 1 : 0) +
+        ((l.blurb || "").length >= 100 ? 1 : 0) +
+        ((l.services || []).length >= 2 ? 1 : 0);
+    }
+    function standing(l) { return confidence(l) + completeness(l) / 12; }
     function isSpecialist(l) { return FAMILY.indexOf(l.cat) > -1; }
 
     /* The page of cards, with the two groups named where they meet. On the
@@ -1979,7 +1993,7 @@
 
     function relevance(a, b) {
       var pa = FAMILY.indexOf(a.cat) > -1 ? 0 : 1, pb = FAMILY.indexOf(b.cat) > -1 ? 0 : 1;
-      return (pa - pb) || (confidence(b) - confidence(a)) || a.name.localeCompare(b.name);
+      return (pa - pb) || (standing(b) - standing(a)) || a.name.localeCompare(b.name);
     }
 
     function sortFn(a, b) {
