@@ -623,7 +623,7 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 	}
 	$oria_chip = static function ( array $c ): void {
 		?>
-		<a class="quickf__chip<?php echo $c[3] ? ' is-current' : ''; ?>" href="<?php echo esc_url( $c[0] ); ?>"<?php echo $c[3] ? ' aria-current="page"' : ''; ?>>
+		<a class="quickf__chip<?php echo $c[3] ? ' is-current' : ''; ?>" href="<?php echo esc_url( $c[0] ); ?>" data-oria-event="category_quick_filter_select"<?php echo $c[3] ? ' aria-current="page"' : ''; ?>>
 			<?php echo esc_html( $c[1] ); ?> <b><?php echo esc_html( number_format_i18n( $c[2] ) ); ?></b>
 		</a>
 		<?php

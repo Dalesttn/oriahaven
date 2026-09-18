@@ -32,7 +32,7 @@ if ( ! $oria_guides ) {
 	</div>
 	<div class="grid grid-3 guidegrid">
 		<?php foreach ( $oria_guides as $oria_i => $oria_g ) : ?>
-			<a class="article guidecard" href="<?php echo esc_url( (string) get_permalink( $oria_g ) ); ?>" style="--i:<?php echo (int) $oria_i; ?>">
+			<a class="article guidecard" href="<?php echo esc_url( (string) get_permalink( $oria_g ) ); ?>" style="--i:<?php echo (int) $oria_i; ?>"<?php echo $oria_compact ? ' data-oria-event="category_guide_click"' : ''; ?>>
 				<?php if ( has_post_thumbnail( $oria_g ) ) : ?>
 					<div class="article__img"><?php echo get_the_post_thumbnail( $oria_g, 'oria-card', array( 'loading' => 'lazy' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 				<?php else : ?>

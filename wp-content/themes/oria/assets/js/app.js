@@ -1224,7 +1224,7 @@
       } else if (DirAPI.mapRefresh) {
         DirAPI.mapRefresh();
       }
-      pushEvent("category_map_open", { results_count: (DirAPI.lastUrls || []).length });
+      (DirAPI.catEvent || pushEvent)("category_map_open", { results_count: (DirAPI.lastUrls || []).length });
     }
     var pendingFocus = null;
     function focus(url) {
@@ -1331,6 +1331,11 @@
       mk._oriaSub = (p.s || "").toLowerCase();
       mk.on("mouseover", function () { mk.setStyle({ fillColor: "#C9A24B" }); });
       mk.on("mouseout", function () { mk.setStyle({ fillColor: mk._oriaHeld ? "#C9A24B" : "#0E3B38" }); });
+      // Which practice a pin was opened for -- by its address, never its position.
+      mk.on("click", function () {
+        if (!host.closest("#catMapView") || !DirAPI.catEvent) return;
+        DirAPI.catEvent("category_map_pin_select", { listing_id: String(p.u || "").split("/").filter(Boolean).pop() || "" });
+      });
       group.push(mk);
     });
 
@@ -1746,6 +1751,98 @@
        page itself locks (its category, a facet's style, a suburb). The
        featured band only shows on the page as it arrived; the moment
        somebody narrows it, the band steps aside. */
+    /* Category-page analytics. Every event carries the page's category and
+       city so GA4 can compare categories; none carries a position on a map
+       or a visitor's location -- the brief's "no precise coordinates", and
+       the site never sends one anywhere. Clicks fire on click (the
+       render-vs-click trap in memory: oria-analytics), and a card counts as
+       seen once per page view, however often it scrolls past. */
+    function catEvent(name, params) {
+      if (!CAT) { pushEvent(name, params || {}); return; }
+      var p = { page_category: locked.cat || "", page_city: locked.city || "" };
+      Object.keys(params || {}).forEach(function (k) { p[k] = params[k]; });
+      pushEvent(name, p);
+    }
+    DirAPI.catEvent = catEvent;
+
+    function cardInfo(article) {
+      var a = article && article.querySelector(".listing__name a");
+      var slug = a ? (a.getAttribute("href") || "").replace(/\/+$/, "").split("/").pop() : "";
+      var inBand = !!(band && band.contains(article));
+      var list = Array.prototype.slice.call((inBand ? band : root).querySelectorAll("article.listing"));
+      var idx = list.indexOf(article);
+      return {
+        listing_id: slug,
+        position: idx < 0 ? 0 : (inBand ? idx + 1 : (state.page - 1) * PER_PAGE + idx + 1),
+        featured: inBand
+      };
+    }
+
+    if (CAT) {
+      // Which filter somebody reaches for, whether or not they use it.
+      $$("#dirFilters [data-popover]").forEach(function (d) {
+        d.addEventListener("toggle", function () {
+          if (!d.open) return;
+          var sum = d.querySelector("summary");
+          var name = sum ? sum.textContent.replace(/[▾\d]/g, "").replace(/\s+/g, " ").trim() : "";
+          catEvent("category_filter_open", { filter_name: name });
+        });
+      });
+
+      // Opening a practice, saving it, comparing it -- from a card, with its place.
+      [root, band].forEach(function (box) {
+        if (!box) return;
+        box.addEventListener("click", function (e) {
+          var t = e.target;
+          var article = t.closest && t.closest("article.listing");
+          if (!article) return;
+          var info = cardInfo(article);
+          if (t.closest(".listing__name a, a.btn--dark")) {
+            catEvent(info.featured ? "featured_listing_click" : "listing_profile_click", info);
+            return;
+          }
+          // Saving already reports itself (listing_save / listing_unsave in
+          // the save handler); only comparing needs telling here.
+          var cmp = t.closest("[data-compare-toggle]");
+          if (cmp) {
+            // After the button's own handler has flipped it: only "on" counts.
+            window.setTimeout(function () {
+              if (cmp.getAttribute("aria-pressed") === "true") catEvent("listing_compare_add", info);
+            }, 0);
+          }
+        });
+      });
+
+      // Seen: half a card on screen, once per listing per page view.
+      if ("IntersectionObserver" in window) {
+        var seenCards = {};
+        var cardObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            var info = cardInfo(en.target);
+            cardObs.unobserve(en.target);
+            if (!info.listing_id || seenCards[info.listing_id]) return;
+            seenCards[info.listing_id] = 1;
+            catEvent("listing_card_view", info);
+          });
+        }, { threshold: 0.5 });
+        DirAPI.watchCards = function () {
+          [root, band].forEach(function (box) {
+            if (box) $$("article.listing", box).forEach(function (a) { cardObs.observe(a); });
+          });
+        };
+      }
+
+      // Which questions people open.
+      $$("#faq details").forEach(function (d) {
+        d.addEventListener("toggle", function () {
+          if (!d.open) return;
+          var q = d.querySelector("summary");
+          catEvent("category_faq_open", { question: q ? q.textContent.replace(/\s+/g, " ").trim().slice(0, 100) : "" });
+        });
+      });
+    }
+
     function userFilters() {
       function extra(arr, own) { return arr.filter(function (v) { return own.indexOf(v) === -1; }).length; }
       var n = extra(state.cats, locked.cat ? [locked.cat] : []) +
@@ -2122,6 +2219,7 @@
        the chip row only offers "Clear all" from two filters up, so the empty
        state cannot rely on finding it. */
     function resetFilters() {
+      catEvent("category_filter_clear", { results_count: lastCount });
       GFSel = {};
       state.cats = locked.cat ? [locked.cat] : [];
       state.regions = locked.region ? [locked.region] : [];
@@ -2327,7 +2425,7 @@
              of the document. */
           head.setAttribute("tabindex", "-1");
           head.focus({ preventScroll: true });
-          pushEvent("category_page", { page: state.page, results_count: lastCount });
+          catEvent("category_page", { page: state.page, results_count: lastCount });
         });
       }
       if (pages <= 1) { pagerBox.hidden = true; pagerBox.innerHTML = ""; return; }
@@ -2559,6 +2657,8 @@
       if (CAT) pager(list, pages);
       else more(found, pages);
 
+      if (DirAPI.watchCards) DirAPI.watchCards();
+
       /* The map listens for this, so its pins are always the listings the
          list is showing -- the same filters, never a second set. */
       DirAPI.lastUrls = found.map(function (l) { return l.url; });
@@ -2787,7 +2887,7 @@
            double the volume to say the same thing twice, and the count
            after the redraw already shows whether it narrowed too far. */
         if (input.checked || (kind === "rating" && state.rating)) {
-          pushEvent("dir_filter", {
+          catEvent("dir_filter", {
             filter_name: kind,
             filter_value: val,
             results_count: lastCount
@@ -2802,7 +2902,7 @@
       state.sort = sortSel.value;
       state.page = 1;
       render();
-      pushEvent("category_sort_change", { sort: state.sort, results_count: lastCount });
+      catEvent("category_sort_change", { sort: state.sort, results_count: lastCount });
     });
 
     /* Free-text search. Redraws a beat after typing stops, and reports only
@@ -2827,7 +2927,9 @@
           var term = qEl.value.trim().toLowerCase();
           if (term.length < 2 || term === qLast) return;
           qLast = term;
-          pushEvent("category_search", { search_term: term, results_count: lastCount });
+          // dir_search, the site's existing name for this (already in the GTM
+          // allowlist and GA4's history), with the page's category added.
+          catEvent("dir_search", { search_term: term, results_count: lastCount });
         }, 1200);
       });
     }
