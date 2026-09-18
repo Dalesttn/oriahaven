@@ -45,7 +45,7 @@ $oria_cta_l = trim( (string) get_field( 'primary_cta_label', $oria_id ) );
 $oria_cta_u = (string) get_field( 'primary_cta_url', $oria_id );
 ?>
 <section class="reelrec reelrec--<?php echo esc_attr( $oria_variant ); ?>" aria-labelledby="<?php echo esc_attr( $oria_uid ); ?>-h">
-	<div class="reelrec__frame" data-reel data-reel-url="<?php echo esc_url( $oria_r['url'] ); ?>" data-reel-trend="<?php echo esc_attr( $oria_slug ); ?>" data-reel-where="<?php echo esc_attr( $oria_where ); ?>">
+	<div class="reelrec__frame" data-reel data-reel-id="<?php echo (int) $oria_id; ?>" data-reel-url="<?php echo esc_url( $oria_r['url'] ); ?>" data-reel-trend="<?php echo esc_attr( $oria_slug ); ?>" data-reel-where="<?php echo esc_attr( $oria_where ); ?>">
 		<?php if ( $oria_r['show'] ) : ?>
 			<div class="reelrec__placeholder"<?php echo '' !== $oria_cover ? ' style="--reel-cover:url(\'' . esc_url( $oria_cover ) . '\')"' : ''; ?>>
 				<button type="button" class="reelrec__play" data-reel-load aria-describedby="<?php echo esc_attr( $oria_uid ); ?>-note">

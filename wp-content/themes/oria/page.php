@@ -63,6 +63,9 @@ while ( have_posts() ) :
 			// code-injected, low on the page, and silent until one is published.
 			if ( is_front_page() && 'journal_latest' === $oria_layout ) {
 				get_template_part( 'template-parts/sections/best-of' );
+				// Trend to Try after it: the same rules, silent until a
+				// trend is published.
+				get_template_part( 'template-parts/sections/trend-to-try' );
 			}
 
 		}

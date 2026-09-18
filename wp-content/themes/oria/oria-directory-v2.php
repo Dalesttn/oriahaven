@@ -194,6 +194,23 @@ list( $oria_hero_file, $oria_hero_pos ) = $oria_hero_by_city[ $oria_cslug ?? '' 
 
 	<?php
 	/*
+	 * The way into Trends to Try from Explore: one quiet line under the
+	 * categories, for somebody who arrived with something from their feed
+	 * rather than a category in mind. Only once a trend is published --
+	 * a link to an empty hub would be a dead end.
+	 */
+	if ( function_exists( '\Oria\Core\Trends\published' ) && \Oria\Core\Trends\published() ) :
+		?>
+		<p class="cmpnudge">
+			<a href="<?php echo esc_url( \Oria\Core\Trends\hub_url() ); ?>" data-oria-event="explore_trends_click">
+				<span aria-hidden="true">&#10022;</span> <?php esc_html_e( 'Seen a wellness trend online? What it is, what to expect and where to try it in Perth', 'oria' ); ?>
+				<span aria-hidden="true">&rarr;</span>
+			</a>
+		</p>
+	<?php endif; ?>
+
+	<?php
+	/*
 	 * Only the wants this page can actually answer. Without the counts the
 	 * row printed all twelve on /explore/margaret-river/, where most of
 	 * them filter to nothing.

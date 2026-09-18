@@ -1665,6 +1665,19 @@
      link out instead: never a blank box or a broken iframe. The frame's
      height is reserved in CSS, and any growth after this follows the
      visitor's own press, so it is not counted as layout shift. */
+  /* The site's own counter (Core\Analytics) for a trend: a view, a Reel
+     opened, a next step taken. Each at most once per page view, so the
+     report's rates are per visit, not per click. */
+  var trendSent = {};
+  function trendBeacon(id, type) {
+    id = parseInt(id, 10);
+    if (!id || trendSent[id + ":" + type] || !window.ORIA_TRACK || !navigator.sendBeacon) return;
+    trendSent[id + ":" + type] = 1;
+    try {
+      navigator.sendBeacon(ORIA_TRACK.url, new Blob([JSON.stringify({ id: id, type: type })], { type: "application/json" }));
+    } catch (e) { /* counting must never break the page */ }
+  }
+
   var igLoading = null;
   function loadInstagram() {
     if (window.instgrm && window.instgrm.Embeds) return Promise.resolve();
@@ -1715,6 +1728,7 @@
           q.appendChild(a);
           frame.appendChild(q);
           pushEvent("reel_load", params);
+          trendBeacon(frame.getAttribute("data-reel-id"), "reel");
           loadInstagram().then(function () {
             try { window.instgrm.Embeds.process(); } catch (e) { fail(); return; }
             var waited = 0;
@@ -1749,7 +1763,14 @@
   function initTrends() {
     var page = $("[data-trend-page]");
     var slug = page ? page.getAttribute("data-trend-page") : "";
-    if (page) pushEvent("trend_view", { trend_slug: slug });
+    var tid = page ? page.getAttribute("data-trend-id") : "";
+    if (page) {
+      pushEvent("trend_view", { trend_slug: slug });
+      trendBeacon(tid, "view");
+    }
+    // What counts as the trend page having done its job: somebody went on
+    // to somewhere to try it, or to decide between options.
+    var NEXT = { listing: 1, category: 1, cta: 1, compare: 1, event: 1 };
 
     var NAMES = { listing: "trend_listing_click", compare: "trend_compare_click", product: "trend_product_click", related: "trend_related_click" };
     document.addEventListener("click", function (e) {
@@ -1769,6 +1790,7 @@
       pushEvent(NAMES[kind] || "trend_cta_click", {
         trend_slug: slug, cta_location: where, destination_type: kind
       });
+      if (page && NEXT[kind]) trendBeacon(tid, "next");
     });
 
     var grid = $("[data-trend-grid]");

@@ -243,6 +243,14 @@ $oria_hero = get_post_thumbnail_id( $oria_id ) ? (string) wp_get_attachment_imag
 	</section>
 <?php endif; ?>
 
+<?php
+// Trend to Try, when one is tied to this guide or its category.
+$oria_tr = function_exists( '\Oria\Core\Trends\for_guide' ) ? \Oria\Core\Trends\for_guide( $oria_id ) : array();
+?>
+<?php if ( $oria_tr ) : ?>
+	<section class="wrap bosection"><?php get_template_part( 'template-parts/trend-context', null, array( 'trends' => $oria_tr, 'location' => 'best_of' ) ); ?></section>
+<?php endif; ?>
+
 <?php if ( $oria_related ) : ?>
 	<section class="wrap bosection bosection--last">
 		<div class="sec-head reveal">

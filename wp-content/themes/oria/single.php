@@ -279,6 +279,14 @@ while ( have_posts() ) :
 	</section>
 	<?php endif; ?>
 
+	<?php
+	// Trend to Try, when an editor tied one to this guide or its categories.
+	$oria_tr = function_exists( '\Oria\Core\Trends\for_guide' ) ? \Oria\Core\Trends\for_guide( (int) get_the_ID() ) : array();
+	?>
+	<?php if ( $oria_tr ) : ?>
+	<section class="wrap section section--top-flush"><?php get_template_part( 'template-parts/trend-context', null, array( 'trends' => $oria_tr, 'location' => 'guide' ) ); ?></section>
+	<?php endif; ?>
+
 	<?php $oria_shop = function_exists( '\Oria\Shop\Render\auto_band' ) ? \Oria\Shop\Render\auto_band( __( 'Products you might find helpful', 'oria' ) ) : ''; ?>
 	<?php if ( $oria_shop ) : ?>
 	<section class="wrap section section--top-flush"><?php echo $oria_shop; // phpcs:ignore WordPress.Security.EscapeOutput ?></section>

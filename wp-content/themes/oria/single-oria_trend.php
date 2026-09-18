@@ -64,7 +64,7 @@ $oria_section = static function ( string $field, string $heading, string $id = '
 };
 ?>
 
-<article class="trend" data-trend-page="<?php echo esc_attr( $oria_slug ); ?>">
+<article class="trend" data-trend-page="<?php echo esc_attr( $oria_slug ); ?>" data-trend-id="<?php echo (int) $oria_id; ?>">
 <div class="heroband heroband--stack<?php echo '' !== $oria_cover ? '' : ' heroband--bare'; ?>"
 	<?php if ( '' !== $oria_cover ) : ?>style="--heroband-img:url('<?php echo esc_url( $oria_cover ); ?>')"<?php endif; ?>>
 <section class="wrap bohero">

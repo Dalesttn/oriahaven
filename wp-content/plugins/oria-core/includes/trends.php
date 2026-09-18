@@ -126,6 +126,8 @@ function bootstrap(): void {
 	add_action( 'manage_' . POST_TYPE . '_posts_custom_column', __NAMESPACE__ . '\admin_column', 10, 2 );
 
 	add_action( 'admin_menu', __NAMESPACE__ . '\candidate_menu' );
+	add_action( 'admin_menu', __NAMESPACE__ . '\report_menu' );
+	add_action( 'add_meta_boxes', __NAMESPACE__ . '\stats_box' );
 	add_action( 'admin_post_oria_trend_candidate', __NAMESPACE__ . '\candidate_save' );
 
 	add_filter( 'wpseo_title', __NAMESPACE__ . '\seo_title', 20 );
@@ -645,6 +647,191 @@ function candidate_save(): void {
 	update_field( 'editorial_stage', 'candidate', $id );
 	wp_safe_redirect( (string) get_edit_post_link( (int) $id, 'url' ) );
 	exit;
+}
+
+/* ------------------------------------------------ where trends surface */
+
+/**
+ * Every published trend, featured first, then newest. Only ever a handful,
+ * so matching happens here in PHP rather than in meta queries.
+ *
+ * @return list<\WP_Post>
+ */
+function published(): array {
+	static $all = null;
+	if ( null !== $all ) {
+		return $all;
+	}
+	$all = get_posts(
+		array(
+			'post_type'      => POST_TYPE,
+			'post_status'    => 'publish',
+			'posts_per_page' => 60,
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+		)
+	);
+	usort( $all, static fn( $a, $b ): int => (int) (bool) get_field( 'featured_trend', $b->ID ) <=> (int) (bool) get_field( 'featured_trend', $a->ID ) );
+	return $all;
+}
+
+/**
+ * Published trends an editor tied to this category, or to its parent or a
+ * child (a sauna trend filed under Spa belongs on the infrared sauna page).
+ *
+ * @return list<\WP_Post>
+ */
+function for_practice( \WP_Term $term ): array {
+	$out = array();
+	foreach ( published() as $t ) {
+		foreach ( practices( (int) $t->ID ) as $p ) {
+			if ( $p->term_id === $term->term_id
+				|| term_is_ancestor_of( $p, $term, $term->taxonomy )
+				|| term_is_ancestor_of( $term, $p, $term->taxonomy ) ) {
+				$out[] = $t;
+				continue 2;
+			}
+		}
+	}
+	return $out;
+}
+
+/**
+ * Published trends for a guide: first any trend that names this guide as
+ * related, then any sharing a category with it (a journal guide's
+ * related_practices, a Best Of guide's guide_practice).
+ *
+ * @return list<\WP_Post>
+ */
+function for_guide( int $post_id ): array {
+	$named = array();
+	$by_cat = array();
+	$terms = array();
+	foreach ( (array) get_field( 'related_practices', $post_id, false ) as $tid ) {
+		$t = get_term( (int) $tid, Taxonomies\PRACTICE );
+		if ( $t instanceof \WP_Term ) {
+			$terms[] = $t;
+		}
+	}
+	if ( function_exists( '\Oria\Core\BestOf\practice' ) && PostTypes\BEST_OF === get_post_type( $post_id ) ) {
+		$bp = \Oria\Core\BestOf\practice( $post_id );
+		if ( $bp ) {
+			$terms[] = $bp;
+		}
+	}
+	foreach ( published() as $t ) {
+		if ( in_array( $post_id, array_map( 'intval', (array) get_field( 'related_guides', $t->ID, false ) ), true ) ) {
+			$named[] = $t;
+			continue;
+		}
+		foreach ( $terms as $term ) {
+			if ( in_array( $t, for_practice( $term ), true ) ) {
+				$by_cat[] = $t;
+				break;
+			}
+		}
+	}
+	return array_merge( $named, $by_cat );
+}
+
+/* ------------------------------------------------------------- reporting */
+
+/**
+ * The brief's success measures from the site's own counter (Analytics):
+ * visits, the share who opened the Reel, and the share who took a next
+ * step -- a listing, category, compare page, event or the main call to
+ * action. First-party, no cookies, editors and crawlers not counted.
+ *
+ * @return array{views:int, reel:int, next:int, reel_rate:string, next_rate:string}
+ */
+function stats( int $id, int $days ): array {
+	$f = static fn( string $t ): int => function_exists( '\Oria\Core\Analytics\total' ) ? \Oria\Core\Analytics\total( $id, $t, $days ) : 0;
+	$v = $f( 'view' );
+	$r = $f( 'reel' );
+	$n = $f( 'next' );
+	$pct = static fn( int $x ): string => $v > 0 ? round( 100 * $x / $v ) . '%' : '—';
+	return array( 'views' => $v, 'reel' => $r, 'next' => $n, 'reel_rate' => $pct( $r ), 'next_rate' => $pct( $n ) );
+}
+
+function stats_box(): void {
+	add_meta_box(
+		'oria_trend_stats',
+		__( 'How it is doing', 'oria' ),
+		static function ( \WP_Post $post ): void {
+			if ( 'publish' !== $post->post_status ) {
+				echo '<p>' . esc_html__( 'Counts start once the trend is published.', 'oria' ) . '</p>';
+				return;
+			}
+			foreach ( array( 30, 90 ) as $d ) {
+				$s = stats( (int) $post->ID, $d );
+				/* translators: %d: days */
+				echo '<p style="margin:0 0 4px"><strong>' . esc_html( sprintf( __( 'Last %d days', 'oria' ), $d ) ) . '</strong></p><ul style="margin:0 0 10px">';
+				echo '<li>' . esc_html( sprintf( /* translators: %s: number */ __( '%s visits', 'oria' ), number_format_i18n( $s['views'] ) ) ) . '</li>';
+				echo '<li>' . esc_html( sprintf( /* translators: 1: number, 2: rate */ __( '%1$s opened the Reel (%2$s)', 'oria' ), number_format_i18n( $s['reel'] ), $s['reel_rate'] ) ) . '</li>';
+				echo '<li>' . esc_html( sprintf( /* translators: 1: number, 2: rate */ __( '%1$s took a next step (%2$s)', 'oria' ), number_format_i18n( $s['next'] ), $s['next_rate'] ) ) . '</li></ul>';
+			}
+			echo '<p class="description">' . esc_html__( 'Counted by the site itself; editors and crawlers excluded. GA4 has the detail.', 'oria' ) . '</p>';
+		},
+		POST_TYPE,
+		'side',
+		'default'
+	);
+}
+
+function report_menu(): void {
+	add_submenu_page(
+		'edit.php?post_type=' . POST_TYPE,
+		__( 'Trends report', 'oria' ),
+		__( 'Report', 'oria' ),
+		'edit_posts',
+		'oria-trend-report',
+		__NAMESPACE__ . '\report_page'
+	);
+}
+
+function report_page(): void {
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return;
+	}
+	$days = isset( $_GET['days'] ) && 90 === (int) $_GET['days'] ? 90 : 30; // phpcs:ignore WordPress.Security.NonceVerification -- display only
+	$rows = published();
+	?>
+	<div class="wrap">
+		<h1><?php esc_html_e( 'Trends report', 'oria' ); ?></h1>
+		<p style="max-width:70ch"><?php esc_html_e( 'Whether each trend page is useful: how many people opened the Reel, and how many went on to a listing, category, compare page, event or the main call to action. Time on page is not counted — it says little about usefulness.', 'oria' ); ?></p>
+		<p>
+			<?php foreach ( array( 30, 90 ) as $d ) : ?>
+				<a class="button<?php echo $d === $days ? ' button-primary' : ''; ?>" href="<?php echo esc_url( add_query_arg( 'days', $d ) ); ?>"><?php echo esc_html( sprintf( /* translators: %d: days */ __( 'Last %d days', 'oria' ), $d ) ); ?></a>
+			<?php endforeach; ?>
+		</p>
+		<?php if ( ! $rows ) : ?>
+			<p><?php esc_html_e( 'No published trends yet.', 'oria' ); ?></p>
+		<?php else : ?>
+			<table class="widefat striped" style="max-width:960px">
+				<thead><tr>
+					<th><?php esc_html_e( 'Trend', 'oria' ); ?></th>
+					<th style="text-align:right"><?php esc_html_e( 'Visits', 'oria' ); ?></th>
+					<th style="text-align:right"><?php esc_html_e( 'Opened Reel', 'oria' ); ?></th>
+					<th style="text-align:right"><?php esc_html_e( 'Took a next step', 'oria' ); ?></th>
+					<th><?php esc_html_e( 'Reel', 'oria' ); ?></th>
+				</tr></thead>
+				<tbody>
+				<?php foreach ( $rows as $t ) : ?>
+					<?php $s = stats( (int) $t->ID, $days ); $r = reel( (int) $t->ID ); ?>
+					<tr>
+						<td><a href="<?php echo esc_url( (string) get_edit_post_link( $t->ID ) ); ?>"><?php echo esc_html( get_the_title( $t ) ); ?></a></td>
+						<td style="text-align:right"><?php echo esc_html( number_format_i18n( $s['views'] ) ); ?></td>
+						<td style="text-align:right"><?php echo esc_html( number_format_i18n( $s['reel'] ) . ' (' . $s['reel_rate'] . ')' ); ?></td>
+						<td style="text-align:right"><?php echo esc_html( number_format_i18n( $s['next'] ) . ' (' . $s['next_rate'] . ')' ); ?></td>
+						<td><?php echo esc_html( $r ? ( REEL_STATUS[ $r['status'] ] ?? $r['status'] ) : __( 'None', 'oria' ) ); ?></td>
+					</tr>
+				<?php endforeach; ?>
+				</tbody>
+			</table>
+			<p class="description"><?php esc_html_e( 'Visits count people, not editors or crawlers. A Reel open is counted once per page view; so is a next step. Saves to My Oria and email signups will join this once those exist on the live site.', 'oria' ); ?></p>
+		<?php endif; ?>
+	</div>
+	<?php
 }
 
 /* --------------------------------------------------------------------- SEO */

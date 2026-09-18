@@ -20,7 +20,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const META_STATS = '_oria_stats';
 const KEEP_DAYS  = 90;
-const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq' );
+const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'reel', 'next' );
+
+/**
+ * Which counters each kind of page may carry. Trends to Try reuse the same
+ * store for the brief's success measures: how many visitors opened the
+ * Reel, and how many went on to a listing, category or other next step.
+ * A listing never takes a trend's counter, or the other way round.
+ */
+const TYPES_FOR = array(
+	PostTypes\LISTING => array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq' ),
+	PostTypes\TREND   => array( 'view', 'reel', 'next' ),
+);
 
 function bootstrap(): void {
 	add_action( 'rest_api_init', __NAMESPACE__ . '\routes' );
@@ -141,7 +152,7 @@ function routes(): void {
 			'permission_callback' => '__return_true',
 			'args'                => array(
 				'id'   => array( 'type' => 'integer', 'required' => true ),
-				'type' => array( 'type' => 'string', 'required' => true, 'enum' => array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq' ) ),
+				'type' => array( 'type' => 'string', 'required' => true, 'enum' => TYPES ),
 			),
 			'callback'            => __NAMESPACE__ . '\track_endpoint',
 		)
@@ -152,7 +163,8 @@ function track_endpoint( \WP_REST_Request $request ): \WP_REST_Response {
 	$post_id = (int) $request['id'];
 	$type    = (string) $request['type'];
 
-	if ( PostTypes\LISTING !== get_post_type( $post_id ) || 'publish' !== get_post_status( $post_id ) ) {
+	$allowed = TYPES_FOR[ (string) get_post_type( $post_id ) ] ?? array();
+	if ( ! in_array( $type, $allowed, true ) || 'publish' !== get_post_status( $post_id ) ) {
 		return new \WP_REST_Response( null, 204 );
 	}
 
@@ -166,7 +178,7 @@ function track_endpoint( \WP_REST_Request $request ): \WP_REST_Response {
 	}
 	set_transient( $key, $n + 1, MINUTE_IN_SECONDS );
 
-	if ( 'view' === $type && ! countable_view( $post_id ) ) {
+	if ( ( 'view' === $type || PostTypes\TREND === get_post_type( $post_id ) ) && ! countable_view( $post_id ) ) {
 		return new \WP_REST_Response( null, 204 );
 	}
 

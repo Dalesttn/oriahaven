@@ -987,6 +987,19 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 		<div class="prose prose--intro"><?php echo wp_kses_post( \Oria\Core\PracticesIndex\rewrite_content_links( (string) $oria_intro, $oria_term ) ); ?></div>
 	<?php endif; ?>
 
+	<?php
+	/*
+	 * Trend to Try: one published trend an editor tied to this category,
+	 * at the end of the guide -- the reader has just learned how the
+	 * practice works and is the one most likely to have seen it online.
+	 * Nothing renders until a trend is published. Left off suburb pages,
+	 * like What's on.
+	 */
+	if ( ! $oria_area && $oria_term && function_exists( '\Oria\Core\Trends\for_practice' ) ) {
+		get_template_part( 'template-parts/trend-context', null, array( 'trends' => \Oria\Core\Trends\for_practice( $oria_term ), 'location' => 'category_page' ) );
+	}
+	?>
+
 </section>
 
 <?php
