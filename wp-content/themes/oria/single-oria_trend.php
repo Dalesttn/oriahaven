@@ -257,7 +257,7 @@ $oria_section = static function ( string $field, string $heading, string $id = '
 		</div>
 
 		<?php if ( $oria_listings ) : ?>
-			<div class="trendwhere__grid">
+			<div class="trendwhere__grid dir__results dir__results--wide">
 				<?php
 				global $post;
 				foreach ( $oria_listings as $post ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited

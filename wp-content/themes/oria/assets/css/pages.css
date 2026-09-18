@@ -7370,7 +7370,8 @@ article.is-spotlit {
 .trendsafety { padding: var(--s-5); background: var(--white); border: 1px solid var(--line); border-left: 3px solid var(--moss); border-radius: var(--r-md); }
 .trendsafety__h3 { margin: var(--s-5) 0 var(--s-2); font-size: 1.05rem; font-weight: 600; }
 .trendwhere { margin-top: clamp(2.5rem, 5vw, 3.5rem); }
-.trendwhere__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: var(--s-5); }
+/* The directory's own card layout (.dir__results--wide) does the rest. */
+.trendwhere__grid { margin-top: 0; }
 .trendwhere__more { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: var(--s-4) 0 0; }
 .trendwhere__h3 { margin: var(--s-6) 0 var(--s-2); font-size: 1.05rem; font-weight: 600; }
 .trendevents, .trendreadnext { margin: 0; padding-left: 1.2rem; display: grid; gap: 6px; }
