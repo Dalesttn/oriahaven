@@ -845,6 +845,58 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 			<?php endif; ?>
 		</div>
 	<?php endif; ?>
+
+	<?php
+	/*
+	 * The way out for somebody the filters have not served: say it in
+	 * their own words to Ask Oria, which retrieves real listings and shows
+	 * why each matched. The form hands the sentence over as ?q=, the same
+	 * door the front page's card uses, and /ask/ runs it on arrival. The
+	 * example names this category and a suburb it really has listings in,
+	 * so the first thing it teaches is a place and a time -- never a
+	 * symptom (see page-ask.php on why).
+	 *
+	 * "Build your session" answers the other doubt: not where, but whether
+	 * this is the right kind of practice at all.
+	 */
+	$oria_ask_sub = '';
+	foreach ( (array) $oria_near as $oria_nrow ) {
+		$oria_ask_sub = (string) ( $oria_nrow['name'] ?? '' );
+		break;
+	}
+	$oria_ask_eg = '' !== $oria_ask_sub
+		/* translators: 1: category name, lowercased, 2: suburb */
+		? sprintf( __( 'e.g. %1$s near %2$s after work', 'oria' ), strtolower( $oria_pname ), $oria_ask_sub )
+		/* translators: %s: category name, lowercased */
+		: sprintf( __( 'e.g. %s near the city after work', 'oria' ), strtolower( $oria_pname ) );
+	?>
+	<aside class="askband" aria-labelledby="askband-title">
+		<?php get_template_part( 'template-parts/oria-orb', null, array( 'class' => 'askband__orb', 'uid' => 'band' ) ); ?>
+		<div class="askband__text">
+			<p class="micro askband__eyebrow"><?php esc_html_e( 'Ask Oria', 'oria' ); ?></p>
+			<h2 class="askband__title" id="askband-title"><?php esc_html_e( 'Can’t find what you’re looking for?', 'oria' ); ?></h2>
+			<p class="askband__lede">
+				<?php
+				printf(
+					/* translators: %s: city name */
+					esc_html__( 'Say it in your own words — where, when, what to spend, how it should feel — and we’ll look through every listing in %s.', 'oria' ),
+					esc_html( $oria_cname )
+				);
+				?>
+			</p>
+		</div>
+		<div class="askband__act">
+			<form class="askband__form" action="<?php echo esc_url( home_url( '/ask/' ) ); ?>" method="get" data-oria-event="category_ask_start">
+				<label class="sr-only" for="askband-q"><?php esc_html_e( 'Describe what you are looking for', 'oria' ); ?></label>
+				<input class="askband__input" type="text" id="askband-q" name="q" maxlength="400" autocomplete="off" placeholder="<?php echo esc_attr( $oria_ask_eg ); ?>">
+				<button class="btn btn--dark askband__go" type="submit"><?php esc_html_e( 'Ask Oria', 'oria' ); ?><span aria-hidden="true"><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput -- static SVG ?></span></button>
+			</form>
+			<p class="askband__alt">
+				<?php esc_html_e( 'Not sure which kind of practice suits you?', 'oria' ); ?>
+				<a href="<?php echo esc_url( home_url( '/compare/build/' ) ); ?>" data-oria-event="category_build_session_click"><?php esc_html_e( 'Build your session', 'oria' ); ?></a>
+			</p>
+		</div>
+	</aside>
 </section>
 
 <!-- Floor 3 — the guide, straight after the first page of listings -->

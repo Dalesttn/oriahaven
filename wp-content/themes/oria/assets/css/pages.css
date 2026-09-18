@@ -979,6 +979,59 @@ a.livesession:hover { background: var(--sand-2); }
 .prodcard__price--none { font-weight: 500; color: var(--text-faint); }
 .shopband__disclosure { margin-top: var(--s-5); font-size: var(--fs-xs); color: var(--text-faint); max-width: 62ch; }
 
+/* --- Category pages: "Can't find it?" under the pager ------------------
+   Ask Oria for whoever the filters did not serve, in the space the section
+   already leaves before the guide. A card on the page's grid, sand on
+   paper like the rest of the page's quiet surfaces; Oria herself carries
+   the one bit of character, in the softer palette the front page uses. */
+.askband {
+  display: grid; align-items: center;
+  grid-template-columns: auto minmax(0, 1fr) minmax(20rem, 1.05fr);
+  gap: var(--s-4) var(--s-6);
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.25rem, 3vw, 2.25rem);
+  background: var(--sand-2); border: 1px solid var(--line); border-radius: var(--r-lg);
+}
+.askband .oria { --oria-body: #9EC0AB; --oria-hi: #F6EFE3; --oria-glow: #D8BCA0; }
+.askband .oria__svg { width: 76px; height: 76px; }
+.askband__text { min-width: 0; }
+.askband__eyebrow { margin: 0 0 var(--s-1); color: var(--moss); }
+.askband__title { margin: 0; font-size: var(--fs-h3); line-height: 1.2; letter-spacing: -0.014em; font-weight: 600; text-wrap: balance; }
+.askband__lede { margin: var(--s-2) 0 0; font-size: var(--fs-sm); color: var(--text-soft); max-width: 52ch; }
+.askband__act { min-width: 0; }
+.askband__form { display: flex; gap: var(--s-2); }
+.askband__input {
+  flex: 1 1 auto; min-width: 0; min-height: 48px; padding: 0 1rem;
+  font: inherit; font-size: var(--fs-sm); color: var(--ink);
+  background: var(--white); border: 1px solid var(--line-strong); border-radius: 999px;
+}
+.askband__input::placeholder { color: var(--text-faint); }
+.askband__input:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-color: transparent; }
+.askband__go { flex: 0 0 auto; min-height: 48px; }
+.askband__alt { margin: var(--s-2) 0 0; padding-left: 1rem; font-size: var(--fs-xs); color: var(--text-soft); }
+.askband__alt a { color: var(--moss); font-weight: 600; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.askband__alt a:hover { color: var(--ink); text-decoration-color: currentColor; }
+
+/* Laptop: the form drops under the words rather than squeezing them. */
+@media (max-width: 64rem) {
+  .askband { grid-template-columns: auto minmax(0, 1fr); }
+  .askband__act { grid-column: 1 / -1; }
+  .askband__alt { padding-left: 0; }
+}
+/* Phones: Oria beside the eyebrow and title, the rest full width. */
+@media (max-width: 37.5rem) {
+  .askband { column-gap: var(--s-3); align-items: start; }
+  .askband .oria__svg { width: 52px; height: 52px; }
+  .askband__text { display: contents; }
+  .askband__eyebrow, .askband__title { grid-column: 2; }
+  .askband__eyebrow { align-self: end; margin: 0; }
+  .askband__title { font-size: 1.2rem; }
+  .askband__orb { grid-row: 1 / span 2; align-self: center; }
+  .askband__lede { grid-column: 1 / -1; margin: 0; }
+  .askband__form { flex-direction: column; }
+  .askband__go { justify-content: center; }
+}
+
 /* --- Category pages: products and apps at the foot -------------------
    Two short recommendations sharing one structure (template-parts/
    support-bands.php): a header with its "see all" on the same row, three
