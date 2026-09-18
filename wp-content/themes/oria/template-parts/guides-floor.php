@@ -8,6 +8,8 @@
  *     @type list<WP_Post> $guides  The posts to show.
  *     @type string        $heading Section heading.
  *     @type string        $icon    Optional inline SVG used where a post has no image.
+ *     @type bool          $compact Smaller cards, for pages where the guides support
+ *                                  something else rather than being the point.
  * }
  */
 
@@ -16,12 +18,13 @@ declare(strict_types=1);
 $oria_guides  = isset( $args['guides'] ) && is_array( $args['guides'] ) ? $args['guides'] : array();
 $oria_heading = (string) ( $args['heading'] ?? __( 'Guides worth reading first', 'oria' ) );
 $oria_icon    = (string) ( $args['icon'] ?? '' );
+$oria_compact = ! empty( $args['compact'] );
 
 if ( ! $oria_guides ) {
 	return;
 }
 ?>
-<section class="wrap section section--top-flush floor" id="guides">
+<section class="wrap section section--top-flush floor<?php echo $oria_compact ? ' guides--compact' : ''; ?>" id="guides">
 	<h2 class="micro floor__label"><?php esc_html_e( 'Guides', 'oria' ); ?></h2>
 	<div class="guides__head">
 		<h2 class="h3"><?php echo esc_html( $oria_heading ); ?></h2>

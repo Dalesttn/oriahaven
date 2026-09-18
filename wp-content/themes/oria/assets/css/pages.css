@@ -979,6 +979,45 @@ a.livesession:hover { background: var(--sand-2); }
 .prodcard__price--none { font-weight: 500; color: var(--text-faint); }
 .shopband__disclosure { margin-top: var(--s-5); font-size: var(--fs-xs); color: var(--text-faint); max-width: 62ch; }
 
+/* Category pages: the same cards, shorter. Still four across -- five made
+   them narrow enough that names ran to three lines and the two buttons
+   stacked, so the cards came out taller. The height comes out of the parts
+   instead: a 2:1 image, tighter padding (the image's negative margin has to
+   match it or the picture stops being full-bleed), two lines of blurb.
+   "Goes well with" is dropped here only: it links back to the category the
+   reader is already on. */
+.shopband--compact .prodgrid { gap: var(--s-3); }
+.shopband--compact .prodcard { padding: var(--s-4); gap: 6px; }
+.shopband--compact .prodcard__img { margin: calc(var(--s-4) * -1) calc(var(--s-4) * -1) var(--s-1); }
+.shopband--compact .prodcard__img img,
+.shopband--compact .prodcard__img--none { aspect-ratio: 2 / 1; }
+.shopband--compact .prodcard__img img { padding: var(--s-2); }
+.shopband--compact .prodcard__img--art img { padding: 0; }
+.shopband--compact .prodcard__name { font-size: .95rem; }
+.shopband--compact .prodcard__blurb { -webkit-line-clamp: 2; }
+.shopband--compact .prodcard__goes { display: none; }
+.shopband--compact .shopband__disclosure { margin-top: var(--s-3); }
+
+/* Phones: one swipeable row each, the way the guides already work. Stacked,
+   four events and three products were over two thousand pixels of scrolling
+   between the listings and the reading -- more than the listings themselves. */
+@media (max-width: 50rem) {
+  .catevents .wkrows,
+  .shopband--compact .prodgrid {
+    display: flex; overflow-x: auto; gap: var(--s-3);
+    scroll-snap-type: x mandatory; scrollbar-width: none;
+    margin: 0 calc(-1 * var(--gutter, 18px));
+    padding: 0 var(--gutter, 18px) var(--s-2);
+    /* Without this a snapped card sits flush to the screen edge instead of
+       lining up with the page's own margin. */
+    scroll-padding-inline: var(--gutter, 18px);
+  }
+  .catevents .wkrows::-webkit-scrollbar,
+  .shopband--compact .prodgrid::-webkit-scrollbar { display: none; }
+  .catevents .wkrow { flex: 0 0 72%; scroll-snap-align: start; }
+  .shopband--compact .prodcard { flex: 0 0 68%; scroll-snap-align: start; }
+}
+
 /* --- Shop: intention tiles --------------------------------------------
    The first question on the page is "what for", asked as a row of tiles
    that filter the grid below. A tile is a button, not a link: the whole
@@ -3191,6 +3230,22 @@ html.has-sheet { overflow: hidden; }
 .guidecard .article__img--empty { aspect-ratio: 3 / 2; display: grid; place-items: center; background: linear-gradient(135deg, var(--sand-2), var(--sand-3)); color: var(--deep); }
 .guidecard .article__img--empty svg { width: 3rem; height: 3rem; opacity: .7; }
 .guidecard .article__excerpt { margin: .35rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Category pages: the guides support the directory rather than being the
+   point of the page, so they sit smaller -- four across instead of three, a
+   shorter picture, and two lines of excerpt. The track width matches the
+   event cards above (.wkrows, 16rem minimum), so the two rows line up.
+   auto-fill rather than a fixed four, so three guides stay card-sized
+   instead of stretching to fill the row. */
+.guides--compact .guidegrid { grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: var(--s-4); }
+.guides--compact .guidecard .article__img { margin-bottom: .5rem; }
+.guides--compact .article__img img { aspect-ratio: 16 / 9; }
+.guides--compact .article__meta { margin-top: var(--s-2); }
+.guides--compact .article__title { font-size: 1.02rem; line-height: 1.3; margin-top: var(--s-1); }
+.guides--compact .guidecard .article__excerpt { -webkit-line-clamp: 2; }
+@media (max-width: 50rem) {
+  .guides--compact .guidecard { flex-basis: 64%; }
+}
 .guidecard { opacity: 0; animation: spinedrop .5s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: calc(.1s + .09s * var(--i, 0)); }
 @media (prefers-reduced-motion: reduce) { .guidecard { animation: none; opacity: 1; } }
 

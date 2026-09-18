@@ -1857,6 +1857,101 @@ function event_mark( int $event_id ): string {
 	}
 	return $term && isset( $marks[ $term->slug ] ) ? $marks[ $term->slug ] : '◦';
 }
+
+/**
+ * Events and workshops in a category that are on now or still to come.
+ *
+ * The rules, and why, are on template-parts/category-events.php, which
+ * renders these. Here so a page can ask before it draws its section menu --
+ * the "What's on" jump link should exist only when something is.
+ *
+ * @param array<string, mixed>|null $city Cities\current() for the page.
+ * @return list<array{id:int, ts:int, now:bool, member:bool, src:string, suburb:string, price:string}>
+ */
+function category_events( \WP_Term $term, ?array $city = null ): array {
+	// Local time, stored and compared as local -- the same convention the
+	// What's On page and the aggregator use, so "now" means the same thing.
+	$oria_now     = (int) current_time( 'timestamp' );
+	$oria_now_sql = gmdate( 'Y-m-d H:i:s', $oria_now );
+
+	$oria_ids = get_posts(
+		array(
+			'post_type'      => 'event',
+			'post_status'    => 'publish',
+			'posts_per_page' => 60,
+			'fields'         => 'ids',
+			'meta_key'       => 'event_start',
+			'orderby'        => 'meta_value',
+			'order'          => 'ASC',
+			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				'relation' => 'OR',
+				array( 'key' => 'event_start', 'value' => $oria_now_sql, 'compare' => '>=', 'type' => 'DATETIME' ),
+				array( 'key' => 'event_end', 'value' => $oria_now_sql, 'compare' => '>=', 'type' => 'DATETIME' ),
+			),
+			'tax_query'      => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+				array(
+					'taxonomy'         => 'practice',
+					'field'            => 'term_id',
+					'terms'            => array( $term->term_id ),
+					'include_children' => true,
+				),
+			),
+		)
+	);
+
+	$oria_default = function_exists( '\Oria\Core\Cities\default_city' ) ? (string) ( \Oria\Core\Cities\default_city()['slug'] ?? 'perth' ) : 'perth';
+	$oria_here    = (string) ( $city['slug'] ?? $oria_default );
+
+	$oria_rows = array();
+	foreach ( $oria_ids as $oria_id ) {
+		$oria_id = (int) $oria_id;
+		$oria_ts = strtotime( (string) get_field( 'event_start', $oria_id, false ) );
+		if ( ! $oria_ts ) {
+			continue;
+		}
+
+		// Where it is, and therefore which city's page it belongs on.
+		$oria_areas  = wp_get_post_terms( $oria_id, 'area' );
+		$oria_areas  = is_wp_error( $oria_areas ) ? array() : $oria_areas;
+		$oria_suburb = '';
+		$oria_evcity = '';
+		foreach ( $oria_areas as $oria_at ) {
+			$oria_suburb = \Oria\Theme\tname( $oria_at );
+			if ( '' === $oria_evcity && function_exists( '\Oria\Core\Cities\for_area' ) ) {
+				$oria_evcity = (string) ( \Oria\Core\Cities\for_area( $oria_at )['slug'] ?? '' );
+			}
+			if ( $oria_at->parent ) {
+				break;
+			}
+		}
+		if ( ( '' !== $oria_evcity ? $oria_evcity : $oria_default ) !== $oria_here ) {
+			continue;
+		}
+		if ( '' === $oria_suburb ) {
+			$oria_parts  = array_map( 'trim', explode( ',', (string) get_field( 'venue', $oria_id ) ) );
+			$oria_suburb = (string) end( $oria_parts );
+		}
+
+		$oria_end  = strtotime( (string) get_field( 'event_end', $oria_id, false ) ) ?: 0;
+		$oria_rows[] = array(
+			'id'     => $oria_id,
+			'ts'     => $oria_ts,
+			'now'    => $oria_ts < $oria_now && $oria_end >= $oria_now,
+			'member' => '' === (string) get_post_meta( $oria_id, '_oria_src', true ),
+			'src'    => (string) get_post_meta( $oria_id, '_oria_src', true ),
+			'suburb' => $oria_suburb,
+			'price'  => (string) get_field( 'price', $oria_id ),
+		);
+	}
+
+	// Happening now, then the directory's own practices, then soonest.
+	usort(
+		$oria_rows,
+		static fn( array $a, array $b ): int => array( ! $a['now'], ! $a['member'], $a['ts'] ) <=> array( ! $b['now'], ! $b['member'], $b['ts'] )
+	);
+	return $oria_rows;
+}
+
 /**
  * A photograph to stand in for an event that has none of its own.
  *

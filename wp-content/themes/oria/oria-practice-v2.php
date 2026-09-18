@@ -134,6 +134,14 @@ $oria_rows   = $oria_term && function_exists( '\Oria\Core\Intents\for_practice' 
 $oria_guides = $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) ? \Oria\Core\Guides\for_term( $oria_term ) : array();
 $oria_latest = $oria_guides ? array() : get_posts( array( 'post_type' => 'post', 'post_status' => 'publish', 'numberposts' => 3, 'orderby' => 'date', 'order' => 'DESC' ) );
 
+// Events and workshops on now or coming up in this category. Asked for
+// here, before the section menu is drawn, so the menu offers "What's on"
+// only when something is. The category view only -- on an area page the
+// same citywide list would read as though it were local.
+$oria_events = ( $oria_term && ! $oria_area && function_exists( '\Oria\Theme\category_events' ) )
+	? \Oria\Theme\category_events( $oria_term, $oria_city )
+	: array();
+
 // The FAQ for this page — the frame's on a facet page, the category's
 // otherwise — worked out here so the spine knows whether to offer a stop.
 $oria_faqs = array();
@@ -213,11 +221,26 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 <?php if ( $oria_term ) : ?>
 <nav class="spine" aria-label="<?php esc_attr_e( 'Page sections', 'oria' ); ?>">
 	<div class="wrap spine__row">
-		<a href="#decide"><b>1</b> <?php esc_html_e( 'Decide', 'oria' ); ?></a>
-		<a href="#browse"><b>2</b> <?php printf( esc_html__( 'Browse all %s', 'oria' ), esc_html( number_format_i18n( count( $oria_ids ) ) ) ); ?></a>
-		<a href="#read"><b>3</b> <?php esc_html_e( 'Read up', 'oria' ); ?></a>
-		<?php if ( $oria_guides || $oria_latest ) : ?><a href="#guides"><b>4</b> <?php esc_html_e( 'Guides', 'oria' ); ?></a><?php endif; ?>
-		<?php if ( $oria_faqs ) : ?><a href="#faq"><b><?php echo ( $oria_guides || $oria_latest ) ? 5 : 4; ?></b> <?php esc_html_e( 'FAQ', 'oria' ); ?></a><?php endif; ?>
+		<?php
+		// Numbered from what the page actually has, so an optional floor
+		// never leaves a gap in the count.
+		$oria_floors = array( array( '#decide', __( 'Decide', 'oria' ) ) );
+		/* translators: %s: number of listings */
+		$oria_floors[] = array( '#browse', sprintf( __( 'Browse all %s', 'oria' ), number_format_i18n( count( $oria_ids ) ) ) );
+		if ( $oria_events ) {
+			$oria_floors[] = array( '#events', __( "What's on", 'oria' ) );
+		}
+		$oria_floors[] = array( '#read', __( 'Read up', 'oria' ) );
+		if ( $oria_guides || $oria_latest ) {
+			$oria_floors[] = array( '#guides', __( 'Guides', 'oria' ) );
+		}
+		if ( $oria_faqs ) {
+			$oria_floors[] = array( '#faq', __( 'FAQ', 'oria' ) );
+		}
+		foreach ( $oria_floors as $oria_n => $oria_f ) :
+			?>
+			<a href="<?php echo esc_attr( $oria_f[0] ); ?>"><b><?php echo (int) $oria_n + 1; ?></b> <?php echo esc_html( $oria_f[1] ); ?></a>
+		<?php endforeach; ?>
 	</div>
 </nav>
 
@@ -678,6 +701,12 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 	</div>
 </section>
 
+<?php
+if ( $oria_events ) {
+	get_template_part( 'template-parts/category', 'events', array( 'term' => $oria_term, 'city' => $oria_city, 'rows' => $oria_events ) );
+}
+?>
+
 <!-- Floor 3 — Read -->
 <section class="wrap section floor" id="read">
 	<h2 class="micro floor__label"><?php esc_html_e( 'Read up', 'oria' ); ?></h2>
@@ -706,6 +735,10 @@ get_template_part(
 		'guides'  => $oria_guides ?: $oria_latest,
 		'heading' => $oria_guides ? sprintf( __( 'Guides to %s worth reading first', 'oria' ), strtolower( $oria_pname ) ) : __( 'From the journal', 'oria' ),
 		'icon'    => ( $oria_term && function_exists( '\Oria\Core\Categories\icon' ) ) ? \Oria\Core\Categories\icon( $oria_term->slug ) : '',
+		// Supporting reading, below the directory: smaller cards than the
+		// journal's own pages, so they sit under the listings rather than
+		// competing with them.
+		'compact' => true,
 	)
 );
 ?>
@@ -800,7 +833,7 @@ $oria_shopband = ( ! $oria_area && function_exists( '\Oria\Shop\Render\auto_band
 	: '';
 ?>
 <?php if ( $oria_shopband ) : ?>
-	<section class="wrap section section--top-flush"><?php echo $oria_shopband; // phpcs:ignore WordPress.Security.EscapeOutput ?></section>
+	<section class="wrap section section--top-flush shopband--compact"><?php echo $oria_shopband; // phpcs:ignore WordPress.Security.EscapeOutput ?></section>
 <?php endif; ?>
 
 <?php
