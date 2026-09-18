@@ -1866,7 +1866,7 @@ function event_mark( int $event_id ): string {
  * the "What's on" jump link should exist only when something is.
  *
  * @param array<string, mixed>|null $city Cities\current() for the page.
- * @return list<array{id:int, ts:int, now:bool, member:bool, src:string, suburb:string, price:string}>
+ * @return list<array{id:int, ts:int, now:bool, pinned:bool, member:bool, src:string, suburb:string, price:string}>
  */
 function category_events( \WP_Term $term, ?array $city = null ): array {
 	// Local time, stored and compared as local -- the same convention the
@@ -1937,6 +1937,7 @@ function category_events( \WP_Term $term, ?array $city = null ): array {
 			'id'     => $oria_id,
 			'ts'     => $oria_ts,
 			'now'    => $oria_ts < $oria_now && $oria_end >= $oria_now,
+			'pinned' => '1' === (string) get_post_meta( $oria_id, 'category_priority', true ),
 			'member' => '' === (string) get_post_meta( $oria_id, '_oria_src', true ),
 			'src'    => (string) get_post_meta( $oria_id, '_oria_src', true ),
 			'suburb' => $oria_suburb,
@@ -1944,12 +1945,14 @@ function category_events( \WP_Term $term, ?array $city = null ): array {
 		);
 	}
 
-	// Featured events first -- the ones the directory's own practices post,
-	// badged "Featured practice" -- then everything by date. An event on now
-	// started earliest, so it still leads its group without a rule of its own.
+	// Priority events first -- the ones switched on in the admin with
+	// "Priority on category pages" -- then featured events (the ones the
+	// directory's own practices post, badged "Featured practice"), then
+	// everything by date. An event on now started earliest, so it still
+	// leads its group without a rule of its own.
 	usort(
 		$oria_rows,
-		static fn( array $a, array $b ): int => array( ! $a['member'], $a['ts'] ) <=> array( ! $b['member'], $b['ts'] )
+		static fn( array $a, array $b ): int => array( ! $a['pinned'], ! $a['member'], $a['ts'] ) <=> array( ! $b['pinned'], ! $b['member'], $b['ts'] )
 	);
 	return $oria_rows;
 }

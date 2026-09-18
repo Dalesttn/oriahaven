@@ -1045,6 +1045,22 @@ function register_event_fields(): void {
 					'allow_null'    => true,
 					'instructions'  => 'The listing that runs this event, if it has one.',
 				),
+				/*
+				 * A placement lever, so admin-only: hidden from practitioners
+				 * and write-locked for them in ownership.php. It orders; it does
+				 * not place. The event still shows only in the categories and
+				 * city it belongs to -- pinning a sound bath cannot put it on
+				 * the Fitness page -- and drops off by itself when it is over.
+				 */
+				array(
+					'key'          => 'field_oria_event_priority',
+					'name'         => 'category_priority',
+					'label'        => 'Priority on category pages',
+					'type'         => 'true_false',
+					'ui'           => 1,
+					'message'      => 'Show this event first on its category pages',
+					'instructions' => "Puts it ahead of every other event in the What's on section of each category it is tagged with, Featured practice events included, until it finishes. It still appears only in its own categories and city.",
+				),
 				array(
 					'key'   => 'field_oria_event_booking',
 					'name'  => 'booking_url',

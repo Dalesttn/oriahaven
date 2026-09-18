@@ -85,7 +85,7 @@ function bootstrap(): void {
 	add_action( 'pre_get_posts', __NAMESPACE__ . '\limit_list_table' );
 	add_filter( 'ajax_query_attachments_args', __NAMESPACE__ . '\own_media_only' );
 	add_filter( 'acf/prepare_field', __NAMESPACE__ . '\admin_only_fields' );
-	foreach ( array( 'claim_status', 'claimed_by', 'admin_featured', 'verified_at', 'google_place_id' ) as $locked ) {
+	foreach ( array( 'claim_status', 'claimed_by', 'admin_featured', 'verified_at', 'google_place_id', 'category_priority' ) as $locked ) {
 		add_filter( "acf/update_value/name={$locked}", __NAMESPACE__ . '\lock_operator_values', 10, 3 );
 	}
 	add_filter( 'acf/validate_value/name=gallery', __NAMESPACE__ . '\enforce_gallery_limit', 10, 4 );
@@ -528,7 +528,7 @@ function admin_only_fields( $field ) {
 	// By prepare-time ACF has rewritten 'name' into the input name
 	// (acf[field_…]); the field's own name survives in '_name'.
 	$name = $field['_name'] ?? ( $field['name'] ?? '' );
-	if ( in_array( $name, array( 'claim_status', 'claimed_by', 'admin_featured' ), true ) ) {
+	if ( in_array( $name, array( 'claim_status', 'claimed_by', 'admin_featured', 'category_priority' ), true ) ) {
 		return false;
 	}
 	// The event's "Run by" picker: practitioners never choose — the field is
