@@ -1641,6 +1641,9 @@ details[open] > .gfsummary { background: var(--ink); border-color: var(--ink); c
    hidden away as a fallback. .pager below is kept for any template still
    rendering a server-side pager. */
 .loadmore { display: flex; flex-direction: column; align-items: center; gap: .6rem; margin-top: 2.25rem; }
+/* The class sets display, which beats the browser's own [hidden] rule: category pages
+   hide this (they page with numbers instead) and an empty white button showed. */
+.loadmore[hidden], .loadmore__dots[hidden] { display: none; }
 .loadmore__btn[hidden] { display: none; }
 .loadmore__btn {
   min-height: 48px;
