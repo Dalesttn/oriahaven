@@ -1122,9 +1122,41 @@
       // anchoring must never be left switched off.
       window.setTimeout(function () { jump(); root.style.overflowAnchor = ""; }, 120);
     }
+    /* On a phone the full-screen map is a dialog in all but name, so it
+       behaves as one: lifted to the body (the way the filter sheets are),
+       labelled modal, everything else made inert so Tab cannot wander
+       into the page behind it, and focus handed back to whatever opened it
+       when it closes. */
+    var home = document.createComment("catmap-home");
+    var opener = null;
+    function modal(on) {
+      if (on) {
+        if (panel.parentNode !== document.body) {
+          panel.parentNode.insertBefore(home, panel);
+          document.body.appendChild(panel);
+        }
+        panel.setAttribute("role", "dialog");
+        panel.setAttribute("aria-modal", "true");
+        panel.setAttribute("aria-label", "Map");
+        Array.prototype.forEach.call(document.body.children, function (el) {
+          if (el !== panel && el.tagName !== "SCRIPT") el.setAttribute("inert", "");
+        });
+      } else {
+        Array.prototype.forEach.call(document.body.children, function (el) { el.removeAttribute("inert"); });
+        panel.removeAttribute("role");
+        panel.removeAttribute("aria-modal");
+        panel.removeAttribute("aria-label");
+        if (home.parentNode) {
+          home.parentNode.insertBefore(panel, home);
+          home.parentNode.removeChild(home);
+        }
+      }
+    }
     function show(view) {
       var isMap = view === "map";
       var wasMap = browse.classList.contains("is-map");
+      if (isMap && !wasMap) opener = document.activeElement;
+      modal(isMap && phone.matches);
       if (isMap && !wasMap) {
         listY = window.pageYOffset;
         document.documentElement.style.overflowAnchor = "none";
@@ -1138,6 +1170,9 @@
       if (!isMap) {
         if (wasMap) pinScroll(listY);
         else document.documentElement.style.overflowAnchor = "";
+        if (wasMap && opener && document.body.contains(opener) && opener.focus) {
+          try { opener.focus({ preventScroll: true }); } catch (e) { opener.focus(); }
+        }
         return;
       }
       var close = $(".dirmap__close");
@@ -2244,6 +2279,12 @@
           var head = $("#results") || root;
           var top = head.getBoundingClientRect().top + window.pageYOffset - chromeTop() - 16;
           window.scrollTo({ top: Math.max(0, top), behavior: reducedMotion ? "auto" : "smooth" });
+          /* The button that was pressed has just been redrawn away. Focus
+             goes to the results heading -- where a keyboard or screen-reader
+             user now needs to start reading -- rather than falling to the top
+             of the document. */
+          head.setAttribute("tabindex", "-1");
+          head.focus({ preventScroll: true });
           pushEvent("category_page", { page: state.page, results_count: lastCount });
         });
       }
