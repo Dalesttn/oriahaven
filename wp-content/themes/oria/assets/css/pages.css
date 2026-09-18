@@ -986,9 +986,11 @@ a.livesession:hover { background: var(--sand-2); }
 @media (min-width: 861px) {
   .heroband--explore .pagehead { padding-bottom: var(--s-4); }
   .heroband--explore .decide { grid-template-columns: minmax(0, 1fr); max-width: min(52rem, 54%); }
-  /* One photograph, not a stack: keep the towers in frame, not cropped
-     off by the default right-anchored cover. */
-  .heroband--explore::before { background-position: 58% center; }
+  /* One photograph, not a stack: the page says which part to keep in
+     frame (--heroband-pos) rather than the default right-anchored cover.
+     Two classes, because the shared .heroband::before rule comes later in
+     this file and would otherwise win. */
+  .heroband.heroband--explore::before { background-position: var(--heroband-pos, 58% center); }
 }
 .pagehead--rest { padding-top: 0; }
 

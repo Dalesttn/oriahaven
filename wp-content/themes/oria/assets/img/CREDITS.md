@@ -33,6 +33,14 @@ sideloads it into the media library as that post's featured image.
 | 3 | Meditating by a window | ROMAN ODINTSOV | [6193613](https://www.pexels.com/photo/a-woman-in-lotus-position-meditating-6193613/) |
 
 
+## The directory hub's header pictures
+
+`/explore/{region}/`, one photograph per region, desktop only.
+
+- **`scene-perth-skyline.webp`** (Perth, also the call-to-action slab): Perth's skyline across the Swan at dusk.
+- **`scene-margaret-river-coast.webp`** (Margaret River): Canal Rocks from above. Supplied by Dale for the site, September 2026.
+
+
 ## The Best Of guides' header pictures
 
 Same construction: three photographs as panels in one 1920×1080 file,

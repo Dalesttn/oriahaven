@@ -108,6 +108,9 @@ if ( $oria_dircity && function_exists( '\Oria\Core\Cities\for_area' ) ) {
  * and apps use: Perth's skyline across the Swan at dusk, dissolving in from
  * the right -- the city the page is a directory of. Dale's choice; the same
  * photograph as the call-to-action slab (scene-perth-skyline.webp).
+ * Each region gets its own place: Margaret River's is Canal Rocks from
+ * above, the granite and the footbridge over the channel (Dale's photo).
+ * A region with no picture of its own falls back to the skyline.
  * Decoration only: a background, so screen readers skip it, and desktop
  * only (.heroband--cat), so a phone never downloads it and the categories
  * stay near the top there.
@@ -116,8 +119,14 @@ if ( $oria_dircity && function_exists( '\Oria\Core\Cities\for_area' ) ) {
  * share this section, and a band sized to all of that would have stretched
  * the picture a screen and a half down the page.
  */
+// Each region's picture, and where to hold the crop: the band shows about two thirds of a
+// 16:9 photograph, so each picture says which part matters.
+$oria_hero_by_city = array(
+	'margaret-river' => array( 'scene-margaret-river-coast.webp', '50% center' ), // the channel and footbridge
+);
+list( $oria_hero_file, $oria_hero_pos ) = $oria_hero_by_city[ $oria_cslug ?? '' ] ?? array( 'scene-perth-skyline.webp', '58% center' ); // the towers
 ?>
-<div class="heroband heroband--stack heroband--cat heroband--explore" style="--heroband-img:url('<?php echo esc_url( get_theme_file_uri( 'assets/img/scene-perth-skyline.webp' ) ); ?>')">
+<div class="heroband heroband--stack heroband--cat heroband--explore" style="--heroband-img:url('<?php echo esc_url( get_theme_file_uri( 'assets/img/' . $oria_hero_file ) ); ?>');--heroband-pos:<?php echo esc_attr( $oria_hero_pos ); ?>">
 <!-- Floor 1 — Decide -->
 <section class="wrap pagehead floor" id="decide">
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
