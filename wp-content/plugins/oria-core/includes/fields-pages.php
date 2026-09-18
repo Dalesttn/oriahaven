@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function bootstrap(): void {
 	add_action( 'acf/init', __NAMESPACE__ . '\register_sections' );
 	add_action( 'acf/init', __NAMESPACE__ . '\register_practice_term' );
+	add_filter( 'acf/load_field/key=field_oria_quick_filter_row', __NAMESPACE__ . '\quick_filter_choices' );
 	add_action( 'acf/init', __NAMESPACE__ . '\register_specialty_term' );
 	add_action( 'acf/init', __NAMESPACE__ . '\register_options' );
 }
@@ -292,9 +293,58 @@ function register_practice_term(): void {
 				// reviewed as HTML elsewhere, and pasting markup into a
 				// Visual-only editor escapes it into literal text on the page.
 				array( 'key' => 'field_oria_practice_intro', 'name' => 'landing_intro', 'label' => 'Landing page introduction', 'type' => 'wysiwyg', 'tabs' => 'all', 'media_upload' => 0, 'toolbar' => 'basic' ),
+				/*
+				 * The shortcuts under the category page's hero. Chosen from the
+				 * rows the page can actually offer (Intents\for_practice) and
+				 * stored as their filters, so a label or count changing never
+				 * breaks a choice; a chosen row that falls below the listing
+				 * floor simply is not shown. Empty = the automatic set.
+				 */
+				array(
+					'key'          => 'field_oria_quick_filters',
+					'name'         => 'quick_filters',
+					'label'        => 'Quick filters',
+					'type'         => 'repeater',
+					'layout'       => 'table',
+					'max'          => 12,
+					'button_label' => 'Add a quick filter',
+					'instructions' => 'The shortcuts under this category page\'s hero, in this order -- drag to reorder. The first six show; the rest sit behind "See all options". Leave empty for the automatic set: every style, format and audience with enough listings, most used first. Counts are always live.',
+					'sub_fields'   => array(
+						array(
+							'key'     => 'field_oria_quick_filter_row',
+							'name'    => 'row',
+							'label'   => 'Filter',
+							'type'    => 'select',
+							'choices' => array(),
+							'ui'      => 1,
+						),
+					),
+				),
 			),
 		)
 	);
+}
+
+/**
+ * The quick-filter picker's choices: the rows this category can offer right
+ * now, with their live counts, for the term being edited.
+ *
+ * @param array<string, mixed> $field
+ * @return array<string, mixed>
+ */
+function quick_filter_choices( $field ) {
+	$id   = isset( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : ( isset( $_POST['tag_ID'] ) ? (int) $_POST['tag_ID'] : 0 ); // phpcs:ignore WordPress.Security.NonceVerification
+	$term = $id ? get_term( $id, \Oria\Core\Taxonomies\PRACTICE ) : null;
+	$field['choices'] = array();
+	if ( $term instanceof \WP_Term && function_exists( '\Oria\Core\Intents\for_practice' ) ) {
+		foreach ( \Oria\Core\Intents\for_practice( $term ) as $row ) {
+			$key = \Oria\Core\Intents\row_key( $row );
+			if ( '' !== $key ) {
+				$field['choices'][ $key ] = sprintf( '%s (%d)', (string) $row['label'], (int) $row['count'] );
+			}
+		}
+	}
+	return $field;
 }
 
 /* -------------------------------------------------- specialty term extras */

@@ -569,7 +569,32 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 	 * away; the UX audit found the full grid pushing the listings down.
 	 */
 	$oria_chips = array();
-	if ( count( $oria_rows ) >= 2 ) {
+	/*
+	 * An admin's chosen quick filters, in their order (the category's
+	 * "Quick filters" field), when there are any. Each is matched to a row
+	 * the page can offer right now -- so its count is live, and one that has
+	 * dropped below the listing floor is simply left out. Otherwise the
+	 * automatic set, as before.
+	 */
+	$oria_qrows  = $oria_rows;
+	$oria_chosen = function_exists( 'get_field' ) ? get_field( 'quick_filters', 'practice_' . $oria_term->term_id ) : null;
+	if ( is_array( $oria_chosen ) && $oria_chosen && function_exists( '\Oria\Core\Intents\row_key' ) ) {
+		$oria_bykey = array();
+		foreach ( $oria_rows as $oria_r ) {
+			$oria_bykey[ \Oria\Core\Intents\row_key( $oria_r ) ] = $oria_r;
+		}
+		$oria_pick = array();
+		foreach ( $oria_chosen as $oria_q ) {
+			$oria_k = (string) ( $oria_q['row'] ?? '' );
+			if ( isset( $oria_bykey[ $oria_k ] ) ) {
+				$oria_pick[] = $oria_bykey[ $oria_k ];
+			}
+		}
+		if ( $oria_pick ) {
+			$oria_qrows = $oria_pick;
+		}
+	}
+	if ( count( $oria_qrows ) >= 2 ) {
 		if ( $oria_facet ) {
 			/* translators: %s: category name */
 			$oria_chips[] = array( $oria_here, sprintf( __( 'All %s', 'oria' ), strtolower( $oria_pname ) ), count( $oria_all ), false );
@@ -590,7 +615,7 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 			/* translators: 1: specialty, 2: city */
 			$oria_chips[] = array( \Oria\Core\PracticesIndex\specialty_url( $oria_specpage ), sprintf( __( 'All %1$s in %2$s', 'oria' ), strtolower( \Oria\Theme\tname( $oria_specpage ) ), $oria_cname ), (int) $oria_specpage->count, false );
 		}
-		foreach ( $oria_rows as $oria_row ) {
+		foreach ( $oria_qrows as $oria_row ) {
 			$oria_href    = $oria_row_url( $oria_row );
 			$oria_on      = '' !== $oria_facet_href && untrailingslashit( $oria_href ) === untrailingslashit( $oria_facet_href );
 			$oria_chips[] = array( $oria_href, (string) $oria_row['label'], (int) $oria_row['count'], $oria_on );

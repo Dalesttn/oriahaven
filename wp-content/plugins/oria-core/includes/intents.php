@@ -63,6 +63,27 @@ function row_url( string $base, string $key, string $value ): string {
 	return add_query_arg( $key, $value, $base ) . ANCHOR;
 }
 
+/**
+ * A row's identity, as the filter it applies -- "aud:beginners",
+ * "page:yin", "svc:hatha-yoga". Stable across label and count changes,
+ * which is what the admin's chosen quick filters are stored as.
+ *
+ * @param array<string, mixed> $row
+ */
+function row_key( array $row ): string {
+	$q = (string) wp_parse_url( (string) ( $row['url'] ?? '' ), PHP_URL_QUERY );
+	parse_str( $q, $args );
+	foreach ( array( 'svc', 'spec', 'aud', 'format', 'price' ) as $k ) {
+		if ( isset( $args[ $k ] ) && '' !== (string) $args[ $k ] ) {
+			return $k . ':' . (string) $args[ $k ];
+		}
+	}
+	// Most rows are pages of their own -- /practices/yoga/yin/ -- rather than a
+	// filtered view, so their address is the key: "page:yin".
+	$path = trim( (string) wp_parse_url( (string) ( $row['url'] ?? '' ), PHP_URL_PATH ), '/' );
+	return '' !== $path ? 'page:' . basename( $path ) : '';
+}
+
 /** Published listings in a practice term and its children. */
 function listings_in( \WP_Term $practice ): array {
 	return get_posts(
