@@ -1,0 +1,150 @@
+/* ==========================================================================
+   Oria Haven v4 -- category page layout (design test).
+
+   Pairs with oria-v4/oria-practice-v2.php. Everything is prefixed .xc- or
+   scoped under .xc-page so it cannot leak into other pages. Colours come
+   from the parent's tokens, re-pointed by v4.css.
+   ========================================================================== */
+
+/* The sticky section menu sat on the old paper colour. */
+.spine { background: color-mix(in srgb, var(--paper) 92%, transparent); }
+
+/* --- Hero: text left, the category's picture right ------------------- */
+.xc-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-7);
+  align-items: center;
+}
+@media (min-width: 60rem) {
+  .xc-hero { grid-template-columns: minmax(0, 1fr) minmax(0, .92fr); }
+  .xc-hero--bare { grid-template-columns: minmax(0, 1fr); }
+}
+.xc-hero .cathero { max-width: none; gap: var(--s-4); }
+.xc-hero .pagehead__title { font-size: var(--fs-display); max-width: 14ch; }
+.xc-hero .cathero__lede { font-size: 1.15rem; line-height: 1.55; color: var(--text); }
+
+.xc-hero__pic {
+  margin: 0;
+  border-radius: var(--r-2xl);
+  overflow: hidden;
+  aspect-ratio: 5 / 4;
+  background: var(--deep);
+}
+.xc-hero__pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* A phone keeps the list near the top: the picture is a slim band. */
+@media (max-width: 59.99rem) {
+  .xc-hero__pic { aspect-ratio: 16 / 9; order: -1; border-radius: var(--r-xl); }
+}
+
+.xc-forme {
+  padding: var(--s-5) var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  max-width: 38rem;
+}
+.xc-forme__title { margin: 0 0 var(--s-2); color: var(--deep); }
+.xc-forme p { margin: 0; font-size: var(--fs-sm); line-height: 1.65; color: var(--text-soft); }
+
+/* The at-a-glance facts read as quiet pills on cream. */
+.xc-hero .catstats li { background: var(--surface); border-color: var(--line); }
+
+/* --- Ways to begin ---------------------------------------------------- */
+.xc-ways { padding-block: var(--s-8) var(--s-6); }
+.xc-ways__title { margin: 0 0 var(--s-6); }
+.xc-ways__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-5);
+}
+@media (min-width: 44rem) { .xc-ways__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.xc-way {
+  display: grid;
+  gap: var(--s-2);
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: var(--r-lg);
+}
+.xc-way__pic {
+  display: block;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--sand);
+  margin-bottom: var(--s-2);
+}
+.xc-way__pic img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform var(--t-slow) var(--ease); }
+.xc-way__pic--bare { background: linear-gradient(160deg, var(--gold-soft), var(--sand)); }
+.xc-way:hover .xc-way__pic img { transform: scale(1.03); }
+.xc-way__n { color: var(--gold); }
+.xc-way__label { color: var(--deep); }
+.xc-way:hover .xc-way__label { text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 43.99rem) {
+  /* Phones: image left, words right, like the canvas's phone board. */
+  .xc-way { grid-template-columns: 96px 1fr; align-items: center; column-gap: var(--s-4); }
+  .xc-way__pic { grid-row: span 2; margin: 0; aspect-ratio: 1; border-radius: var(--r-md); }
+}
+
+/* --- Before you go: the first-timer band ----------------------------- */
+.xc-first { padding-block: var(--s-6); }
+.xc-first__band {
+  display: grid;
+  gap: var(--s-6);
+  padding: clamp(2rem, 5vw, 4.5rem);
+  border-radius: var(--r-2xl);
+  background: var(--deep);
+  color: var(--mist);
+}
+@media (min-width: 60rem) { .xc-first__band { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: start; } }
+.xc-first__head .micro { color: var(--brand-gold); margin: 0 0 var(--s-3); }
+.xc-first__head .h2 { color: var(--white); margin: 0; }
+.xc-first__body .prose { color: var(--mist); max-width: 62ch; }
+.xc-first__body .prose p { color: var(--mist); font-size: 1.05rem; line-height: 1.7; }
+.xc-first__body .prose a { color: var(--white); }
+.xc-first__more {
+  display: inline-flex; gap: .4rem; margin-top: var(--s-4);
+  color: var(--brand-gold); font-weight: 700; text-decoration: none;
+}
+.xc-first__more:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* --- The shortlist and What's on, now above the list ------------------ */
+.xc-shelf { padding-block: var(--s-6) 0; }
+.catevents { padding-top: var(--s-6); }
+
+/* --- Every listing, as editorial rows --------------------------------- */
+#browse .dir__results--wide { gap: 0; border-top: 1px solid var(--line-strong); }
+#browse .dir__results--wide .listing {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  padding-block: var(--s-5);
+  gap: var(--s-5);
+}
+#browse .dir__results--wide .listing:hover { box-shadow: none; transform: none; }
+#browse .dir__results--wide .listing__media { border-radius: var(--r-md); overflow: hidden; align-self: start; aspect-ratio: 4 / 3; }
+#browse .dir__results--wide .listing__media img { aspect-ratio: 4 / 3; min-height: 0; }
+#browse .dir__results--wide .listing__body { padding: 0; }
+#browse .dir__results--wide .listing__name { font-size: clamp(1.3rem, 2vw, 1.6rem); font-weight: 800; color: var(--deep); }
+#browse .dir__results--wide .listing__foot { border-top: 0; padding-top: 0; }
+/* Phones: a row, not a poster -- small square picture beside the words. */
+@media (max-width: 43.99rem) {
+  #browse .dir__results--wide .listing { grid-template-columns: 88px minmax(0, 1fr); gap: var(--s-4); }
+  #browse .dir__results--wide .listing__media,
+  #browse .dir__results--wide .listing__media img { aspect-ratio: 1; }
+  #browse .dir__results--wide .listing__media .listing__flag,
+  #browse .dir__results--wide .listing__quick { display: none; }
+}
+/* The paid band keeps its card look, so it never reads as editorial. */
+#browse .featcat .listing { background: var(--surface); border: 1px solid var(--moss); border-radius: var(--r-lg); padding: 0; }
+#browse .featcat .listing__body { padding: var(--s-4); }
+#browse .featcat .dir__results--wide { border-top: 0; gap: var(--s-4); }
+
+@media (prefers-reduced-motion: reduce) {
+  .xc-way__pic img { transition: none; }
+  .xc-way:hover .xc-way__pic img { transform: none; }
+}

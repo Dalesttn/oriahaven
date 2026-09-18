@@ -1,0 +1,835 @@
+/* ==========================================================================
+   Oria Haven v4 -- listing "experience page" (design test).
+
+   Pairs with oria-v4/single-listing.php. Loads after v4.css (handle
+   oria-v4-listing, only on is_singular('listing')), so the v4 tokens are
+   already in place. Every colour is a token; every new class is .xp-*
+   (hyphen), which cannot collide with the parent's .xp / .xp__* panel.
+
+   Breakpoint: 60rem. Above it the story and the sticky rail sit side by
+   side; below it the rail follows the story, a short summary card sits
+   under the photo, and the action bar is pinned to the bottom.
+   ========================================================================== */
+
+/* --- Shared bits ---------------------------------------------------------- */
+
+.xp-page { --xp-bp-gap: clamp(3rem, 6vw, 6rem); }
+
+.xp-vh {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+/* Every tappable control on the page reaches 44px. */
+.xp-tap { min-height: 44px; }
+
+.xp-page a:focus-visible,
+.xp-page button:focus-visible,
+.xp-page summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* Small uppercase label -- burnt orange on cream (5.6:1). */
+.xp-label {
+  margin: 0 0 .4rem;
+  font-size: .8125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: var(--tr-micro);
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Underlined text link, pine. */
+.xp-link {
+  display: inline-flex; align-items: center;
+  color: var(--deep);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.xp-link:hover { color: var(--deep-2); text-decoration-color: currentColor; }
+
+.xp-crumbs { padding-top: var(--s-5); }
+
+/* --- 1. Visual intro ------------------------------------------------------ */
+
+.xp-hero {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: var(--s-4) var(--gutter) 0;
+}
+
+.xp-hero__panel,
+.xp-hero__panel.gallery {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: end;
+  gap: 0;
+  min-height: clamp(26rem, 70vh, 42.5rem);
+  border-radius: var(--r-2xl);
+  overflow: hidden;
+  background: var(--deep);
+  color: var(--surface);
+}
+/* No photo: the pine panel on its own, shorter, never a stand-in picture. */
+.xp-hero__panel--n0 {
+  min-height: clamp(17rem, 42vh, 25rem);
+  background:
+    radial-gradient(120% 90% at 100% 0%, var(--teal) 0%, transparent 60%),
+    var(--deep);
+}
+
+.xp-hero__media {
+  position: absolute; inset: 0; z-index: 0;
+  display: grid;
+  gap: 6px;
+  background: var(--deep);
+}
+.xp-hero__panel--n2 .xp-hero__media { grid-template-columns: 2fr 1fr; }
+.xp-hero__panel--n3 .xp-hero__media { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; }
+.xp-hero__panel--n3 .xp-hero__shot--0 { grid-row: span 2; }
+
+.xp-hero__shot {
+  position: relative;
+  display: block;
+  min-width: 0; min-height: 0;
+  margin: 0; padding: 0;
+  border: 0; border-radius: 0;
+  background: var(--teal);
+  overflow: hidden;
+  font: inherit;
+}
+.xp-hero__shot[hidden] { display: none; }
+button.xp-hero__shot { cursor: zoom-in; }
+.xp-hero__shot img,
+.xp-hero__panel.gallery .xp-hero__shot img {
+  display: block;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform var(--t-slow) var(--ease-out);
+}
+button.xp-hero__shot:hover img { transform: scale(1.025); }
+.xp-hero__panel button.xp-hero__shot:focus-visible {
+  outline: 3px solid var(--focus-on-deep);
+  outline-offset: -6px;
+}
+
+/* The shade makes the words legible on any photograph. The first line is
+   the fallback for browsers without color-mix(): solid at the foot. */
+.xp-hero__shade {
+  position: absolute; inset: 0; z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(0deg, var(--deep-2) 0%, transparent 72%);
+  background: linear-gradient(0deg,
+    color-mix(in srgb, var(--deep-2) 94%, transparent) 0%,
+    color-mix(in srgb, var(--deep-2) 78%, transparent) 34%,
+    color-mix(in srgb, var(--deep-2) 30%, transparent) 62%,
+    transparent 82%);
+}
+
+.xp-hero__text {
+  position: relative; z-index: 2;
+  max-width: 62rem;
+  padding: clamp(6rem, 18vh, 12rem) clamp(1.25rem, 4.5vw, 4rem) clamp(1.75rem, 4.2vw, 3.75rem);
+  /* Clicks on the words fall through to the photo underneath... */
+  pointer-events: none;
+  text-shadow: 0 1px 14px color-mix(in srgb, var(--deep-2) 45%, transparent);
+}
+/* ...except on the words that are links. */
+.xp-hero__text a { pointer-events: auto; }
+.xp-hero__panel--n0 .xp-hero__text { padding-top: clamp(3rem, 8vh, 5rem); }
+
+.xp-hero__eyebrow {
+  margin: 0 0 var(--s-4);
+  font-size: .8125rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: var(--tr-micro);
+  text-transform: uppercase;
+  color: var(--mist);
+}
+.xp-hero__eyebrow a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--mist) 45%, transparent);
+  text-underline-offset: 4px;
+}
+.xp-hero__eyebrow a:hover { text-decoration-color: currentColor; }
+.xp-hero__sep { margin-inline: .35em; }
+.xp-hero__best { color: var(--brand-gold) !important; }
+.xp-hero__eyebrow a:focus-visible,
+.xp-hero__all:focus-visible { outline-color: var(--focus-on-deep); }
+
+.xp-hero__title {
+  margin: 0 0 var(--s-4);
+  color: var(--surface);
+  font-size: clamp(2.25rem, 5.2vw, 4.3rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+.xp-hero__lede {
+  margin: 0;
+  max-width: 52rem;
+  font-size: clamp(1.1rem, 1.9vw, 1.6rem);
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--mist-2);
+  text-wrap: pretty;
+}
+
+.xp-hero__status {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+  margin: var(--s-5) 0 0; padding: 0;
+  list-style: none;
+}
+.xp-hero__pill {
+  padding: .4rem .8rem;
+  border: 1px solid color-mix(in srgb, var(--mist) 55%, transparent);
+  border-radius: var(--r-pill);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--mist);
+  text-shadow: none;
+  pointer-events: auto; /* so the "Verified" date tooltip can show */
+}
+
+.xp-hero__all {
+  position: absolute; z-index: 3;
+  top: var(--s-4); right: var(--s-4);
+  display: inline-flex; align-items: center; gap: .5rem;
+  min-height: 44px;
+  padding: .55rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--surface) 55%, transparent);
+  border-radius: var(--r-pill);
+  background: var(--deep-2);
+  background: color-mix(in srgb, var(--deep-2) 72%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: var(--surface);
+  font: inherit;
+  font-size: .8125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.xp-hero__all svg { width: 18px; height: 18px; flex: none; }
+.xp-hero__all:hover { background: var(--deep-2); }
+
+.xp-hero__credit {
+  margin: .6rem 0 0;
+  font-size: var(--fs-xs);
+  color: var(--text-soft);
+}
+.xp-hero__credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+/* --- Phone summary card (under the photo) --------------------------------- */
+
+.xp-glance { display: none; }
+.xp-glance__card {
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.xp-glance__big {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--deep);
+}
+.xp-glance__unit {
+  font-size: .9375rem;
+  font-weight: 600;
+  text-transform: none;
+  color: var(--text-soft);
+}
+.xp-glance__sub { margin: .35rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
+.xp-glance__facts {
+  margin: 1rem 0 0;
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  color: var(--ink);
+}
+.xp-glance__card > .xp-glance__facts:first-child { margin-top: 0; }
+
+/* --- 2. Story + rail ------------------------------------------------------ */
+
+.xp-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 25rem;
+  gap: var(--xp-bp-gap);
+  /* stretch (the default), so the rail column is as tall as the story and
+     its card has room to stick */
+  padding-block: clamp(3rem, 6vw, 5.5rem);
+}
+
+.xp-story {
+  display: flex; flex-direction: column;
+  gap: clamp(3rem, 5vw, 4.5rem);
+  min-width: 0;
+}
+
+.xp-sec { min-width: 0; }
+.xp-sec__title {
+  margin: 0 0 var(--s-5);
+  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+  line-height: 1.04;
+  color: var(--deep);
+}
+.xp-sec__hint {
+  margin: calc(var(--s-3) * -1) 0 var(--s-5);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+.xp-sec__headrow {
+  display: flex; flex-wrap: wrap;
+  align-items: baseline; justify-content: space-between;
+  gap: var(--s-2) var(--s-4);
+  margin-bottom: var(--s-5);
+}
+.xp-sec__headrow .xp-sec__title,
+.xp-sec__headrow .xp-sub__title { margin: 0; }
+
+.xp-sub { margin-top: var(--s-6); }
+.xp-sub__title {
+  margin: 0 0 var(--s-3);
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  font-weight: 800;
+  color: var(--deep);
+}
+
+.xp-prose {
+  max-width: 42.5rem;
+  font-size: clamp(1.0625rem, 1.35vw, 1.25rem);
+  line-height: 1.65;
+  color: var(--text-soft);
+}
+/* Imported descriptions sometimes carry page-builder headings. */
+.xp-prose h2, .xp-prose h3, .xp-prose h4 { font-size: 1.15em; line-height: 1.35; color: var(--ink); }
+.xp-prose blockquote { margin: 0; padding-left: var(--s-4); border-left: 3px solid var(--gold-soft); }
+
+.xp-tags {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+  margin: var(--s-5) 0 0; padding: 0;
+  list-style: none;
+}
+.xp-tag {
+  padding: .6rem .9rem;
+  border-radius: var(--r-pill);
+  background: var(--gold-soft);
+  color: var(--ink);
+  font-size: .75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.xp-tags--services { margin-top: var(--s-4); }
+
+/* The parent's experience panel, sat inside "What it's like". */
+.xp-profile { margin-top: var(--s-6); max-width: 42.5rem; }
+.xp-profile .xp__b:first-child { margin-top: 0; }
+
+/* Classes / services: the parent's offer cards in the v4 card shape. */
+.xp-offers {
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: .875rem;
+}
+.xp-offers .offercard {
+  padding: 1.5rem;
+  border-color: var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.xp-offers .offercard:hover { border-color: var(--deep); }
+.xp-offers .offercard__name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--deep);
+}
+.xp-offers .offercard__note { font-size: var(--fs-sm); color: var(--text-soft); }
+.xp-offers .offercard__go { color: var(--deep); }
+
+/* Why our editors picked it */
+.xp-picks__list { display: grid; gap: 1rem; }
+.xp-pick {
+  margin: 0;
+  padding: clamp(1.4rem, 2.6vw, 1.9rem) clamp(1.4rem, 2.8vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.xp-pick--lead { border-color: transparent; background: var(--gold-soft); }
+.xp-pick__head {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem .5rem;
+  font-size: .75rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: var(--tr-micro);
+  text-transform: uppercase;
+  color: var(--deep);
+}
+.xp-pick__mark { color: var(--gold); }
+.xp-pick__guide {
+  color: var(--deep);
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: .9375rem;
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 4px;
+}
+.xp-pick__guide:hover { text-decoration-color: currentColor; }
+.xp-pick__why { margin: .9rem 0 0; }
+.xp-pick__why p {
+  margin: 0;
+  font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.xp-pick__seal {
+  display: inline-flex; align-items: center;
+  min-height: 44px;
+  margin-top: .35rem;
+  font-size: var(--fs-xs);
+  color: var(--text-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.xp-pick__seal:hover { color: var(--ink); }
+
+/* Your first visit */
+.xp-first {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: .875rem;
+  margin: 0;
+}
+.xp-first__item {
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.xp-first__item dt {
+  font-size: .8125rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--gold);
+}
+.xp-first__item dd {
+  margin: .4rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* The parent's team part opens its own .section: flatten it into the flow. */
+.xp-part:empty { display: none; }
+.xp-part .section { padding-block: 0; }
+.xp-part .teamsec__title {
+  margin: 0 0 var(--s-5);
+  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.04;
+  text-transform: uppercase;
+  color: var(--deep);
+}
+
+/* Reviews */
+.xp-gquote { margin: var(--s-5) 0 0; border-radius: var(--r-xl); }
+.xp-greviews { margin-top: var(--s-6); }
+#reviews .reviewform { margin-top: var(--s-6); }
+
+/* Getting there */
+.xp-there { overflow: hidden; border-radius: var(--r-lg); background: var(--surface); }
+
+/* Enquiry and claim forms */
+.xp-enquire {
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background: var(--surface);
+}
+.xp-form { display: grid; gap: .9rem; max-width: 40rem; }
+.xp-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+.xp-form .input,
+.xp-form .textarea { min-height: 44px; width: 100%; }
+.xp-form .btn { justify-self: start; justify-content: center; }
+.xp-form__opt { font-weight: 400; color: var(--text-soft); }
+.xp-form__error { margin: 0; font-size: var(--fs-sm); font-weight: 600; color: var(--gold); }
+
+/* Share / follow / out-of-date */
+.xp-extras {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--s-4);
+  align-items: start;
+}
+
+/* --- The action rail ------------------------------------------------------ */
+
+.xp-rail { min-width: 0; }
+.xp-rail__card {
+  position: sticky;
+  top: calc(var(--head-h) + var(--s-4));
+  display: grid;
+  gap: var(--s-5);
+  padding: 2.25rem 2rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background: var(--surface);
+}
+/* Named for assistive tech everywhere; shown as a heading only on a phone,
+   where the rail follows the story. */
+.xp-rail__title {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+.xp-rail__top > :last-child { margin-bottom: 0; }
+.xp-rail__big {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.02;
+  text-transform: uppercase;
+  color: var(--deep);
+}
+.xp-rail__unit {
+  font-size: .9375rem;
+  font-weight: 600;
+  text-transform: none;
+  color: var(--text-soft);
+}
+.xp-rail__sub { margin: .5rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
+
+.xp-rail__ctas { display: grid; gap: .6rem; }
+.xp-rail__ctas .btn {
+  justify-content: center;
+  padding: .95rem 1.4rem;
+  font-size: 1rem;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
+}
+.xp-rail__ctas .btn--ghost { color: var(--deep); border-color: var(--deep); }
+.xp-rail__ctas .btn--ghost:hover { background: var(--gold-soft); }
+
+.xp-facts { margin: 0; }
+.xp-fact {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: var(--s-4);
+  padding-block: .9rem;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.xp-fact:first-child { padding-top: 0; }
+.xp-fact dt { color: var(--text-soft); }
+.xp-fact dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.xp-fact__link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
+}
+.xp-fact__link:hover { text-decoration-color: currentColor; }
+.xp-fact__link .rating__star {
+  width: 14px; height: 14px;
+  margin-right: .1rem;
+  vertical-align: -1px;
+  color: var(--gold);
+}
+.xp-fact__more {
+  margin-left: .35rem;
+  font-weight: 600;
+  color: var(--deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.xp-rail__foot {
+  display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+  gap: .25rem var(--s-4);
+}
+.xp-save {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  color: var(--deep);
+  cursor: pointer;
+}
+.xp-save .savebtn__label {
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.xp-save:hover .savebtn__label { text-decoration-color: currentColor; }
+.xp-page .savebtn__on { color: var(--gold); }
+
+/* --- 3. If you like the sound of this ------------------------------------- */
+
+.xp-more {
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+  /* A hairline across the content width, inside the gutters. */
+  background-image: linear-gradient(var(--line), var(--line));
+  background-size: calc(100% - 2 * var(--gutter)) 1px;
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+.xp-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin: 0; padding: 0;
+  list-style: none;
+}
+.xp-card {
+  position: relative;
+  display: flex; flex-direction: column; gap: .5rem;
+  padding: 1.875rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background: var(--surface);
+  transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.xp-card:hover { border-color: var(--deep); transform: translateY(-2px); }
+.xp-card .xp-label { margin: 0; font-size: .75rem; }
+.xp-card__title {
+  margin: 0;
+  font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+  font-weight: 800;
+  line-height: 1.12;
+  color: var(--deep);
+}
+.xp-card__link { color: inherit; text-decoration: none; }
+/* The whole card is the link's target. */
+.xp-card__link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.xp-card__link:focus-visible { outline: none; }
+.xp-card:has(.xp-card__link:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+.xp-card__text {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--text-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.xp-card__meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .75rem;
+  margin: auto 0 0; padding-top: .5rem;
+  font-size: var(--fs-xs);
+  color: var(--text-soft);
+}
+.xp-card__meta .rating { color: var(--gold); font-weight: 700; }
+.xp-card__meta .rating__star { width: 13px; height: 13px; }
+
+.xp-more__specs { margin-top: var(--s-7); }
+.xp-more__specs:first-child { margin-top: 0; }
+
+/* --- 4. Claim ------------------------------------------------------------- */
+
+.xp-claimwrap { padding-bottom: clamp(3rem, 6vw, 5rem); }
+.xp-claim {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-5) var(--s-6);
+  padding: clamp(1.75rem, 3.5vw, 2.5rem) clamp(1.5rem, 3.5vw, 2.75rem);
+  border-radius: var(--r-xl);
+  background: var(--deep);
+  color: var(--surface);
+}
+.xp-claim__title {
+  margin: 0 0 .4rem;
+  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+  font-weight: 800;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--surface);
+}
+.xp-claim__text { margin: 0; max-width: 40rem; font-size: var(--fs-sm); line-height: 1.55; color: var(--mist); }
+.xp-claim__fold[open] { grid-column: 1 / -1; }
+.xp-claim__open {
+  list-style: none;
+  cursor: pointer;
+  justify-content: center;
+  color: var(--deep);
+}
+.xp-claim__open::-webkit-details-marker { display: none; }
+.xp-claim__open::marker { content: ""; }
+.xp-claim__form { margin-top: var(--s-5); }
+.xp-claim .field__label { color: var(--mist); }
+.xp-claim .xp-form__error { color: var(--brand-gold); }
+.xp-claim .btn--light { color: var(--deep); }
+.xp-claim a:focus-visible,
+.xp-claim button:focus-visible,
+.xp-claim summary:focus-visible { outline-color: var(--focus-on-deep); }
+.xp-claim__done { grid-column: 1 / -1; background: var(--surface); color: var(--ink); }
+
+/* --- 5. Phone action bar -------------------------------------------------- */
+
+.xp-bar { display: none; }
+
+/* --- Below 60rem: one column --------------------------------------------- */
+
+@media (max-width: 59.99rem) {
+  .xp-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(3rem, 8vw, 4rem);
+    padding-top: clamp(2.5rem, 7vw, 3.5rem);
+  }
+  .xp-rail__card { position: static; padding: 1.75rem 1.5rem; }
+  .xp-rail__title {
+    position: static;
+    width: auto; height: auto;
+    margin: 0; overflow: visible; clip: auto; white-space: normal;
+    font-size: clamp(1.45rem, 5.5vw, 1.75rem);
+    font-weight: 800;
+    line-height: 1.05;
+    text-transform: uppercase;
+    color: var(--deep);
+  }
+
+  .xp-glance { display: block; margin-top: var(--s-4); }
+
+  .xp-cards {
+    display: flex;
+    gap: .75rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: .25rem var(--gutter) .75rem;
+    scroll-padding-inline: var(--gutter);
+  }
+  .xp-card {
+    flex: 0 0 min(16.5rem, 80%);
+    padding: 1.4rem;
+    border-radius: var(--r-lg);
+    scroll-snap-align: start;
+  }
+
+  .xp-claim { grid-template-columns: minmax(0, 1fr); }
+  .xp-claim__open { width: 100%; }
+
+  /* The bar: always there on a phone, clear of the home indicator. */
+  .xp-bar {
+    position: fixed; z-index: 60;
+    left: max(.75rem, env(safe-area-inset-left, 0px));
+    right: max(.75rem, env(safe-area-inset-right, 0px));
+    bottom: calc(.75rem + env(safe-area-inset-bottom, 0px));
+    display: flex; align-items: center; gap: .5rem;
+    padding: .5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    box-shadow: var(--sh-3);
+  }
+  .xp-bar__main {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 48px;
+    justify-content: center;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .xp-bar__icon {
+    flex: none;
+    display: grid; place-items: center;
+    width: 48px; height: 48px;
+    margin-left: auto;
+    padding: 0;
+    border: 1px solid var(--deep);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--deep);
+    font: inherit;
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .xp-bar__main + .xp-bar__icon,
+  .xp-bar__icon + .xp-bar__icon { margin-left: 0; }
+  .xp-bar__icon svg { width: 20px; height: 20px; }
+  .xp-bar__icon[aria-pressed="true"] { background: var(--gold-soft); }
+
+  /* Room at the foot of the page so the bar never covers the footer. */
+  body.single-listing { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* --- Phones --------------------------------------------------------------- */
+
+@media (max-width: 40rem) {
+  .xp-crumbs { padding-top: var(--s-4); }
+
+  /* Full-bleed picture with rounded foot, as in the phone design. */
+  .xp-hero { padding: var(--s-3) 0 0; }
+  .xp-hero__panel,
+  .xp-hero__panel.gallery {
+    min-height: clamp(26rem, 72vh, 35rem);
+    border-radius: 0 0 var(--r-xl) var(--r-xl);
+  }
+  .xp-hero__panel--n0 { min-height: 17rem; }
+  .xp-hero__panel--n2 .xp-hero__media,
+  .xp-hero__panel--n3 .xp-hero__media {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .xp-hero__shot--1,
+  .xp-hero__shot--2 { display: none !important; }
+  .xp-hero__text { padding: 7rem 1.25rem 2rem; }
+  .xp-hero__credit { padding-inline: var(--gutter); }
+
+  .xp-form__row { grid-template-columns: minmax(0, 1fr); }
+  .xp-form .btn { justify-self: stretch; }
+
+  .xp-fact { grid-template-columns: 5.75rem minmax(0, 1fr); gap: .75rem; }
+  .xp-pick__guide { font-size: .875rem; }
+}
+
+/* --- Motion --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-hero__shot img,
+  .xp-card { transition: none; }
+  button.xp-hero__shot:hover img,
+  .xp-card:hover { transform: none; }
+  .xp-page .btn:hover { transform: none; }
+}

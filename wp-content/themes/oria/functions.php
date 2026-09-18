@@ -1185,14 +1185,16 @@ function facet_image( string $slug ): string {
 	static $have = null;
 	if ( null === $have ) {
 		$have = array();
-		foreach ( (array) glob( get_stylesheet_directory() . '/assets/img/facets/*.webp' ) as $file ) {
+		// The template (this theme), not the stylesheet: under a child theme
+		// the stylesheet directory is the child's, which ships no images.
+		foreach ( (array) glob( get_template_directory() . '/assets/img/facets/*.webp' ) as $file ) {
 			$have[ basename( (string) $file, '.webp' ) ] = true;
 		}
 	}
 	if ( '' === $slug || ! isset( $have[ $slug ] ) ) {
 		return '';
 	}
-	return get_stylesheet_directory_uri() . '/assets/img/facets/' . $slug . '.webp';
+	return get_template_directory_uri() . '/assets/img/facets/' . $slug . '.webp';
 }
 
 /** Directions link — needs no API key. */
