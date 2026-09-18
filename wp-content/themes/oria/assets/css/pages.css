@@ -6790,6 +6790,18 @@ article.is-spotlit {
 
 /* --- Hero ---------------------------------------------------------------- */
 .cathero { display: grid; gap: var(--s-3); max-width: 60rem; }
+/* With a header picture the copy keeps to the left half, where the band
+   has faded to paper; the picture takes the right. */
+@media (min-width: 861px) {
+  .heroband--cat:not(.heroband--bare) .cathero { max-width: min(38rem, 54%); }
+  .heroband--cat:not(.heroband--bare) { align-items: start; }
+}
+/* Phones: no picture at all. The guides drop theirs below the header; here
+   that would push the listings back down the page. */
+@media (max-width: 860px) {
+  .heroband--cat { display: block; }
+  .heroband--cat::before { content: none !important; }
+}
 /* The hero ends where its content does; the listings follow straight on. */
 #decide.pagehead { padding-bottom: var(--s-4); }
 #decide .pagehead__title { font-size: clamp(2.1rem, 4.2vw, 3.4rem); }

@@ -1859,6 +1859,29 @@ function event_mark( int $event_id ): string {
 }
 
 /**
+ * The header picture for a category page, or '' for none.
+ *
+ * Three photographs composed into one file per category, shipped in the
+ * theme (assets/img/cat-heroes/{slug}.webp, credits in assets/img/
+ * CREDITS.md) so the same picture reaches every environment without an
+ * upload. A sub-category without its own takes its parent's -- a new
+ * sub-category looks finished on day one. No file, no picture: the hero
+ * renders exactly as it did before.
+ */
+function category_hero_url( \WP_Term $term ): string {
+	foreach ( array( $term->slug, $term->parent ? (string) get_term_field( 'slug', (int) $term->parent, $term->taxonomy ) : '' ) as $slug ) {
+		if ( '' === $slug || is_wp_error( $slug ) ) {
+			continue;
+		}
+		$rel = 'assets/img/cat-heroes/' . sanitize_file_name( $slug ) . '.webp';
+		if ( is_readable( get_theme_file_path( $rel ) ) ) {
+			return get_theme_file_uri( $rel ) . '?v=' . filemtime( get_theme_file_path( $rel ) );
+		}
+	}
+	return '';
+}
+
+/**
  * Events and workshops in a category that are on now or still to come.
  *
  * The rules, and why, are on template-parts/category-events.php, which

@@ -253,6 +253,19 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 	</div>
 </nav>
 
+<?php
+/*
+ * The header picture, in the same .heroband block the guides and Best Of
+ * pages use: three photographs dissolving in from the right, decoration
+ * only (a background, so screen readers skip it and a phone never
+ * downloads it). Category pages keep it to desktop -- dropping it under
+ * the header on a phone, as the guides do, would push the listings back
+ * down the page the UX redesign pulled them up.
+ */
+$oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url' ) ) ? \Oria\Theme\category_hero_url( $oria_term ) : '';
+?>
+<div class="heroband heroband--stack heroband--cat<?php echo '' !== $oria_hero_img ? '' : ' heroband--bare'; ?>"
+	<?php if ( '' !== $oria_hero_img ) : ?>style="--heroband-img:url('<?php echo esc_url( $oria_hero_img ); ?>')"<?php endif; ?>>
 <!-- Floor 1 — Decide -->
 <section class="wrap pagehead floor" id="decide">
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
@@ -544,6 +557,7 @@ $oria_fill = static function ( string $s ) use ( $oria_ids, $oria_all, $oria_pna
 	?>
 	<?php // The compare prompts are drawn at the top of the guide now -- see below. ?>
 </section>
+</div>
 
 <!-- Floor 2 — Listings -->
 <section class="wrap section section--top-flush floor" id="browse">
