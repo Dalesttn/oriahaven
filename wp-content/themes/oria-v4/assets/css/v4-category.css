@@ -1,0 +1,651 @@
+/* ==========================================================================
+   Oria Haven v4 -- category page, "The Wellness Horizon".
+
+   Pairs with oria-v4/oria-practice-v2.php and assets/js/v4-category.js.
+   Loaded on practice (category) pages only. New parts are prefixed .xc-;
+   rules on the parent's own parts are scoped under #browse / #dirFilters so
+   nothing leaks elsewhere. Colours, radii and fonts are the parent's tokens.
+
+   Order: hero (#decide) -> Discovery Dock -> results heading, filters ->
+   one Featured card -> listings (Oria Note after the sixth, Local
+   intelligence after the page) -> About -> Best Of -> one event -> guide
+   -> FAQs -> by experience / by area -> products, apps. The Discovery
+   Ribbon is fixed under the site header once the dock has scrolled away.
+   ========================================================================== */
+
+/* The dock carries location now, so the separate region bar goes on these
+   pages (its links are in the dock's Location panel, "Another region"). */
+.regionbar { display: none; }
+
+/* Anchors clear the header (html's scroll-padding) and the ribbon. */
+#results, #dirResults, #browse, #read, #events, #faq, #guides, #xcBestOf {
+  scroll-margin-top: calc(var(--xc-ribbon-h, 60px) + 1rem);
+}
+
+/* --- 1. Hero ----------------------------------------------------------------
+   One <img> for every width, so there is one LCP request. On a wide screen
+   it is the full-bleed background, under a layered shade the text never
+   depends on the photograph for. Below 60rem it is its own rounded picture
+   above the words, as before, on the plain page. */
+.xc-hz { position: relative; isolation: isolate; padding-block: var(--s-4) var(--s-5); }
+.xc-hz__media { overflow: hidden; background: var(--deep); }
+.xc-hz__img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--xc-hz-pos, 60% 50%); }
+.xc-hz__shade { display: none; }
+.xc-hz__crumbs { margin-bottom: var(--s-3); }
+.xc-hz__copy { display: grid; gap: var(--s-3); }
+.xc-hz__eyebrow { margin: 0; color: var(--moss); }
+.xc-hz__title {
+  margin: 0;
+  font-size: clamp(1.9rem, 7vw, 2.4rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--deep);
+}
+.xc-hz__title .edit { font-weight: 400; }
+.xc-hz__line { margin: 0; max-width: 34ch; font-family: var(--font-edit); font-style: italic; font-size: clamp(1.1rem, 1.6vw, 1.35rem); line-height: 1.4; color: var(--text-soft); }
+.xc-hz__trust { margin: 0; font-size: var(--fs-sm); color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.xc-hz__acts { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: var(--s-2); }
+.xc-hz__acts .btn { min-height: 48px; }
+
+/* The one orange action in a component; a quiet partner beside it. */
+.xc-btn-primary { background: var(--brand-gold); border-color: var(--brand-gold); color: var(--ink); }
+.xc-btn-primary:hover { background: color-mix(in srgb, var(--brand-gold) 85%, var(--ink)); border-color: transparent; color: var(--ink); }
+.xc-btn-light { background: transparent; border-color: var(--line-strong); color: var(--ink); }
+.xc-btn-light:hover { background: var(--sand-2); }
+.xc-hz .btn:focus-visible { outline: 2px solid var(--deep); outline-offset: 3px; }
+
+@media (max-width: 59.99rem) {
+  .xc-hz__media { margin: 0 var(--gutter) var(--s-4); aspect-ratio: 21 / 9; max-height: 14rem; border-radius: var(--radius-card); background: var(--sand); }
+  .xc-hz--bare .xc-hz__media { display: none; }
+  .xc-hz__acts .btn { flex: 1 1 auto; justify-content: center; }
+}
+
+@media (min-width: 60rem) {
+  .xc-hz {
+    display: flex;
+    align-items: center;
+    min-height: clamp(620px, 74svh, 780px);
+    padding-block: var(--s-6) calc(var(--xc-dock-overlap, 84px) + var(--s-7));
+    background: var(--deep);
+    color: var(--white);
+  }
+  .xc-hz__media { position: absolute; inset: 0; z-index: -2; }
+  .xc-hz__shade {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(90deg,
+        color-mix(in srgb, var(--deep) 88%, transparent) 0%,
+        color-mix(in srgb, var(--deep) 72%, transparent) 38%,
+        color-mix(in srgb, var(--deep) 20%, transparent) 72%,
+        color-mix(in srgb, var(--deep) 4%, transparent) 100%),
+      linear-gradient(0deg, color-mix(in srgb, var(--deep) 35%, transparent) 0%, transparent 45%);
+  }
+  .xc-hz__inner { width: 100%; }
+  .xc-hz__copy { max-width: 40rem; gap: var(--s-4); }
+  .xc-hz .crumbs a, .xc-hz .crumbs span { color: rgba(255, 255, 255, .78); }
+  .xc-hz .crumbs a:hover { color: var(--white); }
+  .xc-hz__eyebrow { color: var(--brand-gold); }
+  .xc-hz__title { font-size: clamp(3.5rem, 6.4vw, 6rem); color: var(--white); line-height: 1; }
+  .xc-hz--long .xc-hz__title { font-size: clamp(2.6rem, 4.4vw, 4.25rem); }
+  .xc-hz__line { color: rgba(255, 255, 255, .9); max-width: 34ch; }
+  .xc-hz__trust { color: rgba(255, 255, 255, .82); }
+  .xc-hz .xc-btn-light { border-color: rgba(255, 255, 255, .55); color: var(--white); }
+  .xc-hz .xc-btn-light:hover { background: rgba(255, 255, 255, .12); }
+  .xc-hz .btn:focus-visible { outline-color: var(--white); }
+  .xc-hz--bare { min-height: clamp(460px, 56svh, 620px); }
+
+  /* A slow settle for the photograph and a short rise for the words. */
+  .xc-hz__img { animation: xc-settle 1.8s var(--ease, ease-out) both; }
+  .xc-hz__copy > * { animation: xc-rise .7s var(--ease, ease-out) both; }
+  .xc-hz__copy > :nth-child(2) { animation-delay: .06s; }
+  .xc-hz__copy > :nth-child(3) { animation-delay: .12s; }
+  .xc-hz__copy > :nth-child(n+4) { animation-delay: .18s; }
+}
+@keyframes xc-settle { from { transform: scale(1.02); } to { transform: scale(1); } }
+@keyframes xc-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* --- 2. Discovery Dock --------------------------------------------------- */
+/* Above the sticky filter bar (z-index 20 in the parent) so an open dock
+   panel is never painted over; still below the ribbon (50) and sheets. */
+.xc-dockwrap { position: relative; z-index: 30; }
+.xc-dockwrap__inner { position: relative; }
+@media (min-width: 60rem) { .xc-dockwrap { margin-top: calc(-1 * var(--xc-dock-overlap, 84px)); } }
+.xc-dock {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding: var(--s-4);
+  border: 1px solid color-mix(in srgb, var(--white) 70%, transparent);
+  border-radius: 28px;
+  background: color-mix(in srgb, var(--paper) 96%, transparent);
+  box-shadow: 0 34px 80px -34px rgba(8, 34, 32, .42), 0 10px 26px -14px rgba(8, 34, 32, .2);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.xc-dock__controls { display: flex; flex-direction: column; gap: .5rem; }
+.xc-dock__ctl {
+  display: grid;
+  gap: .1rem;
+  min-height: 56px;
+  padding: .55rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.xc-dock__ctl:hover { border-color: var(--line-strong); }
+.xc-dock__ctl[aria-expanded="true"] { border-color: var(--deep); box-shadow: inset 0 0 0 1px var(--deep); }
+.xc-dock__ctl:focus-visible, .xc-dock__go:focus-visible, .xc-pchip:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+.xc-dock__k { font-size: var(--fs-micro); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
+.xc-dock__v { font-weight: 700; color: var(--deep); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.xc-dock__v::after { content: " \25BE"; font-weight: 400; color: var(--text-faint); }
+.xc-dock__go { justify-content: center; min-height: 56px; border-radius: 18px; background: var(--deep); border-color: var(--deep); color: var(--white); font-weight: 700; }
+.xc-dock__go:hover { background: var(--ink); color: var(--white); }
+.xc-dock__go b { font-variant-numeric: tabular-nums; }
+.xc-narrow { display: inline; }
+.xc-wide { display: none; }
+.xc-dock__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; margin-top: var(--s-3); }
+.xc-dock__pop { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+.xc-pchip {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  min-height: 44px;
+  padding: 0 .95rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.xc-pchip:hover { border-color: var(--deep); }
+.xc-pchip[aria-pressed="true"] { background: var(--deep); border-color: var(--deep); color: var(--white); }
+.xc-pchip[aria-pressed="true"]::before { content: "\2713"; }
+.xc-pchip__n { font-weight: 400; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.xc-pchip[aria-pressed="true"] .xc-pchip__n { color: rgba(255, 255, 255, .8); }
+.xc-dock__snap { margin: 0; font-size: var(--fs-xs); color: var(--text-soft); font-variant-numeric: tabular-nums; }
+@media (max-width: 49.99rem) {
+  /* Two shortcuts and "More" on a phone -- never a sideways scroll. */
+  .xc-dock__pop li:nth-child(n+3):not(.xc-more) { display: none; }
+}
+@media (min-width: 50rem) {
+  .xc-narrow { display: none; }
+  .xc-wide { display: inline; }
+  .xc-dock { padding: var(--s-3); }
+  .xc-dock__controls { flex-direction: row; align-items: stretch; }
+  .xc-dock__ctl { flex: 1 1 0; min-width: 0; }
+  .xc-dock__go { flex: 0 0 auto; padding-inline: 1.6rem; }
+  .xc-dock__foot { padding-inline: .35rem; }
+}
+
+/* --- Panels: anchored popover on a wide screen, bottom sheet on a phone -- */
+.xc-pop {
+  position: absolute;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  width: min(26rem, calc(100vw - 32px));
+  max-height: min(72vh, 40rem);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--sh-3);
+  color: var(--ink);
+}
+.xc-pop[hidden] { display: none; }
+.xc-pop--wide { width: min(48rem, calc(100vw - 32px)); }
+.xc-pop.is-fixed { position: fixed; z-index: 56; }
+.xc-pop__head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-4) var(--s-5) var(--s-2); }
+.xc-pop__title { margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--deep); }
+.xc-pop__x {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-soft);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.xc-pop__body { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; padding: 0 var(--s-5) var(--s-4); }
+.xc-pop__sub { margin: var(--s-4) 0 .25rem; font-size: var(--fs-micro); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
+.xc-pop__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-3) var(--s-5); border-top: 1px solid var(--line); }
+.xc-pop__foot .btn { min-height: 48px; }
+.xc-pop__clear { min-height: 44px; padding: 0 .5rem; border: 0; background: none; color: var(--deep); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.xc-pop__x:focus-visible, .xc-pop__clear:focus-visible, .xc-mood:focus-visible, .xc-near:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+
+.xc-moods { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: .6rem; }
+.xc-mood {
+  display: grid;
+  align-content: start;
+  gap: .2rem;
+  min-height: 44px;
+  padding: .85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--sand-2);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .2s ease, border-color .2s ease;
+}
+.xc-mood:hover { border-color: var(--deep); }
+.xc-mood[aria-pressed="true"] { background: var(--deep); border-color: var(--deep); color: var(--white); }
+.xc-mood__name { font-weight: 700; }
+.xc-mood[aria-pressed="true"] .xc-mood__name::before { content: "\2713\00a0"; }
+.xc-mood__line { font-size: var(--fs-sm); line-height: 1.4; color: var(--text-soft); }
+.xc-mood__n { font-size: var(--fs-xs); font-weight: 600; color: var(--moss); }
+.xc-mood[aria-pressed="true"] .xc-mood__line,
+.xc-mood[aria-pressed="true"] .xc-mood__n { color: rgba(255, 255, 255, .85); }
+.xc-mood__detail { margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1px solid var(--line); }
+.xc-mood__hint { margin: 0 0 .25rem; font-size: var(--fs-sm); color: var(--text-soft); }
+.xc-checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: 0 1rem; }
+.xc-check { display: flex; align-items: center; gap: .6rem; min-height: 44px; cursor: pointer; }
+.xc-check input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: var(--deep); }
+.xc-check__label { flex: 1 1 auto; }
+.xc-check__n { flex: none; font-size: var(--fs-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.xc-ways { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.xc-ways a { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); min-height: 44px; border-bottom: 1px solid var(--line); color: var(--ink); font-weight: 600; text-decoration: none; }
+.xc-ways a[aria-current="page"] { color: var(--deep); }
+.xc-ways a[aria-current="page"]::before { content: "\2713\00a0"; }
+.xc-ways a:hover span:first-child { text-decoration: underline; text-underline-offset: 3px; }
+.xc-near {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.xc-veil { position: fixed; inset: 0; z-index: 80; background: rgba(8, 34, 32, .45); }
+@media (max-width: 50rem) {
+  .xc-pop, .xc-pop--wide, .xc-pop.is-fixed {
+    position: fixed;
+    inset: auto 0 0 0 !important;
+    z-index: 81;
+    width: auto;
+    max-height: 86vh;
+    border-radius: 22px 22px 0 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .xc-pop:not([hidden]) { animation: xc-sheet .22s cubic-bezier(.2, .8, .25, 1) both; }
+  .xc-moods { grid-template-columns: 1fr 1fr; }
+  .xc-checks { grid-template-columns: 1fr; }
+}
+@keyframes xc-sheet { from { transform: translateY(24px); opacity: .6; } to { transform: none; opacity: 1; } }
+html.xc-locked { overflow: hidden; }
+
+/* --- Discovery Ribbon ----------------------------------------------------- */
+.xc-ribbon {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--xc-head-h, 0px);
+  z-index: 50;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 96%, transparent);
+  box-shadow: 0 10px 26px -18px rgba(8, 34, 32, .35);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
+}
+.xc-ribbon.is-on { opacity: 1; visibility: visible; transform: none; transition: opacity .25s ease, transform .25s ease; }
+.xc-ribbon__row { display: flex; align-items: center; gap: .5rem; min-height: 60px; }
+.xc-ribbon__cat { flex: none; margin-right: .5rem; font-weight: 700; color: var(--deep); }
+.xc-ribbon__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  min-height: 44px;
+  max-width: 16rem;
+  padding: 0 .95rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.xc-ribbon__btn > span:first-child { overflow: hidden; text-overflow: ellipsis; }
+.xc-ribbon__btn[aria-expanded="true"] { border-color: var(--deep); }
+.xc-ribbon__btn:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+.xc-ribbon__count { margin-left: auto; font-size: var(--fs-sm); color: var(--text-soft); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.xc-ribbon__count b { color: var(--ink); }
+@media (max-width: 50rem) {
+  .xc-ribbon__cat, .xc-ribbon__btn--loc { display: none; }
+  .xc-ribbon__row { gap: .4rem; min-height: 56px; }
+  .xc-ribbon__btn { padding: 0 .8rem; max-width: 11rem; }
+}
+/* The ribbon is the one sticky control: the floating Map button goes. */
+.xc-has-ribbon .mapfab { display: none !important; }
+
+/* --- 3. Results ----------------------------------------------------------- */
+/* The results heading sits about 90px under the dock (brief: 80-140). */
+.xc-browse { padding-top: calc(var(--s-8) + var(--s-3)); }
+@media (max-width: 59.99rem) { .xc-browse { padding-top: var(--s-6); } }
+.xc-reshead { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; }
+.xc-reshead .results__head { margin: 0; }
+.xc-reshead .dir__count { margin: 0; }
+.xc-opener { margin: .5rem 0 0; max-width: 68ch; color: var(--text-soft); line-height: 1.6; }
+.xc-split { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; margin: .35rem 0 var(--s-3); font-size: var(--fs-sm); color: var(--text-soft); }
+.xc-split[hidden] { display: none; }
+.xc-split b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.xc-picks { margin-right: auto; }
+#dirChips:empty { display: none; }
+#dirChips { margin-top: .5rem; }
+/* app.js's in-list headings count without the Featured card; the line
+   above counts the whole page. The line carries the numbers. */
+#dirResults .resgroup__n { display: none; }
+
+/* The filter row is no longer sticky -- the ribbon is -- and it is a plain
+   row, so a phone's filter sheet inside it is not trapped under anything. */
+#browse .toolbar {
+  position: relative;
+  top: auto;
+  background: color-mix(in srgb, var(--paper) 96%, var(--white));
+  border-color: var(--line);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+#browse .toolbar__search { flex: 1 1 13rem; max-width: 19rem; }
+#dirFilters .popover > summary { min-height: 44px; }
+#dirFilters summary:focus-visible,
+#dirFilters .select:focus-visible,
+#dirFilters .input:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+@media (min-width: 50.01rem) {
+  #browse .toolbar__near { display: none; }
+  #browse .toolbar__near:has(.toolbar__nearmsg:not(:empty)) { display: flex; }
+  .xc-fpanel { display: contents; }
+}
+
+/* The Area filter's counts were wrapped in CSS-generated "(" and ")", read
+   out by screen readers as stray "()" (brief finding). */
+.popover__panel--areas .check em::before,
+.popover__panel--areas .check em::after { content: none; }
+.popover__panel--areas .check em { margin-left: .3rem; font-variant-numeric: tabular-nums; }
+
+/* Phones: Filters · Map · Sort at the top of the results; Filters opens
+   the whole filter set as a bottom sheet with Clear all and Show N. */
+.xc-tbrow, .xc-fhead, .xc-ffoot { display: none; }
+@media (max-width: 50rem) {
+  #browse .toolbar.xc-bar { z-index: auto; flex-wrap: wrap; align-items: center; gap: .5rem; }
+  #browse .toolbar.xc-bar .xc-tbrow { display: contents; }
+  .xc-tbbtn {
+    order: 0;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-pill);
+    background: var(--white);
+    color: var(--ink);
+    font: inherit;
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .xc-tbbtn:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+  #browse .toolbar.xc-bar .toolbar__sort,
+  #browse .toolbar.xc-bar.is-stuck .toolbar__sort { order: 1; display: block; flex: 1 1 7rem; min-width: 0; margin: 0; }
+  #browse .toolbar.xc-bar .toolbar__sort .select { width: 100%; height: 44px; min-height: 44px; padding-block: 0; }
+  .xc-fpanel { display: none; }
+  #browse .toolbar.xc-open .xc-fpanel {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 64;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    max-height: 86vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0 var(--s-4) calc(var(--s-3) + env(safe-area-inset-bottom, 0px));
+    border-radius: 22px 22px 0 0;
+    background: var(--surface);
+    box-shadow: 0 -12px 40px rgba(8, 34, 32, .22);
+    animation: xc-sheet .22s cubic-bezier(.2, .8, .25, 1) both;
+  }
+  #browse #xcFilterPanel .toolbar__search { display: block; }
+  #browse #xcFilterPanel .toolbar__filters { flex-direction: column; flex-wrap: nowrap; overflow: visible; gap: .5rem; }
+  #browse #xcFilterPanel .popover > summary { width: 100%; justify-content: space-between; }
+  #browse #xcFilterPanel .toolbar__near .btn { width: 100%; justify-content: center; }
+  .xc-fhead { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; margin: 0 calc(var(--s-4) * -1); padding: .75rem var(--s-4); background: var(--surface); border-bottom: 1px solid var(--line); }
+  .xc-fhead b { font-size: 1.1rem; color: var(--deep); }
+  .xc-ffoot { position: sticky; bottom: 0; display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin: 0 calc(var(--s-4) * -1); padding: .75rem var(--s-4); background: var(--surface); border-top: 1px solid var(--line); }
+  .xc-ffoot .btn { min-height: 48px; }
+  .xc-fveil { position: fixed; inset: 0; z-index: 63; background: rgba(8, 34, 32, .45); }
+  .xc-has-ribbon .xc-browse .viewswitch { display: none; }
+}
+
+/* --- Featured: one card, full width, unmistakably paid --------------------- */
+#browse .xc-feat {
+  margin-top: var(--s-4);
+  padding: var(--s-4);
+  border: 1px solid var(--gold-soft);
+  border-radius: var(--radius-card);
+  background: linear-gradient(180deg, rgba(242, 228, 198, .32), rgba(242, 228, 198, .06));
+}
+.xc-feat__head { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem 1rem; margin-bottom: var(--s-3); }
+.xc-feat__label { margin: 0; font-size: 1rem; }
+.xc-feat__note { margin: 0; font-size: var(--fs-sm); color: var(--text-soft); }
+.xc-feat__how { margin-left: auto; font-size: var(--fs-sm); font-weight: 600; color: var(--deep); }
+#browse .xc-feat .featcat__grid { display: block; margin: 0; }
+#browse .xc-feat .listing { grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); gap: var(--s-5); padding: 0; background: transparent; border: 0; box-shadow: none; }
+#browse .xc-feat .listing__media { border-radius: var(--radius-control); overflow: hidden; aspect-ratio: 16 / 10; align-self: start; }
+#browse .xc-feat .listing__media img { width: 100%; height: 100%; aspect-ratio: 16 / 10; min-height: 0; object-fit: cover; }
+#browse .xc-feat .listing__body { padding: 0; }
+#browse .xc-feat .listing__flag { display: none; } /* the band says Featured */
+
+/* --- Listing cards: editorial rows ------------------------------------------ */
+#browse #dirResults { gap: 0; border-top: 1px solid var(--line-strong); }
+#browse #dirResults .listing {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: var(--s-5);
+  padding-block: var(--s-5);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  transition: border-color .2s ease;
+}
+@media (min-width: 68rem) { #browse #dirResults { column-gap: var(--s-6); align-items: stretch; } }
+#browse #dirResults .listing:hover { box-shadow: none; transform: none; border-bottom-color: var(--ink); }
+#browse #dirResults .listing__media { position: relative; overflow: hidden; align-self: start; aspect-ratio: 4 / 3; border-radius: var(--radius-control); background: var(--sand); }
+#browse #dirResults .listing__media img { width: 100%; height: 100%; aspect-ratio: 4 / 3; min-height: 0; object-fit: cover; transition: transform .5s var(--ease, ease); }
+#browse .listing:hover .listing__media img,
+#browse .listing:focus-within .listing__media img { transform: scale(1.02); }
+#browse .listing .btn__dot { transition: transform .2s ease; }
+#browse .listing:hover .btn--dark .btn__dot,
+#browse .listing .btn--dark:focus-visible .btn__dot { transform: translateX(4px); }
+#browse #dirResults .listing__body { padding: 0; }
+#browse #dirResults .listing__name { font-size: clamp(1.2rem, 1.6vw, 1.45rem); font-weight: 800; color: var(--deep); }
+#browse #dirResults .listing__foot { border-top: 0; padding-top: 0; }
+#browse .listing__desc { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+#browse .listing__tags > :nth-child(n+3) { display: none; }
+#browse .cmpbtn { min-height: 40px; background: transparent; border-color: transparent; color: var(--text-soft); font-weight: 600; }
+#browse .cmpbtn[aria-pressed="true"] { background: var(--sand-2); border-color: var(--deep); color: var(--deep); }
+#browse .cmpbtn:focus-visible,
+#browse .listing__name a:focus-visible,
+#browse .listing .btn:focus-visible,
+#browse .qact:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+
+/* Wider screens: the picture runs the full height of its card, top to
+   bottom, however much text sits beside it. The image fills the frame
+   absolutely, so it never adds height of its own; min-height keeps a short
+   card from squashing it into a strip. Phones keep their 16:10 picture on
+   top (below). */
+@media (min-width: 44rem) {
+  #browse #dirResults .listing__media,
+  #browse .xc-feat .listing__media {
+    align-self: stretch;
+    aspect-ratio: auto;
+    min-height: 13rem;
+  }
+  #browse #dirResults .listing__media img,
+  #browse .xc-feat .listing__media img {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+  #browse .xc-feat .listing__media { position: relative; }
+}
+
+/* Why this card is here, when a feeling or experience is chosen. It takes
+   the tag row's place rather than adding to it. */
+.xc-match { margin: .15rem 0 .35rem; font-size: var(--fs-sm); line-height: 1.45; color: var(--moss); }
+.xc-match b { color: var(--deep); }
+#browse .listing.xc-has-match .listing__tags { display: none; }
+
+@media (max-width: 43.99rem) {
+  /* One card per row, the picture on top at 16:10 (brief 12). */
+  #browse #dirResults .listing { grid-template-columns: minmax(0, 1fr); gap: var(--s-3); }
+  /* The one paid card stays compact on a phone, so it never outweighs the
+     listings that follow it. */
+  #browse .xc-feat .listing { grid-template-columns: 96px minmax(0, 1fr); gap: var(--s-3); }
+  #browse .xc-feat .listing__media,
+  #browse .xc-feat .listing__media img { aspect-ratio: 1; }
+  .xc-feat__how { margin-left: 0; }
+  #browse #dirResults .listing__media,
+  #browse #dirResults .listing__media img { aspect-ratio: 16 / 10; }
+  #browse #dirResults .qact--pin { display: none; }
+  #browse .listing__desc { -webkit-line-clamp: 2; }
+  /* Narrow phones: name/rating and price/actions wrap rather than spill. */
+  #browse .listing__head, #browse .listing__foot, #browse .listing__acts { flex-wrap: wrap; }
+  #browse .listing__foot { gap: .5rem; }
+}
+
+/* --- Map: a side panel on a wide screen, the list still beside it ---------
+   app.js's own map, re-hosted by CSS: the parent hides the list in map mode
+   (display:none !important); these rules, more specific, keep it. */
+@media (min-width: 64rem) {
+  #browse.is-map .xc-results { display: grid; grid-template-columns: minmax(0, 58fr) minmax(0, 42fr); column-gap: var(--s-5); align-items: start; }
+  html body #browse.is-map #dirResults { display: grid !important; grid-template-columns: minmax(0, 1fr); grid-column: 1; }
+  html body #browse.is-map .xc-results > .pager { display: flex !important; grid-column: 1; }
+  html body #browse.is-map .results__head { display: block !important; }
+  #browse.is-map #catMapView { grid-column: 2; grid-row: 1 / span 3; position: sticky; top: calc(var(--xc-head-h, 0px) + var(--xc-ribbon-h, 60px) + 12px); margin-top: 0; }
+  #browse.is-map .catmap--view { height: calc(100vh - var(--xc-head-h, 0px) - var(--xc-ribbon-h, 60px) - 36px); min-height: 420px; }
+  #browse.is-map #catMapView .nearyou { display: none; }
+  #browse.is-map .xc-note, #browse.is-map .xc-local { display: none; }
+}
+
+/* --- Editorial moments inside the results ---------------------------------- */
+.xc-note, .xc-local { margin: var(--s-5) 0; border-radius: var(--radius-card); }
+.xc-note.is-inline, .xc-local.is-inline { grid-column: 1 / -1; }
+.xc-note { padding: var(--s-5); background: color-mix(in srgb, var(--moss) 12%, var(--paper)); }
+.xc-note__eyebrow { margin: 0 0 .35rem; color: var(--moss); }
+.xc-note__title { margin: 0 0 .35rem; font-size: 1.35rem; color: var(--deep); }
+.xc-note__copy { margin: 0 0 var(--s-3); max-width: 60ch; color: var(--text-soft); }
+.xc-note__acts { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.25rem; margin: 0; }
+.xc-note__acts .btn { min-height: 44px; }
+.xc-note__link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; color: var(--deep); }
+.xc-local { padding: var(--s-4) var(--s-5); background: var(--sand-2); }
+.xc-local__title { margin: 0 0 .25rem; font-size: var(--fs-micro); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
+.xc-local__copy { margin: 0; line-height: 1.6; }
+.xc-local__copy a { font-weight: 600; color: var(--deep); }
+#browse .xc-about { margin-top: var(--s-5); max-width: 62ch; }
+
+/* --- 4. Best Of shelf ------------------------------------------------------- */
+.xc-bo { margin-block: var(--s-7) 0; }
+.xc-bo__head { display: grid; gap: .2rem; margin-bottom: var(--s-4); }
+.xc-bo__eyebrow { margin: 0; color: var(--gold); }
+.xc-bo__title { margin: 0; color: var(--deep); }
+.xc-bo__note { margin: 0; font-size: var(--fs-xs); color: var(--text-soft); }
+.xc-bo__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); margin: 0; padding: 0; list-style: none; }
+@media (min-width: 44rem) { .xc-bo__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.xc-bocard { display: grid; align-content: start; gap: var(--s-2); height: 100%; color: var(--ink); text-decoration: none; }
+.xc-bocard__pic { display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--radius-control); background: var(--sand); }
+.xc-bocard__pic img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .5s var(--ease, ease); }
+.xc-bocard:hover .xc-bocard__pic img { transform: scale(1.02); }
+.xc-bocard__body { display: grid; gap: .25rem; }
+.xc-bocard__title { color: var(--deep); font-size: 1.05rem; line-height: 1.3; }
+.xc-bocard:hover .xc-bocard__title { text-decoration: underline; text-underline-offset: 3px; }
+.xc-bocard:focus-visible { outline: 2px solid var(--deep); outline-offset: 3px; border-radius: var(--radius-control); }
+.xc-bocard__why { font-size: var(--fs-sm); line-height: 1.5; color: var(--text-soft); }
+.xc-bocard__n { font-size: var(--fs-xs); font-weight: 600; color: var(--moss); }
+
+/* --- 5. One upcoming experience, ticket style ------------------------------ */
+.xc-event { margin-block: var(--s-7) 0; }
+.xc-event__eyebrow { margin: 0 0 .25rem; color: var(--moss); }
+.xc-event__heading { margin: 0 0 var(--s-4); }
+.xc-ticket {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--sand-2);
+  color: var(--ink);
+  text-decoration: none;
+}
+.xc-ticket__pic { display: block; aspect-ratio: 16 / 9; background: var(--sand); }
+.xc-ticket__pic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.xc-ticket__body { display: grid; gap: .25rem; padding: var(--s-4) var(--s-5); }
+.xc-ticket__time { font-size: var(--fs-sm); font-weight: 700; color: var(--moss); }
+.xc-ticket__title { font-size: 1.15rem; line-height: 1.3; color: var(--deep); }
+.xc-ticket__meta { font-size: var(--fs-sm); color: var(--text-soft); }
+.xc-ticket__stub { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-3) var(--s-5); border-top: 2px dashed var(--line-strong); font-weight: 700; color: var(--deep); }
+.xc-ticket:hover .xc-ticket__title { text-decoration: underline; text-underline-offset: 3px; }
+.xc-ticket:focus-visible { outline: 2px solid var(--deep); outline-offset: 3px; }
+@media (min-width: 50rem) {
+  .xc-ticket { grid-template-columns: 16rem minmax(0, 1fr) auto; align-items: stretch; }
+  .xc-ticket__pic { aspect-ratio: auto; min-height: 9rem; }
+  .xc-ticket__body { align-content: center; }
+  .xc-ticket__stub { flex-direction: column; justify-content: center; border-top: 0; border-left: 2px dashed var(--line-strong); padding-inline: var(--s-6); }
+}
+.xc-event__more { margin: var(--s-3) 0 0; font-weight: 600; }
+
+/* --- Supporting content ----------------------------------------------------- */
+.xc-guide .floor__label { margin: 0 0 var(--s-3); }
+.xc-mesh__title { margin: 0 0 var(--s-3); }
+.xc-mesh__chips + .xc-mesh__title { margin-top: var(--s-6); }
+
+@media (prefers-reduced-motion: reduce) {
+  .xc-hz__img, .xc-hz__copy > *, .xc-pop:not([hidden]), #browse .toolbar.xc-open .xc-fpanel { animation: none; }
+  .xc-ribbon, .xc-ribbon.is-on { transition: none; transform: none; }
+  #browse .listing:hover .listing__media img,
+  #browse .listing:focus-within .listing__media img,
+  .xc-bocard:hover .xc-bocard__pic img { transform: none; }
+  #browse .listing:hover .btn--dark .btn__dot { transform: none; }
+}
+
+/* --- The Explore hub (oria-v4/oria-directory-v2.php) --------------------------
+   The same components; only what a whole-city page needs differently. */
+.xc-hub .xc-hz__title b { font-weight: inherit; color: var(--brand-gold); font-variant-numeric: tabular-nums; }
+.xc-hub .xc-hz__line--long { max-width: 52ch; font-size: clamp(1rem, 1.3vw, 1.15rem); line-height: 1.5; }
+@media (max-width: 59.99rem) { .xc-hub .xc-hz__title b { color: var(--moss); } }
+/* The featured card's twin in the list, while the card shows (v4-category.js). */
+#dirResults > .listing.xc-twin { display: none !important; }
+/* The hub's list grows by "Show more listings"; it stays beside the map. */
+@media (min-width: 64rem) {
+  html body #browse.is-map .xc-results > #dirMore { display: block !important; grid-column: 1; }
+}
+.xc-trendline { margin-block: var(--s-6) 0; }
+.xc-trendline .cmpnudge { margin: 0; }

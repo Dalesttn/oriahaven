@@ -1,0 +1,203 @@
+{
+  "_about": "The editorial layer of the area pages (oria-v4/taxonomy-area.php, inc/area-guide.php). Everything counted -- places, practices, hours, prices, nearby suburbs -- comes from the live listings and is NOT stored here. What is here is hand-written: a place's own photograph, its one-line character, the local-rhythm introduction, getting around, and the public places the reset plans can use. Keyed by area term slug. Every claim must be checked before 'reviewed' is set; a data refresh never touches this file. An area with no entry still gets the full page, with its region's or city's photograph and data-only copy. Images: 'place_verified' is true only where the photo's own source title names that place; the others are fitting scenes, not claimed as the place, and their alt text says only what is in the picture.",
+  "groups": [
+    {
+      "name": "Feel calmer",
+      "line": "Quiet rooms, breath and stillness",
+      "cats": [
+        "mind",
+        "energy"
+      ]
+    },
+    {
+      "name": "Care for the body",
+      "line": "Hands-on treatments, heat, cold and health care",
+      "cats": [
+        "bodywork",
+        "spa",
+        "natural",
+        "allied",
+        "beauty",
+        "longevity",
+        "nutrition"
+      ]
+    },
+    {
+      "name": "Move and connect",
+      "line": "Classes, circles and making things together",
+      "cats": [
+        "yoga",
+        "fitness",
+        "community",
+        "creative",
+        "family",
+        "seniors",
+        "experiences"
+      ]
+    }
+  ],
+  "areas": {
+    "fremantle": {
+      "image": {
+        "wide": "area/fremantle-1920.webp",
+        "mid": "area/fremantle-960.webp",
+        "pos": "50% 45%",
+        "alt": "Early light down High Street, Fremantle, between limestone heritage buildings towards the Round House",
+        "credit": "Photo: Rachel Claire / Pexels"
+      },
+      "tagline": "Limestone streets, sea air and one of Perth's strongest pockets for breathwork.",
+      "rhythm_intro": "Fremantle's wellness rooms sit in the same few streets as everything else here: back from the water, above shops, in converted heritage buildings. Breathwork, remedial massage and art therapy are all a short walk apart, which makes it an easy place to put two things into one visit.",
+      "anchor": {
+        "name": "Fremantle Station",
+        "lat": -32.0549,
+        "lng": 115.7431
+      },
+      "getting_around": [
+        "Fremantle Station is the last stop on the Fremantle train line from Perth.",
+        "Parking in central Fremantle is run by the City of Fremantle — check the signs and rates before a long appointment."
+      ],
+      "links": [
+        {
+          "label": "Transperth journey planner",
+          "url": "https://www.transperth.wa.gov.au/"
+        },
+        {
+          "label": "City of Fremantle",
+          "url": "https://www.fremantle.wa.gov.au/"
+        }
+      ],
+      "walks": [
+        {
+          "label": "Walk down to Bathers Beach",
+          "line": "The small beach below the Round House, a few minutes from the West End."
+        },
+        {
+          "label": "Sit a while on the Esplanade Reserve",
+          "line": "The big lawn under the Norfolk pines, between the town and the fishing boat harbour."
+        }
+      ],
+      "reviewed": "",
+      "editor": "Oria Haven"
+    },
+    "freo": {
+      "image": {
+        "wide": "area/freo-1920.webp",
+        "mid": "area/freo-960.webp",
+        "pos": "40% 50%",
+        "alt": "Restaurants and the Ferris wheel on the Fremantle waterfront",
+        "credit": "Photo: Afifi Zakaria / Pexels",
+        "place_verified": true
+      }
+    },
+    "perth-cbd": {
+      "image": {
+        "wide": "area/perth-cbd-1920.webp",
+        "mid": "area/perth-cbd-960.webp",
+        "pos": "55% 50%",
+        "alt": "Perth CBD towers above Elizabeth Quay",
+        "credit": "Photo: Horace Young / Pexels",
+        "place_verified": true
+      }
+    },
+    "central": {
+      "image": {
+        "wide": "area/central-1920.webp",
+        "mid": "area/central-960.webp",
+        "pos": "60% 50%",
+        "alt": "Perth's city towers seen from Kings Park",
+        "credit": "Photo: Tibor Janas / Pexels",
+        "place_verified": true
+      }
+    },
+    "west-perth": {
+      "image": {
+        "wide": "area/west-perth-1920.webp",
+        "mid": "area/west-perth-960.webp",
+        "pos": "60% 50%",
+        "alt": "A path through Kings Park, beside West Perth",
+        "credit": "Photo: Dieter Wolff / Pexels",
+        "place_verified": true
+      }
+    },
+    "west": {
+      "image": {
+        "wide": "area/west-1920.webp",
+        "mid": "area/west-960.webp",
+        "pos": "72% 50%",
+        "alt": "The Indiana Tea House above Cottesloe Beach",
+        "credit": "Photo: Rachel Claire / Pexels",
+        "place_verified": true
+      }
+    },
+    "peel": {
+      "image": {
+        "wide": "area/peel-1920.webp",
+        "mid": "area/peel-960.webp",
+        "pos": "60% 50%",
+        "alt": "The Mandurah Traffic Bridge at dusk",
+        "credit": "Photo: Zane Holmes / Pexels",
+        "place_verified": true
+      }
+    },
+    "margaret-river-south": {
+      "image": {
+        "wide": "area/margaret-river-south-1920.webp",
+        "mid": "area/margaret-river-south-960.webp",
+        "pos": "50% 50%",
+        "alt": "Storm light over Redgate Beach, south of Margaret River",
+        "credit": "Photo: Ajay Lamichhane / Pexels",
+        "place_verified": true
+      }
+    },
+    "north": {
+      "image": {
+        "wide": "area/north-1920.webp",
+        "mid": "area/north-960.webp",
+        "pos": "60% 50%",
+        "alt": "Swimmers in the surf off a Perth beach",
+        "credit": "Photo: James Wong / Pexels",
+        "place_verified": false
+      }
+    },
+    "hills": {
+      "image": {
+        "wide": "area/hills-1920.webp",
+        "mid": "area/hills-960.webp",
+        "pos": "60% 50%",
+        "alt": "A road winding through eucalyptus bushland",
+        "credit": "Photo: Line Knipst / Pexels",
+        "place_verified": false
+      }
+    },
+    "swan": {
+      "image": {
+        "wide": "area/swan-1920.webp",
+        "mid": "area/swan-960.webp",
+        "pos": "45% 50%",
+        "alt": "A pair of black swans on a grassy riverbank",
+        "credit": "Photo: Ajay Lamichhane / Pexels",
+        "place_verified": false
+      }
+    },
+    "southeast": {
+      "image": {
+        "wide": "area/southeast-1920.webp",
+        "mid": "area/southeast-960.webp",
+        "pos": "50% 50%",
+        "alt": "Rock pools in weathered stone beneath bushland",
+        "credit": "Photo: Rachel Claire / Pexels",
+        "place_verified": false
+      }
+    },
+    "margaret-river-town": {
+      "image": {
+        "wide": "area/margaret-river-town-1920.webp",
+        "mid": "area/margaret-river-town-960.webp",
+        "pos": "60% 50%",
+        "alt": "Granite rocks on the coast at Margaret River",
+        "credit": "Photo: Michelle Chadwick / Pexels",
+        "place_verified": true
+      }
+    }
+  }
+}

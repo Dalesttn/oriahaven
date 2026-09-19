@@ -1,0 +1,65 @@
+/* ==========================================================================
+   Oria Haven v4 -- shared tokens and overrides (design test).
+
+   Loads after the parent's tokens/base/components/pages. Colours and fonts
+   are the parent's own (reverted from the "Sunset" palette on 19 Sep
+   2026): petrol teal, sage mist and paper, Manrope with Newsreader italic
+   for accents. What stays here is only what the v4 layouts add: a radius
+   hierarchy, the section rhythm and the folding footer. The header is
+   the parent's own.
+   ========================================================================== */
+
+:root {
+  /* Aliases the v4 layouts use, pointed at the parent's own palette. */
+  --accent:      var(--ink);    /* primary actions: the parent's dark button */
+  --accent-text: var(--moss);   /* small labels on paper (5.5:1) */
+
+  /* Radius hierarchy: sections, features, cards, controls, pills. */
+  --radius-section: 40px;
+  --radius-feature: 30px;
+  --radius-card:    22px;
+  --radius-control: 16px;
+  --radius-pill:    999px;
+
+  /* Section rhythm. */
+  --section-gap: clamp(4rem, 9vw, 9.5rem);
+
+}
+@media (max-width: 40rem) {
+  :root { --radius-section: 26px; --radius-feature: 22px; }
+}
+
+/* --- Footer: six groups, columns that fold on phones ------------------ */
+.foot__group > summary { list-style: none; }
+.foot__group > summary::-webkit-details-marker { display: none; }
+.foot__group > summary h4 { margin-bottom: var(--s-4); }
+.foot__all { font-weight: 700; }
+@media (min-width: 48.01rem) {
+  .foot__group > summary { pointer-events: none; }
+}
+@media (max-width: 48rem) {
+  .foot__group { border-top: 1px solid var(--teal-line); }
+  .foot__group > summary { display: flex; justify-content: space-between; align-items: center; min-height: 48px; cursor: pointer; }
+  .foot__group > summary h4 { margin: 0; }
+  .foot__group > summary::after { content: "+"; color: var(--mist); font-size: 1.25rem; }
+  .foot__group[open] > summary::after { content: "\2212"; }
+  .foot__group .foot__list { padding-bottom: var(--s-4); }
+}
+
+/* --- Oria's picks: the brush-stroke Oria mark instead of the ✦ ---------- */
+/* One rule for every pick marker -- server-rendered badges, the Oria's
+   picks chip, and the cards app.js draws -- since they all share
+   .badge--best__mark. The glyph stays in the markup (hidden, aria-hidden)
+   and the painted mark is drawn in the brand gold through a mask. */
+.badge--best__mark {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  flex: none;
+  vertical-align: -0.22em;
+  overflow: hidden;
+  color: transparent !important;
+  background-color: var(--brand-gold);
+  -webkit-mask: url(../../../oria/assets/img/logo-mark.svg) center / contain no-repeat;
+          mask: url(../../../oria/assets/img/logo-mark.svg) center / contain no-repeat;
+}

@@ -1,0 +1,188 @@
+<?php
+/**
+ * Site footer — the deep-teal slab from the prototype, with the SEO link
+ * cloud generated from real suburb terms instead of hardcoded anchors.
+ *
+ * v4 (design review, 19 Sep 2026): six practice groups and "View all
+ * practices" instead of every category, so the footer reads as a guide
+ * rather than a link dump; each column is a <details> that folds up on
+ * phones (v4-nav.js) and stays open everywhere else.
+ */
+
+declare(strict_types=1);
+
+// The six biggest top-level practice groups; the rest are one click away.
+$oria_practices = get_terms(
+	array(
+		'taxonomy'   => 'practice',
+		'parent'     => 0,
+		'hide_empty' => true,
+		'orderby'    => 'count',
+		'order'      => 'DESC',
+		'number'     => 6,
+	)
+);
+$oria_suburbs   = function_exists( '\Oria\Core\AreaDepth\popular' )
+	? \Oria\Core\AreaDepth\popular( 12 )
+	: ( function_exists( '\Oria\Core\Taxonomies\suburbs' ) ? \Oria\Core\Taxonomies\suburbs() : array() );
+?>
+</main>
+
+<footer class="foot">
+	<div class="wrap foot__inner">
+		<div class="foot__grid">
+			<div>
+				<a class="brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+					<?php echo \Oria\Theme\mark( 'small', 24 ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+					<b>Oria</b><i>&thinsp;Haven</i>
+				</a>
+				<p style="margin-top:1rem;font-size:.9375rem;max-width:30ch"><?php echo esc_html( \Oria\Theme\opt( 'footer_tagline', "Oria Haven — Discover wellness that fits you." ) ); ?></p>
+
+				<?php
+				/*
+				 * Name, address and contact, in the same words as the
+				 * Organization schema — they are drawn from one constant so
+				 * they cannot drift, which is the entire point of a NAP.
+				 * A service-area business, so the locality is the metro and
+				 * there is no street line.
+				 */
+				$oria_nap = \Oria\Core\Schema\NAP;
+				?>
+				<address class="foot__nap">
+					<span><?php echo esc_html( $oria_nap['locality'] . ', ' . $oria_nap['region'] ); ?></span>
+					<?php if ( $oria_nap['founded'] ) : ?>
+						<?php // Says how long we have been at it, in the same breath as who we are. ?>
+						<span><?php printf( /* translators: %s: year */ esc_html__( 'Independent and hand-checked since %s', 'oria' ), esc_html( $oria_nap['founded'] ) ); ?></span>
+					<?php endif; ?>
+					<?php if ( $oria_nap['phone'] ) : ?>
+						<?php // Reads as a human wrote it, dials as E.164. ?>
+						<a href="tel:<?php echo esc_attr( $oria_nap['phone_e164'] ); ?>"><?php echo esc_html( $oria_nap['phone'] ); ?></a>
+					<?php endif; ?>
+					<a href="mailto:<?php echo esc_attr( $oria_nap['email'] ); ?>"><?php echo esc_html( $oria_nap['email'] ); ?></a>
+					<?php if ( $oria_nap['abn'] ) : ?>
+						<span><?php printf( /* translators: %s: ABN */ esc_html__( 'ABN %s', 'oria' ), esc_html( $oria_nap['abn'] ) ); ?></span>
+					<?php endif; ?>
+				</address>
+
+				<?php
+				// The same list that feeds sameAs in the Organization schema,
+				// so a new profile is added once and appears in both.
+				$oria_profiles = \Oria\Core\Schema\profiles();
+				?>
+				<?php if ( $oria_profiles ) : ?>
+					<div class="foot__social">
+						<?php foreach ( $oria_profiles as $oria_profile ) : ?>
+							<?php $oria_meta = \Oria\Theme\social_link( $oria_profile ); ?>
+							<?php if ( $oria_meta ) : ?>
+								<a href="<?php echo esc_url( $oria_profile ); ?>" rel="me noopener" target="_blank" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: network name */ __( 'Oria Haven on %s', 'oria' ), $oria_meta['label'] ) ); ?>">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><?php echo $oria_meta['icon']; // phpcs:ignore WordPress.Security.EscapeOutput ?></svg>
+								</a>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
+			</div>
+
+			<details class="foot__group" open>
+				<summary><h4><?php esc_html_e( 'Practices', 'oria' ); ?></h4></summary>
+				<ul class="foot__list">
+					<?php if ( ! is_wp_error( $oria_practices ) ) : ?>
+						<?php foreach ( $oria_practices as $oria_term ) : ?>
+							<li><a href="<?php echo esc_url( function_exists( '\Oria\Core\PracticesIndex\category_url' ) ? \Oria\Core\PracticesIndex\category_url( $oria_term ) : (string) get_term_link( $oria_term ) ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_term ) ); ?></a></li>
+						<?php endforeach; ?>
+					<?php endif; ?>
+					<li><a class="foot__all" href="<?php echo esc_url( function_exists( '\Oria\Core\PracticesIndex\url' ) ? \Oria\Core\PracticesIndex\url() : home_url( '/practices/' ) ); ?>"><?php esc_html_e( 'View all practices', 'oria' ); ?> &rarr;</a></li>
+				</ul>
+			</details>
+
+			<details class="foot__group" open>
+				<summary><h4><?php esc_html_e( 'Explore', 'oria' ); ?></h4></summary>
+				<ul class="foot__list">
+					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Explore', 'oria' ); ?></a></li>
+					<?php
+					/*
+					 * Sitewide, so every practice, modality and suburb page sits two
+					 * clicks from anywhere on the site.
+					 *
+					 * Points straight at /explore/{city}/ rather than /{city}/, which
+					 * only 301s there -- a redirect on a link this many pages carry.
+					 * And it follows the city rather than naming Perth, so a southern
+					 * page offers the south rather than sending the reader north.
+					 */
+					$oria_footcity = function_exists( '\Oria\Core\Cities\current' ) ? \Oria\Core\Cities\current() : null;
+					$oria_footurl  = function_exists( '\Oria\Core\Explore\base_url' )
+						? \Oria\Core\Explore\base_url( $oria_footcity )
+						: home_url( '/explore/perth/' );
+					$oria_footname = function_exists( '\Oria\Core\Cities\name' ) ? \Oria\Core\Cities\name( $oria_footcity ) : __( 'Perth', 'oria' );
+					?>
+					<li><a href="<?php echo esc_url( $oria_footurl ); ?>"><?php
+						/* translators: %s: the city, e.g. Perth. */
+						printf( esc_html__( 'Browse all of %s', 'oria' ), esc_html( $oria_footname ) );
+					?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/wellness-finder/' ) ); ?>"><?php esc_html_e( 'Wellness Finder', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/compare/' ) ); ?>"><?php esc_html_e( 'Compare experiences', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ); ?>"><?php esc_html_e( 'Best Of guides', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ); ?>"><?php esc_html_e( 'Workshops/Events', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/this-weekend/' ) ); ?>"><?php esc_html_e( 'This weekend', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/journal/' ) ); ?>"><?php esc_html_e( 'The Journal', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>"><?php esc_html_e( 'Shop wellness products', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'About us', 'oria' ); ?></a></li>
+				</ul>
+			</details>
+
+			<details class="foot__group" open>
+				<summary><h4><?php esc_html_e( 'Practitioners', 'oria' ); ?></h4></summary>
+				<ul class="foot__list">
+					<li><a href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>"><?php esc_html_e( 'List your practice', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your listing', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/claim/#pricing' ) ); ?>"><?php esc_html_e( 'Featured listings', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/about/#contact' ) ); ?>"><?php esc_html_e( 'Remove a listing', 'oria' ); ?></a></li>
+				</ul>
+			</details>
+		</div>
+
+		<?php if ( $oria_suburbs ) : ?>
+		<div style="margin-top:3rem">
+			<h4><?php esc_html_e( 'Popular suburbs', 'oria' ); ?></h4>
+			<div class="linkcloud">
+				<?php foreach ( $oria_suburbs as $oria_suburb ) : ?>
+					<a href="<?php echo esc_url( (string) get_term_link( $oria_suburb ) ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_suburb ) ); ?></a>
+				<?php endforeach; ?>
+			</div>
+		</div>
+		<?php endif; ?>
+
+		<div class="foot__bottom">
+			<span>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> Oria Haven. Perth, Western Australia. <?php echo esc_html( \Oria\Theme\opt( 'acknowledgement', 'We acknowledge the Whadjuk Noongar people as the traditional custodians of the land this site is made on.' ) ); ?></span>
+			<?php
+			/*
+			 * Legal links appear once the pages exist, so the footer can
+			 * never advertise a 404 — the drafts are in /legal/ waiting to
+			 * be pasted in, and these light up by themselves when they are.
+			 */
+			$oria_legal = array(
+				'privacy-policy' => __( 'Privacy', 'oria' ),
+				'terms'          => __( 'Terms', 'oria' ),
+			);
+			$oria_links = array();
+			foreach ( $oria_legal as $oria_slug => $oria_label ) {
+				$oria_page = get_page_by_path( $oria_slug );
+				if ( $oria_page instanceof WP_Post && 'publish' === $oria_page->post_status ) {
+					$oria_links[] = '<a href="' . esc_url( (string) get_permalink( $oria_page ) ) . '">' . esc_html( $oria_label ) . '</a>';
+				}
+			}
+			?>
+			<?php if ( $oria_links ) : ?>
+				<span class="foot__legal"><?php echo implode( ' · ', $oria_links ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+			<?php endif; ?>
+		</div>
+		<p class="foot__credit">
+			<?php esc_html_e( 'Website powered by', 'oria' ); ?>
+			<a href="https://oriadigital.com.au/" rel="noopener" target="_blank">oriadigital.com.au</a>
+		</p>
+	</div>
+</footer>
+
+<?php wp_footer(); ?>
+</body>
+</html>
