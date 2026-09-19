@@ -711,10 +711,102 @@ while ( have_posts() ) :
 										) );
 										?>
 									</p>
+									<?php
+									/*
+									 * The strand: the same scores as the bars below, drawn as one
+									 * smooth line -- a point per bar, spaced evenly, higher for a
+									 * higher score -- in each bar's own colour. The faint twin
+									 * mirrored about the middle and the rungs between them are
+									 * decoration that makes it read as a helix; they carry no
+									 * data. Hidden from assistive tech: the bars say it all.
+									 */
+									$oria_hx_col = array(
+										'physical' => '#B4561F',
+										'quiet'    => '#3E6E8E',
+										'social'   => '#C9A24B',
+										'handson'  => '#4F7A64',
+										'afford'   => '#8A5A83',
+										'beginner' => '#2E8B84',
+									);
+									$oria_hx_short = array(
+										'physical' => __( 'Effort', 'oria' ),
+										'quiet'    => __( 'Quiet', 'oria' ),
+										'social'   => __( 'Social', 'oria' ),
+										'handson'  => __( 'Hands-on', 'oria' ),
+										'afford'   => __( 'Price', 'oria' ),
+										'beginner' => __( 'Beginners', 'oria' ),
+									);
+									$oria_hx_n = count( $oria_dna );
+									if ( $oria_hx_n >= 3 ) :
+										$oria_hx_w   = 600;
+										$oria_hx_h   = 150;
+										$oria_hx_top = 22;
+										$oria_hx_bot = $oria_hx_h - 22;
+										$oria_hx_pts = array();
+										$oria_hx_twin = array();
+										foreach ( $oria_dna as $oria_hi => $oria_hb ) {
+											$oria_hs = max( 1, min( 5, (int) $oria_hb['score'] ) );
+											$oria_hy = $oria_hx_top + ( 5 - $oria_hs ) / 4 * ( $oria_hx_bot - $oria_hx_top );
+											$oria_hx = ( $oria_hi + 0.5 ) / $oria_hx_n * $oria_hx_w;
+											$oria_hx_pts[]  = array( 'x' => $oria_hx, 'y' => $oria_hy, 'c' => $oria_hx_col[ $oria_hb['key'] ] ?? '#4F7A64', 'key' => (string) $oria_hb['key'] );
+											$oria_hx_twin[] = array( 'x' => $oria_hx, 'y' => $oria_hx_h - $oria_hy );
+										}
+										// A smooth path (Catmull-Rom as cubic Béziers), running in flat
+										// from the left edge and out to the right like a strand.
+										$oria_hx_path = static function ( array $pts, int $w ): string {
+											$all = array_merge( array( array( 'x' => 0, 'y' => $pts[0]['y'] ) ), $pts, array( array( 'x' => $w, 'y' => $pts[ count( $pts ) - 1 ]['y'] ) ) );
+											$d   = sprintf( 'M%.1f %.1f', $all[0]['x'], $all[0]['y'] );
+											$n   = count( $all );
+											for ( $i = 0; $i < $n - 1; $i++ ) {
+												$p0 = $all[ max( 0, $i - 1 ) ];
+												$p1 = $all[ $i ];
+												$p2 = $all[ $i + 1 ];
+												$p3 = $all[ min( $n - 1, $i + 2 ) ];
+												$d .= sprintf(
+													' C%.1f %.1f %.1f %.1f %.1f %.1f',
+													$p1['x'] + ( $p2['x'] - $p0['x'] ) / 6,
+													$p1['y'] + ( $p2['y'] - $p0['y'] ) / 6,
+													$p2['x'] - ( $p3['x'] - $p1['x'] ) / 6,
+													$p2['y'] - ( $p3['y'] - $p1['y'] ) / 6,
+													$p2['x'],
+													$p2['y']
+												);
+											}
+											return $d;
+										};
+										$oria_hx_gid = 'xpHx' . (int) $oria_id;
+										?>
+										<figure class="xp-helix" data-xp-helix aria-hidden="true">
+											<svg class="xp-helix__svg" viewBox="0 0 <?php echo (int) $oria_hx_w; ?> <?php echo (int) $oria_hx_h; ?>" preserveAspectRatio="none" focusable="false">
+												<defs>
+													<linearGradient id="<?php echo esc_attr( $oria_hx_gid ); ?>" x1="0" y1="0" x2="<?php echo (int) $oria_hx_w; ?>" y2="0" gradientUnits="userSpaceOnUse">
+														<?php foreach ( $oria_hx_pts as $oria_p ) : ?>
+															<stop offset="<?php echo esc_attr( (string) round( $oria_p['x'] / $oria_hx_w, 4 ) ); ?>" stop-color="<?php echo esc_attr( $oria_p['c'] ); ?>"/>
+														<?php endforeach; ?>
+													</linearGradient>
+												</defs>
+												<line class="xp-helix__mid" x1="0" y1="<?php echo (int) ( $oria_hx_h / 2 ); ?>" x2="<?php echo (int) $oria_hx_w; ?>" y2="<?php echo (int) ( $oria_hx_h / 2 ); ?>"/>
+												<?php foreach ( $oria_hx_pts as $oria_hi => $oria_p ) : ?>
+													<line class="xp-helix__rung" x1="<?php echo esc_attr( (string) round( $oria_p['x'], 1 ) ); ?>" y1="<?php echo esc_attr( (string) round( $oria_p['y'], 1 ) ); ?>" x2="<?php echo esc_attr( (string) round( $oria_p['x'], 1 ) ); ?>" y2="<?php echo esc_attr( (string) round( $oria_hx_twin[ $oria_hi ]['y'], 1 ) ); ?>" stroke="<?php echo esc_attr( $oria_p['c'] ); ?>"/>
+												<?php endforeach; ?>
+												<path class="xp-helix__twin" d="<?php echo esc_attr( $oria_hx_path( $oria_hx_twin, $oria_hx_w ) ); ?>" stroke="url(#<?php echo esc_attr( $oria_hx_gid ); ?>)" pathLength="1"/>
+												<path class="xp-helix__line" d="<?php echo esc_attr( $oria_hx_path( $oria_hx_pts, $oria_hx_w ) ); ?>" stroke="url(#<?php echo esc_attr( $oria_hx_gid ); ?>)" pathLength="1"/>
+											</svg>
+											<?php // The points in HTML, so they stay round however wide the strand is drawn. ?>
+											<div class="xp-helix__dots" style="--xp-hx-n:<?php echo (int) $oria_hx_n; ?>">
+												<?php foreach ( $oria_hx_pts as $oria_p ) : ?>
+													<span class="xp-helix__col" style="--xp-hx-c:<?php echo esc_attr( $oria_p['c'] ); ?>">
+														<i class="xp-helix__dot" style="top:<?php echo esc_attr( (string) round( $oria_p['y'] / $oria_hx_h * 100, 2 ) ); ?>%"></i>
+														<span class="xp-helix__lab"><?php echo esc_html( $oria_hx_short[ $oria_p['key'] ] ?? '' ); ?></span>
+													</span>
+												<?php endforeach; ?>
+											</div>
+										</figure>
+									<?php endif; ?>
 									<ul class="xp-dna">
 										<?php foreach ( $oria_dna as $oria_b ) : ?>
 											<?php $oria_dm = $oria_dmeta[ $oria_b['key'] ] ?? array( $oria_b['label'], '', '' ); ?>
-											<li class="xp-dna__row">
+											<li class="xp-dna__row" style="--xp-hx-c:<?php echo esc_attr( $oria_hx_col[ $oria_b['key'] ] ?? '' ); ?>">
 												<span class="xp-dna__label"><?php echo esc_html( $oria_dm[0] ); ?></span>
 												<span class="xp-dna__scale" role="img" aria-label="<?php echo esc_attr( sprintf( /* translators: 1: dimension, 2: score, 3: score in words, 4: low end, 5: high end */ __( '%1$s: %2$d out of 5, %3$s. 1 is %4$s, 5 is %5$s.', 'oria' ), $oria_dm[0], (int) $oria_b['score'], strtolower( (string) $oria_b['word'] ), strtolower( $oria_dm[1] ), strtolower( $oria_dm[2] ) ) ); ?>">
 													<span class="xp-dna__end" aria-hidden="true"><?php echo esc_html( $oria_dm[1] ); ?></span>

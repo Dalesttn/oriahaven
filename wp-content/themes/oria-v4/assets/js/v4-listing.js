@@ -382,3 +382,19 @@
   if (doc.readyState === "loading") doc.addEventListener("DOMContentLoaded", init);
   else init();
 })();
+
+/* Experience DNA strand: drawn in when it first scrolls into view. */
+(function () {
+  "use strict";
+  var hx = document.querySelector("[data-xp-helix]");
+  if (!hx || !("IntersectionObserver" in window)) return;
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  hx.classList.add("is-pending");
+  var io = new IntersectionObserver(function (en) {
+    if (!en[0].isIntersecting) return;
+    io.disconnect();
+    // One frame with the pending state painted, then let it draw.
+    window.requestAnimationFrame(function () { window.requestAnimationFrame(function () { hx.classList.remove("is-pending"); }); });
+  }, { threshold: 0.4 });
+  io.observe(hx);
+})();

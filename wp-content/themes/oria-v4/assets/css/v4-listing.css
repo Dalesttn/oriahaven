@@ -1201,3 +1201,56 @@ html.xp-sheet-open { overflow: hidden; }
   .xp-card:hover { transform: none; }
   .xp-page .btn:hover { transform: none; }
 }
+
+/* ---- Experience DNA: the strand ----------------------------------------- */
+/* The bars' scores as one line, higher for a higher score, each point in
+   its bar's colour. The SVG stretches to the column (non-scaling strokes
+   keep the line weight); the points sit in HTML so they stay round. */
+.xp-helix { position: relative; margin: var(--s-4) 0 calc(var(--s-5) + 1.4rem); height: 150px; }
+.xp-helix__svg { display: block; width: 100%; height: 150px; overflow: visible; }
+.xp-helix__svg path, .xp-helix__svg line { fill: none; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+.xp-helix__mid { stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 6; }
+.xp-helix__rung { stroke-width: 2; opacity: .28; }
+.xp-helix__twin { stroke-width: 2; opacity: .22; }
+.xp-helix__line { stroke-width: 4; }
+.xp-helix__dots { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--xp-hx-n), minmax(0, 1fr)); pointer-events: none; }
+.xp-helix__col { position: relative; }
+.xp-helix__dot {
+  position: absolute; left: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px;
+  border-radius: 50%; background: var(--surface, #fff); border: 4px solid var(--xp-hx-c);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--xp-hx-c) 18%, transparent);
+}
+.xp-helix__lab {
+  position: absolute; left: 0; right: 0; top: calc(100% + .6rem);
+  text-align: center; font-size: var(--fs-xs); font-weight: 700; letter-spacing: .02em;
+  color: color-mix(in srgb, var(--xp-hx-c) 78%, var(--ink));
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* The rows below wear the same colours, so line and bars read together. */
+.xp-dna__row[style*="--xp-hx-c"] .xp-dna__seg.is-on { background: var(--xp-hx-c); }
+.xp-dna__row[style*="--xp-hx-c"] .xp-dna__label::before {
+  content: ""; display: inline-block; width: .6rem; height: .6rem; margin-right: .5rem;
+  border-radius: 50%; background: var(--xp-hx-c); vertical-align: .05em;
+}
+/* Drawn in once it scrolls into view (v4-listing.js adds is-pending, then
+   takes it away); with no script, or reduced motion, it is simply there. */
+.xp-helix__line, .xp-helix__twin { stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 1.6s var(--ease, ease-out); }
+.xp-helix__twin { transition-delay: .25s; }
+.xp-helix__dot { transition: transform .35s var(--ease, ease-out), opacity .35s; }
+.xp-helix.is-pending .xp-helix__line, .xp-helix.is-pending .xp-helix__twin { stroke-dashoffset: 1; }
+.xp-helix.is-pending .xp-helix__dot { opacity: 0; transform: scale(.4); }
+.xp-helix__col:nth-child(2) .xp-helix__dot { transition-delay: .2s; }
+.xp-helix__col:nth-child(3) .xp-helix__dot { transition-delay: .4s; }
+.xp-helix__col:nth-child(4) .xp-helix__dot { transition-delay: .6s; }
+.xp-helix__col:nth-child(5) .xp-helix__dot { transition-delay: .8s; }
+.xp-helix__col:nth-child(6) .xp-helix__dot { transition-delay: 1s; }
+@media (max-width: 40rem) {
+  .xp-helix, .xp-helix__svg { height: 120px; }
+  .xp-helix__lab { font-size: .68rem; letter-spacing: 0; overflow: visible; text-overflow: clip; }
+  /* The end labels hug the edges instead of being cut ("Beginne…"). */
+  .xp-helix__col:first-child .xp-helix__lab { text-align: left; }
+  .xp-helix__col:last-child .xp-helix__lab { left: auto; right: 0; text-align: right; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xp-helix__line, .xp-helix__twin, .xp-helix__dot { transition: none; }
+}
