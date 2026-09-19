@@ -105,7 +105,14 @@
   display: flex; flex-direction: column; padding: var(--s-5);
   border-radius: var(--radius-feature); background: var(--sand-2);
 }
-.xa-plan__name { margin: 0; font-family: var(--font-edit); font-size: 1.5rem; font-weight: 500; color: var(--deep); }
+/* Handwritten, like the Browse by practice group names. */
+.xa-plan__name {
+  margin: 0;
+  font-family: 'Caveat', var(--font-edit);
+  font-size: clamp(1.9rem, 2.6vw, 2.3rem); font-weight: 700; line-height: 1;
+  letter-spacing: 0; color: var(--deep);
+  transform: rotate(-1.5deg); transform-origin: left center;
+}
 .xa-plan__line { margin: .35rem 0 var(--s-4); color: var(--text-soft); font-size: var(--fs-sm); line-height: 1.5; }
 .xa-plan__stops { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; counter-reset: xa-stop; }
 .xa-stop {
