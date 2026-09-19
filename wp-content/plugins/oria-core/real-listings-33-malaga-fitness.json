@@ -1,0 +1,190 @@
+{
+ "_note": "Six fitness and movement practices in Malaga, lifting Fitness & Movement in Malaga from one listing (noindexed, under the three-listing floor) to seven (19 September 2026): reformer Pilates, pole and aerial, martial arts, two boxing gyms and a ballroom and social dance studio. Every field from each practice's own website on 19 September 2026; no ratings, reviews or photographs copied; priceFrom null where only intro offers or course prices are published. A coach's personal email was left out. Not included: children-only schools, 24/7 and franchise gyms, and studios without their own website.",
+ "categories": [],
+ "regions": [],
+ "listings": [
+  {
+   "id": "studio-forte-malaga",
+   "name": "Studio Fortè",
+   "cat": "fitness",
+   "also": [],
+   "suburb": "Malaga",
+   "region": "north",
+   "address": "3/3 Carson Road, Malaga WA 6090",
+   "blurb": "Studio Fortè is a reformer Pilates studio in a unit on Carson Road, Malaga, run by owner Emma. The timetable mixes all-levels Reformer Forte Fusion and a reformer-and-mat Dynamic Fusion class with intermediate options, Forte Sculpt Reformer and Intermediate Reformer Fusion, which the studio says are not for newcomers or during pregnancy. A casual class is $38, weekly memberships start at $45 for two visits, and new members can try five classes for $65. Classes are booked online.",
+   "services": [
+    "Reformer Forte Fusion",
+    "Reformer/Matwork Dynamic Fusion",
+    "Forte Sculpt Reformer",
+    "Intermediate Reformer Fusion"
+   ],
+   "priceFrom": 38,
+   "priceBand": "$$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-studio",
+   "phone": "0493 883 916",
+   "email": "malaga@studioforte.com.au",
+   "web": "https://studioforte.com.au/",
+   "next": "",
+   "_source": "studioforte.com.au — address, phone, email, owner, intro offer (home); class types (/classes-timetable/); casual, membership and pass prices (/membership-pricing/). Checked 2026-09-19."
+  },
+  {
+   "id": "flying-high-aerial-arts-studios-malaga",
+   "name": "Flying High Aerial Arts Studios",
+   "cat": "fitness",
+   "also": [
+    "creative"
+   ],
+   "suburb": "Malaga",
+   "region": "north",
+   "address": "1/34 Westchester Rd, Malaga WA 6090",
+   "blurb": "Flying High Aerial Arts Studios is a pole dance and flexibility studio on Westchester Road, Malaga, that has been teaching in Perth for more than ten years. Small classes run from beginner pole, covering spins, poses and climbs, through intermediate and advanced levels, alongside flexibility and conditioning sessions. No experience is needed and new students start each week. Class times vary with the timetable, and new students can take two weeks of unlimited classes for $88.",
+   "services": [
+    "Beginner pole dance",
+    "Intermediate and advanced pole",
+    "Flexibility and conditioning",
+    "Trial class"
+   ],
+   "priceFrom": null,
+   "priceBand": "",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-studio",
+   "phone": "0473 641 470",
+   "email": "info@flyinghighaerialartsstudios.com.au",
+   "web": "https://flyinghighaerialartsstudios.com.au/",
+   "next": "New students welcome every week",
+   "_source": "flyinghighaerialartsstudios.com.au — class levels, 10+ years, intro offer (home, /pricing/); address, phone, email, hours note (/contact-flying-high-studios/). Casual/membership prices not shown on site. Checked 2026-09-19."
+  },
+  {
+   "id": "ati-martial-arts-malaga",
+   "name": "ATI Martial Arts Malaga",
+   "cat": "fitness",
+   "also": [
+    "family"
+   ],
+   "suburb": "Malaga",
+   "region": "north",
+   "address": "7/1924 Beach Rd, Malaga WA 6090",
+   "blurb": "ATI Martial Arts runs its headquarters from an air-conditioned, matted centre on Beach Road, Malaga, with a cafe and viewing area. Adult classes cover Taekwondo, Brazilian Jiu-Jitsu, kickboxing and Boxing Fit, plus women's self-defence and private lessons. Children start from age three in Little Dragons, then move into kids Taekwondo and BJJ, with teen kickboxing and boxing from 12. Classes run 30 to 60 minutes, Monday to Saturday, and a free trial is offered.",
+   "services": [
+    "Taekwondo",
+    "Brazilian Jiu-Jitsu",
+    "Kickboxing",
+    "Boxing Fit",
+    "Women's self-defence",
+    "Little Dragons (ages 3-6)"
+   ],
+   "priceFrom": null,
+   "priceBand": "",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-hall",
+   "phone": "(08) 9248 7811",
+   "email": "malaga@atimartialarts.com.au",
+   "web": "https://www.atimartialarts.com.au/locations/malaga/",
+   "next": "Classes Mon–Sat",
+   "_source": "atimartialarts.com.au — address, phone, email, programs, facility, free trial (/locations/malaga/); days and class lengths (/timetables/malaga/). No prices published. Checked 2026-09-19."
+  },
+  {
+   "id": "the-dungeon-boxing-malaga",
+   "name": "The Dungeon Boxing",
+   "cat": "fitness",
+   "also": [
+    "family"
+   ],
+   "suburb": "Malaga",
+   "region": "north",
+   "address": "Unit 2/289 Camboon Road, Malaga WA 6090",
+   "blurb": "The Dungeon Boxing is a boxing gym in a Camboon Road unit in Malaga, coaching in the Cuban school of boxing. One-hour adult classes run Monday to Saturday, with beginners, all-levels and women's sessions, and invite-only intermediate and advanced training. Juniors and youth aged 6 to 16 have their own classes. A casual adult class is $25, weekly passes start at $29 for two classes, and personal training is $100 a session by appointment.",
+   "services": [
+    "Beginners boxing",
+    "All-levels boxing",
+    "Women's boxing",
+    "Juniors and youth boxing",
+    "Personal training"
+   ],
+   "priceFrom": 25,
+   "priceBand": "$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-hall",
+   "phone": "0422 428 475",
+   "email": "",
+   "web": "https://thedungeonboxing.com.au/",
+   "next": "Classes Mon–Sat",
+   "_source": "thedungeonboxing.com.au — address, phone, email, Cuban style, programs (home); timetable (/classes); prices and class length (/book-online). Checked 2026-09-19. | personal coach email left out"
+  },
+  {
+   "id": "competitive-boxing-fitness-malaga",
+   "name": "Competitive Boxing & Fitness",
+   "cat": "fitness",
+   "also": [],
+   "suburb": "Malaga",
+   "region": "north",
+   "address": "30 Finance Pl, Malaga WA 6090",
+   "blurb": "Competitive Boxing & Fitness is a boxing and group training gym on Finance Place, Malaga. Boxing runs at three levels, from all-levels drills and bag or pad rounds to partner work and an invite-only fight team, plus junior boxing for ages 10 to 14. Box n Burn, Punch & HIIT and LIFT strength sessions round out the timetable. It opens weekday mornings and afternoons and weekend mornings, and new members can take two weeks unlimited for $49.",
+   "services": [
+    "Boxing (all levels)",
+    "Intermediate boxing",
+    "Junior boxing (10-14)",
+    "Punch & HIIT",
+    "LIFT strength and conditioning",
+    "Personal training"
+   ],
+   "priceFrom": null,
+   "priceBand": "",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-hall",
+   "phone": "(08) 9248 6966",
+   "email": "info@competitiveboxing.com.au",
+   "web": "https://competitiveboxing.com.au/",
+   "next": "Open daily, mornings and afternoons",
+   "_source": "competitiveboxing.com.au — classes, intro offer (home); address, phone, email (Cloudflare-decoded), opening hours (/contact). No casual or membership prices published. Checked 2026-09-19."
+  },
+  {
+   "id": "crystal-ballroom-malaga",
+   "name": "Crystal Ballroom",
+   "cat": "fitness",
+   "also": [
+    "creative",
+    "community"
+   ],
+   "suburb": "Malaga",
+   "region": "north",
+   "address": "720 Marshall Rd, Malaga WA 6090",
+   "blurb": "Crystal Ballroom is a ballroom and social dance studio on Marshall Road, Malaga, led by principals Richard and Julie Morrissey. Adults learn waltz, cha-cha, slow rhythm and other social dances in an eight-week Wednesday evening course from 7pm, followed by a social dance until 9.30pm, for $120. People can come solo or with a partner. Kids classes run Saturday mornings at $15 a week, and private lessons, competition coaching and wedding dance packages are also offered.",
+   "services": [
+    "Adult social dance course",
+    "Kids dance classes",
+    "Private lessons",
+    "Competition coaching",
+    "Wedding dance"
+   ],
+   "priceFrom": null,
+   "priceBand": "$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-hall",
+   "phone": "0408 315 600",
+   "email": "info@crystalballroom.com.au",
+   "web": "https://www.crystalballroom.com.au/",
+   "next": "Adult classes Wednesdays 7pm",
+   "_source": "crystalballroom.com.au — address, phone, email, principals, styles (home); adult course time, social dance, $120/8 weeks, kids $15 (/classes.php). Checked 2026-09-19."
+  }
+ ]
+}
