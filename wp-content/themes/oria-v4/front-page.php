@@ -817,9 +817,9 @@ $oria_short = static function ( string $name ): string {
 <!-- 9. Closing: a room being made ready -->
 <section class="wrap xh-sec">
 	<div class="xh-close on-deep">
-		<img class="xh-close__pic" src="<?php echo esc_url( $oria_v4img( 'close-studio-1400.webp' ) ); ?>"
-			srcset="<?php echo esc_url( $oria_v4img( 'close-studio-960.webp' ) ); ?> 960w, <?php echo esc_url( $oria_v4img( 'close-studio-1400.webp' ) ); ?> 1400w"
-			sizes="(min-width: 80rem) 1320px, 100vw" alt="" loading="lazy" decoding="async" width="1400" height="1050">
+		<img class="xh-close__pic" src="<?php echo esc_url( $oria_v4img( 'close-room-1400.webp' ) ); ?>"
+			srcset="<?php echo esc_url( $oria_v4img( 'close-room-960.webp' ) ); ?> 960w, <?php echo esc_url( $oria_v4img( 'close-room-1400.webp' ) ); ?> 1400w, <?php echo esc_url( $oria_v4img( 'close-room-1920.webp' ) ); ?> 1920w"
+			sizes="(min-width: 80rem) 1320px, 100vw" alt="" loading="lazy" decoding="async" width="1920" height="1280">
 		<div class="xh-close__text">
 			<h2 class="display xh-close__title"><?php esc_html_e( 'Somewhere nearby, a room is already being prepared.', 'oria' ); ?></h2>
 			<div class="xh-actions">
