@@ -238,7 +238,7 @@ $oria_all_label = sprintf( __( 'All of %s', 'oria' ), $oria_place );
 			<h1 class="xc-hz__title">
 				<?php
 				/* translators: %s: area */
-				printf( esc_html__( 'Wellness in %s', 'oria' ), esc_html( $oria_place ) );
+				printf( esc_html__( 'Wellness in %s', 'oria' ), esc_html( $oria_term ? Area\in_name( $oria_term ) : $oria_place ) );
 				?>
 			</h1>
 			<?php if ( '' !== $oria_tagline ) : ?>

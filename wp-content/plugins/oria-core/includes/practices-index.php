@@ -88,6 +88,16 @@ function bootstrap(): void {
 	 * advertises the twenty pages that filter noindexes.
 	 */
 	add_filter( 'wpseo_exclude_from_sitemap_by_term_ids', __NAMESPACE__ . '\exclude_thin_specialties' );
+	add_filter( 'wpseo_sitemap_entry', __NAMESPACE__ . '\dedupe_specialty_entry', 10, 3 );
+	add_filter( 'wpseo_sitemap_exclude_taxonomy', __NAMESPACE__ . '\skip_empty_specialty_sitemap', 10, 2 );
+	// /explore/ is the Explore sitemap's; Yoast also adds it to the listing
+	// sitemap as the post type archive.
+	add_filter(
+		'wpseo_sitemap_post_type_archive_link',
+		static fn( $link, $post_type ) => PostTypes\LISTING === $post_type ? false : $link,
+		10,
+		2
+	);
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title', 25 );
 
 	// 101 facet pages were live, indexable and in no sitemap: nothing but a
@@ -1780,4 +1790,84 @@ function thin_specialty_ids(): array {
 function exclude_thin_specialties( $ids ): array {
 	$ids = is_array( $ids ) ? $ids : array();
 	return array_values( array_unique( array_map( 'intval', array_merge( $ids, thin_specialty_ids() ) ) ) );
+}
+
+/**
+ * Addresses another sitemap already carries, for the specialty sitemap to
+ * skip.
+ *
+ * A specialty's link resolves to its facet page, so 65 specialties sat in
+ * both specialty-sitemap.xml and facet-sitemap.xml; yoga and nutrition,
+ * whose specialty slug is the category's own, sat in the practice sitemap
+ * too; four more in the intent sitemap. Nothing breaks when a URL is listed
+ * twice, but a sitemap is a statement of what the site considers its pages,
+ * and one page should be stated once.
+ *
+ * @return array<string, true> untrailed URL => true
+ */
+function other_sitemap_urls(): array {
+	static $set = null;
+	if ( null !== $set ) {
+		return $set;
+	}
+	$set  = array();
+	$urls = array_column( sitemap_entries(), 'loc' );
+	if ( function_exists( '\Oria\Core\IntentPages\sitemap_entries' ) ) {
+		$urls = array_merge( $urls, array_column( \Oria\Core\IntentPages\sitemap_entries(), 'loc' ) );
+	}
+	foreach ( practices() as $p ) {
+		$urls[] = category_url( $p );
+	}
+	foreach ( $urls as $u ) {
+		$set[ untrailingslashit( (string) $u ) ] = true;
+	}
+	return $set;
+}
+
+/**
+ * wpseo_sitemap_entry: drop a specialty whose address is published by the
+ * facet, practice or intent sitemap.
+ *
+ * @param mixed  $url
+ * @param string $type
+ * @param mixed  $object
+ * @return mixed
+ */
+function dedupe_specialty_entry( $url, $type = '', $object = null ) {
+	if ( 'term' !== $type || ! $object instanceof \WP_Term || Taxonomies\SPECIALTY !== $object->taxonomy || ! is_array( $url ) ) {
+		return $url;
+	}
+	$loc = untrailingslashit( (string) ( $url['loc'] ?? '' ) );
+	return ( '' !== $loc && isset( other_sitemap_urls()[ $loc ] ) ) ? false : $url;
+}
+
+/**
+ * wpseo_sitemap_exclude_taxonomy: leave specialty-sitemap.xml out of the
+ * index while every specialty it would list is already published elsewhere
+ * (today, all of them) -- an empty sitemap in the index reads as a fault.
+ * The moment one specialty is not covered, the sitemap comes back.
+ *
+ * @param mixed  $exclude
+ * @param string $taxonomy
+ * @return mixed
+ */
+function skip_empty_specialty_sitemap( $exclude, $taxonomy = '' ) {
+	if ( Taxonomies\SPECIALTY !== $taxonomy || $exclude ) {
+		return $exclude;
+	}
+	$thin  = array_flip( thin_specialty_ids() );
+	$terms = get_terms( array( 'taxonomy' => Taxonomies\SPECIALTY, 'hide_empty' => true ) );
+	if ( is_wp_error( $terms ) ) {
+		return $exclude;
+	}
+	foreach ( $terms as $t ) {
+		if ( isset( $thin[ (int) $t->term_id ] ) ) {
+			continue;
+		}
+		$link = get_term_link( $t );
+		if ( ! is_wp_error( $link ) && ! isset( other_sitemap_urls()[ untrailingslashit( (string) $link ) ] ) ) {
+			return $exclude; // at least one needs this sitemap
+		}
+	}
+	return true;
 }

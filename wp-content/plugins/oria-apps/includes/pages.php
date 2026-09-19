@@ -36,6 +36,20 @@ function bootstrap(): void {
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\canonical', 20 );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\yoast_robots', 20 );
 	add_filter( 'wp_robots', __NAMESPACE__ . '\wp_robots' );
+	/*
+	 * The sitemap tells the same story as the page: while the guides
+	 * archive is thin enough to carry noindex, it is not advertised either.
+	 * thin_guide_archive() asks is_post_type_archive(), which is never true
+	 * inside the sitemap request, so the count is asked directly.
+	 */
+	add_filter(
+		'wpseo_sitemap_post_type_archive_link',
+		static function ( $link, $post_type ) {
+			return ( Guides\CPT === $post_type && count( Guides\all() ) < Guides\ARCHIVE_MIN ) ? false : $link;
+		},
+		10,
+		2
+	);
 	add_action( 'wp_footer', __NAMESPACE__ . '\schema', 20 );
 }
 

@@ -527,7 +527,13 @@ function legacy_redirect(): void {
 	if ( null === $page || is_admin() ) {
 		return;
 	}
-	$target = url( (string) $page['practice'], (string) $page['intent'] );
+	/*
+	 * Straight to the live /explore/ address. url() builds the retired
+	 * /practices/ form, which PracticesIndex then 301s again -- so
+	 * /practice/yoga/pregnancy/ took two hops to land (Search Console still
+	 * held the first address as indexed a month after the move).
+	 */
+	$target = public_url( (string) $page['practice'], (string) $page['intent'] );
 	$here   = home_url( add_query_arg( array() ) );
 	// Never redirect a URL to itself: the facet route serves the target, and
 	// if it ever also set our query var this would be an infinite loop.

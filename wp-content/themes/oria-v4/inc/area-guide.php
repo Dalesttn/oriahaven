@@ -73,13 +73,22 @@ function indexable( \WP_Term $term ): bool {
 	return ! function_exists( '\Oria\Core\AreaDepth\is_thin' ) || ! \Oria\Core\AreaDepth\is_thin( (int) $term->term_id );
 }
 
+/**
+ * The area's name as it reads after "in": "the Northern Suburbs",
+ * "Fremantle". Region names that are a plural description take "the".
+ */
+function in_name( \WP_Term $term ): string {
+	$name = \Oria\Theme\tname( $term );
+	return preg_match( '/\bSuburbs$/', $name ) ? 'the ' . $name : $name;
+}
+
 function title( $title ) {
 	$term = term();
 	if ( ! $term || has_override( $term, 'wpseo_title' ) ) {
 		return $title;
 	}
 	$n    = count( rows( $term ) );
-	$name = \Oria\Theme\tname( $term );
+	$name = in_name( $term );
 	return indexable( $term ) && $n > 1
 		/* translators: 1: area, 2: number of places, 3: site name */
 		? sprintf( __( 'Wellness in %1$s — %2$d Places to Explore | %3$s', 'oria' ), $name, $n, get_bloginfo( 'name' ) )
@@ -114,9 +123,9 @@ function description( $desc ) {
 	$list = count( $names ) > 1 ? implode( ', ', array_slice( $names, 0, -1 ) ) . ' ' . __( 'and', 'oria' ) . ' ' . end( $names ) : (string) ( $names[0] ?? '' );
 	return sprintf(
 		/* translators: 1: count, 2: area, 3: list of practices */
-		__( 'Explore %1$d hand-checked wellness places in %2$s, including %3$s. Compare prices, reviews and what each place is like.', 'oria' ),
+		__( '%1$d hand-checked wellness places in %2$s, including %3$s. Compare prices and reviews.', 'oria' ),
 		$n,
-		\Oria\Theme\tname( $term ),
+		in_name( $term ),
 		$list
 	);
 }

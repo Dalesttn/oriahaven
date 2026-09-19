@@ -37,6 +37,59 @@ function bootstrap(): void {
 
 	// Yoast when present, core titles as the fallback.
 	add_filter( 'wpseo_title', __NAMESPACE__ . '\seo_title' );
+	/*
+	 * One separator site-wide. The titles built here end " | Oria Haven";
+	 * the ones Yoast builds from its templates (pages, the journal, Best Of,
+	 * What's On) used its own "-" setting, so the site shipped both, and the
+	 * setting lives in the database where a code change cannot see it.
+	 */
+	add_filter(
+		'wpseo_replacements',
+		static function ( $replacements ) {
+			if ( is_array( $replacements ) && isset( $replacements['%%sep%%'] ) ) {
+				$replacements['%%sep%%'] = '|';
+			}
+			return $replacements;
+		}
+	);
+	/*
+	 * A last word on length, after every module has had its say: Google
+	 * shows about 155-160 characters of a description, so anything longer
+	 * is cut at a word near 157 and closed with an ellipsis, where the
+	 * search result would otherwise cut it mid-word. The Best Of hub (208),
+	 * a Best Of guide (172) and an area page (170) were running long.
+	 */
+	add_filter(
+		'wpseo_metadesc',
+		static function ( $desc ) {
+			$desc = (string) $desc;
+			if ( mb_strlen( $desc ) <= 160 ) {
+				return $desc;
+			}
+			$cut   = mb_substr( $desc, 0, 157 );
+			$space = mb_strrpos( $cut, ' ' );
+			if ( false !== $space && $space > 100 ) {
+				$cut = mb_substr( $cut, 0, $space );
+			}
+			return rtrim( $cut, " ,;:—-" ) . '…';
+		},
+		99
+	);
+	/*
+	 * The front page's share title said "Home | Oria Haven" -- Yoast takes
+	 * og:title from the page's own name. A link shared to Facebook or
+	 * LinkedIn should carry the same words as the search result.
+	 */
+	add_filter(
+		'wpseo_opengraph_title',
+		static function ( $title ) {
+			if ( is_front_page() && function_exists( 'YoastSEO' ) ) {
+				$seo = (string) YoastSEO()->meta->for_current_page()->title;
+				return '' !== $seo ? $seo : $title;
+			}
+			return $title;
+		}
+	);
 	add_filter( 'wpseo_metadesc', __NAMESPACE__ . '\seo_description' );
 	add_action( 'template_redirect', __NAMESPACE__ . '\retire_city_combo', 6 );
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\seo_canonical' );
