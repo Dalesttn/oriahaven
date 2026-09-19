@@ -496,7 +496,7 @@ while ( have_posts() ) :
 					$oria_eyebrow[] = esc_html( $oria_area_name );
 				}
 				if ( $oria_best_badge ) {
-					$oria_eyebrow[] = '<a class="xp-hero__best" href="' . esc_url( $oria_best_badge['url'] ) . '"><span aria-hidden="true">&#10022;</span> ' . esc_html( $oria_best_badge['label'] ) . '<span class="xp-vh"> ' . esc_html__( '(see the Best Of guide)', 'oria' ) . '</span></a>';
+					$oria_eyebrow[] = '<a class="xp-hero__best" href="' . esc_url( $oria_best_badge['url'] ) . '"><span class="badge--best__mark" aria-hidden="true">&#10022;</span> ' . esc_html( $oria_best_badge['label'] ) . '<span class="xp-vh"> ' . esc_html__( '(see the Best Of guide)', 'oria' ) . '</span></a>';
 				}
 				?>
 				<?php if ( $oria_eyebrow ) : ?>
@@ -1101,7 +1101,7 @@ while ( have_posts() ) :
 					?>
 					<figure class="xp-pick xp-pick--lead">
 						<figcaption class="xp-pick__head">
-							<span class="xp-pick__award"><span class="xp-pick__mark" aria-hidden="true">&#10022;</span> <?php echo esc_html( (string) $oria_lead_pick['label'] ); ?></span>
+							<span class="xp-pick__award"><span class="xp-pick__mark badge--best__mark" aria-hidden="true">&#10022;</span> <?php echo esc_html( (string) $oria_lead_pick['label'] ); ?></span>
 							<span class="xp-pick__sep" aria-hidden="true">&middot;</span>
 							<a class="xp-pick__guide" href="<?php echo esc_url( (string) get_permalink( $oria_lead_pick['guide'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_lead_pick['guide'] ) ) ); ?></a>
 						</figcaption>
@@ -1119,7 +1119,7 @@ while ( have_posts() ) :
 								<?php foreach ( $oria_more_pick as $oria_row ) : ?>
 									<?php $oria_mpng = \Oria\Core\BestOf\seal_url( (string) $oria_row['award'], 'png', false ); ?>
 									<li>
-										<span class="xp-pick__mark" aria-hidden="true">&#10022;</span>
+										<span class="xp-pick__mark badge--best__mark" aria-hidden="true">&#10022;</span>
 										<span class="xp-picks__award"><?php echo esc_html( (string) $oria_row['label'] ); ?></span>
 										<span aria-hidden="true">&middot;</span>
 										<a class="xp-pick__guide" href="<?php echo esc_url( (string) get_permalink( $oria_row['guide'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_row['guide'] ) ) ); ?></a>

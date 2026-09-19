@@ -45,3 +45,21 @@
   .foot__group[open] > summary::after { content: "\2212"; }
   .foot__group .foot__list { padding-bottom: var(--s-4); }
 }
+
+/* --- Oria's picks: the brush-stroke Oria mark instead of the ✦ ---------- */
+/* One rule for every pick marker -- server-rendered badges, the Oria's
+   picks chip, and the cards app.js draws -- since they all share
+   .badge--best__mark. The glyph stays in the markup (hidden, aria-hidden)
+   and the painted mark is drawn in the brand gold through a mask. */
+.badge--best__mark {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  flex: none;
+  vertical-align: -0.22em;
+  overflow: hidden;
+  color: transparent !important;
+  background-color: var(--brand-gold);
+  -webkit-mask: url(../../../oria/assets/img/logo-mark.svg) center / contain no-repeat;
+          mask: url(../../../oria/assets/img/logo-mark.svg) center / contain no-repeat;
+}

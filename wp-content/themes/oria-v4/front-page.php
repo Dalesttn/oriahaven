@@ -699,7 +699,7 @@ $oria_short = static function ( string $name ): string {
 <section class="wrap xh-sec" aria-labelledby="xh-cards-title">
 	<header class="xh-sec__head">
 		<div>
-			<p class="micro"><span aria-hidden="true">&#10022;</span> <?php esc_html_e( 'From our Best Of guides', 'oria' ); ?></p>
+			<p class="micro"><span class="badge--best__mark" aria-hidden="true">&#10022;</span> <?php esc_html_e( 'From our Best Of guides', 'oria' ); ?></p>
 			<h2 class="h1" id="xh-cards-title"><?php esc_html_e( 'A few places worth knowing', 'oria' ); ?></h2>
 		</div>
 		<a class="xh-link" href="<?php echo esc_url( function_exists( '\Oria\Core\BestOf\hub_url' ) ? \Oria\Core\BestOf\hub_url() : home_url( '/best/' ) ); ?>"><?php esc_html_e( 'Every Best Of guide', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
@@ -724,7 +724,7 @@ $oria_short = static function ( string $name ): string {
 					<?php endif; ?>
 				</div>
 				<div class="xh-card__body">
-					<p class="xh-card__award"><span aria-hidden="true">&#10022;</span> <?php echo esc_html( $oria_c['label'] ); ?></p>
+					<p class="xh-card__award"><span class="badge--best__mark" aria-hidden="true">&#10022;</span> <?php echo esc_html( $oria_c['label'] ); ?></p>
 					<h3 class="xh-card__name"><a href="<?php echo esc_url( get_permalink( $oria_lid ) ); ?>" title="<?php echo esc_attr( $oria_full ); ?>"><?php echo esc_html( $oria_short( $oria_full ) ); ?></a></h3>
 					<?php if ( $oria_meta ) : ?>
 						<p class="xh-card__meta"><?php echo esc_html( implode( ' · ', $oria_meta ) ); ?></p>
