@@ -725,6 +725,7 @@
    "slug": "infrared-sauna",
    "name": "Infrared sauna",
    "categories": [
+    "spa",
     "recovery",
     "sound"
    ],
@@ -743,6 +744,7 @@
    "slug": "traditional-sauna",
    "name": "Traditional sauna",
    "categories": [
+    "spa",
     "recovery"
    ],
    "aliases": [
@@ -761,6 +763,7 @@
    "slug": "steam-room",
    "name": "Steam room",
    "categories": [
+    "spa",
     "recovery"
    ],
    "aliases": [],
@@ -774,6 +777,7 @@
    "slug": "ice-bath",
    "name": "Ice bath",
    "categories": [
+    "spa",
     "recovery"
    ],
    "aliases": [
@@ -793,6 +797,7 @@
    "slug": "contrast-therapy",
    "name": "Contrast therapy",
    "categories": [
+    "spa",
     "recovery"
    ],
    "aliases": [
@@ -810,6 +815,7 @@
    "slug": "red-light-therapy",
    "name": "Red light therapy",
    "categories": [
+    "spa",
     "recovery",
     "natural"
    ],
@@ -829,6 +835,7 @@
    "slug": "compression-therapy",
    "name": "Compression therapy",
    "categories": [
+    "spa",
     "recovery"
    ],
    "aliases": [
@@ -845,6 +852,7 @@
    "slug": "cryotherapy",
    "name": "Cryotherapy",
    "categories": [
+    "spa",
     "recovery"
    ],
    "aliases": [
@@ -861,6 +869,7 @@
    "slug": "hyperbaric-oxygen-therapy",
    "name": "Hyperbaric oxygen therapy",
    "categories": [
+    "spa",
     "recovery",
     "longevity"
    ],
@@ -1815,6 +1824,7 @@
    "slug": "day-spa",
    "name": "Day spa",
    "categories": [
+    "spa",
     "recovery"
    ],
    "aliases": [
@@ -1831,6 +1841,7 @@
    "slug": "bathhouse",
    "name": "Bathhouse",
    "categories": [
+    "spa",
     "recovery"
    ],
    "aliases": [
