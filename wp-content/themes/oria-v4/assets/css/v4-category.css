@@ -110,7 +110,9 @@
 @keyframes xc-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
 /* --- 2. Discovery Dock --------------------------------------------------- */
-.xc-dockwrap { position: relative; z-index: 6; }
+/* Above the sticky filter bar (z-index 20 in the parent) so an open dock
+   panel is never painted over; still below the ribbon (50) and sheets. */
+.xc-dockwrap { position: relative; z-index: 30; }
 .xc-dockwrap__inner { position: relative; }
 @media (min-width: 60rem) { .xc-dockwrap { margin-top: calc(-1 * var(--xc-dock-overlap, 84px)); } }
 .xc-dock {
