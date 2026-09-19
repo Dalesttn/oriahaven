@@ -3,8 +3,8 @@
 
    Pairs with oria-v4/front-page.php. Every class is prefixed .xh- so it
    cannot leak. Colours, type, radii and rhythm come from v4.css tokens.
-   Refined per the staging design review (19 Sep 2026): the serif carries
-   the headings, cards use borders rather than shadows, one accent.
+   Refined per the staging design review (19 Sep 2026); colours and fonts
+   are the parent theme's own.
    ========================================================================== */
 
 .xh { padding-bottom: var(--s-6); }
@@ -24,7 +24,7 @@
 .xh-credit { display: block; font-size: .75rem; color: var(--text-faint); margin-top: .4rem; }
 .xh-credit--on {
   position: absolute; right: .6rem; bottom: .5rem; margin: 0; padding: .15rem .5rem;
-  border-radius: var(--radius-pill); background: rgba(19,58,51,.7); color: var(--white);
+  border-radius: var(--radius-pill); background: rgba(10,46,44,.7); color: var(--white);
 }
 .xh a:focus-visible, .xh button:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 .xh .on-deep a:focus-visible, .xh .on-deep button:focus-visible,
@@ -42,7 +42,7 @@
 .xh-hero__pics { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; }
 .xh-hero__pics::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(19,58,51,.55) 0%, rgba(19,58,51,.12) 38%, rgba(19,58,51,.3) 62%, rgba(19,58,51,.85) 100%);
+  background: linear-gradient(180deg, rgba(10,46,44,.55) 0%, rgba(10,46,44,.12) 38%, rgba(10,46,44,.3) 62%, rgba(10,46,44,.85) 100%);
 }
 .xh-hero__pic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s var(--ease); }
 .xh-hero__pic.is-on { opacity: 1; }
@@ -65,7 +65,7 @@
   box-shadow: 0 1px 2px rgba(26,42,38,.06), 0 14px 34px rgba(26,42,38,.1);
 }
 .xh-concierge__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3) var(--s-5); }
-.xh-concierge__title { margin: 0; font-family: var(--font-edit); font-weight: 450; font-size: clamp(1.35rem, 2vw, 1.7rem); color: var(--deep); }
+.xh-concierge__title { margin: 0; font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.015em; font-size: clamp(1.35rem, 2vw, 1.7rem); color: var(--deep); }
 .xh-feel { display: flex; gap: .4rem; }
 .xh-feel__chip {
   flex: none; min-height: 44px; padding: .55rem 1rem; border-radius: var(--radius-pill);
@@ -134,7 +134,7 @@
 .xh-world { position: relative; min-height: 28rem; border-radius: var(--radius-feature); overflow: hidden; background: var(--deep); display: flex; }
 .xh-world__pic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
 .xh-world:hover .xh-world__pic, .xh-world:focus-within .xh-world__pic { transform: scale(1.03); }
-.xh-world::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(19,58,51,0) 32%, rgba(19,58,51,.9) 100%); }
+.xh-world::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,46,44,0) 32%, rgba(10,46,44,.9) 100%); }
 .xh-world__body { position: relative; z-index: 1; margin-top: auto; padding: var(--s-5); display: grid; gap: .45rem; }
 .xh-world__title { color: var(--white); margin: 0; font-size: clamp(1.8rem, 2.4vw, 2.3rem); }
 .xh-world:first-child .xh-world__title { font-size: clamp(2.1rem, 3.2vw, 3rem); }
@@ -164,7 +164,7 @@
 /* The route line joining the time markers. */
 .xh-stops::before {
   content: ""; position: absolute; left: calc(1.75rem - 1px); top: 2.25rem; bottom: 2.25rem;
-  border-left: 2px dotted rgba(245,177,104,.55);
+  border-left: 2px dotted rgba(201,162,75,.55);
 }
 .xh-stop { position: relative; display: grid; grid-template-columns: 3.5rem 1fr; gap: var(--s-4); padding-block: var(--s-4); }
 .xh-stop__time {
@@ -175,7 +175,7 @@
 }
 .xh-stop.is-active .xh-stop__time { background: var(--brand-gold); color: var(--deep); }
 .xh-stop__label { margin: 0 0 .25rem; }
-.xh-stop__name { margin: 0 0 .15rem; font-family: var(--font-edit); font-weight: 450; font-size: 1.5rem; line-height: 1.15; }
+.xh-stop__name { margin: 0 0 .15rem; font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.015em; font-size: 1.5rem; line-height: 1.15; }
 .xh-stop__name a { color: var(--white); text-decoration: none; }
 .xh-stop__name a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .xh-stop__where { margin: 0; color: var(--mist); font-size: var(--fs-sm); }
@@ -209,11 +209,11 @@
 .xh-ev--lead .xh-ev__media { position: absolute; inset: 0; width: auto; aspect-ratio: auto; border-radius: 0; }
 .xh-ev--lead .xh-ev__media::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(19,58,51,.15) 0%, rgba(19,58,51,.45) 40%, rgba(19,58,51,.94) 72%, rgba(19,58,51,.98) 100%);
+  background: linear-gradient(180deg, rgba(10,46,44,.15) 0%, rgba(10,46,44,.45) 40%, rgba(10,46,44,.94) 72%, rgba(10,46,44,.98) 100%);
 }
 .xh-ev--lead .xh-ev__body { position: relative; z-index: 1; margin-top: auto; max-width: 32rem; gap: .5rem; }
 .xh-ev--lead .xh-ev__feel { color: var(--brand-gold); }
-.xh-ev--lead .xh-ev__name { color: var(--white); font-family: var(--font-edit); font-weight: 450; font-size: clamp(1.7rem, 2.6vw, 2.3rem); line-height: 1.1; -webkit-line-clamp: 3; }
+.xh-ev--lead .xh-ev__name { color: var(--white); font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.015em; font-size: clamp(1.7rem, 2.6vw, 2.3rem); line-height: 1.1; -webkit-line-clamp: 3; }
 .xh-ev--lead .xh-ev__when { color: var(--mist); }
 
 /* --- 6. Field Notes --------------------------------------------------- */
@@ -221,7 +221,7 @@
 @media (min-width: 60rem) { .xh-notes { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); } }
 .xh-note { display: grid; gap: .35rem; text-decoration: none; color: var(--ink); }
 .xh-note__label { font-size: .72rem; font-weight: 800; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--accent-text); }
-.xh-note__title { font-family: var(--font-edit); font-weight: 450; font-size: 1.45rem; line-height: 1.2; color: var(--deep); }
+.xh-note__title { font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.015em; font-size: 1.45rem; line-height: 1.2; color: var(--deep); }
 .xh-note:hover .xh-note__title { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 .xh-note__date { color: var(--text-faint); font-size: .8rem; }
 .xh-notes__side { display: grid; align-content: start; gap: var(--s-5); }
@@ -233,7 +233,7 @@
 .xh-note--lead { position: relative; overflow: hidden; padding: var(--s-6); min-height: 28rem; border-radius: var(--radius-feature); background: var(--sand); display: flex; }
 .xh-note--lead.on-deep { background: var(--deep); }
 .xh-note__media { position: absolute; inset: 0; }
-.xh-note__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(19,58,51,0) 35%, rgba(19,58,51,.92) 100%); }
+.xh-note__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,46,44,0) 35%, rgba(10,46,44,.92) 100%); }
 .xh-note__pic { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 1.2s var(--ease); }
 .xh-note--lead:hover .xh-note__pic { transform: scale(1.025); }
 .xh-note--lead .xh-note__body { position: relative; z-index: 1; margin-top: auto; display: grid; gap: var(--s-3); max-width: 36rem; }
@@ -269,7 +269,7 @@
 .xh-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .xh-card__body { display: grid; gap: .45rem; align-content: start; padding: var(--s-5); }
 .xh-card__award { margin: 0; font-size: .72rem; font-weight: 800; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--accent-text); }
-.xh-card__name { margin: 0; font-family: var(--font-edit); font-weight: 450; font-size: 1.55rem; line-height: 1.15; }
+.xh-card__name { margin: 0; font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.015em; font-size: 1.55rem; line-height: 1.15; }
 .xh-card--lead .xh-card__name { font-size: clamp(1.8rem, 2.6vw, 2.3rem); }
 .xh-card__name a { color: var(--deep); text-decoration: none; }
 .xh-card__name a:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
@@ -282,12 +282,12 @@
 /* --- 9. Closing ------------------------------------------------------- */
 .xh-close { position: relative; overflow: hidden; border-radius: var(--radius-section); min-height: clamp(26rem, 62vh, 40rem); display: flex; background: var(--deep-2); }
 .xh-close__pic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.xh-close::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(19,58,51,.1) 0%, rgba(19,58,51,.45) 45%, rgba(19,58,51,.9) 100%); }
+.xh-close::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,46,44,.1) 0%, rgba(10,46,44,.45) 45%, rgba(10,46,44,.9) 100%); }
 .xh-close__text { position: relative; z-index: 1; margin-top: auto; padding: clamp(1.75rem, 6vw, 5rem); display: grid; gap: var(--s-5); }
 .xh-close__title { color: var(--white); max-width: 16ch; margin: 0; font-size: clamp(2.4rem, 5.4vw, 4.8rem); }
 /* The secondary button keeps its contrast on any picture: a dark glass fill. */
-.xh-btn-glass { background: rgba(19,58,51,.72); color: var(--white); border: 1px solid rgba(255,255,255,.6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-.xh-btn-glass:hover { background: rgba(19,58,51,.88); color: var(--white); }
+.xh-btn-glass { background: rgba(10,46,44,.72); color: var(--white); border: 1px solid rgba(255,255,255,.6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.xh-btn-glass:hover { background: rgba(10,46,44,.88); color: var(--white); }
 
 /* Phones: the hero title stays within three lines. */
 @media (max-width: 40rem) {

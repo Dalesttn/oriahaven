@@ -2,14 +2,11 @@
 /**
  * Oria Haven v4 -- design test (child of the Oria theme).
  *
- * The v4 "Sunset" direction from the design canvas, applied to the real
- * site: colours and type only. Every template, the category engine,
- * Trends to Try, Ask Oria, schema and SEO come from the parent untouched,
- * so what you see is the live site in the new clothes.
- *
- * Nunito Sans loads from Google Fonts here for speed of iteration. If v4
- * is chosen, self-host it the way the parent's fonts.css does before it
- * goes anywhere near production.
+ * The redesigned layouts from the design canvas -- front page, category
+ * page, listing page, one header, a shorter footer -- in the parent's own
+ * colours and fonts (the trial "Sunset" palette was reverted on 19 Sep
+ * 2026). The category engine, Trends to Try, Ask Oria, schema and SEO all
+ * come from the parent untouched.
  *
  * Lives on branch design/haven-v2 only. Activate it locally with
  * Appearance > Themes; switch back to "Oria" before checking out main,
@@ -59,24 +56,4 @@ add_action(
 		}
 	},
 	20
-);
-
-/*
- * Fonts to preload: the two v4 actually paints above the fold -- Nunito
- * Sans (everything you operate) and Newsreader upright (the headings).
- * The parent's Manrope is never used here, so it is not fetched early.
- */
-add_filter( 'oria_preload_fonts', static fn(): array => array( 'newsreader-normal-latin' ) );
-add_action(
-	'wp_head',
-	static function (): void {
-		$file = get_stylesheet_directory() . '/assets/fonts/nunito-sans-normal-latin.woff2';
-		if ( is_readable( $file ) ) {
-			printf(
-				'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
-				esc_url( get_stylesheet_directory_uri() . '/assets/fonts/nunito-sans-normal-latin.woff2?v=' . filemtime( $file ) )
-			);
-		}
-	},
-	2
 );

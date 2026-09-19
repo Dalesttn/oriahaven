@@ -1,76 +1,17 @@
 /* ==========================================================================
-   Oria Haven v4 -- "Sunset" tokens and overrides (design test).
+   Oria Haven v4 -- shared tokens and overrides (design test).
 
-   Loads after the parent's tokens/base/components/pages, so anything set
-   here wins. It re-points the parent's own tokens rather than restyling
-   components, so every page picks the palette up at once.
-
-   Contrast, checked on the cream page (#f7f0dc):
-     ink        #1a2a26  14:1+  body text, headings
-     pine       #1d4f45   9.3:1 dark surfaces (white text on it 9.3:1)
-     burnt      #a33d1a   5.6:1 small labels, ratings
-     cta        #c24f26   white text on it 4.7:1: primary buttons
-     sunset     #e8763f   2.9:1 decoration only, never text
-     soft sun   #f5b168   on pine 5:1: the brand mark and accents on dark
-     cream text #f6e7c4   on pine 7.5:1: body text on dark
+   Loads after the parent's tokens/base/components/pages. Colours and fonts
+   are the parent's own (reverted from the "Sunset" palette on 19 Sep
+   2026): petrol teal, sage mist and paper, Manrope with Newsreader italic
+   for accents. What stays here is only what the v4 layouts add: a radius
+   hierarchy, the section rhythm, one header, and the folding footer.
    ========================================================================== */
 
 :root {
-  /* Palette */
-  --ink:        #1a2a26;
-  --deep:       #1d4f45;  /* pine teal: primary dark surface */
-  --deep-2:     #133a33;
-  --teal:       #2a5a4f;
-  --teal-line:  #3f7a6c;
-
-  --mist:       #f6e7c4;  /* cream: body text on dark */
-  --mist-2:     #fdf3dc;
-  --moss:       #2d6a5c;
-
-  --sand:       #efe4c8;
-  --sand-2:     #f6ecd4;
-  --sand-3:     #ecdcb9;
-  --paper:      #f7f0dc;  /* butter cream page */
-
-  --brand-gold: #f5b168;  /* the mark on dark surfaces */
-  --gold:       #a33d1a;  /* ratings on light */
-  --gold-soft:  #f6dcc0;  /* apricot */
-
-  --text-soft:  #4e5a55;
-  --text-faint: #56625d;
-
-  --line:        #e3d6b6;
-  --line-strong: #d3c29a;
-  --surface:     #fdf9ec;
-  --surface-sunk: var(--sand-2);
-
-  --focus:         #1d4f45;
-  --focus-on-deep: #f6e7c4;
-
-  --claimed:  #2d6a5c;
-  --featured: #1d4f45;
-
-  /* Type: Nunito Sans for the interface (self-hosted below) */
-  --font-sans: "Nunito Sans", ui-sans-serif, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  /*
-   * Two voices (design review, 19 Sep 2026): an editorial serif for
-   * headings and emotional moments, the clean sans for everything you
-   * operate. Newsreader is the parent's own, already self-hosted, so the
-   * serif costs no new download.
-   */
-  --font-edit: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
-
-  --fs-display: clamp(2.75rem, 6vw, 5.5rem);
-  --fs-h1:      clamp(2.2rem, 4.2vw, 3.6rem);
-  --fs-h2:      clamp(1.8rem, 3vw, 2.7rem);
-
-  --tr-display: -0.02em;
-  --tr-head:    -0.012em;
-  --tr-micro:   0.14em;
-
-  /* The system accent: terracotta, for eyebrows, markers and primary actions. */
-  --accent:      #c24f26;   /* white text on it 4.7:1 */
-  --accent-text: #a33d1a;   /* as text on cream 5.6:1 */
+  /* Aliases the v4 layouts use, pointed at the parent's own palette. */
+  --accent:      var(--ink);    /* primary actions: the parent's dark button */
+  --accent-text: var(--moss);   /* small labels on paper (5.5:1) */
 
   /* Radius hierarchy: sections, features, cards, controls, pills. */
   --radius-section: 40px;
@@ -82,54 +23,12 @@
   /* Section rhythm. */
   --section-gap: clamp(4rem, 9vw, 9.5rem);
 
-  --sh-1: 0 1px 2px rgba(26, 42, 38, .05), 0 2px 8px rgba(26, 42, 38, .04);
-  --sh-2: 0 2px 6px rgba(26, 42, 38, .06), 0 12px 28px rgba(26, 42, 38, .07);
-  --sh-3: 0 4px 12px rgba(26, 42, 38, .08), 0 26px 60px rgba(26, 42, 38, .12);
-
   /* One header now: the utility bar is gone (see header.php). */
   --topbar-h: 0px;
 }
 @media (max-width: 40rem) {
   :root { --radius-section: 26px; --radius-feature: 22px; }
 }
-
-/* Nunito Sans, self-hosted (latin, one variable file, 400-800). */
-@font-face {
-  font-family: "Nunito Sans";
-  font-style: normal;
-  font-weight: 400 800;
-  font-display: swap;
-  src: url(../fonts/nunito-sans-normal-latin.woff2) format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-body { background: var(--paper); }
-
-/* Headings: the editorial serif, mixed case. Uppercase is kept for small
-   labels (.micro) only, so sections no longer all speak at one volume. */
-.display, .h1, .h2 {
-  font-family: var(--font-edit);
-  font-weight: 450;
-  text-transform: none;
-  line-height: 1.06;
-  letter-spacing: var(--tr-head);
-}
-.display { letter-spacing: var(--tr-display); line-height: 1.02; }
-.h3 { font-weight: 700; }
-.on-deep .display, .on-deep .h1, .on-deep .h2 { color: var(--white); }
-.micro { color: var(--accent-text); }
-.on-deep .micro { color: var(--brand-gold); }
-
-/* The accent inside a heading: the same serif, italic. */
-.edit { font-style: italic; font-weight: 400; letter-spacing: 0; }
-
-/* Primary buttons: terracotta. */
-.btn { font-weight: 700; letter-spacing: 0; }
-.btn--dark { background: var(--accent); color: #fff; }
-.btn--dark .btn__dot { background: #fff; color: var(--accent); }
-.btn--dark:hover { background: #a8421e; }
-
-::selection { background: #e8763f; color: var(--ink); }
 
 /* --- One header: search and "For practitioners" as small pop-overs ---- */
 .xnav-pop { position: relative; }
