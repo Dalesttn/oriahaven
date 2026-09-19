@@ -728,6 +728,8 @@ $oria_all_label = sprintf( __( 'All of %s', 'oria' ), $oria_place );
 <?php if ( $oria_groups ) : ?>
 <!-- 7. Browse by practice -->
 <section class="wrap section xa-practices" id="practices" aria-labelledby="xaPracTitle">
+	<div class="xa-paper">
+	<span class="xa-paper__tape" aria-hidden="true"></span>
 	<div class="xa-head">
 		<p class="micro xa-head__eyebrow"><?php esc_html_e( 'Browse by practice', 'oria' ); ?></p>
 		<h2 class="h3 xa-head__title" id="xaPracTitle">
@@ -756,6 +758,7 @@ $oria_all_label = sprintf( __( 'All of %s', 'oria' ), $oria_place );
 				</ul>
 			</div>
 		<?php endforeach; ?>
+	</div>
 	</div>
 </section>
 <?php endif; ?>

@@ -159,7 +159,42 @@ a.xa-stop__name:hover { text-decoration-color: currentColor; }
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
   gap: var(--s-4) var(--s-6);
 }
-.xa-group__name { margin: 0; font-family: var(--font-edit); font-size: 1.35rem; font-weight: 500; color: var(--deep); }
+/* The sheet: a page torn from a journal. Warm paper, a fine grain (an SVG
+   noise tile, no image request), edges a shade darker, a soft lift off
+   the page and a strip of tape at the top. No ruled lines: they ran
+   through the text and fought the list rows. */
+.xa-paper {
+  --xa-paper: #fbf6ea;
+  position: relative;
+  padding: clamp(2rem, 4vw, 3.25rem) clamp(1.25rem, 4vw, 3.5rem) clamp(1.75rem, 3.5vw, 3rem);
+  border-radius: 6px;
+  background-color: var(--xa-paper);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .25 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(160, 130, 80, .10) 100%);
+  box-shadow:
+    0 1px 1px rgba(60, 45, 20, .06),
+    0 12px 28px -12px rgba(60, 45, 20, .22),
+    0 28px 60px -30px rgba(60, 45, 20, .18);
+}
+.xa-paper__tape {
+  position: absolute; top: -12px; left: 50%;
+  width: 118px; height: 28px;
+  transform: translateX(-50%) rotate(-2.5deg);
+  background: rgba(214, 196, 150, .55);
+  box-shadow: 0 1px 2px rgba(60, 45, 20, .12);
+  -webkit-mask: linear-gradient(90deg, transparent 0 3px, #000 3px calc(100% - 3px), transparent calc(100% - 3px));
+          mask: linear-gradient(90deg, transparent 0 3px, #000 3px calc(100% - 3px), transparent calc(100% - 3px));
+}
+.xa-paper .xa-group__links, .xa-paper .xa-group__links li { border-color: rgba(92, 80, 55, .16); }
+
+.xa-group__name {
+  margin: 0;
+  font-family: 'Caveat', var(--font-edit);
+  font-size: clamp(1.9rem, 2.6vw, 2.3rem); font-weight: 700; line-height: 1;
+  letter-spacing: 0; color: var(--deep);
+  transform: rotate(-1.5deg); transform-origin: left center;
+}
 .xa-group__line { margin: .2rem 0 var(--s-3); font-size: var(--fs-sm); color: var(--text-soft); }
 .xa-group__links { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
 .xa-group__links li { border-bottom: 1px solid var(--line); }
