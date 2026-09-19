@@ -497,6 +497,28 @@ html.xc-locked { overflow: hidden; }
 #browse .listing .btn:focus-visible,
 #browse .qact:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
 
+/* Wider screens: the picture runs the full height of its card, top to
+   bottom, however much text sits beside it. The image fills the frame
+   absolutely, so it never adds height of its own; min-height keeps a short
+   card from squashing it into a strip. Phones keep their 16:10 picture on
+   top (below). */
+@media (min-width: 44rem) {
+  #browse #dirResults .listing__media,
+  #browse .xc-feat .listing__media {
+    align-self: stretch;
+    aspect-ratio: auto;
+    min-height: 13rem;
+  }
+  #browse #dirResults .listing__media img,
+  #browse .xc-feat .listing__media img {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+  #browse .xc-feat .listing__media { position: relative; }
+}
+
 /* Why this card is here, when a feeling or experience is chosen. It takes
    the tag row's place rather than adding to it. */
 .xc-match { margin: .15rem 0 .35rem; font-size: var(--fs-sm); line-height: 1.45; color: var(--moss); }
