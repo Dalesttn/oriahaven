@@ -38,3 +38,9 @@ listed venue. Sub-categories use their parent category's picture.
 | nutrition | https://www.pexels.com/photo/7964659/ | Kampus Production |
 | seniors | https://www.pexels.com/photo/6815693/ | Yan Krukau |
 | family | https://www.pexels.com/photo/3984345/ | Gustavo Fring |
+
+## Area pages (assets/img/area/)
+
+| Area | Source | Photographer |
+|---|---|---|
+| Fremantle (High Street) | https://www.pexels.com/photo/5865075/ | Rachel Claire |

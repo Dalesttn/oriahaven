@@ -1,0 +1,202 @@
+/* ==========================================================================
+   Oria Haven v4 -- area pages, "The Local Rhythm" (taxonomy-area.php).
+   Loads after v4-category.css, whose hero, Local Finder (the Discovery
+   Dock), ribbon, results and Oria Note this page reuses. Here: the hero's
+   height and credit, At a glance, The Local Rhythm, the reset plans,
+   events, browse by practice, getting around and nearby areas.
+   ========================================================================== */
+
+/* ---- 1. the place ------------------------------------------------------- */
+.xc-area__plan {
+  display: inline-flex; align-items: center; gap: .35rem;
+  min-height: 48px; padding-inline: .25rem;
+  font-weight: 600; color: var(--deep); text-decoration: underline; text-underline-offset: .2em;
+}
+.xc-area__credit { margin: 0 var(--gutter); font-size: var(--fs-xs); color: var(--text-faint); }
+@media (min-width: 60rem) {
+  .xc-area { min-height: clamp(560px, 68svh, 720px); }
+  .xc-area .xc-hz__title { font-size: clamp(3rem, 5.6vw, 5.25rem); }
+  .xc-area__plan { color: var(--white); }
+  .xc-area__plan:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
+  .xc-area__credit {
+    position: absolute; right: var(--gutter); bottom: calc(var(--xc-dock-overlap, 84px) + .75rem);
+    margin: 0; color: rgba(255, 255, 255, .7); text-shadow: 0 1px 2px rgba(0, 0, 0, .4);
+  }
+}
+/* The Where panel's nearby suburbs, two to a row: six in one column made
+   the panel taller than a laptop screen. */
+.xc-area ~ .xc-dockwrap #xcLoc .xc-ways {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s-3);
+}
+.xc-area__popmap { margin: var(--s-3) 0 0; }
+.xc-area__popmap .xc-pchip { min-height: 44px; }
+/* Phones: practice, Filters and Map fit the ribbon; the count, already in
+   the results heading, is what pushed Map off the edge. */
+@media (max-width: 50rem) {
+  .xc-area ~ .xc-ribbon .xc-ribbon__count { display: none; }
+  .xc-area ~ .xc-ribbon .xc-ribbon__btn--map { margin-left: auto; }
+}
+
+/* ---- 3. at a glance ----------------------------------------------------- */
+.xa-glance { margin-block: var(--s-5) var(--s-4); }
+.xa-glance__row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: var(--s-3); margin: 0; padding: 0; list-style: none;
+}
+.xa-glance__card {
+  display: grid; align-content: start; gap: .3rem;
+  padding: var(--s-4); border-radius: var(--radius-card);
+  background: var(--sand-2);
+}
+.xa-glance__n {
+  font-family: var(--font-edit); font-size: clamp(2rem, 3.2vw, 2.6rem); line-height: 1;
+  color: var(--deep); font-variant-numeric: tabular-nums;
+}
+.xa-glance__card--word .xa-glance__n { font-size: clamp(1.35rem, 2vw, 1.6rem); line-height: 1.15; }
+/* Phones: two by two, the one worded figure across the row, so the four
+   figures cost two card heights rather than four before the listings. */
+@media (max-width: 44rem) {
+  .xa-glance__row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+  .xa-glance__card { padding: var(--s-3); }
+  .xa-glance__card--word { grid-column: 1 / -1; }
+  .xa-glance__n { font-size: 1.9rem; }
+}
+.xa-glance__label { font-size: var(--fs-sm); line-height: 1.4; color: var(--text-soft); }
+.xa-glance__about { margin-top: var(--s-3); font-size: var(--fs-sm); color: var(--text-soft); }
+.xa-glance__about summary {
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-weight: 600; color: var(--deep); cursor: pointer;
+}
+.xa-glance__body { max-width: var(--maxw-text, 68ch); }
+.xa-glance__body p { margin: 0 0 var(--s-2); line-height: 1.6; }
+
+/* ---- 4. The Local Rhythm (the page's #xcNote) ----------------------------- */
+.xa-rhythm { background: var(--deep); color: var(--text-on-deep, #fff); }
+.xa-rhythm .xc-note__eyebrow { color: var(--brand-gold); }
+.xa-rhythm .xc-note__title { color: var(--white); font-size: clamp(1.4rem, 2.2vw, 1.8rem); }
+.xa-rhythm__intro {
+  max-width: 62ch; margin: 0 0 var(--s-4);
+  font-family: var(--font-edit); font-style: italic; font-size: 1.125rem; line-height: 1.5;
+  color: var(--text-on-deep, #fff);
+}
+.xa-rhythm__points {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--s-3) var(--s-5); margin: 0; padding: 0; list-style: none;
+}
+.xa-rhythm__points li {
+  padding-top: var(--s-3); border-top: 1px solid rgba(255, 255, 255, .22);
+  line-height: 1.5; color: var(--text-on-deep-soft, rgba(255, 255, 255, .86));
+}
+.xa-rhythm__meta { margin: var(--s-4) 0 0; font-size: var(--fs-xs); color: var(--text-on-deep-soft, rgba(255, 255, 255, .75)); }
+
+/* ---- shared section heads ------------------------------------------------ */
+.xa-head { margin-bottom: var(--s-5); }
+.xa-head__eyebrow { margin: 0 0 .35rem; color: var(--moss); }
+.xa-head__title { margin: 0; color: var(--deep); text-wrap: balance; }
+.xa-head__line { margin: var(--s-2) 0 0; max-width: 62ch; color: var(--text-soft); line-height: 1.55; }
+
+/* ---- 5. plan a local reset ----------------------------------------------- */
+.xa-reset { padding-block: var(--section-gap, var(--s-8)); }
+.xa-plans {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--s-4);
+}
+.xa-plan {
+  display: flex; flex-direction: column; padding: var(--s-5);
+  border-radius: var(--radius-feature); background: var(--sand-2);
+}
+.xa-plan__name { margin: 0; font-family: var(--font-edit); font-size: 1.5rem; font-weight: 500; color: var(--deep); }
+.xa-plan__line { margin: .35rem 0 var(--s-4); color: var(--text-soft); font-size: var(--fs-sm); line-height: 1.5; }
+.xa-plan__stops { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; counter-reset: xa-stop; }
+.xa-stop {
+  position: relative; display: grid; gap: .15rem;
+  padding: var(--s-3) 0 var(--s-3) 2.25rem;
+  counter-increment: xa-stop;
+}
+.xa-stop + .xa-stop { border-top: 1px solid var(--line); }
+.xa-stop::before {
+  content: counter(xa-stop);
+  position: absolute; left: 0; top: var(--s-3);
+  display: grid; place-items: center; width: 1.6rem; height: 1.6rem;
+  border-radius: 50%; background: var(--deep); color: var(--white);
+  font-size: var(--fs-xs); font-weight: 700;
+}
+.xa-stop--walk::before { background: var(--moss); }
+.xa-stop__what { font-size: var(--fs-xs); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-faint); }
+.xa-stop__name { font-weight: 700; color: var(--deep); line-height: 1.3; }
+a.xa-stop__name { text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--deep) 30%, transparent); text-underline-offset: .18em; }
+a.xa-stop__name:hover { text-decoration-color: currentColor; }
+.xa-stop__cat { font-size: var(--fs-sm); color: var(--moss); }
+.xa-stop__blurb { font-size: var(--fs-sm); line-height: 1.45; color: var(--text-soft); }
+.xa-stop__swap {
+  justify-self: start; min-height: 44px; margin-top: .15rem; padding: 0 .9rem;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-pill);
+  background: var(--paper); color: var(--deep); font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer;
+}
+.xa-stop__swap:hover { border-color: var(--deep); }
+.xa-stop__swap:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+.xa-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---- 6. events ----------------------------------------------------------- */
+.xa-events__row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--s-3); margin: 0; padding: 0; list-style: none;
+}
+.xa-ev {
+  display: grid; gap: .3rem; height: 100%; padding: var(--s-4);
+  border: 1px solid var(--line); border-radius: var(--radius-card);
+  background: var(--paper); color: inherit; text-decoration: none;
+  transition: border-color var(--t-fast, .15s);
+}
+.xa-ev:hover { border-color: var(--deep); }
+.xa-ev__when { font-size: var(--fs-sm); font-weight: 700; color: var(--moss); font-variant-numeric: tabular-nums; }
+.xa-ev__name { color: var(--deep); line-height: 1.3; }
+.xa-ev__meta { font-size: var(--fs-sm); color: var(--text-soft); }
+.xa-ev__go { margin-top: .25rem; font-size: var(--fs-sm); font-weight: 600; color: var(--deep); }
+
+/* ---- 7. browse by practice ----------------------------------------------- */
+.xa-groups {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: var(--s-4) var(--s-6);
+}
+.xa-group__name { margin: 0; font-family: var(--font-edit); font-size: 1.35rem; font-weight: 500; color: var(--deep); }
+.xa-group__line { margin: .2rem 0 var(--s-3); font-size: var(--fs-sm); color: var(--text-soft); }
+.xa-group__links { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.xa-group__links li { border-bottom: 1px solid var(--line); }
+.xa-group__links a {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  min-height: 44px; padding-block: .35rem;
+  color: var(--deep); font-weight: 600; text-decoration: none;
+}
+.xa-group__links a:hover span:first-child { text-decoration: underline; text-underline-offset: .18em; }
+.xa-group__links .is-sub a { padding-left: 1rem; font-weight: 500; color: var(--text); }
+.xa-group__n { font-size: var(--fs-sm); font-weight: 500; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+/* ---- 8 + 9. getting around, nearby ----------------------------------------- */
+.xa-onward { display: grid; gap: var(--s-6); }
+@media (min-width: 60rem) {
+  .xa-onward:has(.xa-around):has(.xa-nearby) { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+}
+.xa-around { padding: var(--s-5); border-radius: var(--radius-feature); background: var(--sand-2); }
+.xa-around .xa-head__title { margin-bottom: var(--s-3); }
+.xa-around__list { display: grid; gap: var(--s-2); margin: 0; padding-left: 1.1rem; line-height: 1.55; }
+.xa-around__links { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; margin: var(--s-3) 0 0; }
+.xa-around__links a { display: inline-flex; align-items: center; gap: .3rem; min-height: 44px; font-weight: 600; color: var(--deep); }
+.xa-nearby .xa-head__title { margin-bottom: var(--s-3); }
+.xa-nearby__row {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  gap: var(--s-3); margin: 0; padding: 0; list-style: none;
+}
+.xa-near {
+  display: grid; gap: .2rem; height: 100%; padding: var(--s-4);
+  border: 1px solid var(--line); border-radius: var(--radius-card);
+  color: inherit; text-decoration: none; transition: border-color var(--t-fast, .15s);
+}
+.xa-near:hover { border-color: var(--deep); }
+.xa-near__name { font-size: 1.1rem; color: var(--deep); }
+.xa-near__meta { font-size: var(--fs-sm); color: var(--text-soft); }
+.xa-near__top { font-size: var(--fs-sm); color: var(--moss); }
+
+@media (prefers-reduced-motion: reduce) {
+  .xa-ev, .xa-near { transition: none; }
+}

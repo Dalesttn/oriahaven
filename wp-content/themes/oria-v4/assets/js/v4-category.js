@@ -338,6 +338,7 @@
   function initial(key, fallback) { var v = $('[data-xc-val="' + key + '"]'); return v ? v.textContent.trim() : fallback; }
   var expDefault = initial("exp", "All experiences");
   var ribbonDefault = initial("ribbon", expDefault);
+  var moodDefault = initial("mood", "Any feeling");
   var locDefault = (function () { var v = $('[data-xc-val="loc"]'); return v ? v.textContent.trim() : ""; })();
   function locSummary() {
     var seen = {}, on = [];
@@ -362,7 +363,7 @@
     moodBtns.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-xc-mood") === activeMood ? "true" : "false"); });
     $$("[data-xc-mood-detail]").forEach(function (d) { d.hidden = d.getAttribute("data-xc-mood-detail") !== activeMood; });
     var mood = moodName(), exp = expSummary();
-    if (moodBtns.length) setVal("mood", mood || "Any feeling");
+    if (moodBtns.length) setVal("mood", mood || moodDefault);
     setVal("exp", exp || expDefault);
     setVal("loc", locSummary());
     setVal("ribbon", mood || exp || ribbonDefault);

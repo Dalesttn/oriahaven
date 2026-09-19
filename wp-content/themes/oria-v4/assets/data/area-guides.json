@@ -1,0 +1,39 @@
+{
+  "_about": "The editorial layer of the area pages (oria-v4/taxonomy-area.php, inc/area-guide.php). Everything counted -- places, practices, hours, prices, nearby suburbs -- comes from the live listings and is NOT stored here. What is here is hand-written: a place's own photograph, its one-line character, the local-rhythm introduction, getting around, and the public places the reset plans can use. Keyed by area term slug. Every claim must be checked before 'reviewed' is set; a data refresh never touches this file. An area with no entry still gets the full page, with its region's or city's photograph and data-only copy.",
+
+  "groups": [
+    { "name": "Feel calmer", "line": "Quiet rooms, breath and stillness", "cats": ["mind", "energy"] },
+    { "name": "Care for the body", "line": "Hands-on treatments, heat, cold and health care", "cats": ["bodywork", "spa", "natural", "allied", "beauty", "longevity", "nutrition"] },
+    { "name": "Move and connect", "line": "Classes, circles and making things together", "cats": ["yoga", "fitness", "community", "creative", "family", "seniors", "experiences"] }
+  ],
+
+  "areas": {
+    "fremantle": {
+      "image": {
+        "wide": "area/fremantle-1920.webp",
+        "mid": "area/fremantle-960.webp",
+        "phone": "area/fremantle-portrait-800.webp",
+        "pos": "50% 45%",
+        "alt": "Early light down High Street, Fremantle, between limestone heritage buildings towards the Round House",
+        "credit": "Photo: Rachel Claire / Pexels"
+      },
+      "tagline": "Limestone streets, sea air and one of Perth's strongest pockets for breathwork.",
+      "rhythm_intro": "Fremantle's wellness rooms sit in the same few streets as everything else here: back from the water, above shops, in converted heritage buildings. Breathwork, remedial massage and art therapy are all a short walk apart, which makes it an easy place to put two things into one visit.",
+      "anchor": { "name": "Fremantle Station", "lat": -32.0549, "lng": 115.7431 },
+      "getting_around": [
+        "Fremantle Station is the last stop on the Fremantle train line from Perth.",
+        "Parking in central Fremantle is run by the City of Fremantle — check the signs and rates before a long appointment."
+      ],
+      "links": [
+        { "label": "Transperth journey planner", "url": "https://www.transperth.wa.gov.au/" },
+        { "label": "City of Fremantle", "url": "https://www.fremantle.wa.gov.au/" }
+      ],
+      "walks": [
+        { "label": "Walk down to Bathers Beach", "line": "The small beach below the Round House, a few minutes from the West End." },
+        { "label": "Sit a while on the Esplanade Reserve", "line": "The big lawn under the Norfolk pines, between the town and the fishing boat harbour." }
+      ],
+      "reviewed": "",
+      "editor": "Oria Haven"
+    }
+  }
+}
