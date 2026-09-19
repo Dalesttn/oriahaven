@@ -795,14 +795,28 @@ html.xp-sheet-open { overflow: hidden; }
 .xp-rail__ctas { display: grid; gap: .5rem; }
 .xp-rail__ctas .btn {
   justify-content: center;
-  padding: .85rem 1rem;
-  font-size: .9375rem;
+  min-height: 44px;
+  padding: .55rem .9rem;
+  font-size: .875rem;
   white-space: normal;
   text-align: center;
   line-height: 1.2;
 }
-.xp-rail__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: .5rem; }
-.xp-rail__row .btn { gap: .35rem; padding-inline: .5rem; }
+/* The main action's arrow disc, scaled down with the button. */
+.xp-rail__ctas .btn .btn__dot { width: 24px; height: 24px; flex-basis: 24px; }
+.xp-rail__ctas .btn .btn__dot svg { width: 11px; height: 11px; }
+/* Call / Directions / Save: compact, one line each, icon and label kept
+   inside the pill at every sidebar width. */
+.xp-rail__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: .4rem; }
+.xp-rail__row .btn {
+  gap: .3rem;
+  padding: .45rem .4rem;
+  font-size: .8125rem;
+  white-space: nowrap;
+  min-width: 0;
+}
+.xp-rail__row .btn > span:not(.xp-vh) { overflow: hidden; text-overflow: ellipsis; }
+.xp-rail__row .btn svg { width: 15px; height: 15px; flex: none; }
 .xp-rail__ctas .xp-link { justify-self: center; }
 
 .xp-facts { margin: 0; }
