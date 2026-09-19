@@ -454,28 +454,33 @@ function prices( array $rows ): array {
 }
 
 /**
- * The Local Rhythm's data-backed observations (brief 14). Each one carries
- * its own count, and each has a floor below which it is left out.
+ * The Local Rhythm's data-backed observations (brief 14), as stat tiles.
+ * Each one carries its own count, and each has a floor below which it is
+ * left out. The figure leads ("17 of 31"), a plain label says what it
+ * counts, and a note carries any caveat -- so the tile reads at a glance
+ * and the qualification is still there.
  *
  * @param list<array<string, mixed>> $rows
- * @return list<string>
+ * @return list<array{kind: string, big: string, label: string, note: string, frac: float|null}>
  */
 function rhythm_points( array $rows, ?array $strong, string $place, string $place_city, array $guide ): array {
 	$n = count( $rows );
 	if ( $n < MIN_PATTERN ) {
 		return array();
 	}
-	$out = array();
+	$out  = array();
+	/* translators: 1: count, 2: total */
+	$of   = static fn( int $a, int $b ): string => sprintf( __( '%1$d of %2$d', 'oria' ), $a, $b );
+	$tile = static fn( string $kind, string $big, string $label, string $note = '', ?float $frac = null ): array => compact( 'kind', 'big', 'label', 'note', 'frac' );
 
 	if ( $strong ) {
-		$out[] = sprintf(
-			/* translators: 1: practice, 2: count here, 3: count across the city, 4: city, 5: area */
-			__( '%1$s is where %5$s stands out: %2$d of the %3$d %1$s practices listed across %4$s are here.', 'oria' ),
+		$out[] = $tile(
+			'star',
 			pname( $strong['slug'] ),
-			$strong['n'],
-			$strong['of'],
-			$place_city,
-			$place
+			/* translators: 1: count here, 2: count across the city, 3: city */
+			sprintf( __( 'stands out here: %1$d of the %2$d listed across %3$s', 'oria' ), $strong['n'], $strong['of'], $place_city ),
+			'',
+			$strong['of'] ? $strong['n'] / $strong['of'] : null
 		);
 	}
 
@@ -486,12 +491,13 @@ function rhythm_points( array $rows, ?array $strong, string $place, string $plac
 		if ( count( $addressed ) >= MIN_ADDRESSED ) {
 			$near = array_filter( $addressed, static fn( array $r ): bool => km( (float) $r['lat'], (float) $r['lng'], (float) $anchor['lat'], (float) $anchor['lng'] ) <= 1.0 );
 			if ( count( $near ) * 2 >= count( $addressed ) ) {
-				$out[] = sprintf(
-					/* translators: 1: count near, 2: count with a street address, 3: landmark */
-					__( '%1$d of the %2$d places with a street address on file are within a kilometre of %3$s, as the crow flies.', 'oria' ),
-					count( $near ),
-					count( $addressed ),
-					(string) $anchor['name']
+				$out[] = $tile(
+					'pin',
+					$of( count( $near ), count( $addressed ) ),
+					/* translators: %s: landmark */
+					sprintf( __( 'within a kilometre of %s', 'oria' ), (string) $anchor['name'] ),
+					__( 'Of the places with a street address on file, as the crow flies.', 'oria' ),
+					count( $near ) / count( $addressed )
 				);
 			}
 		}
@@ -500,40 +506,45 @@ function rhythm_points( array $rows, ?array $strong, string $place, string $plac
 	$h = hours( $rows );
 	if ( $h['known'] >= MIN_PATTERN ) {
 		if ( count( $h['evening'] ) >= 2 ) {
-			$out[] = sprintf(
-				/* translators: 1: count, 2: count that publish hours */
-				__( '%1$d of the %2$d places that publish their hours stay open past 7pm on at least one day.', 'oria' ),
-				count( $h['evening'] ),
-				$h['known']
+			$out[] = $tile(
+				'moon',
+				$of( count( $h['evening'] ), $h['known'] ),
+				__( 'open past 7pm on at least one day', 'oria' ),
+				__( 'Of the places that publish their hours.', 'oria' ),
+				count( $h['evening'] ) / $h['known']
 			);
 		}
 		if ( count( $h['weekend'] ) >= 2 ) {
-			$out[] = sprintf(
-				/* translators: 1: count, 2: count that publish hours */
-				__( '%1$d of those %2$d open on a Saturday or Sunday.', 'oria' ),
-				count( $h['weekend'] ),
-				$h['known']
+			$out[] = $tile(
+				'calendar',
+				$of( count( $h['weekend'] ), $h['known'] ),
+				__( 'open on a Saturday or Sunday', 'oria' ),
+				__( 'Of the places that publish their hours.', 'oria' ),
+				count( $h['weekend'] ) / $h['known']
 			);
 		}
 	}
 
 	$prices = prices( $rows );
 	if ( count( $prices ) >= MIN_PRICES ) {
-		$out[] = sprintf(
-			/* translators: 1: lowest, 2: highest, 3: count with a price */
-			__( 'Published starting prices run from $%1$d to $%2$d across the %3$d places that list one — each practice sets its own, and they change.', 'oria' ),
-			min( $prices ),
-			max( $prices ),
-			count( $prices )
+		$out[] = $tile(
+			'tag',
+			'$' . min( $prices ) . '–$' . max( $prices ),
+			/* translators: %d: count with a price */
+			sprintf( __( 'published starting prices, from %d places', 'oria' ), count( $prices ) ),
+			__( 'Each practice sets its own, and they change.', 'oria' )
 		);
 	}
 
 	$online = count( array_filter( $rows, static fn( array $r ): bool => in_array( $r['format'] ?? '', array( 'online', 'both' ), true ) ) );
 	if ( $online >= 2 ) {
-		$out[] = sprintf(
-			/* translators: %d: count */
-			_n( '%d place here also sees people online.', '%d places here also see people online.', $online, 'oria' ),
-			$online
+		$out[] = $tile(
+			'screen',
+			(string) $online,
+			_n( 'place also sees people online', 'places also see people online', $online, 'oria' ),
+			/* translators: %d: listings here */
+			sprintf( __( 'Out of %d here.', 'oria' ), $n ),
+			$online / $n
 		);
 	}
 

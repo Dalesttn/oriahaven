@@ -611,16 +611,39 @@ $oria_all_label = sprintf( __( 'All of %s', 'oria' ), $oria_place );
 			<p class="micro xc-note__eyebrow"><?php esc_html_e( 'The local rhythm', 'oria' ); ?></p>
 			<h3 class="xc-note__title" id="xaRhythmTitle">
 				<?php
+				// "in the Northern Suburbs", "in Fremantle".
+				$oria_in = preg_match( '/\bSuburbs$/', $oria_place ) ? 'the ' . $oria_place : $oria_place;
 				/* translators: %s: area */
-				printf( esc_html__( 'How wellness works in %s', 'oria' ), esc_html( $oria_place ) );
+				printf( esc_html__( 'How wellness works in %s', 'oria' ), esc_html( $oria_in ) );
 				?>
 			</h3>
 			<?php if ( ! empty( $oria_guide['rhythm_intro'] ) ) : ?>
 				<p class="xa-rhythm__intro"><?php echo esc_html( (string) $oria_guide['rhythm_intro'] ); ?></p>
 			<?php endif; ?>
-			<ul class="xa-rhythm__points">
+			<?php
+			// A small line icon per kind of figure; decoration only.
+			$oria_rh_icons = array(
+				'star'     => '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
+				'pin'      => '<path d="M12 21s-6.5-6.1-6.5-11A6.5 6.5 0 0 1 18.5 10c0 4.9-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>',
+				'moon'     => '<path d="M19.5 14.5A7.5 7.5 0 0 1 9.5 4.5a7.5 7.5 0 1 0 10 10z"/>',
+				'calendar' => '<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',
+				'tag'      => '<path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1.4 1.4 0 0 1 0 2l-6.7 6.7a1.4 1.4 0 0 1-2 0z"/><circle cx="8" cy="8" r="1.5"/>',
+				'screen'   => '<rect x="3.5" y="4.5" width="17" height="11.5" rx="2"/><path d="M8.5 20h7M12 16v4"/>',
+			);
+			?>
+			<ul class="xa-rhythm__tiles">
 				<?php foreach ( $oria_rhythm as $oria_pt ) : ?>
-					<li><?php echo esc_html( $oria_pt ); ?></li>
+					<li class="xa-rtile xa-rtile--<?php echo esc_attr( $oria_pt['kind'] ); ?>">
+						<svg class="xa-rtile__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><?php echo $oria_rh_icons[ $oria_pt['kind'] ] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup above ?></svg>
+						<span class="xa-rtile__big"><?php echo esc_html( $oria_pt['big'] ); ?></span>
+						<span class="xa-rtile__label"><?php echo esc_html( $oria_pt['label'] ); ?></span>
+						<?php if ( null !== $oria_pt['frac'] ) : ?>
+							<span class="xa-rtile__bar" aria-hidden="true"><i style="width:<?php echo esc_attr( (string) max( 4, min( 100, round( $oria_pt['frac'] * 100 ) ) ) ); ?>%"></i></span>
+						<?php endif; ?>
+						<?php if ( '' !== $oria_pt['note'] ) : ?>
+							<span class="xa-rtile__note"><?php echo esc_html( $oria_pt['note'] ); ?></span>
+						<?php endif; ?>
+					</li>
 				<?php endforeach; ?>
 			</ul>
 			<p class="xa-rhythm__meta">

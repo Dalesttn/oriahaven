@@ -71,22 +71,50 @@
 .xa-glance__body p { margin: 0 0 var(--s-2); line-height: 1.6; }
 
 /* ---- 4. The Local Rhythm (the page's #xcNote) ----------------------------- */
-.xa-rhythm { background: var(--deep); color: var(--text-on-deep, #fff); }
+.xa-rhythm {
+  position: relative; overflow: hidden;
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 75, .16), transparent 55%),
+    var(--deep);
+  color: var(--text-on-deep, #fff);
+}
 .xa-rhythm .xc-note__eyebrow { color: var(--brand-gold); }
-.xa-rhythm .xc-note__title { color: var(--white); font-size: clamp(1.4rem, 2.2vw, 1.8rem); }
+.xa-rhythm .xc-note__title { margin-bottom: var(--s-4); color: var(--white); font-size: clamp(1.45rem, 2.4vw, 1.95rem); text-wrap: balance; }
 .xa-rhythm__intro {
-  max-width: 62ch; margin: 0 0 var(--s-4);
+  max-width: 62ch; margin: calc(-1 * var(--s-2)) 0 var(--s-5);
   font-family: var(--font-edit); font-style: italic; font-size: 1.125rem; line-height: 1.5;
   color: var(--text-on-deep, #fff);
 }
-.xa-rhythm__points {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  gap: var(--s-3) var(--s-5); margin: 0; padding: 0; list-style: none;
+/* One tile per figure: the number first and large, what it counts under it,
+   a gold bar for an "x of y", and any caveat in small type at the foot. */
+.xa-rhythm__tiles {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.5rem), 1fr));
+  gap: var(--s-3); margin: 0; padding: 0; list-style: none;
 }
-.xa-rhythm__points li {
-  padding-top: var(--s-3); border-top: 1px solid rgba(255, 255, 255, .22);
-  line-height: 1.5; color: var(--text-on-deep-soft, rgba(255, 255, 255, .86));
+.xa-rtile {
+  position: relative;
+  display: flex; flex-direction: column; gap: .35rem;
+  padding: var(--s-4); padding-right: calc(var(--s-4) + 30px);
+  border-radius: var(--radius-card);
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .1);
 }
+/* In the corner, so the figure starts at the top of the tile. */
+.xa-rtile__icon {
+  position: absolute; top: var(--s-4); right: var(--s-4);
+  width: 24px; height: 24px;
+  fill: none; stroke: var(--brand-gold); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+}
+.xa-rtile__big {
+  font-family: var(--font-edit); font-size: clamp(1.9rem, 2.8vw, 2.4rem); line-height: 1.05;
+  color: var(--white); font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+}
+.xa-rtile--star .xa-rtile__big { font-size: clamp(1.5rem, 2.2vw, 1.85rem); }
+.xa-rtile__label { font-size: var(--fs-sm); line-height: 1.4; color: rgba(255, 255, 255, .88); }
+.xa-rtile__bar { display: block; height: 4px; margin-top: .35rem; border-radius: 2px; background: rgba(255, 255, 255, .14); overflow: hidden; }
+.xa-rtile__bar i { display: block; height: 100%; border-radius: inherit; background: var(--brand-gold); }
+.xa-rtile__note { margin-top: auto; padding-top: .5rem; font-size: var(--fs-xs); line-height: 1.4; color: rgba(255, 255, 255, .62); }
 .xa-rhythm__meta { margin: var(--s-4) 0 0; font-size: var(--fs-xs); color: var(--text-on-deep-soft, rgba(255, 255, 255, .75)); }
 
 /* ---- shared section heads ------------------------------------------------ */
