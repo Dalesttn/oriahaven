@@ -5,7 +5,8 @@
    are the parent's own (reverted from the "Sunset" palette on 19 Sep
    2026): petrol teal, sage mist and paper, Manrope with Newsreader italic
    for accents. What stays here is only what the v4 layouts add: a radius
-   hierarchy, the section rhythm, one header, and the folding footer.
+   hierarchy, the section rhythm and the folding footer. The header is
+   the parent's own.
    ========================================================================== */
 
 :root {
@@ -23,41 +24,10 @@
   /* Section rhythm. */
   --section-gap: clamp(4rem, 9vw, 9.5rem);
 
-  /* One header now: the utility bar is gone (see header.php). */
-  --topbar-h: 0px;
 }
 @media (max-width: 40rem) {
   :root { --radius-section: 26px; --radius-feature: 22px; }
 }
-
-/* --- One header: search and "For practitioners" as small pop-overs ---- */
-.xnav-pop { position: relative; }
-.xnav-pop > summary { list-style: none; }
-.xnav-pop > summary::-webkit-details-marker { display: none; }
-.xnav-pop__btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
-  min-width: 44px; min-height: 44px; padding: 0 .6rem; border-radius: var(--radius-pill);
-  cursor: pointer; color: inherit; font-weight: 700; font-size: var(--fs-sm);
-}
-.xnav-pop__btn svg { width: 18px; height: 18px; }
-.xnav-pop__btn--text { padding: 0 1rem; border: 1px solid currentColor; }
-.xnav-pop__btn:hover { background: rgba(255, 255, 255, .12); }
-.site-head--solid .xnav-pop__btn:hover { background: var(--sand-2); }
-.xnav-pop__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-.site-head:not(.site-head--solid) .xnav-pop__btn:focus-visible { outline-color: var(--focus-on-deep); }
-.xnav-pop__panel {
-  position: absolute; right: 0; top: calc(100% + .5rem); z-index: 60;
-  min-width: 15rem; padding: .5rem; border-radius: var(--radius-control);
-  background: var(--surface); border: 1px solid var(--line); box-shadow: var(--sh-2);
-  display: grid; gap: .15rem; color: var(--ink);
-}
-.xnav-pop__panel > a { display: block; padding: .7rem .85rem; border-radius: 10px; color: var(--ink); font-weight: 700; text-decoration: none; }
-.xnav-pop__panel > a:hover { background: var(--sand-2); }
-.xnav-search .xnav-pop__panel { min-width: 18rem; padding: .75rem 1rem; }
-.xnav-search .navsearch input,
-.site-head:not(.site-head--solid) .xnav-search .navsearch input { width: 100%; color: var(--ink); border-bottom: 1px solid var(--line-strong); padding: .5rem 0; }
-.xnav-search .navsearch input::placeholder { color: var(--text-faint); }
-.nav__actions { gap: .35rem; }
 
 /* --- Footer: six groups, columns that fold on phones ------------------ */
 .foot__group > summary { list-style: none; }
@@ -75,14 +45,3 @@
   .foot__group[open] > summary::after { content: "\2212"; }
   .foot__group .foot__list { padding-bottom: var(--s-4); }
 }
-
-/* --- The canvas header: five spaced-capital links and an Ask Oria pill -- */
-.xnav-links .nav__link { text-transform: uppercase; letter-spacing: .14em; font-size: .8rem; font-weight: 700; }
-.xnav-ask {
-  min-height: 46px; padding: 0 1.5rem; border-radius: var(--radius-pill);
-  background: var(--white); color: var(--ink);
-  text-transform: uppercase; letter-spacing: .14em; font-size: .8rem; font-weight: 700;
-}
-.xnav-ask:hover { background: var(--sand-2); color: var(--ink); }
-.site-head--solid .xnav-ask { background: var(--ink); color: var(--white); }
-.site-head--solid .xnav-ask:hover { background: var(--deep); color: var(--white); }

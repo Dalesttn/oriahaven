@@ -47,7 +47,7 @@ add_action(
 			}
 		}
 
-		// The header's search and For practitioners pop-overs, every page.
+		// The footer's folding columns, every page.
 		wp_enqueue_script( 'oria-v4-nav', "{$uri}/assets/js/v4-nav.js", array(), (string) filemtime( "{$dir}/assets/js/v4-nav.js" ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 
 		// The front page's feeling chips. The page works without it.

@@ -136,6 +136,84 @@ $oria_whens = array(
 	'week'    => __( 'This week', 'oria' ),
 	'any'     => __( 'Any time', 'oria' ),
 );
+/*
+ * The three dropdowns in the concierge bar. Each option is
+ * [value, label, sub-line]. Rendered as a real <select> (the page without
+ * scripting) plus a styled listbox that v4-home.js switches on.
+ */
+$oria_now  = (int) current_time( 'timestamp' );
+$oria_dow  = (int) gmdate( 'N', $oria_now ); // 1 Mon .. 7 Sun
+$oria_sat  = 6 === $oria_dow ? $oria_now : ( 7 === $oria_dow ? $oria_now - DAY_IN_SECONDS : $oria_now + ( 6 - $oria_dow ) * DAY_IN_SECONDS );
+$oria_sun  = 7 === $oria_dow ? $oria_now : $oria_sat + DAY_IN_SECONDS;
+$oria_dd_when = array(
+	array( 'today', __( 'Today', 'oria' ), gmdate( 'l j M', $oria_now ) ),
+	/* translators: 1: Saturday's date, 2: Sunday's date */
+	array( 'this weekend', __( 'This weekend', 'oria' ), 7 === $oria_dow ? gmdate( 'l j M', $oria_now ) : sprintf( __( 'Sat %1$s – Sun %2$s', 'oria' ), gmdate( 'j', $oria_sat ), gmdate( 'j M', $oria_sun ) ) ),
+	/* translators: %s: Sunday's date */
+	array( 'this week', __( 'This week', 'oria' ), sprintf( __( 'Now until Sun %s', 'oria' ), gmdate( 'j M', $oria_sun ) ) ),
+	array( 'any time', __( 'Any time', 'oria' ), __( 'No rush', 'oria' ) ),
+);
+// "Anywhere in Perth" counts Perth only, not every city in the directory.
+$oria_city_total = $oria_total;
+if ( $oria_city && function_exists( '\Oria\Core\Cities\filter_ids' ) ) {
+	$oria_city_total = count(
+		\Oria\Core\Cities\filter_ids(
+			get_posts( array( 'post_type' => 'listing', 'post_status' => 'publish', 'posts_per_page' => -1, 'fields' => 'ids', 'no_found_rows' => true ) ),
+			$oria_city
+		)
+	);
+}
+$oria_dd_where = array(
+	/* translators: %s: city name */
+	array( '', sprintf( __( 'Anywhere in %s', 'oria' ), $oria_cname ), sprintf( _n( '%s place', '%s places', $oria_city_total, 'oria' ), number_format_i18n( $oria_city_total ) ) ),
+);
+foreach ( $oria_regions as $oria_r ) {
+	$oria_rn = count(
+		get_posts(
+			array(
+				'post_type'      => 'listing',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'tax_query'      => array( array( 'taxonomy' => 'area', 'field' => 'term_id', 'terms' => $oria_r->term_id, 'include_children' => true ) ),
+			)
+		)
+	);
+	if ( $oria_rn ) {
+		/* translators: %s: number of places */
+		$oria_dd_where[] = array( tname( $oria_r ), tname( $oria_r ), sprintf( _n( '%s place', '%s places', $oria_rn, 'oria' ), number_format_i18n( $oria_rn ) ) );
+	}
+}
+$oria_dd = static function ( string $id, string $label, array $options, int $selected, string $kind ): void {
+	$cur = $options[ $selected ];
+	?>
+	<div class="xh-bar__field xh-dd" data-xh-dd="<?php echo esc_attr( $kind ); ?>">
+		<span class="xh-bar__label" id="<?php echo esc_attr( $id ); ?>-label"><?php echo esc_html( $label ); ?></span>
+		<button type="button" class="xh-dd__btn" id="<?php echo esc_attr( $id ); ?>-btn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="<?php echo esc_attr( $id ); ?>-label <?php echo esc_attr( $id ); ?>-btn" hidden>
+			<span class="xh-dd__value"><?php echo esc_html( $cur[1] ); ?></span>
+			<svg class="xh-dd__chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg>
+		</button>
+		<ul class="xh-dd__list" id="<?php echo esc_attr( $id ); ?>-list" role="listbox" tabindex="-1" aria-labelledby="<?php echo esc_attr( $id ); ?>-label" hidden>
+			<?php foreach ( $options as $i => $o ) : ?>
+				<li class="xh-dd__opt" role="option" id="<?php echo esc_attr( $id . '-o' . $i ); ?>" data-value="<?php echo esc_attr( $o[0] ); ?>" aria-selected="<?php echo $i === $selected ? 'true' : 'false'; ?>">
+					<span class="xh-dd__name"><?php echo esc_html( $o[1] ); ?></span>
+					<?php if ( '' !== (string) $o[2] ) : ?>
+						<span class="xh-dd__sub"><?php echo esc_html( $o[2] ); ?></span>
+					<?php endif; ?>
+					<svg class="xh-dd__tick" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 7.5 2.5 2.5L11 4.5"/></svg>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+		<?php // Without scripting: the plain select, which the script hides. ?>
+		<select class="xh-bar__select xh-dd__native" aria-labelledby="<?php echo esc_attr( $id ); ?>-label" data-xh-<?php echo esc_attr( $kind ); ?>>
+			<?php foreach ( $options as $i => $o ) : ?>
+				<option value="<?php echo esc_attr( $o[0] ); ?>"<?php selected( $i, $selected ); ?>><?php echo esc_html( $o[1] ); ?></option>
+			<?php endforeach; ?>
+		</select>
+	</div>
+	<?php
+};
 $oria_srcset = static fn( string $base, array $w ): string => sprintf( '%s %dw, %s %dw', esc_url( get_stylesheet_directory_uri() . "/assets/img/{$base}-{$w[0]}.webp" ), $w[0], esc_url( get_stylesheet_directory_uri() . "/assets/img/{$base}-{$w[1]}.webp" ), $w[1] );
 
 // Four ways in: a line each, and at most two practices named. Counts
@@ -376,28 +454,11 @@ $oria_short = static function ( string $name ): string {
 				<?php endforeach; ?>
 			</div>
 			<div class="xh-bar">
-				<div class="xh-bar__field">
-					<span class="xh-bar__label" id="xh-help-label"><?php esc_html_e( 'What would help?', 'oria' ); ?></span>
-					<output class="xh-bar__value" aria-labelledby="xh-help-label" data-xh-help><?php echo esc_html( $oria_moods[0][2] ); ?></output>
-				</div>
-				<div class="xh-bar__field">
-					<label class="xh-bar__label" for="xh-where"><?php esc_html_e( 'Where are you?', 'oria' ); ?></label>
-					<select class="xh-bar__select" id="xh-where" data-xh-where>
-						<?php /* translators: %s: city name */ ?>
-						<option value=""><?php printf( esc_html__( 'Anywhere in %s', 'oria' ), esc_html( $oria_cname ) ); ?></option>
-						<?php foreach ( $oria_regions as $oria_r ) : ?>
-							<option value="<?php echo esc_attr( tname( $oria_r ) ); ?>"><?php echo esc_html( tname( $oria_r ) ); ?></option>
-						<?php endforeach; ?>
-					</select>
-				</div>
-				<div class="xh-bar__field">
-					<label class="xh-bar__label" for="xh-when"><?php esc_html_e( 'When?', 'oria' ); ?></label>
-					<select class="xh-bar__select" id="xh-when" data-xh-when>
-						<?php foreach ( $oria_whens as $oria_wk => $oria_wl ) : ?>
-							<option value="<?php echo esc_attr( strtolower( $oria_wl ) ); ?>"<?php selected( 'weekend', $oria_wk ); ?>><?php echo esc_html( $oria_wl ); ?></option>
-						<?php endforeach; ?>
-					</select>
-				</div>
+				<?php
+				$oria_dd( 'xh-help', __( 'What would help?', 'oria' ), array_map( static fn( array $m ): array => array( $m[0], $m[2], $m[1] ), $oria_moods ), 0, 'help' );
+				$oria_dd( 'xh-where', __( 'Where are you?', 'oria' ), $oria_dd_where, 0, 'where' );
+				$oria_dd( 'xh-when', __( 'When?', 'oria' ), $oria_dd_when, 1, 'when' );
+				?>
 				<?php
 				// The sentence Ask Oria receives. Written here for the page without
 				// scripting; v4-home.js rewrites it from the choices on submit.

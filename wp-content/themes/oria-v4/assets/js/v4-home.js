@@ -3,8 +3,10 @@
  * the page is complete -- the Calm picture, a plain Ask Oria form, every
  * link crawlable.
  *
- *  - Mood chips: swap the hero picture and set "What would help?"; the
- *    bar's choices become the sentence Ask Oria receives on submit.
+ *  - Mood chips and the three styled dropdowns (What would help? / Where
+ *    are you? / When?): the choices become the sentence Ask Oria receives
+ *    on submit. Chips swap the hero picture and stay in step with the
+ *    first dropdown.
  *    Only Calm loads with the page; the rest arrive once it is idle, or on
  *    the first tap of their chip.
  *  - Perth Reset: hovering or focusing a stop shows its picture.
@@ -13,20 +15,21 @@
 (function () {
   "use strict";
 
-  /* --- Mood chips ----------------------------------------------------- */
+  /* --- The concierge: chips, dropdowns and the Ask Oria sentence ------ */
   var hero = document.querySelector("[data-xh-hero]");
   if (hero) {
     var chips = hero.querySelectorAll("[data-feel]");
     var pics = hero.querySelectorAll("[data-feel-pic]");
     var form = hero.querySelector("[data-xh-concierge]");
-    var help = hero.querySelector("[data-xh-help]");
-    var where = hero.querySelector("[data-xh-where]");
-    var when = hero.querySelector("[data-xh-when]");
+    var help = hero.querySelector("select[data-xh-help]");
+    var where = hero.querySelector("select[data-xh-where]");
+    var when = hero.querySelector("select[data-xh-when]");
     var q = hero.querySelector("[data-xh-q]");
     var say = chips.length ? chips[0].getAttribute("data-feel-say") : "";
+    var dds = {};
 
     // The sentence Ask Oria gets: what would help, where, when --
-    // "Somewhere calm to switch off in Fremantle this weekend".
+    // "Somewhere calm to switch off in Fremantle & South this weekend".
     var compose = function () {
       var parts = [say];
       if (where && where.value) parts.push("in " + where.value);
@@ -52,24 +55,108 @@
       }
     });
 
-    chips.forEach(function (chip) {
-      chip.addEventListener("click", function () {
-        var feel = chip.getAttribute("data-feel");
-        chips.forEach(function (c) { c.setAttribute("aria-pressed", c === chip ? "true" : "false"); });
-        pics.forEach(function (p) {
-          var on = p.getAttribute("data-feel-pic") === feel;
-          if (on) load(p);
-          p.classList.toggle("is-on", on);
-        });
-        say = chip.getAttribute("data-feel-say") || say;
-        if (help) {
-          help.textContent = chip.getAttribute("data-feel-help") || "";
-          help.classList.remove("is-updated");
-          void help.offsetWidth; // restart the small settle animation
-          help.classList.add("is-updated");
-        }
-        compose();
+    var pickFeel = function (feel) {
+      chips.forEach(function (c) {
+        var on = c.getAttribute("data-feel") === feel;
+        c.setAttribute("aria-pressed", on ? "true" : "false");
+        if (on) say = c.getAttribute("data-feel-say") || say;
       });
+      pics.forEach(function (p) {
+        var on = p.getAttribute("data-feel-pic") === feel;
+        if (on) load(p);
+        p.classList.toggle("is-on", on);
+      });
+      if (dds.help) dds.help.set(feel, true);
+      compose();
+    };
+    chips.forEach(function (chip) {
+      chip.addEventListener("click", function () { pickFeel(chip.getAttribute("data-feel")); });
+    });
+
+    /*
+     * The styled dropdowns: a button that opens a listbox. Arrow keys move,
+     * Enter or Space chooses, Escape closes, Home and End jump. The native
+     * <select> stays in the page, hidden, as the single source of the value.
+     */
+    var openDd = null;
+    hero.querySelectorAll("[data-xh-dd]").forEach(function (box) {
+      var kind = box.getAttribute("data-xh-dd");
+      var btn = box.querySelector(".xh-dd__btn");
+      var list = box.querySelector(".xh-dd__list");
+      var value = box.querySelector(".xh-dd__value");
+      var native = box.querySelector(".xh-dd__native");
+      var opts = Array.prototype.slice.call(box.querySelectorAll(".xh-dd__opt"));
+      var active = Math.max(0, native.selectedIndex);
+      if (!btn || !list || !native) return;
+
+      btn.hidden = false;
+      native.hidden = true;
+      box.classList.add("is-enhanced");
+
+      var mark = function (i) {
+        active = i;
+        opts.forEach(function (o, j) { o.classList.toggle("is-active", j === i); });
+        list.setAttribute("aria-activedescendant", opts[i].id);
+        opts[i].scrollIntoView({ block: "nearest" });
+      };
+      var close = function (focusBtn) {
+        list.hidden = true;
+        btn.setAttribute("aria-expanded", "false");
+        box.classList.remove("is-open");
+        if (openDd === api) openDd = null;
+        if (focusBtn) btn.focus();
+      };
+      var open = function () {
+        if (openDd && openDd !== api) openDd.close(false);
+        list.hidden = false;
+        btn.setAttribute("aria-expanded", "true");
+        box.classList.add("is-open");
+        openDd = api;
+        mark(Math.max(0, native.selectedIndex));
+        list.focus({ preventScroll: true });
+      };
+      var set = function (val, quiet) {
+        var i = opts.findIndex(function (o) { return o.getAttribute("data-value") === val; });
+        if (i < 0) return;
+        opts.forEach(function (o, j) { o.setAttribute("aria-selected", j === i ? "true" : "false"); });
+        value.textContent = opts[i].querySelector(".xh-dd__name").textContent;
+        native.selectedIndex = i;
+        value.classList.remove("is-updated");
+        void value.offsetWidth; // restart the small settle animation
+        value.classList.add("is-updated");
+        if (!quiet) native.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      var choose = function (i) {
+        set(opts[i].getAttribute("data-value"), false);
+        close(true);
+      };
+      var api = { close: close, set: set };
+      dds[kind] = api;
+
+      btn.addEventListener("click", function () { if (list.hidden) open(); else close(true); });
+      btn.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); open(); }
+      });
+      list.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown") { e.preventDefault(); mark(Math.min(opts.length - 1, active + 1)); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); mark(Math.max(0, active - 1)); }
+        else if (e.key === "Home") { e.preventDefault(); mark(0); }
+        else if (e.key === "End") { e.preventDefault(); mark(opts.length - 1); }
+        else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(active); }
+        else if (e.key === "Escape") { e.preventDefault(); close(true); }
+        else if (e.key === "Tab") { close(false); }
+      });
+      opts.forEach(function (o, i) {
+        o.addEventListener("mousemove", function () { if (active !== i) mark(i); });
+        o.addEventListener("click", function () { choose(i); });
+      });
+      native.addEventListener("change", function () {
+        if (kind === "help") pickFeel(native.value);
+        else compose();
+      });
+    });
+    document.addEventListener("click", function (e) {
+      if (openDd && !e.target.closest(".xh-dd.is-open")) openDd.close(false);
     });
   }
 

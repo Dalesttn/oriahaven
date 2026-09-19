@@ -31,11 +31,14 @@
 .xh-hero a:focus-visible { outline-color: var(--focus-on-deep); }
 
 /* --- 1. Hero: the canvas layout ------------------------------------- */
+/* Edge to edge and the full height of the screen, under the parent's
+   utility bar; the nav pill floats over the picture. */
 .xh-hero {
   position: relative;
-  margin: var(--s-3) var(--gutter) 0;
-  border-radius: var(--radius-section);
-  min-height: clamp(36rem, 92vh, 56rem);
+  margin: 0;
+  border-radius: 0;
+  min-height: calc(100vh - var(--topbar-h, 44px));
+  min-height: calc(100svh - var(--topbar-h, 44px));
   background: var(--deep-2);
   display: flex; flex-direction: column; justify-content: space-between;
 }
@@ -87,10 +90,11 @@
 .xh-feel__chip:hover { border-color: var(--deep); }
 .xh-feel__chip[aria-pressed="true"] { background: var(--deep); border-color: var(--deep); color: var(--white); }
 .xh-bar {
-  display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr) auto; align-items: stretch;
-  border: 1px solid var(--line-strong); border-radius: var(--radius-card); overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr) auto; align-items: stretch;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-card);
+  background: var(--white);
 }
-.xh-bar__field { display: grid; gap: .45rem; align-content: center; padding: .9rem 1.5rem; border-right: 1px solid var(--line); min-width: 0; }
+.xh-bar__field { position: relative; display: grid; gap: .3rem; align-content: center; padding: .85rem 1.5rem; border-right: 1px solid var(--line); min-width: 0; }
 .xh-bar__label { font-size: .75rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--text-soft); }
 .xh-bar__value { font-size: 1.2rem; font-weight: 600; color: var(--ink); }
 .xh-bar__value.is-updated { animation: xh-settle .4s var(--ease); }
@@ -108,6 +112,57 @@
   background: var(--deep); color: var(--white); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: .85rem;
 }
 .xh-bar__go:hover { background: var(--ink); color: var(--white); }
+/* --- The styled dropdowns ----------------------------------------------- */
+.xh-dd__btn {
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  width: 100%; min-height: 40px; padding: .15rem .6rem .15rem 0; margin: 0 0 0 -.1rem;
+  border: 0; border-radius: 10px; background: transparent; color: var(--ink);
+  font: inherit; font-size: 1.2rem; font-weight: 600; text-align: left; cursor: pointer;
+}
+.xh-dd__value { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xh-dd__value.is-updated { animation: xh-settle .4s var(--ease); }
+.xh-dd__chev {
+  flex: none; width: 30px; height: 30px; padding: 8px; border-radius: 50%;
+  background: var(--sand-2); color: var(--deep);
+  transition: transform var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.xh-dd.is-enhanced { cursor: pointer; }
+.xh-dd.is-enhanced:hover { background: var(--sand-2); }
+.xh-dd.is-enhanced:hover .xh-dd__chev { background: var(--white); }
+.xh-dd.is-open { background: var(--sand-2); }
+.xh-dd.is-open .xh-dd__chev { transform: rotate(180deg); background: var(--deep); color: var(--white); }
+.xh-bar .xh-dd:first-child { border-radius: calc(var(--radius-card) - 1px) 0 0 calc(var(--radius-card) - 1px); }
+.xh-dd__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+
+.xh-dd__list {
+  position: absolute; z-index: 40; left: .5rem; top: calc(100% + .5rem);
+  min-width: calc(100% - 1rem); width: max-content; max-width: 22rem; max-height: 22rem; overflow-y: auto;
+  margin: 0; padding: .4rem; list-style: none;
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-control);
+  box-shadow: 0 2px 6px rgba(8,34,32,.06), 0 22px 48px rgba(8,34,32,.16);
+  animation: xh-dd-in .18s var(--ease-out);
+}
+.xh-dd__list:focus { outline: none; }
+.xh-dd__list:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@keyframes xh-dd-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.xh-dd__opt {
+  position: relative; display: grid; gap: .1rem;
+  padding: .7rem 2.6rem .7rem .9rem; border-radius: 10px; cursor: pointer; min-height: 44px;
+}
+.xh-dd__name { font-weight: 700; color: var(--ink); }
+.xh-dd__sub { font-size: .82rem; color: var(--text-faint); }
+.xh-dd__tick { position: absolute; right: .85rem; top: 50%; width: 16px; height: 16px; margin-top: -8px; color: var(--deep); opacity: 0; }
+.xh-dd__opt.is-active { background: var(--sand-2); }
+.xh-dd__opt[aria-selected="true"] .xh-dd__name { color: var(--deep); }
+.xh-dd__opt[aria-selected="true"] .xh-dd__tick { opacity: 1; }
+@media (max-width: 40rem) {
+  .xh-dd__list { left: 0; right: 0; width: auto; max-width: none; min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xh-dd__list, .xh-dd__value.is-updated { animation: none; }
+  .xh-dd__chev { transition: none; }
+}
+
 @media (max-width: 60rem) {
   .xh-bar { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .xh-bar__field:first-child { grid-column: 1 / -1; border-bottom: 1px solid var(--line); border-right: 0; }
@@ -124,6 +179,7 @@
   .xh-feel::-webkit-scrollbar { display: none; }
   .xh-bar { grid-template-columns: minmax(0, 1fr); }
   .xh-bar__field { border-right: 0; border-bottom: 1px solid var(--line); }
+  .xh-bar .xh-dd:first-child { border-radius: calc(var(--radius-card) - 1px) calc(var(--radius-card) - 1px) 0 0; }
   .xh-hero__actions .btn { flex: 1 1 auto; justify-content: center; }
 }
 
@@ -313,7 +369,6 @@
 /* Phones: the hero title stays within three lines. */
 @media (max-width: 40rem) {
   .xh-hero__title { font-size: min(3.1rem, 12.5vw); }
-  .xh-hero { min-height: 30rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
