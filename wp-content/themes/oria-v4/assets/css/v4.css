@@ -75,3 +75,14 @@
   .foot__group[open] > summary::after { content: "\2212"; }
   .foot__group .foot__list { padding-bottom: var(--s-4); }
 }
+
+/* --- The canvas header: five spaced-capital links and an Ask Oria pill -- */
+.xnav-links .nav__link { text-transform: uppercase; letter-spacing: .14em; font-size: .8rem; font-weight: 700; }
+.xnav-ask {
+  min-height: 46px; padding: 0 1.5rem; border-radius: var(--radius-pill);
+  background: var(--white); color: var(--ink);
+  text-transform: uppercase; letter-spacing: .14em; font-size: .8rem; font-weight: 700;
+}
+.xnav-ask:hover { background: var(--sand-2); color: var(--ink); }
+.site-head--solid .xnav-ask { background: var(--ink); color: var(--white); }
+.site-head--solid .xnav-ask:hover { background: var(--deep); color: var(--white); }

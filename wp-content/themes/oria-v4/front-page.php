@@ -109,11 +109,32 @@ $oria_sentence = static function ( string $text, int $max = 40 ): string {
  * requested with the page; the others load once the page is idle.
  */
 $oria_moods = array(
-	array( 'calm', __( 'Calm', 'oria' ), 'mood-calm', array( 960, 1920 ), __( 'Somewhere quiet to slow down this week', 'oria' ) ),
-	array( 'restored', __( 'Restored', 'oria' ), 'mood-restored', array( 960, 1400 ), __( 'A massage or sauna near me this weekend', 'oria' ) ),
-	array( 'energised', __( 'Energised', 'oria' ), 'mood-energised', array( 960, 1400 ), __( 'A class that gets me moving before work', 'oria' ) ),
-	array( 'connected', __( 'Connected', 'oria' ), 'mood-connected', array( 960, 1920 ), __( 'A group or workshop to meet people at', 'oria' ) ),
-	array( 'away', __( 'Somewhere else', 'oria' ), 'mood-away', array( 960, 1280 ), __( 'A day out of the city, somewhere by the water', 'oria' ) ),
+	// id, chip (the visitor's words), what would help, image base, widths, the sentence for Ask Oria
+	array( 'calm', __( 'I need to switch off', 'oria' ), __( 'Calm', 'oria' ), 'mood-meditation', array( 960, 1920 ), __( 'Somewhere calm to switch off', 'oria' ) ),
+	array( 'recovery', __( 'My body feels tight', 'oria' ), __( 'Recovery', 'oria' ), 'mood-restored', array( 960, 1400 ), __( 'A massage, sauna or stretch session', 'oria' ) ),
+	array( 'energy', __( 'I need more energy', 'oria' ), __( 'Energy', 'oria' ), 'mood-energised', array( 960, 1400 ), __( 'A class that gets me moving', 'oria' ) ),
+	array( 'connection', __( 'I want to meet people', 'oria' ), __( 'Connection', 'oria' ), 'mood-connected', array( 960, 1920 ), __( 'A group class or workshop to meet people at', 'oria' ) ),
+	array( 'escape', __( 'Something new this weekend', 'oria' ), __( 'Somewhere new', 'oria' ), 'mood-away', array( 960, 1280 ), __( 'Something new to try', 'oria' ) ),
+);
+// Where: the city's own regions, real areas only.
+$oria_regions = function_exists( '\Oria\Core\Taxonomies\regions' ) ? \Oria\Core\Taxonomies\regions() : array();
+$oria_regions = is_wp_error( $oria_regions ) ? array() : $oria_regions;
+if ( $oria_city && function_exists( '\Oria\Core\Cities\for_area' ) ) {
+	$oria_regions = array_values(
+		array_filter(
+			$oria_regions,
+			static function ( $rt ) use ( $oria_city ): bool {
+				$rc = \Oria\Core\Cities\for_area( $rt );
+				return ! is_array( $rc ) || ( $rc['slug'] ?? '' ) === ( $oria_city['slug'] ?? '' );
+			}
+		)
+	);
+}
+$oria_whens = array(
+	'today'   => __( 'Today', 'oria' ),
+	'weekend' => __( 'This weekend', 'oria' ),
+	'week'    => __( 'This week', 'oria' ),
+	'any'     => __( 'Any time', 'oria' ),
 );
 $oria_srcset = static fn( string $base, array $w ): string => sprintf( '%s %dw, %s %dw', esc_url( get_stylesheet_directory_uri() . "/assets/img/{$base}-{$w[0]}.webp" ), $w[0], esc_url( get_stylesheet_directory_uri() . "/assets/img/{$base}-{$w[1]}.webp" ), $w[1] );
 
@@ -308,51 +329,82 @@ $oria_short = static function ( string $name ): string {
 		<?php foreach ( $oria_moods as $oria_i => $oria_m ) : ?>
 			<?php if ( 0 === $oria_i ) : ?>
 				<img class="xh-hero__pic is-on" data-feel-pic="<?php echo esc_attr( $oria_m[0] ); ?>"
-					src="<?php echo esc_url( $oria_v4img( "{$oria_m[2]}-{$oria_m[3][1]}.webp" ) ); ?>"
-					srcset="<?php echo $oria_srcset( $oria_m[2], $oria_m[3] ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside ?>"
-					sizes="100vw" width="1920" height="1080" alt="" fetchpriority="high" decoding="async">
+					src="<?php echo esc_url( $oria_v4img( "{$oria_m[3]}-{$oria_m[4][1]}.webp" ) ); ?>"
+					srcset="<?php echo $oria_srcset( $oria_m[3], $oria_m[4] ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside ?>"
+					sizes="100vw" width="1920" height="1280" alt="" fetchpriority="high" decoding="async">
 			<?php else : ?>
 				<?php // No src: loaded after the page has painted, or on the first tap (v4-home.js). ?>
 				<img class="xh-hero__pic" data-feel-pic="<?php echo esc_attr( $oria_m[0] ); ?>"
-					data-src="<?php echo esc_url( $oria_v4img( "{$oria_m[2]}-{$oria_m[3][1]}.webp" ) ); ?>"
-					data-srcset="<?php echo $oria_srcset( $oria_m[2], $oria_m[3] ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside ?>"
+					data-src="<?php echo esc_url( $oria_v4img( "{$oria_m[3]}-{$oria_m[4][1]}.webp" ) ); ?>"
+					data-srcset="<?php echo $oria_srcset( $oria_m[3], $oria_m[4] ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside ?>"
 					sizes="100vw" alt="" decoding="async">
 			<?php endif; ?>
 		<?php endforeach; ?>
 	</div>
 	<div class="wrap xh-hero__copy on-deep">
-		<p class="micro xh-hero__eyebrow">
+		<p class="xh-hero__eyebrow">
 			<?php
 			/* translators: %s: city name */
-			printf( esc_html__( '%s’s wellness guide', 'oria' ), esc_html( $oria_cname ) );
+			printf( esc_html__( '%s’s living wellness guide', 'oria' ), esc_html( $oria_cname ) );
 			?>
 		</p>
 		<h1 class="display xh-hero__title" id="xh-hero-title"><?php esc_html_e( 'How do you want to feel today?', 'oria' ); ?></h1>
-		<p class="lede xh-hero__lede"><?php esc_html_e( 'Begin with how you feel. Leave with somewhere to go.', 'oria' ); ?></p>
+		<p class="lede xh-hero__lede">
+			<?php
+			/* translators: %s: city name */
+			printf( esc_html__( 'Find somewhere in %s to move, recover, connect or simply stop for a while.', 'oria' ), esc_html( $oria_cname ) );
+			?>
+		</p>
+		<div class="xh-actions xh-hero__actions">
+			<a class="btn xh-btn-white" href="#concierge"><?php esc_html_e( 'Find my reset', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
+			<a class="btn xh-btn-outline" href="<?php echo esc_url( home_url( '/wellness-map/' ) ); ?>"><?php esc_html_e( 'Explore nearby', 'oria' ); ?></a>
+		</div>
 	</div>
 
 	<!-- 2. The concierge -->
 	<div class="wrap xh-concierge-wrap">
-		<form class="xh-concierge" id="concierge" action="<?php echo esc_url( home_url( '/ask/' ) ); ?>" method="get">
+		<form class="xh-concierge" id="concierge" action="<?php echo esc_url( home_url( '/ask/' ) ); ?>" method="get" data-xh-concierge>
 			<div class="xh-concierge__top">
 				<h2 class="xh-concierge__title"><?php esc_html_e( 'What would make today feel better?', 'oria' ); ?></h2>
-				<div class="xh-feel" role="group" aria-label="<?php esc_attr_e( 'How you want to feel', 'oria' ); ?>">
-					<?php foreach ( $oria_moods as $oria_i => $oria_m ) : ?>
-						<button type="button" class="xh-feel__chip" data-feel="<?php echo esc_attr( $oria_m[0] ); ?>" data-feel-say="<?php echo esc_attr( $oria_m[4] ); ?>" aria-pressed="<?php echo 0 === $oria_i ? 'true' : 'false'; ?>">
-							<?php echo esc_html( $oria_m[1] ); ?>
-						</button>
-					<?php endforeach; ?>
-				</div>
+				<a class="xh-link" href="<?php echo esc_url( home_url( '/ask/' ) ); ?>"><?php esc_html_e( 'Or tell Oria in your own words', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
 			</div>
-			<div class="xh-concierge__row">
-				<div class="xh-concierge__field">
-					<label class="xh-concierge__label" for="xh-q"><?php esc_html_e( 'Or tell Oria in your own words', 'oria' ); ?></label>
-					<input class="xh-concierge__input" type="text" id="xh-q" name="q" maxlength="400" autocomplete="off"
-						placeholder="<?php echo esc_attr( $oria_moods[0][4] ); ?>">
-				</div>
-				<button class="btn btn--dark xh-concierge__go" type="submit"><?php esc_html_e( 'Ask Oria', 'oria' ); ?></button>
+			<div class="xh-feel" role="group" aria-label="<?php esc_attr_e( 'How you feel', 'oria' ); ?>">
+				<?php foreach ( $oria_moods as $oria_i => $oria_m ) : ?>
+					<button type="button" class="xh-feel__chip" data-feel="<?php echo esc_attr( $oria_m[0] ); ?>" data-feel-help="<?php echo esc_attr( $oria_m[2] ); ?>" data-feel-say="<?php echo esc_attr( $oria_m[5] ); ?>" aria-pressed="<?php echo 0 === $oria_i ? 'true' : 'false'; ?>">
+						<?php echo esc_html( $oria_m[1] ); ?>
+					</button>
+				<?php endforeach; ?>
 			</div>
-			<a class="xh-link xh-concierge__browse" href="<?php echo esc_url( \Oria\Core\Explore\base_url( $oria_city ) ); ?>"><?php esc_html_e( 'Or browse everything', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
+			<div class="xh-bar">
+				<div class="xh-bar__field">
+					<span class="xh-bar__label" id="xh-help-label"><?php esc_html_e( 'What would help?', 'oria' ); ?></span>
+					<output class="xh-bar__value" aria-labelledby="xh-help-label" data-xh-help><?php echo esc_html( $oria_moods[0][2] ); ?></output>
+				</div>
+				<div class="xh-bar__field">
+					<label class="xh-bar__label" for="xh-where"><?php esc_html_e( 'Where are you?', 'oria' ); ?></label>
+					<select class="xh-bar__select" id="xh-where" data-xh-where>
+						<?php /* translators: %s: city name */ ?>
+						<option value=""><?php printf( esc_html__( 'Anywhere in %s', 'oria' ), esc_html( $oria_cname ) ); ?></option>
+						<?php foreach ( $oria_regions as $oria_r ) : ?>
+							<option value="<?php echo esc_attr( tname( $oria_r ) ); ?>"><?php echo esc_html( tname( $oria_r ) ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+				<div class="xh-bar__field">
+					<label class="xh-bar__label" for="xh-when"><?php esc_html_e( 'When?', 'oria' ); ?></label>
+					<select class="xh-bar__select" id="xh-when" data-xh-when>
+						<?php foreach ( $oria_whens as $oria_wk => $oria_wl ) : ?>
+							<option value="<?php echo esc_attr( strtolower( $oria_wl ) ); ?>"<?php selected( 'weekend', $oria_wk ); ?>><?php echo esc_html( $oria_wl ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+				<?php
+				// The sentence Ask Oria receives. Written here for the page without
+				// scripting; v4-home.js rewrites it from the choices on submit.
+				?>
+				<input type="hidden" name="q" value="<?php echo esc_attr( $oria_moods[0][5] . ' ' . strtolower( $oria_whens['weekend'] ) ); ?>" data-xh-q>
+				<button class="btn xh-bar__go" type="submit"><?php esc_html_e( 'Find my reset', 'oria' ); ?></button>
+			</div>
 		</form>
 	</div>
 </section>

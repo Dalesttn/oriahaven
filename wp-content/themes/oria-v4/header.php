@@ -37,11 +37,10 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 
 <?php
 /*
- * v4 (design review, 19 Sep 2026): one header, not two. The parent's dark
- * utility bar is gone; its search and practitioner links moved into the
- * nav itself below -- search behind an icon (the front page's concierge
- * already does discovery), Claim and List inside "For practitioners".
- * The drawer and footer keep both links for phones.
+ * v4 (19 Sep 2026): one header, not two, laid out as the design canvas
+ * has it -- the logo, five links and an Ask Oria button in one floating
+ * pill. The parent's utility bar is gone; List your practice and Claim
+ * your business live in the drawer and the footer.
  */
 ?>
 <header class="site-head<?php echo $oria_has_hero ? '' : ' site-head--solid'; ?>">
@@ -52,72 +51,25 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 		</a>
 
 		<?php
-		wp_nav_menu(
-			array(
-				'theme_location' => 'primary',
-				'container'      => false,
-				'menu_class'     => 'nav__links',
-				'fallback_cb'    => static function (): void {
-					// Sensible default until a menu is assigned in the admin.
-					echo '<ul class="nav__links">';
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Explore', 'oria' ) );
-					/*
-					 * Experiences carries a submenu. The markup matches what WordPress's
-					 * own walker emits for a nested menu item -- menu-item-has-children
-					 * on the li, ul.sub-menu inside -- so the CSS and the JS enhancement
-					 * work the same whether this fallback renders or an admin-built menu
-					 * does. The parent stays a real link to /practices/; opening the
-					 * panel is never the only way past it.
-					 */
-					echo '<li class="menu-item-has-children">';
-					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( function_exists( '\Oria\Core\PracticesIndex\url' ) ? \Oria\Core\PracticesIndex\url() : home_url( '/practices/' ) ), esc_html__( 'Experiences', 'oria' ) );
-					echo '<ul class="sub-menu">';
-					/*
-					 * Ask first: describing what you want is the shortest way in,
-					 * and browsing is what the rest of this list is for.
-					 *
-					 * "Wellness map" replaced "All experiences", which pointed at
-					 * PracticesIndex\url() -- the very same URL as its own parent
-					 * above it. The dropdown was carrying a duplicate link, and the
-					 * index is still one click away through that parent, so this
-					 * cost an entry point that was never really there.
-					 */
-					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/ask/' ) ), esc_html__( 'Ask Oria', 'oria' ) );
-					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/wellness-map/' ) ), esc_html__( 'Wellness map', 'oria' ) );
-					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );
-					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
-					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
-					echo '</ul></li>';
-					/*
-					 * Discover: what to do at home, as opposed to Explore, which is
-					 * where to go. Two children now that the apps hub exists. The
-					 * parent still points at a real page rather than nowhere -- a top
-					 * level item is never a dead end -- and the apps hub is the
-					 * better destination of the two, being an index rather than a
-					 * single subject.
-					 */
-					echo '<li class="menu-item-has-children">';
-					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( get_post_type_archive_link( 'wellness_app' ) ?: home_url( '/apps/' ) ), esc_html__( 'Discover', 'oria' ) );
-					echo '<ul class="sub-menu">';
-					printf( '<li><a href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'wellness_app' ) ?: home_url( '/apps/' ) ), esc_html__( 'Apps', 'oria' ) );
-					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Singing bowls', 'oria' ) );
-					// Wellness Trends: only once one is published, so the menu never
-					// sends anyone to an empty hub.
-					if ( function_exists( '\Oria\Core\Trends\published' ) && \Oria\Core\Trends\published() ) {
-						printf( '<li><a href="%s">%s</a></li>', esc_url( \Oria\Core\Trends\hub_url() ), esc_html__( 'Wellness Trends', 'oria' ) );
-					}
-					echo '</ul></li>';
-					// Best Of: the editors' shortlists. A hub, not a dropdown, until
-					// there are enough guides for a second level to earn its place.
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Best Of', 'oria' ) );
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( 'Workshops/Events', 'oria' ) );
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
-					echo '</ul>';
-				},
-			)
+		/*
+		 * v4 (canvas layout, 19 Sep 2026): five plain links, no dropdowns.
+		 * The full admin menu still renders in the drawer below, so every
+		 * page it lists stays one tap away on a phone and in the HTML.
+		 */
+		$oria_v4_city = function_exists( '\Oria\Core\Cities\current' ) ? \Oria\Core\Cities\current() : null;
+		$oria_v4_nav  = array(
+			array( function_exists( '\Oria\Core\Explore\base_url' ) ? \Oria\Core\Explore\base_url( $oria_v4_city ) : home_url( '/explore/' ), __( 'Explore', 'oria' ) ),
+			array( home_url( '/journeys/' ), __( 'Journeys', 'oria' ) ),
+			array( get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ), __( 'What’s On', 'oria' ) ),
+			array( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ), __( 'Best Of', 'oria' ) ),
+			array( home_url( '/journal/' ), __( 'Field Notes', 'oria' ) ),
 		);
 		?>
+		<ul class="nav__links xnav-links">
+			<?php foreach ( $oria_v4_nav as $oria_v4_l ) : ?>
+				<li><a class="nav__link" href="<?php echo esc_url( $oria_v4_l[0] ); ?>"><?php echo esc_html( $oria_v4_l[1] ); ?></a></li>
+			<?php endforeach; ?>
+		</ul>
 
 		<div class="nav__actions">
 			<?php
@@ -135,32 +87,11 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 			 * likely to have been built.
 			 */
 			?>
-			<details class="xnav-pop xnav-search">
-				<summary class="xnav-pop__btn" aria-label="<?php esc_attr_e( 'Search', 'oria' ); ?>">
-					<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M12.2 12.2 16 16"/></svg>
-				</summary>
-				<div class="xnav-pop__panel">
-					<span class="navsearch">
-						<label class="screen-reader-text" for="navSearch"><?php esc_html_e( 'Search practices', 'oria' ); ?></label>
-						<input id="navSearch" type="text" autocomplete="off"
-							placeholder="<?php esc_attr_e( 'Search practices…', 'oria' ); ?>"
-							data-oria-search role="combobox" aria-autocomplete="list" aria-expanded="false"
-							aria-controls="navSearchList">
-						<span class="osearch osearch--nav" id="navSearchList" data-oria-search-panel hidden></span>
-					</span>
-				</div>
-			</details>
-			<details class="xnav-pop xnav-pro nav__hide">
-				<summary class="xnav-pop__btn xnav-pop__btn--text"><?php esc_html_e( 'For practitioners', 'oria' ); ?></summary>
-				<div class="xnav-pop__panel">
-					<a href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>"><?php esc_html_e( 'List your practice', 'oria' ); ?></a>
-					<a href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your business', 'oria' ); ?></a>
-				</div>
-			</details>
 			<a class="navsaved" href="<?php echo esc_url( home_url( '/saved/' ) ); ?>" data-saved-nav hidden>
 				<span class="navsaved__heart" aria-hidden="true">&#9829;</span>
 				<span class="navsaved__count" data-saved-nav-count>0</span>
 			</a>
+			<a class="btn xnav-ask nav__hide" href="<?php echo esc_url( home_url( '/ask/' ) ); ?>"><?php esc_html_e( 'Ask Oria', 'oria' ); ?></a>
 			<button class="nav__toggle" data-drawer-open aria-label="<?php esc_attr_e( 'Open menu', 'oria' ); ?>" aria-controls="drawer">
 				<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M2 4.5h12M2 11.5h12"/></svg>
 			</button>

@@ -3,7 +3,8 @@
  * the page is complete -- the Calm picture, a plain Ask Oria form, every
  * link crawlable.
  *
- *  - Mood chips: swap the hero picture and write the sentence into Ask Oria.
+ *  - Mood chips: swap the hero picture and set "What would help?"; the
+ *    bar's choices become the sentence Ask Oria receives on submit.
  *    Only Calm loads with the page; the rest arrive once it is idle, or on
  *    the first tap of their chip.
  *  - Perth Reset: hovering or focusing a stop shows its picture.
@@ -17,7 +18,22 @@
   if (hero) {
     var chips = hero.querySelectorAll("[data-feel]");
     var pics = hero.querySelectorAll("[data-feel-pic]");
-    var input = document.getElementById("xh-q");
+    var form = hero.querySelector("[data-xh-concierge]");
+    var help = hero.querySelector("[data-xh-help]");
+    var where = hero.querySelector("[data-xh-where]");
+    var when = hero.querySelector("[data-xh-when]");
+    var q = hero.querySelector("[data-xh-q]");
+    var say = chips.length ? chips[0].getAttribute("data-feel-say") : "";
+
+    // The sentence Ask Oria gets: what would help, where, when --
+    // "Somewhere calm to switch off in Fremantle this weekend".
+    var compose = function () {
+      var parts = [say];
+      if (where && where.value) parts.push("in " + where.value);
+      if (when && when.value && when.value !== "any time") parts.push(when.value);
+      if (q) q.value = parts.join(" ");
+    };
+    if (form) form.addEventListener("submit", compose);
 
     var load = function (img) {
       if (!img || !img.dataset.src) return;
@@ -45,12 +61,14 @@
           if (on) load(p);
           p.classList.toggle("is-on", on);
         });
-        if (input) {
-          input.value = chip.getAttribute("data-feel-say") || "";
-          input.classList.remove("is-updated");
-          void input.offsetWidth; // restart the small settle animation
-          input.classList.add("is-updated");
+        say = chip.getAttribute("data-feel-say") || say;
+        if (help) {
+          help.textContent = chip.getAttribute("data-feel-help") || "";
+          help.classList.remove("is-updated");
+          void help.offsetWidth; // restart the small settle animation
+          help.classList.add("is-updated");
         }
+        compose();
       });
     });
   }
