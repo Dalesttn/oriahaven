@@ -796,7 +796,18 @@ function robots( $robots ) {
 	$f = facet();
 	if ( null !== $f ) {
 		$term = get_queried_object();
-		if ( ! $term instanceof \WP_Term || count( facet_ids( $term, $f ) ) < FACET_MIN ) {
+		if ( ! $term instanceof \WP_Term ) {
+			return 'noindex, follow';
+		}
+		/*
+		 * An editor's setting under Listings > Facet pages wins over the
+		 * floor either way ("Always index" still needs one listing, and the
+		 * canonical test below still applies). The facet sitemap reads the
+		 * same setting, so the two agree.
+		 */
+		$n        = count( facet_ids( $term, $f ) );
+		$override = function_exists( '\Oria\Core\FacetIndex\state' ) ? \Oria\Core\FacetIndex\state( category_url( $term ) . $f['slug'] . '/' ) : '';
+		if ( 'noindex' === $override || $n < 1 || ( $n < FACET_MIN && 'index' !== $override ) ) {
 			return 'noindex, follow';
 		}
 		/*
@@ -1210,7 +1221,8 @@ function sitemap_entries(): array {
 		return $cached;
 	}
 
-	$out = array();
+	$out       = array();
+	$inventory = array();
 
 	foreach ( practices() as $practice ) {
 		$ids = function_exists( '\Oria\Core\Intents\listings_in' )
@@ -1256,8 +1268,9 @@ function sitemap_entries(): array {
 			}
 			$seen[ $f['slug'] ] = true;
 
-			if ( count( facet_ids( $practice, $f ) ) < FACET_MIN ) {
-				continue; // robots() would noindex it
+			$n = count( facet_ids( $practice, $f ) );
+			if ( $n < 1 ) {
+				continue;
 			}
 			// An area facet answers under its own city, not the default one.
 			$fcity = facet_city( $f );
@@ -1265,11 +1278,37 @@ function sitemap_entries(): array {
 			if ( $loc !== category_url( $practice, $fcity ) . $f['slug'] . '/' ) {
 				continue; // a non-owner copy; the owner's entry covers it
 			}
-			$out[] = array( 'loc' => $loc );
+			// Every facet home, floor or not, for Listings > Facet pages.
+			$inventory[] = array(
+				'loc'      => $loc,
+				'label'    => (string) $f['label'],
+				'practice' => wp_specialchars_decode( $practice->name, ENT_QUOTES ),
+				'n'        => $n,
+			);
+			// The editor's setting wins; otherwise the floor, as robots() rules.
+			$override = function_exists( '\Oria\Core\FacetIndex\state' ) ? \Oria\Core\FacetIndex\state( $loc ) : '';
+			if ( 'noindex' === $override || ( $n < FACET_MIN && 'index' !== $override ) ) {
+				continue;
+			}
+			// The date of the last real change: a listing edited, added or
+			// removed, or the page's own words (facet-guides.json) -- never
+			// the moment the sitemap was built.
+			$shown = facet_ids( $practice, $f );
+			if ( function_exists( '\Oria\Core\Cities\filter_ids' ) && $fcity ) {
+				$shown = \Oria\Core\Cities\filter_ids( $shown, $fcity );
+			}
+			$words = ( function_exists( '\Oria\Core\FacetGuides\entry' ) && \Oria\Core\FacetGuides\entry( $f ) ) ? array( ORIA_CORE_DIR . 'data/facet-guides.json' ) : array();
+			$out[] = array(
+				'loc' => $loc,
+				'mod' => function_exists( '\Oria\Core\Lastmod\for_url' ) ? \Oria\Core\Lastmod\for_url( $loc, $shown, $words ) : gmdate( 'c' ),
+			);
 		}
 	}
 
 	set_transient( SITEMAP_CACHE, $out, DAY_IN_SECONDS );
+	if ( defined( '\Oria\Core\FacetIndex\INVENTORY' ) ) {
+		set_transient( \Oria\Core\FacetIndex\INVENTORY, $inventory, DAY_IN_SECONDS );
+	}
 	return $out;
 }
 
@@ -1311,7 +1350,7 @@ function build_sitemap(): void {
 	}
 	$links = array();
 	foreach ( sitemap_entries() as $e ) {
-		$links[] = array( 'loc' => $e['loc'], 'mod' => gmdate( 'c' ) );
+		$links[] = array( 'loc' => $e['loc'], 'mod' => (string) ( $e['mod'] ?? gmdate( 'c' ) ) );
 	}
 	$sm->set_sitemap( $sm->renderer->get_sitemap( $links, SITEMAP, 1 ) );
 }
@@ -1324,7 +1363,7 @@ function sitemap_index( $xml ) {
 	return $xml . sprintf(
 		"<sitemap><loc>%s</loc><lastmod>%s</lastmod></sitemap>\n",
 		esc_url( home_url( '/' . SITEMAP . '-sitemap.xml' ) ),
-		esc_html( gmdate( 'c' ) )
+		esc_html( \Oria\Core\Lastmod\newest( sitemap_entries() ) )
 	);
 }
 

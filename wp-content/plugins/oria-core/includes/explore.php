@@ -383,11 +383,36 @@ function build_sitemap(): void {
 	if ( ! $sm || ! isset( $sm->renderer ) ) {
 		return;
 	}
-	$links = array();
-	foreach ( sitemap_entries() as $e ) {
-		$links[] = array( 'loc' => $e['loc'], 'mod' => gmdate( 'c' ) );
+	$sm->set_sitemap( $sm->renderer->get_sitemap( dated_entries(), SITEMAP, 1 ) );
+}
+
+/**
+ * The entries with the date each hub last really changed: /explore/ from
+ * every listing, /explore/{city}/ from that city's.
+ *
+ * @return list<array{loc: string, mod: string}>
+ */
+function dated_entries(): array {
+	static $memo = null;
+	if ( null !== $memo ) {
+		return $memo;
 	}
-	$sm->set_sitemap( $sm->renderer->get_sitemap( $links, SITEMAP, 1 ) );
+	$all  = get_posts( array( 'post_type' => PostTypes\LISTING, 'post_status' => 'publish', 'numberposts' => -1, 'fields' => 'ids' ) );
+	$memo = array();
+	foreach ( sitemap_entries() as $e ) {
+		$ids = $all;
+		foreach ( Cities\all() as $city ) {
+			if ( '' !== (string) ( $city['slug'] ?? '' ) && base_url( $city ) === $e['loc'] ) {
+				$ids = Cities\filter_ids( $all, $city );
+				break;
+			}
+		}
+		$memo[] = array(
+			'loc' => $e['loc'],
+			'mod' => function_exists( '\Oria\Core\Lastmod\for_url' ) ? \Oria\Core\Lastmod\for_url( $e['loc'], $ids ) : gmdate( 'c' ),
+		);
+	}
+	return $memo;
 }
 
 /** Only advertise the sitemap when it has something in it. */
@@ -398,6 +423,6 @@ function sitemap_index( $xml ) {
 	return $xml . sprintf(
 		"<sitemap><loc>%s</loc><lastmod>%s</lastmod></sitemap>\n",
 		esc_url( home_url( '/' . SITEMAP . '-sitemap.xml' ) ),
-		esc_html( gmdate( 'c' ) )
+		esc_html( \Oria\Core\Lastmod\newest( dated_entries() ) )
 	);
 }

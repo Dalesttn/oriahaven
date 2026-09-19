@@ -1851,10 +1851,17 @@ function build_sitemap(): void {
 	foreach ( sitemap_entries() as $e ) {
 		$links[] = array(
 			'loc' => $e['loc'],
-			'mod' => gmdate( 'c' ),
+			// Built from data/compare.json: dated by that file, not by the build.
+			'mod' => compare_mod( $e['loc'] ),
 		);
 	}
 	$sm->set_sitemap( $sm->renderer->get_sitemap( $links, SITEMAP, 1 ) );
+}
+
+function compare_mod( string $loc ): string {
+	return function_exists( '\Oria\Core\Lastmod\for_url' )
+		? \Oria\Core\Lastmod\for_url( $loc, array(), array( ORIA_CORE_DIR . 'data/compare.json' ) )
+		: gmdate( 'c' );
 }
 
 function sitemap_index( $xml ) {
@@ -1864,7 +1871,7 @@ function sitemap_index( $xml ) {
 	return $xml . sprintf(
 		"<sitemap><loc>%s</loc><lastmod>%s</lastmod></sitemap>\n",
 		esc_url( home_url( '/' . SITEMAP . '-sitemap.xml' ) ),
-		esc_html( gmdate( 'c' ) )
+		esc_html( compare_mod( home_url( '/compare/' ) ) )
 	);
 }
 

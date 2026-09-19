@@ -588,12 +588,27 @@ function sitemap_entries(): array {
 	 * reachable only through a single link on /directory/ and sat at
 	 * "Discovered - currently not indexed, never crawled".
 	 */
+	static $memo = null;
+	if ( null !== $memo ) {
+		return $memo;
+	}
 	foreach ( registry()['pages'] as $p ) {
 		if ( facts( $p )['publishable'] ) {
-			$out[] = array( 'loc' => public_url( $p['practice'], $p['intent'] ) );
+			$loc = public_url( $p['practice'], $p['intent'] );
+			// Dated by its listings and its hand-written frame (intents.json),
+			// never by the moment the sitemap is built.
+			$term  = get_term_by( 'slug', (string) $p['practice'], Taxonomies\PRACTICE );
+			$shown = $term instanceof \WP_Term ? matching_ids( $term, (array) ( $p['filter'] ?? array() ) ) : array();
+			if ( $shown && function_exists( '\Oria\Core\Cities\filter_ids' ) && function_exists( '\Oria\Core\Cities\default_city' ) ) {
+				$shown = \Oria\Core\Cities\filter_ids( $shown, \Oria\Core\Cities\default_city() );
+			}
+			$out[] = array(
+				'loc' => $loc,
+				'mod' => function_exists( '\Oria\Core\Lastmod\for_url' ) ? \Oria\Core\Lastmod\for_url( $loc, $shown, array( ORIA_CORE_DIR . 'data/intents.json' ) ) : gmdate( 'c' ),
+			);
 		}
 	}
-	return $out;
+	return $memo = $out;
 }
 
 function register_sitemap(): void {
@@ -613,7 +628,7 @@ function build_sitemap(): void {
 	foreach ( sitemap_entries() as $e ) {
 		$links[] = array(
 			'loc' => $e['loc'],
-			'mod' => gmdate( 'c' ),
+			'mod' => (string) ( $e['mod'] ?? gmdate( 'c' ) ),
 		);
 	}
 	$sm->set_sitemap( $sm->renderer->get_sitemap( $links, SITEMAP, 1 ) );
@@ -627,6 +642,6 @@ function sitemap_index( $xml ) {
 	return $xml . sprintf(
 		"<sitemap><loc>%s</loc><lastmod>%s</lastmod></sitemap>\n",
 		esc_url( home_url( '/' . SITEMAP . '-sitemap.xml' ) ),
-		esc_html( gmdate( 'c' ) )
+		esc_html( \Oria\Core\Lastmod\newest( sitemap_entries() ) )
 	);
 }
