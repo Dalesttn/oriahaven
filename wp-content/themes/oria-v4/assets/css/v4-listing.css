@@ -1,14 +1,16 @@
 /* ==========================================================================
-   Oria Haven v4 -- listing "experience page" (design test).
+   Oria Haven v4 -- listing "experience page", as a decision page.
 
-   Pairs with oria-v4/single-listing.php. Loads after v4.css (handle
-   oria-v4-listing, only on is_singular('listing')), so the v4 tokens are
-   already in place. Every colour is a token; every new class is .xp-*
-   (hyphen), which cannot collide with the parent's .xp / .xp__* panel.
+   Pairs with oria-v4/single-listing.php (and template-parts/review-form.php).
+   Loads after v4.css (handle oria-v4-listing, only on is_singular('listing')),
+   so the parent tokens are in place. Every colour is a token; every new
+   class is .xp-* (hyphen), which cannot collide with the parent's .xp /
+   .xp__* panel.
 
-   Breakpoint: 60rem. Above it the story and the sticky rail sit side by
-   side; below it the rail follows the story, a short summary card sits
-   under the photo, and the action bar is pinned to the bottom.
+   Breakpoints: 60rem -- story and sticky rail side by side above it; below
+   it one column, no rail (the hero and Location carry its content) and the
+   phone action bar. 40rem -- phones: the photo stands alone and the title
+   sits beneath it on paper.
    ========================================================================== */
 
 /* --- Shared bits ---------------------------------------------------------- */
@@ -23,17 +25,32 @@
   white-space: nowrap; border: 0;
 }
 
+/* Honeypots on the enquiry and claim forms: off-screen, not display:none
+   (some bots skip hidden fields), and aria-hidden + tabindex=-1 in markup. */
+.xp-hp {
+  position: absolute !important;
+  left: -9999px;
+  width: 1px; height: 1px;
+  overflow: hidden;
+}
+
 /* Every tappable control on the page reaches 44px. */
 .xp-tap { min-height: 44px; }
 
 .xp-page a:focus-visible,
 .xp-page button:focus-visible,
-.xp-page summary:focus-visible {
+.xp-page summary:focus-visible,
+.xp-page input:focus-visible,
+.xp-page select:focus-visible,
+.xp-page textarea:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 
-/* Small uppercase label -- burnt orange on cream (5.6:1). */
+/* Anchored sections clear the sticky header. */
+.xp-page [id] { scroll-margin-top: calc(var(--head-h) + 1rem); }
+
+/* Small uppercase label -- burnt orange on cream. */
 .xp-label {
   margin: 0 0 .4rem;
   font-size: .8125rem;
@@ -58,7 +75,16 @@
 
 .xp-crumbs { padding-top: var(--s-5); }
 
-/* --- 1. Visual intro ------------------------------------------------------ */
+/* Buttons that carry an icon and a word. */
+.xp-page .btn svg { width: 18px; height: 18px; flex: none; }
+.xp-page .btn--ghost { color: var(--deep); border-color: var(--deep); }
+.xp-page .btn--ghost:hover { background: var(--sand-2); }
+.xp-page .savebtn__on { color: var(--gold); }
+.xp-page .savebtn__on,
+.xp-page .savebtn__off { font-size: 1.1rem; line-height: 1; }
+.xp-page .savebtn[aria-pressed="true"] { background: var(--gold-soft); border-color: var(--gold); }
+
+/* --- 1. Decision hero ----------------------------------------------------- */
 
 .xp-hero {
   max-width: var(--maxw);
@@ -74,25 +100,28 @@
   grid-template-columns: minmax(0, 1fr);
   align-items: end;
   gap: 0;
-  min-height: clamp(26rem, 70vh, 42.5rem);
-  border-radius: var(--r-2xl);
+  /* Short enough that the decision strip shows under it on a laptop. */
+  min-height: clamp(22rem, 56vh, 34rem);
+  border-radius: var(--r-2xl) var(--r-2xl) 0 0;
   overflow: hidden;
   background: var(--deep);
   color: var(--surface);
 }
 /* No photo: the pine panel on its own, shorter, never a stand-in picture. */
 .xp-hero__panel--n0 {
-  min-height: clamp(17rem, 42vh, 25rem);
+  min-height: clamp(14rem, 34vh, 20rem);
   background:
     radial-gradient(120% 90% at 100% 0%, var(--teal) 0%, transparent 60%),
     var(--deep);
 }
 
+/* The photo grid. While a picture loads its cell shows a warm sand
+   skeleton, not a flat green block. */
 .xp-hero__media {
   position: absolute; inset: 0; z-index: 0;
   display: grid;
-  gap: 6px;
-  background: var(--deep);
+  gap: 4px;
+  background: var(--paper);
 }
 .xp-hero__panel--n2 .xp-hero__media { grid-template-columns: 2fr 1fr; }
 .xp-hero__panel--n3 .xp-hero__media { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; }
@@ -104,14 +133,18 @@
   min-width: 0; min-height: 0;
   margin: 0; padding: 0;
   border: 0; border-radius: 0;
-  background: var(--teal);
+  background: linear-gradient(110deg, var(--sand) 30%, var(--sand-2) 50%, var(--sand) 70%);
+  background-size: 250% 100%;
+  animation: xp-skeleton 1.6s ease-in-out infinite;
   overflow: hidden;
   font: inherit;
 }
+@keyframes xp-skeleton { from { background-position: 100% 0; } to { background-position: -150% 0; } }
 .xp-hero__shot[hidden] { display: none; }
 button.xp-hero__shot { cursor: zoom-in; }
 .xp-hero__shot img,
 .xp-hero__panel.gallery .xp-hero__shot img {
+  position: relative;
   display: block;
   width: 100%; height: 100%;
   object-fit: cover;
@@ -123,41 +156,42 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
   outline-offset: -6px;
 }
 
-/* The shade makes the words legible on any photograph. The first line is
-   the fallback for browsers without color-mix(): solid at the foot. */
+/* The shade keeps the words legible on any photograph. */
 .xp-hero__shade {
   position: absolute; inset: 0; z-index: 1;
   pointer-events: none;
   background: linear-gradient(0deg, var(--deep-2) 0%, transparent 72%);
   background: linear-gradient(0deg,
     color-mix(in srgb, var(--deep-2) 94%, transparent) 0%,
-    color-mix(in srgb, var(--deep-2) 78%, transparent) 34%,
-    color-mix(in srgb, var(--deep-2) 30%, transparent) 62%,
-    transparent 82%);
+    color-mix(in srgb, var(--deep-2) 76%, transparent) 36%,
+    color-mix(in srgb, var(--deep-2) 28%, transparent) 64%,
+    transparent 84%);
 }
 
 .xp-hero__text {
   position: relative; z-index: 2;
-  max-width: 62rem;
-  padding: clamp(6rem, 18vh, 12rem) clamp(1.25rem, 4.5vw, 4rem) clamp(1.75rem, 4.2vw, 3.75rem);
+  max-width: 60rem;
+  padding: clamp(5rem, 14vh, 9rem) clamp(1.25rem, 4.5vw, 3.5rem) clamp(1.5rem, 3.2vw, 2.75rem);
   /* Clicks on the words fall through to the photo underneath... */
   pointer-events: none;
   text-shadow: 0 1px 14px color-mix(in srgb, var(--deep-2) 45%, transparent);
 }
 /* ...except on the words that are links. */
 .xp-hero__text a { pointer-events: auto; }
-.xp-hero__panel--n0 .xp-hero__text { padding-top: clamp(3rem, 8vh, 5rem); }
+.xp-hero__panel--n0 .xp-hero__text { padding-top: clamp(2.5rem, 7vh, 4rem); }
 
 .xp-hero__eyebrow {
-  margin: 0 0 var(--s-4);
+  margin: 0 0 var(--s-3);
   font-size: .8125rem;
   font-weight: 700;
   line-height: 1.5;
   letter-spacing: var(--tr-micro);
   text-transform: uppercase;
-  color: var(--mist);
+  color: var(--mist-2);
 }
 .xp-hero__eyebrow a {
+  display: inline-block;
+  padding-block: .35rem; /* a taller hit area without moving the line */
   color: inherit;
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--mist) 45%, transparent);
@@ -170,41 +204,29 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 .xp-hero__all:focus-visible { outline-color: var(--focus-on-deep); }
 
 .xp-hero__title {
-  margin: 0 0 var(--s-4);
+  margin: 0 0 var(--s-3);
   color: var(--surface);
-  font-size: clamp(2.25rem, 5.2vw, 4.3rem);
-  line-height: 1.02;
+  font-size: clamp(2.1rem, 4.4vw, 3.6rem);
+  line-height: 1.04;
   letter-spacing: -0.01em;
   overflow-wrap: break-word;
   hyphens: auto;
 }
 .xp-hero__lede {
   margin: 0;
-  max-width: 52rem;
-  font-size: clamp(1.1rem, 1.9vw, 1.6rem);
+  max-width: 48rem;
+  font-family: var(--font-edit);
+  font-size: clamp(1.1rem, 1.7vw, 1.4rem);
   font-style: italic;
-  font-weight: 600;
-  line-height: 1.3;
+  font-weight: 500;
+  line-height: 1.35;
   color: var(--mist-2);
   text-wrap: pretty;
-}
-
-.xp-hero__status {
-  display: flex; flex-wrap: wrap; gap: .5rem;
-  margin: var(--s-5) 0 0; padding: 0;
-  list-style: none;
-}
-.xp-hero__pill {
-  padding: .4rem .8rem;
-  border: 1px solid color-mix(in srgb, var(--mist) 55%, transparent);
-  border-radius: var(--r-pill);
-  font-size: .75rem;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--mist);
-  text-shadow: none;
-  pointer-events: auto; /* so the "Verified" date tooltip can show */
+  /* Two lines at most; the whole sentence stays in the DOM. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .xp-hero__all {
@@ -235,60 +257,104 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 }
 .xp-hero__credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
-/* --- Phone summary card (under the photo) --------------------------------- */
-
-.xp-glance { display: none; }
-.xp-glance__card {
-  padding: 1.5rem;
+/* The decision strip: facts, then actions, then the trust note. It joins
+   the picture as its foot, so the two read as one block. */
+.xp-decide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-4) var(--s-6);
+  padding: clamp(1.1rem, 2.2vw, 1.6rem) clamp(1.25rem, 3vw, 2.25rem);
   border: 1px solid var(--line);
-  border-radius: var(--r-lg);
+  border-top: 0;
+  border-radius: 0 0 var(--r-2xl) var(--r-2xl);
   background: var(--surface);
 }
-.xp-glance__big {
-  margin: 0;
-  font-size: 1.85rem;
-  font-weight: 800;
-  line-height: 1.05;
-  text-transform: uppercase;
-  color: var(--deep);
-}
-.xp-glance__unit {
-  font-size: .9375rem;
-  font-weight: 600;
-  text-transform: none;
-  color: var(--text-soft);
-}
-.xp-glance__sub { margin: .35rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
-.xp-glance__facts {
-  margin: 1rem 0 0;
+.xp-decide__facts {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: .5rem 1.5rem;
+  margin: 0; padding: 0;
+  list-style: none;
   font-size: var(--fs-sm);
-  line-height: 1.6;
   color: var(--ink);
 }
-.xp-glance__card > .xp-glance__facts:first-child { margin-top: 0; }
+.xp-decide__fact { display: inline-flex; align-items: center; gap: .4rem; min-height: 28px; }
+.xp-decide__fact + .xp-decide__fact::before {
+  content: "";
+  width: 4px; height: 4px;
+  margin-right: 1.1rem; margin-left: -.35rem;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+.xp-decide__fact--price,
+.xp-decide__fact--hours { font-weight: 700; }
+.xp-decide__fact .rating__star { width: 16px; height: 16px; color: var(--gold); vertical-align: -2px; }
+.xp-decide__k {
+  margin-right: .25rem;
+  font-size: .75rem; font-weight: 800;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  color: var(--gold);
+}
+.xp-decide__fact--hours [data-open="1"] { color: var(--moss); }
+
+.xp-decide__acts {
+  display: flex; flex-wrap: wrap; justify-content: flex-end;
+  gap: .5rem;
+}
+.xp-decide__acts .btn { justify-content: center; font-size: .9375rem; }
+.xp-decide__main { padding-inline: 1.4rem; }
+.xp-decide__trust {
+  grid-column: 1 / -1;
+  display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .75rem;
+  margin: 0;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-xs);
+  color: var(--text-soft);
+}
+.xp-decide__tag {
+  padding: .2rem .6rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Rating/fact links shared by the hero and the rail. */
+.xp-fact__link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
+}
+.xp-fact__link:hover { text-decoration-color: currentColor; }
+.xp-fact__link .rating__star { width: 15px; height: 15px; margin-right: .1rem; vertical-align: -2px; color: var(--gold); }
+.xp-fact__sub { font-weight: 500; color: var(--text-soft); }
+.xp-fact__block { display: block; font-size: var(--fs-xs); }
 
 /* --- 2. Story + rail ------------------------------------------------------ */
 
 .xp-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 25rem;
+  grid-template-columns: minmax(0, 1fr) 23rem;
   gap: var(--xp-bp-gap);
   /* stretch (the default), so the rail column is as tall as the story and
-     its card has room to stick */
-  padding-block: clamp(3rem, 6vw, 5.5rem);
+     its card has room to stick -- and stops at the story's end, so it can
+     never ride over the similar places or the footer. */
+  padding-block: clamp(3rem, 5vw, 4.5rem);
 }
 
 .xp-story {
   display: flex; flex-direction: column;
-  gap: clamp(3rem, 5vw, 4.5rem);
+  gap: clamp(2.75rem, 4.5vw, 4rem);
   min-width: 0;
 }
 
 .xp-sec { min-width: 0; }
 .xp-sec__title {
   margin: 0 0 var(--s-5);
-  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
-  line-height: 1.04;
+  font-size: clamp(1.55rem, 2.3vw, 2rem);
+  line-height: 1.06;
   color: var(--deep);
 }
 .xp-sec__hint {
@@ -308,14 +374,14 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 .xp-sub { margin-top: var(--s-6); }
 .xp-sub__title {
   margin: 0 0 var(--s-3);
-  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  font-size: clamp(1.15rem, 1.6vw, 1.3rem);
   font-weight: 800;
   color: var(--deep);
 }
 
 .xp-prose {
   max-width: 42.5rem;
-  font-size: clamp(1.0625rem, 1.35vw, 1.25rem);
+  font-size: clamp(1.0625rem, 1.3vw, 1.1875rem);
   line-height: 1.65;
   color: var(--text-soft);
 }
@@ -329,15 +395,13 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
   list-style: none;
 }
 .xp-tag {
-  padding: .6rem .9rem;
+  padding: .5rem .85rem;
   border-radius: var(--r-pill);
-  background: var(--gold-soft);
+  background: var(--sand-2);
   color: var(--ink);
-  font-size: .75rem;
+  font-size: .8125rem;
   font-weight: 700;
   line-height: 1.2;
-  letter-spacing: .12em;
-  text-transform: uppercase;
 }
 .xp-tags--services { margin-top: var(--s-4); }
 
@@ -345,37 +409,102 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 .xp-profile { margin-top: var(--s-6); max-width: 42.5rem; }
 .xp-profile .xp__b:first-child { margin-top: 0; }
 
-/* Classes / services: the parent's offer cards in the v4 card shape. */
-.xp-offers {
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  gap: .875rem;
+/* Experience DNA with words at both ends of every scale. */
+.xp-dna__head { margin: 0; font: inherit; }
+.xp-dna {
+  display: grid;
+  gap: .9rem;
+  margin: var(--s-4) 0 0; padding: 0;
+  list-style: none;
 }
-.xp-offers .offercard {
-  padding: 1.5rem;
-  border-color: var(--line);
-  border-radius: var(--r-lg);
-  background: var(--surface);
+.xp-dna__row {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  align-items: center;
+  gap: .35rem 1rem;
 }
-.xp-offers .offercard:hover { border-color: var(--deep); }
-.xp-offers .offercard__name {
-  font-size: 1.3rem;
-  font-weight: 800;
-  line-height: 1.15;
+.xp-dna__label { font-size: var(--fs-sm); font-weight: 700; color: var(--ink); }
+.xp-dna__scale {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(6rem, 1fr) 7.5rem;
+  align-items: center;
+  gap: .75rem;
+}
+.xp-dna__end { font-size: var(--fs-xs); line-height: 1.25; color: var(--text-soft); }
+.xp-dna__end:first-child { text-align: right; }
+.xp-dna__track { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.xp-dna__seg { display: block; height: 8px; border-radius: 4px; background: var(--sand); }
+.xp-dna__seg.is-on { background: var(--moss); }
+.xp-dna__how { margin-top: var(--s-4); }
+.xp-dna__how summary {
+  display: inline-flex; align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  font-weight: 700;
   color: var(--deep);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 4px;
 }
-.xp-offers .offercard__note { font-size: var(--fs-sm); color: var(--text-soft); }
-.xp-offers .offercard__go { color: var(--deep); }
+.xp-dna__howbody { max-width: 40rem; font-size: var(--fs-sm); line-height: 1.6; color: var(--text-soft); }
+.xp-dna__howbody p { margin: .5rem 0 0; }
+
+/* What you'll find here: compact service cards. */
+.xp-svc {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: .75rem;
+  margin: 0; padding: 0;
+  list-style: none;
+}
+.xp-svc__item[hidden] { display: none; }
+.xp-svc__card {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: .9rem;
+  height: 100%;
+  padding: .9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color var(--t-fast) var(--ease);
+}
+.xp-svc__card:hover { border-color: var(--deep); }
+.xp-svc__img {
+  display: block;
+  width: 4.5rem; height: 4.5rem;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  background: var(--sand-2);
+}
+.xp-svc__img--none { background: linear-gradient(135deg, var(--sand-2), var(--sand)); }
+.xp-svc__body { display: flex; flex-direction: column; gap: .3rem; min-width: 0; }
+.xp-svc__name { font-size: 1.0625rem; font-weight: 800; line-height: 1.2; color: var(--deep); }
+.xp-svc__note {
+  font-size: var(--fs-xs);
+  line-height: 1.45;
+  color: var(--text-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.xp-svc__facts { display: flex; flex-wrap: wrap; gap: .25rem .75rem; font-size: var(--fs-xs); color: var(--ink); }
+.xp-svc__fact span { color: var(--moss); }
+.xp-svc__go { margin-top: auto; padding-top: .2rem; font-size: var(--fs-xs); font-weight: 700; color: var(--deep); }
+.xp-svc__card:hover .xp-svc__go { text-decoration: underline; text-underline-offset: 3px; }
+.xp-svc__all { margin-top: var(--s-4); justify-content: center; }
 
 /* Why our editors picked it */
-.xp-picks__list { display: grid; gap: 1rem; }
 .xp-pick {
   margin: 0;
-  padding: clamp(1.4rem, 2.6vw, 1.9rem) clamp(1.4rem, 2.8vw, 2rem);
-  border: 1px solid var(--line);
+  padding: clamp(1.3rem, 2.4vw, 1.8rem) clamp(1.3rem, 2.6vw, 1.9rem);
   border-radius: var(--r-lg);
-  background: var(--surface);
+  background: var(--gold-soft);
 }
-.xp-pick--lead { border-color: transparent; background: var(--gold-soft); }
 .xp-pick__head {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem .5rem;
   font-size: .75rem;
@@ -391,77 +520,226 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
   letter-spacing: 0;
   text-transform: none;
   font-size: .9375rem;
+  font-weight: 700;
   text-decoration: underline;
   text-decoration-color: var(--gold);
   text-underline-offset: 4px;
 }
 .xp-pick__guide:hover { text-decoration-color: currentColor; }
-.xp-pick__why { margin: .9rem 0 0; }
+.xp-pick__why { margin: .8rem 0 0; }
 .xp-pick__why p {
   margin: 0;
-  font-size: clamp(1.1rem, 1.6vw, 1.3rem);
-  font-weight: 700;
-  line-height: 1.4;
+  font-family: var(--font-edit);
+  font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+  font-style: italic;
+  line-height: 1.45;
   color: var(--ink);
 }
 .xp-pick__seal {
   display: inline-flex; align-items: center;
   min-height: 44px;
-  margin-top: .35rem;
+  margin-top: .25rem;
   font-size: var(--fs-xs);
   color: var(--text-soft);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 .xp-pick__seal:hover { color: var(--ink); }
+.xp-picks__more { margin-top: var(--s-4); }
+.xp-picks__morek {
+  margin: 0 0 .35rem;
+  font-size: .75rem; font-weight: 800;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  color: var(--text-soft);
+}
+.xp-picks__more ul { margin: 0; padding: 0; list-style: none; }
+.xp-picks__more li {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .15rem .5rem;
+  min-height: 44px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-sm);
+}
+.xp-picks__award { font-weight: 700; color: var(--deep); }
+.xp-picks__seal { margin-left: auto; font-size: var(--fs-xs); color: var(--text-soft); text-decoration: underline; text-underline-offset: 3px; }
 
-/* Your first visit */
+/* Before your first visit */
 .xp-first {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: .875rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: .75rem;
   margin: 0;
 }
 .xp-first__item {
-  padding: 1.5rem;
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  background: var(--surface);
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--r-md);
+  background: var(--sand-2);
 }
 .xp-first__item dt {
-  font-size: .8125rem;
-  font-weight: 700;
-  letter-spacing: .04em;
-  color: var(--gold);
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: var(--tr-micro);
+  text-transform: uppercase;
+  color: var(--text-soft);
 }
 .xp-first__item dd {
-  margin: .4rem 0 0;
-  font-size: 1.0625rem;
+  margin: .35rem 0 0;
+  font-size: 1rem;
   line-height: 1.5;
   color: var(--ink);
 }
+.xp-amenity { margin-top: var(--s-5); }
+.xp-first + .xp-source,
+.xp-amenity + .xp-source { margin-top: var(--s-4); }
+.xp-source { font-size: var(--fs-xs); }
 
 /* The parent's team part opens its own .section: flatten it into the flow. */
 .xp-part:empty { display: none; }
 .xp-part .section { padding-block: 0; }
 .xp-part .teamsec__title {
   margin: 0 0 var(--s-5);
-  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+  font-size: clamp(1.55rem, 2.3vw, 2rem);
   font-weight: 800;
-  line-height: 1.04;
-  text-transform: uppercase;
+  line-height: 1.06;
   color: var(--deep);
 }
 
+/* Location and hours */
+.xp-loc {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--s-5) var(--s-6);
+  padding: clamp(1.25rem, 2.6vw, 1.75rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.xp-loc__k {
+  margin: 0 0 .35rem;
+  font-size: .75rem; font-weight: 800;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  color: var(--text-soft);
+}
+.xp-loc__v { margin: 0; font-size: 1.0625rem; font-weight: 600; line-height: 1.45; color: var(--ink); }
+.xp-loc__note { margin: .2rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
+.xp-loc__dir { margin-top: var(--s-4); }
+.xp-loc__more { display: grid; gap: .75rem; margin: var(--s-5) 0 0; }
+.xp-loc__more dt { font-size: var(--fs-xs); color: var(--text-soft); }
+.xp-loc__more dd { margin: .1rem 0 0; font-size: var(--fs-sm); font-weight: 600; color: var(--ink); }
+.xp-loc__small { display: block; font-weight: 400; font-size: var(--fs-xs); color: var(--text-soft); }
+.xp-loc__small--faint { color: var(--text-faint); margin-top: .2rem; }
+.xp-loc__week { margin-top: .5rem; }
+.xp-loc__week summary {
+  display: inline-flex; align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: var(--fs-sm); font-weight: 700;
+  color: var(--deep);
+  text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 4px;
+}
+.xp-loc__col .hint { margin-top: .5rem; font-size: var(--fs-xs); }
+.xp-loc__map {
+  margin-top: var(--s-4);
+  border-radius: var(--r-lg);
+  aspect-ratio: 16 / 6;
+}
+#getting-there iframe { margin-top: var(--s-4); border-radius: var(--r-lg); }
+
 /* Reviews */
-.xp-gquote { margin: var(--s-5) 0 0; border-radius: var(--r-xl); }
+.xp-rvsum {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--s-4) var(--s-6);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem) clamp(1.25rem, 2.6vw, 1.75rem);
+  border-radius: var(--r-lg);
+  background: var(--sand-2);
+}
+.xp-rvsum__scores { display: grid; gap: .5rem; }
+.xp-rvsum__score {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .6rem;
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+.xp-rvsum__num { font-size: 2rem; font-weight: 800; line-height: 1; color: var(--deep); }
+.xp-rvsum__score--oria .xp-rvsum__num { font-size: 1.5rem; }
+.xp-rvsum__stars { display: inline-flex; gap: 2px; color: var(--gold); }
+.xp-rvsum__stars .rating__star { width: 16px; height: 16px; }
+.xp-rvsum__none { margin: 0; font-weight: 600; color: var(--ink); }
+.xp-rvsum__acts { display: flex; flex-wrap: wrap; gap: .5rem; }
+.xp-rvsum__acts .btn { justify-content: center; }
+
 .xp-greviews { margin-top: var(--s-6); }
-#reviews .reviewform { margin-top: var(--s-6); }
+.xp-greview__text {
+  font-size: .9375rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
-/* Getting there */
-.xp-there { overflow: hidden; border-radius: var(--r-lg); background: var(--surface); }
+/* The review form panel: inline on a wide screen... */
+.xp-rvpanel { margin-top: var(--s-6); }
+.xp-rvpanel__bar { display: flex; justify-content: flex-end; }
+.xp-rvpanel__close {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .4rem .9rem;
+  border: 0; border-radius: var(--r-pill);
+  background: transparent;
+  font: inherit; font-size: var(--fs-sm); font-weight: 700;
+  color: var(--deep);
+  cursor: pointer;
+}
+.xp-rvpanel__close:hover { background: var(--sand-2); }
+.xp-rvpanel__close span[aria-hidden] { font-size: 1.4rem; line-height: 1; }
+#reviews .reviewform { margin-top: .25rem; }
+.reviewform__title:focus { outline: none; }
+.reviewform__title:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.reviewform__opt { font-weight: 400; color: var(--text-soft); }
+.reviewform__stepno {
+  margin: 0 0 var(--s-4);
+  font-size: .75rem; font-weight: 800;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  color: var(--text-soft);
+}
+.reviewform__stepno:focus { outline: none; }
+.reviewform__step[hidden],
+.reviewform__stepno[hidden],
+[data-review-nav][hidden],
+[data-review-back][hidden] { display: none !important; }
+.reviewform__nav,
+.reviewform__foot { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
+.reviewform__nav .btn,
+.reviewform__foot .btn { min-height: 44px; justify-content: center; }
+.reviewform__navnote { margin: 0; font-size: var(--fs-xs); }
+.reviewform__row--flat { margin: 0; }
+.reviewform__choice label { min-height: 44px; }
+.reviewform .spectag { min-height: 44px; }
+.reviewform__hp {
+  position: absolute !important;
+  left: -9999px;
+  width: 1px; height: 1px;
+  overflow: hidden;
+}
 
-/* Enquiry and claim forms */
+/* ...and a full-screen sheet on a phone (v4-listing.js adds .is-sheet). */
+.xp-rvpanel.is-sheet {
+  position: fixed; inset: 0; z-index: 1000;
+  margin: 0;
+  padding: calc(.75rem + env(safe-area-inset-top, 0px)) var(--gutter) calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--paper);
+}
+.xp-rvpanel.is-sheet .xp-rvpanel__bar {
+  position: sticky; top: calc(-.75rem - env(safe-area-inset-top, 0px));
+  z-index: 1;
+  margin: 0 calc(var(--gutter) * -1) .5rem;
+  padding: .25rem var(--gutter);
+  background: var(--paper);
+}
+.xp-rvpanel.is-sheet .reviewform { margin: 0; border: 0; padding: 0; background: transparent; }
+html.xp-sheet-open { overflow: hidden; }
+
+/* Getting there / enquiry and claim forms */
 .xp-enquire {
   padding: clamp(1.5rem, 3vw, 2.25rem);
   border: 1px solid var(--line);
@@ -492,80 +770,63 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
   top: calc(var(--head-h) + var(--s-4));
   display: grid;
   gap: var(--s-5);
-  padding: 2.25rem 2rem;
+  /* Never taller than the screen, so its foot is always reachable. */
+  max-height: calc(100vh - var(--head-h) - 2rem);
+  overflow-y: auto;
+  padding: 1.75rem 1.6rem;
   border: 1px solid var(--line);
   border-radius: var(--r-xl);
   background: var(--surface);
 }
-/* Named for assistive tech everywhere; shown as a heading only on a phone,
-   where the rail follows the story. */
 .xp-rail__title {
-  position: absolute;
-  width: 1px; height: 1px;
-  margin: -1px; padding: 0;
-  overflow: hidden; clip: rect(0 0 0 0);
-  white-space: nowrap; border: 0;
+  margin: 0;
+  font-size: .8125rem;
+  font-weight: 800;
+  letter-spacing: var(--tr-micro);
+  text-transform: uppercase;
+  color: var(--text-soft);
 }
-
 .xp-rail__top > :last-child { margin-bottom: 0; }
 .xp-rail__big {
   margin: 0;
-  font-size: 1.85rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  line-height: 1.02;
-  text-transform: uppercase;
+  line-height: 1.1;
   color: var(--deep);
-}
-.xp-rail__unit {
-  font-size: .9375rem;
-  font-weight: 600;
-  text-transform: none;
-  color: var(--text-soft);
 }
 .xp-rail__sub { margin: .5rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
 
-.xp-rail__ctas { display: grid; gap: .6rem; }
+.xp-rail__ctas { display: grid; gap: .5rem; }
 .xp-rail__ctas .btn {
   justify-content: center;
-  padding: .95rem 1.4rem;
-  font-size: 1rem;
+  padding: .85rem 1rem;
+  font-size: .9375rem;
   white-space: normal;
   text-align: center;
   line-height: 1.2;
 }
-.xp-rail__ctas .btn--ghost { color: var(--deep); border-color: var(--deep); }
-.xp-rail__ctas .btn--ghost:hover { background: var(--gold-soft); }
+.xp-rail__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: .5rem; }
+.xp-rail__row .btn { gap: .35rem; padding-inline: .5rem; }
+.xp-rail__ctas .xp-link { justify-self: center; }
 
 .xp-facts { margin: 0; }
 .xp-fact {
   display: grid;
-  grid-template-columns: 7rem minmax(0, 1fr);
-  gap: var(--s-4);
-  padding-block: .9rem;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: var(--s-3);
+  padding-block: .8rem;
   border-bottom: 1px solid var(--line);
   font-size: var(--fs-sm);
   line-height: 1.5;
 }
 .xp-fact:first-child { padding-top: 0; }
+.xp-fact:last-child { border-bottom: 0; padding-bottom: 0; }
 .xp-fact dt { color: var(--text-soft); }
 .xp-fact dd {
   margin: 0;
   font-weight: 600;
   color: var(--ink);
   overflow-wrap: anywhere;
-}
-.xp-fact__link {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--line-strong);
-  text-underline-offset: 3px;
-}
-.xp-fact__link:hover { text-decoration-color: currentColor; }
-.xp-fact__link .rating__star {
-  width: 14px; height: 14px;
-  margin-right: .1rem;
-  vertical-align: -1px;
-  color: var(--gold);
 }
 .xp-fact__more {
   margin-left: .35rem;
@@ -575,31 +836,7 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
   text-underline-offset: 3px;
 }
 
-.xp-rail__foot {
-  display: flex; flex-wrap: wrap;
-  align-items: center; justify-content: space-between;
-  gap: .25rem var(--s-4);
-}
-.xp-save {
-  display: inline-flex; align-items: center; gap: .45rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  font-weight: 700;
-  color: var(--deep);
-  cursor: pointer;
-}
-.xp-save .savebtn__label {
-  text-decoration: underline;
-  text-decoration-color: var(--line-strong);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
-}
-.xp-save:hover .savebtn__label { text-decoration-color: currentColor; }
-.xp-page .savebtn__on { color: var(--gold); }
-
-/* --- 3. If you like the sound of this ------------------------------------- */
+/* --- 3. Similar places ---------------------------------------------------- */
 
 .xp-more {
   padding-block: clamp(2.5rem, 5vw, 4rem);
@@ -618,20 +855,30 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 }
 .xp-card {
   position: relative;
-  display: flex; flex-direction: column; gap: .5rem;
-  padding: 1.875rem;
+  display: flex; flex-direction: column;
+  overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: var(--r-xl);
+  border-radius: var(--r-lg);
   background: var(--surface);
   transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
 }
 .xp-card:hover { border-color: var(--deep); transform: translateY(-2px); }
-.xp-card .xp-label { margin: 0; font-size: .75rem; }
+.xp-card__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  height: auto;
+  object-fit: cover;
+  background: var(--sand-2);
+}
+.xp-card__img--none { background: linear-gradient(135deg, var(--sand-2), var(--sand)); }
+.xp-card__body { display: flex; flex-direction: column; gap: .4rem; flex: 1; padding: 1.1rem 1.25rem 1.3rem; }
+.xp-card .xp-label { margin: 0; font-size: .6875rem; }
 .xp-card__title {
   margin: 0;
-  font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+  font-size: clamp(1.15rem, 1.5vw, 1.3rem);
   font-weight: 800;
-  line-height: 1.12;
+  line-height: 1.15;
   color: var(--deep);
 }
 .xp-card__link { color: inherit; text-decoration: none; }
@@ -639,31 +886,23 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 .xp-card__link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
 .xp-card__link:focus-visible { outline: none; }
 .xp-card:has(.xp-card__link:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
-.xp-card__text {
-  margin: 0;
-  font-size: var(--fs-sm);
-  line-height: 1.55;
-  color: var(--text-soft);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 .xp-card__meta {
   display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .75rem;
-  margin: auto 0 0; padding-top: .5rem;
+  margin: 0;
   font-size: var(--fs-xs);
   color: var(--text-soft);
 }
-.xp-card__meta .rating { color: var(--gold); font-weight: 700; }
-.xp-card__meta .rating__star { width: 13px; height: 13px; }
+.xp-card__meta .rating { color: var(--ink); font-weight: 700; }
+.xp-card__meta .rating__star { width: 13px; height: 13px; color: var(--gold); }
+.xp-card__src { margin-left: .25rem; font-weight: 500; color: var(--text-soft); }
+.xp-card__why { margin: auto 0 0; padding-top: .35rem; font-size: var(--fs-sm); line-height: 1.45; color: var(--ink); }
 
 .xp-more__specs { margin-top: var(--s-7); }
 .xp-more__specs:first-child { margin-top: 0; }
 
 /* --- 4. Claim ------------------------------------------------------------- */
 
-.xp-claimwrap { padding-bottom: clamp(3rem, 6vw, 5rem); }
+.xp-claimwrap { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
 .xp-claim {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -676,10 +915,9 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 }
 .xp-claim__title {
   margin: 0 0 .4rem;
-  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+  font-size: clamp(1.35rem, 2.1vw, 1.65rem);
   font-weight: 800;
   line-height: 1.1;
-  text-transform: uppercase;
   color: var(--surface);
 }
 .xp-claim__text { margin: 0; max-width: 40rem; font-size: var(--fs-sm); line-height: 1.55; color: var(--mist); }
@@ -698,34 +936,41 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 .xp-claim .btn--light { color: var(--deep); }
 .xp-claim a:focus-visible,
 .xp-claim button:focus-visible,
-.xp-claim summary:focus-visible { outline-color: var(--focus-on-deep); }
+.xp-claim summary:focus-visible,
+.xp-claim input:focus-visible,
+.xp-claim textarea:focus-visible { outline-color: var(--focus-on-deep); }
 .xp-claim__done { grid-column: 1 / -1; background: var(--surface); color: var(--ink); }
 
-/* --- 5. Phone action bar -------------------------------------------------- */
+/* --- 5. Products: one compact row ----------------------------------------- */
+
+.xp-shop { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+.xp-shop .shopband {
+  padding: clamp(1.25rem, 2.6vw, 1.75rem);
+  border-radius: var(--r-lg);
+  background: var(--sand-2);
+}
+.xp-shop .shopband h2 { font-size: 1.15rem; }
+.xp-shop .prodgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+.xp-shop .shopband__disclosure { margin-top: var(--s-3); }
+
+/* --- 6. Phone action bar -------------------------------------------------- */
 
 .xp-bar { display: none; }
 
-/* --- Below 60rem: one column --------------------------------------------- */
+/* --- Below 60rem: one column, no rail, the bar ---------------------------- */
 
 @media (max-width: 59.99rem) {
   .xp-body {
     grid-template-columns: minmax(0, 1fr);
-    gap: clamp(3rem, 8vw, 4rem);
-    padding-top: clamp(2.5rem, 7vw, 3.5rem);
+    gap: 0;
+    padding-top: clamp(2.25rem, 6vw, 3rem);
   }
-  .xp-rail__card { position: static; padding: 1.75rem 1.5rem; }
-  .xp-rail__title {
-    position: static;
-    width: auto; height: auto;
-    margin: 0; overflow: visible; clip: auto; white-space: normal;
-    font-size: clamp(1.45rem, 5.5vw, 1.75rem);
-    font-weight: 800;
-    line-height: 1.05;
-    text-transform: uppercase;
-    color: var(--deep);
-  }
+  /* The hero strip and "Location and hours" already hold everything the
+     rail does; a second copy after all the content would only repeat it. */
+  .xp-rail { display: none; }
 
-  .xp-glance { display: block; margin-top: var(--s-4); }
+  .xp-decide { grid-template-columns: minmax(0, 1fr); }
+  .xp-decide__acts { justify-content: flex-start; }
 
   .xp-cards {
     display: flex;
@@ -738,75 +983,107 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
     scroll-padding-inline: var(--gutter);
   }
   .xp-card {
-    flex: 0 0 min(16.5rem, 80%);
-    padding: 1.4rem;
-    border-radius: var(--r-lg);
+    flex: 0 0 min(17rem, 80%);
     scroll-snap-align: start;
   }
 
   .xp-claim { grid-template-columns: minmax(0, 1fr); }
   .xp-claim__open { width: 100%; }
 
-  /* The bar: always there on a phone, clear of the home indicator. */
+  .xp-shop .prodgrid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: .25rem var(--gutter) .5rem;
+  }
+  .xp-shop .prodcard { flex: 0 0 min(15rem, 75%); scroll-snap-align: start; }
+
+  /* The bar: words under every icon, clear of the home indicator. Without
+     script it is simply always there; v4-listing.js adds .xp-bar--js and
+     then shows it only between the hero and the footer. */
   .xp-bar {
     position: fixed; z-index: 60;
-    left: max(.75rem, env(safe-area-inset-left, 0px));
-    right: max(.75rem, env(safe-area-inset-right, 0px));
-    bottom: calc(.75rem + env(safe-area-inset-bottom, 0px));
-    display: flex; align-items: center; gap: .5rem;
-    padding: .5rem;
+    left: max(.5rem, env(safe-area-inset-left, 0px));
+    right: max(.5rem, env(safe-area-inset-right, 0px));
+    bottom: calc(.5rem + env(safe-area-inset-bottom, 0px));
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: .35rem;
+    padding: .35rem;
     border: 1px solid var(--line);
-    border-radius: var(--r-pill);
+    border-radius: var(--r-lg);
     background: var(--surface);
     box-shadow: var(--sh-3);
+    transition: transform var(--t-med) var(--ease-out), opacity var(--t-med) var(--ease-out), visibility 0s linear 0s;
   }
-  .xp-bar__main {
-    flex: 1 1 auto;
+  .xp-bar--js:not(.is-on) {
+    transform: translateY(calc(100% + 1.5rem));
+    opacity: 0;
+    visibility: hidden;
+    transition: transform var(--t-med) var(--ease-out), opacity var(--t-med) var(--ease-out), visibility 0s linear var(--t-med);
+  }
+  .xp-bar__btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: .2rem;
     min-width: 0;
-    min-height: 48px;
-    justify-content: center;
-    font-size: 1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .xp-bar__icon {
-    flex: none;
-    display: grid; place-items: center;
-    width: 48px; height: 48px;
-    margin-left: auto;
-    padding: 0;
-    border: 1px solid var(--deep);
-    border-radius: 50%;
+    min-height: 52px;
+    padding: .35rem .25rem;
+    border: 0;
+    border-radius: var(--r-md);
     background: transparent;
     color: var(--deep);
     font: inherit;
-    font-size: 1.3rem;
-    line-height: 1;
+    font-size: .75rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
+    text-decoration: none;
     cursor: pointer;
   }
-  .xp-bar__main + .xp-bar__icon,
-  .xp-bar__icon + .xp-bar__icon { margin-left: 0; }
-  .xp-bar__icon svg { width: 20px; height: 20px; }
-  .xp-bar__icon[aria-pressed="true"] { background: var(--gold-soft); }
+  .xp-bar__btn > span:not([aria-hidden]) { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .xp-bar__btn svg { width: 20px; height: 20px; }
+  .xp-bar__btn .savebtn__on,
+  .xp-bar__btn .savebtn__off { font-size: 1.15rem; line-height: 20px; height: 20px; }
+  .xp-bar__btn--main { background: var(--ink); color: var(--surface); }
+  .xp-bar__btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .xp-bar__btn[aria-pressed="true"] { background: var(--gold-soft); }
 
-  /* Room at the foot of the page so the bar never covers the footer. */
-  body.single-listing { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+  /* Room at the foot of the page so the bar never covers the last words. */
+  body.single-listing { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Story sections get their own spacing once the grid gap is gone. */
+@media (max-width: 59.99rem) {
+  .xp-story { gap: clamp(2.5rem, 8vw, 3.25rem); }
 }
 
 /* --- Phones --------------------------------------------------------------- */
 
 @media (max-width: 40rem) {
-  .xp-crumbs { padding-top: var(--s-4); }
+  .xp-crumbs { padding-top: var(--s-3); }
+  .xp-crumbs .crumbs { font-size: var(--fs-xs); }
 
-  /* Full-bleed picture with rounded foot, as in the phone design. */
+  /* One photo, full bleed, the title and its facts beneath it on paper --
+     readable on any picture and the H1 never fills the screen. */
   .xp-hero { padding: var(--s-3) 0 0; }
-  .xp-hero__panel,
+  .xp-hero__panel:not(.xp-hero__panel--n0),
   .xp-hero__panel.gallery {
-    min-height: clamp(26rem, 72vh, 35rem);
-    border-radius: 0 0 var(--r-xl) var(--r-xl);
+    display: block;
+    min-height: 0;
+    border-radius: 0;
+    overflow: visible;
+    background: transparent;
+    color: var(--ink);
   }
-  .xp-hero__panel--n0 { min-height: 17rem; }
+  .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    max-height: 46vh;
+    width: 100%;
+    overflow: hidden;
+  }
   .xp-hero__panel--n2 .xp-hero__media,
   .xp-hero__panel--n3 .xp-hero__media {
     grid-template-columns: minmax(0, 1fr);
@@ -814,21 +1091,64 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
   }
   .xp-hero__shot--1,
   .xp-hero__shot--2 { display: none !important; }
-  .xp-hero__text { padding: 7rem 1.25rem 2rem; }
+  .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__shade { display: none; }
+  .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__text {
+    padding: 1.1rem var(--gutter) .9rem;
+    text-shadow: none;
+  }
+  .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__eyebrow { color: var(--text-soft); }
+  .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__eyebrow a { text-decoration-color: var(--line-strong); }
+  .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__best { color: var(--gold) !important; }
+  .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__title { color: var(--deep); }
+  .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__lede { color: var(--text-soft); }
+  .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__eyebrow a:focus-visible { outline-color: var(--focus); }
+  .xp-hero__title { font-size: clamp(1.85rem, 8vw, 2.35rem); }
+  .xp-hero__lede { font-size: 1.0625rem; -webkit-line-clamp: 3; }
+  /* "View all photos" stays on the one photo, top right. */
+  .xp-hero__all { top: .75rem; right: var(--gutter); }
+
+  .xp-hero__panel--n0 { min-height: 0; border-radius: 0; }
+  .xp-hero__panel--n0 .xp-hero__text { padding: 2rem var(--gutter) 1.5rem; }
+
+  .xp-decide {
+    margin-inline: var(--gutter);
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+  }
+  .xp-decide__facts { gap: .35rem 1.1rem; }
+  .xp-decide__fact + .xp-decide__fact::before { display: none; }
+  .xp-decide__acts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .45rem;
+  }
+  .xp-decide__acts .btn { padding: .6rem .5rem; gap: .35rem; font-size: .875rem; }
+  .xp-decide__main { grid-column: 1 / -1; }
+  .xp-decide__trust { padding-top: .6rem; }
   .xp-hero__credit { padding-inline: var(--gutter); }
+
+  .xp-dna__row { grid-template-columns: minmax(0, 1fr); }
+  .xp-dna__scale { grid-template-columns: 5.5rem minmax(4rem, 1fr) 5.5rem; gap: .5rem; }
 
   .xp-form__row { grid-template-columns: minmax(0, 1fr); }
   .xp-form .btn { justify-self: stretch; }
+  .reviewform__split { grid-template-columns: minmax(0, 1fr); }
 
-  .xp-fact { grid-template-columns: 5.75rem minmax(0, 1fr); gap: .75rem; }
+  .xp-rvsum__acts { width: 100%; }
+  .xp-rvsum__acts .btn { flex: 1 1 10rem; }
+  .xp-loc__map { aspect-ratio: 16 / 9; }
   .xp-pick__guide { font-size: .875rem; }
 }
 
 /* --- Motion --------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
+  .xp-hero__shot { animation: none; }
   .xp-hero__shot img,
-  .xp-card { transition: none; }
+  .xp-card,
+  .xp-bar,
+  .xp-bar--js:not(.is-on) { transition: none; }
   button.xp-hero__shot:hover img,
   .xp-card:hover { transform: none; }
   .xp-page .btn:hover { transform: none; }

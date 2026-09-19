@@ -1,34 +1,114 @@
 <?php
 /**
- * v4 listing profile -- the "experience page" (design test, child theme).
+ * v4 listing profile -- the "experience page" as a decision page (child theme).
  *
  * Overrides the parent's single-listing.php. Every data read, guard, form,
- * analytics attribute and template part below comes from the parent file;
- * what changes is the order and the wrapping:
+ * analytics attribute and template part comes from the parent file; what
+ * changes is the order, the wrapping and what is shown first:
  *
- *   1. Visual intro   -- real photos (never a stand-in: no photo = a pine
- *                        panel), category · suburb · Best Of, the H1, and
- *                        the first sentence of the listing's own excerpt.
- *   2. Story + rail   -- story sections on the left, each only when its data
- *                        exists; a sticky action rail on the right.
- *   3. Similar        -- the parent's Similar\listings_for() as cards.
+ *   1. Decision hero  -- real photos (no photo = a pine panel, never a
+ *                        stand-in), category · suburb · Best Of, the H1, the
+ *                        first sentence of the listing's own excerpt; then,
+ *                        directly under the picture, rating, price and
+ *                        today's hours, the four actions and a trust note.
+ *   2. Story + rail   -- one DOM order that is also the phone order:
+ *                        What it's like -> What you'll find here -> Before
+ *                        your first visit -> Location and hours -> Why our
+ *                        editors picked it -> Reviews. From 60rem a sticky
+ *                        rail of practical facts and actions sits beside it;
+ *                        below 60rem the rail is not shown (the hero and the
+ *                        Location section already carry everything in it).
+ *   3. Similar        -- Similar\listings_for() as picture cards, each with a
+ *                        reason built only from services the two share.
  *   4. Claim          -- the parent's claim form, unclaimed listings only.
- *   5. Phone          -- a persistent bottom action bar.
+ *   5. Products       -- one compact row, only when at least two match.
+ *   6. Phone bar      -- shown once the hero's own actions scroll away,
+ *                        hidden again at the footer and while a form is in use.
  *
  * Nothing on this page is written for the listing: every sentence is a
  * stored field or a label. A section with no data behind it does not render.
  *
- * Styles: assets/css/v4-listing.css (handle oria-v4-listing). All new classes
- * are prefixed .xp- so nothing collides with the parent's own .xp / .xp__*.
+ * Styles: assets/css/v4-listing.css. Behaviour: assets/js/v4-listing.js
+ * (hours today, show-all services, review panel, phone bar); the page works
+ * without it. New classes are .xp- prefixed so nothing collides with the
+ * parent's own .xp / .xp__* panel.
  */
 
 declare(strict_types=1);
 
 use function Oria\Theme\arrow;
 
+/* -------------------------------------------------------------------------
+ * Photos, resolved before get_header() so the first can be preloaded from
+ * wp_head. The listing's own, else its featured image, else its Google
+ * Places photos (credited). No placeholder scene at the end of the chain:
+ * no photo means the pine panel, never a picture of somewhere else.
+ * ----------------------------------------------------------------------- */
+
+$oria_qid         = (int) get_queried_object_id();
+$oria_places_attr = array();
+$oria_gallery     = array_values( array_filter( array_map(
+	static fn( $gid ) => wp_get_attachment_image_url( (int) $gid, 'oria-wide' ),
+	\Oria\Theme\rows( 'gallery', array(), $oria_qid )
+) ) );
+// The plan caps what is published, not what is stored.
+$oria_gcap = function_exists( '\Oria\Core\Tiers\gallery_limit' ) ? \Oria\Core\Tiers\gallery_limit( $oria_qid ) : 0;
+if ( $oria_gcap > 0 && count( $oria_gallery ) > $oria_gcap ) {
+	$oria_gallery = array_slice( $oria_gallery, 0, $oria_gcap );
+}
+if ( ! $oria_gallery && has_post_thumbnail( $oria_qid ) ) {
+	$oria_gallery = array_filter( array( (string) get_the_post_thumbnail_url( $oria_qid, 'oria-wide' ) ) );
+}
+if ( ! $oria_gallery && function_exists( '\Oria\Core\Places\photos_for' ) ) {
+	$oria_places = \Oria\Core\Places\photos_for( $oria_qid );
+	if ( ! empty( $oria_places['urls'] ) ) {
+		$oria_gallery     = array_values( $oria_places['urls'] );
+		$oria_places_attr = (array) $oria_places['attributions'];
+	}
+}
+$oria_gallery = array_values( $oria_gallery );
+$oria_photos  = count( $oria_gallery );
+
+// Google photo URLs take a size suffix; ask for the size the slot needs.
+$oria_gsz = static function ( string $oria_gu, int $oria_gw ): string {
+	return false !== strpos( $oria_gu, 'googleusercontent.com' )
+		? (string) preg_replace( '/=[a-z0-9-]+$/i', '=w' . $oria_gw, $oria_gu )
+		: $oria_gu;
+};
+
+// One srcset/sizes pair, shared by the <img> and its preload so the browser reuses the fetch.
+$oria_hero_sizes = 1 === $oria_photos
+	? '(max-width: 82.5rem) 100vw, 1320px'
+	: '(max-width: 40rem) 100vw, (max-width: 82.5rem) 66vw, 880px';
+$oria_srcset     = static fn( string $oria_u ): string => $oria_gsz( $oria_u, 800 ) . ' 800w, ' . $oria_gsz( $oria_u, 1600 ) . ' 1600w';
+
+if ( $oria_photos ) {
+	$oria_pre = (string) $oria_gallery[0];
+	add_action(
+		'wp_head',
+		static function () use ( $oria_pre, $oria_gsz, $oria_srcset, $oria_hero_sizes ): void {
+			printf(
+				'<link rel="preload" as="image" href="%1$s" imagesrcset="%2$s" imagesizes="%3$s" fetchpriority="high">' . "\n",
+				esc_url( $oria_gsz( $oria_pre, 1200 ) ),
+				esc_attr( $oria_srcset( $oria_pre ) ),
+				esc_attr( $oria_hero_sizes )
+			);
+		},
+		2
+	);
+}
+
 get_header();
 
-$oria_star = '<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>';
+$oria_star = '<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>';
+
+// Small line icons for the action buttons. Decorative: every button also has words.
+$oria_ico = array(
+	'web'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+	'tel'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>',
+	'dir'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>',
+	'save' => '<span class="savebtn__on" aria-hidden="true">&#9829;</span><span class="savebtn__off" aria-hidden="true">&#9825;</span>',
+);
 
 while ( have_posts() ) :
 	the_post();
@@ -56,7 +136,7 @@ while ( have_posts() ) :
 		? \Oria\Core\Categories\primary_for( $oria_id )
 		: ( wp_get_post_terms( $oria_id, 'practice' )[0] ?? null );
 
-	$oria_address  = (string) get_field( 'address', $oria_id );
+	$oria_address  = trim( (string) get_field( 'address', $oria_id ) );
 	$oria_phone    = (string) get_field( 'phone', $oria_id );
 	$oria_email    = (string) get_field( 'email', $oria_id );
 	$oria_slugname = (string) get_post_field( 'post_name', $oria_id );
@@ -71,11 +151,12 @@ while ( have_posts() ) :
 	$oria_contactless = '' !== (string) ( $oria_words['contactless'] ?? '' );
 	$oria_price_from  = get_field( 'price_from', $oria_id );
 	$oria_format      = (string) ( get_field( 'format', $oria_id ) ?: 'in-person' );
-	$oria_next        = (string) get_field( 'next_session', $oria_id );
+	$oria_next        = trim( (string) get_field( 'next_session', $oria_id ) );
 	$oria_good_for    = (string) get_field( 'good_for', $oria_id );
 	$oria_hours       = \Oria\Theme\rows( 'opening_hours', array(), $oria_id );
 	$oria_transit     = (string) get_field( 'transit', $oria_id );
 	$oria_parking     = (string) get_field( 'parking', $oria_id );
+	$oria_kind        = (string) get_field( 'kind', $oria_id );
 	$oria_reviews     = \Oria\Core\Places\reviews_for( $oria_id );
 	$oria_display     = \Oria\Theme\display_status( $oria_id );
 	$oria_claimed_by  = (int) get_post_meta( $oria_id, 'claimed_by', true );
@@ -87,42 +168,24 @@ while ( have_posts() ) :
 
 	$oria_lcity = function_exists( '\Oria\Core\Cities\current' ) ? \Oria\Core\Cities\current() : null;
 	$oria_lname = $oria_lcity ? \Oria\Core\Cities\name( $oria_lcity ) : '';
+	$oria_cityw = '' !== $oria_lname ? $oria_lname : __( 'Perth', 'oria' );
+
+	$oria_area_name = $oria_suburb instanceof WP_Term
+		? \Oria\Theme\tname( $oria_suburb )
+		: ( $oria_region instanceof WP_Term ? \Oria\Theme\tname( $oria_region ) : '' );
 
 	/*
-	 * Photos: the listing's own, else its featured image, else its Google
-	 * Places photos (credited). Unlike the parent there is no placeholder
-	 * scene at the end of the chain -- no photo means the pine panel, never
-	 * a stand-in picture of somewhere else.
+	 * Address. A stored address that is only "Suburb WA 6014" is not a
+	 * street address, and saying so is more useful than presenting the
+	 * suburb as if it were the door.
 	 */
-	$oria_places_attr = array();
-	$oria_gallery     = array_values( array_filter( array_map(
-		static fn( $gid ) => wp_get_attachment_image_url( (int) $gid, 'oria-wide' ),
-		\Oria\Theme\rows( 'gallery', array(), $oria_id )
-	) ) );
-	// The plan caps what is published, not what is stored.
-	$oria_gcap = function_exists( '\Oria\Core\Tiers\gallery_limit' ) ? \Oria\Core\Tiers\gallery_limit( $oria_id ) : 0;
-	if ( $oria_gcap > 0 && count( $oria_gallery ) > $oria_gcap ) {
-		$oria_gallery = array_slice( $oria_gallery, 0, $oria_gcap );
-	}
-	if ( ! $oria_gallery && has_post_thumbnail( $oria_id ) ) {
-		$oria_gallery = array_filter( array( (string) get_the_post_thumbnail_url( $oria_id, 'oria-wide' ) ) );
-	}
-	if ( ! $oria_gallery ) {
-		$oria_places = \Oria\Core\Places\photos_for( $oria_id );
-		if ( ! empty( $oria_places['urls'] ) ) {
-			$oria_gallery     = array_values( $oria_places['urls'] );
-			$oria_places_attr = (array) $oria_places['attributions'];
-		}
-	}
-	$oria_gallery = array_values( $oria_gallery );
-	$oria_photos  = count( $oria_gallery );
-
-	// Google photo URLs take a size suffix; ask for the size the slot needs.
-	$oria_gsz = static function ( string $oria_gu, int $oria_gw ): string {
-		return false !== strpos( $oria_gu, 'googleusercontent.com' )
-			? (string) preg_replace( '/=[a-z0-9-]+$/i', '=w' . $oria_gw, $oria_gu )
-			: $oria_gu;
-	};
+	$oria_street = '' !== $oria_address
+		&& ! preg_match( "/^[\\p{L}\\s'.-]+(\\s+(WA|NSW|VIC|QLD|SA|TAS|NT|ACT)(\\s*\\d{4})?)?$/iu", $oria_address );
+	// Directions to a suburb alone would drop a pin in its middle; the name lets the map find the door.
+	$oria_dir_dest = $oria_street ? $oria_address : trim( $oria_title . ', ' . ( '' !== $oria_address ? $oria_address : $oria_area_name ) , ', ' );
+	$oria_dir_url  = ( '' !== $oria_address || '' !== $oria_area_name ) && 'online' !== $oria_format
+		? \Oria\Theme\map_directions_url( $oria_dir_dest )
+		: '';
 
 	/*
 	 * The one-sentence reason to go: the first sentence of the listing's own
@@ -142,13 +205,31 @@ while ( have_posts() ) :
 	$oria_best_in    = function_exists( '\Oria\Core\BestOf\guides_for_listing' ) ? \Oria\Core\BestOf\guides_for_listing( $oria_id ) : array();
 	$oria_best_badge = function_exists( '\Oria\Core\BestOf\card_badge' ) ? \Oria\Core\BestOf\card_badge( $oria_id ) : null;
 
+	// The listing's own terms, as slug lookups: used to keep derived links honest.
+	$oria_tslugs = static function ( string $oria_tax ) use ( $oria_id ): array {
+		$oria_tt = get_the_terms( $oria_id, $oria_tax );
+		return is_array( $oria_tt ) ? array_fill_keys( wp_list_pluck( $oria_tt, 'slug' ), true ) : array();
+	};
+	$oria_own_cats   = $oria_tslugs( 'practice' );
+	$oria_own_facets = $oria_tslugs( 'specialty' ) + $oria_tslugs( 'service' );
+	$oria_beginners  = isset( $oria_tslugs( 'audience' )['beginners'] );
+
+	$oria_group  = (string) get_field( 'group_size', $oria_id );
+	$oria_groups = array(
+		'one-to-one' => __( 'One to one', 'oria' ),
+		'small'      => __( 'Small groups (under 12)', 'oria' ),
+		'class'      => __( 'Class sized (12+)', 'oria' ),
+		'solo'       => __( 'On your own (a room or a machine)', 'oria' ),
+	);
+	$oria_band_raw = trim( (string) get_field( 'price_band', $oria_id ) );
+
 	// The experience profile, as the parent assembles it.
 	$oria_wants  = function_exists( '\Oria\Core\GoodFor\for_listing' ) ? \Oria\Core\GoodFor\for_listing( $oria_id ) : array();
 	$oria_expect = function_exists( '\Oria\Theme\expect_chips' ) ? \Oria\Theme\expect_chips( $oria_id ) : array();
 	$oria_echips = array();
 	foreach ( $oria_expect as $oria_e ) {
-		// Price and distance live in the rail's facts; the rest stay chips.
-		if ( ! in_array( $oria_e['kind'], array( 'price', 'where' ), true ) ) {
+		// Price and distance live in the hero and Location; how you book lives in "Before your first visit".
+		if ( ! in_array( $oria_e['kind'], array( 'price', 'where', 'book' ), true ) ) {
 			$oria_echips[] = $oria_e;
 		}
 	}
@@ -157,8 +238,64 @@ while ( have_posts() ) :
 	$oria_like_on = ! function_exists( '\Oria\Core\Dna\feels_like_enabled' ) || \Oria\Core\Dna\feels_like_enabled();
 	$oria_dna     = $oria_dna_on && function_exists( '\Oria\Core\Dna\bars' ) ? \Oria\Core\Dna\bars( $oria_id ) : array();
 	$oria_dnax    = $oria_dna && function_exists( '\Oria\Core\Dna\experience_for' ) ? \Oria\Core\Dna\experience_for( $oria_id ) : null;
-	$oria_feel    = $oria_dnax ? \Oria\Core\Dna\summary( $oria_dna ) : '';
-	$oria_like    = $oria_dnax && $oria_like_on ? \Oria\Core\Dna\feels_like( $oria_dnax, 3 ) : array();
+
+	/*
+	 * Experience DNA, kept to what can be backed.
+	 *
+	 * Every bar starts from the Compare registry's score for the KIND of
+	 * session (Dna\experience_for) and only three are narrowed by a fact on
+	 * this listing (Dna\bars): Social by group_size, Affordability by
+	 * price_band, Beginner friendly by the "beginners" audience tag. Where
+	 * the listing carries no such fact the registry value is a guess about
+	 * this particular room -- that is how a communal sauna house came to be
+	 * "small and private" -- so the bar is not shown. The others describe the
+	 * kind of session itself and stay, provided the registry scored them.
+	 */
+	$oria_dattr = $oria_dnax ? (array) ( $oria_dnax['attributes'] ?? array() ) : array();
+	$oria_dknow = array(
+		'physical' => isset( $oria_dattr['intensity'] ) && '' !== (string) $oria_dattr['intensity'],
+		'quiet'    => isset( $oria_dattr['quiet'] ) && '' !== (string) $oria_dattr['quiet'],
+		'social'   => isset( $oria_groups[ $oria_group ] ),
+		'handson'  => '' !== trim( (string) ( $oria_dattr['touch'] ?? '' ) ),
+		'afford'   => '' !== $oria_band_raw,
+		'beginner' => $oria_beginners || '' !== trim( (string) ( $oria_dattr['experience'] ?? '' ) ),
+	);
+	$oria_dna_all = $oria_dna;
+	$oria_dna     = array_values( array_filter( $oria_dna, static fn( $oria_b ) => ! empty( $oria_dknow[ $oria_b['key'] ] ) ) );
+	// Plain-language names and the two ends of each scale (1 -> 5).
+	$oria_dmeta = array(
+		'physical' => array( __( 'Physical effort', 'oria' ), __( 'Gentle', 'oria' ), __( 'Demanding', 'oria' ) ),
+		'quiet'    => array( __( 'Quietness', 'oria' ), __( 'Music or talk', 'oria' ), __( 'Very quiet', 'oria' ) ),
+		'social'   => array( __( 'Social atmosphere', 'oria' ), __( 'Just you', 'oria' ), __( 'Shared, social', 'oria' ) ),
+		'handson'  => array( __( 'Hands-on support', 'oria' ), __( 'Hands-off', 'oria' ), __( 'Hands-on', 'oria' ) ),
+		'afford'   => array( __( 'Price accessibility', 'oria' ), __( 'Premium', 'oria' ), __( 'Budget friendly', 'oria' ) ),
+		'beginner' => array( __( 'Beginner friendliness', 'oria' ), __( 'Some experience helps', 'oria' ), __( 'Easy first visit', 'oria' ) ),
+	);
+	// The one-line summary reads the Social bar, so it only speaks when that bar is backed.
+	$oria_feel = $oria_dnax && $oria_dknow['social'] ? \Oria\Core\Dna\summary( $oria_dna_all ) : '';
+
+	/*
+	 * "Feels like": the registry's nearest other kinds of session, kept only
+	 * when this listing itself is filed under that kind (its category, or a
+	 * specialty/service tag). A neighbour in the scoring space that the
+	 * listing does not offer -- breathwork beside a sauna house -- is exactly
+	 * the loose relation the brief asks us not to publish.
+	 */
+	$oria_like = array();
+	if ( $oria_dnax && $oria_like_on && function_exists( '\Oria\Core\Dna\top_level' ) && function_exists( '\Oria\Core\Compare\experience_url' ) ) {
+		$oria_keys = array();
+		foreach ( \Oria\Core\Dna\top_level() as $oria_te ) {
+			$oria_keys[ \Oria\Core\Compare\experience_url( $oria_te ) ] = \Oria\Core\Dna\key_of( $oria_te );
+		}
+		foreach ( \Oria\Core\Dna\feels_like( $oria_dnax, 12 ) as $oria_l ) {
+			list( $oria_lk, $oria_ls ) = $oria_keys[ $oria_l['url'] ] ?? array( '', '' );
+			$oria_mine = 'category' === $oria_lk ? isset( $oria_own_cats[ $oria_ls ] ) : ( 'facet' === $oria_lk && isset( $oria_own_facets[ $oria_ls ] ) );
+			if ( '' !== $oria_ls && $oria_mine ) {
+				$oria_like[] = $oria_l;
+			}
+		}
+		$oria_like = array_slice( $oria_like, 0, 3 );
+	}
 
 	// Rating: our own reviews first, else Google's, labelled and linked as Google's.
 	$oria_rate = \Oria\Theme\effective_rating( $oria_id );
@@ -167,17 +304,25 @@ while ( have_posts() ) :
 	// Price: an exact "from" figure, else the band in words.
 	$oria_price_num  = (int) $oria_price_from;
 	$oria_band_label = '';
-	if ( $oria_price_num <= 0 ) {
-		$oria_band_raw   = trim( (string) get_field( 'price_band', $oria_id ) );
-		$oria_band_label = ( '' !== $oria_band_raw && function_exists( '\Oria\Core\Answer\band_label' ) )
-			? \Oria\Core\Answer\band_label( $oria_band_raw )
-			: '';
+	if ( $oria_price_num <= 0 && '' !== $oria_band_raw ) {
+		$oria_band_label = 'Free' === $oria_band_raw
+			? __( 'Free', 'oria' )
+			: ( function_exists( '\Oria\Core\Answer\band_label' ) ? \Oria\Core\Answer\band_label( $oria_band_raw ) : '' );
 	}
+	$oria_price_txt = $oria_price_num > 0
+		/* translators: %d: lowest published price */
+		? sprintf( __( 'From $%d a session', 'oria' ), $oria_price_num )
+		: ( '' === $oria_band_label ? '' : ( 'Free' === $oria_band_raw ? $oria_band_label : sprintf( /* translators: %s: price band such as $25–60 */ __( 'Typically %s', 'oria' ), $oria_band_label ) ) );
 
 	// Special offer (paid; hides itself when expired or unclaimed).
 	$oria_offer = \Oria\Theme\active_offer( $oria_id );
 
-	// Hours: the owner's own rows, else today's line from Google.
+	/*
+	 * Hours: the owner's own rows win; else Google's week. Today's line is
+	 * rendered from the server's clock and then corrected by v4-listing.js
+	 * from the same data (the page can be served from a cache the next day),
+	 * which also works out "open now" from Google's structured periods.
+	 */
 	$oria_hbits = array();
 	foreach ( $oria_hours as $oria_hr ) {
 		$oria_hline = trim( trim( (string) ( $oria_hr['days'] ?? '' ) ) . ' ' . trim( (string) ( $oria_hr['hours'] ?? '' ) ) );
@@ -185,46 +330,44 @@ while ( have_posts() ) :
 			$oria_hbits[] = $oria_hline;
 		}
 	}
-	$oria_wk    = function_exists( '\Oria\Core\Places\hours_for' ) ? \Oria\Core\Places\hours_for( $oria_id ) : array();
-	$oria_today = '';
-	if ( ! $oria_hbits ) {
-		$oria_todayw = (string) wp_date( 'l' );
-		foreach ( $oria_wk as $oria_ghl ) {
-			if ( 0 === stripos( $oria_ghl, $oria_todayw ) ) {
-				$oria_today = trim( (string) preg_replace( '/^[^:]+:\s*/u', '', $oria_ghl ) );
-				break;
-			}
+	$oria_wk     = ! $oria_hbits && function_exists( '\Oria\Core\Places\hours_for' ) ? \Oria\Core\Places\hours_for( $oria_id ) : array();
+	$oria_prec   = function_exists( '\Oria\Core\Places\data_for' ) ? \Oria\Core\Places\data_for( $oria_id, false ) : null;
+	$oria_gts    = $oria_prec ? (int) ( $oria_prec['ts'] ?? 0 ) : 0;
+	$oria_todayw = (string) wp_date( 'l' );
+	$oria_today  = '';
+	foreach ( $oria_wk as $oria_ghl ) {
+		if ( 0 === stripos( $oria_ghl, $oria_todayw ) ) {
+			$oria_today = trim( (string) preg_replace( '/^[^:]+:\s*/u', '', $oria_ghl ) );
+			break;
 		}
 	}
-
-	$oria_amen = get_field( 'amenities', $oria_id );
-	if ( is_string( $oria_amen ) && '' !== trim( $oria_amen ) ) {
-		$oria_amen = array_map( 'trim', explode( ',', $oria_amen ) );
-	}
-	$oria_amen = is_array( $oria_amen ) ? array_filter( array_map( 'strval', $oria_amen ) ) : array();
+	$oria_hours_json = $oria_wk
+		? (string) wp_json_encode( array(
+			'tz'      => wp_timezone_string(),
+			'week'    => array_values( $oria_wk ),
+			'periods' => $oria_prec ? array_values( (array) ( $oria_prec['periods'] ?? array() ) ) : array(),
+		) )
+		: '';
 
 	$oria_show_email = $oria_email && ( ! function_exists( '\Oria\Core\Tiers\shows_email' ) || \Oria\Core\Tiers\shows_email( $oria_id ) );
 	$oria_can_enq    = ! $oria_contactless && $oria_email && function_exists( '\Oria\Core\Leads\eligible' ) && \Oria\Core\Leads\eligible( $oria_id );
 	$oria_owns_this  = is_user_logged_in() && $oria_claimed_by === get_current_user_id();
-	$oria_dir_url    = $oria_address ? \Oria\Theme\map_directions_url( $oria_address ) : '';
 	$oria_tel        = $oria_phone && ! $oria_contactless ? (string) preg_replace( '/[^0-9+]/', '', $oria_phone ) : '';
 	$oria_primary    = $oria_booking
 		? array( 'url' => $oria_booking, 'track' => 'book', 'label' => __( 'Book a session', 'oria' ), 'short' => __( 'Book', 'oria' ) )
-		: ( $oria_website ? array( 'url' => $oria_website, 'track' => 'web', 'label' => __( 'Visit their website', 'oria' ), 'short' => __( 'Visit website', 'oria' ) ) : null );
+		: ( $oria_website ? array( 'url' => $oria_website, 'track' => 'web', 'label' => __( 'Check sessions and availability', 'oria' ), 'short' => __( 'Website', 'oria' ) ) : null );
 
-	// First-visit facts: only the fields a listing can actually carry.
-	$oria_first  = array();
-	$oria_bring  = trim( (string) get_field( 'what_to_bring', $oria_id ) );
-	$oria_mins   = (int) get_field( 'duration_min', $oria_id );
-	$oria_group  = (string) get_field( 'group_size', $oria_id );
-	$oria_groups = array(
-		'one-to-one' => __( 'One to one', 'oria' ),
-		'small'      => __( 'Small groups (under 12)', 'oria' ),
-		'class'      => __( 'Class sized (12+)', 'oria' ),
-		'solo'       => __( 'On your own (a room or a machine)', 'oria' ),
+	/* First-visit facts: only fields a listing actually carries. */
+	$oria_first = array();
+	$oria_bring = trim( (string) get_field( 'what_to_bring', $oria_id ) );
+	$oria_mins  = (int) get_field( 'duration_min', $oria_id );
+	$oria_kinds = array(
+		'practice' => __( 'Book a practitioner', 'oria' ),
+		'place'    => __( 'Book a room or a slot', 'oria' ),
+		'spot'     => __( 'Turn up, nothing to book', 'oria' ),
 	);
 	if ( '' !== $oria_bring ) {
-		$oria_first[] = array( __( 'Before you go', 'oria' ), $oria_bring );
+		$oria_first[] = array( __( 'What to bring', 'oria' ), $oria_bring );
 	}
 	if ( $oria_mins > 0 ) {
 		/* translators: %d: minutes */
@@ -233,6 +376,13 @@ while ( have_posts() ) :
 	if ( isset( $oria_groups[ $oria_group ] ) ) {
 		$oria_first[] = array( __( 'Group size', 'oria' ), $oria_groups[ $oria_group ] );
 	}
+	if ( isset( $oria_kinds[ $oria_kind ] ) ) {
+		$oria_first[] = array( __( 'Booking', 'oria' ), $oria_kinds[ $oria_kind ] );
+	}
+	if ( '' !== $oria_next ) {
+		$oria_first[] = array( __( 'Next session', 'oria' ), $oria_next );
+	}
+	$oria_amenities = function_exists( '\Oria\Core\Amenities\for_listing' ) ? \Oria\Core\Amenities\for_listing( $oria_id ) : array();
 
 	// Services heading: "Classes" where the listing runs a class timetable or a class-led category.
 	$oria_week       = function_exists( '\Oria\Core\Classes\timetable_for' ) ? \Oria\Core\Classes\timetable_for( $oria_id ) : array();
@@ -240,6 +390,27 @@ while ( have_posts() ) :
 	$oria_is_classes = $oria_week || ( $oria_practice instanceof WP_Term && in_array( $oria_practice->slug, $oria_class_cats, true ) );
 
 	$oria_sec = 0; // Heading ids, so every section can be aria-labelledby.
+
+	/* Small builders for the action buttons, so hero, rail and bar stay in step. */
+	$oria_rating_html = '';
+	if ( $oria_rate['rating'] > 0 ) {
+		$oria_rnum = number_format_i18n( (float) $oria_rate['rating'], 1 );
+		if ( 'google' === $oria_rate['source'] ) {
+			$oria_rcnt = $oria_rate['count'] > 0
+				/* translators: %s: number of Google reviews */
+				? sprintf( _n( '%s Google review', '%s Google reviews', (int) $oria_rate['count'], 'oria' ), number_format_i18n( (int) $oria_rate['count'] ) )
+				: __( 'Rating on Google', 'oria' );
+			$oria_rating_html = '<a class="xp-fact__link" href="' . esc_url( ! empty( $oria_grat['uri'] ) ? $oria_grat['uri'] : '#reviews' ) . '"' . ( ! empty( $oria_grat['uri'] ) ? ' rel="nofollow noopener" target="_blank"' : '' ) . '>'
+				. $oria_star . ' <b>' . esc_html( $oria_rnum ) . '</b> <span class="xp-fact__sub">' . esc_html( $oria_rcnt ) . '</span>'
+				. ( ! empty( $oria_grat['uri'] ) ? '<span class="xp-vh"> ' . esc_html__( '(opens Google)', 'oria' ) . '</span>' : '' ) . '</a>';
+		} else {
+			$oria_rcnt = $oria_rate['count'] > 0
+				/* translators: %s: number of reviews */
+				? sprintf( _n( '%s Oria Haven review', '%s Oria Haven reviews', (int) $oria_rate['count'], 'oria' ), number_format_i18n( (int) $oria_rate['count'] ) )
+				: __( 'Oria Haven reviews', 'oria' );
+			$oria_rating_html = '<a class="xp-fact__link" href="#reviews">' . $oria_star . ' <b>' . esc_html( $oria_rnum ) . '</b> <span class="xp-fact__sub">' . esc_html( $oria_rcnt ) . '</span></a>';
+		}
+	}
 	?>
 
 <div class="xp-page">
@@ -265,8 +436,8 @@ while ( have_posts() ) :
 		</nav>
 	</div>
 
-	<!-- 1. Visual intro -->
-	<section class="xp-hero" aria-labelledby="xp-title">
+	<!-- 1. Decision hero -->
+	<section class="xp-hero" aria-labelledby="xp-title" data-xp-hero>
 		<?php
 		$oria_lightbox = $oria_photos >= 2;
 		$oria_panel_cl = 'xp-hero__panel xp-hero__panel--n' . min( 3, $oria_photos );
@@ -274,7 +445,7 @@ while ( have_posts() ) :
 			// .gallery[data-lightbox] is the hook app.js's lightbox looks for.
 			$oria_panel_cl .= ' gallery';
 		}
-		// Places photo URIs are short-lived; one that expires simply drops out, leaving the pine panel.
+		// Places photo URIs are short-lived; one that expires simply drops out.
 		$oria_fb = "this.closest('.xp-hero__shot').hidden=true";
 		?>
 		<div class="<?php echo esc_attr( $oria_panel_cl ); ?>"<?php echo $oria_lightbox ? ' data-lightbox' : ''; ?>>
@@ -286,19 +457,25 @@ while ( have_posts() ) :
 							? $oria_title
 							/* translators: 1: listing name, 2: photo number */
 							: sprintf( __( '%1$s, photo %2$d', 'oria' ), $oria_title, $oria_pi + 1 );
-						$oria_img  = sprintf(
-							'<img src="%1$s" srcset="%2$s" sizes="%3$s" alt="%4$s"%5$s onerror="%6$s">',
+						/*
+						 * First photo: eager, high priority, preloaded from wp_head.
+						 * The others: lazy (and never fetched on a phone, where
+						 * their slot is display:none). width/height give the
+						 * browser the ratio; the grid cell sets the real size.
+						 */
+						$oria_img = sprintf(
+							'<img src="%1$s" srcset="%2$s" sizes="%3$s" alt="%4$s" width="1200" height="800"%5$s onerror="%6$s">',
 							esc_url( $oria_gsz( $oria_pu, 0 === $oria_pi ? 1200 : 800 ) ),
-							esc_attr( $oria_gsz( $oria_pu, 800 ) . ' 800w, ' . $oria_gsz( $oria_pu, 1600 ) . ' 1600w' ),
-							esc_attr( 0 === $oria_pi ? '(max-width: 60rem) 100vw, 66vw' : '(max-width: 60rem) 0px, 33vw' ),
+							esc_attr( $oria_srcset( $oria_pu ) ),
+							esc_attr( 0 === $oria_pi ? $oria_hero_sizes : '(max-width: 40rem) 1px, 33vw' ),
 							esc_attr( $oria_palt ),
-							0 === $oria_pi ? ' fetchpriority="high"' : ' loading="lazy"',
+							0 === $oria_pi ? ' fetchpriority="high" decoding="async"' : ' loading="lazy" decoding="async"',
 							esc_attr( $oria_fb )
 						);
 						?>
 						<?php if ( $oria_lightbox ) : ?>
 							<button type="button" class="xp-hero__shot xp-hero__shot--<?php echo (int) $oria_pi; ?>" data-lb="<?php echo (int) $oria_pi; ?>"
-								aria-label="<?php echo esc_attr( sprintf( /* translators: 1: photo number, 2: photo count */ __( 'Open photo %1$d of %2$d', 'oria' ), $oria_pi + 1, $oria_photos ) ); ?>">
+								aria-label="<?php echo esc_attr( sprintf( /* translators: 1: photo number, 2: photo count, 3: listing name */ __( 'Open photo %1$d of %2$d of %3$s', 'oria' ), $oria_pi + 1, $oria_photos, $oria_title ) ); ?>">
 								<?php echo $oria_img; // phpcs:ignore WordPress.Security.EscapeOutput -- every attribute escaped above. ?>
 							</button>
 						<?php else : ?>
@@ -315,13 +492,11 @@ while ( have_posts() ) :
 				if ( $oria_practice instanceof WP_Term ) {
 					$oria_eyebrow[] = '<a href="' . esc_url( (string) get_term_link( $oria_practice ) ) . '">' . esc_html( \Oria\Theme\tname( $oria_practice ) ) . '</a>';
 				}
-				if ( $oria_suburb instanceof WP_Term ) {
-					$oria_eyebrow[] = esc_html( \Oria\Theme\tname( $oria_suburb ) );
-				} elseif ( $oria_region instanceof WP_Term ) {
-					$oria_eyebrow[] = esc_html( \Oria\Theme\tname( $oria_region ) );
+				if ( '' !== $oria_area_name ) {
+					$oria_eyebrow[] = esc_html( $oria_area_name );
 				}
 				if ( $oria_best_badge ) {
-					$oria_eyebrow[] = '<a class="xp-hero__best" href="' . esc_url( $oria_best_badge['url'] ) . '" title="' . esc_attr__( 'See the Best Of guide this comes from', 'oria' ) . '"><span aria-hidden="true">&#10022;</span> ' . esc_html( $oria_best_badge['label'] ) . '</a>';
+					$oria_eyebrow[] = '<a class="xp-hero__best" href="' . esc_url( $oria_best_badge['url'] ) . '"><span aria-hidden="true">&#10022;</span> ' . esc_html( $oria_best_badge['label'] ) . '<span class="xp-vh"> ' . esc_html__( '(see the Best Of guide)', 'oria' ) . '</span></a>';
 				}
 				?>
 				<?php if ( $oria_eyebrow ) : ?>
@@ -333,45 +508,91 @@ while ( have_posts() ) :
 				<?php if ( '' !== $oria_lede ) : ?>
 					<p class="xp-hero__lede"><?php echo esc_html( $oria_lede ); ?></p>
 				<?php endif; ?>
-
-				<?php
-				// The parent's status badges, same guards: Featured/Claimed/Unclaimed, and the verified seal for paid tiers.
-				$oria_pills = array();
-				if ( 'featured' === $oria_display ) {
-					$oria_pills[] = array( __( 'Featured', 'oria' ), '' );
-				} elseif ( 'claimed' === $oria_display && 'unclaimed' === $oria_status ) {
-					$oria_pills[] = array( __( 'Claimed', 'oria' ), '' );
-				} elseif ( 'unclaimed' === $oria_display ) {
-					$oria_pills[] = array( __( 'Unclaimed', 'oria' ), '' );
-				}
-				if ( 'unclaimed' !== $oria_status ) {
-					$oria_pills[] = array(
-						__( 'Verified', 'oria' ),
-						/* translators: %s: date */
-						$oria_verified ? sprintf( __( 'Details verified by the owner on %s', 'oria' ), mysql2date( 'j F Y', $oria_verified ) ) : __( 'Details verified by the owner', 'oria' ),
-					);
-				}
-				?>
-				<?php if ( $oria_pills ) : ?>
-					<ul class="xp-hero__status" aria-label="<?php esc_attr_e( 'Listing status', 'oria' ); ?>">
-						<?php foreach ( $oria_pills as $oria_pl ) : ?>
-							<li class="xp-hero__pill"<?php echo '' !== $oria_pl[1] ? ' title="' . esc_attr( $oria_pl[1] ) . '"' : ''; ?>><?php echo esc_html( $oria_pl[0] ); ?></li>
-						<?php endforeach; ?>
-					</ul>
-				<?php endif; ?>
 			</div>
 
 			<?php if ( $oria_lightbox ) : ?>
 				<button type="button" class="xp-hero__all" data-lb="0">
-					<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4" width="15" height="12" rx="2"/><circle cx="7.5" cy="8.5" r="1.4"/><path d="m3 15 4.5-4.5 3 3 2.5-2.5 4 4"/></svg>
+					<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.5" y="4" width="15" height="12" rx="2"/><circle cx="7.5" cy="8.5" r="1.4"/><path d="m3 15 4.5-4.5 3 3 2.5-2.5 4 4"/></svg>
 					<?php
 					/* translators: %d: number of photos */
-					echo esc_html( sprintf( _n( '%d photo', 'All %d photos', $oria_photos, 'oria' ), $oria_photos ) );
+					echo esc_html( sprintf( _n( 'View %d photo', 'View all %d photos', $oria_photos, 'oria' ), $oria_photos ) );
 					?>
 				</button>
 				<?php $oria_lb = array_map( static fn( string $oria_gu ): string => $oria_gsz( $oria_gu, 1600 ), $oria_gallery ); ?>
 				<script type="application/json" data-lightbox-set><?php echo wp_json_encode( array_values( $oria_lb ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></script>
 			<?php endif; ?>
+		</div>
+
+		<?php
+		/*
+		 * The decision strip: rating, price and today's hours, then the
+		 * actions, straight under the picture at every width. Every value is
+		 * a stored field or Google's own figure, labelled as Google's.
+		 */
+		$oria_hfacts = array();
+		if ( $oria_offer ) {
+			$oria_hfacts[] = array( 'offer', '<span class="xp-decide__k">' . esc_html__( 'Offer', 'oria' ) . '</span> ' . esc_html( $oria_offer['title'] ) );
+		}
+		if ( '' !== $oria_rating_html ) {
+			$oria_hfacts[] = array( 'rating', $oria_rating_html );
+		}
+		if ( '' !== $oria_price_txt ) {
+			$oria_hfacts[] = array( 'price', esc_html( $oria_price_txt ) );
+		}
+		if ( '' !== $oria_today ) {
+			$oria_hfacts[] = array( 'hours', '<span data-xp-today>' . esc_html( sprintf( /* translators: %s: today's hours as Google words them */ __( 'Today %s', 'oria' ), $oria_today ) ) . '</span>' );
+		} elseif ( $oria_hbits ) {
+			$oria_hfacts[] = array( 'hours', '<a class="xp-fact__link" href="#getting-there">' . esc_html__( 'Opening hours', 'oria' ) . '</a>' );
+		}
+		if ( 'online' === $oria_format || 'both' === $oria_format ) {
+			$oria_hfacts[] = array( 'format', esc_html( $oria_format_label ) );
+		}
+		?>
+		<div class="xp-decide" data-xp-decide>
+			<?php if ( $oria_hfacts ) : ?>
+				<ul class="xp-decide__facts" aria-label="<?php esc_attr_e( 'At a glance', 'oria' ); ?>">
+					<?php foreach ( $oria_hfacts as $oria_hf ) : ?>
+						<li class="xp-decide__fact xp-decide__fact--<?php echo esc_attr( $oria_hf[0] ); ?>"><?php echo $oria_hf[1]; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped as built. ?></li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+
+			<div class="xp-decide__acts">
+				<?php if ( $oria_primary ) : ?>
+					<a class="btn btn--dark xp-tap xp-decide__main" href="<?php echo esc_url( $oria_primary['url'] ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="<?php echo esc_attr( $oria_primary['track'] ); ?>" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo esc_html( $oria_primary['label'] ); ?><span class="xp-vh"> <?php esc_html_e( '(opens their site)', 'oria' ); ?></span><?php echo arrow(); // phpcs:ignore ?></a>
+				<?php endif; ?>
+				<?php if ( $oria_tel ) : ?>
+					<a class="btn btn--ghost xp-tap xp-decide__btn" href="tel:<?php echo esc_attr( $oria_tel ); ?>" data-oria-track="tel" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo $oria_ico['tel']; // phpcs:ignore ?><span><?php esc_html_e( 'Call', 'oria' ); ?></span><span class="xp-vh"> <?php echo esc_html( $oria_phone ); ?></span></a>
+				<?php endif; ?>
+				<?php if ( $oria_dir_url ) : ?>
+					<a class="btn btn--ghost xp-tap xp-decide__btn<?php echo $oria_primary ? '' : ' xp-decide__main'; ?>" href="<?php echo esc_url( $oria_dir_url ); ?>" rel="noopener" target="_blank" data-oria-track="dir" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo $oria_ico['dir']; // phpcs:ignore ?><span><?php esc_html_e( 'Directions', 'oria' ); ?></span><span class="xp-vh"> <?php echo esc_html( sprintf( /* translators: %s: listing name */ __( 'to %s (opens Google Maps)', 'oria' ), $oria_title ) ); ?></span></a>
+				<?php endif; ?>
+				<?php // Rendered as the unsaved state and corrected by app.js on load: what this browser has saved lives on the device. ?>
+				<button class="btn btn--ghost xp-tap xp-decide__btn xp-decide__save savebtn" type="button"
+					data-save="<?php echo esc_attr( $oria_slugname ); ?>"
+					data-save-name="<?php echo esc_attr( $oria_title ); ?>"
+					aria-pressed="false">
+					<?php echo $oria_ico['save']; // phpcs:ignore ?><span class="savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span><span class="xp-vh"> <?php echo esc_html( $oria_title ); ?></span>
+				</button>
+			</div>
+
+			<p class="xp-decide__trust">
+				<?php if ( 'featured' === $oria_display ) : ?>
+					<span class="xp-decide__tag"><?php esc_html_e( 'Featured listing', 'oria' ); ?></span>
+				<?php endif; ?>
+				<?php
+				if ( 'unclaimed' !== $oria_status ) {
+					echo esc_html(
+						$oria_verified
+							/* translators: %s: date */
+							? sprintf( __( 'Managed by the practice. Details confirmed by the owner on %s.', 'oria' ), mysql2date( 'j F Y', $oria_verified ) )
+							: __( 'Managed by the practice.', 'oria' )
+					);
+				} else {
+					esc_html_e( 'Information independently sourced and hand-checked by Oria Haven.', 'oria' );
+				}
+				?>
+			</p>
 		</div>
 
 		<?php if ( $oria_places_attr ) : // Google's terms require crediting photo contributors. ?>
@@ -390,51 +611,8 @@ while ( have_posts() ) :
 		<?php endif; ?>
 	</section>
 
-	<?php
-	/*
-	 * Phone only: the three facts a reader checks first, straight under the
-	 * picture. The full list is in the rail, which on a phone follows the
-	 * story. Hidden from 60rem up, where the rail sits beside the story.
-	 */
-	$oria_glance_where = $oria_address ?: ( $oria_suburb instanceof WP_Term ? \Oria\Theme\tname( $oria_suburb ) : '' );
-	$oria_glance_line  = array();
-	if ( $oria_rate['rating'] > 0 ) {
-		$oria_glance_line[] = number_format_i18n( (float) $oria_rate['rating'], 1 ) . ( $oria_rate['count'] > 0
-			? ' · ' . sprintf(
-				'google' === $oria_rate['source']
-					/* translators: %d: number of reviews */
-					? _n( '%d Google review', '%d Google reviews', (int) $oria_rate['count'], 'oria' )
-					/* translators: %d: number of reviews */
-					: _n( '%d Oria Haven review', '%d Oria Haven reviews', (int) $oria_rate['count'], 'oria' ),
-				(int) $oria_rate['count']
-			)
-			: '' );
-	}
-	if ( '' !== $oria_band_label ) {
-		$oria_glance_line[] = $oria_band_label;
-	}
-	$oria_has_top = $oria_offer || $oria_price_num > 0;
-	?>
-	<?php if ( $oria_has_top || '' !== $oria_glance_where || $oria_glance_line ) : ?>
-		<div class="wrap xp-glance">
-			<div class="xp-glance__card">
-				<?php if ( $oria_offer ) : ?>
-					<p class="xp-label"><?php esc_html_e( 'Offer', 'oria' ); ?></p>
-					<p class="xp-glance__big"><?php echo esc_html( $oria_offer['title'] ); ?></p>
-					<?php if ( $oria_offer['text'] ) : ?><p class="xp-glance__sub"><?php echo esc_html( $oria_offer['text'] ); ?></p><?php endif; ?>
-				<?php elseif ( $oria_price_num > 0 ) : ?>
-					<p class="xp-label"><?php esc_html_e( 'Price from', 'oria' ); ?></p>
-					<p class="xp-glance__big"><?php echo esc_html( '$' . $oria_price_num ); ?> <span class="xp-glance__unit"><?php esc_html_e( 'a session', 'oria' ); ?></span></p>
-				<?php endif; ?>
-				<?php if ( '' !== $oria_glance_where || $oria_glance_line ) : ?>
-					<p class="xp-glance__facts">
-						<?php echo esc_html( $oria_glance_where ); ?>
-						<?php if ( '' !== $oria_glance_where && $oria_glance_line ) : ?><br><?php endif; ?>
-						<?php echo esc_html( implode( ' · ', $oria_glance_line ) ); ?>
-					</p>
-				<?php endif; ?>
-			</div>
-		</div>
+	<?php if ( '' !== $oria_hours_json ) : ?>
+		<script type="application/json" id="xp-hours-data"><?php echo $oria_hours_json; // phpcs:ignore WordPress.Security.EscapeOutput -- wp_json_encode. ?></script>
 	<?php endif; ?>
 
 	<!-- 2. Story (left) and the action rail (right) -->
@@ -463,9 +641,9 @@ while ( have_posts() ) :
 
 			<?php
 			/* --- What it's like -------------------------------------------
-			 * The listing's own description, then the parent's experience
-			 * profile (good for, the feel, DNA bars, why it might suit you)
-			 * and good_for. Every piece is conditional on its own field. */
+			 * The listing's own description, then the experience profile:
+			 * good for, the feel, Experience DNA, why it might suit you, and
+			 * good_for. Every piece is conditional on its own field. */
 			$oria_about_html = '';
 			if ( '' !== $oria_body ) {
 				$oria_about_html = wp_kses_post( $oria_body );
@@ -476,7 +654,7 @@ while ( have_posts() ) :
 			?>
 			<?php if ( $oria_has_about ) : ?>
 				<?php $oria_sec++; ?>
-				<section class="xp-sec" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
+				<section class="xp-sec" id="about" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
 					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'What it’s like', 'oria' ); ?></h2>
 
 					<?php if ( '' !== $oria_about_html ) : ?>
@@ -523,26 +701,36 @@ while ( have_posts() ) :
 
 							<?php if ( $oria_dna ) : ?>
 								<div class="xp__b xp__b--rule">
-									<span class="micro rowlabel"><?php esc_html_e( 'Experience DNA', 'oria' ); ?></span>
-									<p class="xp__lede"><?php esc_html_e( 'A quick feel for what a session here is like.', 'oria' ); ?></p>
-									<dl class="dna__bars">
+									<h3 class="micro rowlabel xp-dna__head"><?php esc_html_e( 'Experience DNA', 'oria' ); ?></h3>
+									<p class="xp__lede">
+										<?php
+										echo esc_html( sprintf(
+											/* translators: %s: the kind of session, e.g. Ice bath & contrast */
+											__( 'A quick feel for the room, based on how %s sessions usually run.', 'oria' ),
+											(string) ( $oria_dnax['label'] ?? '' )
+										) );
+										?>
+									</p>
+									<ul class="xp-dna">
 										<?php foreach ( $oria_dna as $oria_b ) : ?>
-											<div class="dna__row">
-												<dt class="dna__label"><?php echo esc_html( $oria_b['label'] ); ?></dt>
-												<dd class="dna__val">
-													<span class="dna__track" role="img" aria-label="<?php echo esc_attr( sprintf( /* translators: 1: dimension, 2: score, 3: score in words */ __( '%1$s: %2$d out of 5, %3$s', 'oria' ), $oria_b['label'], $oria_b['score'], $oria_b['word'] ) ); ?>">
-														<?php for ( $oria_i = 1; $oria_i <= 5; $oria_i++ ) : ?>
-															<i class="dna__seg<?php echo $oria_i <= $oria_b['score'] ? ' is-on' : ''; ?>"></i>
-														<?php endfor; ?>
-													</span>
-													<small class="dna__word"><?php echo esc_html( $oria_b['word'] ); ?></small>
-												</dd>
-											</div>
+											<?php $oria_dm = $oria_dmeta[ $oria_b['key'] ] ?? array( $oria_b['label'], '', '' ); ?>
+											<li class="xp-dna__row">
+												<span class="xp-dna__label"><?php echo esc_html( $oria_dm[0] ); ?></span>
+												<span class="xp-dna__scale" role="img" aria-label="<?php echo esc_attr( sprintf( /* translators: 1: dimension, 2: score, 3: score in words, 4: low end, 5: high end */ __( '%1$s: %2$d out of 5, %3$s. 1 is %4$s, 5 is %5$s.', 'oria' ), $oria_dm[0], (int) $oria_b['score'], strtolower( (string) $oria_b['word'] ), strtolower( $oria_dm[1] ), strtolower( $oria_dm[2] ) ) ); ?>">
+													<span class="xp-dna__end" aria-hidden="true"><?php echo esc_html( $oria_dm[1] ); ?></span>
+													<span class="xp-dna__track" aria-hidden="true"><?php for ( $oria_i = 1; $oria_i <= 5; $oria_i++ ) : ?><i class="xp-dna__seg<?php echo $oria_i <= (int) $oria_b['score'] ? ' is-on' : ''; ?>"></i><?php endfor; ?></span>
+													<span class="xp-dna__end" aria-hidden="true"><?php echo esc_html( $oria_dm[2] ); ?></span>
+												</span>
+											</li>
 										<?php endforeach; ?>
-									</dl>
-									<details class="xp__how">
+									</ul>
+									<details class="xp-dna__how">
 										<summary><?php esc_html_e( 'How these ratings work', 'oria' ); ?></summary>
-										<p><?php echo esc_html( sprintf( /* translators: %s: the kind of session, e.g. Reiki & energy work */ __( 'A guide, not a measurement. The bars start from how %s tends to run as a kind of session, then narrow to what this listing itself states about its price and group size. They describe the room — how quiet, how physical, how many people — and never what a session is supposed to do for you.', 'oria' ), (string) $oria_dnax['label'] ) ); ?></p>
+										<div class="xp-dna__howbody">
+											<p><?php echo esc_html( sprintf( /* translators: %s: the kind of session */ __( 'These bars are a guide, not a score of this business. Each starts from Oria Haven’s profile of %s as a kind of session, then is adjusted by facts stored on this listing: its price band, its group size and whether it welcomes beginners.', 'oria' ), (string) ( $oria_dnax['label'] ?? '' ) ) ); ?></p>
+											<p><?php esc_html_e( 'Nobody has rated this particular venue in person, and reviews are not fed in. Where we have no fact about this listing behind a bar — for example how many people share the room — we leave that bar out rather than guess.', 'oria' ); ?></p>
+											<p><?php esc_html_e( 'They describe the room — how quiet, how physical, how many people — never what a session is supposed to do for you.', 'oria' ); ?></p>
+										</div>
 									</details>
 								</div>
 							<?php endif; ?>
@@ -570,10 +758,10 @@ while ( have_posts() ) :
 
 			<?php
 			/* --- Classes / services you'll find here ----------------------
-			 * The parent's services block, logic unchanged: a service with a
-			 * live facet page becomes a card that goes there; anything else
-			 * keeps its own words as a pill. Then "People come here for" and
-			 * "Why people come here", the practice's own ticks. */
+			 * The parent's services logic, unchanged: a service with a live
+			 * facet page becomes a card that goes there; anything else keeps
+			 * its own words as a pill. Cards are compact; four show, the
+			 * rest sit behind "Show all services". */
 			$oria_comefor = function_exists( '\Oria\Core\ComeFor\for_listing' ) ? \Oria\Core\ComeFor\for_listing( $oria_id ) : array();
 			$oria_reasons = function_exists( '\Oria\Core\Reasons\flat' ) ? \Oria\Core\Reasons\flat( $oria_id ) : array();
 			$oria_cards   = array();
@@ -603,58 +791,62 @@ while ( have_posts() ) :
 					'slug'  => $oria_slug,
 				);
 			}
+			$oria_svc_show = 4;
 			?>
 			<?php if ( $oria_cards || $oria_srest || $oria_comefor || $oria_reasons ) : ?>
 				<?php $oria_sec++; ?>
-				<section class="xp-sec" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
+				<section class="xp-sec" id="services" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
 					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php echo esc_html( $oria_is_classes ? __( 'Classes you’ll find here', 'oria' ) : __( 'What you’ll find here', 'oria' ) ); ?></h2>
 					<?php if ( $oria_cards ) : ?>
-						<p class="xp-sec__hint"><?php printf( esc_html__( 'Each one leads to everywhere else in %s that offers it.', 'oria' ), esc_html( '' !== $oria_lname ? $oria_lname : __( 'Perth', 'oria' ) ) ); ?></p>
-						<div class="offergrid xp-offers">
-							<?php foreach ( $oria_cards as $oria_c ) : ?>
+						<p class="xp-sec__hint"><?php printf( esc_html__( 'Each one leads to everywhere else in %s that offers it.', 'oria' ), esc_html( $oria_cityw ) ); ?></p>
+						<ul class="xp-svc" id="xp-svc-list" data-xp-svc="<?php echo (int) $oria_svc_show; ?>">
+							<?php foreach ( $oria_cards as $oria_ci => $oria_c ) : ?>
 								<?php
 								$oria_cimg  = \Oria\Theme\facet_image( (string) $oria_c['slug'] );
 								$oria_ccard = function_exists( '\Oria\Core\Services\card' )
 									? \Oria\Core\Services\card( (string) $oria_c['slug'] )
-									: array( 'traits' => array(), 'intensity' => 0 );
+									: array( 'traits' => array() );
+								// Two facts at most, and never one that just repeats the card's own name.
+								$oria_ctraits = array_slice( array_values( array_filter(
+									(array) ( $oria_ccard['traits'] ?? array() ),
+									static fn( $oria_tr ) => '' !== trim( (string) $oria_tr ) && false === stripos( (string) $oria_tr, (string) $oria_c['label'] )
+								) ), 0, 2 );
 								?>
-								<a class="offercard<?php echo $oria_cimg ? ' offercard--img' : ''; ?>" href="<?php echo esc_url( $oria_c['url'] ); ?>">
-									<b class="offercard__name"><?php echo esc_html( $oria_c['label'] ); ?></b>
-									<?php if ( '' !== $oria_c['note'] ) : ?>
-										<span class="offercard__note"><?php echo esc_html( $oria_c['note'] ); ?></span>
-									<?php endif; ?>
-									<span class="offercard__more"><span class="offercard__morein">
-									<?php if ( ! empty( $oria_ccard['traits'] ) ) : ?>
-										<span class="offercard__traits">
-											<span class="offercard__traitshead"><?php esc_html_e( 'Good to know:', 'oria' ); ?></span>
-											<?php foreach ( $oria_ccard['traits'] as $oria_tr ) : ?>
-												<span class="offercard__trait"><span class="offercard__tick" aria-hidden="true">&#10003;</span><?php echo esc_html( $oria_tr ); ?></span>
-											<?php endforeach; ?>
+								<li class="xp-svc__item"<?php echo $oria_ci >= $oria_svc_show ? ' data-xp-extra' : ''; ?>>
+									<a class="xp-svc__card" href="<?php echo esc_url( $oria_c['url'] ); ?>">
+										<?php if ( $oria_cimg ) : ?>
+											<img class="xp-svc__img" src="<?php echo esc_url( $oria_cimg ); ?>" alt="" loading="lazy" decoding="async" width="160" height="160">
+										<?php else : ?>
+											<span class="xp-svc__img xp-svc__img--none" aria-hidden="true"></span>
+										<?php endif; ?>
+										<span class="xp-svc__body">
+											<b class="xp-svc__name"><?php echo esc_html( $oria_c['label'] ); ?></b>
+											<?php if ( '' !== $oria_c['note'] ) : ?>
+												<span class="xp-svc__note"><?php echo esc_html( $oria_c['note'] ); ?></span>
+											<?php endif; ?>
+											<?php if ( $oria_ctraits ) : ?>
+												<span class="xp-svc__facts">
+													<?php foreach ( $oria_ctraits as $oria_tr ) : ?>
+														<span class="xp-svc__fact"><span aria-hidden="true">&#10003;</span> <?php echo esc_html( (string) $oria_tr ); ?></span>
+													<?php endforeach; ?>
+												</span>
+											<?php endif; ?>
+											<span class="xp-svc__go"><?php printf( esc_html__( 'More places in %s', 'oria' ), esc_html( $oria_cityw ) ); ?> <span aria-hidden="true">&rarr;</span></span>
 										</span>
-									<?php endif; ?>
-									<?php if ( ( $oria_ccard['intensity'] ?? 0 ) > 0 ) : ?>
-										<span class="offercard__meter">
-											<span class="offercard__meterlabel"><?php esc_html_e( 'Intensity', 'oria' ); ?></span>
-											<span class="offercard__dots" role="img" aria-label="<?php echo esc_attr( sprintf( __( 'Intensity %1$d of 5', 'oria' ), $oria_ccard['intensity'] ) ); ?>"><?php
-											for ( $oria_i = 1; $oria_i <= 5; $oria_i++ ) {
-												echo '<span class="offercard__dot' . ( $oria_i <= $oria_ccard['intensity'] ? ' is-on' : '' ) . '" aria-hidden="true"></span>';
-											}
-											?></span>
-										</span>
-									<?php endif; ?>
-									<?php if ( $oria_cimg ) : ?>
-										<span class="offercard__media" aria-hidden="true">
-											<img class="offercard__img" src="<?php echo esc_url( $oria_cimg ); ?>" alt="" loading="lazy" decoding="async" width="800" height="450">
-										</span>
-									<?php endif; ?>
-									</span></span>
-									<span class="offercard__go"><?php echo esc_html( sprintf( __( 'Explore %s', 'oria' ), $oria_c['label'] ) ); ?> <span aria-hidden="true">&rarr;</span></span>
-								</a>
+									</a>
+								</li>
 							<?php endforeach; ?>
-						</div>
+						</ul>
+						<?php if ( count( $oria_cards ) > $oria_svc_show ) : ?>
+							<?php // Revealed by v4-listing.js, which also folds the extra cards; without it every card simply shows. ?>
+							<button type="button" class="btn btn--ghost xp-tap xp-svc__all" data-xp-svc-all aria-controls="xp-svc-list" aria-expanded="false" hidden
+								data-less="<?php esc_attr_e( 'Show fewer services', 'oria' ); ?>">
+								<?php printf( esc_html__( 'Show all services (%d)', 'oria' ), count( $oria_cards ) ); ?>
+							</button>
+						<?php endif; ?>
 					<?php endif; ?>
 					<?php if ( $oria_srest ) : ?>
-						<ul class="xp-tags xp-tags--services">
+						<ul class="xp-tags xp-tags--services" aria-label="<?php esc_attr_e( 'Also offered', 'oria' ); ?>">
 							<?php foreach ( $oria_srest as $oria_r ) : ?>
 								<li class="xp-tag"><?php echo esc_html( $oria_r ); ?></li>
 							<?php endforeach; ?>
@@ -690,7 +882,7 @@ while ( have_posts() ) :
 			<?php /* --- The week, from the Classes repeater --------------------- */ ?>
 			<?php if ( $oria_week ) : ?>
 				<?php $oria_sec++; ?>
-				<section class="xp-sec" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
+				<section class="xp-sec" id="timetable" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
 					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Weekly timetable', 'oria' ); ?></h2>
 					<p class="xp-sec__hint"><?php esc_html_e( 'Published by the practice. Public holidays excepted — check before you travel.', 'oria' ); ?></p>
 					<?php get_template_part( 'template-parts/listing-week', null, array( 'sessions' => $oria_week ) ); ?>
@@ -739,55 +931,205 @@ while ( have_posts() ) :
 			<?php endif; ?>
 
 			<?php
-			/* --- Why our editors picked it --------------------------------
-			 * Best Of guides that picked this listing, with the editor's own
-			 * reason. Replaces template-parts/best-featured-in.php here (same
-			 * data: BestOf\guides_for_listing), so it keeps that part's
-			 * editorial disclaimer and the seal download. */
+			/* --- Before your first visit ------------------------------------
+			 * Stored first-visit fields and ticked amenities only; empty
+			 * fields are not shown. Where the details came from is said
+			 * plainly, with a date only when a real one is stored. */
 			?>
-			<?php if ( $oria_best_in ) : ?>
+			<?php if ( $oria_first || $oria_amenities ) : ?>
 				<?php $oria_sec++; ?>
-				<section class="xp-sec xp-picks" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
-					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Why our editors picked it', 'oria' ); ?></h2>
-					<?php
-					// The lead pick first, as the badge in the intro shows it.
-					usort( $oria_best_in, static fn( $a, $b ) => (int) ! empty( $b['lead'] ) <=> (int) ! empty( $a['lead'] ) );
-					?>
-					<div class="xp-picks__list">
-						<?php foreach ( $oria_best_in as $oria_pk => $oria_row ) : ?>
-							<?php $oria_png = \Oria\Core\BestOf\seal_url( (string) $oria_row['award'], 'png', false ); ?>
-							<figure class="xp-pick<?php echo 0 === $oria_pk ? ' xp-pick--lead' : ''; ?>">
-								<figcaption class="xp-pick__head">
-									<span class="xp-pick__award"><span class="xp-pick__mark" aria-hidden="true">&#10022;</span> <?php echo esc_html( (string) $oria_row['label'] ); ?></span>
-									<span class="xp-pick__sep" aria-hidden="true">&middot;</span>
-									<a class="xp-pick__guide" href="<?php echo esc_url( (string) get_permalink( $oria_row['guide'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_row['guide'] ) ) ); ?></a>
-								</figcaption>
-								<?php if ( ! empty( $oria_row['reason'] ) ) : ?>
-									<blockquote class="xp-pick__why"><p>&ldquo;<?php echo esc_html( (string) $oria_row['reason'] ); ?>&rdquo;</p></blockquote>
-								<?php endif; ?>
-								<?php if ( $oria_png ) : ?>
-									<a class="xp-pick__seal" href="<?php echo esc_url( $oria_png ); ?>" download><?php esc_html_e( 'Run this practice? Download the seal for your website', 'oria' ); ?></a>
-								<?php endif; ?>
-							</figure>
-						<?php endforeach; ?>
-					</div>
-					<p class="hint"><?php esc_html_e( 'Best Of guides are an editorial selection. A practice cannot pay to be in one.', 'oria' ); ?></p>
+				<section class="xp-sec" id="first-visit" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
+					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Before your first visit', 'oria' ); ?></h2>
+					<?php if ( $oria_first ) : ?>
+						<dl class="xp-first">
+							<?php foreach ( $oria_first as $oria_fv ) : ?>
+								<div class="xp-first__item">
+									<dt><?php echo esc_html( $oria_fv[0] ); ?></dt>
+									<dd><?php echo esc_html( $oria_fv[1] ); ?></dd>
+								</div>
+							<?php endforeach; ?>
+						</dl>
+					<?php endif; ?>
+					<?php if ( $oria_amenities ) : ?>
+						<div class="amenity xp-amenity" id="amenities">
+							<?php foreach ( $oria_amenities as $oria_grp ) : ?>
+								<div class="amenity__group">
+									<h3 class="micro amenity__label"><?php echo esc_html( $oria_grp['label'] ); ?></h3>
+									<ul class="amenity__list">
+										<?php foreach ( $oria_grp['items'] as $oria_item ) : ?>
+											<li>
+												<?php echo \Oria\Theme\amenity_icon( (string) $oria_item['slug'] ); // phpcs:ignore WordPress.Security.EscapeOutput -- built SVG, no user input. ?>
+												<span><?php echo esc_html( (string) $oria_item['label'] ); ?></span>
+											</li>
+										<?php endforeach; ?>
+									</ul>
+								</div>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+					<p class="hint xp-source">
+						<?php
+						if ( 'unclaimed' === $oria_status ) {
+							esc_html_e( 'From public sources such as their website and Google listing, checked by hand. Not yet confirmed by the practice — worth checking with them before you go.', 'oria' );
+						} elseif ( $oria_verified ) {
+							/* translators: %s: date */
+							echo esc_html( sprintf( __( 'Told to us by the practice. Last confirmed %s.', 'oria' ), mysql2date( 'j F Y', $oria_verified ) ) );
+						} else {
+							esc_html_e( 'Told to us by the practice.', 'oria' );
+						}
+						?>
+					</p>
 				</section>
 			<?php endif; ?>
 
-			<?php /* --- Your first visit: stored first-visit fields only ------ */ ?>
-			<?php if ( $oria_first ) : ?>
+			<?php
+			/* --- Location and hours ------------------------------------------
+			 * Address (or an honest "not provided"), directions, the map on
+			 * request only, then today's hours with the week in a disclosure. */
+			$oria_map   = '' !== $oria_address ? \Oria\Theme\map_embed_url( $oria_street ? $oria_address : $oria_dir_dest ) : '';
+			$oria_geo   = function_exists( '\Oria\Core\Geo\position' ) ? \Oria\Core\Geo\position( $oria_id ) : null;
+			$oria_kmlab = $oria_geo ? \Oria\Core\Geo\label( $oria_id ) : '';
+			$oria_has_loc = '' !== $oria_address || '' !== $oria_area_name || $oria_transit || $oria_parking || '' !== $oria_kmlab || $oria_wk || $oria_hbits;
+			?>
+			<?php if ( $oria_has_loc && 'online' !== $oria_format ) : ?>
 				<?php $oria_sec++; ?>
-				<section class="xp-sec" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
-					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Your first visit', 'oria' ); ?></h2>
-					<dl class="xp-first">
-						<?php foreach ( $oria_first as $oria_fv ) : ?>
-							<div class="xp-first__item">
-								<dt><?php echo esc_html( $oria_fv[0] ); ?></dt>
-								<dd><?php echo esc_html( $oria_fv[1] ); ?></dd>
+				<section class="xp-sec" id="getting-there" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
+					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php echo esc_html( $oria_wk || $oria_hbits ? __( 'Location and hours', 'oria' ) : __( 'Getting there', 'oria' ) ); ?></h2>
+					<div class="xp-loc">
+						<div class="xp-loc__col">
+							<p class="xp-loc__k"><?php esc_html_e( 'Address', 'oria' ); ?></p>
+							<?php if ( $oria_street ) : ?>
+								<p class="xp-loc__v"><?php echo esc_html( $oria_address ); ?></p>
+							<?php else : ?>
+								<p class="xp-loc__v"><?php echo esc_html( '' !== $oria_address ? $oria_address : $oria_area_name ); ?></p>
+								<p class="xp-loc__note"><?php esc_html_e( 'Exact address not provided.', 'oria' ); ?></p>
+							<?php endif; ?>
+							<?php if ( $oria_dir_url ) : ?>
+								<a class="btn btn--ghost xp-tap xp-loc__dir" href="<?php echo esc_url( $oria_dir_url ); ?>" rel="noopener" target="_blank" data-oria-track="dir" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo $oria_ico['dir']; // phpcs:ignore ?><span><?php esc_html_e( 'Get directions', 'oria' ); ?></span><span class="xp-vh"> <?php esc_html_e( '(opens Google Maps)', 'oria' ); ?></span></a>
+							<?php endif; ?>
+
+							<?php if ( $oria_transit || $oria_parking || '' !== $oria_kmlab ) : ?>
+								<dl class="xp-loc__more">
+									<?php if ( $oria_transit ) : ?>
+										<div><dt><?php esc_html_e( 'Public transport', 'oria' ); ?></dt><dd><?php echo esc_html( $oria_transit ); ?></dd></div>
+									<?php endif; ?>
+									<?php if ( $oria_parking ) : ?>
+										<div><dt><?php esc_html_e( 'Parking', 'oria' ); ?></dt><dd><?php echo esc_html( $oria_parking ); ?></dd></div>
+									<?php endif; ?>
+									<?php if ( '' !== $oria_kmlab ) : ?>
+										<div data-oria-distance data-lat="<?php echo esc_attr( (string) $oria_geo['lat'] ); ?>" data-lng="<?php echo esc_attr( (string) $oria_geo['lng'] ); ?>">
+											<dt><?php esc_html_e( 'Distance', 'oria' ); ?></dt>
+											<dd>
+												<span data-oria-distance-value><?php echo esc_html( $oria_kmlab ); ?></span>
+												<?php if ( 'suburb' === $oria_geo['precision'] ) : ?>
+													<small class="xp-loc__small"><?php esc_html_e( 'measured to the suburb, not the door', 'oria' ); ?></small>
+												<?php endif; ?>
+												<?php // ODbL requires OpenStreetMap to be credited wherever a derived distance is shown. ?>
+												<small class="xp-loc__small xp-loc__small--faint"><?php echo esc_html( \Oria\Core\Geo\attribution() ); ?></small>
+											</dd>
+										</div>
+									<?php endif; ?>
+								</dl>
+							<?php endif; ?>
+						</div>
+
+						<?php if ( $oria_wk || $oria_hbits ) : ?>
+							<div class="xp-loc__col">
+								<p class="xp-loc__k"><?php esc_html_e( 'Opening hours', 'oria' ); ?></p>
+								<?php if ( $oria_hbits ) : ?>
+									<ul class="hourslist xp-loc__hours">
+										<?php foreach ( $oria_hbits as $oria_hb ) : ?>
+											<li><?php echo esc_html( $oria_hb ); ?></li>
+										<?php endforeach; ?>
+									</ul>
+									<p class="hint"><?php esc_html_e( 'Hours from the practice — worth a check before a special trip.', 'oria' ); ?></p>
+								<?php else : ?>
+									<p class="xp-loc__v xp-loc__today">
+										<span data-xp-today-long><?php echo esc_html( '' !== $oria_today ? sprintf( /* translators: %s: today's hours */ __( 'Today: %s', 'oria' ), $oria_today ) : __( 'Hours for today not listed', 'oria' ) ); ?></span>
+									</p>
+									<details class="xp-loc__week">
+										<summary><?php esc_html_e( 'Hours for the full week', 'oria' ); ?></summary>
+										<ul class="hourslist">
+											<?php foreach ( $oria_wk as $oria_hl ) : ?>
+												<li<?php echo 0 === stripos( $oria_hl, $oria_todayw ) ? ' class="is-today"' : ''; ?>><?php echo esc_html( $oria_hl ); ?></li>
+											<?php endforeach; ?>
+										</ul>
+									</details>
+									<p class="hint">
+										<?php
+										echo esc_html(
+											$oria_gts > 0
+												/* translators: %s: date the hours were fetched from Google */
+												? sprintf( __( 'Hours via Google, last fetched %s — worth a check before a special trip.', 'oria' ), wp_date( 'j F Y', $oria_gts ) )
+												: __( 'Hours via Google — worth a check before a special trip.', 'oria' )
+										);
+										?>
+									</p>
+								<?php endif; ?>
 							</div>
-						<?php endforeach; ?>
-					</dl>
+						<?php endif; ?>
+					</div>
+
+					<?php if ( $oria_map ) : ?>
+						<button type="button" class="mapfacade xp-loc__map" data-map-src="<?php echo esc_url( $oria_map ); ?>"
+							data-map-title="<?php printf( esc_attr__( 'Map showing %s', 'oria' ), esc_attr( $oria_title ) ); ?>">
+							<?php echo $oria_ico['dir']; // phpcs:ignore ?>
+							<span><?php esc_html_e( 'Show the map', 'oria' ); ?><span class="xp-vh"> <?php echo esc_html( sprintf( /* translators: %s: listing name */ __( 'of %s (loads Google Maps)', 'oria' ), $oria_title ) ); ?></span></span>
+						</button>
+					<?php endif; ?>
+				</section>
+			<?php endif; ?>
+
+			<?php
+			/* --- Why our editors picked it --------------------------------
+			 * The strongest pick with the editor's reason first; any other
+			 * guides as a compact list, so two near-identical excerpts are
+			 * never stacked. Same data as template-parts/best-featured-in. */
+			?>
+			<?php if ( $oria_best_in ) : ?>
+				<?php $oria_sec++; ?>
+				<section class="xp-sec xp-picks" id="picked" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
+					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Why our editors picked it', 'oria' ); ?></h2>
+					<?php
+					// The lead pick first, as the badge in the hero shows it.
+					usort( $oria_best_in, static fn( $a, $b ) => (int) ! empty( $b['lead'] ) <=> (int) ! empty( $a['lead'] ) );
+					$oria_lead_pick = $oria_best_in[0];
+					$oria_more_pick = array_slice( $oria_best_in, 1 );
+					$oria_png       = \Oria\Core\BestOf\seal_url( (string) $oria_lead_pick['award'], 'png', false );
+					?>
+					<figure class="xp-pick xp-pick--lead">
+						<figcaption class="xp-pick__head">
+							<span class="xp-pick__award"><span class="xp-pick__mark" aria-hidden="true">&#10022;</span> <?php echo esc_html( (string) $oria_lead_pick['label'] ); ?></span>
+							<span class="xp-pick__sep" aria-hidden="true">&middot;</span>
+							<a class="xp-pick__guide" href="<?php echo esc_url( (string) get_permalink( $oria_lead_pick['guide'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_lead_pick['guide'] ) ) ); ?></a>
+						</figcaption>
+						<?php if ( ! empty( $oria_lead_pick['reason'] ) ) : ?>
+							<blockquote class="xp-pick__why"><p>&ldquo;<?php echo esc_html( (string) $oria_lead_pick['reason'] ); ?>&rdquo;</p></blockquote>
+						<?php endif; ?>
+						<?php if ( $oria_png ) : ?>
+							<a class="xp-pick__seal" href="<?php echo esc_url( $oria_png ); ?>" download><?php esc_html_e( 'Run this practice? Download the seal for your website', 'oria' ); ?></a>
+						<?php endif; ?>
+					</figure>
+					<?php if ( $oria_more_pick ) : ?>
+						<div class="xp-picks__more">
+							<h3 class="xp-picks__morek"><?php esc_html_e( 'Also picked in', 'oria' ); ?></h3>
+							<ul>
+								<?php foreach ( $oria_more_pick as $oria_row ) : ?>
+									<?php $oria_mpng = \Oria\Core\BestOf\seal_url( (string) $oria_row['award'], 'png', false ); ?>
+									<li>
+										<span class="xp-pick__mark" aria-hidden="true">&#10022;</span>
+										<span class="xp-picks__award"><?php echo esc_html( (string) $oria_row['label'] ); ?></span>
+										<span aria-hidden="true">&middot;</span>
+										<a class="xp-pick__guide" href="<?php echo esc_url( (string) get_permalink( $oria_row['guide'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_row['guide'] ) ) ); ?></a>
+										<?php if ( $oria_mpng ) : ?>
+											<a class="xp-picks__seal" href="<?php echo esc_url( $oria_mpng ); ?>" download><?php esc_html_e( 'Seal', 'oria' ); ?><span class="xp-vh"> <?php echo esc_html( sprintf( /* translators: %s: award label */ __( 'for %s', 'oria' ), (string) $oria_row['label'] ) ); ?></span></a>
+										<?php endif; ?>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+						</div>
+					<?php endif; ?>
+					<p class="hint"><?php esc_html_e( 'Best Of guides are an editorial selection. A practice cannot pay to be in one.', 'oria' ); ?></p>
 				</section>
 			<?php endif; ?>
 
@@ -895,78 +1237,73 @@ while ( have_posts() ) :
 			<?php endif; ?>
 
 			<?php
-			/* --- What is here: ticked amenities only ----------------------- */
-			$oria_amenities = function_exists( '\Oria\Core\Amenities\for_listing' ) ? \Oria\Core\Amenities\for_listing( $oria_id ) : array();
-			?>
-			<?php if ( $oria_amenities ) : ?>
-				<?php $oria_sec++; ?>
-				<section class="xp-sec" id="amenities" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
-					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'What is here', 'oria' ); ?></h2>
-					<div class="amenity">
-						<?php foreach ( $oria_amenities as $oria_grp ) : ?>
-							<div class="amenity__group">
-								<h3 class="micro amenity__label"><?php echo esc_html( $oria_grp['label'] ); ?></h3>
-								<ul class="amenity__list">
-									<?php foreach ( $oria_grp['items'] as $oria_item ) : ?>
-										<li>
-											<?php echo \Oria\Theme\amenity_icon( (string) $oria_item['slug'] ); // phpcs:ignore WordPress.Security.EscapeOutput -- built SVG, no user input. ?>
-											<span><?php echo esc_html( (string) $oria_item['label'] ); ?></span>
-										</li>
-									<?php endforeach; ?>
-								</ul>
-							</div>
-						<?php endforeach; ?>
-					</div>
-					<p class="hint" style="margin-top:.9rem"><?php esc_html_e( 'Listed by the practice itself. Anything not shown has not been told to us either way.', 'oria' ); ?></p>
-				</section>
-			<?php endif; ?>
-
-			<?php
 			/* --- Reviews ---------------------------------------------------
-			 * Ours first (template-parts/review-list), then one Google line
-			 * set large, then Google's own, attributed and linked; then the
-			 * review form. #reviews stays on the wrapper. */
-			$oria_quote = null;
-			foreach ( $oria_reviews as $oria_qrv ) {
-				$oria_qt = trim( (string) ( $oria_qrv['text'] ?? '' ) );
-				if ( strlen( $oria_qt ) >= 60 && (float) ( $oria_qrv['rating'] ?? 0 ) >= 4 ) {
-					if ( preg_match( '/^(.{50,180}?[.!?])(\s|$)/u', $oria_qt, $oria_qm ) ) {
-						$oria_qt = $oria_qm[1];
-					} elseif ( preg_match( '/^.{180}/us', $oria_qt, $oria_qm ) ) {
-						$oria_qt = rtrim( $oria_qm[0] ) . '…';
-					}
-					$oria_quote = array( 'text' => $oria_qt, 'by' => (string) ( $oria_qrv['author'] ?? '' ) );
-					break;
-				}
-			}
+			 * A summary with both sources kept apart (Google's count is
+			 * Google's), Oria Haven reviews (template-parts/review-list),
+			 * three Google reviews attributed and linked, and the review
+			 * form folded behind "Write a review". #reviews stays on the
+			 * wrapper and #write-review on the form, for the handler's
+			 * redirect and the Google sign-in return. */
+			$oria_rv_open  = isset( $_GET['review'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display state: the handler came back with a message.
+			$oria_native_n = function_exists( '\Oria\Core\Reviews\approved' ) ? count( (array) \Oria\Core\Reviews\approved( $oria_id ) ) : 0;
 			$oria_sec++;
+			$oria_rv_head = 'xp-s' . $oria_sec;
 			?>
-			<section class="xp-sec" id="reviews" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
-				<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Reviews', 'oria' ); ?></h2>
+			<section class="xp-sec" id="reviews" aria-labelledby="<?php echo esc_attr( $oria_rv_head ); ?>">
+				<h2 class="h2 xp-sec__title" id="<?php echo esc_attr( $oria_rv_head ); ?>"><?php esc_html_e( 'Reviews', 'oria' ); ?></h2>
+
+				<div class="xp-rvsum">
+					<div class="xp-rvsum__scores">
+						<?php if ( $oria_grat['rating'] > 0 ) : ?>
+							<p class="xp-rvsum__score">
+								<span class="xp-rvsum__num"><?php echo esc_html( number_format_i18n( (float) $oria_grat['rating'], 1 ) ); ?></span>
+								<span class="xp-rvsum__stars" aria-hidden="true"><?php echo str_repeat( $oria_star, 5 ); // phpcs:ignore ?></span>
+								<span class="xp-rvsum__of">
+									<?php
+									echo esc_html(
+										$oria_grat['count'] > 0
+											/* translators: %s: number of Google reviews */
+											? sprintf( _n( 'out of 5 from %s review on Google', 'out of 5 from %s reviews on Google', (int) $oria_grat['count'], 'oria' ), number_format_i18n( (int) $oria_grat['count'] ) )
+											: __( 'out of 5 on Google', 'oria' )
+									);
+									?>
+								</span>
+							</p>
+						<?php endif; ?>
+						<?php if ( 'native' === $oria_rate['source'] && $oria_rate['rating'] > 0 ) : ?>
+							<p class="xp-rvsum__score xp-rvsum__score--oria">
+								<span class="xp-rvsum__num"><?php echo esc_html( number_format_i18n( (float) $oria_rate['rating'], 1 ) ); ?></span>
+								<span class="xp-rvsum__of">
+									<?php
+									/* translators: %s: number of Oria Haven reviews */
+									echo esc_html( sprintf( _n( 'out of 5 from %s Oria Haven review', 'out of 5 from %s Oria Haven reviews', max( 1, (int) $oria_rate['count'] ), 'oria' ), number_format_i18n( max( 1, (int) $oria_rate['count'] ) ) ) );
+									?>
+								</span>
+							</p>
+						<?php endif; ?>
+						<?php if ( $oria_grat['rating'] <= 0 && 0 === $oria_native_n ) : ?>
+							<p class="xp-rvsum__none"><?php esc_html_e( 'No reviews here yet.', 'oria' ); ?></p>
+						<?php endif; ?>
+					</div>
+					<div class="xp-rvsum__acts">
+						<button type="button" class="btn btn--dark xp-tap xp-rvopen" data-xp-rvopen aria-controls="xp-rvpanel" aria-expanded="<?php echo $oria_rv_open ? 'true' : 'false'; ?>"><?php esc_html_e( 'Write a review', 'oria' ); ?></button>
+						<?php if ( ! empty( $oria_grat['uri'] ) && $oria_grat['count'] > 0 ) : ?>
+							<a class="btn btn--ghost xp-tap" href="<?php echo esc_url( $oria_grat['uri'] ); ?>" rel="nofollow noopener" target="_blank"><?php esc_html_e( 'Read all on Google', 'oria' ); ?><span class="xp-vh"> <?php esc_html_e( '(opens Google)', 'oria' ); ?></span></a>
+						<?php endif; ?>
+					</div>
+				</div>
 
 				<?php get_template_part( 'template-parts/review', 'list', array( 'listing_id' => $oria_id ) ); ?>
 
-				<?php if ( $oria_quote ) : ?>
-					<figure class="gquote xp-gquote">
-						<blockquote>“<?php echo esc_html( $oria_quote['text'] ); ?>”</blockquote>
-						<figcaption>— <?php echo esc_html( $oria_quote['by'] ); ?>, <?php esc_html_e( 'on Google', 'oria' ); ?></figcaption>
-					</figure>
-				<?php endif; ?>
-
 				<?php if ( $oria_reviews ) : ?>
 					<div class="xp-greviews">
-						<div class="xp-sec__headrow">
-							<h3 class="h3 xp-sub__title"><?php esc_html_e( 'From Google', 'oria' ); ?></h3>
-							<?php if ( ! empty( $oria_grat['uri'] ) ) : ?>
-								<a class="xp-link" href="<?php echo esc_url( $oria_grat['uri'] ); ?>" rel="nofollow noopener" target="_blank"><?php esc_html_e( 'Read all on Google', 'oria' ); ?></a>
-							<?php endif; ?>
-						</div>
-						<?php foreach ( $oria_reviews as $oria_rv ) : ?>
-							<div class="reviewitem">
+						<h3 class="h3 xp-sub__title"><?php esc_html_e( 'From Google', 'oria' ); ?></h3>
+						<?php foreach ( array_slice( $oria_reviews, 0, 3 ) as $oria_rv ) : ?>
+							<article class="reviewitem">
 								<div class="reviewitem__head">
 									<div class="row" style="gap:.75rem">
 										<?php if ( ! empty( $oria_rv['avatar'] ) ) : ?>
-											<img src="<?php echo esc_url( $oria_rv['avatar'] ); ?>" alt="" aria-hidden="true" width="36" height="36" loading="lazy"
+											<img src="<?php echo esc_url( $oria_rv['avatar'] ); ?>" alt="" aria-hidden="true" width="36" height="36" loading="lazy" decoding="async"
 												style="border-radius:50%;flex:none" onerror="this.style.display='none'">
 										<?php endif; ?>
 										<div>
@@ -981,23 +1318,40 @@ while ( have_posts() ) :
 										</div>
 									</div>
 									<?php if ( $oria_rv['rating'] > 0 ) : ?>
-										<span class="rating"><?php echo $oria_star; // phpcs:ignore ?> <?php echo esc_html( number_format_i18n( (float) $oria_rv['rating'], 1 ) ); ?></span>
+										<span class="rating"><?php echo $oria_star; // phpcs:ignore ?> <?php echo esc_html( number_format_i18n( (float) $oria_rv['rating'], 1 ) ); ?><span class="xp-vh"> <?php esc_html_e( 'out of 5', 'oria' ); ?></span></span>
 									<?php endif; ?>
 								</div>
-								<p class="muted" style="font-size:.9375rem"><?php echo esc_html( $oria_rv['text'] ); ?></p>
-							</div>
+								<p class="muted xp-greview__text"><?php echo esc_html( $oria_rv['text'] ); ?></p>
+							</article>
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
 
-				<?php get_template_part( 'template-parts/review', 'form', array( 'listing_id' => $oria_id ) ); ?>
+				<?php
+				/*
+				 * The form panel. Hidden until "Write a review" (inline on a
+				 * wide screen, a full-screen sheet on a phone -- v4-listing.js),
+				 * open on arrival when the handler came back with a message or
+				 * the Google sign-in returned to #write-review. Without script
+				 * the <noscript> rule shows it inline.
+				 */
+				?>
+				<div class="xp-rvpanel" id="xp-rvpanel" data-xp-rvpanel<?php echo $oria_rv_open ? '' : ' hidden'; ?>>
+					<div class="xp-rvpanel__bar">
+						<button type="button" class="xp-rvpanel__close xp-tap" data-xp-rvclose>
+							<span aria-hidden="true">&times;</span> <?php esc_html_e( 'Close', 'oria' ); ?><span class="xp-vh"> <?php esc_html_e( 'the review form', 'oria' ); ?></span>
+						</button>
+					</div>
+					<?php get_template_part( 'template-parts/review', 'form', array( 'listing_id' => $oria_id ) ); ?>
+				</div>
+				<noscript><style>.xp-rvpanel[hidden]{display:block!important}.xp-rvopen,.xp-rvpanel__bar{display:none!important}</style></noscript>
 			</section>
 
 			<?php /* --- Quick answers: the FAQPage schema reads the same helper -- */ ?>
 			<?php $oria_faq = function_exists( '\Oria\Core\Schema\listing_faq' ) ? \Oria\Core\Schema\listing_faq( $oria_id ) : array(); ?>
 			<?php if ( $oria_faq ) : ?>
 				<?php $oria_sec++; ?>
-				<section class="xp-sec" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
+				<section class="xp-sec" id="faq" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
 					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Quick answers', 'oria' ); ?></h2>
 					<div class="qanda">
 						<?php foreach ( $oria_faq as $oria_i => $oria_qa ) : ?>
@@ -1011,78 +1365,9 @@ while ( have_posts() ) :
 			<?php endif; ?>
 
 			<?php
-			/* --- Getting there --------------------------------------------- */
-			$oria_map   = $oria_address ? \Oria\Theme\map_embed_url( $oria_address ) : '';
-			$oria_geo   = function_exists( '\Oria\Core\Geo\position' ) ? \Oria\Core\Geo\position( $oria_id ) : null;
-			$oria_kmlab = $oria_geo ? \Oria\Core\Geo\label( $oria_id ) : '';
-			?>
-			<?php if ( $oria_address || $oria_transit || $oria_parking || '' !== $oria_kmlab ) : ?>
-				<?php $oria_sec++; ?>
-				<section class="xp-sec" id="getting-there" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
-					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Getting there', 'oria' ); ?></h2>
-					<div class="card xp-there">
-						<?php if ( $oria_map ) : ?>
-							<button type="button" class="mapfacade" data-map-src="<?php echo esc_url( $oria_map ); ?>"
-								data-map-title="<?php printf( esc_attr__( 'Map showing %s', 'oria' ), esc_attr( $oria_title ) ); ?>">
-								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
-								<span><?php esc_html_e( 'Show the map', 'oria' ); ?></span>
-							</button>
-						<?php endif; ?>
-						<div class="card__body">
-							<div class="grid grid-2" style="gap:1rem">
-								<?php if ( $oria_address ) : ?>
-									<div>
-										<div class="keyfact__k"><?php esc_html_e( 'Address', 'oria' ); ?></div>
-										<div class="keyfact__v" style="font-weight:500"><?php echo esc_html( $oria_address ); ?></div>
-									</div>
-									<div style="align-self:center;justify-self:start">
-										<a class="btn btn--ghost btn--sm btn--plain xp-tap" href="<?php echo esc_url( $oria_dir_url ); ?>" rel="noopener" target="_blank" data-oria-track="dir" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Get directions', 'oria' ); ?></a>
-									</div>
-								<?php endif; ?>
-								<?php if ( $oria_transit ) : ?>
-									<div><div class="keyfact__k"><?php esc_html_e( 'Public transport', 'oria' ); ?></div><div class="keyfact__v" style="font-weight:500"><?php echo esc_html( $oria_transit ); ?></div></div>
-								<?php endif; ?>
-								<?php if ( $oria_parking ) : ?>
-									<div><div class="keyfact__k"><?php esc_html_e( 'Parking', 'oria' ); ?></div><div class="keyfact__v" style="font-weight:500"><?php echo esc_html( $oria_parking ); ?></div></div>
-								<?php endif; ?>
-								<?php if ( '' !== $oria_kmlab ) : ?>
-									<div data-oria-distance data-lat="<?php echo esc_attr( (string) $oria_geo['lat'] ); ?>" data-lng="<?php echo esc_attr( (string) $oria_geo['lng'] ); ?>">
-										<div class="keyfact__k"><?php esc_html_e( 'Distance', 'oria' ); ?></div>
-										<div class="keyfact__v" style="font-weight:500">
-											<span data-oria-distance-value><?php echo esc_html( $oria_kmlab ); ?></span>
-											<?php if ( 'suburb' === $oria_geo['precision'] ) : ?>
-												<small style="display:block;font-weight:400;opacity:.7"><?php esc_html_e( 'measured to the suburb, not the door', 'oria' ); ?></small>
-											<?php endif; ?>
-											<?php // ODbL requires OpenStreetMap to be credited wherever a derived distance is shown. ?>
-											<small style="display:block;font-weight:400;opacity:.55;margin-top:.25rem"><?php echo esc_html( \Oria\Core\Geo\attribution() ); ?></small>
-										</div>
-									</div>
-								<?php endif; ?>
-							</div>
-
-							<?php if ( $oria_wk ) : ?>
-								<div style="margin-top:1.1rem">
-									<div class="keyfact__k"><?php esc_html_e( 'Opening hours', 'oria' ); ?></div>
-									<ul class="hourslist">
-										<?php $oria_todayw = (string) wp_date( 'l' ); ?>
-										<?php foreach ( $oria_wk as $oria_hl ) : ?>
-											<li<?php echo 0 === stripos( $oria_hl, $oria_todayw ) ? ' class="is-today"' : ''; ?>><?php echo esc_html( $oria_hl ); ?></li>
-										<?php endforeach; ?>
-									</ul>
-									<p class="hint" style="margin-top:.45rem"><?php esc_html_e( 'Hours via Google — worth a check before a special trip.', 'oria' ); ?></p>
-								</div>
-							<?php endif; ?>
-						</div>
-					</div>
-				</section>
-			<?php endif; ?>
-
-			<?php
 			/* --- Send an enquiry ---------------------------------------------
 			 * The parent's enquiry form, logic unchanged (stored, forwarded
-			 * with Reply-To -- Oria\Core\Leads). Out of its dark rail card and
-			 * into the story, so the sticky rail never grows past the screen;
-			 * the rail links here. */
+			 * with Reply-To -- Oria\Core\Leads). The rail links here. */
 			?>
 			<?php if ( $oria_can_enq ) : ?>
 				<?php
@@ -1104,7 +1389,7 @@ while ( have_posts() ) :
 							<input type="hidden" name="listing_id" value="<?php echo (int) $oria_id; ?>">
 							<input type="hidden" name="oform_ts" value="<?php echo esc_attr( (string) time() ); ?>">
 							<?php wp_nonce_field( 'oria_enquiry_' . $oria_id, 'oform_nonce' ); ?>
-							<input type="text" name="oform_website" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+							<input type="text" name="oform_website" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="xp-hp">
 							<?php if ( 'error' === $oria_lead_state ) : ?>
 								<p class="xp-form__error" role="alert"><?php esc_html_e( 'That didn\'t send — check your name and email and try again.', 'oria' ); ?></p>
 							<?php endif; ?>
@@ -1177,10 +1462,10 @@ while ( have_posts() ) :
 
 		</div><!-- .xp-story -->
 
-		<!-- The action rail -->
+		<!-- The action rail (60rem and up) -->
 		<aside class="xp-rail" aria-labelledby="xp-rail-title">
 			<div class="xp-rail__card">
-				<h2 class="xp-rail__title" id="xp-rail-title"><?php esc_html_e( 'The practical bits', 'oria' ); ?></h2>
+				<h2 class="xp-rail__title" id="xp-rail-title"><?php esc_html_e( 'Plan your visit', 'oria' ); ?></h2>
 
 				<?php if ( $oria_offer ) : ?>
 					<div class="xp-rail__top">
@@ -1193,82 +1478,66 @@ while ( have_posts() ) :
 							<p class="xp-rail__sub"><?php printf( esc_html__( 'Until %s', 'oria' ), esc_html( mysql2date( 'j F Y', $oria_offer['until'] ) ) ); ?></p>
 						<?php endif; ?>
 					</div>
-				<?php elseif ( $oria_price_num > 0 ) : ?>
-					<div class="xp-rail__top">
-						<p class="xp-label"><?php esc_html_e( 'Price from', 'oria' ); ?></p>
-						<p class="xp-rail__big"><?php echo esc_html( '$' . $oria_price_num ); ?> <span class="xp-rail__unit"><?php esc_html_e( 'a session', 'oria' ); ?></span></p>
-					</div>
 				<?php endif; ?>
 
-				<?php if ( $oria_primary || ( $oria_booking && $oria_website ) || $oria_tel || $oria_can_enq ) : ?>
-					<div class="xp-rail__ctas">
-						<?php if ( $oria_primary ) : ?>
-							<a class="btn btn--dark btn--block xp-tap" href="<?php echo esc_url( $oria_primary['url'] ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="<?php echo esc_attr( $oria_primary['track'] ); ?>" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo esc_html( $oria_primary['label'] ); ?><?php echo arrow(); // phpcs:ignore ?></a>
-						<?php endif; ?>
-						<?php if ( $oria_booking && $oria_website ) : ?>
-							<a class="btn btn--ghost btn--block xp-tap" href="<?php echo esc_url( $oria_website ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="web" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Visit their website', 'oria' ); ?></a>
-						<?php endif; ?>
+				<div class="xp-rail__ctas">
+					<?php if ( $oria_primary ) : ?>
+						<a class="btn btn--dark btn--block xp-tap" href="<?php echo esc_url( $oria_primary['url'] ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="<?php echo esc_attr( $oria_primary['track'] ); ?>" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo esc_html( $oria_primary['label'] ); ?><span class="xp-vh"> <?php esc_html_e( '(opens their site)', 'oria' ); ?></span><?php echo arrow(); // phpcs:ignore ?></a>
+					<?php endif; ?>
+					<?php if ( $oria_booking && $oria_website ) : ?>
+						<a class="btn btn--ghost btn--block xp-tap" href="<?php echo esc_url( $oria_website ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="web" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Visit their website', 'oria' ); ?></a>
+					<?php endif; ?>
+					<div class="xp-rail__row">
 						<?php if ( $oria_tel ) : ?>
-							<a class="btn btn--ghost btn--block xp-tap" href="tel:<?php echo esc_attr( $oria_tel ); ?>" data-oria-track="tel" data-oria-id="<?php echo (int) $oria_id; ?>">
-								<?php
-								/* translators: %s: phone number */
-								echo esc_html( sprintf( __( 'Call %s', 'oria' ), $oria_phone ) );
-								?>
-							</a>
+							<a class="btn btn--ghost xp-tap" href="tel:<?php echo esc_attr( $oria_tel ); ?>" data-oria-track="tel" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo $oria_ico['tel']; // phpcs:ignore ?><span><?php esc_html_e( 'Call', 'oria' ); ?></span><span class="xp-vh"> <?php echo esc_html( $oria_phone ); ?></span></a>
 						<?php endif; ?>
-						<?php if ( $oria_can_enq ) : ?>
-							<a class="btn btn--ghost btn--block xp-tap" href="#enquire"><?php esc_html_e( 'Send an enquiry', 'oria' ); ?></a>
+						<?php if ( $oria_dir_url ) : ?>
+							<a class="btn btn--ghost xp-tap" href="<?php echo esc_url( $oria_dir_url ); ?>" rel="noopener" target="_blank" data-oria-track="dir" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo $oria_ico['dir']; // phpcs:ignore ?><span><?php esc_html_e( 'Directions', 'oria' ); ?></span><span class="xp-vh"> <?php esc_html_e( '(opens Google Maps)', 'oria' ); ?></span></a>
 						<?php endif; ?>
+						<button class="btn btn--ghost xp-tap savebtn" type="button"
+							data-save="<?php echo esc_attr( $oria_slugname ); ?>"
+							data-save-name="<?php echo esc_attr( $oria_title ); ?>"
+							aria-pressed="false">
+							<?php echo $oria_ico['save']; // phpcs:ignore ?><span class="savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span><span class="xp-vh"> <?php echo esc_html( $oria_title ); ?></span>
+						</button>
 					</div>
-				<?php endif; ?>
+					<?php if ( $oria_can_enq ) : ?>
+						<a class="xp-link xp-tap" href="#enquire"><?php esc_html_e( 'Send an enquiry', 'oria' ); ?></a>
+					<?php endif; ?>
+				</div>
 
 				<?php
 				// Facts: only rows with something behind them.
 				$oria_facts = array();
-				if ( $oria_address ) {
-					$oria_facts[] = array( __( 'Where', 'oria' ), esc_html( $oria_address ) );
-				} elseif ( $oria_suburb instanceof WP_Term || $oria_region instanceof WP_Term ) {
-					$oria_facts[] = array( __( 'Where', 'oria' ), esc_html( \Oria\Theme\tname( $oria_suburb instanceof WP_Term ? $oria_suburb : $oria_region ) ) );
+				if ( 'online' !== $oria_format && ( '' !== $oria_address || '' !== $oria_area_name ) ) {
+					$oria_facts[] = array(
+						__( 'Address', 'oria' ),
+						$oria_street
+							? esc_html( $oria_address )
+							: esc_html( '' !== $oria_address ? $oria_address : $oria_area_name ) . '<span class="xp-fact__sub xp-fact__block">' . esc_html__( 'Exact address not provided', 'oria' ) . '</span>',
+					);
 				}
 				if ( $oria_offer && $oria_price_num > 0 ) {
+					$oria_facts[] = array( __( 'Price', 'oria' ), esc_html( sprintf( __( 'From $%d a session', 'oria' ), $oria_price_num ) ) );
+				} elseif ( $oria_price_num > 0 ) {
 					$oria_facts[] = array( __( 'Price', 'oria' ), esc_html( sprintf( __( 'From $%d a session', 'oria' ), $oria_price_num ) ) );
 				} elseif ( '' !== $oria_band_label ) {
 					$oria_facts[] = array( __( 'Typical price', 'oria' ), esc_html( $oria_band_label ) );
 				}
 				$oria_facts[] = array( __( 'Format', 'oria' ), esc_html( $oria_format_label ) );
-				if ( $oria_rate['rating'] > 0 ) {
-					$oria_rv_txt = number_format_i18n( (float) $oria_rate['rating'], 1 );
-					if ( 'google' === $oria_rate['source'] ) {
-						$oria_rv_txt .= ' · ' . ( $oria_rate['count'] > 0
-							/* translators: %d: number of Google reviews */
-							? sprintf( _n( '%d Google review', '%d Google reviews', (int) $oria_rate['count'], 'oria' ), (int) $oria_rate['count'] )
-							: __( 'Rating on Google', 'oria' ) );
-						$oria_rv_html = '<a class="xp-fact__link" href="' . esc_url( ! empty( $oria_grat['uri'] ) ? $oria_grat['uri'] : 'https://www.google.com/maps' ) . '" rel="nofollow noopener" target="_blank">' . $oria_star . ' ' . esc_html( $oria_rv_txt ) . '</a>';
-					} else {
-						if ( $oria_rate['count'] > 0 ) {
-							/* translators: %d: number of reviews */
-							$oria_rv_txt .= ' · ' . sprintf( _n( '%d Oria Haven review', '%d Oria Haven reviews', (int) $oria_rate['count'], 'oria' ), (int) $oria_rate['count'] );
-						}
-						$oria_rv_html = '<a class="xp-fact__link" href="#reviews">' . $oria_star . ' ' . esc_html( $oria_rv_txt ) . '</a>';
-					}
-					$oria_facts[] = array( __( 'Rating', 'oria' ), $oria_rv_html );
+				if ( '' !== $oria_rating_html ) {
+					$oria_facts[] = array( __( 'Rating', 'oria' ), $oria_rating_html );
 				}
 				if ( $oria_hbits ) {
 					$oria_facts[] = array( __( 'Hours', 'oria' ), implode( '<br>', array_map( 'esc_html', $oria_hbits ) ) );
 				} elseif ( '' !== $oria_today ) {
-					$oria_facts[] = array( __( 'Hours today', 'oria' ), esc_html( $oria_today ) . ( $oria_wk ? ' <a class="xp-fact__more" href="#getting-there">' . esc_html__( 'All week', 'oria' ) . '</a>' : '' ) );
+					$oria_facts[] = array( __( 'Hours today', 'oria' ), '<span data-xp-today-short>' . esc_html( $oria_today ) . '</span> <a class="xp-fact__more" href="#getting-there">' . esc_html__( 'All week', 'oria' ) . '</a>' );
 				}
-				if ( '' !== trim( $oria_next ) ) {
+				if ( '' !== $oria_next ) {
 					$oria_facts[] = array( __( 'Next session', 'oria' ), esc_html( $oria_next ) );
 				}
 				if ( $oria_show_email && ! $oria_contactless ) {
 					$oria_facts[] = array( __( 'Email', 'oria' ), '<a class="xp-fact__link" href="mailto:' . esc_attr( $oria_email ) . '" data-oria-track="mail" data-oria-id="' . (int) $oria_id . '">' . esc_html( $oria_email ) . '</a>' );
-				}
-				if ( $oria_amen ) {
-					$oria_facts[] = array( __( 'Amenities', 'oria' ), esc_html( implode( ', ', array_slice( $oria_amen, 0, 4 ) ) ) );
-				}
-				if ( $oria_verified ) {
-					$oria_facts[] = array( __( 'Verified', 'oria' ), esc_html( mysql2date( 'j M Y', $oria_verified ) ) );
 				}
 				?>
 				<dl class="xp-facts">
@@ -1279,35 +1548,32 @@ while ( have_posts() ) :
 						</div>
 					<?php endforeach; ?>
 				</dl>
-
-				<div class="xp-rail__foot">
-					<?php if ( $oria_dir_url ) : ?>
-						<a class="xp-link xp-tap" href="<?php echo esc_url( $oria_dir_url ); ?>" rel="noopener" target="_blank" data-oria-track="dir" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Get directions', 'oria' ); ?></a>
-					<?php endif; ?>
-					<?php
-					/*
-					 * Rendered as the unsaved state and corrected by app.js
-					 * on load: what this browser has saved lives on the device.
-					 */
-					?>
-					<button class="xp-save savebtn xp-tap" type="button"
-						data-save="<?php echo esc_attr( $oria_slugname ); ?>"
-						data-save-name="<?php echo esc_attr( $oria_title ); ?>"
-						aria-pressed="false">
-						<span class="savebtn__on" aria-hidden="true">&#9829;</span><span class="savebtn__off" aria-hidden="true">&#9825;</span>
-						<span class="savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
-					</button>
-				</div>
 			</div>
 		</aside>
 	</div><!-- .xp-body -->
 
 	<?php
-	/* --- 3. If you like the sound of this ---------------------------------
+	/* --- 3. Similar places --------------------------------------------------
 	 * Similar practices, scored on shared category, shared services and
-	 * actual kilometres -- see Oria\Core\Similar. Then the specialty pages
-	 * this listing is tagged with ("Find more like this"). */
+	 * actual kilometres -- see Oria\Core\Similar. Each card says why, but
+	 * only from services the two actually share; otherwise it says nothing.
+	 * Then the specialty pages this listing is tagged with. */
 	$oria_similar = function_exists( '\Oria\Core\Similar\listings_for' ) ? \Oria\Core\Similar\listings_for( $oria_id, 3 ) : array();
+
+	// This listing's services and specialties, by slug, with their names.
+	$oria_my_terms = array();
+	foreach ( array( 'service', 'specialty' ) as $oria_tax ) {
+		$oria_tt = get_the_terms( $oria_id, $oria_tax );
+		foreach ( is_array( $oria_tt ) ? $oria_tt : array() as $oria_term ) {
+			$oria_my_terms[ $oria_tax ][ $oria_term->slug ] = \Oria\Theme\tname( $oria_term );
+		}
+	}
+	$oria_lc = static function ( string $oria_s ): string {
+		// "Ice bath" -> "ice bath", but leave "HIIT" or "Bikram yoga"-style names alone.
+		return preg_match( '/^[A-Z][a-z]/', $oria_s ) && ! preg_match( '/^(Bikram|Iyengar|Ashtanga|Kundalini|Reiki|Pilates|Hatha|Yin|Vinyasa|Thai|Swedish|Chinese|Japanese|Himalayan|Finnish)\b/', $oria_s )
+			? strtolower( $oria_s[0] ) . substr( $oria_s, 1 )
+			: $oria_s;
+	};
 
 	$oria_specs     = wp_get_post_terms( $oria_id, 'specialty' );
 	$oria_specs     = is_wp_error( $oria_specs ) ? array() : $oria_specs;
@@ -1335,9 +1601,9 @@ while ( have_posts() ) :
 	}
 	?>
 	<?php if ( $oria_similar || $oria_speccards ) : ?>
-		<section class="wrap xp-more" aria-labelledby="xp-more-title">
+		<section class="wrap xp-more" id="similar" aria-labelledby="xp-more-title">
 			<?php if ( $oria_similar ) : ?>
-				<h2 class="h2 xp-sec__title" id="xp-more-title"><?php esc_html_e( 'If you like the sound of this', 'oria' ); ?></h2>
+				<h2 class="h2 xp-sec__title" id="xp-more-title"><?php echo esc_html( $oria_contactless && '' !== ( $oria_words['similar'] ?? '' ) ? $oria_words['similar'] : __( 'Similar places', 'oria' ) ); ?></h2>
 				<ul class="xp-cards">
 					<?php
 					foreach ( $oria_similar as $oria_nid ) :
@@ -1359,28 +1625,65 @@ while ( have_posts() ) :
 								: '',
 						) );
 						$oria_n_rate = \Oria\Theme\effective_rating( $oria_nid );
-						// Their own excerpt's first sentence, cut, never reworded.
-						$oria_n_ex = trim( wp_strip_all_tags( (string) get_post_field( 'post_excerpt', $oria_nid ) ) );
-						if ( '' !== $oria_n_ex && preg_match( '/^(.{40,}?[.!?])\s+(?=[\p{Lu}"\x{201C}\x{2018}(])/su', $oria_n_ex, $oria_nm ) ) {
-							$oria_n_ex = trim( $oria_nm[1] );
+
+						// A picture: their own, else a cached Google photo. Never a stand-in scene.
+						$oria_n_img = (string) get_the_post_thumbnail_url( $oria_nid, 'oria-card' );
+						if ( '' === $oria_n_img ) {
+							$oria_n_gal = \Oria\Theme\rows( 'gallery', array(), $oria_nid );
+							$oria_n_img = $oria_n_gal ? (string) wp_get_attachment_image_url( (int) $oria_n_gal[0], 'oria-card' ) : '';
+						}
+						if ( '' === $oria_n_img && function_exists( '\Oria\Core\Places\card_photo' ) ) {
+							$oria_n_img = $oria_gsz( \Oria\Core\Places\card_photo( $oria_nid ), 640 );
+						}
+
+						// Why it is here: services (else specialties) the two actually share.
+						$oria_n_why = '';
+						foreach ( array( 'service', 'specialty' ) as $oria_tax ) {
+							if ( empty( $oria_my_terms[ $oria_tax ] ) ) {
+								continue;
+							}
+							$oria_n_tt = get_the_terms( $oria_nid, $oria_tax );
+							$oria_both = array();
+							foreach ( is_array( $oria_n_tt ) ? $oria_n_tt : array() as $oria_term ) {
+								if ( isset( $oria_my_terms[ $oria_tax ][ $oria_term->slug ] ) ) {
+									$oria_both[] = $oria_lc( $oria_my_terms[ $oria_tax ][ $oria_term->slug ] );
+								}
+							}
+							if ( $oria_both ) {
+								$oria_both  = array_slice( $oria_both, 0, 3 );
+								$oria_last  = array_pop( $oria_both );
+								$oria_n_why = sprintf(
+									/* translators: %s: list of shared services, e.g. "ice bath and traditional sauna" */
+									__( 'Also offers %s.', 'oria' ),
+									$oria_both ? implode( ', ', $oria_both ) . ' ' . __( 'and', 'oria' ) . ' ' . $oria_last : $oria_last
+								);
+								break;
+							}
 						}
 						?>
 						<li class="xp-card">
-							<?php if ( $oria_n_cat instanceof WP_Term ) : ?>
-								<p class="xp-label"><?php echo esc_html( \Oria\Theme\tname( $oria_n_cat ) ); ?></p>
+							<?php if ( '' !== $oria_n_img ) : ?>
+								<img class="xp-card__img" src="<?php echo esc_url( $oria_n_img ); ?>" alt="" loading="lazy" decoding="async" width="640" height="400" onerror="this.remove()">
+							<?php else : ?>
+								<span class="xp-card__img xp-card__img--none" aria-hidden="true"></span>
 							<?php endif; ?>
-							<h3 class="xp-card__title"><a class="xp-card__link" href="<?php echo esc_url( (string) get_permalink( $oria_nid ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( $oria_nid ) ); ?></a></h3>
-							<?php if ( '' !== $oria_n_ex ) : ?>
-								<p class="xp-card__text"><?php echo esc_html( $oria_n_ex ); ?></p>
-							<?php endif; ?>
-							<?php if ( $oria_n_meta || ( $oria_n_rate['rating'] ?? 0 ) > 0 ) : ?>
-								<p class="xp-card__meta">
-									<?php echo esc_html( implode( ' · ', $oria_n_meta ) ); ?>
-									<?php if ( ( $oria_n_rate['rating'] ?? 0 ) > 0 ) : ?>
-										<span class="rating"><?php echo $oria_star; // phpcs:ignore ?><?php echo esc_html( number_format_i18n( (float) $oria_n_rate['rating'], 1 ) ); ?></span>
-									<?php endif; ?>
-								</p>
-							<?php endif; ?>
+							<div class="xp-card__body">
+								<?php if ( $oria_n_cat instanceof WP_Term ) : ?>
+									<p class="xp-label"><?php echo esc_html( \Oria\Theme\tname( $oria_n_cat ) ); ?></p>
+								<?php endif; ?>
+								<h3 class="xp-card__title"><a class="xp-card__link" href="<?php echo esc_url( (string) get_permalink( $oria_nid ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( $oria_nid ) ); ?></a></h3>
+								<?php if ( $oria_n_meta || ( $oria_n_rate['rating'] ?? 0 ) > 0 ) : ?>
+									<p class="xp-card__meta">
+										<?php echo esc_html( implode( ' · ', $oria_n_meta ) ); ?>
+										<?php if ( ( $oria_n_rate['rating'] ?? 0 ) > 0 ) : ?>
+											<span class="rating"><?php echo $oria_star; // phpcs:ignore ?><?php echo esc_html( number_format_i18n( (float) $oria_n_rate['rating'], 1 ) ); ?><span class="xp-card__src"><?php echo esc_html( 'google' === $oria_n_rate['source'] ? __( 'on Google', 'oria' ) : __( 'on Oria Haven', 'oria' ) ); ?></span></span>
+										<?php endif; ?>
+									</p>
+								<?php endif; ?>
+								<?php if ( '' !== $oria_n_why ) : ?>
+									<p class="xp-card__why"><?php echo esc_html( $oria_n_why ); ?></p>
+								<?php endif; ?>
+							</div>
 						</li>
 					<?php endforeach; ?>
 				</ul>
@@ -1410,7 +1713,7 @@ while ( have_posts() ) :
 											/* translators: 1: modality name, 2: city name. */
 											esc_html__( '%1$s in %2$s', 'oria' ),
 											esc_html( \Oria\Theme\tname( $oria_spec ) ),
-											esc_html( '' !== $oria_lname ? $oria_lname : __( 'Perth', 'oria' ) )
+											esc_html( $oria_cityw )
 										);
 										?>
 									</span>
@@ -1462,7 +1765,7 @@ while ( have_posts() ) :
 								<input type="hidden" name="action" value="oria_claim">
 								<input type="hidden" name="listing_id" value="<?php echo (int) $oria_id; ?>">
 								<?php wp_nonce_field( 'oria_claim', 'oria_claim_nonce' ); ?>
-								<input type="text" name="oria_website_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+								<input type="text" name="oria_website_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="xp-hp">
 								<div class="xp-form__row">
 									<label class="field"><span class="field__label"><?php esc_html_e( 'Your name', 'oria' ); ?></span><input class="input" type="text" name="claimant_name" autocomplete="name" required></label>
 									<label class="field"><span class="field__label"><?php esc_html_e( 'Email', 'oria' ); ?></span><input class="input" type="email" name="claimant_email" autocomplete="email" required placeholder="<?php esc_attr_e( 'Ideally the one on your website', 'oria' ); ?>"></label>
@@ -1483,37 +1786,44 @@ while ( have_posts() ) :
 	<?php endif; ?>
 
 	<?php
-	/* --- 5. Phone: the persistent action bar ---------------------------------
-	 * Replaces the parent's scroll-revealed .stickybar: on a phone it is
-	 * always there; from 60rem up the sticky rail does the same job and the
-	 * bar is not shown. Same tracking attributes as every other button. */
+	/* --- 5. Products: one compact row, after everything a visitor came for.
+	 * The shop plugin's own matching (the listing's practice), rendered by its
+	 * own band(); hidden when fewer than two products match, which is the
+	 * same "no padding a shelf" rule the category pages follow. */
+	$oria_prods = function_exists( '\Oria\Shop\Render\auto_products' ) ? \Oria\Shop\Render\auto_products( 3 ) : array();
+	$oria_shop  = count( $oria_prods ) >= 2 && function_exists( '\Oria\Shop\Render\band' ) ? \Oria\Shop\Render\band( $oria_prods ) : '';
 	?>
-	<div class="xp-bar" role="group" aria-label="<?php esc_attr_e( 'Quick actions', 'oria' ); ?>">
+	<?php if ( '' !== $oria_shop ) : ?>
+		<section class="wrap xp-shop" aria-label="<?php esc_attr_e( 'Products', 'oria' ); ?>"><?php echo $oria_shop; // phpcs:ignore WordPress.Security.EscapeOutput ?></section>
+	<?php endif; ?>
+
+	<?php
+	/* --- 6. Phone: the bottom action bar ---------------------------------
+	 * Words under every icon. Always shown on a phone without script; with
+	 * v4-listing.js it appears once the hero's own actions have scrolled
+	 * away and steps aside at the footer, while a form field has focus and
+	 * while the review sheet is open. Same tracking attributes as every
+	 * other button. Not shown from 60rem, where the rail does this job. */
+	?>
+	<div class="xp-bar" id="xp-bar" role="group" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: listing name */ __( 'Quick actions for %s', 'oria' ), $oria_title ) ); ?>">
 		<?php if ( $oria_primary ) : ?>
-			<a class="btn btn--dark xp-bar__main" href="<?php echo esc_url( $oria_primary['url'] ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="<?php echo esc_attr( $oria_primary['track'] ); ?>" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo esc_html( $oria_primary['short'] ); ?></a>
-		<?php elseif ( $oria_dir_url ) : ?>
-			<a class="btn btn--dark xp-bar__main" href="<?php echo esc_url( $oria_dir_url ); ?>" rel="noopener" target="_blank" data-oria-track="dir" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'Get directions', 'oria' ); ?></a>
+			<a class="xp-bar__btn xp-bar__btn--main" href="<?php echo esc_url( $oria_primary['url'] ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="<?php echo esc_attr( $oria_primary['track'] ); ?>" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo $oria_ico['web']; // phpcs:ignore ?><span><?php echo esc_html( $oria_primary['short'] ); ?></span></a>
 		<?php endif; ?>
 		<?php if ( $oria_tel ) : ?>
-			<a class="xp-bar__icon" href="tel:<?php echo esc_attr( $oria_tel ); ?>" data-oria-track="tel" data-oria-id="<?php echo (int) $oria_id; ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Call %s', 'oria' ), $oria_phone ) ); ?>">
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
-			</a>
+			<a class="xp-bar__btn" href="tel:<?php echo esc_attr( $oria_tel ); ?>" data-oria-track="tel" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo $oria_ico['tel']; // phpcs:ignore ?><span><?php esc_html_e( 'Call', 'oria' ); ?></span></a>
 		<?php endif; ?>
-		<button class="xp-bar__icon savebtn" type="button"
+		<?php if ( $oria_dir_url ) : ?>
+			<a class="xp-bar__btn<?php echo $oria_primary ? '' : ' xp-bar__btn--main'; ?>" href="<?php echo esc_url( $oria_dir_url ); ?>" rel="noopener" target="_blank" data-oria-track="dir" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo $oria_ico['dir']; // phpcs:ignore ?><span><?php esc_html_e( 'Directions', 'oria' ); ?></span></a>
+		<?php endif; ?>
+		<button class="xp-bar__btn savebtn" type="button"
 			data-save="<?php echo esc_attr( $oria_slugname ); ?>"
 			data-save-name="<?php echo esc_attr( $oria_title ); ?>"
 			aria-pressed="false">
-			<span class="savebtn__on" aria-hidden="true">&#9829;</span><span class="savebtn__off" aria-hidden="true">&#9825;</span>
-			<span class="savebtn__label xp-vh"><?php esc_html_e( 'Save', 'oria' ); ?></span>
+			<?php echo $oria_ico['save']; // phpcs:ignore ?><span class="savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
 		</button>
 	</div>
 
 </div><!-- .xp-page -->
-
-	<?php $oria_shop = function_exists( '\Oria\Shop\Render\auto_band' ) ? \Oria\Shop\Render\auto_band() : ''; ?>
-	<?php if ( $oria_shop ) : ?>
-	<section class="wrap section section--top-flush"><?php echo $oria_shop; // phpcs:ignore WordPress.Security.EscapeOutput ?></section>
-	<?php endif; ?>
 	<?php
 endwhile;
 

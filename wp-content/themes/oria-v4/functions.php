@@ -50,6 +50,13 @@ add_action(
 		// The footer's folding columns, every page.
 		wp_enqueue_script( 'oria-v4-nav', "{$uri}/assets/js/v4-nav.js", array(), (string) filemtime( "{$dir}/assets/js/v4-nav.js" ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 
+		// Category and listing page behaviour, when those pages ship a script.
+		foreach ( array( 'oria-v4-category-js' => array( 'v4-category.js', is_tax( 'practice' ) ), 'oria-v4-listing-js' => array( 'v4-listing.js', is_singular( 'listing' ) ) ) as $handle => $js ) {
+			if ( $js[1] && is_readable( "{$dir}/assets/js/{$js[0]}" ) ) {
+				wp_enqueue_script( $handle, "{$uri}/assets/js/{$js[0]}", array(), (string) filemtime( "{$dir}/assets/js/{$js[0]}" ), array( 'strategy' => 'defer', 'in_footer' => true ) );
+			}
+		}
+
 		// The front page's feeling chips. The page works without it.
 		if ( is_front_page() && is_readable( "{$dir}/assets/js/v4-home.js" ) ) {
 			wp_enqueue_script( 'oria-v4-home', "{$uri}/assets/js/v4-home.js", array(), (string) filemtime( "{$dir}/assets/js/v4-home.js" ), array( 'strategy' => 'defer', 'in_footer' => true ) );
