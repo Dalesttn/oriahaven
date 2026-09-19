@@ -1,814 +1,838 @@
 {
-  "_note": [
-    "Intent pages: /practice/{practice}/{intent}/ — a practice category with one more facet locked, framed by hand.",
-    "",
-    "`intents` defines the facet each intent locks, in the directory engine's own keys: aud (audience slug),",
-    "svc (service vocabulary slug), spec (specialty slug), format ('online'), price (a price band such as 'Free').",
-    "`pages` are the pages that exist, one per practice × intent, each with its own hand-written frame.",
-    "",
-    "A page renders the live filtered set — it counts and links, it never ranks, and nothing here names a business.",
-    "It is indexable and linked from the intent rows only when ALL of: live is true, the live count clears `min`,",
-    "and — for audience intents — Audience\\coverage() says the category has actually been checked. Otherwise it",
-    "serves noindex,follow and stays off the sitemap and out of the mesh: built, dark, waiting for data or review.",
-    "",
-    "Intent slugs may never equal an area slug — the route resolves intents before areas, and the loader drops",
-    "any entry that collides. Placeholders in frame text: {count} {total} {practice}.",
-    "Voice per writing style/tone.md. Nothing may state or imply an effect on a body or a condition."
-  ],
-  "min": 3,
-  "intents": {
-    "beginners": {
-      "label": "Start as a beginner",
-      "filter": {
-        "aud": "beginners"
-      },
-      "kind": "audience",
-      "note": "A course, or a class that says all levels"
+    "_note": [
+        "Intent pages: /practice/{practice}/{intent}/ — a practice category with one more facet locked, framed by hand.",
+        "",
+        "`intents` defines the facet each intent locks, in the directory engine's own keys: aud (audience slug),",
+        "svc (service vocabulary slug), spec (specialty slug), format ('online'), price (a price band such as 'Free').",
+        "`pages` are the pages that exist, one per practice × intent, each with its own hand-written frame.",
+        "",
+        "A page renders the live filtered set — it counts and links, it never ranks, and nothing here names a business.",
+        "It is indexable and linked from the intent rows only when ALL of: live is true, the live count clears `min`,",
+        "and — for audience intents — Audience\\coverage() says the category has actually been checked. Otherwise it",
+        "serves noindex,follow and stays off the sitemap and out of the mesh: built, dark, waiting for data or review.",
+        "",
+        "Intent slugs may never equal an area slug — the route resolves intents before areas, and the loader drops",
+        "any entry that collides. Placeholders in frame text: {count} {total} {practice}.",
+        "Voice per writing style/tone.md. Nothing may state or imply an effect on a body or a condition."
+    ],
+    "min": 3,
+    "intents": {
+        "beginners": {
+            "label": "Start as a beginner",
+            "filter": {
+                "aud": "beginners"
+            },
+            "kind": "audience",
+            "note": "A course, or a class that says all levels"
+        },
+        "over-50s": {
+            "label": "Over 50s",
+            "filter": {
+                "aud": "seniors"
+            },
+            "kind": "audience",
+            "note": "Classes named for older adults"
+        },
+        "online": {
+            "label": "Online or hybrid",
+            "filter": {
+                "format": "online"
+            },
+            "kind": "format",
+            "note": "Streamed, recorded or hybrid timetables"
+        },
+        "free": {
+            "label": "Free or by donation",
+            "filter": {
+                "price": "Free"
+            },
+            "kind": "price",
+            "note": "No charge, or pay what you can"
+        },
+        "yin": {
+            "label": "Yin yoga",
+            "filter": {
+                "svc": "yin-yoga"
+            },
+            "kind": "service",
+            "note": "Floor postures held for minutes, on props"
+        },
+        "hot-room": {
+            "label": "Heated rooms",
+            "filter": {
+                "svc": "hot-yoga"
+            },
+            "kind": "specialty",
+            "note": "Heated rooms, from warm flow to a hot sequence"
+        },
+        "reformer": {
+            "label": "Reformer Pilates",
+            "filter": {
+                "svc": "reformer-pilates"
+            },
+            "kind": "service",
+            "note": "A sliding carriage on springs"
+        },
+        "mat": {
+            "label": "Mat Pilates",
+            "filter": {
+                "svc": "mat-pilates"
+            },
+            "kind": "service",
+            "note": "Bodyweight on the floor, with a ring or band"
+        },
+        "personal-training": {
+            "label": "Personal training",
+            "filter": {
+                "svc": "personal-training"
+            },
+            "kind": "service",
+            "note": "One to one, programmed around you"
+        },
+        "vinyasa": {
+            "label": "Vinyasa yoga",
+            "filter": {
+                "svc": "vinyasa-yoga"
+            },
+            "kind": "service",
+            "note": "Postures linked to the breath, moving throughout"
+        },
+        "restorative": {
+            "label": "Restorative yoga",
+            "filter": {
+                "svc": "restorative-yoga"
+            },
+            "kind": "service",
+            "note": "Fully propped shapes, almost no effort"
+        },
+        "ashtanga": {
+            "label": "Ashtanga yoga",
+            "filter": {
+                "svc": "ashtanga-yoga"
+            },
+            "kind": "service",
+            "note": "The same set series, in the same order"
+        },
+        "pregnancy": {
+            "label": "Pregnancy yoga",
+            "filter": {
+                "svc": "pregnancy-yoga"
+            },
+            "kind": "service",
+            "note": "Built around the trimester, never heated"
+        },
+        "nidra": {
+            "label": "Yoga nidra",
+            "filter": {
+                "svc": "yoga-nidra"
+            },
+            "kind": "service",
+            "note": "Lying down, voice-led, start to finish"
+        },
+        "boxing": {
+            "label": "Boxing",
+            "filter": {
+                "svc": "boxing"
+            },
+            "kind": "service",
+            "note": "Bag and pad work, contact optional"
+        },
+        "clinical-pilates": {
+            "label": "Clinical Pilates",
+            "filter": {
+                "svc": "clinical-pilates"
+            },
+            "kind": "service",
+            "note": "Assessed first, then a program written for you"
+        },
+        "qigong": {
+            "label": "Qigong",
+            "filter": {
+                "svc": "qigong"
+            },
+            "kind": "service",
+            "note": "Slow standing movement, timed to the breath"
+        },
+        "group": {
+            "label": "Group fitness",
+            "filter": {
+                "svc": "group-fitness"
+            },
+            "kind": "service",
+            "note": "Coached in a group, at a fixed time"
+        },
+        "saunas": {
+            "label": "Saunas",
+            "filter": {
+                "svc": "traditional-sauna,infrared-sauna"
+            },
+            "kind": "service",
+            "note": "Traditional and infrared, together"
+        }
     },
-    "over-50s": {
-      "label": "Over 50s",
-      "filter": {
-        "aud": "seniors"
-      },
-      "kind": "audience",
-      "note": "Classes named for older adults"
-    },
-    "online": {
-      "label": "Online or hybrid",
-      "filter": {
-        "format": "online"
-      },
-      "kind": "format",
-      "note": "Streamed, recorded or hybrid timetables"
-    },
-    "free": {
-      "label": "Free or by donation",
-      "filter": {
-        "price": "Free"
-      },
-      "kind": "price",
-      "note": "No charge, or pay what you can"
-    },
-    "yin": {
-      "label": "Yin yoga",
-      "filter": {
-        "svc": "yin-yoga"
-      },
-      "kind": "service",
-      "note": "Floor postures held for minutes, on props"
-    },
-    "hot-room": {
-      "label": "Heated rooms",
-      "filter": {
-        "svc": "hot-yoga"
-      },
-      "kind": "specialty",
-      "note": "Heated rooms, from warm flow to a hot sequence"
-    },
-    "reformer": {
-      "label": "Reformer Pilates",
-      "filter": {
-        "svc": "reformer-pilates"
-      },
-      "kind": "service",
-      "note": "A sliding carriage on springs"
-    },
-    "mat": {
-      "label": "Mat Pilates",
-      "filter": {
-        "svc": "mat-pilates"
-      },
-      "kind": "service",
-      "note": "Bodyweight on the floor, with a ring or band"
-    },
-    "personal-training": {
-      "label": "Personal training",
-      "filter": {
-        "svc": "personal-training"
-      },
-      "kind": "service",
-      "note": "One to one, programmed around you"
-    },
-    "vinyasa": {
-      "label": "Vinyasa yoga",
-      "filter": {
-        "svc": "vinyasa-yoga"
-      },
-      "kind": "service",
-      "note": "Postures linked to the breath, moving throughout"
-    },
-    "restorative": {
-      "label": "Restorative yoga",
-      "filter": {
-        "svc": "restorative-yoga"
-      },
-      "kind": "service",
-      "note": "Fully propped shapes, almost no effort"
-    },
-    "ashtanga": {
-      "label": "Ashtanga yoga",
-      "filter": {
-        "svc": "ashtanga-yoga"
-      },
-      "kind": "service",
-      "note": "The same set series, in the same order"
-    },
-    "pregnancy": {
-      "label": "Pregnancy yoga",
-      "filter": {
-        "svc": "pregnancy-yoga"
-      },
-      "kind": "service",
-      "note": "Built around the trimester, never heated"
-    },
-    "nidra": {
-      "label": "Yoga nidra",
-      "filter": {
-        "svc": "yoga-nidra"
-      },
-      "kind": "service",
-      "note": "Lying down, voice-led, start to finish"
-    },
-    "boxing": {
-      "label": "Boxing",
-      "filter": {
-        "svc": "boxing"
-      },
-      "kind": "service",
-      "note": "Bag and pad work, contact optional"
-    },
-    "clinical-pilates": {
-      "label": "Clinical Pilates",
-      "filter": {
-        "svc": "clinical-pilates"
-      },
-      "kind": "service",
-      "note": "Assessed first, then a program written for you"
-    },
-    "qigong": {
-      "label": "Qigong",
-      "filter": {
-        "svc": "qigong"
-      },
-      "kind": "service",
-      "note": "Slow standing movement, timed to the breath"
-    },
-    "group": {
-      "label": "Group fitness",
-      "filter": {
-        "svc": "group-fitness"
-      },
-      "kind": "service",
-      "note": "Coached in a group, at a fixed time"
-    }
-  },
-  "pages": [
-    {
-      "practice": "yoga",
-      "intent": "beginners",
-      "live": true,
-      "frame": {
-        "h1": "Beginner yoga in Perth",
-        "title": "Beginner yoga in Perth: where to start | Oria Haven",
-        "description": "Perth yoga studios and teachers that publish a beginners' class, course or an all-levels welcome — counted from the directory, not guessed.",
-        "opener": "Two different things get called a beginner class in Perth. One is a course with an intake date; the other is a mixed-level class with a note that beginners are welcome. Both are listed here, and the listing text says which.",
-        "worth_knowing": [
-          "A course — the same dozen people for four to six weeks, taught in sequence — assumes nothing in week one and usually works out cheaper per class than it looks, even when the block price is higher. A mixed-level class with a welcome note is cheaper to try and fine if you have done a little before; arrive ten minutes early and say so at the desk.",
-          "Every studio on this page has said, on its own website or timetable, that it runs something for people starting out. Where a studio hasn't said so it simply isn't listed here — that is not a statement that beginners are unwelcome, only that nobody has checked."
-        ],
-        "faq": [
-          {
-            "q": "What counts as a beginners' yoga class?",
-            "a": "Two different things, and this page lists both. One is a course with an intake date that starts everyone together and assumes nothing; the other is a mixed-level class the studio states is suitable for people with no experience. The listing says which."
-          },
-          {
-            "q": "How many Perth yoga studios run classes for beginners?",
-            "a": "{count} of the {total} yoga listings in the directory publish a beginners' class, a course, or a plain all-levels welcome. That comes from reading {checked} of the {total} against the studio's own website rather than from sampling the easy ones. Both numbers are live and move as listings are added and re-checked."
-          },
-          {
-            "q": "Is a beginners' course better than a mixed-level class?",
-            "a": "Different, rather than better. A course starts everyone together and explains nothing twice; a mixed-level class is easier to drop into and usually cheaper per visit. If you have never done a class, the course is the gentler way in."
-          },
-          {
-            "q": "How does a studio end up on this page?",
-            "a": "Only by publishing it themselves — a beginners' class on the timetable, a course with an intake, or a plain statement that classes suit all levels. {checked} of the {total} yoga listings have been read against the studio's own website, and we record the page it was read on and the words that were on it. A studio checked and not listed here publishes nothing of the kind; that is not a judgement about whether beginners are welcome. An intro discount on its own does not count, because a cheaper first visit says nothing about who the class is for."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "yoga",
-      "intent": "yin",
-      "live": true,
-      "frame": {
-        "h1": "Yin yoga in Perth",
-        "title": "Yin yoga in Perth | Oria Haven",
-        "description": "Perth studios with yin yoga on the timetable — long-held floor postures, props, and very little movement. Counted live from the directory.",
-        "opener": "Yin is the slow one: a handful of floor postures held for minutes at a time, with blocks and bolsters doing much of the work. It sits at the opposite end of the timetable from a flowing class, and it is usually the evening slot.",
-        "worth_knowing": [
-          "Expect somewhere between sixty and seventy-five minutes, most of it lying or sitting, with long stretches where nothing is said. Studios tend to keep the room a little warmer than for other classes and lend the props; bring a layer, because you will not be generating much heat.",
-          "Yin often shares a timetable with restorative and yoga nidra classes, and several Perth studios pair it with a sound bath on a Sunday evening. If the studio runs both, the listing usually says so."
-        ],
-        "faq": [
-          {
-            "q": "What is yin yoga?",
-            "a": "A slow style practised mostly on the floor, where a small number of supported postures are held for two to five minutes each rather than flowed through. Blocks and bolsters take much of the weight, and the room is usually quiet."
-          },
-          {
-            "q": "How many Perth studios run yin yoga?",
-            "a": "{count} of the {total} yoga listings in the directory publish yin classes. The count is live."
-          },
-          {
-            "q": "What happens in a yin class?",
-            "a": "Floor postures held for several minutes each, supported by props, in a quiet room — typically sixty to seventy-five minutes. There is no flowing sequence and little instruction once you are in a shape."
-          },
-          {
-            "q": "Do I need experience for yin?",
-            "a": "No. The postures are supported and held, and studios generally list yin as suitable for all levels. Tell the teacher if anything feels wrong in a hold — you are expected to adjust."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "yoga",
-      "intent": "online",
-      "live": true,
-      "frame": {
-        "h1": "Online yoga from Perth studios",
-        "title": "Online yoga classes from Perth studios | Oria Haven",
-        "description": "Perth yoga studios that stream or record classes, or run hybrid timetables you can join from home. Counted live from the directory.",
-        "opener": "A few Perth studios kept the camera on after 2020. Some stream the live timetable, some sell a recorded library, and a couple run hybrid classes where the room and the screen share a teacher.",
-        "worth_knowing": [
-          "Ask which of the three you are buying. A live stream keeps the studio's times; a library is on your clock; a hybrid class puts you in the room's corner of the screen, which some people like and some find distracting.",
-          "Pricing for online is usually a separate membership or a cheaper casual rate, and intro offers often exclude it. Check whether the online pass and the studio pass are the same thing before you pay for both."
-        ],
-        "faq": [
-          {
-            "q": "What is an online yoga class?",
-            "a": "One of three things in Perth: a live stream that follows the studio's own timetable, a library of recordings you watch on your own clock, or a hybrid class taught to the room and the camera at once."
-          },
-          {
-            "q": "How many Perth yoga studios offer online classes?",
-            "a": "{count} of the {total} yoga listings in the directory offer online or hybrid sessions. The count is live."
-          },
-          {
-            "q": "Is it a live class or a recording?",
-            "a": "It varies by studio and the listing says which where the studio has told us. Live streams follow the studio timetable; libraries are available any time; hybrid classes run in the room and online together."
-          },
-          {
-            "q": "Do online classes cost less?",
-            "a": "Usually, and usually on a separate pass. Intro offers often apply to the studio only — worth checking before you assume one pass covers both."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "yoga",
-      "intent": "hot-room",
-      "live": true,
-      "frame": {
-        "h1": "Hot yoga in Perth",
-        "title": "Hot yoga in Perth: heated studios and what to expect | Oria Haven",
-        "description": "Perth yoga studios that run heated rooms — from warm slow flow to hot sequences — listed where the studio publishes it. Counted live from the directory.",
-        "opener": "\"Hot\" covers a wide range in Perth. A warm slow flow and a forty-degree sequence are different afternoons, and the temperature is usually on the studio's own timetable — where it is, we list it.",
-        "worth_knowing": [
-          "Heated classes are harder work than the same sequence at room temperature, which is worth a second thought for a first class. Studios generally ask you to bring water and a towel, and most hire mats for a few dollars so you are not carrying a wet one home.",
-          "A heated timetable often includes one or two unheated or cooler classes a week — a Sunday community class, a beginners' hour. If the heat is the thing putting you off, look for those first."
-        ],
-        "faq": [
-          {
-            "q": "What is hot yoga?",
-            "a": "Yoga practised in a deliberately heated room. In Perth that covers a wide range — a warm slow flow around thirty degrees and a Bikram sequence near forty are both called hot, and the studio's timetable is where the actual temperature is published."
-          },
-          {
-            "q": "How many Perth studios run heated yoga?",
-            "a": "{count} of the {total} yoga listings in the directory publish heated classes. The count is live and only includes studios that say so themselves."
-          },
-          {
-            "q": "How hot are the rooms?",
-            "a": "It depends on the style — warm slow flow classes sit well below a hot sequence. Studios that publish a temperature have it on their timetable, and the listing notes it where we have seen it."
-          },
-          {
-            "q": "What should I bring to a hot class?",
-            "a": "Water, a towel, and something to change into. Most studios hire mats and towels for a few dollars."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "breathwork",
-      "intent": "beginners",
-      "live": false,
-      "frame": {
-        "h1": "Breathwork for beginners in Perth",
-        "title": "Breathwork for beginners in Perth: a first session | Oria Haven",
-        "description": "Perth breathwork facilitators who publish a first-timer session, an introductory course, or an all-levels welcome. Counted live from the directory.",
-        "opener": "Breathwork covers two rooms that share a name. One is a long, lying-down session to music; the other is short, seated and practical. Both take first-timers, and the facilitators here have said so on their own pages.",
-        "worth_knowing": [
-          "A first long-form session will come with a form — facilitators screen for a handful of things beforehand, and you should answer it honestly. A first seated session needs nothing but turning up. If you are not sure which you want, the shorter one is the cheaper way to find out.",
-          "Several Perth facilitators offer a short call before a first booking. Where a listing mentions it, take it; five minutes on the phone tells you more than the description does."
-        ],
-        "faq": [
-          {
-            "q": "How many Perth breathwork facilitators take beginners?",
-            "a": "{count} of the {total} breathwork listings in the directory publish a first-timer session or an all-levels welcome. The count is live."
-          },
-          {
-            "q": "What happens in a first breathwork session?",
-            "a": "Either an hour or more lying down breathing in a continuous pattern to music with a facilitator working the room, or a shorter seated session of slow nasal breathing and holds. The listing says which kind the facilitator runs."
-          },
-          {
-            "q": "Is there anything to do before the session?",
-            "a": "Long-form sessions usually come with a screening form; answer it fully. Eat lightly beforehand, and allow time afterwards — most people do not want to rush off."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "breathwork",
-      "intent": "online",
-      "live": true,
-      "frame": {
-        "h1": "Online breathwork sessions from Perth facilitators",
-        "title": "Online breathwork from Perth facilitators | Oria Haven",
-        "description": "Perth breathwork facilitators who run sessions by video or hybrid. Counted live from the directory.",
-        "opener": "Breathwork travels well over video — the seated, practical kind especially — and a handful of Perth facilitators run it that way, either as a standing online group or as one-to-one calls.",
-        "worth_knowing": [
-          "Ask whether the session is live or a recording, and whether it is a group or one-to-one. Live online groups keep the facilitator's clock; a recording is on yours; one-to-one is the most expensive and the most tailored.",
-          "A quiet room, a floor you can lie on and headphones make most of the difference at home. Long-form sessions still come with the same screening form online as in the room."
-        ],
-        "faq": [
-          {
-            "q": "How many Perth breathwork facilitators work online?",
-            "a": "{count} of the {total} breathwork listings in the directory offer online or hybrid sessions. The count is live."
-          },
-          {
-            "q": "Does online breathwork work for a first session?",
-            "a": "The seated, practical kind does. For a long-form session many facilitators prefer a first meeting in the room; the listing or a quick call will tell you their view."
-          },
-          {
-            "q": "What do I need at home?",
-            "a": "Somewhere quiet to lie down, headphones, and a device you can prop up so you are not holding it."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "fitness",
-      "intent": "reformer",
-      "live": true,
-      "frame": {
-        "h1": "Reformer Pilates in Perth",
-        "title": "Reformer Pilates in Perth: studios and how classes work | Oria Haven",
-        "description": "Perth studios running reformer Pilates — small-group classes on the machine, foundation sessions for new clients, and memberships. Counted live from the directory.",
-        "opener": "Reformer classes run on the spring-loaded machine, in small groups because there are only so many beds in the room, and almost every studio puts new clients through a foundation class or two first — not an upsell, just how the machine is taught.",
-        "worth_knowing": [
-          "Class sizes are small enough that popular times book out days ahead, and most studios sell memberships alongside casual rates. Reformer studios generally ask for grip socks and sell them at the desk if you arrive without.",
-          "Clinical Pilates — run by a physiotherapist, one-to-one or in twos and threes — is a different booking from a group reformer class, and it matters for one dull reason: private health funds stopped rebating Pilates as a natural therapy in 2019, and the exception is when a physiotherapist delivers it as physiotherapy."
-        ],
-        "faq": [
-          {
-            "q": "What is reformer Pilates?",
-            "a": "Pilates done on a reformer — a sliding carriage loaded with springs, with a footbar and straps. The springs can make an exercise harder or easier than the floor version, which is why the machine is not simply the advanced option."
-          },
-          {
-            "q": "How many Perth studios run reformer Pilates?",
-            "a": "{count} of the {total} fitness and movement listings in the directory publish reformer classes. The count is live."
-          },
-          {
-            "q": "Do I need to do a foundation class first?",
-            "a": "At most studios, yes — one or two introductory sessions before the general timetable. It is how the machine is taught, and the listing or the studio's booking page will say."
-          },
-          {
-            "q": "Will my health fund rebate reformer classes?",
-            "a": "Group reformer classes are not rebated as a natural therapy since 2019. Clinical Pilates delivered by a physiotherapist as physiotherapy can be — ask which you are booking."
-          },
-          {
-            "q": "What happens in a reformer class?",
-            "a": "Six to twelve people, one bed each, working through a sequence the instructor calls while adjusting springs between exercises. Forty-five to fifty minutes, and grip socks are required at most studios."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "fitness",
-      "intent": "mat",
-      "live": true,
-      "frame": {
-        "h1": "Mat Pilates in Perth",
-        "title": "Mat Pilates in Perth | Oria Haven",
-        "description": "Perth studios and halls running mat Pilates — no machine, larger classes, and the cheaper way into the method. Counted live from the directory.",
-        "opener": "Mat classes are Pilates without the machine: a mat, sometimes a ring or a band, and more people in the room. No foundation class is needed and the price is noticeably lower than reformer.",
-        "worth_knowing": [
-          "Because mat classes take more people, they turn up in community halls and gyms as well as studios, and casual rates are common. Mats are usually supplied; bring a towel in summer.",
-          "If you later move to reformer, expect to start again with the studio's foundation sessions regardless of how long you have done mat work — the machine is taught separately."
-        ],
-        "faq": [
-          {
-            "q": "What is mat Pilates?",
-            "a": "Pilates done on the floor using your own bodyweight, sometimes with a ring, a band or a small ball. No machine, more people in the room, and nothing to learn before your first class."
-          },
-          {
-            "q": "How many Perth studios run mat Pilates?",
-            "a": "{count} of the {total} fitness and movement listings in the directory publish mat classes. The count is live."
-          },
-          {
-            "q": "What is the difference between mat and reformer?",
-            "a": "Mat uses your own bodyweight on the floor, sometimes with small props; reformer uses the spring-loaded machine. Mat classes are larger, cheaper and need no introduction; reformer classes are small and usually start with a foundation session."
-          },
-          {
-            "q": "Do I need to book?",
-            "a": "Studios generally run bookings; community-hall and gym classes are often walk-in. The listing says which where we know."
-          },
-          {
-            "q": "What happens in a mat class?",
-            "a": "A sequence of controlled, repeated exercises on the floor, counted by the instructor, usually forty-five to sixty minutes. Props are handed out as needed and you can walk into a general class without an intro."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "fitness",
-      "intent": "personal-training",
-      "live": true,
-      "frame": {
-        "h1": "Personal training in Perth",
-        "title": "Personal training in Perth: one-to-one and small-group trainers | Oria Haven",
-        "description": "Perth trainers offering one-to-one and small-group sessions, in studios, gyms and parks. Counted live from the directory.",
-        "opener": "Personal training is the one part of a fitness timetable you set yourself — the trainer, the time, the place and the price are all agreed rather than listed, which is why the listings here read differently from a class schedule.",
-        "worth_knowing": [
-          "Sessions are usually sold in blocks, so ask what happens to unused ones before you buy ten. Small-group training — two to four people splitting a trainer — is the common middle ground on price.",
-          "Where the session happens matters more than it sounds: a studio, a gym floor, a park or your garage are all on offer in Perth, and most trainers list which. Outdoor sessions shift to early mornings from December through March."
-        ],
-        "faq": [
-          {
-            "q": "How many personal trainers are listed in Perth?",
-            "a": "{count} of the {total} fitness and movement listings in the directory offer personal training. The count is live."
-          },
-          {
-            "q": "How are sessions priced?",
-            "a": "Almost always in blocks, with small-group sessions cheaper per person than one-to-one. Ask what the block covers and whether unused sessions expire."
-          },
-          {
-            "q": "Where do sessions happen?",
-            "a": "Studios, gym floors, parks and sometimes your home — trainers list which, and many offer more than one."
-          },
-          {
-            "q": "What happens in a first session?",
-            "a": "Most trainers use it to ask what you want and to watch how you move before writing anything — so expect questions and some light work rather than a hard session. Where a trainer charges differently for it, the listing says so."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "fitness",
-      "intent": "over-50s",
-      "live": false,
-      "frame": {
-        "h1": "Fitness and movement for over 50s in Perth",
-        "title": "Fitness and movement classes for over 50s in Perth | Oria Haven",
-        "description": "Perth classes and trainers who publish sessions named for older adults — senior fitness, gentle and chair-based classes, mobility work. Counted live from the directory.",
-        "opener": "Almost none of what exists for older adults in Perth is advertised where you would look for it — much of it sits with councils, community centres and a handful of studios that name the class for who it is for. This page lists the ones that do.",
-        "worth_knowing": [
-          "The useful distinction is between a class built for older adults — slower, chair options, smaller — and a general class with a note that all ages are welcome. Both are real; only the first is listed here, because it is the one the studio has actually said.",
-          "Council and community-centre classes are the cheapest on this page and the worst advertised. If a listing is a council program, ring the centre rather than trusting a web timetable that may be a term out of date."
-        ],
-        "faq": [
-          {
-            "q": "How many Perth classes are named for over 50s?",
-            "a": "{count} of the {total} fitness and movement listings in the directory publish a class or session for older adults. The count is live and only includes those that say so themselves."
-          },
-          {
-            "q": "Do I need a referral or assessment first?",
-            "a": "Not for a community or studio class. Some exercise physiologists run assessed programs, and those are a different booking — the listing says which."
-          },
-          {
-            "q": "What does a class for older adults look like?",
-            "a": "Slower, usually smaller, with chair or standing options and a teacher who expects a range of abilities in the room. Sessions run forty-five minutes to an hour."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "yoga",
-      "intent": "vinyasa",
-      "live": true,
-      "frame": {
-        "h1": "Vinyasa yoga in Perth",
-        "title": "Vinyasa yoga in Perth: flowing classes and where to find them | Oria Haven",
-        "description": "Perth studios running vinyasa — postures linked to the breath in a sequence that changes week to week. Counted live from the directory.",
-        "opener": "Vinyasa is the one that keeps moving. Postures are linked together and timed to the breath, so the class runs as a sequence rather than a set of held shapes, and most teachers build a different one each week.",
-        "worth_knowing": [
-          "Because the sequence changes, two vinyasa classes at the same studio can feel quite different depending on who is teaching. Studios that run several a week usually mark the harder ones on the timetable — look for slow flow or level one if it is your first.",
-          "Heat is a separate question. A warm room and a vinyasa sequence often come together in Perth, but plenty of studios run it at room temperature. Where a studio publishes the temperature we note it on the listing."
-        ],
-        "faq": [
-          {
-            "q": "What is vinyasa yoga?",
-            "a": "A flowing style where each posture is linked to an inhale or an exhale, so the class moves continuously rather than stopping between shapes. The sequence is built by the teacher and usually differs week to week."
-          },
-          {
-            "q": "How many Perth studios run vinyasa classes?",
-            "a": "{count} of the {total} yoga listings in the directory publish vinyasa on the timetable. The count is live and changes as listings are checked."
-          },
-          {
-            "q": "What is the difference between vinyasa and yin?",
-            "a": "Pace and stillness. Vinyasa links postures to the breath and keeps moving; yin holds a handful of supported shapes for minutes at a time. Many studios run both, often on the same evening."
-          },
-          {
-            "q": "Do I need experience for a vinyasa class?",
-            "a": "For a general class it helps to have done a little, because the sequence moves without stopping to explain. Studios that run a slow flow or beginners class list it separately, and that is the easier way in."
-          },
-          {
-            "q": "What happens in a vinyasa class?",
-            "a": "A warm-up, then a continuously moving sequence timed to the breath, usually building to a peak and winding down into floor postures and a few minutes lying still at the end. Sixty minutes is the common length."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "yoga",
-      "intent": "restorative",
-      "live": true,
-      "frame": {
-        "h1": "Restorative yoga in Perth",
-        "title": "Restorative yoga in Perth: supported, slow classes | Oria Haven",
-        "description": "Perth studios running restorative yoga — a handful of fully supported shapes, held with props, in a quiet room. Counted live from the directory.",
-        "opener": "Restorative is the most supported thing on a yoga timetable. Bolsters, blankets and blocks hold you in a small number of shapes so that very little effort is being made, and the class is largely spent still.",
-        "worth_knowing": [
-          "The props are the class, not an accommodation, and the studio provides them. Expect to spend most of the hour lying down, and bring a layer — you will not be generating much heat, and rooms are often kept warm for that reason.",
-          "Restorative sits close to yin on a timetable and the two are often confused. Yin works into the same shape for several minutes with some sensation; restorative aims for none, with the props taking the weight."
-        ],
-        "faq": [
-          {
-            "q": "What is restorative yoga?",
-            "a": "A style built entirely around support. A handful of shapes are propped with bolsters, blankets and blocks so that almost no muscular effort is being made, and each is held for several minutes."
-          },
-          {
-            "q": "How many Perth studios run restorative yoga?",
-            "a": "{count} of the {total} yoga listings in the directory publish restorative classes. The count is live."
-          },
-          {
-            "q": "What is the difference between restorative and yin?",
-            "a": "How much you are asked to feel. Yin holds a shape long enough for sensation to build; restorative props you up so there is as little as possible. Studios frequently run both and the timetable names which."
-          },
-          {
-            "q": "Is restorative yoga suitable if I have never done yoga?",
-            "a": "Studios generally list it as an all-levels class, and there is no sequence to learn. Tell the teacher before you start if anything needs adapting — the props are adjusted to you rather than the other way round."
-          },
-          {
-            "q": "What happens in a restorative class?",
-            "a": "The teacher sets up each shape with props, you settle into it, and you stay there for several minutes while very little is said. Expect four or five shapes across an hour, and to be repositioned rather than corrected."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "yoga",
-      "intent": "ashtanga",
-      "live": true,
-      "frame": {
-        "h1": "Ashtanga yoga in Perth",
-        "title": "Ashtanga yoga in Perth: led classes and Mysore rooms | Oria Haven",
-        "description": "Perth studios teaching ashtanga — the same set series in the same order, led or self-practised in a Mysore room. Counted live from the directory.",
-        "opener": "Ashtanga is the one that does not change. A set series is practised in the same order every time, which makes it the most repetitive style on a timetable and, for the people who take to it, the reason they stay.",
-        "worth_knowing": [
-          "Classes come in two shapes. A led class has the teacher counting the whole room through the series together; a Mysore room has everyone working through it at their own pace with the teacher moving between people. Most studios ask you to do the led class first.",
-          "It is physically demanding and the series is long — expect seventy-five to ninety minutes. Traditional timetables run early mornings and take a rest day, so check the week before committing to a pass."
-        ],
-        "faq": [
-          {
-            "q": "What is ashtanga yoga?",
-            "a": "A set sequence of postures practised in the same order every time. It is taught either as a led class, where a teacher counts the room through together, or as Mysore, where each person works through the series at their own pace in a shared room."
-          },
-          {
-            "q": "How many Perth studios teach ashtanga?",
-            "a": "{count} of the {total} yoga listings in the directory publish ashtanga classes. The count is live."
-          },
-          {
-            "q": "What is a Mysore class?",
-            "a": "A room where everyone practises the same series at their own pace, with the teacher working individually rather than leading from the front. It is not a drop-in format at most studios — the led class usually comes first."
-          },
-          {
-            "q": "Is ashtanga suitable for beginners?",
-            "a": "The led class is where beginners start, and studios that teach it generally say so on the timetable. The series is fixed, so the first few weeks are spent learning an order that then stops changing."
-          },
-          {
-            "q": "What happens in an ashtanga class?",
-            "a": "The same series, in the same order. A led class is counted through together and runs seventy-five to ninety minutes; a Mysore room has everyone at a different point in the sequence, with the teacher moving between people rather than teaching from the front."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "yoga",
-      "intent": "pregnancy",
-      "live": true,
-      "frame": {
-        "h1": "Pregnancy yoga in Perth",
-        "title": "Pregnancy yoga in Perth: prenatal classes and studios | Oria Haven",
-        "description": "Perth studios and teachers running prenatal and pregnancy yoga classes, listed where the studio publishes them. Counted live from the directory.",
-        "opener": "A pregnancy class is built around the trimester rather than a fixed sequence, and the room is not heated. Classes are usually smaller than a general timetable slot, and props do a lot of the work.",
-        "worth_knowing": [
-          "Most studios ask you to be past the first trimester before joining, and several ask for a note from your midwife or doctor. That is a booking condition rather than anything else — check it when you book rather than on the day.",
-          "Some studios run the class as a course with an intake date and the same group each week, others as a drop-in slot on the general timetable. The course format is the one that tends to come with a postnatal class afterwards."
-        ],
-        "faq": [
-          {
-            "q": "What is pregnancy yoga?",
-            "a": "A class built around pregnancy rather than a general class with modifications offered. The room is not heated, props are used heavily, and what is taught shifts across the trimesters."
-          },
-          {
-            "q": "How many Perth studios run pregnancy yoga?",
-            "a": "{count} of the {total} yoga listings in the directory publish prenatal or pregnancy classes. The count is live and only includes studios that say so themselves."
-          },
-          {
-            "q": "When can I start pregnancy yoga?",
-            "a": "Most Perth studios ask you to be past the first trimester, and some ask for clearance from your midwife or doctor. The requirement varies by studio, so check when you book."
-          },
-          {
-            "q": "Are heated rooms used for pregnancy classes?",
-            "a": "No. Studios run prenatal classes at room temperature, and a studio with a heated timetable will hold the pregnancy class somewhere else or at a different time."
-          },
-          {
-            "q": "What happens in a pregnancy yoga class?",
-            "a": "Standing and supported shapes, breathing, and time spent on positions used later in labour, in a group that is usually smaller than a general class. Teachers commonly ask how far along everyone is before starting and adjust from there."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "yoga",
-      "intent": "nidra",
-      "live": true,
-      "frame": {
-        "h1": "Yoga nidra in Perth",
-        "title": "Yoga nidra in Perth: guided sessions and where to find them | Oria Haven",
-        "description": "Perth studios and teachers running yoga nidra — a guided practice done lying down, start to finish. Counted live from the directory.",
-        "opener": "Yoga nidra is the one with no postures. You lie down at the start, stay there, and a teacher talks the whole way through. Sessions are often shorter than a class and frequently sit at the end of a timetable rather than in the middle of it.",
-        "worth_knowing": [
-          "Bring or borrow something to lie on and something warm — you will be still for thirty to sixty minutes and rooms cool down quickly. Most studios lend blankets, bolsters and eye pillows.",
-          "It often shares a slot with a sound bath in Perth, and several studios run the two together on a Sunday evening. Where the listing says both, the session is usually longer than a nidra on its own."
-        ],
-        "faq": [
-          {
-            "q": "What is yoga nidra?",
-            "a": "A guided practice done lying down from start to finish, with no postures at all. The teacher speaks throughout and the participant stays still; sessions usually run thirty to sixty minutes."
-          },
-          {
-            "q": "How many Perth studios run yoga nidra?",
-            "a": "{count} of the {total} yoga listings in the directory publish yoga nidra. The count is live."
-          },
-          {
-            "q": "Do I need to be able to do yoga postures?",
-            "a": "No. The practice is done lying down from beginning to end, and there is nothing to follow visually — the teacher's voice is the whole of the instruction."
-          },
-          {
-            "q": "How long is a yoga nidra session?",
-            "a": "Usually thirty to sixty minutes, which is shorter than a general class. Sessions paired with a sound bath run longer, and the studio's timetable says which it is."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "fitness",
-      "intent": "boxing",
-      "live": true,
-      "frame": {
-        "h1": "Boxing in Perth",
-        "title": "Boxing gyms in Perth: beginners, non-contact and sparring | Oria Haven",
-        "description": "Perth gyms teaching boxing, from non-contact technique classes to sparring you opt into. Counted live from the directory.",
-        "opener": "Boxing in Perth splits along one line, and it is the line worth asking about before you book: whether anybody hits you. Most gyms teach the craft on bags and pads with no contact at all, and run sparring as a separate thing you choose to join.",
-        "worth_knowing": [
-          "A beginners' class is usually stance, footwork and the basic punches on a bag or with a coach holding pads. Gyms that run partner drills commonly rule out contact to the head in them, and say so on the timetable. Sparring, where it exists, tends to be invitation-only or a separate club within the gym.",
-          "You need hand wraps and gloves. Most gyms lend gloves for a first session and sell wraps at the desk, so the first class costs the class fee and nothing else. Sessions usually run forty to sixty minutes."
-        ],
-        "faq": [
-          {
-            "q": "What is a boxing class?",
-            "a": "Technique taught on bags and focus pads — stance, footwork, and the punches — usually in a group with a coach circulating. In most Perth gyms it involves no contact with another person at all."
-          },
-          {
-            "q": "How many Perth gyms teach boxing?",
-            "a": "{count} of the {total} fitness listings in the directory publish boxing classes. The count is live and changes as listings are checked."
-          },
-          {
-            "q": "Will I have to spar?",
-            "a": "Not unless you choose to. Gyms that offer sparring run it as its own session, often by invitation, and it is normal to train for a long time without ever doing it. If a gym does not make that clear on its timetable, it is a fair question at the desk."
-          },
-          {
-            "q": "What do I need for a first class?",
-            "a": "Hand wraps, and gloves you can usually borrow. Most gyms lend a pair for a first session; wraps are a few dollars at the desk."
-          },
-          {
-            "q": "What happens in a boxing class?",
-            "a": "A warm-up, then rounds — typically three minutes on, one off — rotating between bags, pads and conditioning, with the coach correcting technique as you go. Forty to sixty minutes is the common length."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "fitness",
-      "intent": "clinical-pilates",
-      "live": true,
-      "frame": {
-        "h1": "Clinical Pilates in Perth",
-        "title": "Clinical Pilates in Perth: physiotherapist-led studios | Oria Haven",
-        "description": "Perth practices running clinical Pilates — an assessment first, then small sessions delivered by a physiotherapist. Counted live from the directory.",
-        "opener": "Clinical Pilates is Pilates delivered inside a physiotherapy practice. What separates it from a studio class is the order of events: an assessment comes first, the program is written from it, and the class sizes are small enough that someone is watching you the whole time.",
-        "worth_knowing": [
-          "Expect the first appointment to be one-to-one rather than a class. Practices then run groups of three or four, sometimes one-to-one, typically forty-five to sixty minutes, using reformers, a trapeze table or a mat depending on what the practitioner picks.",
-          "It usually costs more than a studio reformer class and is often claimable through private health where a physiotherapist delivers it. Whether yours rebates it depends on your fund, your level of cover and the practitioner's registration — confirm all three before you assume it."
-        ],
-        "faq": [
-          {
-            "q": "What is clinical Pilates?",
-            "a": "Pilates prescribed and supervised by a physiotherapist, following an individual assessment, in one-to-one or very small group sessions. The equipment is the same as a studio's; what differs is who runs it and how the program is arrived at."
-          },
-          {
-            "q": "How many Perth practices offer clinical Pilates?",
-            "a": "{count} of the {total} fitness listings in the directory publish clinical Pilates. The count is live and only includes practices that say so themselves."
-          },
-          {
-            "q": "What is the difference from reformer Pilates?",
-            "a": "Who delivers it and how you get in. A reformer class is booked off a timetable and taught to the room; clinical Pilates starts with an assessment and the session is built from it. Both may use the same reformer."
-          },
-          {
-            "q": "Can I claim it on private health?",
-            "a": "Often, where a physiotherapist delivers it — but it depends on your fund, your level of extras cover and the practitioner's registration. Ask the practice and your fund before booking rather than after."
-          },
-          {
-            "q": "What happens in a clinical Pilates session?",
-            "a": "The first appointment is an assessment. After that, a set of exercises chosen for you, on a reformer, trapeze table or mat, with the practitioner adjusting as you go. Forty-five to sixty minutes is usual, and grip socks are generally required."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "fitness",
-      "intent": "qigong",
-      "live": true,
-      "frame": {
-        "h1": "Qigong in Perth",
-        "title": "Qigong classes in Perth: where to practise | Oria Haven",
-        "description": "Perth teachers and schools running qigong — slow standing movement timed to the breath. Counted live from the directory.",
-        "opener": "Qigong is slow, mostly upright, and repetitive by design. Sets of simple movements are timed to the breath and repeated, which makes it one of the least demanding things on a movement timetable and one of the easiest to start late.",
-        "worth_knowing": [
-          "In Perth it is most often taught alongside tai chi or kung fu rather than on its own, so the school's name may not mention it even when the class runs weekly. Where a listing names qigong, the school publishes it as its own class rather than as a warm-up.",
-          "Classes are frequently held in halls, community centres and parks rather than studios, and several run in terms that follow the school calendar. Little equipment is involved: flat shoes or bare feet and clothes you can move in."
-        ],
-        "faq": [
-          {
-            "q": "What is qigong?",
-            "a": "A Chinese movement practice of slow, repeated sets timed to the breath, usually done standing. It shares its roots with tai chi; qigong tends to repeat short sequences where tai chi works through a longer form."
-          },
-          {
-            "q": "How many Perth schools teach qigong?",
-            "a": "{count} of the {total} fitness listings in the directory publish qigong classes. The count is live."
-          },
-          {
-            "q": "What is the difference between qigong and tai chi?",
-            "a": "Length and structure. Qigong repeats short sets of movements; tai chi learns a long sequence of postures in a fixed order. Most Perth schools teach both, often in the same session."
-          },
-          {
-            "q": "Do I need to be fit or flexible to start?",
-            "a": "Schools generally list qigong as suitable for all levels, and much of it is done standing with small movements. Several Perth classes are run for older adults specifically."
-          }
-        ]
-      }
-    },
-    {
-      "practice": "fitness",
-      "intent": "group",
-      "live": true,
-      "frame": {
-        "h1": "Group fitness classes in Perth",
-        "title": "Group fitness classes in Perth: coached, timetabled sessions | Oria Haven",
-        "description": "Perth studios running coached group fitness — a set time, a coach in the room, and a cap on numbers. Counted live from the directory.",
-        "opener": "Group fitness is the middle ground between training alone and paying for a trainer: a coach writes the session and watches the room, but the time is fixed and you share it. What varies most between Perth studios is the cap on numbers.",
-        "worth_knowing": [
-          "The cap is the thing to ask about. A studio running groups of six is selling something much closer to personal training than one running thirty, and the price usually reflects it. Where a studio publishes its cap we record it on the listing.",
-          "Most sessions run forty-five to sixty minutes and are sold as a pass or a membership rather than casually, though nearly all studios will take a casual booking at a higher rate for a first visit."
-        ],
-        "faq": [
-          {
-            "q": "What is a group fitness class?",
-            "a": "A coached session run to a timetable, with the workout written by the coach rather than by you, and numbers capped by the studio. It sits between training on your own and one-to-one personal training."
-          },
-          {
-            "q": "How many Perth studios run group fitness?",
-            "a": "{count} of the {total} fitness listings in the directory publish group fitness. The count is live."
-          },
-          {
-            "q": "How is it different from personal training?",
-            "a": "You share the time and the coach's attention, and the session is written for the group rather than for you. It is correspondingly cheaper, and the smaller the cap the closer the two get."
-          },
-          {
-            "q": "How big are the groups?",
-            "a": "It ranges widely in Perth — some studios cap at six, others run much larger rooms. Where the studio publishes a number the listing records it; where it does not, it is worth asking before buying a pass."
-          }
-        ]
-      }
-    }
-  ]
+    "pages": [
+        {
+            "practice": "yoga",
+            "intent": "beginners",
+            "live": true,
+            "frame": {
+                "h1": "Beginner yoga in Perth",
+                "title": "Beginner yoga in Perth: where to start | Oria Haven",
+                "description": "Perth yoga studios and teachers that publish a beginners' class, course or an all-levels welcome — counted from the directory, not guessed.",
+                "opener": "Two different things get called a beginner class in Perth. One is a course with an intake date; the other is a mixed-level class with a note that beginners are welcome. Both are listed here, and the listing text says which.",
+                "worth_knowing": [
+                    "A course — the same dozen people for four to six weeks, taught in sequence — assumes nothing in week one and usually works out cheaper per class than it looks, even when the block price is higher. A mixed-level class with a welcome note is cheaper to try and fine if you have done a little before; arrive ten minutes early and say so at the desk.",
+                    "Every studio on this page has said, on its own website or timetable, that it runs something for people starting out. Where a studio hasn't said so it simply isn't listed here — that is not a statement that beginners are unwelcome, only that nobody has checked."
+                ],
+                "faq": [
+                    {
+                        "q": "What counts as a beginners' yoga class?",
+                        "a": "Two different things, and this page lists both. One is a course with an intake date that starts everyone together and assumes nothing; the other is a mixed-level class the studio states is suitable for people with no experience. The listing says which."
+                    },
+                    {
+                        "q": "How many Perth yoga studios run classes for beginners?",
+                        "a": "{count} of the {total} yoga listings in the directory publish a beginners' class, a course, or a plain all-levels welcome. That comes from reading {checked} of the {total} against the studio's own website rather than from sampling the easy ones. Both numbers are live and move as listings are added and re-checked."
+                    },
+                    {
+                        "q": "Is a beginners' course better than a mixed-level class?",
+                        "a": "Different, rather than better. A course starts everyone together and explains nothing twice; a mixed-level class is easier to drop into and usually cheaper per visit. If you have never done a class, the course is the gentler way in."
+                    },
+                    {
+                        "q": "How does a studio end up on this page?",
+                        "a": "Only by publishing it themselves — a beginners' class on the timetable, a course with an intake, or a plain statement that classes suit all levels. {checked} of the {total} yoga listings have been read against the studio's own website, and we record the page it was read on and the words that were on it. A studio checked and not listed here publishes nothing of the kind; that is not a judgement about whether beginners are welcome. An intro discount on its own does not count, because a cheaper first visit says nothing about who the class is for."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "yoga",
+            "intent": "yin",
+            "live": true,
+            "frame": {
+                "h1": "Yin yoga in Perth",
+                "title": "Yin yoga in Perth | Oria Haven",
+                "description": "Perth studios with yin yoga on the timetable — long-held floor postures, props, and very little movement. Counted live from the directory.",
+                "opener": "Yin is the slow one: a handful of floor postures held for minutes at a time, with blocks and bolsters doing much of the work. It sits at the opposite end of the timetable from a flowing class, and it is usually the evening slot.",
+                "worth_knowing": [
+                    "Expect somewhere between sixty and seventy-five minutes, most of it lying or sitting, with long stretches where nothing is said. Studios tend to keep the room a little warmer than for other classes and lend the props; bring a layer, because you will not be generating much heat.",
+                    "Yin often shares a timetable with restorative and yoga nidra classes, and several Perth studios pair it with a sound bath on a Sunday evening. If the studio runs both, the listing usually says so."
+                ],
+                "faq": [
+                    {
+                        "q": "What is yin yoga?",
+                        "a": "A slow style practised mostly on the floor, where a small number of supported postures are held for two to five minutes each rather than flowed through. Blocks and bolsters take much of the weight, and the room is usually quiet."
+                    },
+                    {
+                        "q": "How many Perth studios run yin yoga?",
+                        "a": "{count} of the {total} yoga listings in the directory publish yin classes. The count is live."
+                    },
+                    {
+                        "q": "What happens in a yin class?",
+                        "a": "Floor postures held for several minutes each, supported by props, in a quiet room — typically sixty to seventy-five minutes. There is no flowing sequence and little instruction once you are in a shape."
+                    },
+                    {
+                        "q": "Do I need experience for yin?",
+                        "a": "No. The postures are supported and held, and studios generally list yin as suitable for all levels. Tell the teacher if anything feels wrong in a hold — you are expected to adjust."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "yoga",
+            "intent": "online",
+            "live": true,
+            "frame": {
+                "h1": "Online yoga from Perth studios",
+                "title": "Online yoga classes from Perth studios | Oria Haven",
+                "description": "Perth yoga studios that stream or record classes, or run hybrid timetables you can join from home. Counted live from the directory.",
+                "opener": "A few Perth studios kept the camera on after 2020. Some stream the live timetable, some sell a recorded library, and a couple run hybrid classes where the room and the screen share a teacher.",
+                "worth_knowing": [
+                    "Ask which of the three you are buying. A live stream keeps the studio's times; a library is on your clock; a hybrid class puts you in the room's corner of the screen, which some people like and some find distracting.",
+                    "Pricing for online is usually a separate membership or a cheaper casual rate, and intro offers often exclude it. Check whether the online pass and the studio pass are the same thing before you pay for both."
+                ],
+                "faq": [
+                    {
+                        "q": "What is an online yoga class?",
+                        "a": "One of three things in Perth: a live stream that follows the studio's own timetable, a library of recordings you watch on your own clock, or a hybrid class taught to the room and the camera at once."
+                    },
+                    {
+                        "q": "How many Perth yoga studios offer online classes?",
+                        "a": "{count} of the {total} yoga listings in the directory offer online or hybrid sessions. The count is live."
+                    },
+                    {
+                        "q": "Is it a live class or a recording?",
+                        "a": "It varies by studio and the listing says which where the studio has told us. Live streams follow the studio timetable; libraries are available any time; hybrid classes run in the room and online together."
+                    },
+                    {
+                        "q": "Do online classes cost less?",
+                        "a": "Usually, and usually on a separate pass. Intro offers often apply to the studio only — worth checking before you assume one pass covers both."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "yoga",
+            "intent": "hot-room",
+            "live": true,
+            "frame": {
+                "h1": "Hot yoga in Perth",
+                "title": "Hot yoga in Perth: heated studios and what to expect | Oria Haven",
+                "description": "Perth yoga studios that run heated rooms — from warm slow flow to hot sequences — listed where the studio publishes it. Counted live from the directory.",
+                "opener": "\"Hot\" covers a wide range in Perth. A warm slow flow and a forty-degree sequence are different afternoons, and the temperature is usually on the studio's own timetable — where it is, we list it.",
+                "worth_knowing": [
+                    "Heated classes are harder work than the same sequence at room temperature, which is worth a second thought for a first class. Studios generally ask you to bring water and a towel, and most hire mats for a few dollars so you are not carrying a wet one home.",
+                    "A heated timetable often includes one or two unheated or cooler classes a week — a Sunday community class, a beginners' hour. If the heat is the thing putting you off, look for those first."
+                ],
+                "faq": [
+                    {
+                        "q": "What is hot yoga?",
+                        "a": "Yoga practised in a deliberately heated room. In Perth that covers a wide range — a warm slow flow around thirty degrees and a Bikram sequence near forty are both called hot, and the studio's timetable is where the actual temperature is published."
+                    },
+                    {
+                        "q": "How many Perth studios run heated yoga?",
+                        "a": "{count} of the {total} yoga listings in the directory publish heated classes. The count is live and only includes studios that say so themselves."
+                    },
+                    {
+                        "q": "How hot are the rooms?",
+                        "a": "It depends on the style — warm slow flow classes sit well below a hot sequence. Studios that publish a temperature have it on their timetable, and the listing notes it where we have seen it."
+                    },
+                    {
+                        "q": "What should I bring to a hot class?",
+                        "a": "Water, a towel, and something to change into. Most studios hire mats and towels for a few dollars."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "breathwork",
+            "intent": "beginners",
+            "live": false,
+            "frame": {
+                "h1": "Breathwork for beginners in Perth",
+                "title": "Breathwork for beginners in Perth: a first session | Oria Haven",
+                "description": "Perth breathwork facilitators who publish a first-timer session, an introductory course, or an all-levels welcome. Counted live from the directory.",
+                "opener": "Breathwork covers two rooms that share a name. One is a long, lying-down session to music; the other is short, seated and practical. Both take first-timers, and the facilitators here have said so on their own pages.",
+                "worth_knowing": [
+                    "A first long-form session will come with a form — facilitators screen for a handful of things beforehand, and you should answer it honestly. A first seated session needs nothing but turning up. If you are not sure which you want, the shorter one is the cheaper way to find out.",
+                    "Several Perth facilitators offer a short call before a first booking. Where a listing mentions it, take it; five minutes on the phone tells you more than the description does."
+                ],
+                "faq": [
+                    {
+                        "q": "How many Perth breathwork facilitators take beginners?",
+                        "a": "{count} of the {total} breathwork listings in the directory publish a first-timer session or an all-levels welcome. The count is live."
+                    },
+                    {
+                        "q": "What happens in a first breathwork session?",
+                        "a": "Either an hour or more lying down breathing in a continuous pattern to music with a facilitator working the room, or a shorter seated session of slow nasal breathing and holds. The listing says which kind the facilitator runs."
+                    },
+                    {
+                        "q": "Is there anything to do before the session?",
+                        "a": "Long-form sessions usually come with a screening form; answer it fully. Eat lightly beforehand, and allow time afterwards — most people do not want to rush off."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "breathwork",
+            "intent": "online",
+            "live": true,
+            "frame": {
+                "h1": "Online breathwork sessions from Perth facilitators",
+                "title": "Online breathwork from Perth facilitators | Oria Haven",
+                "description": "Perth breathwork facilitators who run sessions by video or hybrid. Counted live from the directory.",
+                "opener": "Breathwork travels well over video — the seated, practical kind especially — and a handful of Perth facilitators run it that way, either as a standing online group or as one-to-one calls.",
+                "worth_knowing": [
+                    "Ask whether the session is live or a recording, and whether it is a group or one-to-one. Live online groups keep the facilitator's clock; a recording is on yours; one-to-one is the most expensive and the most tailored.",
+                    "A quiet room, a floor you can lie on and headphones make most of the difference at home. Long-form sessions still come with the same screening form online as in the room."
+                ],
+                "faq": [
+                    {
+                        "q": "How many Perth breathwork facilitators work online?",
+                        "a": "{count} of the {total} breathwork listings in the directory offer online or hybrid sessions. The count is live."
+                    },
+                    {
+                        "q": "Does online breathwork work for a first session?",
+                        "a": "The seated, practical kind does. For a long-form session many facilitators prefer a first meeting in the room; the listing or a quick call will tell you their view."
+                    },
+                    {
+                        "q": "What do I need at home?",
+                        "a": "Somewhere quiet to lie down, headphones, and a device you can prop up so you are not holding it."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "fitness",
+            "intent": "reformer",
+            "live": true,
+            "frame": {
+                "h1": "Reformer Pilates in Perth",
+                "title": "Reformer Pilates in Perth: studios and how classes work | Oria Haven",
+                "description": "Perth studios running reformer Pilates — small-group classes on the machine, foundation sessions for new clients, and memberships. Counted live from the directory.",
+                "opener": "Reformer classes run on the spring-loaded machine, in small groups because there are only so many beds in the room, and almost every studio puts new clients through a foundation class or two first — not an upsell, just how the machine is taught.",
+                "worth_knowing": [
+                    "Class sizes are small enough that popular times book out days ahead, and most studios sell memberships alongside casual rates. Reformer studios generally ask for grip socks and sell them at the desk if you arrive without.",
+                    "Clinical Pilates — run by a physiotherapist, one-to-one or in twos and threes — is a different booking from a group reformer class, and it matters for one dull reason: private health funds stopped rebating Pilates as a natural therapy in 2019, and the exception is when a physiotherapist delivers it as physiotherapy."
+                ],
+                "faq": [
+                    {
+                        "q": "What is reformer Pilates?",
+                        "a": "Pilates done on a reformer — a sliding carriage loaded with springs, with a footbar and straps. The springs can make an exercise harder or easier than the floor version, which is why the machine is not simply the advanced option."
+                    },
+                    {
+                        "q": "How many Perth studios run reformer Pilates?",
+                        "a": "{count} of the {total} fitness and movement listings in the directory publish reformer classes. The count is live."
+                    },
+                    {
+                        "q": "Do I need to do a foundation class first?",
+                        "a": "At most studios, yes — one or two introductory sessions before the general timetable. It is how the machine is taught, and the listing or the studio's booking page will say."
+                    },
+                    {
+                        "q": "Will my health fund rebate reformer classes?",
+                        "a": "Group reformer classes are not rebated as a natural therapy since 2019. Clinical Pilates delivered by a physiotherapist as physiotherapy can be — ask which you are booking."
+                    },
+                    {
+                        "q": "What happens in a reformer class?",
+                        "a": "Six to twelve people, one bed each, working through a sequence the instructor calls while adjusting springs between exercises. Forty-five to fifty minutes, and grip socks are required at most studios."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "fitness",
+            "intent": "mat",
+            "live": true,
+            "frame": {
+                "h1": "Mat Pilates in Perth",
+                "title": "Mat Pilates in Perth | Oria Haven",
+                "description": "Perth studios and halls running mat Pilates — no machine, larger classes, and the cheaper way into the method. Counted live from the directory.",
+                "opener": "Mat classes are Pilates without the machine: a mat, sometimes a ring or a band, and more people in the room. No foundation class is needed and the price is noticeably lower than reformer.",
+                "worth_knowing": [
+                    "Because mat classes take more people, they turn up in community halls and gyms as well as studios, and casual rates are common. Mats are usually supplied; bring a towel in summer.",
+                    "If you later move to reformer, expect to start again with the studio's foundation sessions regardless of how long you have done mat work — the machine is taught separately."
+                ],
+                "faq": [
+                    {
+                        "q": "What is mat Pilates?",
+                        "a": "Pilates done on the floor using your own bodyweight, sometimes with a ring, a band or a small ball. No machine, more people in the room, and nothing to learn before your first class."
+                    },
+                    {
+                        "q": "How many Perth studios run mat Pilates?",
+                        "a": "{count} of the {total} fitness and movement listings in the directory publish mat classes. The count is live."
+                    },
+                    {
+                        "q": "What is the difference between mat and reformer?",
+                        "a": "Mat uses your own bodyweight on the floor, sometimes with small props; reformer uses the spring-loaded machine. Mat classes are larger, cheaper and need no introduction; reformer classes are small and usually start with a foundation session."
+                    },
+                    {
+                        "q": "Do I need to book?",
+                        "a": "Studios generally run bookings; community-hall and gym classes are often walk-in. The listing says which where we know."
+                    },
+                    {
+                        "q": "What happens in a mat class?",
+                        "a": "A sequence of controlled, repeated exercises on the floor, counted by the instructor, usually forty-five to sixty minutes. Props are handed out as needed and you can walk into a general class without an intro."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "fitness",
+            "intent": "personal-training",
+            "live": true,
+            "frame": {
+                "h1": "Personal training in Perth",
+                "title": "Personal training in Perth: one-to-one and small-group trainers | Oria Haven",
+                "description": "Perth trainers offering one-to-one and small-group sessions, in studios, gyms and parks. Counted live from the directory.",
+                "opener": "Personal training is the one part of a fitness timetable you set yourself — the trainer, the time, the place and the price are all agreed rather than listed, which is why the listings here read differently from a class schedule.",
+                "worth_knowing": [
+                    "Sessions are usually sold in blocks, so ask what happens to unused ones before you buy ten. Small-group training — two to four people splitting a trainer — is the common middle ground on price.",
+                    "Where the session happens matters more than it sounds: a studio, a gym floor, a park or your garage are all on offer in Perth, and most trainers list which. Outdoor sessions shift to early mornings from December through March."
+                ],
+                "faq": [
+                    {
+                        "q": "How many personal trainers are listed in Perth?",
+                        "a": "{count} of the {total} fitness and movement listings in the directory offer personal training. The count is live."
+                    },
+                    {
+                        "q": "How are sessions priced?",
+                        "a": "Almost always in blocks, with small-group sessions cheaper per person than one-to-one. Ask what the block covers and whether unused sessions expire."
+                    },
+                    {
+                        "q": "Where do sessions happen?",
+                        "a": "Studios, gym floors, parks and sometimes your home — trainers list which, and many offer more than one."
+                    },
+                    {
+                        "q": "What happens in a first session?",
+                        "a": "Most trainers use it to ask what you want and to watch how you move before writing anything — so expect questions and some light work rather than a hard session. Where a trainer charges differently for it, the listing says so."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "fitness",
+            "intent": "over-50s",
+            "live": false,
+            "frame": {
+                "h1": "Fitness and movement for over 50s in Perth",
+                "title": "Fitness and movement classes for over 50s in Perth | Oria Haven",
+                "description": "Perth classes and trainers who publish sessions named for older adults — senior fitness, gentle and chair-based classes, mobility work. Counted live from the directory.",
+                "opener": "Almost none of what exists for older adults in Perth is advertised where you would look for it — much of it sits with councils, community centres and a handful of studios that name the class for who it is for. This page lists the ones that do.",
+                "worth_knowing": [
+                    "The useful distinction is between a class built for older adults — slower, chair options, smaller — and a general class with a note that all ages are welcome. Both are real; only the first is listed here, because it is the one the studio has actually said.",
+                    "Council and community-centre classes are the cheapest on this page and the worst advertised. If a listing is a council program, ring the centre rather than trusting a web timetable that may be a term out of date."
+                ],
+                "faq": [
+                    {
+                        "q": "How many Perth classes are named for over 50s?",
+                        "a": "{count} of the {total} fitness and movement listings in the directory publish a class or session for older adults. The count is live and only includes those that say so themselves."
+                    },
+                    {
+                        "q": "Do I need a referral or assessment first?",
+                        "a": "Not for a community or studio class. Some exercise physiologists run assessed programs, and those are a different booking — the listing says which."
+                    },
+                    {
+                        "q": "What does a class for older adults look like?",
+                        "a": "Slower, usually smaller, with chair or standing options and a teacher who expects a range of abilities in the room. Sessions run forty-five minutes to an hour."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "yoga",
+            "intent": "vinyasa",
+            "live": true,
+            "frame": {
+                "h1": "Vinyasa yoga in Perth",
+                "title": "Vinyasa yoga in Perth: flowing classes and where to find them | Oria Haven",
+                "description": "Perth studios running vinyasa — postures linked to the breath in a sequence that changes week to week. Counted live from the directory.",
+                "opener": "Vinyasa is the one that keeps moving. Postures are linked together and timed to the breath, so the class runs as a sequence rather than a set of held shapes, and most teachers build a different one each week.",
+                "worth_knowing": [
+                    "Because the sequence changes, two vinyasa classes at the same studio can feel quite different depending on who is teaching. Studios that run several a week usually mark the harder ones on the timetable — look for slow flow or level one if it is your first.",
+                    "Heat is a separate question. A warm room and a vinyasa sequence often come together in Perth, but plenty of studios run it at room temperature. Where a studio publishes the temperature we note it on the listing."
+                ],
+                "faq": [
+                    {
+                        "q": "What is vinyasa yoga?",
+                        "a": "A flowing style where each posture is linked to an inhale or an exhale, so the class moves continuously rather than stopping between shapes. The sequence is built by the teacher and usually differs week to week."
+                    },
+                    {
+                        "q": "How many Perth studios run vinyasa classes?",
+                        "a": "{count} of the {total} yoga listings in the directory publish vinyasa on the timetable. The count is live and changes as listings are checked."
+                    },
+                    {
+                        "q": "What is the difference between vinyasa and yin?",
+                        "a": "Pace and stillness. Vinyasa links postures to the breath and keeps moving; yin holds a handful of supported shapes for minutes at a time. Many studios run both, often on the same evening."
+                    },
+                    {
+                        "q": "Do I need experience for a vinyasa class?",
+                        "a": "For a general class it helps to have done a little, because the sequence moves without stopping to explain. Studios that run a slow flow or beginners class list it separately, and that is the easier way in."
+                    },
+                    {
+                        "q": "What happens in a vinyasa class?",
+                        "a": "A warm-up, then a continuously moving sequence timed to the breath, usually building to a peak and winding down into floor postures and a few minutes lying still at the end. Sixty minutes is the common length."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "yoga",
+            "intent": "restorative",
+            "live": true,
+            "frame": {
+                "h1": "Restorative yoga in Perth",
+                "title": "Restorative yoga in Perth: supported, slow classes | Oria Haven",
+                "description": "Perth studios running restorative yoga — a handful of fully supported shapes, held with props, in a quiet room. Counted live from the directory.",
+                "opener": "Restorative is the most supported thing on a yoga timetable. Bolsters, blankets and blocks hold you in a small number of shapes so that very little effort is being made, and the class is largely spent still.",
+                "worth_knowing": [
+                    "The props are the class, not an accommodation, and the studio provides them. Expect to spend most of the hour lying down, and bring a layer — you will not be generating much heat, and rooms are often kept warm for that reason.",
+                    "Restorative sits close to yin on a timetable and the two are often confused. Yin works into the same shape for several minutes with some sensation; restorative aims for none, with the props taking the weight."
+                ],
+                "faq": [
+                    {
+                        "q": "What is restorative yoga?",
+                        "a": "A style built entirely around support. A handful of shapes are propped with bolsters, blankets and blocks so that almost no muscular effort is being made, and each is held for several minutes."
+                    },
+                    {
+                        "q": "How many Perth studios run restorative yoga?",
+                        "a": "{count} of the {total} yoga listings in the directory publish restorative classes. The count is live."
+                    },
+                    {
+                        "q": "What is the difference between restorative and yin?",
+                        "a": "How much you are asked to feel. Yin holds a shape long enough for sensation to build; restorative props you up so there is as little as possible. Studios frequently run both and the timetable names which."
+                    },
+                    {
+                        "q": "Is restorative yoga suitable if I have never done yoga?",
+                        "a": "Studios generally list it as an all-levels class, and there is no sequence to learn. Tell the teacher before you start if anything needs adapting — the props are adjusted to you rather than the other way round."
+                    },
+                    {
+                        "q": "What happens in a restorative class?",
+                        "a": "The teacher sets up each shape with props, you settle into it, and you stay there for several minutes while very little is said. Expect four or five shapes across an hour, and to be repositioned rather than corrected."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "yoga",
+            "intent": "ashtanga",
+            "live": true,
+            "frame": {
+                "h1": "Ashtanga yoga in Perth",
+                "title": "Ashtanga yoga in Perth: led classes and Mysore rooms | Oria Haven",
+                "description": "Perth studios teaching ashtanga — the same set series in the same order, led or self-practised in a Mysore room. Counted live from the directory.",
+                "opener": "Ashtanga is the one that does not change. A set series is practised in the same order every time, which makes it the most repetitive style on a timetable and, for the people who take to it, the reason they stay.",
+                "worth_knowing": [
+                    "Classes come in two shapes. A led class has the teacher counting the whole room through the series together; a Mysore room has everyone working through it at their own pace with the teacher moving between people. Most studios ask you to do the led class first.",
+                    "It is physically demanding and the series is long — expect seventy-five to ninety minutes. Traditional timetables run early mornings and take a rest day, so check the week before committing to a pass."
+                ],
+                "faq": [
+                    {
+                        "q": "What is ashtanga yoga?",
+                        "a": "A set sequence of postures practised in the same order every time. It is taught either as a led class, where a teacher counts the room through together, or as Mysore, where each person works through the series at their own pace in a shared room."
+                    },
+                    {
+                        "q": "How many Perth studios teach ashtanga?",
+                        "a": "{count} of the {total} yoga listings in the directory publish ashtanga classes. The count is live."
+                    },
+                    {
+                        "q": "What is a Mysore class?",
+                        "a": "A room where everyone practises the same series at their own pace, with the teacher working individually rather than leading from the front. It is not a drop-in format at most studios — the led class usually comes first."
+                    },
+                    {
+                        "q": "Is ashtanga suitable for beginners?",
+                        "a": "The led class is where beginners start, and studios that teach it generally say so on the timetable. The series is fixed, so the first few weeks are spent learning an order that then stops changing."
+                    },
+                    {
+                        "q": "What happens in an ashtanga class?",
+                        "a": "The same series, in the same order. A led class is counted through together and runs seventy-five to ninety minutes; a Mysore room has everyone at a different point in the sequence, with the teacher moving between people rather than teaching from the front."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "yoga",
+            "intent": "pregnancy",
+            "live": true,
+            "frame": {
+                "h1": "Pregnancy yoga in Perth",
+                "title": "Pregnancy yoga in Perth: prenatal classes and studios | Oria Haven",
+                "description": "Perth studios and teachers running prenatal and pregnancy yoga classes, listed where the studio publishes them. Counted live from the directory.",
+                "opener": "A pregnancy class is built around the trimester rather than a fixed sequence, and the room is not heated. Classes are usually smaller than a general timetable slot, and props do a lot of the work.",
+                "worth_knowing": [
+                    "Most studios ask you to be past the first trimester before joining, and several ask for a note from your midwife or doctor. That is a booking condition rather than anything else — check it when you book rather than on the day.",
+                    "Some studios run the class as a course with an intake date and the same group each week, others as a drop-in slot on the general timetable. The course format is the one that tends to come with a postnatal class afterwards."
+                ],
+                "faq": [
+                    {
+                        "q": "What is pregnancy yoga?",
+                        "a": "A class built around pregnancy rather than a general class with modifications offered. The room is not heated, props are used heavily, and what is taught shifts across the trimesters."
+                    },
+                    {
+                        "q": "How many Perth studios run pregnancy yoga?",
+                        "a": "{count} of the {total} yoga listings in the directory publish prenatal or pregnancy classes. The count is live and only includes studios that say so themselves."
+                    },
+                    {
+                        "q": "When can I start pregnancy yoga?",
+                        "a": "Most Perth studios ask you to be past the first trimester, and some ask for clearance from your midwife or doctor. The requirement varies by studio, so check when you book."
+                    },
+                    {
+                        "q": "Are heated rooms used for pregnancy classes?",
+                        "a": "No. Studios run prenatal classes at room temperature, and a studio with a heated timetable will hold the pregnancy class somewhere else or at a different time."
+                    },
+                    {
+                        "q": "What happens in a pregnancy yoga class?",
+                        "a": "Standing and supported shapes, breathing, and time spent on positions used later in labour, in a group that is usually smaller than a general class. Teachers commonly ask how far along everyone is before starting and adjust from there."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "yoga",
+            "intent": "nidra",
+            "live": true,
+            "frame": {
+                "h1": "Yoga nidra in Perth",
+                "title": "Yoga nidra in Perth: guided sessions and where to find them | Oria Haven",
+                "description": "Perth studios and teachers running yoga nidra — a guided practice done lying down, start to finish. Counted live from the directory.",
+                "opener": "Yoga nidra is the one with no postures. You lie down at the start, stay there, and a teacher talks the whole way through. Sessions are often shorter than a class and frequently sit at the end of a timetable rather than in the middle of it.",
+                "worth_knowing": [
+                    "Bring or borrow something to lie on and something warm — you will be still for thirty to sixty minutes and rooms cool down quickly. Most studios lend blankets, bolsters and eye pillows.",
+                    "It often shares a slot with a sound bath in Perth, and several studios run the two together on a Sunday evening. Where the listing says both, the session is usually longer than a nidra on its own."
+                ],
+                "faq": [
+                    {
+                        "q": "What is yoga nidra?",
+                        "a": "A guided practice done lying down from start to finish, with no postures at all. The teacher speaks throughout and the participant stays still; sessions usually run thirty to sixty minutes."
+                    },
+                    {
+                        "q": "How many Perth studios run yoga nidra?",
+                        "a": "{count} of the {total} yoga listings in the directory publish yoga nidra. The count is live."
+                    },
+                    {
+                        "q": "Do I need to be able to do yoga postures?",
+                        "a": "No. The practice is done lying down from beginning to end, and there is nothing to follow visually — the teacher's voice is the whole of the instruction."
+                    },
+                    {
+                        "q": "How long is a yoga nidra session?",
+                        "a": "Usually thirty to sixty minutes, which is shorter than a general class. Sessions paired with a sound bath run longer, and the studio's timetable says which it is."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "fitness",
+            "intent": "boxing",
+            "live": true,
+            "frame": {
+                "h1": "Boxing in Perth",
+                "title": "Boxing gyms in Perth: beginners, non-contact and sparring | Oria Haven",
+                "description": "Perth gyms teaching boxing, from non-contact technique classes to sparring you opt into. Counted live from the directory.",
+                "opener": "Boxing in Perth splits along one line, and it is the line worth asking about before you book: whether anybody hits you. Most gyms teach the craft on bags and pads with no contact at all, and run sparring as a separate thing you choose to join.",
+                "worth_knowing": [
+                    "A beginners' class is usually stance, footwork and the basic punches on a bag or with a coach holding pads. Gyms that run partner drills commonly rule out contact to the head in them, and say so on the timetable. Sparring, where it exists, tends to be invitation-only or a separate club within the gym.",
+                    "You need hand wraps and gloves. Most gyms lend gloves for a first session and sell wraps at the desk, so the first class costs the class fee and nothing else. Sessions usually run forty to sixty minutes."
+                ],
+                "faq": [
+                    {
+                        "q": "What is a boxing class?",
+                        "a": "Technique taught on bags and focus pads — stance, footwork, and the punches — usually in a group with a coach circulating. In most Perth gyms it involves no contact with another person at all."
+                    },
+                    {
+                        "q": "How many Perth gyms teach boxing?",
+                        "a": "{count} of the {total} fitness listings in the directory publish boxing classes. The count is live and changes as listings are checked."
+                    },
+                    {
+                        "q": "Will I have to spar?",
+                        "a": "Not unless you choose to. Gyms that offer sparring run it as its own session, often by invitation, and it is normal to train for a long time without ever doing it. If a gym does not make that clear on its timetable, it is a fair question at the desk."
+                    },
+                    {
+                        "q": "What do I need for a first class?",
+                        "a": "Hand wraps, and gloves you can usually borrow. Most gyms lend a pair for a first session; wraps are a few dollars at the desk."
+                    },
+                    {
+                        "q": "What happens in a boxing class?",
+                        "a": "A warm-up, then rounds — typically three minutes on, one off — rotating between bags, pads and conditioning, with the coach correcting technique as you go. Forty to sixty minutes is the common length."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "fitness",
+            "intent": "clinical-pilates",
+            "live": true,
+            "frame": {
+                "h1": "Clinical Pilates in Perth",
+                "title": "Clinical Pilates in Perth: physiotherapist-led studios | Oria Haven",
+                "description": "Perth practices running clinical Pilates — an assessment first, then small sessions delivered by a physiotherapist. Counted live from the directory.",
+                "opener": "Clinical Pilates is Pilates delivered inside a physiotherapy practice. What separates it from a studio class is the order of events: an assessment comes first, the program is written from it, and the class sizes are small enough that someone is watching you the whole time.",
+                "worth_knowing": [
+                    "Expect the first appointment to be one-to-one rather than a class. Practices then run groups of three or four, sometimes one-to-one, typically forty-five to sixty minutes, using reformers, a trapeze table or a mat depending on what the practitioner picks.",
+                    "It usually costs more than a studio reformer class and is often claimable through private health where a physiotherapist delivers it. Whether yours rebates it depends on your fund, your level of cover and the practitioner's registration — confirm all three before you assume it."
+                ],
+                "faq": [
+                    {
+                        "q": "What is clinical Pilates?",
+                        "a": "Pilates prescribed and supervised by a physiotherapist, following an individual assessment, in one-to-one or very small group sessions. The equipment is the same as a studio's; what differs is who runs it and how the program is arrived at."
+                    },
+                    {
+                        "q": "How many Perth practices offer clinical Pilates?",
+                        "a": "{count} of the {total} fitness listings in the directory publish clinical Pilates. The count is live and only includes practices that say so themselves."
+                    },
+                    {
+                        "q": "What is the difference from reformer Pilates?",
+                        "a": "Who delivers it and how you get in. A reformer class is booked off a timetable and taught to the room; clinical Pilates starts with an assessment and the session is built from it. Both may use the same reformer."
+                    },
+                    {
+                        "q": "Can I claim it on private health?",
+                        "a": "Often, where a physiotherapist delivers it — but it depends on your fund, your level of extras cover and the practitioner's registration. Ask the practice and your fund before booking rather than after."
+                    },
+                    {
+                        "q": "What happens in a clinical Pilates session?",
+                        "a": "The first appointment is an assessment. After that, a set of exercises chosen for you, on a reformer, trapeze table or mat, with the practitioner adjusting as you go. Forty-five to sixty minutes is usual, and grip socks are generally required."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "fitness",
+            "intent": "qigong",
+            "live": true,
+            "frame": {
+                "h1": "Qigong in Perth",
+                "title": "Qigong classes in Perth: where to practise | Oria Haven",
+                "description": "Perth teachers and schools running qigong — slow standing movement timed to the breath. Counted live from the directory.",
+                "opener": "Qigong is slow, mostly upright, and repetitive by design. Sets of simple movements are timed to the breath and repeated, which makes it one of the least demanding things on a movement timetable and one of the easiest to start late.",
+                "worth_knowing": [
+                    "In Perth it is most often taught alongside tai chi or kung fu rather than on its own, so the school's name may not mention it even when the class runs weekly. Where a listing names qigong, the school publishes it as its own class rather than as a warm-up.",
+                    "Classes are frequently held in halls, community centres and parks rather than studios, and several run in terms that follow the school calendar. Little equipment is involved: flat shoes or bare feet and clothes you can move in."
+                ],
+                "faq": [
+                    {
+                        "q": "What is qigong?",
+                        "a": "A Chinese movement practice of slow, repeated sets timed to the breath, usually done standing. It shares its roots with tai chi; qigong tends to repeat short sequences where tai chi works through a longer form."
+                    },
+                    {
+                        "q": "How many Perth schools teach qigong?",
+                        "a": "{count} of the {total} fitness listings in the directory publish qigong classes. The count is live."
+                    },
+                    {
+                        "q": "What is the difference between qigong and tai chi?",
+                        "a": "Length and structure. Qigong repeats short sets of movements; tai chi learns a long sequence of postures in a fixed order. Most Perth schools teach both, often in the same session."
+                    },
+                    {
+                        "q": "Do I need to be fit or flexible to start?",
+                        "a": "Schools generally list qigong as suitable for all levels, and much of it is done standing with small movements. Several Perth classes are run for older adults specifically."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "fitness",
+            "intent": "group",
+            "live": true,
+            "frame": {
+                "h1": "Group fitness classes in Perth",
+                "title": "Group fitness classes in Perth: coached, timetabled sessions | Oria Haven",
+                "description": "Perth studios running coached group fitness — a set time, a coach in the room, and a cap on numbers. Counted live from the directory.",
+                "opener": "Group fitness is the middle ground between training alone and paying for a trainer: a coach writes the session and watches the room, but the time is fixed and you share it. What varies most between Perth studios is the cap on numbers.",
+                "worth_knowing": [
+                    "The cap is the thing to ask about. A studio running groups of six is selling something much closer to personal training than one running thirty, and the price usually reflects it. Where a studio publishes its cap we record it on the listing.",
+                    "Most sessions run forty-five to sixty minutes and are sold as a pass or a membership rather than casually, though nearly all studios will take a casual booking at a higher rate for a first visit."
+                ],
+                "faq": [
+                    {
+                        "q": "What is a group fitness class?",
+                        "a": "A coached session run to a timetable, with the workout written by the coach rather than by you, and numbers capped by the studio. It sits between training on your own and one-to-one personal training."
+                    },
+                    {
+                        "q": "How many Perth studios run group fitness?",
+                        "a": "{count} of the {total} fitness listings in the directory publish group fitness. The count is live."
+                    },
+                    {
+                        "q": "How is it different from personal training?",
+                        "a": "You share the time and the coach's attention, and the session is written for the group rather than for you. It is correspondingly cheaper, and the smaller the cap the closer the two get."
+                    },
+                    {
+                        "q": "How big are the groups?",
+                        "a": "It ranges widely in Perth — some studios cap at six, others run much larger rooms. Where the studio publishes a number the listing records it; where it does not, it is worth asking before buying a pass."
+                    }
+                ]
+            }
+        },
+        {
+            "practice": "spa",
+            "intent": "saunas",
+            "live": true,
+            "frame": {
+                "h1": "Saunas in Perth",
+                "title": "Saunas in Perth — Traditional & Infrared | Oria Haven",
+                "description": "Every sauna Oria Haven lists in Perth: traditional saunas and infrared cabins, with published prices, session times and what else is on site. Counted live.",
+                "opener": "Two different rooms get called a sauna in Perth. A traditional sauna heats the air; an infrared cabin runs at a lower air temperature and warms you more directly, so sessions there tend to run longer. {count} places are listed here, and each listing says which kind it has.",
+                "worth_knowing": [
+                    "Most places sell sauna time as a timed block, and many pair it with a cold plunge or ice bath in the same visit. Where a place publishes its session length and price, the listing shows it; where it doesn't, the listing says so rather than guessing.",
+                    "Check whether the room is private or shared before booking, and whether towels are provided. Both vary from place to place, and both are on each place's own website."
+                ],
+                "faq": []
+            }
+        }
+    ]
 }

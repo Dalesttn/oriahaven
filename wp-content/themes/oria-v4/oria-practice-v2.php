@@ -260,6 +260,10 @@ if ( $oria_facet ) {
 			$oria_faqs[] = array( 'q' => (string) $oria_qa['q'], 'a' => (string) $oria_qa['a'] );
 		}
 	}
+	// No frame questions: the facet's own, from data/facet-guides.json.
+	if ( ! $oria_faqs && function_exists( '\Oria\Core\FacetGuides\faqs' ) ) {
+		$oria_faqs = \Oria\Core\FacetGuides\faqs( $oria_facet );
+	}
 } elseif ( $oria_term && function_exists( '\Oria\Core\Faq\for_term' ) ) {
 	$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_term );
 }
@@ -1581,6 +1585,13 @@ $oria_ev     = $oria_ev_row ? get_post( (int) $oria_ev_row['id'] ) : null;
 $oria_intro_html = ( is_string( $oria_intro ) && '' !== trim( $oria_intro ) && $oria_term )
 	? (string) \Oria\Core\PracticesIndex\rewrite_content_links( (string) $oria_intro, $oria_term )
 	: '';
+// A service or specialty facet's own guide and neighbours, where written.
+$oria_fg_on    = $oria_facet && ! $oria_area && function_exists( '\Oria\Core\FacetGuides\intro' );
+$oria_fg_intro = $oria_fg_on ? \Oria\Core\FacetGuides\intro( $oria_facet ) : array();
+$oria_fg_also  = $oria_fg_on ? \Oria\Core\FacetGuides\see_also( $oria_facet, is_array( $oria_city ) ? $oria_city : null ) : array();
+$oria_fg_name  = $oria_fg_on
+	? ( '' !== \Oria\Core\FacetGuides\phrase( $oria_facet ) ? \Oria\Core\FacetGuides\phrase( $oria_facet ) . ' ' . sprintf( /* translators: %s: city */ __( 'in %s', 'oria' ), $oria_cname ) : (string) $oria_facet['label'] )
+	: '';
 ?>
 <!-- 6. Guide -->
 <section class="wrap section floor xc-guide" id="read">
@@ -1609,6 +1620,25 @@ $oria_intro_html = ( is_string( $oria_intro ) && '' !== trim( $oria_intro ) && $
 				<p><?php echo esc_html( $oria_fill( (string) $oria_para ) ); ?></p>
 			<?php endforeach; ?>
 		</div>
+	<?php elseif ( $oria_fg_intro ) : ?>
+		<?php
+		/*
+		 * The facet's own guide (data/facet-guides.json, else the specialty
+		 * intro for the same slug), in place of the category's: without it
+		 * every Spa facet page carried the same 369 words.
+		 */
+		?>
+		<h2 class="h3" style="margin-bottom:1rem">
+			<?php
+			/* translators: %s: facet name, e.g. Ice baths & cold plunges in Perth */
+			printf( esc_html__( 'Before you go: %s', 'oria' ), esc_html( $oria_fg_name ) );
+			?>
+		</h2>
+		<div class="prose prose--intro">
+			<?php foreach ( $oria_fg_intro as $oria_para ) : ?>
+				<p><?php echo esc_html( $oria_para ); ?></p>
+			<?php endforeach; ?>
+		</div>
 	<?php elseif ( '' !== $oria_intro_html ) : ?>
 		<h2 class="h3" style="margin-bottom:1rem">
 			<?php
@@ -1617,6 +1647,25 @@ $oria_intro_html = ( is_string( $oria_intro ) && '' !== trim( $oria_intro ) && $
 			?>
 		</h2>
 		<div class="prose prose--intro"><?php echo wp_kses_post( $oria_intro_html ); ?></div>
+	<?php endif; ?>
+
+	<?php if ( $oria_fg_also ) : ?>
+		<?php // Hand-picked neighbours: "Want both? Ice bath & sauna together". ?>
+		<nav class="xc-also" aria-label="<?php esc_attr_e( 'Related pages', 'oria' ); ?>">
+			<p class="micro xc-also__label"><?php esc_html_e( 'You might also look at', 'oria' ); ?></p>
+			<ul class="xc-also__list">
+				<?php foreach ( $oria_fg_also as $oria_sa ) : ?>
+					<li>
+						<a class="xc-also__link" href="<?php echo esc_url( $oria_sa['url'] ); ?>" data-oria-event="category_see_also_click">
+							<span class="xc-also__name"><?php echo esc_html( $oria_sa['label'] ); ?> <span aria-hidden="true">&rarr;</span></span>
+							<?php if ( '' !== $oria_sa['line'] ) : ?>
+								<span class="xc-also__line"><?php echo esc_html( $oria_sa['line'] ); ?></span>
+							<?php endif; ?>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</nav>
 	<?php endif; ?>
 
 	<?php

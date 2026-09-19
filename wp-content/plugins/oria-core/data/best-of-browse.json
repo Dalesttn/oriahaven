@@ -1,0 +1,24 @@
+{
+  "_about": "Links each Best Of guide adds to its 'Keep exploring' list, beside the ones typed into the guide in the admin (field guide_links). Read at runtime by FacetGuides\\best_of_links(); keyed by guide slug. Each is a facet page in a category, so the address is built by the site and never goes stale. Added only where not already listed.",
+  "guides": {
+    "saunas-perth": [
+      { "category": "spa", "facet": "saunas", "label": "Saunas in Perth — traditional and infrared" },
+      { "category": "spa", "facet": "traditional-sauna", "label": "Traditional saunas in Perth" },
+      { "category": "spa", "facet": "infrared-sauna", "label": "Infrared saunas in Perth" },
+      { "category": "spa", "facet": "contrast-therapy", "label": "Ice bath & sauna together" }
+    ],
+    "ice-baths-perth": [
+      { "category": "spa", "facet": "cold-plunge", "label": "Ice baths & cold plunges in Perth" },
+      { "category": "spa", "facet": "contrast-therapy", "label": "Ice bath & sauna together" }
+    ],
+    "massage-perth": [
+      { "category": "bodywork", "facet": "remedial-massage", "label": "Remedial massage in Perth" }
+    ],
+    "remedial-massage-perth": [
+      { "category": "bodywork", "facet": "remedial-massage", "label": "Every remedial massage place in Perth" }
+    ],
+    "acupuncture-perth": [
+      { "category": "natural", "facet": "acupuncture", "label": "Every acupuncture clinic in Perth" }
+    ]
+  }
+}

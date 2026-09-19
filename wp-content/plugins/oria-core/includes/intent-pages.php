@@ -262,12 +262,15 @@ function matching_ids( \WP_Term $practice, array $filter ): array {
 				static function ( $id ) use ( $key, $value ): bool {
 					$id = (int) $id;
 					switch ( $key ) {
+						// A comma list is any of them: "traditional-sauna,
+						// infrared-sauna" is Saunas in Perth. has_term() takes
+						// the array and answers for any member.
 						case 'aud':
-							return has_term( $value, Audience\TAXONOMY, $id );
+							return has_term( explode( ',', $value ), Audience\TAXONOMY, $id );
 						case 'svc':
-							return has_term( $value, Services\TAXONOMY, $id );
+							return has_term( explode( ',', $value ), Services\TAXONOMY, $id );
 						case 'spec':
-							return has_term( $value, Taxonomies\SPECIALTY, $id );
+							return has_term( explode( ',', $value ), Taxonomies\SPECIALTY, $id );
 						case 'format':
 							$f = (string) get_field( 'format', $id );
 							return $f === $value || 'both' === $f;

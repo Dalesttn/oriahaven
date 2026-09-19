@@ -669,3 +669,22 @@ html.xc-locked { overflow: hidden; }
   .xc-dock__controls--near .xc-near { flex: 1 1 auto; }
   .xc-dock__controls--near .xc-dock__go { flex: none; }
 }
+
+/* ---- A facet page's hand-picked neighbours ------------------------------ */
+.xc-also { margin-top: var(--s-5); }
+.xc-also__label { margin: 0 0 .5rem; color: var(--text-soft); }
+.xc-also__list {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--s-3); margin: 0; padding: 0; list-style: none;
+}
+.xc-also__link {
+  display: grid; gap: .2rem; height: 100%; padding: var(--s-4);
+  border: 1px solid var(--line); border-radius: var(--radius-card);
+  background: var(--surface); color: inherit; text-decoration: none;
+  transition: border-color var(--t-fast, .15s);
+}
+.xc-also__link:hover { border-color: var(--deep); }
+.xc-also__link:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+.xc-also__name { font-weight: 700; color: var(--deep); }
+.xc-also__line { font-size: var(--fs-sm); color: var(--text-soft); }
+@media (prefers-reduced-motion: reduce) { .xc-also__link { transition: none; } }

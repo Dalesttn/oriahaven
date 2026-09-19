@@ -533,6 +533,14 @@ function rewrite_url( string $url, ?\WP_Term $here = null ): string {
 		}
 		return specialty_url( $spec );
 	}
+	/*
+	 * A facet named by its twin's slug -- /explore/perth/spa/ice-bath/ --
+	 * is a noindexed copy of the twin's page. A hand-typed link to it (the
+	 * saunas Best Of guide had one) goes to the page that is indexed.
+	 */
+	if ( preg_match( '~^/explore/([^/]+)/([^/]+)/([^/]+)/$~', $path, $pm ) && specialty_twin( $pm[3] ) !== $pm[3] ) {
+		return home_url( '/explore/' . $pm[1] . '/' . $pm[2] . '/' . specialty_twin( $pm[3] ) . '/' );
+	}
 	if ( '/directory/' === $path && '' !== $qs ) {
 		parse_str( $qs, $q );
 		if ( ! empty( $q['cat'] ) && is_string( $q['cat'] ) && 1 === count( $q ) ) {
@@ -1506,6 +1514,27 @@ function title( $title ) {
 		$term = get_queried_object();
 		if ( $term instanceof \WP_Term && in_array( $f['key'], array( 'svc', 'spec' ), true ) ) {
 			$bare = (string) preg_replace( '/ in ' . preg_quote( label_city(), '/' ) . '$/', '', $f['label'] );
+			/*
+			 * On the facet's HOME page -- the one the other categories'
+			 * copies canonicalise to -- lead with what people search and
+			 * the count that makes the result worth clicking: "Ice Baths &
+			 * Cold Plunges in Perth — 25 Places". The /perth/{specialty}/
+			 * pages the category suffix below was keeping apart from are
+			 * retired (they 301 here), so on the home page it only pushed
+			 * the search words to the back.
+			 */
+			$home = 'svc' === $f['key'] ? facet_owner( (string) $f['value'] ) : specialty_home( (string) $f['value'] );
+			if ( $home === $term->slug ) {
+				$lead = function_exists( '\Oria\Core\FacetGuides\phrase' ) ? \Oria\Core\FacetGuides\phrase( $f ) : '';
+				$ids  = facet_ids( $term, $f );
+				if ( function_exists( '\Oria\Core\Cities\filter_ids' ) && function_exists( '\Oria\Core\Cities\current' ) ) {
+					$ids = \Oria\Core\Cities\filter_ids( $ids, \Oria\Core\Cities\current() );
+				}
+				$n = count( $ids );
+				return $n > 1
+					? sprintf( '%s in %s — %d Places | %s', '' !== $lead ? $lead : $bare, label_city(), $n, get_bloginfo( 'name' ) )
+					: sprintf( '%s in %s | %s', '' !== $lead ? $lead : $bare, label_city(), get_bloginfo( 'name' ) );
+			}
 			return sprintf(
 				'%s — %s in Perth | %s',
 				$bare,

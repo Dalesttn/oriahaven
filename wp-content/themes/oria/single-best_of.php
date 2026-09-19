@@ -23,6 +23,43 @@ $oria_method  = trim( (string) get_field( 'methodology', $oria_id ) );
 $oria_note    = trim( (string) get_field( 'editor_note', $oria_id ) );
 $oria_faq     = array_values( array_filter( (array) get_field( 'guide_faq', $oria_id ), static fn( $r ) => ! empty( $r['question'] ) && ! empty( $r['answer'] ) ) );
 $oria_links   = array_values( array_filter( (array) get_field( 'guide_links', $oria_id ), static fn( $r ) => ! empty( $r['label'] ) && ! empty( $r['url'] ) ) );
+/*
+ * Typed links go through the same rewriter as guide copy, so one pointing
+ * at a retired or twin address lands on the indexed page. Then the facet
+ * pages this guide should lead on to (data/best-of-browse.json), where the
+ * list doesn't already have them.
+ */
+if ( function_exists( '\Oria\Core\PracticesIndex\rewrite_url' ) ) {
+	foreach ( $oria_links as $oria_k => $oria_lk ) {
+		$oria_fixed = \Oria\Core\PracticesIndex\rewrite_url( (string) $oria_lk['url'] );
+		// A post typed by its bare slug (/sauna-ice-bath-or-float/) 301s to
+		// /journal/...; link the address it lands on.
+		if ( '' === $oria_fixed && 0 === strpos( (string) $oria_lk['url'], home_url( '/' ) ) ) {
+			$oria_pid = url_to_postid( (string) $oria_lk['url'] );
+			$oria_pl  = $oria_pid ? (string) get_permalink( $oria_pid ) : '';
+			if ( '' !== $oria_pl && untrailingslashit( $oria_pl ) !== untrailingslashit( (string) $oria_lk['url'] ) ) {
+				$oria_fixed = $oria_pl;
+			}
+		}
+		if ( '' !== $oria_fixed ) {
+			$oria_links[ $oria_k ]['url'] = $oria_fixed;
+		}
+	}
+}
+// The category link sits first on its own; a typed copy of it is dropped.
+if ( $oria_prac ) {
+	$oria_cat_url = untrailingslashit( (string) get_term_link( $oria_prac ) );
+	$oria_links   = array_values( array_filter( $oria_links, static fn( $r ) => untrailingslashit( (string) $r['url'] ) !== $oria_cat_url ) );
+}
+if ( function_exists( '\Oria\Core\FacetGuides\best_of_links' ) ) {
+	$oria_have = array_flip( array_map( static fn( $r ) => untrailingslashit( (string) $r['url'] ), $oria_links ) );
+	foreach ( \Oria\Core\FacetGuides\best_of_links( (string) get_post_field( 'post_name', $oria_id ) ) as $oria_bl ) {
+		if ( ! isset( $oria_have[ untrailingslashit( $oria_bl['url'] ) ] ) ) {
+			$oria_links[] = $oria_bl;
+			$oria_have[ untrailingslashit( $oria_bl['url'] ) ] = true;
+		}
+	}
+}
 $oria_related = BestOf\related( $oria_id, 3 );
 $oria_qa      = BestOf\quick_answer( $oria_id );
 $oria_spots   = BestOf\spotlights( $oria_entries );

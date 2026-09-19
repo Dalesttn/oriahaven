@@ -2077,10 +2077,13 @@
     if (locked.cat) state.cats = [locked.cat];
     if (locked.region) state.regions = [locked.region];
     if (locked.spec) state.spec = [locked.spec];
-    function isLockedIntent(k, v) { return !!locked.intentKey && k === locked.intentKey && v === locked.intentValue; }
+    // A page may lock several values of one key -- "traditional-sauna,
+    // infrared-sauna" for Saunas in Perth -- matched as any of them.
+    locked.intentValues = locked.intentValue ? locked.intentValue.split(",").filter(Boolean) : [];
+    function isLockedIntent(k, v) { return !!locked.intentKey && k === locked.intentKey && locked.intentValues.indexOf(v) > -1; }
     if (locked.intentKey && state[locked.intentKey] !== undefined) {
-      if (locked.intentKey === "spec") { locked.spec = locked.intentValue; }
-      state[locked.intentKey] = [locked.intentValue];
+      if (locked.intentKey === "spec") { locked.spec = locked.intentValues[0] || ""; }
+      state[locked.intentKey] = locked.intentValues.slice();
     }
 
     /* How many filters the VISITOR has added, as opposed to the ones the
@@ -2198,7 +2201,7 @@
         state.suburbs.length +
         extra(state.spec, locked.spec ? [locked.spec] : []);
       ["svc", "aud", "price", "format"].forEach(function (k) {
-        n += extra(state[k], locked.intentKey === k ? [locked.intentValue] : []);
+        n += extra(state[k], locked.intentKey === k ? locked.intentValues : []);
       });
       return n + (state.rating ? 1 : 0) + (state.q ? 1 : 0) + (state.picks ? 1 : 0);
     }
@@ -2596,7 +2599,7 @@
       state.svc = []; state.aud = []; state.suburbs = [];
       state.price = []; state.format = []; state.rating = 0; state.q = ""; state.picks = false;
       // Clearing never unlocks the page's own facet.
-      if (locked.intentKey && state[locked.intentKey] !== undefined) state[locked.intentKey] = [locked.intentValue];
+      if (locked.intentKey && state[locked.intentKey] !== undefined) state[locked.intentKey] = locked.intentValues.slice();
       var qb = $("#dirQ");
       if (qb) qb.value = "";
       syncInputs();

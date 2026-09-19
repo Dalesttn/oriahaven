@@ -1,0 +1,124 @@
+{
+  "_about": "Facet guides (includes/facet-guides.php): the words that make one facet page -- /explore/perth/spa/cold-plunge/ -- its own page. Keyed by the facet's URL slug. 'phrase' is what the search result title leads with ('Ice Baths & Cold Plunges in Perth -- 25 Places'); 'intro' is a list of paragraphs that replaces the category's intro on that page (the 7 intros in specialty-intros.json are used when there is none here); 'faq' is a list of {q, a} shown with FAQPage markup; 'see_also' is a list of {category, facet, label, line} links. House rule: what a session involves, what it costs, where -- never what it does to a body. Every price or fact must come from the listed places or their own sites.",
+  "facets": {
+    "cold-plunge": {
+      "phrase": "Ice Baths & Cold Plunges",
+      "see_also": [
+        {
+          "category": "spa",
+          "facet": "contrast-therapy",
+          "label": "Ice bath & sauna together",
+          "line": "Places that pair the cold with heat, for contrast sessions"
+        },
+        {
+          "category": "spa",
+          "facet": "saunas",
+          "label": "Saunas in Perth",
+          "line": "Traditional and infrared"
+        }
+      ]
+    },
+    "contrast-therapy": {
+      "phrase": "Ice Bath & Sauna (Contrast Therapy)",
+      "see_also": [
+        {
+          "category": "spa",
+          "facet": "cold-plunge",
+          "label": "Ice baths & cold plunges",
+          "line": "Every place with a cold plunge, sauna or not"
+        },
+        {
+          "category": "spa",
+          "facet": "saunas",
+          "label": "Saunas in Perth",
+          "line": "Traditional and infrared"
+        }
+      ]
+    },
+    "traditional-sauna": {
+      "phrase": "Traditional Saunas",
+      "see_also": [
+        {
+          "category": "spa",
+          "facet": "infrared-sauna",
+          "label": "Infrared saunas",
+          "line": "Lower air temperature, longer sessions"
+        },
+        {
+          "category": "spa",
+          "facet": "contrast-therapy",
+          "label": "Ice bath & sauna together",
+          "line": "Places with both, for contrast sessions"
+        }
+      ]
+    },
+    "infrared-sauna": {
+      "phrase": "Infrared Saunas",
+      "see_also": [
+        {
+          "category": "spa",
+          "facet": "traditional-sauna",
+          "label": "Traditional saunas",
+          "line": "Wood-lined, hotter air, often with a plunge nearby"
+        },
+        {
+          "category": "spa",
+          "facet": "contrast-therapy",
+          "label": "Ice bath & sauna together",
+          "line": "Places with both, for contrast sessions"
+        }
+      ]
+    },
+    "steam-room": {
+      "phrase": "Steam Rooms",
+      "see_also": [
+        {
+          "category": "spa",
+          "facet": "saunas",
+          "label": "Saunas in Perth",
+          "line": "Dry heat, traditional and infrared"
+        },
+        {
+          "category": "spa",
+          "facet": "contrast-therapy",
+          "label": "Ice bath & sauna together",
+          "line": "Heat and cold in one visit"
+        }
+      ]
+    },
+    "acupuncture": {
+      "phrase": "Acupuncture",
+      "see_also": [
+        {
+          "category": "natural",
+          "facet": "chinese-medicine",
+          "label": "Chinese medicine",
+          "line": "Clinics offering herbs, cupping and acupuncture"
+        }
+      ]
+    },
+    "saunas": {
+      "phrase": "Saunas",
+      "see_also": [
+        {
+          "category": "spa",
+          "facet": "traditional-sauna",
+          "label": "Traditional saunas",
+          "line": "Wood-lined rooms with hotter air"
+        },
+        {
+          "category": "spa",
+          "facet": "infrared-sauna",
+          "label": "Infrared saunas",
+          "line": "Lower air temperature, longer sessions"
+        },
+        {
+          "category": "spa",
+          "facet": "contrast-therapy",
+          "label": "Ice bath & sauna together",
+          "line": "Places with both, for contrast sessions"
+        }
+      ]
+    }
+  }
+}

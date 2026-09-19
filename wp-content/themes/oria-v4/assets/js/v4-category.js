@@ -53,7 +53,8 @@
 
   function fire(el, type) { el.dispatchEvent(new Event(type, { bubbles: true })); }
   function isLocked(input) {
-    return input.getAttribute("data-filter") === LOCK_KEY && input.value === LOCK_VAL;
+    // Several values may be locked at once ("traditional-sauna,infrared-sauna").
+    return input.getAttribute("data-filter") === LOCK_KEY && LOCK_VAL.split(",").indexOf(input.value) > -1;
   }
 
   /* ---- 1. sticky chrome ------------------------------------------------ */
