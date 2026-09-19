@@ -658,3 +658,14 @@ html.xc-locked { overflow: hidden; }
 }
 .xc-trendline { margin-block: var(--s-6) 0; }
 .xc-trendline .cmpnudge { margin: 0; }
+
+/* ---- The dock on a page too small to filter: the category nearby ------- */
+.xc-near { display: grid; gap: .45rem; min-width: 0; }
+.xc-near__label { margin: 0; font-size: var(--fs-xs); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-soft); }
+.xc-near__list { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+.xc-near__list .xc-pchip { min-height: 40px; }
+@media (min-width: 50rem) {
+  .xc-dock__controls--near { align-items: center; justify-content: space-between; gap: var(--s-4); }
+  .xc-dock__controls--near .xc-near { flex: 1 1 auto; }
+  .xc-dock__controls--near .xc-dock__go { flex: none; }
+}

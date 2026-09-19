@@ -572,6 +572,70 @@ function centroids( string $city ): array {
 }
 
 /**
+ * The same practice in the suburbs nearest this one -- for a category x
+ * suburb page with too little to filter ("Fitness & Movement in Malaga"):
+ * where else close by has it. Closest first, within 15 km, only suburbs
+ * with at least one such listing, each linked to its own category x suburb
+ * page. Distances are between suburb centres, so they are shown only as a
+ * direction.
+ *
+ * @return list<array{term: \WP_Term, n: int, dir: string, url: string}>
+ */
+function category_nearby( \WP_Term $practice, \WP_Term $suburb, ?array $city, int $limit = 6 ): array {
+	if ( ! function_exists( '\Oria\Core\PracticesIndex\category_url' ) ) {
+		return array();
+	}
+	$cslug = (string) ( $city['slug'] ?? '' );
+	$cent  = centroids( $cslug );
+	$here  = \Oria\Theme\tname( $suburb );
+	$me    = $cent[ $here ] ?? null;
+	if ( ! $me ) {
+		return array();
+	}
+
+	// Listings of this practice per suburb name, in one pass.
+	$per = array();
+	foreach ( city_rows( $cslug ) as $r ) {
+		$s = html_entity_decode( (string) ( $r['suburb'] ?? '' ), ENT_QUOTES, 'UTF-8' );
+		if ( '' !== $s && $s !== $here && in_practice( $r, $practice->slug ) ) {
+			$per[ $s ] = ( $per[ $s ] ?? 0 ) + 1;
+		}
+	}
+	if ( ! $per ) {
+		return array();
+	}
+
+	$terms = array();
+	foreach ( (array) get_terms( array( 'taxonomy' => 'area', 'hide_empty' => false ) ) as $t ) {
+		if ( $t instanceof \WP_Term && \Oria\Core\Taxonomies\is_suburb( $t ) ) {
+			$terms[ \Oria\Theme\tname( $t ) ] = $t;
+		}
+	}
+
+	$base = \Oria\Core\PracticesIndex\category_url( $practice, $city );
+	$out  = array();
+	foreach ( $per as $name => $n ) {
+		$c = $cent[ $name ] ?? null;
+		if ( ! $c || ! isset( $terms[ $name ] ) ) {
+			continue;
+		}
+		$d = km( $me['lat'], $me['lng'], $c['lat'], $c['lng'] );
+		if ( $d > 15.0 ) {
+			continue;
+		}
+		$out[] = array(
+			'term' => $terms[ $name ],
+			'n'    => $n,
+			'd'    => $d,
+			'dir'  => $d > 0.5 ? direction( $me['lat'], $me['lng'], $c['lat'], $c['lng'] ) : '',
+			'url'  => $base . $terms[ $name ]->slug . '/',
+		);
+	}
+	usort( $out, static fn( array $a, array $b ): int => $a['d'] <=> $b['d'] );
+	return array_slice( $out, 0, $limit );
+}
+
+/**
  * Nearby areas worth going on to (brief 18): suburbs with enough listings to
  * be indexed, closest first, within 8 km -- or the guide's own hand-picked
  * list when it has one. Each with its direction, its count and the practice

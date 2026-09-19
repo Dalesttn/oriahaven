@@ -752,7 +752,38 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 <div class="xc-dockwrap" id="xcDockWrap">
 	<div class="wrap xc-dockwrap__inner">
 		<div class="xc-dock" id="xcDock" role="search" aria-label="<?php esc_attr_e( 'Find a place', 'oria' ); ?>">
-			<div class="xc-dock__controls">
+			<?php
+			/*
+			 * A category x suburb page too small to filter ("Fitness & Movement
+			 * in Malaga", seven places, no feelings, experiences or places to
+			 * choose between) left the dock as one button in an empty bar. There
+			 * it offers the same category in the nearest suburbs instead.
+			 */
+			$oria_dock_bare = ! $oria_moods && ! $oria_ways && ! $oria_exp && ! $oria_has_loc;
+			$oria_near_cat  = ( $oria_dock_bare && $oria_term && $oria_area && \Oria\Core\Taxonomies\is_suburb( $oria_area ) && function_exists( '\Oria\V4\Area\category_nearby' ) )
+				? \Oria\V4\Area\category_nearby( $oria_term, $oria_area, is_array( $oria_city ) ? $oria_city : null )
+				: array();
+			?>
+			<div class="xc-dock__controls<?php echo $oria_near_cat ? ' xc-dock__controls--near' : ''; ?>">
+				<?php if ( $oria_near_cat ) : ?>
+					<div class="xc-near">
+						<p class="xc-near__label">
+							<?php
+							/* translators: %s: category name */
+							printf( esc_html__( '%s nearby', 'oria' ), esc_html( $oria_pname ) );
+							?>
+						</p>
+						<ul class="xc-near__list">
+							<?php foreach ( $oria_near_cat as $oria_nc ) : ?>
+								<li>
+									<a class="xc-pchip" href="<?php echo esc_url( $oria_nc['url'] ); ?>" data-oria-event="category_nearby_click"<?php echo '' !== $oria_nc['dir'] ? ' title="' . esc_attr( sprintf( /* translators: 1: suburb, 2: compass direction */ __( '%1$s, to the %2$s', 'oria' ), \Oria\Theme\tname( $oria_nc['term'] ), $oria_nc['dir'] ) ) . '"' : ''; ?>>
+										<?php echo esc_html( \Oria\Theme\tname( $oria_nc['term'] ) ); ?> <span class="xc-pchip__n"><?php echo esc_html( number_format_i18n( $oria_nc['n'] ) ); ?></span>
+									</a>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
+				<?php endif; ?>
 				<?php
 				if ( $oria_moods ) {
 					$oria_dock_ctl( 'xcWays', __( 'Desired feeling', 'oria' ), __( 'How do you want to feel?', 'oria' ), 'mood', __( 'Any feeling', 'oria' ) );
