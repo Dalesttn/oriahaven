@@ -138,6 +138,22 @@ function rows( \WP_Term $term ): array {
 		 */
 		if ( function_exists( '\Oria\Core\Taxonomies\is_city' ) && \Oria\Core\Taxonomies\is_city( $term ) ) {
 			$cache[ $term->term_id ] = city_rows( $term->slug );
+		} elseif ( function_exists( '\Oria\Core\Taxonomies\is_suburb' ) && \Oria\Core\Taxonomies\is_suburb( $term ) ) {
+			/*
+			 * A suburb by its display name, as the results engine matches it
+			 * (data-suburb). Faq\matching() compares sanitize_title() of the
+			 * name with the slug, which misses a suburb whose slug had to be
+			 * made unique: "Margaret River" is margaret-river-town, and its
+			 * page said "No practices listed" above its own ten listings.
+			 */
+			$name = \Oria\Theme\tname( $term );
+			$city = function_exists( '\Oria\Core\Cities\for_area' ) ? (string) ( \Oria\Core\Cities\for_area( $term )['slug'] ?? '' ) : '';
+			$cache[ $term->term_id ] = array_values(
+				array_filter(
+					city_rows( $city ),
+					static fn( array $r ): bool => html_entity_decode( (string) ( $r['suburb'] ?? '' ), ENT_QUOTES, 'UTF-8' ) === $name
+				)
+			);
 		} else {
 			$cache[ $term->term_id ] = function_exists( '\Oria\Core\Faq\matching' ) ? array_values( (array) \Oria\Core\Faq\matching( $term ) ) : array();
 		}

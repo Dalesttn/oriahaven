@@ -44,3 +44,15 @@ listed venue. Sub-categories use their parent category's picture.
 | Area | Source | Photographer |
 |---|---|---|
 | Fremantle (High Street) | https://www.pexels.com/photo/5865075/ | Rachel Claire |
+| Fremantle & South (waterfront) | https://www.pexels.com/photo/36765079/ | Afifi Zakaria |
+| Perth CBD (Elizabeth Quay) | https://www.pexels.com/photo/20777136/ | Horace Young |
+| Perth Central (from Kings Park) | https://www.pexels.com/photo/16229061/ | Tibor Janas |
+| West Perth (Kings Park) | https://www.pexels.com/photo/28458386/ | Dieter Wolff |
+| Western Suburbs (Cottesloe) | https://www.pexels.com/photo/8112745/ | Rachel Claire |
+| Rockingham & Peel (Mandurah) | https://www.pexels.com/photo/19728459/ | Zane Holmes |
+| Margaret River & South (Redgate Beach) | https://www.pexels.com/photo/38854591/ | Ajay Lamichhane |
+| Northern Suburbs (a Perth beach, not named) | https://www.pexels.com/photo/27608819/ | James Wong |
+| Perth Hills (bushland road, not named) | https://www.pexels.com/photo/20260314/ | Line Knipst |
+| Swan Valley & East (black swans, not named) | https://www.pexels.com/photo/33125605/ | Ajay Lamichhane |
+| South East (rock pools, not named) | https://www.pexels.com/photo/4577810/ | Rachel Claire |
+| Margaret River town (coast) | https://www.pexels.com/photo/35928299/ | Michelle Chadwick |
