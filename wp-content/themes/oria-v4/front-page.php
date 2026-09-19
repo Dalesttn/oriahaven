@@ -491,7 +491,11 @@ $oria_short = static function ( string $name ): string {
 			}
 			?>
 			<article class="xh-world">
-				<img class="xh-world__pic" src="<?php echo esc_url( $oria_v4img( $oria_w[2] ) ); ?>" alt="" loading="lazy" decoding="async" width="720" height="960">
+				<?php $oria_wbase = str_replace( '-720.webp', '', $oria_w[2] ); ?>
+				<img class="xh-world__pic" src="<?php echo esc_url( $oria_v4img( $oria_w[2] ) ); ?>"
+					srcset="<?php echo esc_url( $oria_v4img( "{$oria_wbase}-720.webp" ) ); ?> 720w, <?php echo esc_url( $oria_v4img( "{$oria_wbase}-1200.webp" ) ); ?> 1200w"
+					sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 50vw, 86vw"
+					alt="" loading="lazy" decoding="async" width="720" height="960">
 				<div class="xh-world__body on-deep">
 					<h3 class="h2 xh-world__title"><?php echo esc_html( $oria_w[0] ); ?></h3>
 					<p class="xh-world__line"><?php echo esc_html( $oria_w[1] ); ?></p>
