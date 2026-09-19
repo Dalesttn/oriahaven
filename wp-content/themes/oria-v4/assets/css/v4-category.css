@@ -613,3 +613,17 @@ html.xc-locked { overflow: hidden; }
   .xc-bocard:hover .xc-bocard__pic img { transform: none; }
   #browse .listing:hover .btn--dark .btn__dot { transform: none; }
 }
+
+/* --- The Explore hub (oria-v4/oria-directory-v2.php) --------------------------
+   The same components; only what a whole-city page needs differently. */
+.xc-hub .xc-hz__title b { font-weight: inherit; color: var(--brand-gold); font-variant-numeric: tabular-nums; }
+.xc-hub .xc-hz__line--long { max-width: 52ch; font-size: clamp(1rem, 1.3vw, 1.15rem); line-height: 1.5; }
+@media (max-width: 59.99rem) { .xc-hub .xc-hz__title b { color: var(--moss); } }
+/* The featured card's twin in the list, while the card shows (v4-category.js). */
+#dirResults > .listing.xc-twin { display: none !important; }
+/* The hub's list grows by "Show more listings"; it stays beside the map. */
+@media (min-width: 64rem) {
+  html body #browse.is-map .xc-results > #dirMore { display: block !important; grid-column: 1; }
+}
+.xc-trendline { margin-block: var(--s-6) 0; }
+.xc-trendline .cmpnudge { margin: 0; }

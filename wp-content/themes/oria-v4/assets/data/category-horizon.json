@@ -29,5 +29,15 @@
       "heading": "Not sure what to book first?",
       "copy": "Sauna, ice bath and float sessions ask very different things of you. Here is the quickest way to choose."
     }
+  },
+  "hub": {
+    "_about": "The Explore hub (oria-v4/oria-directory-v2.php). Moods here name PRACTICE category slugs; the hub drops any category with no listings in the city, and any mood left with none. Choosing a mood ticks those categories in the directory's own cat= filter.",
+    "moods": [
+      { "slug": "switch-off", "name": "Switch off", "line": "Quiet rooms, stillness and sound", "cats": ["mind", "energy", "sound"] },
+      { "slug": "recover", "name": "Recover", "line": "Heat, cold and hands-on treatments", "cats": ["spa", "bodywork"] },
+      { "slug": "move", "name": "Move", "line": "Classes that get you moving", "cats": ["fitness", "yoga"] },
+      { "slug": "connect", "name": "Connect", "line": "Groups, circles and making things together", "cats": ["community", "creative"] },
+      { "slug": "treat-yourself", "name": "Treat yourself", "line": "Make the day feel special", "cats": ["beauty", "spa"] }
+    ]
   }
 }

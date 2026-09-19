@@ -811,7 +811,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 					<?php if ( $oria_moods ) : ?>
 						<div class="xc-moods" role="group" aria-label="<?php esc_attr_e( 'Moods', 'oria' ); ?>">
 							<?php foreach ( $oria_moods as $oria_m ) : ?>
-								<button type="button" class="xc-mood" aria-pressed="false" data-xc-mood="<?php echo esc_attr( $oria_m['slug'] ); ?>" data-xc-mood-name="<?php echo esc_attr( $oria_m['name'] ); ?>" data-svc="<?php echo esc_attr( implode( ',', $oria_m['items'] ) ); ?>">
+								<button type="button" class="xc-mood" aria-pressed="false" data-xc-mood="<?php echo esc_attr( $oria_m['slug'] ); ?>" data-xc-mood-name="<?php echo esc_attr( $oria_m['name'] ); ?>" data-kind="svc" data-items="<?php echo esc_attr( implode( ',', $oria_m['items'] ) ); ?>">
 									<span class="xc-mood__name"><?php echo esc_html( $oria_m['name'] ); ?></span>
 									<?php if ( '' !== $oria_m['line'] ) : ?>
 										<span class="xc-mood__line"><?php echo esc_html( $oria_m['line'] ); ?></span>

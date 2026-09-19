@@ -35,9 +35,18 @@ add_action(
 		 * their own page: the front page, a category (practice) page and a
 		 * listing. Their templates here override the parent's by name.
 		 */
+		/*
+		 * The Explore hub (/explore/, /explore/{city}/) wears the category
+		 * page's layout (oria-v4/oria-directory-v2.php) and shares its sheet
+		 * and script. Same test the router uses to hand it that template
+		 * (Oria\Core\PracticesIndex\template()).
+		 */
+		$oria_v4_hub = is_post_type_archive( 'listing' ) && ! is_search()
+			&& function_exists( '\Oria\Core\PracticesIndex\mode' ) && '' !== \Oria\Core\PracticesIndex\mode();
+
 		$layouts = array(
 			'oria-v4-home'     => array( 'v4-home.css', is_front_page() ),
-			'oria-v4-category' => array( 'v4-category.css', is_tax( 'practice' ) ),
+			'oria-v4-category' => array( 'v4-category.css', is_tax( 'practice' ) || $oria_v4_hub ),
 			'oria-v4-listing'  => array( 'v4-listing.css', is_singular( 'listing' ) ),
 		);
 		foreach ( $layouts as $handle => $layout ) {
@@ -51,7 +60,7 @@ add_action(
 		wp_enqueue_script( 'oria-v4-nav', "{$uri}/assets/js/v4-nav.js", array(), (string) filemtime( "{$dir}/assets/js/v4-nav.js" ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 
 		// Category and listing page behaviour, when those pages ship a script.
-		foreach ( array( 'oria-v4-category-js' => array( 'v4-category.js', is_tax( 'practice' ) ), 'oria-v4-listing-js' => array( 'v4-listing.js', is_singular( 'listing' ) ) ) as $handle => $js ) {
+		foreach ( array( 'oria-v4-category-js' => array( 'v4-category.js', is_tax( 'practice' ) || $oria_v4_hub ), 'oria-v4-listing-js' => array( 'v4-listing.js', is_singular( 'listing' ) ) ) as $handle => $js ) {
 			if ( $js[1] && is_readable( "{$dir}/assets/js/{$js[0]}" ) ) {
 				wp_enqueue_script( $handle, "{$uri}/assets/js/{$js[0]}", array(), (string) filemtime( "{$dir}/assets/js/{$js[0]}" ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 			}

@@ -38,7 +38,10 @@
   function $$(s, c) { return Array.prototype.slice.call((c || doc).querySelectorAll(s)); }
 
   var root = $("#dirResults");
-  if (!root || root.getAttribute("data-mode") !== "category") return;
+  // Category pages (data-mode="category") and the Explore hub (app.js's
+  // directory mode): both carry the Horizon hero.
+  if (!root || !$(".xc-hz")) return;
+  var CAT = root.getAttribute("data-mode") === "category";
 
   var phone = window.matchMedia("(max-width: 50rem)");
   var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -217,16 +220,22 @@
   });
 
   /* ---- 3. moods, experiences, location ---------------------------------- */
-  var expBoxes = $$('[data-xc-exp-list] input[data-filter="svc"]');
+  /* What the dock filters by: services (svc=) on a category page,
+     categories (cat=) on the hub -- whichever its lists carry. */
+  var KIND = (function () {
+    var i = $("[data-xc-exp-list] input[data-filter]") || $("#xcWays input[data-filter]");
+    return i ? i.getAttribute("data-filter") : "svc";
+  })();
+  var expBoxes = $$('[data-xc-exp-list] input[data-filter="' + KIND + '"]');
   var moodBtns = $$(".xc-mood");
   var activeMood = null;
-  function moodItems(btn) { return (btn.getAttribute("data-svc") || "").split(",").filter(Boolean); }
+  function moodItems(btn) { return (btn.getAttribute("data-items") || "").split(",").filter(Boolean); }
   function svcBoxes() {
     // One input per service: the Experience list when there is one, else
     // the moods' own lists.
     if (expBoxes.length) return expBoxes;
     var seen = {}, out = [];
-    $$('#xcWays input[data-filter="svc"]').forEach(function (b) { if (!seen[b.value]) { seen[b.value] = 1; out.push(b); } });
+    $$('#xcWays input[data-filter="' + KIND + '"]').forEach(function (b) { if (!seen[b.value]) { seen[b.value] = 1; out.push(b); } });
     return out;
   }
   function ticked() {
@@ -325,6 +334,10 @@
     if (!on.length) return "";
     return on.length === 1 ? labelOf(on[0]) : labelOf(on[0]) + " + " + (on.length - 1) + " more";
   }
+  // The labels as the server drew them ("All experiences" / "All categories").
+  function initial(key, fallback) { var v = $('[data-xc-val="' + key + '"]'); return v ? v.textContent.trim() : fallback; }
+  var expDefault = initial("exp", "All experiences");
+  var ribbonDefault = initial("ribbon", expDefault);
   var locDefault = (function () { var v = $('[data-xc-val="loc"]'); return v ? v.textContent.trim() : ""; })();
   function locSummary() {
     var seen = {}, on = [];
@@ -350,9 +363,9 @@
     $$("[data-xc-mood-detail]").forEach(function (d) { d.hidden = d.getAttribute("data-xc-mood-detail") !== activeMood; });
     var mood = moodName(), exp = expSummary();
     if (moodBtns.length) setVal("mood", mood || "Any feeling");
-    setVal("exp", exp || "All experiences");
+    setVal("exp", exp || expDefault);
     setVal("loc", locSummary());
-    setVal("ribbon", mood || exp || "All experiences");
+    setVal("ribbon", mood || exp || ribbonDefault);
     $$(".xc-pchip[data-xc-svc][role=button]").forEach(function (a) {
       var box = expBoxes.filter(function (b) { return b.value === a.getAttribute("data-xc-svc"); })[0];
       if (box) a.setAttribute("aria-pressed", box.checked ? "true" : "false");
@@ -424,7 +437,7 @@
     h.el.classList.remove("is-inline");
   }
   function placeInline() {
-    var cards = $$("#dirResults > article.listing");
+    var cards = $$("#dirResults > article.listing:not(.xc-twin)");
     var first = onFirstPage();
     // The Oria Note after the sixth listing, with more to follow.
     if (homes.xcNote) {
@@ -436,7 +449,8 @@
     // Local intelligence after the page's listings.
     if (homes.xcLocal) {
       if (first && cards.length > 6) {
-        var last = cards[cards.length - 1];
+        // After the first run of ten (the hub's list grows with "load more").
+        var last = cards[Math.min(cards.length, 10) - 1];
         if (last.nextElementSibling !== homes.xcLocal.el) last.insertAdjacentElement("afterend", homes.xcLocal.el);
         homes.xcLocal.el.classList.add("is-inline");
       } else putHome(homes.xcLocal);
@@ -465,10 +479,10 @@
   }
 
   var svcName = {};
-  (Array.isArray(DATA.services) ? DATA.services : []).forEach(function (s) { if (s && s.id) svcName[s.id] = s.name; });
+  (KIND === "cat" ? (DATA.categories || []) : (Array.isArray(DATA.services) ? DATA.services : [])).forEach(function (s) { if (s && s.id) svcName[s.id] = s.name; });
   function activeSvc() {
     var seen = {}, out = [];
-    $$('input[data-filter="svc"]:checked').forEach(function (b) {
+    $$('input[data-filter="' + KIND + '"]:checked').forEach(function (b) {
       if (seen[b.value] || isLocked(b)) return;
       seen[b.value] = 1;
       out.push(b.value);
@@ -488,11 +502,12 @@
       var a = $(".listing__name a", art);
       var l = a ? listingFor(a.getAttribute("href")) : null;
       if (!l) return;
-      var hits = (l.svc || []).filter(function (s) { return on.indexOf(s) > -1; });
+      var own = KIND === "cat" ? [l.cat].concat(l.also || []) : (l.svc || []);
+      var hits = own.filter(function (s) { return on.indexOf(s) > -1; });
       if (!hits.length) return;
       var p = doc.createElement("p");
       p.className = "xc-match";
-      var names = hits.map(function (s) { return svcName[s] || s; }).join(", ");
+      var names = hits.filter(function (s, i) { return hits.indexOf(s) === i; }).map(function (s) { return svcName[s] || s; }).join(", ");
       if (mood) {
         p.appendChild(doc.createTextNode("Matches "));
         var b = doc.createElement("b");
@@ -500,7 +515,7 @@
         p.appendChild(b);
         p.appendChild(doc.createTextNode(": " + names));
       } else {
-        p.appendChild(doc.createTextNode("Offers " + names));
+        p.appendChild(doc.createTextNode((KIND === "cat" ? "In " : "Offers ") + names));
       }
       var desc = $(".listing__desc", art);
       if (desc) desc.parentNode.insertBefore(p, desc);
@@ -519,8 +534,27 @@
     $$("#dirResults > article.listing img").forEach(function (img, i) { if (i < 2) img.loading = "eager"; });
   }
 
+  /* The hub's one Featured card. On a category page app.js keeps it out of
+     the list itself (#featBand); the hub's directory mode does not, so the
+     card's twin is hidden here while the card shows -- on the page as it
+     arrived, before any filter or re-sort, exactly as the category band. */
+  var band = !CAT ? $("#featBand") : null;
+  var bandLink = band ? $(".listing__name a", band) : null;
+  var bandUrl = bandLink ? bandLink.getAttribute("href") : "";
+  function paintBand() {
+    if (!band) return;
+    var sort = $("#dirSort");
+    var on = activeFilters() === 0 && (!sort || sort.value === "relevance");
+    band.hidden = !on;
+    $$("#dirResults > article.listing").forEach(function (art) {
+      var a = $(".listing__name a", art);
+      art.classList.toggle("xc-twin", on && !!a && a.getAttribute("href") === bandUrl);
+    });
+  }
+
   function afterRender(e) {
     deriveMood();
+    paintBand();
     placeInline();
     updateSplit(e && e.detail && e.detail.urls);
     paintMatches();
