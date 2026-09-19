@@ -50,45 +50,129 @@
   --claimed:  #2d6a5c;
   --featured: #1d4f45;
 
-  /* Type: Nunito Sans throughout, as in the reference */
+  /* Type: Nunito Sans for the interface (self-hosted below) */
   --font-sans: "Nunito Sans", ui-sans-serif, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --font-edit: "Nunito Sans", ui-sans-serif, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  /*
+   * Two voices (design review, 19 Sep 2026): an editorial serif for
+   * headings and emotional moments, the clean sans for everything you
+   * operate. Newsreader is the parent's own, already self-hosted, so the
+   * serif costs no new download.
+   */
+  --font-edit: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
 
-  /* Bold capitals run wider than Manrope 500, so the big sizes step down */
-  --fs-display: clamp(2.3rem, 4.9vw, 4.1rem);
-  --fs-h1:      clamp(2rem, 3.8vw, 3.05rem);
-  --fs-h2:      clamp(1.65rem, 2.8vw, 2.4rem);
+  --fs-display: clamp(2.75rem, 6vw, 5.5rem);
+  --fs-h1:      clamp(2.2rem, 4.2vw, 3.6rem);
+  --fs-h2:      clamp(1.8rem, 3vw, 2.7rem);
 
-  --tr-display: -0.005em;
-  --tr-head:    0;
+  --tr-display: -0.02em;
+  --tr-head:    -0.012em;
   --tr-micro:   0.14em;
+
+  /* The system accent: terracotta, for eyebrows, markers and primary actions. */
+  --accent:      #c24f26;   /* white text on it 4.7:1 */
+  --accent-text: #a33d1a;   /* as text on cream 5.6:1 */
+
+  /* Radius hierarchy: sections, features, cards, controls, pills. */
+  --radius-section: 40px;
+  --radius-feature: 30px;
+  --radius-card:    22px;
+  --radius-control: 16px;
+  --radius-pill:    999px;
+
+  /* Section rhythm. */
+  --section-gap: clamp(4rem, 9vw, 9.5rem);
 
   --sh-1: 0 1px 2px rgba(26, 42, 38, .05), 0 2px 8px rgba(26, 42, 38, .04);
   --sh-2: 0 2px 6px rgba(26, 42, 38, .06), 0 12px 28px rgba(26, 42, 38, .07);
   --sh-3: 0 4px 12px rgba(26, 42, 38, .08), 0 26px 60px rgba(26, 42, 38, .12);
+
+  /* One header now: the utility bar is gone (see header.php). */
+  --topbar-h: 0px;
+}
+@media (max-width: 40rem) {
+  :root { --radius-section: 26px; --radius-feature: 22px; }
+}
+
+/* Nunito Sans, self-hosted (latin, one variable file, 400-800). */
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(../fonts/nunito-sans-normal-latin.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 body { background: var(--paper); }
 
-/* Headlines: extra-bold capitals, like "BALANCE FITNESS AND MINDFULNESS".
-   .h3 stays sentence case, like the reference's small card headings. */
+/* Headings: the editorial serif, mixed case. Uppercase is kept for small
+   labels (.micro) only, so sections no longer all speak at one volume. */
 .display, .h1, .h2 {
-  font-weight: 800;
-  text-transform: uppercase;
-  line-height: 1.04;
+  font-family: var(--font-edit);
+  font-weight: 450;
+  text-transform: none;
+  line-height: 1.06;
+  letter-spacing: var(--tr-head);
 }
-.h3 { font-weight: 800; }
+.display { letter-spacing: var(--tr-display); line-height: 1.02; }
+.h3 { font-weight: 700; }
 .on-deep .display, .on-deep .h1, .on-deep .h2 { color: var(--white); }
+.micro { color: var(--accent-text); }
+.on-deep .micro { color: var(--brand-gold); }
 
-/* The editorial accent was Newsreader italic; in v4 it is the same
-   family, italic, so an accent word reads as emphasis, not a new voice. */
-.edit { font-style: italic; font-weight: 800; letter-spacing: 0; }
+/* The accent inside a heading: the same serif, italic. */
+.edit { font-style: italic; font-weight: 400; letter-spacing: 0; }
 
-/* Primary buttons: sunset orange. The reference's lighter orange fails
-   white text, so this is the nearest shade that passes (4.7:1). */
+/* Primary buttons: terracotta. */
 .btn { font-weight: 700; letter-spacing: 0; }
-.btn--dark { background: #c24f26; color: #fff; }
-.btn--dark .btn__dot { background: #fff; color: #c24f26; }
+.btn--dark { background: var(--accent); color: #fff; }
+.btn--dark .btn__dot { background: #fff; color: var(--accent); }
 .btn--dark:hover { background: #a8421e; }
 
 ::selection { background: #e8763f; color: var(--ink); }
+
+/* --- One header: search and "For practitioners" as small pop-overs ---- */
+.xnav-pop { position: relative; }
+.xnav-pop > summary { list-style: none; }
+.xnav-pop > summary::-webkit-details-marker { display: none; }
+.xnav-pop__btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  min-width: 44px; min-height: 44px; padding: 0 .6rem; border-radius: var(--radius-pill);
+  cursor: pointer; color: inherit; font-weight: 700; font-size: var(--fs-sm);
+}
+.xnav-pop__btn svg { width: 18px; height: 18px; }
+.xnav-pop__btn--text { padding: 0 1rem; border: 1px solid currentColor; }
+.xnav-pop__btn:hover { background: rgba(255, 255, 255, .12); }
+.site-head--solid .xnav-pop__btn:hover { background: var(--sand-2); }
+.xnav-pop__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.site-head:not(.site-head--solid) .xnav-pop__btn:focus-visible { outline-color: var(--focus-on-deep); }
+.xnav-pop__panel {
+  position: absolute; right: 0; top: calc(100% + .5rem); z-index: 60;
+  min-width: 15rem; padding: .5rem; border-radius: var(--radius-control);
+  background: var(--surface); border: 1px solid var(--line); box-shadow: var(--sh-2);
+  display: grid; gap: .15rem; color: var(--ink);
+}
+.xnav-pop__panel > a { display: block; padding: .7rem .85rem; border-radius: 10px; color: var(--ink); font-weight: 700; text-decoration: none; }
+.xnav-pop__panel > a:hover { background: var(--sand-2); }
+.xnav-search .xnav-pop__panel { min-width: 18rem; padding: .75rem 1rem; }
+.xnav-search .navsearch input,
+.site-head:not(.site-head--solid) .xnav-search .navsearch input { width: 100%; color: var(--ink); border-bottom: 1px solid var(--line-strong); padding: .5rem 0; }
+.xnav-search .navsearch input::placeholder { color: var(--text-faint); }
+.nav__actions { gap: .35rem; }
+
+/* --- Footer: six groups, columns that fold on phones ------------------ */
+.foot__group > summary { list-style: none; }
+.foot__group > summary::-webkit-details-marker { display: none; }
+.foot__group > summary h4 { margin-bottom: var(--s-4); }
+.foot__all { font-weight: 700; }
+@media (min-width: 48.01rem) {
+  .foot__group > summary { pointer-events: none; }
+}
+@media (max-width: 48rem) {
+  .foot__group { border-top: 1px solid var(--teal-line); }
+  .foot__group > summary { display: flex; justify-content: space-between; align-items: center; min-height: 48px; cursor: pointer; }
+  .foot__group > summary h4 { margin: 0; }
+  .foot__group > summary::after { content: "+"; color: var(--mist); font-size: 1.25rem; }
+  .foot__group[open] > summary::after { content: "\2212"; }
+  .foot__group .foot__list { padding-bottom: var(--s-4); }
+}

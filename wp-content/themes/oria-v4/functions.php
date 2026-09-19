@@ -25,16 +25,11 @@ add_action(
 	static function (): void {
 		$dir = get_stylesheet_directory();
 		$uri = get_stylesheet_directory_uri();
-		wp_enqueue_style(
-			'oria-v4-fonts',
-			'https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400..900;1,6..12,400..800&display=swap',
-			array(),
-			null
-		);
+		// Nunito Sans is self-hosted now (@font-face in v4.css).
 		wp_enqueue_style(
 			'oria-v4',
 			"{$uri}/assets/css/v4.css",
-			array( 'oria-pages', 'oria-v4-fonts' ),
+			array( 'oria-pages' ),
 			(string) filemtime( "{$dir}/assets/css/v4.css" )
 		);
 
@@ -55,10 +50,33 @@ add_action(
 			}
 		}
 
+		// The header's search and For practitioners pop-overs, every page.
+		wp_enqueue_script( 'oria-v4-nav', "{$uri}/assets/js/v4-nav.js", array(), (string) filemtime( "{$dir}/assets/js/v4-nav.js" ), array( 'strategy' => 'defer', 'in_footer' => true ) );
+
 		// The front page's feeling chips. The page works without it.
 		if ( is_front_page() && is_readable( "{$dir}/assets/js/v4-home.js" ) ) {
 			wp_enqueue_script( 'oria-v4-home', "{$uri}/assets/js/v4-home.js", array(), (string) filemtime( "{$dir}/assets/js/v4-home.js" ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 		}
 	},
 	20
+);
+
+/*
+ * Fonts to preload: the two v4 actually paints above the fold -- Nunito
+ * Sans (everything you operate) and Newsreader upright (the headings).
+ * The parent's Manrope is never used here, so it is not fetched early.
+ */
+add_filter( 'oria_preload_fonts', static fn(): array => array( 'newsreader-normal-latin' ) );
+add_action(
+	'wp_head',
+	static function (): void {
+		$file = get_stylesheet_directory() . '/assets/fonts/nunito-sans-normal-latin.woff2';
+		if ( is_readable( $file ) ) {
+			printf(
+				'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+				esc_url( get_stylesheet_directory_uri() . '/assets/fonts/nunito-sans-normal-latin.woff2?v=' . filemtime( $file ) )
+			);
+		}
+	},
+	2
 );

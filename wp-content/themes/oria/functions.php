@@ -221,7 +221,9 @@ add_action(
 	static function (): void {
 		$dir = get_template_directory();
 		$uri = get_template_directory_uri();
-		foreach ( array( 'manrope-normal-latin', 'newsreader-italic-latin' ) as $font ) {
+		// Filterable so a child theme that sets different faces can preload
+		// what it actually uses instead of paying for these.
+		foreach ( (array) apply_filters( 'oria_preload_fonts', array( 'manrope-normal-latin', 'newsreader-italic-latin' ) ) as $font ) {
 			$path = "{$dir}/assets/fonts/{$font}.woff2";
 			if ( file_exists( $path ) ) {
 				printf(
