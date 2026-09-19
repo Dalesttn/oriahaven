@@ -37,6 +37,9 @@ function bootstrap(): void {
 	add_action( 'manage_' . CPT . '_posts_custom_column', __NAMESPACE__ . '\column_content', 10, 2 );
 	add_filter( 'post_row_actions', __NAMESPACE__ . '\row_actions', 10, 2 );
 	add_action( 'admin_notices', __NAMESPACE__ . '\decision_notice' );
+	// Correct a claim's email, and resend the approval to the right person.
+	add_action( 'admin_menu', __NAMESPACE__ . '\register_email_page' );
+	add_action( 'admin_post_oria_claim_email', __NAMESPACE__ . '\handle_email_change' );
 	// The general "Claim a listing" form (/claim/) feeds the same queue.
 	add_action( 'oria_forms_saved', __NAMESPACE__ . '\from_form', 10, 3 );
 }
@@ -317,25 +320,11 @@ function handle_decision(): void {
 		$user->add_role( Ownership\ROLE );
 		$user_id = (int) $user->ID;
 	} else {
-		$username = sanitize_user( (string) strstr( $email, '@', true ), true );
-		if ( '' === $username || username_exists( $username ) ) {
-			$username = sanitize_user( $username . wp_rand( 100, 999 ), true );
-		}
-		$user_id = wp_insert_user(
-			array(
-				'user_login'   => $username,
-				'user_email'   => $email,
-				'display_name' => $name,
-				'user_pass'    => wp_generate_password( 24 ),
-				'role'         => Ownership\ROLE,
-			)
-		);
-		if ( is_wp_error( $user_id ) ) {
+		$user_id = new_owner_account( $email, $name );
+		if ( ! $user_id ) {
 			wp_safe_redirect( add_query_arg( 'oria_decided', 'error', $back ) );
 			exit;
 		}
-		// Core's notification carries the set-password link.
-		wp_new_user_notification( (int) $user_id, null, 'user' );
 		$new_account = true;
 	}
 
@@ -389,6 +378,9 @@ function handle_decision(): void {
 
 	update_post_meta( $request_id, '_status', 'approved' );
 	update_post_meta( $request_id, '_approved_user', (int) $user_id );
+	// Whether this approval made the account -- what decides, if the email
+	// later turns out to be wrong, that the account can simply be moved.
+	update_post_meta( $request_id, '_new_account', $new_account ? '1' : '0' );
 
 	wp_safe_redirect( add_query_arg( 'oria_decided', 'approved', $back ) );
 	exit;
@@ -445,6 +437,260 @@ function send_approved( string $email, int $listing_id, string $name, bool $new_
 		__( 'Your claim is approved', 'oria' ),
 		approved_body( $listing_id, $name, $new_account )
 	);
+}
+
+/**
+ * A practitioner account for a claim, with core's set-password email.
+ *
+ * @return int The new user id, or 0 on failure.
+ */
+function new_owner_account( string $email, string $name ): int {
+	$username = sanitize_user( (string) strstr( $email, '@', true ), true );
+	if ( '' === $username || username_exists( $username ) ) {
+		$username = sanitize_user( $username . wp_rand( 100, 999 ), true );
+	}
+	$user_id = wp_insert_user(
+		array(
+			'user_login'   => $username,
+			'user_email'   => $email,
+			'display_name' => $name,
+			'user_pass'    => wp_generate_password( 24 ),
+			'role'         => Ownership\ROLE,
+		)
+	);
+	if ( is_wp_error( $user_id ) ) {
+		return 0;
+	}
+	// Core's notification carries the set-password link.
+	wp_new_user_notification( (int) $user_id, null, 'user' );
+	return (int) $user_id;
+}
+
+/** Point the listing at its owner. */
+function link_owner( int $listing_id, int $user_id ): void {
+	if ( function_exists( 'update_field' ) ) {
+		update_field( 'claimed_by', $user_id, $listing_id );
+	} else {
+		update_post_meta( $listing_id, 'claimed_by', $user_id );
+	}
+}
+
+/** How many listings this user owns. */
+function owned_count( int $user_id ): int {
+	return count(
+		get_posts(
+			array(
+				'post_type'      => PostTypes\LISTING,
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_query'     => array( array( 'key' => 'claimed_by', 'value' => $user_id ) ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			)
+		)
+	);
+}
+
+/**
+ * Whether this claim's approval made this account -- the account can then
+ * be moved to the corrected email rather than a second one made.
+ *
+ * Approvals record it (_new_account). For ones made before that, it is
+ * read from the account: registered no earlier than the request, holding
+ * only the practitioner role, and owning nothing but this one listing. An
+ * existing account that merely got linked fails at least one of those, and
+ * is left alone.
+ */
+function made_by_claim( int $request_id, \WP_User $user ): bool {
+	if ( owned_count( (int) $user->ID ) > 1 ) {
+		return false;
+	}
+	$flag = (string) get_post_meta( $request_id, '_new_account', true );
+	if ( '' !== $flag ) {
+		return '1' === $flag;
+	}
+	$registered = strtotime( $user->user_registered . ' UTC' );
+	$requested  = (int) get_post_time( 'U', true, $request_id );
+	return $registered && $registered >= $requested - 60 && array( Ownership\ROLE ) === array_values( (array) $user->roles );
+}
+
+/* ------------------------------------------------------ change the email */
+
+function register_email_page(): void {
+	// Hidden: reached from the claim's row action, never from the menu.
+	add_submenu_page( 'options.php', __( 'Claim email', 'oria' ), __( 'Claim email', 'oria' ), 'manage_options', 'oria-claim-email', __NAMESPACE__ . '\render_email_page' );
+}
+
+function email_page_url( int $request_id ): string {
+	return admin_url( 'options.php?page=oria-claim-email&request=' . $request_id );
+}
+
+function render_email_page(): void {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'Not allowed.', 'oria' ) );
+	}
+	$request_id = isset( $_GET['request'] ) ? (int) $_GET['request'] : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only
+	$request    = get_post( $request_id );
+	if ( ! $request || CPT !== $request->post_type ) {
+		wp_die( esc_html__( 'Claim request not found.', 'oria' ) );
+	}
+	$status     = (string) ( get_post_meta( $request_id, '_status', true ) ?: 'pending' );
+	$email      = (string) get_post_meta( $request_id, '_email', true );
+	$name       = (string) get_post_meta( $request_id, '_name', true );
+	$listing_id = (int) get_post_meta( $request_id, '_listing_id', true );
+	$history    = array_filter( (array) get_post_meta( $request_id, '_email_history', true ) );
+	$approved   = 'approved' === $status;
+	?>
+	<div class="wrap">
+		<h1><?php echo esc_html( $approved ? __( 'Change the email and resend the approval', 'oria' ) : __( 'Change the claim email', 'oria' ) ); ?></h1>
+		<?php if ( isset( $_GET['oria_decided'] ) && 'bad_email' === $_GET['oria_decided'] ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only ?>
+			<div class="notice notice-error"><p><?php esc_html_e( 'That is not a valid email address.', 'oria' ); ?></p></div>
+		<?php endif; ?>
+		<p>
+			<?php
+			printf(
+				/* translators: 1: person, 2: listing */
+				esc_html__( 'The claim by %1$s on %2$s.', 'oria' ),
+				'<b>' . esc_html( $name ) . '</b>',
+				'<b>' . esc_html( (string) get_post_field( 'post_title', $listing_id, 'raw' ) ) . '</b>'
+			);
+			?>
+		</p>
+		<?php if ( $approved ) : ?>
+			<div class="notice notice-info inline"><p>
+				<?php esc_html_e( 'Saving sends the approval email again to the address below, with a fresh link to set a password. If the approval made a new account, that account moves to this address: its password is scrambled, anyone signed in is signed out, and the link already sent to the old address stops working. If this address already has an account, the listing moves to that account instead.', 'oria' ); ?>
+			</p></div>
+		<?php endif; ?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="oria_claim_email">
+			<input type="hidden" name="request" value="<?php echo (int) $request_id; ?>">
+			<?php wp_nonce_field( 'oria_claim_email_' . $request_id ); ?>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Current email', 'oria' ); ?></th>
+					<td><code><?php echo esc_html( $email ); ?></code></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="oriaClaimEmail"><?php esc_html_e( 'Correct email', 'oria' ); ?></label></th>
+					<td><input type="email" class="regular-text" id="oriaClaimEmail" name="email" value="<?php echo esc_attr( $email ); ?>" required></td>
+				</tr>
+			</table>
+			<?php submit_button( $approved ? __( 'Save and resend the approval', 'oria' ) : __( 'Save email', 'oria' ) ); ?>
+		</form>
+		<?php if ( $history ) : ?>
+			<h2><?php esc_html_e( 'Earlier addresses', 'oria' ); ?></h2>
+			<ul>
+				<?php foreach ( $history as $h ) : ?>
+					<li><?php echo esc_html( sprintf( '%s → %s (%s)', (string) ( $h['from'] ?? '' ), (string) ( $h['to'] ?? '' ), (string) ( $h['when'] ?? '' ) ) ); ?></li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+		<p><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . CPT ) ); ?>">&larr; <?php esc_html_e( 'Back to claim requests', 'oria' ); ?></a></p>
+	</div>
+	<?php
+}
+
+function handle_email_change(): void {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'Not allowed.', 'oria' ) );
+	}
+	$request_id = isset( $_POST['request'] ) ? (int) $_POST['request'] : 0;
+	check_admin_referer( 'oria_claim_email_' . $request_id );
+
+	$back    = admin_url( 'edit.php?post_type=' . CPT );
+	$request = get_post( $request_id );
+	$new     = sanitize_email( wp_unslash( (string) ( $_POST['email'] ?? '' ) ) );
+	if ( ! $request || CPT !== $request->post_type ) {
+		wp_safe_redirect( add_query_arg( 'oria_decided', 'error', $back ) );
+		exit;
+	}
+	if ( ! is_email( $new ) ) {
+		wp_safe_redirect( add_query_arg( 'oria_decided', 'bad_email', email_page_url( $request_id ) ) );
+		exit;
+	}
+
+	$status     = (string) ( get_post_meta( $request_id, '_status', true ) ?: 'pending' );
+	$old        = (string) get_post_meta( $request_id, '_email', true );
+	$name       = (string) get_post_meta( $request_id, '_name', true );
+	$listing_id = (int) get_post_meta( $request_id, '_listing_id', true );
+	$changed    = strtolower( $old ) !== strtolower( $new );
+
+	if ( $changed ) {
+		$history   = array_filter( (array) get_post_meta( $request_id, '_email_history', true ) );
+		$history[] = array( 'from' => $old, 'to' => $new, 'when' => current_time( 'Y-m-d H:i' ), 'by' => get_current_user_id() );
+		update_post_meta( $request_id, '_email_history', array_values( $history ) );
+		update_post_meta( $request_id, '_email', $new );
+	}
+
+	// Not approved yet: the corrected address is simply what approval uses.
+	if ( 'approved' !== $status ) {
+		wp_safe_redirect( add_query_arg( 'oria_decided', 'email_saved', $back ) );
+		exit;
+	}
+
+	$old_user    = get_user_by( 'id', (int) get_post_meta( $request_id, '_approved_user', true ) );
+	$existing    = get_user_by( 'email', $new );
+	$new_account = false;
+
+	if ( $existing instanceof \WP_User && ( ! $old_user instanceof \WP_User || (int) $existing->ID !== (int) $old_user->ID ) ) {
+		// The right person already has an account: the listing moves to it.
+		$existing->add_role( Ownership\ROLE );
+		$user_id = (int) $existing->ID;
+	} elseif ( $old_user instanceof \WP_User && made_by_claim( $request_id, $old_user ) ) {
+		/*
+		 * The account this claim made: move it to the right address, and
+		 * shut out whoever received the first email. A new password ends
+		 * any password they set; destroying sessions ends any log-in; and
+		 * the fresh set-password link below replaces the reset key, so the
+		 * link in the misdirected email no longer works.
+		 */
+		$user_id = (int) $old_user->ID;
+		if ( $changed ) {
+			add_filter( 'send_email_change_email', '__return_false' ); // no "your email changed" note to the wrong person
+			$ok = wp_update_user( array( 'ID' => $user_id, 'user_email' => $new ) );
+			remove_filter( 'send_email_change_email', '__return_false' );
+			if ( is_wp_error( $ok ) ) {
+				wp_safe_redirect( add_query_arg( 'oria_decided', 'error', $back ) );
+				exit;
+			}
+			wp_set_password( wp_generate_password( 24 ), $user_id );
+			\WP_Session_Tokens::get_instance( $user_id )->destroy_all();
+		}
+		wp_new_user_notification( $user_id, null, 'user' );
+		$new_account = true;
+	} else {
+		// Linked to somebody's own account: leave it be, and make one for
+		// the right address.
+		$user_id = new_owner_account( $new, $name );
+		if ( ! $user_id ) {
+			wp_safe_redirect( add_query_arg( 'oria_decided', 'error', $back ) );
+			exit;
+		}
+		$new_account = true;
+	}
+
+	link_owner( $listing_id, $user_id );
+	// A different account took over: the previous one keeps nothing it only
+	// had through this listing.
+	if ( $old_user instanceof \WP_User && (int) $old_user->ID !== $user_id && 0 === owned_count( (int) $old_user->ID ) ) {
+		$old_user->remove_role( Ownership\ROLE );
+	}
+	update_post_meta( $request_id, '_approved_user', $user_id );
+	update_post_meta( $request_id, '_new_account', $new_account ? '1' : '0' );
+
+	send_approved( $new, $listing_id, $name, $new_account );
+
+	\Oria\Core\Audit\note(
+		$listing_id,
+		$changed
+			/* translators: 1: old email, 2: new email */
+			? sprintf( __( 'Claim email corrected from %1$s to %2$s, and the approval resent.', 'oria' ), $old, $new )
+			/* translators: %s: email */
+			: sprintf( __( 'Claim approval resent to %s.', 'oria' ), $new ),
+		get_current_user_id()
+	);
+
+	wp_safe_redirect( add_query_arg( 'oria_decided', 'resent', $back ) );
+	exit;
 }
 
 /* ------------------------------------------------------------- admin ui */
@@ -522,6 +768,14 @@ function row_actions( array $actions, \WP_Post $post ): array {
 			),
 		) + $actions;
 	}
+	$state = (string) ( get_post_meta( $post->ID, '_status', true ) ?: 'pending' );
+	if ( 'declined' !== $state ) {
+		$actions['oria_email'] = sprintf(
+			'<a href="%s">%s</a>',
+			esc_url( email_page_url( (int) $post->ID ) ),
+			'approved' === $state ? esc_html__( 'Change email / resend approval', 'oria' ) : esc_html__( 'Change email', 'oria' )
+		);
+	}
 	return $actions;
 }
 
@@ -535,6 +789,9 @@ function decision_notice(): void {
 		'taken'    => array( 'error', __( 'That listing is already claimed by another account — resolve the existing owner first.', 'oria' ) ),
 		'stale'    => array( 'warning', __( 'That request was already decided.', 'oria' ) ),
 		'error'    => array( 'error', __( 'Something went wrong deciding that request.', 'oria' ) ),
+		'resent'      => array( 'success', __( 'Approval resent. The claim now uses the corrected email, and a fresh set-password link went with it.', 'oria' ) ),
+		'email_saved' => array( 'success', __( 'Email updated. Approving the claim will use the new address.', 'oria' ) ),
+		'bad_email'   => array( 'error', __( 'That is not a valid email address.', 'oria' ) ),
 	);
 	$key = sanitize_key( (string) $_GET['oria_decided'] );
 	if ( ! isset( $messages[ $key ] ) ) {
