@@ -137,11 +137,16 @@ a.xa-stop__name:hover { text-decoration-color: currentColor; }
 .xa-stop__blurb { font-size: var(--fs-sm); line-height: 1.45; color: var(--text-soft); }
 .xa-stop__swap {
   justify-self: start; min-height: 44px; margin-top: .15rem; padding: 0 .9rem;
-  border: 1px solid var(--line-strong); border-radius: var(--radius-pill);
-  background: var(--paper); color: var(--deep); font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer;
+  /* Burnt orange: warm beside the petrol teal and brand gold, and dark
+     enough for white text (4.9:1). */
+  --xa-swap: #B4561F;
+  border: 1px solid var(--xa-swap); border-radius: var(--radius-pill);
+  background: var(--xa-swap); color: var(--white); font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer;
+  transition: background-color var(--t-fast, .15s);
 }
-.xa-stop__swap:hover { border-color: var(--deep); }
-.xa-stop__swap:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+.xa-stop__swap:hover { background: #9C4819; border-color: #9C4819; }
+.xa-stop__swap:focus-visible { outline: 2px solid var(--xa-swap); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .xa-stop__swap { transition: none; } }
 .xa-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ---- 6. events ----------------------------------------------------------- */
