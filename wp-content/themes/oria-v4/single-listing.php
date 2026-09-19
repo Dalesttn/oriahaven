@@ -806,10 +806,12 @@ while ( have_posts() ) :
 								$oria_ccard = function_exists( '\Oria\Core\Services\card' )
 									? \Oria\Core\Services\card( (string) $oria_c['slug'] )
 									: array( 'traits' => array() );
-								// Two facts at most, and never one that just repeats the card's own name.
+								// Two facts at most, and never one that repeats the card's name or its one-line note.
 								$oria_ctraits = array_slice( array_values( array_filter(
 									(array) ( $oria_ccard['traits'] ?? array() ),
-									static fn( $oria_tr ) => '' !== trim( (string) $oria_tr ) && false === stripos( (string) $oria_tr, (string) $oria_c['label'] )
+									static fn( $oria_tr ) => '' !== trim( (string) $oria_tr )
+										&& false === stripos( (string) $oria_tr, (string) $oria_c['label'] )
+										&& false === stripos( (string) $oria_c['note'], trim( (string) $oria_tr ) )
 								) ), 0, 2 );
 								?>
 								<li class="xp-svc__item"<?php echo $oria_ci >= $oria_svc_show ? ' data-xp-extra' : ''; ?>>

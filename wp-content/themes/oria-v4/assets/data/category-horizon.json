@@ -1,0 +1,33 @@
+{
+  "_about": "Configuration for the v4 category page (oria-v4/oria-practice-v2.php, 'The Wellness Horizon'). Stands in for category-level ACF fields until those exist (they belong to the oria-core plugin). focal: CSS object-position for the hero photograph, per category slug (a sub-category falls back to its parent's). moods: the 'Ways to begin' chooser; each mood lists SERVICE taxonomy slugs, and the template drops any the page's own listings do not carry, then any mood left with none. A mood has no URL of its own: choosing one ticks those services in the page's filter engine (svc=...). note: the in-results 'Oria Note' copy. Copy here must stay descriptive: no health or outcome claims.",
+  "focal": {
+    "spa": "62% 50%",
+    "recovery": "62% 50%",
+    "yoga": "60% 45%",
+    "bodywork": "60% 50%"
+  },
+  "moods": {
+    "spa": [
+      { "slug": "switch-off", "name": "Switch off", "line": "Quiet, warmth and very little effort", "svc": ["day-spa", "massage", "relaxation-massage", "float-therapy", "steam-room"] },
+      { "slug": "recover", "name": "Recover", "line": "Saunas, cold plunges and contrast sessions", "svc": ["traditional-sauna", "infrared-sauna", "ice-bath", "contrast-therapy", "compression-therapy"] },
+      { "slug": "feel-lighter", "name": "Feel lighter", "line": "Floating, gentle heat and a slow massage", "svc": ["float-therapy", "infrared-sauna", "massage"] },
+      { "slug": "indulge", "name": "Indulge", "line": "Make the day feel special", "svc": ["day-spa", "facials", "bathhouse", "massage"] },
+      { "slug": "wind-down", "name": "Wind down", "line": "Unhurried sessions for the end of the day", "svc": ["float-therapy", "traditional-sauna", "relaxation-massage"] },
+      { "slug": "try-something-new", "name": "Try something new", "line": "Experiences you may not have tried yet", "svc": ["float-therapy", "red-light-therapy", "cryotherapy", "contrast-therapy", "hyperbaric-oxygen-therapy"] }
+    ],
+    "yoga": [
+      { "slug": "slow-restful", "name": "Slow and restful", "line": "Longer holds and a softer pace", "svc": ["yin-yoga", "restorative-yoga", "yoga-nidra", "pregnancy-yoga"] },
+      { "slug": "strong-flowing", "name": "Strong and flowing", "line": "Faster sequences and more physical classes", "svc": ["vinyasa-yoga", "ashtanga-yoga", "hot-yoga"] }
+    ],
+    "bodywork": [
+      { "slug": "relaxing", "name": "Relaxing massage", "line": "Unhurried hands-on treatments", "svc": ["relaxation-massage", "massage", "swedish-massage", "pregnancy-massage", "reflexology", "lymphatic-drainage"] },
+      { "slug": "remedial-sports", "name": "Remedial and sports", "line": "Firmer, more targeted hands-on work", "svc": ["remedial-massage", "sports-massage", "deep-tissue-massage", "dry-needling", "myofascial-release", "cupping"] }
+    ]
+  },
+  "note": {
+    "spa": {
+      "heading": "Not sure what to book first?",
+      "copy": "Sauna, ice bath and float sessions ask very different things of you. Here is the quickest way to choose."
+    }
+  }
+}

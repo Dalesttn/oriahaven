@@ -101,7 +101,7 @@
   align-items: end;
   gap: 0;
   /* Short enough that the decision strip shows under it on a laptop. */
-  min-height: clamp(22rem, 56vh, 34rem);
+  min-height: clamp(20rem, 50vh, 31rem);
   border-radius: var(--r-2xl) var(--r-2xl) 0 0;
   overflow: hidden;
   background: var(--deep);
@@ -140,6 +140,7 @@
   font: inherit;
 }
 @keyframes xp-skeleton { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+.xp-hero__shot.is-loaded { animation: none; }
 .xp-hero__shot[hidden] { display: none; }
 button.xp-hero__shot { cursor: zoom-in; }
 .xp-hero__shot img,
@@ -272,23 +273,17 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 }
 .xp-decide__facts {
   display: flex; flex-wrap: wrap; align-items: center;
-  gap: .5rem 1.5rem;
+  gap: .5rem 1.75rem;
   margin: 0; padding: 0;
   list-style: none;
   font-size: var(--fs-sm);
   color: var(--ink);
 }
-.xp-decide__fact { display: inline-flex; align-items: center; gap: .4rem; min-height: 28px; }
-.xp-decide__fact + .xp-decide__fact::before {
-  content: "";
-  width: 4px; height: 4px;
-  margin-right: 1.1rem; margin-left: -.35rem;
-  border-radius: 50%;
-  background: var(--line-strong);
-}
+.xp-decide__fact { display: inline-flex; align-items: center; gap: .4rem; min-height: 28px; white-space: nowrap; }
+.xp-decide__fact .xp-fact__link { display: inline-flex; align-items: center; gap: .3rem; }
 .xp-decide__fact--price,
 .xp-decide__fact--hours { font-weight: 700; }
-.xp-decide__fact .rating__star { width: 16px; height: 16px; color: var(--gold); vertical-align: -2px; }
+.xp-decide__fact .rating__star { display: inline-block; flex: none; width: 16px; height: 16px; color: var(--gold); vertical-align: -2px; }
 .xp-decide__k {
   margin-right: .25rem;
   font-size: .75rem; font-weight: 800;
@@ -328,7 +323,7 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
   text-underline-offset: 3px;
 }
 .xp-fact__link:hover { text-decoration-color: currentColor; }
-.xp-fact__link .rating__star { width: 15px; height: 15px; margin-right: .1rem; vertical-align: -2px; color: var(--gold); }
+.xp-fact__link .rating__star { display: inline-block; width: 15px; height: 15px; margin-right: .1rem; vertical-align: -2px; color: var(--gold); }
 .xp-fact__sub { font-weight: 500; color: var(--text-soft); }
 .xp-fact__block { display: block; font-size: var(--fs-xs); }
 
@@ -711,6 +706,7 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 .reviewform__foot .btn { min-height: 44px; justify-content: center; }
 .reviewform__navnote { margin: 0; font-size: var(--fs-xs); }
 .reviewform__row--flat { margin: 0; }
+.reviewform legend { padding: 0; }
 .reviewform__choice label { min-height: 44px; }
 .reviewform .spectag { min-height: 44px; }
 .reviewform__hp {
@@ -950,8 +946,35 @@ html.xp-sheet-open { overflow: hidden; }
   background: var(--sand-2);
 }
 .xp-shop .shopband h2 { font-size: 1.15rem; }
-.xp-shop .prodgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+.xp-shop .prodgrid { position: relative; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+/* Keeps the cards' absolutely placed screen-reader text inside the scroller on phones. */
+.xp-shop .prodcard { position: relative; }
 .xp-shop .shopband__disclosure { margin-top: var(--s-3); }
+/* Compact: a small picture beside the name and the one action. The note,
+   pairings and "why we picked it" stay on the shop page. */
+.xp-shop .prodcard {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  align-content: start;
+  gap: .2rem .9rem;
+  padding: .75rem;
+}
+.xp-shop .prodcard:hover { transform: none; }
+.xp-shop .prodcard__img {
+  grid-row: 1 / span 3;
+  margin: 0;
+  width: 5.5rem;
+  border-radius: var(--r-sm);
+}
+.xp-shop .prodcard__img img,
+.xp-shop .prodcard__img--none { aspect-ratio: 1; padding: .25rem; }
+.xp-shop .prodcard__img--art img { padding: 0; }
+.xp-shop .prodcard__artnote { right: 3px; bottom: 3px; padding: 1px 4px; font-size: 8px; }
+.xp-shop .prodcard__blurb,
+.xp-shop .prodcard__goes,
+.xp-shop .prodcard__why,
+.xp-shop .prodcard__tag { display: none; }
+.xp-shop .prodcard__foot { margin-top: .35rem; }
 
 /* --- 6. Phone action bar -------------------------------------------------- */
 
@@ -1063,7 +1086,15 @@ html.xp-sheet-open { overflow: hidden; }
 
 @media (max-width: 40rem) {
   .xp-crumbs { padding-top: var(--s-3); }
-  .xp-crumbs .crumbs { font-size: var(--fs-xs); }
+  /* One line that scrolls sideways rather than two that push the photo down. */
+  .xp-crumbs .crumbs {
+    display: flex; flex-wrap: nowrap; gap: .35rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: var(--fs-xs);
+    scrollbar-width: none;
+  }
+  .xp-crumbs .crumbs::-webkit-scrollbar { display: none; }
 
   /* One photo, full bleed, the title and its facts beneath it on paper --
      readable on any picture and the H1 never fills the screen. */
@@ -1079,8 +1110,8 @@ html.xp-sheet-open { overflow: hidden; }
   }
   .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__media {
     position: relative;
-    aspect-ratio: 4 / 3;
-    max-height: 46vh;
+    aspect-ratio: 16 / 10;
+    max-height: 34vh;
     width: 100%;
     overflow: hidden;
   }
@@ -1093,7 +1124,7 @@ html.xp-sheet-open { overflow: hidden; }
   .xp-hero__shot--2 { display: none !important; }
   .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__shade { display: none; }
   .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__text {
-    padding: 1.1rem var(--gutter) .9rem;
+    padding: .85rem var(--gutter) .75rem;
     text-shadow: none;
   }
   .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__eyebrow { color: var(--text-soft); }
@@ -1103,7 +1134,10 @@ html.xp-sheet-open { overflow: hidden; }
   .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__lede { color: var(--text-soft); }
   .xp-hero__panel:not(.xp-hero__panel--n0) .xp-hero__eyebrow a:focus-visible { outline-color: var(--focus); }
   .xp-hero__title { font-size: clamp(1.85rem, 8vw, 2.35rem); }
-  .xp-hero__lede { font-size: 1.0625rem; -webkit-line-clamp: 3; }
+  .xp-hero__lede { font-size: 1.0625rem; -webkit-line-clamp: 2; }
+  .xp-hero__eyebrow { margin-bottom: .35rem; }
+  .xp-hero__eyebrow a { padding-block: .6rem; margin-block: -.25rem; }
+  .xp-hero__title { margin-bottom: .4rem; }
   /* "View all photos" stays on the one photo, top right. */
   .xp-hero__all { top: .75rem; right: var(--gutter); }
 
@@ -1112,12 +1146,12 @@ html.xp-sheet-open { overflow: hidden; }
 
   .xp-decide {
     margin-inline: var(--gutter);
-    padding: 1rem 1.1rem;
+    gap: .75rem;
+    padding: .85rem 1rem;
     border: 1px solid var(--line);
     border-radius: var(--r-lg);
   }
   .xp-decide__facts { gap: .35rem 1.1rem; }
-  .xp-decide__fact + .xp-decide__fact::before { display: none; }
   .xp-decide__acts {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
