@@ -37,6 +37,8 @@ function bootstrap(): void {
 	add_action( 'manage_' . CPT . '_posts_custom_column', __NAMESPACE__ . '\column_content', 10, 2 );
 	add_filter( 'post_row_actions', __NAMESPACE__ . '\row_actions', 10, 2 );
 	add_action( 'admin_notices', __NAMESPACE__ . '\decision_notice' );
+	// The general "Claim a listing" form (/claim/) feeds the same queue.
+	add_action( 'oria_forms_saved', __NAMESPACE__ . '\from_form', 10, 3 );
 }
 
 function register_cpt(): void {
@@ -122,19 +124,7 @@ function handle_submission(): void {
 		exit;
 	}
 
-	$request_id = (int) wp_insert_post(
-		array(
-			'post_type'   => CPT,
-			'post_status' => 'publish',
-			'post_title'  => sprintf( '%s — %s', $name, get_post_field( 'post_title', $listing, 'raw' ) ),
-		)
-	);
-	update_post_meta( $request_id, '_listing_id', $listing_id );
-	update_post_meta( $request_id, '_name', $name );
-	update_post_meta( $request_id, '_email', $email );
-	update_post_meta( $request_id, '_phone', $phone );
-	update_post_meta( $request_id, '_note', $note );
-	update_post_meta( $request_id, '_status', 'pending' );
+	create( $listing_id, $name, $email, $phone, $note );
 
 	wp_mail(
 		(string) get_option( 'admin_email' ),
@@ -153,6 +143,129 @@ function handle_submission(): void {
 
 	wp_safe_redirect( add_query_arg( 'oria_claim', 'received', get_permalink( $listing_id ) . '#claim' ) );
 	exit;
+}
+
+/**
+ * One pending request in the queue. Shared by the claim button on a listing
+ * and the general "Claim a listing" form (/claim/), so both land in the
+ * same place and are approved the same way.
+ *
+ * @param string $source 'listing' (the listing page) or 'form' (oria-forms).
+ */
+function create( int $listing_id, string $name, string $email, string $phone, string $note, string $source = 'listing', int $entry_id = 0 ): int {
+	$request_id = (int) wp_insert_post(
+		array(
+			'post_type'   => CPT,
+			'post_status' => 'publish',
+			'post_title'  => sprintf( '%s — %s', $name, get_post_field( 'post_title', $listing_id, 'raw' ) ),
+		)
+	);
+	if ( ! $request_id ) {
+		return 0;
+	}
+	update_post_meta( $request_id, '_listing_id', $listing_id );
+	update_post_meta( $request_id, '_name', $name );
+	update_post_meta( $request_id, '_email', $email );
+	update_post_meta( $request_id, '_phone', $phone );
+	update_post_meta( $request_id, '_note', $note );
+	update_post_meta( $request_id, '_status', 'pending' );
+	update_post_meta( $request_id, '_source', $source );
+	if ( $entry_id ) {
+		update_post_meta( $request_id, '_entry_id', $entry_id );
+	}
+	return $request_id;
+}
+
+/** A request for this listing from this email, in any state. */
+function exists_for( int $listing_id, string $email ): bool {
+	return (bool) get_posts(
+		array(
+			'post_type'      => CPT,
+			'posts_per_page' => 1,
+			'post_status'    => 'any',
+			'fields'         => 'ids',
+			'meta_query'     => array(
+				'relation' => 'AND',
+				array( 'key' => '_listing_id', 'value' => $listing_id ),
+				array( 'key' => '_email', 'value' => $email ),
+			),
+		)
+	);
+}
+
+/**
+ * The listing a "Claim a listing" form entry is about, or 0.
+ *
+ * The form's lookup writes "Name — https://…/listing/slug/" into
+ * listing_ref when a listing is picked, so the URL is the reliable part.
+ * Without it (someone typed a name and never picked), fall back to a
+ * published listing whose title matches the typed name exactly -- and only
+ * when exactly one does, so a guess never becomes someone else's listing.
+ *
+ * @param array<string, string> $values the entry's fields.
+ */
+function listing_from_form( array $values ): int {
+	$ref = (string) ( $values['listing_ref'] ?? '' );
+	if ( preg_match( '~https?://\S+~', $ref, $m ) ) {
+		$id = url_to_postid( $m[0] );
+		if ( ! $id ) {
+			// The URL may carry another host (a production entry read on a
+			// local copy); the slug is what identifies the listing.
+			$slug = basename( untrailingslashit( (string) wp_parse_url( $m[0], PHP_URL_PATH ) ) );
+			$post = '' !== $slug ? get_page_by_path( $slug, OBJECT, PostTypes\LISTING ) : null;
+			$id   = $post ? (int) $post->ID : 0;
+		}
+		if ( $id && PostTypes\LISTING === get_post_type( $id ) && 'publish' === get_post_status( $id ) ) {
+			return (int) $id;
+		}
+	}
+
+	$name = trim( (string) ( $values['practice'] ?? '' ) );
+	if ( '' === $name ) {
+		return 0;
+	}
+	global $wpdb;
+	$ids = $wpdb->get_col(
+		$wpdb->prepare(
+			"SELECT ID FROM {$wpdb->posts} WHERE post_type = %s AND post_status = 'publish' AND post_title = %s LIMIT 2",
+			PostTypes\LISTING,
+			$name
+		)
+	);
+	return 1 === count( $ids ) ? (int) $ids[0] : 0;
+}
+
+/**
+ * A submission of the general "Claim a listing" form (oria-forms, form id
+ * "claim") becomes a request in the queue, provided it names a listing we
+ * can identify. The form has already emailed the admin and the claimant,
+ * so nothing is sent from here. An entry that matches no listing stays in
+ * Form entries only -- there is nothing to approve it against yet.
+ *
+ * @param array<string, string> $values
+ */
+function from_form( string $form_id, array $values, int $entry_id = 0 ): int {
+	if ( 'claim' !== $form_id ) {
+		return 0;
+	}
+	$email      = sanitize_email( (string) ( $values['email'] ?? '' ) );
+	$name       = sanitize_text_field( (string) ( $values['name'] ?? '' ) );
+	$listing_id = listing_from_form( $values );
+	if ( ! $listing_id || '' === $name || ! is_email( $email ) ) {
+		return 0;
+	}
+	if ( Ownership\is_paid( $listing_id ) || exists_for( $listing_id, $email ) ) {
+		return 0;
+	}
+	return create(
+		$listing_id,
+		$name,
+		$email,
+		sanitize_text_field( (string) ( $values['phone'] ?? '' ) ),
+		sanitize_textarea_field( (string) ( $values['message'] ?? '' ) ),
+		'form',
+		$entry_id
+	);
 }
 
 /* -------------------------------------------------------------- decision */
@@ -370,6 +483,9 @@ function column_content( string $column, int $post_id ): void {
 			break;
 		case 'oria_note':
 			echo esc_html( wp_trim_words( (string) get_post_meta( $post_id, '_note', true ), 18 ) );
+			if ( 'form' === (string) get_post_meta( $post_id, '_source', true ) ) {
+				echo '<br><span style="color:#50575e">' . esc_html__( 'Via the Claim a listing form', 'oria' ) . '</span>';
+			}
 			break;
 		case 'oria_state':
 			$status = (string) ( get_post_meta( $post_id, '_status', true ) ?: 'pending' );

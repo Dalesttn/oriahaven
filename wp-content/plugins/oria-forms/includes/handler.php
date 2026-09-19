@@ -93,9 +93,17 @@ function handle(): void {
 	}
 
 	// --- record + email ------------------------------------------------
-	Entries\save( $form_id, $form, $values );
+	$entry_id = Entries\save( $form_id, $form, $values );
 	Emails\notify( $form_id, $form, $values );
 	Emails\auto_reply( $form_id, $form, $values );
+
+	/*
+	 * For other plugins to act on a saved submission -- oria-core turns a
+	 * "claim" entry into a request in Listings > Claim requests, where it
+	 * can be approved. Fired after the emails so a slow listener never
+	 * delays the confirmation.
+	 */
+	do_action( 'oria_forms_saved', $form_id, $values, $entry_id );
 
 	back( 'sent', $form_id );
 }
