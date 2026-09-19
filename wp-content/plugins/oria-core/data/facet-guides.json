@@ -16,6 +16,34 @@
           "label": "Saunas in Perth",
           "line": "Traditional and infrared"
         }
+      ],
+      "intro": [
+        "{count} places in Perth list an ice bath or cold plunge, and they fall into three kinds of room. Recovery studios, most of this list, sell the plunge by the session, usually alongside a sauna and often other equipment such as compression boots or red light. Bathhouses and a few day spas include an ice bath in a circuit with a sauna, steam room or hot bath. And a handful of gyms, yoga and Pilates studios keep a plunge beside the training floor.",
+        "The biggest difference between them is whether you share. Some sessions are communal, with a group in the same sauna and pools at a set time, often for a flat hour; others are booked as a private room for one or two people, and a few places can be hired outright for a group. Each listing says which where the place publishes it.",
+        "Where a session price is published, a sauna-and-plunge block starts at about $25 for thirty minutes and an hour runs about $35 to $45, with cheaper early-morning sessions at some rooms and packs or memberships at most. Each place sets its own prices and they change, so check before you go.",
+        "Swimwear is required at communal bathhouses, towels and change rooms vary, and some places set a minimum age. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much does an ice bath cost in Perth?",
+          "a": "Where it's published, a sauna-and-cold-plunge session starts at about $25 for thirty minutes and runs to about $45 for a private hour, with cheaper early-morning sessions at some rooms and packs or memberships at most. Each place sets its own price, and the listing shows it where the place publishes one."
+        },
+        {
+          "q": "Is an ice bath the same as a cold plunge?",
+          "a": "Perth places use the two names for the same thing: cold water you sit in for a short time. Some use chilled plunge pools, others ice baths or ice showers, and one beach-based operator uses the ocean itself. This page lists them all together."
+        },
+        {
+          "q": "Can I book an ice bath privately?",
+          "a": "Yes, at several places. Some rooms are booked for one person or a pair, and a few can be hired outright for a group; others run communal sessions at set times. The listing says which where the place publishes it."
+        },
+        {
+          "q": "What should I bring?",
+          "a": "Usually swimwear, which is required at communal bathhouses. Showers, towels and change rooms are common but not universal, so check the place's own website before your first visit."
+        },
+        {
+          "q": "Where can I do an ice bath and sauna together?",
+          "a": "Most places on this page pair the plunge with a sauna. The ones set up for alternating the two in one session are also listed under Ice bath & sauna together (contrast therapy)."
+        }
       ]
     },
     "contrast-therapy": {
@@ -33,6 +61,30 @@
           "label": "Saunas in Perth",
           "line": "Traditional and infrared"
         }
+      ],
+      "intro": [
+        "Contrast sessions alternate heat and cold in one booking: a sauna or hot plunge, then an ice bath or cold plunge, repeated in rounds. {count} places in Perth say on their own websites that they run sessions this way.",
+        "The format varies more than the name suggests. Some rooms are booked privately for an hour for one or two people; one suburban studio opens from 5am to 9pm, early enough for before work; a dedicated recovery centre pairs a magnesium hot plunge with cold plunge pools; and a beachside operator runs communal hour-long sessions where, at some sites, the cold water is the ocean.",
+        "Where prices are published, a private one-hour session is $45 for one and $80 for two at one studio, and thirty minutes in an infrared sauna starts at $25 at another. Packs and memberships bring the per-visit cost down at most places.",
+        "Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "What is contrast therapy?",
+          "a": "Alternating heat and cold in one session, usually a sauna or hot pool and then an ice bath or cold plunge, repeated a few times. How many rounds, and how long each lasts, is set by each place and often left to you."
+        },
+        {
+          "q": "Where can I do an ice bath and sauna in Perth?",
+          "a": "The {count} places on this page run both for contrast sessions. Many more have one or the other: see Ice baths & cold plunges and Saunas in Perth."
+        },
+        {
+          "q": "How much does a contrast session cost?",
+          "a": "Where it's published: a private hour is $45 for one and $80 for two at one Perth studio, and thirty minutes of sauna starts at $25 at another. Most places sell packs and memberships that lower the price per visit."
+        },
+        {
+          "q": "Can I book privately or as a group?",
+          "a": "Both exist. Some places book the room privately for one or two people, several take group bookings or can be hired outright, and others run communal sessions at set times."
+        }
       ]
     },
     "traditional-sauna": {
@@ -49,6 +101,30 @@
           "facet": "contrast-therapy",
           "label": "Ice bath & sauna together",
           "line": "Places with both, for contrast sessions"
+        }
+      ],
+      "intro": [
+        "A traditional sauna heats the air in a wood-lined room, and in Perth it turns up in four quite different settings: dedicated sauna houses and studios; communal saunas beside the beach; bathhouses, where it's one stop in a circuit with a steam room and baths; and hotel and day spas, where it usually comes with a treatment or a day visit, often in separate men's and women's areas.",
+        "Most of the {count} places here pair the heat with cold water, whether an ice bath, a cold plunge or a magnesium pool, and one sauna house runs its sessions around aufguss, where a facilitator works steam and scent through the room in rounds.",
+        "Where prices are published, a sauna-and-plunge session starts at about $25 for thirty minutes and an hour is about $35, and one Subiaco room discounts its 5am to 7am sessions. Communal beachside sessions often run a flat hour.",
+        "Bring swimwear for communal and bathhouse sessions, check whether towels are supplied, and note that some places set a minimum age: sixteen at one hotel spa, eighteen at one bathhouse. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "Where is there a Finnish sauna in Perth?",
+          "a": "Several places on this page describe their sauna as Finnish, including a sauna house built around aufguss sessions, a communal bathhouse and a dedicated recovery centre. Each listing says what kind of sauna it has."
+        },
+        {
+          "q": "Are there saunas at the beach in Perth?",
+          "a": "Yes. Beachside operators run communal sauna sessions at several Perth beaches, including Scarborough, City Beach, Cottesloe and South Beach, and at some sites the ocean is the cold plunge."
+        },
+        {
+          "q": "How long is a sauna session?",
+          "a": "Usually booked as a block. Thirty minutes and an hour are the most common lengths published, and communal beachside sessions often run a flat hour."
+        },
+        {
+          "q": "Can day visitors use a hotel spa's sauna?",
+          "a": "At some. At least one CBD hotel spa is open to day visitors as well as hotel guests; others are by appointment with a treatment. Check the listing and the spa's own website."
         }
       ]
     },
@@ -84,6 +160,21 @@
           "label": "Ice bath & sauna together",
           "line": "Heat and cold in one visit"
         }
+      ],
+      "intro": [
+        "Steam rooms are rarer in Perth than saunas: {count} places list one, and each is part of something larger. There's a communal bathhouse circuit with a Finnish sauna, hot mineral bath and ice bath; a hotel spa's retreat area with a pool and sauna, in separate men's and women's areas; and a dedicated recovery centre with cold plunge pools and a Finnish sauna.",
+        "A steam room is humid heat at a lower temperature than a sauna's dry heat. If steam is what you're after, read the listing closely: some places offer steam showers rather than a room, and pouring water on a sauna's stones makes any sauna session steamier.",
+        "Access differs from place to place. The bathhouse sells day passes (eighteen and over, swimwear required), the hotel spa's area is for sixteen and over, and the recovery centre runs memberships with casual visits. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "Where is there a steam room in Perth?",
+          "a": "The {count} places on this page have one: a bathhouse, a hotel spa and a recovery centre. Other day spas may have one without saying so on their websites; Oria Haven only lists what a place publishes."
+        },
+        {
+          "q": "What's the difference between a steam room and a sauna?",
+          "a": "A steam room fills with humid, wet heat at a lower temperature; a sauna is drier and hotter, though water poured on the stones adds steam. Saunas are listed on Saunas in Perth."
+        }
       ]
     },
     "acupuncture": {
@@ -117,6 +208,28 @@
           "facet": "contrast-therapy",
           "label": "Ice bath & sauna together",
           "line": "Places with both, for contrast sessions"
+        }
+      ],
+      "faq": [
+        {
+          "q": "How much does a sauna session cost in Perth?",
+          "a": "Where it's published: from about $25 for thirty minutes and about $35 to $45 for an hour, less for early-morning sessions at some rooms. At hotel and day spas the sauna usually comes with a treatment or a day visit rather than being sold on its own. Packs and memberships lower the per-visit price at most sauna studios."
+        },
+        {
+          "q": "What's the difference between a traditional and an infrared sauna?",
+          "a": "A traditional sauna, often Finnish-style, heats the air in a wood-lined room. An infrared sauna uses infrared panels and runs at a lower air temperature, so sessions tend to be longer. Both are listed here, and each listing says which it has."
+        },
+        {
+          "q": "Are there private saunas in Perth?",
+          "a": "Yes. Several places book a sauna room for one or two people, or hire it out to a group, rather than sharing it. Others run communal sessions, including beachside saunas and bathhouses."
+        },
+        {
+          "q": "What is aufguss?",
+          "a": "A sauna session led by a facilitator who pours water on the stones and works the steam and scent through the room in rounds. At least one Perth sauna house builds its sessions around it."
+        },
+        {
+          "q": "Where can I do a sauna and ice bath together?",
+          "a": "Most dedicated sauna studios have a cold plunge or ice bath too. The places set up to alternate the two in one session are listed under Ice bath & sauna together (contrast therapy)."
         }
       ]
     }

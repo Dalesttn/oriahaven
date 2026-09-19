@@ -1636,7 +1636,7 @@ $oria_fg_name  = $oria_fg_on
 		</h2>
 		<div class="prose prose--intro">
 			<?php foreach ( $oria_fg_intro as $oria_para ) : ?>
-				<p><?php echo esc_html( $oria_para ); ?></p>
+				<p><?php echo esc_html( $oria_fill( (string) $oria_para ) ); // {count} stays live ?></p>
 			<?php endforeach; ?>
 		</div>
 	<?php elseif ( '' !== $oria_intro_html ) : ?>
