@@ -162,14 +162,18 @@
         }
       ],
       "intro": [
-        "Steam rooms are rarer in Perth than saunas: {count} places list one, and each is part of something larger. There's a communal bathhouse circuit with a Finnish sauna, hot mineral bath and ice bath; a hotel spa's retreat area with a pool and sauna, in separate men's and women's areas; and a dedicated recovery centre with cold plunge pools and a Finnish sauna.",
+        "Steam rooms are rarer in Perth than saunas: {count} places list one, and most are part of something larger. There are bathhouse circuits with saunas, hot pools and ice baths; a hotel spa's retreat area with a pool and sauna, in separate men's and women's areas; and recovery centres where the steam room is part of a timed contrast session. At least one day spa also sells a steam session on its own.",
         "A steam room is humid heat at a lower temperature than a sauna's dry heat. If steam is what you're after, read the listing closely: some places offer steam showers rather than a room, and pouring water on a sauna's stones makes any sauna session steamier.",
-        "Access differs from place to place. The bathhouse sells day passes (eighteen and over, swimwear required), the hotel spa's area is for sixteen and over, and the recovery centre runs memberships with casual visits. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+        "Access differs from place to place. Bathhouses sell day passes or memberships (one is eighteen and over, with swimwear required), the hotel spa's area is for sixteen and over, recovery centres include the steam room in their sessions and memberships, and one Mount Hawthorn day spa books a thirty-minute steam session for $45, or $70 for two. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
       ],
       "faq": [
         {
           "q": "Where is there a steam room in Perth?",
-          "a": "The {count} places on this page have one: a bathhouse, a hotel spa and a recovery centre. Other day spas may have one without saying so on their websites; Oria Haven only lists what a place publishes."
+          "a": "The {count} places on this page have one: bathhouses, a hotel spa, recovery centres and a day spa. Other places may have one without saying so on their websites; Oria Haven only lists what a place publishes."
+        },
+        {
+          "q": "How much does a steam room session cost?",
+          "a": "Where it's published: a thirty-minute steam session is $45 for one or $70 for two at one Mount Hawthorn day spa. Bathhouses and recovery centres include the steam room in a timed session, day pass or membership rather than pricing it separately."
         },
         {
           "q": "What's the difference between a steam room and a sauna?",

@@ -1,0 +1,106 @@
+{
+ "_note": "Three places with a steam room, for Steam Rooms in Perth (3 -> 6), 19 September 2026: a bathhouse (Osborne Park), a day spa that sells steam sessions on their own (Mount Hawthorn) and a contrast recovery centre (Wangara). Every field from each place's own website on 19 September 2026; no ratings, reviews or photographs copied; priceFrom null where no single session price is published. 'Steam room' is in each services list so the site tags it. Left out: BODHI Westin and Alchemy Saunas East Fremantle, branches sharing a website with listed ones (the importer treats them as duplicates; BODHI's prices were also from a 2023 menu). No further yoga studio exists in West Perth itself -- The Yoga Space stays the only one.",
+ "categories": [],
+ "regions": [],
+ "listings": [
+  {
+   "id": "merse-wellness-osborne-park",
+   "name": "Merse Wellness Osborne Park",
+   "cat": "spa",
+   "also": [
+    "recovery",
+    "sound"
+   ],
+   "suburb": "Osborne Park",
+   "region": "north",
+   "address": "454 Scarborough Beach Rd, Osborne Park WA 6019",
+   "blurb": "Merse Wellness Osborne Park is a bathhouse on Scarborough Beach Road with hot magnesium spas, cold plunge pools, hot rock and infrared saunas, a steam room and monsoon showers. Bathhouse sessions usually run 60 to 90 minutes. The steam room is open to members and casual visitors, with bookings through the Merse app. A Rejuvenate Lounge offers compression, LED light and sound sessions. Open weekdays 5.30am to 9pm, weekends 7am to 7pm.",
+   "services": [
+    "Steam room",
+    "Magnesium spas",
+    "Cold plunge pools",
+    "Hot rock sauna",
+    "Salt room",
+    "Compression therapy",
+    "Infrared sauna",
+    "Cold plunge"
+   ],
+   "priceFrom": null,
+   "priceBand": "",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-still-water",
+   "phone": "0456 841 293",
+   "email": "",
+   "web": "https://www.mersewellness.com.au/osborne-park/",
+   "next": "Open daily",
+   "_source": "mersewellness.com.au/osborne-park — address, phone, hours, facility list incl. 'Steam Room', Rejuvenate Lounge, casual attendance note; /bathhouse — 60-90 min sessions; /osborne-park-memberships — Revive Me / Restore Me, app booking. No prices published on own site. Checked 2026-09-19."
+  },
+  {
+   "id": "revive-skin-emporium-mount-hawthorn",
+   "name": "Revive Skin Emporium",
+   "cat": "spa",
+   "also": [
+    "bodywork",
+    "beauty"
+   ],
+   "suburb": "Mount Hawthorn",
+   "region": "central",
+   "address": "Shop 2, 416-418 Oxford St, Mount Hawthorn WA 6016",
+   "blurb": "Revive Skin Emporium is a day spa on the corner of Oxford Street and Scarborough Beach Road in Mount Hawthorn, with private treatment rooms for singles and couples, a hydrotherapy spa and a steam room. The steam room can be booked on its own as a 30-minute session ($45 for one, $70 for two), paired with the spa, or before a massage, wrap or scrub. Massages start at $145 for 30 minutes. Open Monday to Saturday, closed Sundays.",
+   "services": [
+    "Steam room",
+    "Hydrotherapy spa",
+    "Therapeutic full body massage",
+    "Hot stone massage",
+    "Facials",
+    "Spa packages"
+   ],
+   "priceFrom": 45,
+   "priceBand": "$$$$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-room",
+   "phone": "(08) 9201 0971",
+   "email": "info@reviveskinemporium.com.au",
+   "web": "https://reviveskinemporium.com.au",
+   "next": "Open Mon–Sat",
+   "_source": "reviveskinemporium.com.au — address, phone, emails, 'hydrotherapy spa as well as steam room' (home); /product/steam-room and /collections/steam-spa — steam room 30 min $45 one / $70 two, spa + steam combo $105; /collections/massage — massage prices from $145 (30 min) and $185 (60 min); /pages/contact — hours Mon 9-5, Tue 9-3, Wed 9-5, Thu 9-7, Fri 9-5, Sat 9-4, Sun closed. Checked 2026-09-19."
+  },
+  {
+   "id": "recwell-wangara",
+   "name": "Recwell",
+   "cat": "recovery",
+   "also": [
+    "fitness"
+   ],
+   "suburb": "Wangara",
+   "region": "north",
+   "address": "6/42 Berriman Drive, Wangara WA 6065",
+   "blurb": "Recwell is a contrast therapy and recovery centre in Wangara with hot and cold pools, a steam room, a campfire sauna, a compression boot lounge and Reformer Pilates. Contrast sessions run 60 minutes and include the pools, sauna and steam room, booked as casual sessions, packs or week-to-week memberships from $49 a week for two sessions. Remedial massage and physiotherapy run on site through outside providers. Open weekdays 5.30am to 8pm and weekends 7am to 4pm.",
+   "services": [
+    "Steam room",
+    "Contrast therapy",
+    "Campfire sauna",
+    "Compression boots",
+    "Reformer Pilates"
+   ],
+   "priceFrom": null,
+   "priceBand": "$$",
+   "format": "in-person",
+   "rating": 0,
+   "reviews": 0,
+   "status": "unclaimed",
+   "image": "scene-scrub",
+   "phone": "0431 361 809",
+   "email": "info@recwell.com.au",
+   "web": "https://www.recwell.com.au",
+   "next": "Open daily",
+   "_source": "recwell.com.au — home (Wangara, hot/cold pools, steam room, campfire sauna, 2 weeks unlimited $99); /contact — address, phone, email, hours; /contrast-therapy — 60-min sessions incl. steam room, outside-provider massage/physio; /contrast-therapy-memberships — Essential $49/wk, Lifestyle $69/wk, Ultimate $79/wk; /casual-visits — single/5/10 packs (no single price published). Checked 2026-09-19."
+  }
+ ]
+}
