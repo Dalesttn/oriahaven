@@ -1254,3 +1254,17 @@ html.xp-sheet-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .xp-helix__line, .xp-helix__twin, .xp-helix__dot { transition: none; }
 }
+/* The Oria brush mark, top right of Experience DNA, painted in the
+   strand's own colours (the logo file is one shape, used as a mask). */
+.xp-dna-block { position: relative; }
+.xp-dna__mark {
+  position: absolute; top: var(--s-5, 1.5rem); right: 0;
+  width: clamp(44px, 6vw, 64px); aspect-ratio: 1;
+  background: conic-gradient(from 200deg, #B4561F, #C9A24B, #4F7A64, #2E8B84, #3E6E8E, #8A5A83, #B4561F);
+  -webkit-mask: url(../../../oria/assets/img/logo-mark.svg) center / contain no-repeat;
+          mask: url(../../../oria/assets/img/logo-mark.svg) center / contain no-repeat;
+  opacity: .9; transform: rotate(-8deg);
+  pointer-events: none;
+}
+/* Keep the heading and intro clear of it. */
+.xp-dna-block .xp-dna__head, .xp-dna-block .xp__lede { padding-right: clamp(52px, 7vw, 76px); }

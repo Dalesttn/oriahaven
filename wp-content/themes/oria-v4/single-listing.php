@@ -700,7 +700,8 @@ while ( have_posts() ) :
 							<?php endif; ?>
 
 							<?php if ( $oria_dna ) : ?>
-								<div class="xp__b xp__b--rule">
+								<div class="xp__b xp__b--rule xp-dna-block">
+									<span class="xp-dna__mark" aria-hidden="true"></span>
 									<h3 class="micro rowlabel xp-dna__head"><?php esc_html_e( 'Experience DNA', 'oria' ); ?></h3>
 									<p class="xp__lede">
 										<?php
