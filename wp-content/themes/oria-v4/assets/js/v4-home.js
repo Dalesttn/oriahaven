@@ -195,4 +195,70 @@
     document.querySelectorAll("[data-scroll-prev]").forEach(function (b) { b.addEventListener("click", function () { step(-1); }); });
     document.querySelectorAll("[data-scroll-next]").forEach(function (b) { b.addEventListener("click", function () { step(1); }); });
   }
+
+  /* --- A few places worth knowing: the sets take turns ----------------- */
+  /* Every set is in the markup (the page is cached whole); the first shows
+     without scripting. Here: start on a random set, move on every 8s while
+     the section is on screen, never while it is hovered or holds focus,
+     and never by itself with reduced motion. Previous / Pause / Next, and
+     the next set's pictures are fetched before it is due. */
+  var rot = document.querySelector("[data-xh-rot]");
+  if (rot) {
+    var sets = Array.prototype.slice.call(rot.querySelectorAll("[data-xh-set]"));
+    var ctl = rot.querySelector("[data-xh-rot-ctl]");
+    if (sets.length > 1 && ctl) {
+      var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var count = rot.querySelector("[data-xh-rot-count]");
+      var pauseBtn = rot.querySelector("[data-xh-rot-pause]");
+      var icon = rot.querySelector("[data-xh-rot-icon]");
+      var cur = 0, timer = null, paused = still, hovered = false, seen = false;
+      function warm(i) {
+        sets[i].querySelectorAll("img[loading=lazy]").forEach(function (img) { img.loading = "eager"; });
+      }
+      function show(i, fromUser) {
+        cur = (i + sets.length) % sets.length;
+        sets.forEach(function (s, k) {
+          s.hidden = k !== cur;
+          s.classList.toggle("is-in", k === cur && !still);
+        });
+        if (count) count.textContent = (cur + 1) + " / " + sets.length;
+        warm((cur + 1) % sets.length);
+        if (fromUser) schedule();
+      }
+      function paintPause() {
+        pauseBtn.setAttribute("aria-pressed", paused ? "true" : "false");
+        pauseBtn.setAttribute("aria-label", paused ? "Play" : "Pause");
+        if (icon) icon.innerHTML = paused ? "&#9654;" : "&#10074;&#10074;";
+      }
+      function schedule() {
+        window.clearTimeout(timer);
+        if (paused || hovered || !seen) return;
+        timer = window.setTimeout(function () { show(cur + 1, false); schedule(); }, 8000);
+      }
+      ctl.hidden = false;
+      rot.classList.add("is-live");
+      show(Math.floor(Math.random() * sets.length), false);
+      paintPause();
+      rot.querySelector("[data-xh-rot-prev]").addEventListener("click", function () { show(cur - 1, true); });
+      rot.querySelector("[data-xh-rot-next]").addEventListener("click", function () { show(cur + 1, true); });
+      pauseBtn.addEventListener("click", function () { paused = !paused; paintPause(); schedule(); });
+      rot.addEventListener("mouseenter", function () { hovered = true; schedule(); });
+      rot.addEventListener("mouseleave", function () { hovered = false; schedule(); });
+      // Keyboard focus only: a mouse click on Next leaves focus on the button,
+      // and that should not stop the turns for good.
+      rot.addEventListener("focusin", function (e) {
+        var kb = true;
+        try { kb = e.target.matches(":focus-visible"); } catch (err) { kb = true; }
+        if (kb) { hovered = true; schedule(); }
+      });
+      rot.addEventListener("focusout", function (e) { if (!rot.contains(e.relatedTarget)) { hovered = false; schedule(); } });
+      if ("IntersectionObserver" in window) {
+        // "On screen" = reaching the middle half of the viewport. A ratio
+        // threshold never fires: the section is taller than most screens.
+        new IntersectionObserver(function (en) { seen = en[0].isIntersecting; schedule(); }, { rootMargin: "-25% 0px -25% 0px", threshold: 0 }).observe(rot);
+      } else {
+        seen = true; schedule();
+      }
+    }
+  }
 })();

@@ -14,7 +14,7 @@
  *   5. Coming up: the next events, each with a feeling label
  *   6. Oria Field Notes: a photographic feature and three stories
  *   7. The map
- *   8. A few places worth knowing: three Best Of postcards
+ *   8. A few places worth knowing: Best Of postcards, three at a time, rotating
  *   9. Closing picture
  *
  * A section with nothing real to show is left out, never filled. Venue
@@ -363,31 +363,84 @@ $oria_note_label = static function ( WP_Post $p ): string {
 };
 
 /*
- * A few places worth knowing: the first pick with a reason from each Best
- * Of guide, so the places are different and all edited. Three postcards,
- * each needing the venue's own photograph; a fourth pick becomes a line.
+ * A few places worth knowing: sets of three postcards that take turns
+ * (v4-home.js). The page is cached whole, so the rotation happens in the
+ * browser: every set is in the markup, the first shows without script,
+ * and the script starts on a random set and moves on every few seconds.
+ *
+ * Best Of picks, round-robin across the guides -- each guide's first pick,
+ * then each guide's second -- so a set spans three different guides. Only
+ * picks with a reason and the venue's own photograph, each place once.
+ *
+ * Featured members join as the third card of every other set, never the
+ * lead, and say plainly that they are a paid placement.
  */
-$oria_cards = array();
+$oria_sets = array();
 if ( function_exists( '\Oria\Core\BestOf\guides' ) ) {
-	$oria_seen = array();
+	$oria_seen  = array();
+	$oria_lists = array();
 	foreach ( \Oria\Core\BestOf\guides() as $oria_g ) {
-		foreach ( \Oria\Core\BestOf\entries( (int) $oria_g->ID ) as $oria_e ) {
-			if ( '' === $oria_e['reason'] || isset( $oria_seen[ $oria_e['listing'] ] ) ) {
+		$oria_lists[] = array(
+			'guide'   => $oria_g,
+			'entries' => array_values( array_filter( \Oria\Core\BestOf\entries( (int) $oria_g->ID ), static fn( array $e ): bool => '' !== $e['reason'] ) ),
+		);
+	}
+	// Which guides lead changes daily, so the sets differ from day to day too.
+	$oria_day = current_time( 'Y-m-d' );
+	usort( $oria_lists, static fn( array $a, array $b ): int => crc32( $oria_day . $a['guide']->ID ) <=> crc32( $oria_day . $b['guide']->ID ) );
+
+	$oria_best = array();
+	for ( $oria_round = 0; $oria_round < 4 && count( $oria_best ) < 12; $oria_round++ ) {
+		foreach ( $oria_lists as $oria_l ) {
+			$oria_e = $oria_l['entries'][ $oria_round ] ?? null;
+			if ( ! $oria_e || isset( $oria_seen[ $oria_e['listing'] ] ) ) {
+				continue;
+			}
+			$oria_ph = $oria_photo( (int) $oria_e['listing'] );
+			if ( '' === $oria_ph['url'] ) {
 				continue;
 			}
 			$oria_seen[ $oria_e['listing'] ] = true;
-			$oria_cards[] = $oria_e + array( 'guide' => $oria_g, 'photo' => $oria_photo( (int) $oria_e['listing'] ) );
-			break;
+			$oria_best[] = $oria_e + array( 'guide' => $oria_l['guide'], 'photo' => $oria_ph, 'kind' => 'best' );
+			if ( count( $oria_best ) >= 12 ) {
+				break;
+			}
 		}
-		if ( count( $oria_cards ) >= 8 ) {
+	}
+
+	// Featured members with a photograph and a line of their own.
+	$oria_feat   = array();
+	$oria_blurbs = array();
+	foreach ( (array) ( \Oria\Theme\listing_data()['listings'] ?? array() ) as $oria_row ) {
+		$oria_blurbs[ (string) $oria_row['id'] ] = (string) ( $oria_row['blurb'] ?? '' );
+	}
+	$oria_fids = get_posts( array( 'post_type' => 'listing', 'post_status' => 'publish', 'numberposts' => -1, 'fields' => 'ids' ) );
+	usort( $oria_fids, static fn( $a, $b ): int => crc32( $oria_day . $a ) <=> crc32( $oria_day . $b ) );
+	foreach ( $oria_fids as $oria_fid ) {
+		$oria_fid = (int) $oria_fid;
+		if ( isset( $oria_seen[ $oria_fid ] ) || 'featured' !== \Oria\Theme\display_status( $oria_fid ) ) {
+			continue;
+		}
+		$oria_fb = $oria_blurbs[ (string) get_post_field( 'post_name', $oria_fid ) ] ?? '';
+		$oria_ph = $oria_photo( $oria_fid );
+		if ( '' === $oria_fb || '' === $oria_ph['url'] ) {
+			continue;
+		}
+		$oria_feat[] = array( 'listing' => $oria_fid, 'reason' => $oria_fb, 'label' => __( 'Featured · paid placement', 'oria' ), 'photo' => $oria_ph, 'kind' => 'featured' );
+		if ( count( $oria_feat ) >= 2 ) {
 			break;
 		}
 	}
-	// Photographed picks make the postcards; the next one is the extra line.
-	$oria_with  = array_values( array_filter( $oria_cards, static fn( array $c ): bool => '' !== $c['photo']['url'] ) );
-	$oria_extra = array_values( array_filter( $oria_cards, static fn( array $c ): bool => ! in_array( $c, array_slice( $oria_with, 0, 3 ), true ) ) );
-	$oria_cards = array_slice( $oria_with, 0, 3 );
-	$oria_extra = $oria_extra[0] ?? null;
+
+	foreach ( array_chunk( $oria_best, 3 ) as $oria_si => $oria_set ) {
+		if ( count( $oria_set ) < 3 ) {
+			break;
+		}
+		if ( 1 === $oria_si % 2 && $oria_feat ) {
+			$oria_set[2] = array_shift( $oria_feat );
+		}
+		$oria_sets[] = $oria_set;
+	}
 }
 
 // The display name: the part before a tagline separator, so a long
@@ -694,24 +747,37 @@ $oria_short = static function ( string $name ): string {
 	</div>
 </section>
 
-<?php if ( count( $oria_cards ) >= 2 ) : ?>
+<?php if ( $oria_sets ) : ?>
 <!-- 8. A few places worth knowing -->
-<section class="wrap xh-sec" aria-labelledby="xh-cards-title">
+<section class="wrap xh-sec xh-rot" aria-labelledby="xh-cards-title" aria-roledescription="carousel" data-xh-rot>
 	<header class="xh-sec__head">
 		<div>
 			<p class="micro"><span class="badge--best__mark" aria-hidden="true">&#10022;</span> <?php esc_html_e( 'From our Best Of guides', 'oria' ); ?></p>
 			<h2 class="h1" id="xh-cards-title"><?php esc_html_e( 'A few places worth knowing', 'oria' ); ?></h2>
 		</div>
-		<a class="xh-link" href="<?php echo esc_url( function_exists( '\Oria\Core\BestOf\hub_url' ) ? \Oria\Core\BestOf\hub_url() : home_url( '/best/' ) ); ?>"><?php esc_html_e( 'Every Best Of guide', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
+		<div class="xh-rot__side">
+			<?php if ( count( $oria_sets ) > 1 ) : ?>
+				<div class="xh-rot__ctl" data-xh-rot-ctl hidden>
+					<button type="button" class="xh-rot__btn" data-xh-rot-prev aria-label="<?php esc_attr_e( 'Previous places', 'oria' ); ?>"><span aria-hidden="true">&larr;</span></button>
+					<span class="xh-rot__count" data-xh-rot-count aria-live="polite">1 / <?php echo (int) count( $oria_sets ); ?></span>
+					<button type="button" class="xh-rot__btn" data-xh-rot-pause aria-pressed="false" aria-label="<?php esc_attr_e( 'Pause', 'oria' ); ?>"><span aria-hidden="true" data-xh-rot-icon>&#10074;&#10074;</span></button>
+					<button type="button" class="xh-rot__btn" data-xh-rot-next aria-label="<?php esc_attr_e( 'Next places', 'oria' ); ?>"><span aria-hidden="true">&rarr;</span></button>
+				</div>
+			<?php endif; ?>
+			<a class="xh-link" href="<?php echo esc_url( function_exists( '\Oria\Core\BestOf\hub_url' ) ? \Oria\Core\BestOf\hub_url() : home_url( '/best/' ) ); ?>"><?php esc_html_e( 'Every Best Of guide', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
+		</div>
 	</header>
-	<div class="xh-cards">
+	<div class="xh-rot__stage">
+	<?php foreach ( $oria_sets as $oria_si => $oria_cards ) : ?>
+	<div class="xh-cards" data-xh-set="<?php echo (int) $oria_si; ?>" role="group" aria-roledescription="slide" aria-label="<?php echo esc_attr( sprintf( /* translators: 1: set number, 2: number of sets */ __( '%1$d of %2$d', 'oria' ), $oria_si + 1, count( $oria_sets ) ) ); ?>"<?php echo $oria_si > 0 ? ' hidden' : ''; ?>>
 		<?php
 		foreach ( $oria_cards as $oria_i => $oria_c ) :
 			$oria_lid  = (int) $oria_c['listing'];
 			$oria_full = \Oria\Theme\ptitle( get_post( $oria_lid ) );
 			$oria_meta = array_filter( array( $oria_suburb( $oria_lid ), $oria_from( $oria_lid ) ) );
+			$oria_paid = 'featured' === ( $oria_c['kind'] ?? '' );
 			?>
-			<article class="xh-card<?php echo 0 === $oria_i ? ' xh-card--lead' : ''; ?>">
+			<article class="xh-card<?php echo 0 === $oria_i ? ' xh-card--lead' : ''; ?><?php echo $oria_paid ? ' xh-card--featured' : ''; ?>">
 				<div class="xh-card__media">
 					<img src="<?php echo esc_url( $oria_c['photo']['url'] ); ?>" alt="" loading="lazy" decoding="async">
 					<?php if ( '' !== $oria_c['photo']['credit'] ) : ?>
@@ -724,26 +790,27 @@ $oria_short = static function ( string $name ): string {
 					<?php endif; ?>
 				</div>
 				<div class="xh-card__body">
-					<p class="xh-card__award"><span class="badge--best__mark" aria-hidden="true">&#10022;</span> <?php echo esc_html( $oria_c['label'] ); ?></p>
+					<?php if ( $oria_paid ) : ?>
+						<p class="xh-card__award xh-card__award--paid"><span class="badge-dot" aria-hidden="true"></span> <?php echo esc_html( $oria_c['label'] ); ?></p>
+					<?php else : ?>
+						<p class="xh-card__award"><span class="badge--best__mark" aria-hidden="true">&#10022;</span> <?php echo esc_html( $oria_c['label'] ); ?></p>
+					<?php endif; ?>
 					<h3 class="xh-card__name"><a href="<?php echo esc_url( get_permalink( $oria_lid ) ); ?>" title="<?php echo esc_attr( $oria_full ); ?>"><?php echo esc_html( $oria_short( $oria_full ) ); ?></a></h3>
 					<?php if ( $oria_meta ) : ?>
 						<p class="xh-card__meta"><?php echo esc_html( implode( ' · ', $oria_meta ) ); ?></p>
 					<?php endif; ?>
 					<p class="xh-card__why"><?php echo esc_html( $oria_sentence( (string) $oria_c['reason'], 40 ) ); ?></p>
-					<a class="xh-card__guide" href="<?php echo esc_url( get_permalink( $oria_c['guide'] ) ); ?>"><?php esc_html_e( 'Why we chose it', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
+					<?php if ( $oria_paid ) : ?>
+						<a class="xh-card__guide" href="<?php echo esc_url( get_permalink( $oria_lid ) ); ?>"><?php esc_html_e( 'View place', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
+					<?php else : ?>
+						<a class="xh-card__guide" href="<?php echo esc_url( get_permalink( $oria_c['guide'] ) ); ?>"><?php esc_html_e( 'Why we chose it', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
+					<?php endif; ?>
 				</div>
 			</article>
 		<?php endforeach; ?>
 	</div>
-	<?php if ( $oria_extra ) : ?>
-		<p class="xh-cards__more">
-			<?php esc_html_e( 'Also shortlisted:', 'oria' ); ?>
-			<a href="<?php echo esc_url( get_permalink( (int) $oria_extra['listing'] ) ); ?>"><?php echo esc_html( $oria_short( \Oria\Theme\ptitle( get_post( (int) $oria_extra['listing'] ) ) ) ); ?></a>
-			(<?php echo esc_html( (string) $oria_extra['label'] ); ?>) &mdash;
-			<?php esc_html_e( 'from', 'oria' ); ?>
-			<a href="<?php echo esc_url( get_permalink( $oria_extra['guide'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( $oria_extra['guide'] ) ); ?></a>
-		</p>
-	<?php endif; ?>
+	<?php endforeach; ?>
+	</div>
 </section>
 <?php endif; ?>
 

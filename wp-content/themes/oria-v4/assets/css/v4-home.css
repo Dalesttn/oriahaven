@@ -382,3 +382,32 @@
 @media (max-width: 40rem) {
   .xh-concierge-wrap { margin-bottom: -6rem; }
 }
+
+/* ---- A few places worth knowing: rotating sets ------------------------- */
+.xh-rot__side { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .75rem 1.25rem; }
+.xh-rot__ctl { display: inline-flex; align-items: center; gap: .35rem; }
+.xh-rot__btn {
+  display: inline-grid; place-items: center; width: 44px; height: 44px;
+  border: 1px solid var(--line-strong); border-radius: 50%;
+  background: var(--surface); color: var(--deep); font: inherit; font-size: 1rem; cursor: pointer;
+  transition: border-color var(--t-fast, .15s), background-color var(--t-fast, .15s);
+}
+.xh-rot__btn:hover { border-color: var(--deep); }
+.xh-rot__btn:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+.xh-rot__btn[data-xh-rot-pause] { font-size: .7rem; letter-spacing: -.1em; }
+.xh-rot__count { min-width: 3.2rem; text-align: center; font-size: var(--fs-sm); font-weight: 700; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.xh-cards.is-in { animation: xh-rot-in .5s var(--ease, ease-out) both; }
+@keyframes xh-rot-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* A paid card says so, in the site's Featured colours, never the Best Of mark. */
+.xh-card__award--paid { display: inline-flex; align-items: center; gap: .4rem; color: var(--text-soft); }
+.xh-card__award--paid .badge-dot { width: .5rem; height: .5rem; border-radius: 50%; background: var(--brand-gold); }
+@media (prefers-reduced-motion: reduce) {
+  .xh-cards.is-in { animation: none; }
+  .xh-rot__btn { transition: none; }
+}
+/* Every set in one grid cell once the script runs, so the section is always
+   as tall as its tallest set and nothing below moves when the sets turn.
+   Waiting sets stay out of sight and out of the accessibility tree. */
+.xh-rot.is-live .xh-rot__stage { display: grid; }
+.xh-rot.is-live .xh-rot__stage > .xh-cards { grid-area: 1 / 1; align-self: start; }
+.xh-rot.is-live .xh-rot__stage > .xh-cards[hidden] { display: grid !important; visibility: hidden; pointer-events: none; }
