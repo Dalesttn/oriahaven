@@ -778,6 +778,34 @@ $oria_dots = static function ( int $n ): string {
 				}
 				?>
 			</p>
+			<?php
+			/*
+			 * When the handful we offer happens to sit in one part of
+			 * town, say so -- somebody about to visit two of them would
+			 * rather make one trip. Half of a short list is the bar, so
+			 * this stays quiet on a scattered set.
+			 */
+			if ( function_exists( '\Oria\Core\AreaContext\dominant' ) ) {
+				$oria_try_area = \Oria\Core\AreaContext\dominant( $oria_try, 0.5, 2 );
+				if ( $oria_try_area ) {
+					get_template_part(
+						'template-parts/area/area-strip',
+						null,
+						array(
+							'area'   => $oria_try_area,
+							'lead'   => sprintf(
+								/* translators: 1: how many, 2: suburb */
+								__( '%1$d of these are in %2$s — transport, nearby options and ways to make a day of it.', 'oria' ),
+								(int) $oria_try_area['here'],
+								(string) $oria_try_area['name']
+							),
+							'cta'    => sprintf( /* translators: %s: suburb */ __( 'Open the %s guide', 'oria' ), (string) $oria_try_area['name'] ),
+							'source' => 'compare-cluster',
+						)
+					);
+				}
+			}
+			?>
 			<div class="cmp__trygrid dir__results dir__results--wide">
 				<?php
 				global $post;

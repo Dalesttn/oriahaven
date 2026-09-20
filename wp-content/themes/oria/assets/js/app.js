@@ -482,8 +482,25 @@
                    rank: at.indexOf(q) === 0 ? 2.5 : 3.5 });
       }
     });
+    /* A place someone types is usually somewhere they want to go, not a
+       filter they want to set. Where we have a guide for it, that is the
+       destination; the directory search stays for the suburbs that have
+       no page of their own. Ranked below an exact practice match on
+       purpose -- typing a studio's name should never be answered with a
+       neighbourhood. */
+    var guided = {};
+    (D.areas || []).forEach(function (a) {
+      var name = (a.name || "").toLowerCase();
+      if (name.indexOf(q) !== 0 && q.indexOf(name) !== 0) return;
+      guided[name] = true;
+      var bits = a.places + (a.places === 1 ? " place" : " places");
+      if (a.events > 0) bits += " · " + a.events + (a.events === 1 ? " upcoming event" : " upcoming events");
+      out.push({ kind: "Neighbourhood guide", label: a.name, sub: bits, url: a.url,
+                 rank: name === q ? 1.5 : 3.2 });
+    });
     (D.regions || []).forEach(function (r) {
       (r.suburbs || []).forEach(function (name) {
+        if (guided[name.toLowerCase()]) return;
         if (name.toLowerCase().indexOf(q) === 0) {
           out.push({ kind: "Suburb", label: name,
                      sub: (counts["sub:" + name.toLowerCase()] || 0) + " places",
@@ -1304,6 +1321,16 @@
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
+    /* The guide for a suburb, by its name. Built from the same payload
+       search reads, so a pin can only offer a neighbourhood that has a
+       page -- there is nothing to guess and nothing to 404. */
+    var areaByName = (function () {
+      var D = window.ORIA_DATA || window.ORIA_SEARCH_DATA || {};
+      var by = {};
+      (D.areas || []).forEach(function (a) { by[(a.name || "").toLowerCase()] = a; });
+      return by;
+    })();
+
     var group = [];
     places.forEach(function (p) {
       var mk = L.circleMarker([p.la, p.lo], {
@@ -1327,7 +1354,17 @@
         "<b>" + esc(p.n) + "</b>" +
         (p.s ? "<span>" + esc(p.s) + "</span>" : "") +
         (meta ? '<span class="catmap__pop-meta">' + meta + "</span>" : "") +
-        '<a href="' + esc(p.u) + '" data-catmap-view>View profile &rarr;</a></div>',
+        '<a href="' + esc(p.u) + '" data-catmap-view>View profile &rarr;</a>' +
+        /* Secondary, and only where a guide exists: the pin was opened
+           for the practice, and a popup on a phone has room for one
+           decision. */
+        (function () {
+          var a = areaByName[(p.s || "").toLowerCase()];
+          if (!a) return "";
+          return '<a class="catmap__pop-area" href="' + esc(a.url) + '" data-area-promo="map-popup" data-area-slug="' +
+            esc(a.id) + '">Explore ' + esc(a.name) + " &rarr;</a>";
+        })() +
+        "</div>",
         { minWidth: 200 }
       );
       mk._oriaSub = (p.s || "").toLowerCase();
@@ -3529,6 +3566,36 @@
     try { window.dataLayer.push(payload); } catch (err) { /* never block */ }
   }
 
+  /* Finding a neighbourhood in a long list. The field hides rows it does
+     not match; it never fetches, sorts or rewrites anything, so the list
+     a crawler reads is the list that was served. */
+  function initAreaBrowse() {
+    $$("[data-area-browse]").forEach(function (root) {
+      var q = root.querySelector("[data-area-browse-q]");
+      var none = root.querySelector("[data-area-browse-none]");
+      if (!q) return;
+
+      function apply() {
+        var term = q.value.trim().toLowerCase();
+        var shown = 0;
+        $$("[data-area-browse-group]", root).forEach(function (group) {
+          var live = 0;
+          $$("[data-area-browse-item]", group).forEach(function (item) {
+            var hit = !term || item.getAttribute("data-area-browse-item").indexOf(term) > -1;
+            item.hidden = !hit;
+            if (hit) live++;
+          });
+          group.hidden = live === 0;
+          shown += live;
+        });
+        if (none) none.hidden = shown > 0;
+      }
+
+      q.addEventListener("input", apply);
+      apply();
+    });
+  }
+
   /* Neighbourhood promotions, wherever they are. One listener rather than
      one per component, and no personal data -- where it was and which area,
      nothing about who clicked. */
@@ -5415,6 +5482,7 @@
     initSiteSearch();
     initStickyCta();
     initSave();
+    initAreaBrowse();
     initAreaTracking();
     initSaveEvent();
     initSavedEventsPage();

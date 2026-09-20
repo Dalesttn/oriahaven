@@ -141,6 +141,41 @@ $oria_hero = get_post_thumbnail_id( $oria_id ) ? (string) wp_get_attachment_imag
 	</section>
 <?php endif; ?>
 
+<?php
+/*
+ * Where the picks actually cluster, when they do. Most of these guides
+ * are deliberately spread across the city and this says nothing at all
+ * on them -- which is the point. A callout about a neighbourhood that
+ * holds two of eight places would be a claim the data does not make.
+ */
+if ( function_exists( '\Oria\Core\AreaContext\dominant' ) ) {
+	$oria_bo_area = \Oria\Core\AreaContext\dominant(
+		array_filter( array_map( static fn( array $e ): int => (int) ( $e['listing'] ?? 0 ), $oria_entries ) ),
+		0.4,
+		3
+	);
+	if ( $oria_bo_area ) {
+		echo '<div class="wrap bosection bosection--flush">';
+		get_template_part(
+			'template-parts/area/area-strip',
+			null,
+			array(
+				'area'   => $oria_bo_area,
+				'lead'   => sprintf(
+					/* translators: 1: number of picks, 2: total picks, 3: suburb */
+					__( '%1$d of these %2$d picks are in %3$s.', 'oria' ),
+					(int) $oria_bo_area['here'],
+					$oria_n,
+					(string) $oria_bo_area['name']
+				),
+				'cta'    => sprintf( /* translators: %s: suburb */ __( 'Open the %s guide', 'oria' ), (string) $oria_bo_area['name'] ),
+				'source' => 'best-of-cluster',
+			)
+		);
+		echo '</div>';
+	}
+}
+?>
 <section class="wrap bosection" id="picks">
 	<div class="bopicks-head reveal">
 		<div class="sec-head__text">

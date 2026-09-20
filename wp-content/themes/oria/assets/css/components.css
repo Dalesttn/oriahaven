@@ -1366,6 +1366,55 @@ html.has-sheet .cmptray { display: none; }
 .areastrip__eyebrow { display: block; font-weight: 700; color: var(--ink); }
 .areastrip__cta { flex: none; }
 
+/* A row of neighbourhood cards, for pages where nothing has been chosen
+   yet. Three across on a desk, a swipe on a phone -- a neighbourhood is
+   a picture first and a count second, and a squeezed photo is no use. */
+.areagrid__head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: var(--s-4); flex-wrap: wrap; margin-bottom: var(--s-5);
+}
+.areagrid__line { margin: .5rem 0 0; max-width: 46ch; color: var(--text-soft); }
+.areagrid__more { flex: none; }
+.areagrid__cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+.areagrid__cards .areacard { margin-top: 0; }
+@media (max-width: 60rem) {
+  .areagrid__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 40rem) {
+  .areagrid__cards {
+    display: flex; gap: .75rem; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: .25rem var(--gutter) .75rem;
+    scroll-padding-inline: var(--gutter);
+  }
+  .areagrid__cards .areacard { flex: 0 0 min(17rem, 80%); scroll-snap-align: start; }
+}
+
+/* The full list, grouped by region. The field only hides rows, so every
+   link is in the HTML whether or not the script ever runs. */
+.areabrowse__head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-4); flex-wrap: wrap;
+}
+.areabrowse__head .xc-mesh__title { margin-bottom: 0; }
+.areabrowse__find { margin: 0; flex: 0 1 18rem; }
+.areabrowse__find .input { width: 100%; }
+.areabrowse__group { margin-top: var(--s-4); }
+.areabrowse__group[hidden] { display: none; }
+.areabrowse__region {
+  margin: 0 0 .5rem; font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-soft);
+}
+.areabrowse__n {
+  margin-left: .4rem; font-variant-numeric: tabular-nums;
+  font-size: var(--fs-xs); color: var(--text-soft);
+}
+.areabrowse .pill[hidden] { display: none; }
+.areabrowse__none { margin-top: var(--s-4); color: var(--text-soft); }
+.areabrowse__none[hidden] { display: none; }
+.areabrowse__map { margin-top: var(--s-4); }
+
 /* The event page's linked suburb, under the venue. */
 .keyfact__area {
   display: inline-block; margin-top: .3rem;

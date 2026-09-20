@@ -352,8 +352,13 @@ while ( have_posts() ) :
 	 * Somebody who has just read one Fremantle event is closer to wanting
 	 * Fremantle than to wanting Perth.
 	 */
-	if ( ! $oria_over && function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
-		$oria_day_area = \Oria\Core\AreaContext\for_post( (int) get_the_ID() );
+	$oria_day_area = function_exists( '\Oria\Core\AreaContext\for_post' )
+		? \Oria\Core\AreaContext\for_post( (int) get_the_ID() )
+		: null;
+
+	// The card is for people who can still go; the ordering below it
+	// helps either way, so the area is resolved before this gate.
+	if ( ! $oria_over ) {
 		if ( $oria_day_area ) {
 			echo '<section class="wrap section section--top-flush">';
 			get_template_part(
@@ -370,13 +375,56 @@ while ( have_posts() ) :
 		}
 	}
 
-	if ( $oria_similar ) :
+	/*
+	 * Near first, then the rest of the city. "Also on in Perth" answered
+	 * a question nobody asked -- somebody reading a Fremantle event is
+	 * closer to wanting Fremantle than to wanting Perth. When the suburb
+	 * itself has nothing else on, the region's other suburbs are tried
+	 * before falling back, so the heading is never over an empty grid.
+	 */
+	$oria_near = array();
+	if ( ! empty( $oria_day_area ) && function_exists( '\Oria\Core\Events\for_area' ) ) {
+		$oria_near = array_diff(
+			\Oria\Core\Events\for_area( (string) $oria_day_area['slug'], 4 ),
+			array( get_the_ID() )
+		);
+		if ( count( $oria_near ) < 2 && function_exists( '\Oria\Core\AreaContext\nearby' ) ) {
+			foreach ( \Oria\Core\AreaContext\nearby( $oria_day_area['term'], 4 ) as $oria_nb ) {
+				$oria_near = array_merge( $oria_near, \Oria\Core\Events\for_area( (string) $oria_nb['slug'], 2 ) );
+				if ( count( $oria_near ) >= 3 ) {
+					break;
+				}
+			}
+			$oria_near = array_diff( $oria_near, array( get_the_ID() ) );
+		}
+		$oria_near = array_slice( array_unique( $oria_near ), 0, 3 );
+	}
+
+	// Nothing appears twice: what is near is not also "across Perth".
+	$oria_similar = array_slice( array_values( array_diff( $oria_similar, $oria_near ) ), 0, 4 );
+
+	$oria_groups = array();
+	if ( $oria_near ) {
+		$oria_groups[] = array(
+			/* translators: %s: suburb */
+			'heading' => sprintf( __( 'Also on near %s', 'oria' ), (string) $oria_day_area['name'] ),
+			'ids'     => $oria_near,
+		);
+	}
+	if ( $oria_similar ) {
+		$oria_groups[] = array(
+			'heading' => $oria_near ? __( 'More events across Perth', 'oria' ) : __( 'Also on in Perth', 'oria' ),
+			'ids'     => $oria_similar,
+		);
+	}
+
+	foreach ( $oria_groups as $oria_group ) :
 		?>
 	<section class="wrap section section--top-flush">
-		<h2 class="micro" style="margin-bottom:1rem"><?php esc_html_e( 'Also on in Perth', 'oria' ); ?></h2>
+		<h2 class="micro" style="margin-bottom:1rem"><?php echo esc_html( $oria_group['heading'] ); ?></h2>
 		<div class="evgrid">
 			<?php
-			foreach ( $oria_similar as $oria_sid ) :
+			foreach ( $oria_group['ids'] as $oria_sid ) :
 				$oria_when = (string) get_field( 'event_start', $oria_sid );
 				$oria_where = (string) get_field( 'venue', $oria_sid );
 				$oria_types = wp_get_post_terms( $oria_sid, 'event_type' );
@@ -403,7 +451,7 @@ while ( have_posts() ) :
 		</div>
 	</section>
 		<?php
-	endif;
+	endforeach;
 
 	/*
 	 * The page's own id, for the view counter and the analytics layer.

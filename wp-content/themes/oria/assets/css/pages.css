@@ -4674,6 +4674,13 @@ html.has-sheet { overflow: hidden; }
 .catmap__pop b { display: block; font-weight: 700; margin-bottom: .1rem; }
 .catmap__pop span { display: block; color: var(--text-soft); font-size: .8125rem; margin-bottom: .35rem; }
 .catmap__pop a { font-weight: 600; color: var(--deep); }
+/* The neighbourhood, second. A popup on a phone has room for one
+   decision, and the pin was opened for the practice. */
+.catmap__pop-area {
+  display: block; margin-top: .35rem; padding-top: .35rem;
+  border-top: 1px solid var(--line);
+  font-size: .75rem; font-weight: 600; color: var(--text-soft);
+}
 /* Clusters: pins too close to tell apart, folded into a count. */
 .leaflet-marker-icon.catmap__cluster { display: grid; place-items: center; border-radius: 50%; background: #0E3B38; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.3); color: #fff; font: 700 .8125rem/1 var(--font-sans, system-ui, sans-serif); cursor: pointer; }
 .catmap__cluster.is-held { background: #C9A24B; color: #1d1b16; }
@@ -5722,6 +5729,13 @@ article.is-spotlit {
   text-decoration: none; border-bottom: 1px solid var(--teal-line);
 }
 .wmcard__view:hover { border-bottom-color: var(--deep); }
+/* Quieter than View, and set apart, so the card still asks one question. */
+.wmcard__area {
+  justify-self: start; margin-top: .4rem; padding-top: .4rem;
+  border-top: 1px solid var(--line); width: 100%;
+  font-size: 11px; color: var(--text-soft); text-decoration: none;
+}
+.wmcard__area:hover { color: var(--deep); }
 .wmcard__credit { display: block; margin-top: .3rem; font-size: 10px; color: var(--text-faint); }
 
 /* Goal tags on a result. Same colour as the chip that produced them and as
@@ -6595,6 +6609,13 @@ article.is-spotlit {
 
 .bosection { padding-block: clamp(1.4rem, 3vw, 2.2rem); }
 .bosection--last { padding-bottom: clamp(3rem, 6vw, 5rem); }
+/* The neighbourhood note sits against the picks below it, not floating
+   between two equal gaps. */
+.bosection--flush { padding-bottom: 0; }
+/* The suburb on a pick: a link, but still part of the meta line -- an
+   underline on hover only, or the row turns into a row of links. */
+.bopick__area { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
+.bopick__area:hover { color: var(--deep); border-bottom-color: currentColor; }
 
 /* --- Guide cards: hub, related, home ---------------------------------- */
 .bogrid { display: grid; gap: clamp(1.25rem, 3vw, 2rem); }

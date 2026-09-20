@@ -709,6 +709,24 @@ function listing_data(): array {
 			),
 			get_terms( array( 'taxonomy' => 'practice', 'hide_empty' => false ) ) ?: array()
 		),
+		/*
+		 * The neighbourhood guides, so search can offer a place as a
+		 * destination rather than only as a filter. AreaContext keeps
+		 * out any suburb too thin to have a page worth landing on, so
+		 * nothing here needs checking again in the browser.
+		 */
+		'areas'      => function_exists( '\Oria\Core\AreaContext\catalogue' )
+			? array_map(
+				static fn( array $a ): array => array(
+					'id'     => $a['slug'],
+					'name'   => $a['name'],
+					'url'    => $a['url'],
+					'places' => $a['places'],
+					'events' => $a['events'],
+				),
+				\Oria\Core\AreaContext\catalogue()
+			)
+			: array(),
 		'regions'    => array_map(
 			static function ( \WP_Term $t ): array {
 				$children = get_terms( array( 'taxonomy' => 'area', 'parent' => $t->term_id, 'hide_empty' => false ) );
@@ -1454,7 +1472,7 @@ function article_meta( int $post_id ): string {
  * have left the home map reporting no places in any region until it
  * expired. Bump SEARCH_INDEX_V whenever the shape changes.
  */
-const SEARCH_INDEX_V = 2; // 2: listing rows gained 'region' for the map.
+const SEARCH_INDEX_V = 3; // 3: the neighbourhood guides, for search and map popups.
 
 /**
  * The transient key. The directory-v2 mode is part of it: the category
@@ -1477,6 +1495,7 @@ function search_index(): array {
 	$index = array(
 		'categories'  => $full['categories'],
 		'specialties' => $full['specialties'],
+		'areas'       => $full['areas'],
 		'regions'     => array_map(
 			static fn( array $r ): array => array( 'id' => $r['id'], 'name' => $r['name'], 'suburbs' => $r['suburbs'] ),
 			$full['regions']

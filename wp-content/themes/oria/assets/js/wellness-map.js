@@ -140,6 +140,22 @@
   var PIN = { r: 6, w: 2 };
   var PIN_ON = { r: 10, w: 3 };
 
+  /* The guide for a suburb, by its name. The same payload search reads,
+     so a pin can only offer a neighbourhood that has a page.
+
+     Read on first use, not at load: this file runs before the inline
+     payload that oria-app carries, so a lookup built here at parse time
+     is always empty. */
+  var areaIndex = null;
+  function areaFor(suburb) {
+    if (!areaIndex) {
+      var D = window.ORIA_DATA || window.ORIA_SEARCH_DATA || {};
+      areaIndex = {};
+      (D.areas || []).forEach(function (a) { areaIndex[(a.name || "").toLowerCase()] = a; });
+    }
+    return areaIndex[(suburb || "").toLowerCase()] || null;
+  }
+
   /* The card shown on hover. Built on demand rather than up front: 377
      popups eagerly constructed would mean 377 image requests for pictures
      nobody has asked to see. */
@@ -182,6 +198,19 @@
     a.href = r.u;
     a.textContent = "View";
     body.appendChild(a);
+
+    /* The neighbourhood, second and quieter. The pin was opened for the
+       practice; this card has room for one decision and this is not it. */
+    var area = areaFor(r.sb);
+    if (area) {
+      var ar = document.createElement("a");
+      ar.className = "wmcard__area";
+      ar.href = area.url;
+      ar.textContent = "Explore " + area.name + " →";
+      ar.setAttribute("data-area-promo", "map-popup");
+      ar.setAttribute("data-area-slug", area.id);
+      body.appendChild(ar);
+    }
 
     /* Google Places photos may only be shown with their author credited, and
        places.php says so in as many words. No attribution, no credit line --

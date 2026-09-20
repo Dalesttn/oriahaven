@@ -52,7 +52,23 @@ $oria_rate = \Oria\Theme\effective_rating( $oria_id );
 		</div>
 		<h3 class="bopick__name"><a href="<?php echo esc_url( $oria_url ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_id ) ) ); ?></a></h3>
 		<p class="bopick__where">
-			<?php echo esc_html( implode( ' · ', array_filter( array( $oria_sub, $oria_cat ) ) ) ); ?>
+			<?php
+			/*
+			 * The suburb as a way in. A reader deciding between eight
+			 * places is often really deciding between two parts of town,
+			 * and the guide for one of them is a better answer than a
+			 * filtered list. Plain text where there is no guide.
+			 */
+			$oria_pick_area = function_exists( '\Oria\Core\AreaContext\for_post' )
+				? \Oria\Core\AreaContext\for_post( $oria_id )
+				: null;
+			if ( $oria_pick_area && '' !== $oria_sub ) :
+				?>
+				<a class="bopick__area" href="<?php echo esc_url( (string) $oria_pick_area['url'] ); ?>"
+					data-area-promo="best-of-pick" data-area-slug="<?php echo esc_attr( (string) $oria_pick_area['slug'] ); ?>"><?php echo esc_html( $oria_sub ); ?></a><?php echo '' !== $oria_cat ? esc_html( ' · ' . $oria_cat ) : ''; ?>
+			<?php else : ?>
+				<?php echo esc_html( implode( ' · ', array_filter( array( $oria_sub, $oria_cat ) ) ) ); ?>
+			<?php endif; ?>
 			<?php if ( $oria_rate['rating'] > 0 ) : ?>
 				<span class="rating"><svg class="rating__star" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg><?php echo esc_html( number_format_i18n( $oria_rate['rating'], 1 ) ); ?><?php if ( 'google' === $oria_rate['source'] ) : ?><span class="rating__count"><?php esc_html_e( 'Google', 'oria' ); ?></span><?php endif; ?></span>
 			<?php endif; ?>

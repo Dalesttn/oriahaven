@@ -238,6 +238,32 @@ get_header();
 		<?php
 		$oria_ids   = array_map( static fn( array $r ): int => $r['id'], $oria_results['listings'] );
 		$oria_near  = array_column( $oria_results['listings'], 'near', 'id' );
+
+		/*
+		 * Results that land in one part of town are worth naming; results
+		 * scattered across the city are not, and an area link under them
+		 * would be a guess dressed as a suggestion.
+		 */
+		if ( function_exists( '\Oria\Core\AreaContext\dominant' ) ) {
+			$oria_cluster = \Oria\Core\AreaContext\dominant( $oria_ids, 0.4, 3 );
+			if ( $oria_cluster ) {
+				get_template_part(
+					'template-parts/area/area-strip',
+					null,
+					array(
+						'area'   => $oria_cluster,
+						'lead'   => sprintf(
+							/* translators: 1: how many, 2: suburb */
+							__( '%1$d of these are in %2$s.', 'oria' ),
+							(int) $oria_cluster['here'],
+							(string) $oria_cluster['name']
+						),
+						'cta'    => sprintf( /* translators: %s: suburb */ __( 'Explore %s', 'oria' ), (string) $oria_cluster['name'] ),
+						'source' => 'finder-cluster',
+					)
+				);
+			}
+		}
 		$oria_q     = new WP_Query(
 			array(
 				'post_type'           => 'listing',

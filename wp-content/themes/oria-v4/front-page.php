@@ -747,6 +747,34 @@ $oria_short = static function ( string $name ): string {
 	</div>
 </section>
 
+<?php
+/*
+ * Neighbourhoods, after the map. Six is the whole section -- not the six
+ * biggest, which would be a list of the CBD's neighbours, but the six
+ * most worth an afternoon. AreaContext\featured() does that choosing and
+ * keeps any one region to two of them.
+ */
+if ( function_exists( '\Oria\Core\AreaContext\featured' ) ) {
+	$oria_hoods = \Oria\Core\AreaContext\featured( 6, function_exists( '\Oria\Core\Cities\current' ) ? \Oria\Core\Cities\current() : null );
+	if ( $oria_hoods ) {
+		get_template_part(
+			'template-parts/area/area-grid',
+			null,
+			array(
+				'areas'      => $oria_hoods,
+				'eyebrow'    => __( 'By neighbourhood', 'oria' ),
+				'heading'    => __( 'Explore Perth one neighbourhood at a time', 'oria' ),
+				'line'       => __( 'Each guide has the places worth knowing, what is on this week, and how to get there.', 'oria' ),
+				'id'         => 'xh-hoods-title',
+				'source'     => 'home-grid',
+				'more'       => home_url( '/explore/#browse-areas' ),
+				'more_label' => __( 'All neighbourhoods', 'oria' ),
+			)
+		);
+	}
+}
+?>
+
 <?php if ( $oria_sets ) : ?>
 <!-- 8. A few places worth knowing -->
 <section class="wrap xh-sec xh-rot" aria-labelledby="xh-cards-title" aria-roledescription="carousel" data-xh-rot>

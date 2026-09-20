@@ -749,6 +749,31 @@ if ( function_exists( '\Oria\Core\Trends\published' ) && \Oria\Core\Trends\publi
 
 	<?php
 	/*
+	 * And by neighbourhood -- a region is where somewhere is, a suburb is
+	 * where somebody goes. Every guide is in the HTML; the field only
+	 * hides rows.
+	 */
+	if ( function_exists( '\Oria\Core\AreaContext\catalogue' ) ) {
+		$oria_hoods = \Oria\Core\AreaContext\catalogue( function_exists( '\Oria\Core\Cities\current' ) ? \Oria\Core\Cities\current() : null );
+		if ( $oria_hoods ) {
+			echo '<div id="browse-areas"></div>';
+			get_template_part(
+				'template-parts/area/area-browse',
+				null,
+				array(
+					'areas'   => $oria_hoods,
+					'heading' => __( 'Explore by neighbourhood', 'oria' ),
+					'id'      => 'xc-hoods-title',
+					'map'     => home_url( '/wellness-map/' ),
+					'source'  => 'hub-browse',
+				)
+			);
+		}
+	}
+	?>
+
+	<?php
+	/*
 	 * Counted over this page's listings, and only the head of the list; the
 	 * toolbar's popover still holds every specialty.
 	 */
