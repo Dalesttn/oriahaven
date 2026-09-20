@@ -1309,6 +1309,67 @@ html.has-sheet .cmptray { display: none; }
 /* Editorial badge: a Best Of award. Deliberately not the Featured family --
    sentence case on sand with a gold mark, where Featured is paid and sits
    uppercase on deep green. A reader must never take one for the other. */
+/* --- Neighbourhood discovery ------------------------------------------
+   A window into a place, not an advertisement for one. Photograph, what is
+   actually there, one way in -- and always below whatever the visitor came
+   to the page for. */
+.areacard {
+  display: block; overflow: hidden;
+  border: 1px solid var(--line); border-radius: var(--r-lg, 18px);
+  background: var(--deep); color: var(--white);
+  text-decoration: none; margin-top: var(--s-4);
+  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
+}
+.areacard:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
+.areacard:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 3px; }
+.areacard__media { display: block; position: relative; aspect-ratio: 16 / 9; background: var(--deep-2); }
+.areacard__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* The photograph darkens towards the words rather than under a flat wash,
+   so it still reads as a place. */
+.areacard__media::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(8, 26, 24, .1), rgba(8, 26, 24, .75));
+}
+.areacard__body { display: block; padding: var(--s-4); }
+.areacard--plain .areacard__body { padding-block: var(--s-5); }
+.areacard__eyebrow {
+  display: block; font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gold-soft);
+}
+.areacard__name { display: block; font-size: 1.05rem; margin-top: .3rem; }
+.areacard__counts { display: block; font-size: var(--fs-xs); color: rgba(255, 255, 255, .78); margin-top: .25rem; }
+.areacard__line {
+  display: block; font-size: var(--fs-sm); color: rgba(255, 255, 255, .86);
+  margin-top: .5rem; line-height: 1.45;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.areacard__cta { display: block; font-size: var(--fs-xs); font-weight: 700; color: var(--white); margin-top: .7rem; }
+.areacard:hover .areacard__cta span { padding-left: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .areacard, .areacard__cta span { transition: none; }
+  .areacard:hover { transform: none; }
+}
+
+/* The inline strip: one line, one link, no picture. For places where a
+   card would interrupt somebody mid-scan. */
+.areastrip {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-4); flex-wrap: wrap;
+  padding: var(--s-3) var(--s-4); margin-bottom: var(--s-4);
+  border: 1px solid var(--line); border-left: 3px solid var(--brand-gold);
+  border-radius: var(--r-md); background: var(--sand-2);
+}
+.areastrip__text { margin: 0; font-size: var(--fs-sm); color: var(--text-soft); }
+.areastrip__eyebrow { display: block; font-weight: 700; color: var(--ink); }
+.areastrip__cta { flex: none; }
+
+/* The event page's linked suburb, under the venue. */
+.keyfact__area {
+  display: inline-block; margin-top: .3rem;
+  font-size: var(--fs-xs); font-weight: 600;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+
 /* --- The Best Of award badge ------------------------------------------
    An award, not a filter. The old one was a pale pill the size of a
    category chip and read as one; this is deep green with a cream disc.

@@ -446,6 +446,44 @@ foreach ( $oria_tile_counts as $oria_slug => $oria_n ) {
 		</div>
 	</div>
 
+	<?php
+	/*
+	 * The suburbs on this page that have a guide worth visiting. Built from
+	 * the events actually listed, so the strip can never offer a
+	 * neighbourhood with nothing in it -- AreaContext returns null for a
+	 * suburb too thin to have a page.
+	 */
+	$oria_area_map = array();
+	if ( function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
+		foreach ( $oria_rows as $oria_r ) {
+			$oria_key = sanitize_title( (string) $oria_r['suburb'] );
+			if ( '' === $oria_key || isset( $oria_area_map[ $oria_key ] ) ) {
+				continue;
+			}
+			$oria_ctx = \Oria\Core\AreaContext\for_post( (int) $oria_r['post']->ID );
+			if ( ! $oria_ctx ) {
+				continue;
+			}
+			$oria_area_map[ $oria_key ] = array(
+				'name'   => (string) $oria_ctx['name'],
+				'url'    => (string) $oria_ctx['url'],
+				'places' => (int) $oria_ctx['places'],
+				'slug'   => (string) $oria_ctx['slug'],
+			);
+		}
+	}
+	if ( $oria_area_map ) :
+		?>
+		<script type="application/json" data-wo-areas><?php echo wp_json_encode( $oria_area_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data block. ?></script>
+	<?php endif; ?>
+	<div class="areastrip" data-wo-areastrip hidden>
+		<p class="areastrip__text">
+			<span class="areastrip__eyebrow" data-wo-area-title></span>
+			<span data-wo-area-line></span>
+		</p>
+		<a class="areastrip__cta btn btn--sm" href="#" data-wo-area-cta data-area-promo="whats-on-filter"></a>
+	</div>
+
 	<div class="wotoolbar" data-wo-toolbar>
 		<p class="wotoolbar__count" data-wo-count role="status" aria-live="polite"
 			data-one="<?php esc_attr_e( '%d event', 'oria' ); ?>"
@@ -495,8 +533,10 @@ foreach ( $oria_tile_counts as $oria_slug => $oria_n ) {
 		<div class="dir__empty" data-wo-empty hidden style="margin-top:2rem">
 			<h2 class="h3"><?php esc_html_e( 'Nothing matches those filters yet', 'oria' ); ?></h2>
 			<p class="muted" style="margin-top:.5rem"><?php esc_html_e( 'Try widening the dates or the area — or start again and browse everything coming up.', 'oria' ); ?></p>
+			<p class="wo-empty-area" data-wo-empty-area hidden></p>
 			<p style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
 				<button class="btn btn--sm btn--dark" type="button" data-wo-clear><?php esc_html_e( 'Clear filters', 'oria' ); ?></button>
+				<a class="btn btn--sm" href="#" data-wo-empty-cta data-area-promo="whats-on-empty" hidden></a>
 				<a class="btn btn--sm" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a>
 			</p>
 		</div>

@@ -134,7 +134,35 @@ while ( have_posts() ) :
 						<div><div class="keyfact__k"><?php esc_html_e( 'Price', 'oria' ); ?></div><div class="keyfact__v"><?php echo esc_html( $oria_price ); ?></div></div>
 					<?php endif; ?>
 					<?php if ( $oria_venue ) : ?>
-						<div><div class="keyfact__k"><?php esc_html_e( 'Where', 'oria' ); ?></div><div class="keyfact__v"><?php echo esc_html( $oria_venue ); ?></div></div>
+						<div><div class="keyfact__k"><?php esc_html_e( 'Where', 'oria' ); ?></div>
+							<div class="keyfact__v">
+								<?php echo esc_html( $oria_venue ); ?>
+								<?php
+								/*
+								 * The suburb as a way in, not just an address.
+								 * Its own link, outside the booking link, so
+								 * nothing is nested inside anything.
+								 */
+								$oria_ev_area = function_exists( '\Oria\Core\AreaContext\for_post' )
+									? \Oria\Core\AreaContext\for_post( (int) get_the_ID() )
+									: null;
+								if ( $oria_ev_area ) :
+									?>
+									<a class="keyfact__area" href="<?php echo esc_url( (string) $oria_ev_area['url'] ); ?>"
+										data-area-promo="event-fact" data-area-slug="<?php echo esc_attr( (string) $oria_ev_area['slug'] ); ?>">
+										<?php
+										echo esc_html(
+											sprintf(
+												/* translators: %s: suburb */
+												__( '%s neighbourhood guide', 'oria' ),
+												(string) $oria_ev_area['name']
+											)
+										);
+										?>
+									</a>
+								<?php endif; ?>
+							</div>
+						</div>
 					<?php endif; ?>
 					<?php
 					/*
@@ -319,6 +347,29 @@ while ( have_posts() ) :
 		$oria_host_events = array_diff( \Oria\Core\Events\for_listing( (int) $oria_listing, 4 ), array( get_the_ID() ) );
 		$oria_similar     = array_slice( array_unique( array_merge( $oria_host_events, $oria_similar ) ), 0, 4 );
 	}
+	/*
+	 * Make a day of it: the neighbourhood, before the Perth-wide list.
+	 * Somebody who has just read one Fremantle event is closer to wanting
+	 * Fremantle than to wanting Perth.
+	 */
+	if ( ! $oria_over && function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
+		$oria_day_area = \Oria\Core\AreaContext\for_post( (int) get_the_ID() );
+		if ( $oria_day_area ) {
+			echo '<section class="wrap section section--top-flush">';
+			get_template_part(
+				'template-parts/area/area-card',
+				null,
+				array(
+					'area'    => $oria_day_area,
+					'eyebrow' => __( 'Make a day of it', 'oria' ),
+					'cta'     => sprintf( /* translators: %s: suburb */ __( 'Explore %s', 'oria' ), (string) $oria_day_area['name'] ),
+					'source'  => 'event-day',
+				)
+			);
+			echo '</section>';
+		}
+	}
+
 	if ( $oria_similar ) :
 		?>
 	<section class="wrap section section--top-flush">

@@ -1658,6 +1658,24 @@ while ( have_posts() ) :
 					<?php endforeach; ?>
 				</dl>
 			</div>
+
+			<?php
+			/*
+			 * The neighbourhood, under everything somebody came here to do.
+			 * A visitor deciding whether to book must not meet a guide to
+			 * the suburb first -- this is what they read afterwards.
+			 */
+			if ( function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
+				$oria_area_ctx = \Oria\Core\AreaContext\for_post( $oria_id );
+				if ( $oria_area_ctx ) {
+					get_template_part(
+						'template-parts/area/area-card',
+						null,
+						array( 'area' => $oria_area_ctx, 'source' => 'listing-rail' )
+					);
+				}
+			}
+			?>
 		</aside>
 	</div><!-- .xp-body -->
 

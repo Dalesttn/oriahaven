@@ -1026,6 +1026,37 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 		</h2>
 		<p class="dir__count" id="dirCount" role="status" aria-live="polite"></p>
 	</div>
+	<?php
+	/*
+	 * With a suburb locked, the other half of the intent has an answer of
+	 * its own. AreaContext returns null for a suburb too thin to have a
+	 * page, so this never offers a guide we noindex.
+	 */
+	if ( $oria_area && function_exists( '\Oria\Core\AreaContext\for_term' ) ) {
+		$oria_combo_ctx = \Oria\Core\AreaContext\for_term( $oria_area );
+		if ( $oria_combo_ctx ) {
+			get_template_part(
+				'template-parts/area/area-strip',
+				null,
+				array(
+					'area'   => $oria_combo_ctx,
+					'lead'   => sprintf(
+						/* translators: 1: category, lower case, 2: suburb */
+						__( 'You are exploring %1$s in %2$s.', 'oria' ),
+						strtolower( $oria_pname ),
+						(string) $oria_combo_ctx['name']
+					),
+					'cta'    => sprintf(
+						/* translators: %s: suburb */
+						__( 'View the complete %s wellness guide', 'oria' ),
+						(string) $oria_combo_ctx['name']
+					),
+					'source' => 'category-suburb',
+				)
+			);
+		}
+	}
+	?>
 	<?php if ( '' !== $oria_opener ) : ?>
 		<p class="xc-opener"><?php echo esc_html( $oria_opener ); ?></p>
 	<?php endif; ?>

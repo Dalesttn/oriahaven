@@ -3529,6 +3529,21 @@
     try { window.dataLayer.push(payload); } catch (err) { /* never block */ }
   }
 
+  /* Neighbourhood promotions, wherever they are. One listener rather than
+     one per component, and no personal data -- where it was and which area,
+     nothing about who clicked. */
+  function initAreaTracking() {
+    document.addEventListener("click", function (e) {
+      var el = e.target.closest && e.target.closest("[data-area-promo]");
+      if (!el) return;
+      pushEvent("area_promo_click", {
+        component_position: el.getAttribute("data-area-promo") || "",
+        area_slug: el.getAttribute("data-area-slug") || "",
+        destination_url: el.getAttribute("href") || ""
+      });
+    });
+  }
+
   function initTracking() {
     document.addEventListener("click", function (e) {
       var el = e.target.closest && e.target.closest("[data-oria-track]");
@@ -4390,6 +4405,57 @@
       });
     }
 
+    /* The neighbourhood strip. A suburb filter is a statement of intent --
+       somebody looking at Fremantle events is usually interested in
+       Fremantle -- so the guide is offered there and nowhere else. */
+    var areas = (function () {
+      var el = root.querySelector("[data-wo-areas]");
+      if (!el) return {};
+      try { return JSON.parse(el.textContent) || {}; } catch (e) { return {}; }
+    })();
+    var strip = root.querySelector("[data-wo-areastrip]");
+    var emptyLine = root.querySelector("[data-wo-empty-area]");
+    var emptyCta = root.querySelector("[data-wo-empty-cta]");
+
+    function paintArea(shown) {
+      var area = state.suburb ? areas[state.suburb] : null;
+
+      if (strip) {
+        if (area && shown > 0) {
+          strip.hidden = false;
+          root.querySelector("[data-wo-area-title]").textContent = "Exploring " + area.name;
+          root.querySelector("[data-wo-area-line]").textContent =
+            area.places + (area.places === 1 ? " wellness place" : " wellness places") +
+            " in " + area.name + ", with local day plans and how to get around.";
+          var cta = root.querySelector("[data-wo-area-cta]");
+          cta.href = area.url;
+          cta.textContent = "Explore " + area.name;
+          cta.setAttribute("data-area-slug", area.slug);
+        } else {
+          strip.hidden = true;
+        }
+      }
+
+      /* An empty result in a suburb is not a dead end: the places are
+         still there. The wording covers both reasons the list is empty --
+         nothing on at all, or nothing matching the other filters. */
+      if (emptyLine && emptyCta) {
+        if (area && shown === 0) {
+          emptyLine.hidden = false;
+          emptyLine.textContent =
+            "No events match that in " + area.name + " — but there are " + area.places +
+            " wellness places to explore there.";
+          emptyCta.hidden = false;
+          emptyCta.href = area.url;
+          emptyCta.textContent = "Discover " + area.name;
+          emptyCta.setAttribute("data-area-slug", area.slug);
+        } else {
+          emptyLine.hidden = true;
+          emptyCta.hidden = true;
+        }
+      }
+    }
+
     function apply() {
       var shown = 0;
       $$(".wkrow", root).forEach(function (row) {
@@ -4425,6 +4491,7 @@
       clears.forEach(function (b) {
         if (b.closest("[data-wo-toolbar]")) b.hidden = isDefault();
       });
+      paintArea(shown);
     }
 
     function set(key, value, push) {
@@ -5348,6 +5415,7 @@
     initSiteSearch();
     initStickyCta();
     initSave();
+    initAreaTracking();
     initSaveEvent();
     initSavedEventsPage();
     initClasses();
