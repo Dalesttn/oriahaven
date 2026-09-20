@@ -51,8 +51,17 @@ const REQUIRED = array( 'title', 'start', 'type', 'source_url' );
  * @return array{events: array<int, array<string, mixed>>, errors: string[]}
  */
 function read_file( string $path ): array {
-	if ( ! is_readable( $path ) ) {
-		return array( 'events' => array(), 'errors' => array( sprintf( 'Cannot read %s', $path ) ) );
+	if ( ! is_file( $path ) || ! is_readable( $path ) ) {
+		return array(
+			'events' => array(),
+			'errors' => array(
+				sprintf(
+					'Cannot read %s. A relative path is resolved from %s — pass the full path if the file is elsewhere.',
+					$path,
+					getcwd() ?: 'the current directory'
+				),
+			),
+		);
 	}
 
 	$raw = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local CLI file, not a remote fetch.
@@ -145,8 +154,15 @@ function fault( array $row ): string {
  * @return array{created: int, updated: int, skipped: int, lines: string[], errors: string[]}
  */
 function run( string $path, bool $dry_run = true, bool $publish = false ): array {
-	$read    = read_file( $path );
-	$result  = array( 'created' => 0, 'updated' => 0, 'skipped' => 0, 'lines' => array(), 'errors' => $read['errors'] );
+	$read   = read_file( $path );
+	$result = array( 'created' => 0, 'updated' => 0, 'skipped' => 0, 'lines' => array(), 'errors' => $read['errors'] );
+
+	// A path that isn't there is not a file with bad rows in it: stop here,
+	// before filemtime() warns about a file that does not exist.
+	if ( ! is_file( $path ) || ! is_readable( $path ) ) {
+		return $result;
+	}
+
 	$stamp   = gmdate( 'Y-m-d', (int) ( filemtime( $path ) ?: time() ) );
 	$sources = array();
 
@@ -309,6 +325,11 @@ function bootstrap(): void {
 			}
 			foreach ( $out['errors'] as $error ) {
 				\WP_CLI::warning( $error );
+			}
+
+			// Nothing read at all is a failed run, not a successful empty one.
+			if ( ! $out['lines'] && $out['errors'] ) {
+				\WP_CLI::error( __( 'Nothing was imported.', 'oria' ) );
 			}
 
 			$summary = sprintf(
