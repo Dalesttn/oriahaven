@@ -7291,15 +7291,67 @@ article.is-spotlit {
 
 .catabout { max-width: 62ch; }
 .catabout summary {
-  display: inline-flex; align-items: center; gap: .35rem;
+  display: inline-flex; align-items: center; gap: .6rem;
   min-height: 44px; cursor: pointer;
   font-size: var(--fs-sm); font-weight: 600; color: var(--deep);
   list-style: none;
 }
 .catabout summary::-webkit-details-marker { display: none; }
-.catabout summary::after { content: "+"; font-weight: 700; }
-.catabout[open] summary::after { content: "\2013"; }
+/* Drawn rather than typed: a "+" set in the body face sits off the
+   optical centre of anything round, and a character cannot rotate into a
+   minus. Two bars in a circle can, and the horizontal one stays put. */
+.catabout__mark {
+  position: relative; flex: none; width: 26px; height: 26px;
+  border: 1px solid var(--teal-line, var(--line)); border-radius: 50%;
+  transition: transform var(--t-med, .24s) var(--ease), background var(--t-fast, .18s) var(--ease), border-color var(--t-fast, .18s) var(--ease);
+}
+.catabout__mark::before, .catabout__mark::after {
+  content: ""; position: absolute; inset: 50% auto auto 50%;
+  width: 10px; height: 1.5px; border-radius: 2px; background: currentColor;
+  transform: translate(-50%, -50%);
+}
+.catabout__mark::after { transform: translate(-50%, -50%) rotate(90deg); }
+/* The whole mark turns rather than one bar fading: a plus that becomes a
+   cross reads as "this closes again", and it is one transform to follow
+   rather than two things happening at once. */
+.catabout[open] .catabout__mark { transform: rotate(45deg); }
+.catabout summary:hover .catabout__mark { background: var(--sand-2); border-color: var(--deep); }
 .catabout summary:focus-visible { outline: 2px solid var(--deep); outline-offset: 3px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  .catabout__mark { transition: none; }
+}
+
+/* The way into Trends to Try: deep green, because it is the one thing on
+   this page that is not a list of places, and a card that size earns the
+   colour. Roughly 200px tall -- intentional, not another section. */
+.trendnudge {
+  display: grid; grid-template-columns: minmax(0, 1fr) 15rem;
+  align-items: center; gap: var(--s-4);
+  margin-top: var(--s-5); overflow: hidden;
+  border-radius: var(--r-lg, 18px);
+  background: var(--deep); color: var(--white);
+}
+.trendnudge--bare { grid-template-columns: minmax(0, 1fr); }
+.trendnudge__body { display: grid; gap: .45rem; padding: var(--s-5); }
+.trendnudge__eyebrow {
+  display: flex; align-items: center; gap: .4rem; margin: 0;
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gold-soft);
+}
+.trendnudge__spark { font-size: 12px; line-height: 1; }
+.trendnudge__title { margin: 0; color: var(--white); }
+.trendnudge__line { margin: 0; max-width: 44ch; font-size: var(--fs-sm); color: rgba(255, 255, 255, .86); }
+.trendnudge__cta { justify-self: start; margin-top: .5rem; background: var(--white); color: var(--deep); border-color: var(--white); }
+.trendnudge__cta:hover { background: var(--sand-2); border-color: var(--sand-2); color: var(--deep); }
+.trendnudge__art { align-self: stretch; }
+.trendnudge__art img { display: block; width: 100%; height: 100%; min-height: 11rem; object-fit: cover; }
+@media (max-width: 48rem) {
+  /* The picture goes rather than stacks. Stacked it made a 343px block
+     of a card whose whole point is being small enough not to read as
+     another section; the words are what the card is for. */
+  .trendnudge { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .trendnudge__art { display: none; }
+}
 .catabout__body { display: grid; gap: .6rem; padding-bottom: .25rem; font-size: var(--fs-sm); color: var(--text-soft); }
 .catabout__body p { margin: 0; }
 

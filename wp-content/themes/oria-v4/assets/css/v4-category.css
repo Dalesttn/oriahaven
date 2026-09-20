@@ -580,7 +580,10 @@ html.xc-locked { overflow: hidden; }
 .xc-local__title { margin: 0 0 .25rem; font-size: var(--fs-micro); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
 .xc-local__copy { margin: 0; line-height: 1.6; }
 .xc-local__copy a { font-weight: 600; color: var(--deep); }
-#browse .xc-about { margin-top: var(--s-5); max-width: 62ch; }
+/* Results, then the accordion, then the trend card: three things that
+   belong together, spaced as though they do. */
+#browse .xc-about { margin-top: var(--s-6); max-width: 62ch; }
+#browse .trendnudge { margin-top: var(--s-6); }
 
 /* --- 4. Best Of shelf ------------------------------------------------------- */
 .xc-bo { margin-block: var(--s-7) 0; }
@@ -656,8 +659,6 @@ html.xc-locked { overflow: hidden; }
 @media (min-width: 64rem) {
   html body #browse.is-map .xc-results > #dirMore { display: block !important; grid-column: 1; }
 }
-.xc-trendline { margin-block: var(--s-6) 0; }
-.xc-trendline .cmpnudge { margin: 0; }
 
 /* ---- The dock on a page too small to filter: the category nearby ------- */
 .xc-near { display: grid; gap: .45rem; min-width: 0; }

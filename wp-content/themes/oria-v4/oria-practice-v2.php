@@ -1358,10 +1358,13 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 	?>
 	<details class="catabout xc-about">
 		<summary>
-			<?php
-			/* translators: 1: category, lower case, 2: place */
-			printf( esc_html__( 'About %1$s in %2$s', 'oria' ), esc_html( strtolower( $oria_pname ) ), esc_html( $oria_place_name ) );
-			?>
+			<span>
+				<?php
+				/* translators: %s: category name, lower case */
+				printf( esc_html__( 'How Oria chooses these %s places', 'oria' ), esc_html( strtolower( $oria_pname ) ) );
+				?>
+			</span>
+			<span class="catabout__mark" aria-hidden="true"></span>
 		</summary>
 		<div class="catabout__body">
 			<?php if ( ! $oria_facet && $oria_answer['sentences'] ) : ?>

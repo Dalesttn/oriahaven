@@ -673,10 +673,8 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 
 	<details class="catabout xc-about">
 		<summary>
-			<?php
-			/* translators: %s: city */
-			printf( esc_html__( 'About these places in %s', 'oria' ), esc_html( $oria_place ) );
-			?>
+			<span><?php esc_html_e( 'How Oria chooses these places', 'oria' ); ?></span>
+			<span class="catabout__mark" aria-hidden="true"></span>
 		</summary>
 		<div class="catabout__body">
 			<p>
@@ -696,25 +694,46 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 		</div>
 	</details>
 	<div class="xc-browse-end" aria-hidden="true"></div>
-</section>
 
-<?php
-/*
- * The way into Trends to Try from Explore: one quiet line, for somebody who
- * arrived with something from their feed rather than a category in mind.
- * Only once a trend is published.
- */
-if ( function_exists( '\Oria\Core\Trends\published' ) && \Oria\Core\Trends\published() ) :
+	<?php
+	/*
+	 * The way into Trends to Try, for somebody who arrived with something
+	 * from their feed rather than a category in mind. It used to be one
+	 * quiet line adrift between two sections, with ninety-six pixels of
+	 * nothing above it; it now sits inside the browse section it belongs
+	 * to, close enough to read as its foot.
+	 *
+	 * The picture is the newest trend's own, or nothing -- never a stock
+	 * photograph standing in for an article we have not written.
+	 */
+	if ( function_exists( '\Oria\Core\Trends\published' ) ) {
+		$oria_trends = \Oria\Core\Trends\published();
+		if ( $oria_trends ) {
+			$oria_tshot = get_the_post_thumbnail_url( $oria_trends[0], 'medium_large' );
+			?>
+			<aside class="trendnudge<?php echo $oria_tshot ? '' : ' trendnudge--bare'; ?>" aria-labelledby="xcTrendTitle">
+				<div class="trendnudge__body">
+					<p class="trendnudge__eyebrow">
+						<span class="trendnudge__spark" aria-hidden="true">&#10022;</span>
+						<?php esc_html_e( 'Wellness trends', 'oria' ); ?>
+					</p>
+					<h2 class="h3 trendnudge__title" id="xcTrendTitle"><?php esc_html_e( 'Seen something new online?', 'oria' ); ?></h2>
+					<p class="trendnudge__line"><?php esc_html_e( 'What it actually is, what a first session is like, and where to try it in Perth.', 'oria' ); ?></p>
+					<a class="btn btn--dark btn--sm trendnudge__cta" href="<?php echo esc_url( \Oria\Core\Trends\hub_url() ); ?>" data-oria-event="explore_trends_click">
+						<?php esc_html_e( 'Explore wellness trends', 'oria' ); ?> <span aria-hidden="true">&rarr;</span>
+					</a>
+				</div>
+				<?php if ( $oria_tshot ) : ?>
+					<div class="trendnudge__art" aria-hidden="true">
+						<img src="<?php echo esc_url( $oria_tshot ); ?>" alt="" width="640" height="480" loading="lazy" decoding="async">
+					</div>
+				<?php endif; ?>
+			</aside>
+			<?php
+		}
+	}
 	?>
-	<div class="wrap xc-trendline">
-		<p class="cmpnudge">
-			<a href="<?php echo esc_url( \Oria\Core\Trends\hub_url() ); ?>" data-oria-event="explore_trends_click">
-				<span aria-hidden="true">&#10022;</span> <?php esc_html_e( 'Seen a wellness trend online? What it is, what to expect and where to try it in Perth', 'oria' ); ?>
-				<span aria-hidden="true">&rarr;</span>
-			</a>
-		</p>
-	</div>
-<?php endif; ?>
+</section>
 
 <!-- 4. Read up: what is listed here, and every way in -->
 <section class="wrap section floor xc-guide xc-mesh" id="read">
