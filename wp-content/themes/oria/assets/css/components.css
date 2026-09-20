@@ -1359,6 +1359,9 @@ html.has-sheet .cmptray { display: none; }
   border: 1px solid var(--line); border-left: 3px solid var(--brand-gold);
   border-radius: var(--r-md); background: var(--sand-2);
 }
+/* A class that sets display beats the browser's own [hidden] rule, so the
+   empty strip drew as a bare box on What's On until the script filled it. */
+.areastrip[hidden], .btn[data-wo-empty-cta][hidden] { display: none; }
 .areastrip__text { margin: 0; font-size: var(--fs-sm); color: var(--text-soft); }
 .areastrip__eyebrow { display: block; font-weight: 700; color: var(--ink); }
 .areastrip__cta { flex: none; }
