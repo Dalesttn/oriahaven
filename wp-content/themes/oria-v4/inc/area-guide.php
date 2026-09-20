@@ -427,38 +427,99 @@ function strongest( array $rows, string $city ): ?array {
 }
 
 /**
- * "At a glance": the page's figures as four short cards (brief 12).
+ * "At a glance", as one insight with figures behind it.
+ *
+ * glance() gave four cards of equal weight, so "Breathwork stands out
+ * here" -- the only line that says anything about the place -- sat in a
+ * beige box the same size as a count of practice types. This separates
+ * them: the standout is the story and the numbers support it.
+ *
+ * Nothing new is calculated. strongest() still decides what stands out,
+ * on the rule it already used: at least three here, at least five across
+ * the city, and twice the city's share of them, because the biggest
+ * category everywhere is not what makes a place distinct.
  *
  * @param list<array<string, mixed>> $rows
- * @return list<array{n: string, label: string}>
+ * @param array|null                 $strong From strongest().
+ * @param \WP_Term|null              $area   For the category-and-suburb link.
+ * @return array{standout: array|null, stats: list<array>, place: string}
  */
-function glance( array $rows, int $top_cats, ?array $strong, string $place_city ): array {
-	$n     = count( $rows );
-	$cards = array();
-	/* translators: %s: number of places */
-	$cards[] = array( 'n' => number_format_i18n( $n ), 'label' => _n( 'hand-checked place', 'hand-checked places', $n, 'oria' ) );
-	$cards[] = array( 'n' => number_format_i18n( $top_cats ), 'label' => _n( 'kind of practice', 'kinds of practice', $top_cats, 'oria' ) );
+function snapshot( array $rows, int $top_cats, ?array $strong, string $place_city, ?\WP_Term $area = null ): array {
+	$n   = count( $rows );
+	$out = array( 'standout' => null, 'stats' => array(), 'place' => $place_city );
+
 	if ( $strong ) {
-		$cards[] = array(
-			'n'     => pname( $strong['slug'] ),
-			/* translators: 1: count here, 2: count across the city, 3: city */
-			'label' => sprintf( __( 'stands out here — %1$d of the %2$d listed across %3$s', 'oria' ), $strong['n'], $strong['of'], $place_city ),
-			'word'  => true,
+		$term = get_term_by( 'slug', (string) $strong['slug'], 'practice' );
+		$url  = '';
+		if ( $term instanceof \WP_Term && $area instanceof \WP_Term && function_exists( '\Oria\Core\PracticesIndex\area_url' ) ) {
+			/*
+			 * The clean combination address where one resolves, because
+			 * area_url() hands back the ?suburb= form that 301s to it --
+			 * fine for a form submission, a wasted hop on a link we are
+			 * writing ourselves. Built with the same two helpers the
+			 * redirect uses, so the two can never disagree.
+			 */
+			if ( function_exists( '\Oria\Core\PracticesIndex\resolve_facet' ) ) {
+				$facet = \Oria\Core\PracticesIndex\resolve_facet( $term, $area->slug );
+				if ( null !== $facet && 'area' === ( $facet['key'] ?? '' ) ) {
+					$city = function_exists( '\Oria\Core\PracticesIndex\facet_city' )
+						? \Oria\Core\PracticesIndex\facet_city( $facet )
+						: null;
+					$url = \Oria\Core\PracticesIndex\category_url( $term, $city ) . $facet['slug'] . '/';
+				}
+			}
+			if ( '' === $url ) {
+				$url = (string) \Oria\Core\PracticesIndex\area_url( $term, $area );
+			}
+		}
+		$out['standout'] = array(
+			'slug' => (string) $strong['slug'],
+			'name' => pname( (string) $strong['slug'] ),
+			'here' => (int) $strong['n'],
+			'of'   => (int) $strong['of'],
+			'url'  => $url,
+			'id'   => $term instanceof \WP_Term ? (int) $term->term_id : 0,
 		);
 	}
+
+	$out['stats'][] = array(
+		'value' => number_format_i18n( $n ),
+		/* translators: the label under a count of places */
+		'label' => _n( 'hand-checked place', 'hand-checked places', $n, 'oria' ),
+		'note'  => '',
+	);
+	$out['stats'][] = array(
+		'value' => number_format_i18n( $top_cats ),
+		/* translators: the label under a count of practice types */
+		'label' => _n( 'practice type', 'practice types', $top_cats, 'oria' ),
+		'note'  => __( 'From quiet to active', 'oria' ),
+	);
+
+	/*
+	 * "Typical" in the label, "median of N" in the note: the word people
+	 * read and the arithmetic they can check. Below the floor there is no
+	 * card at all rather than a number pretending to more than it knows.
+	 */
 	$prices = prices( $rows );
 	if ( count( $prices ) >= MIN_PRICES ) {
-		$cards[] = array(
-			'n'     => '$' . number_format_i18n( (int) round( median( $prices ) ) ),
-			/* translators: %d: number of places with a published price */
-			'label' => sprintf( __( 'middle published starting price, from %d places', 'oria' ), count( $prices ) ),
+		$out['stats'][] = array(
+			'value' => '$' . number_format_i18n( (int) round( median( $prices ) ) ),
+			'label' => __( 'typical starting price', 'oria' ),
+			/* translators: %d: how many places publish a price */
+			'note'  => sprintf( __( 'Median of %d published prices', 'oria' ), count( $prices ) ),
 		);
+	} else {
+		$online = count( array_filter( $rows, static fn( array $r ): bool => in_array( $r['format'] ?? '', array( 'online', 'both' ), true ) ) );
+		if ( $online >= 2 ) {
+			$out['stats'][] = array(
+				'value' => number_format_i18n( $online ),
+				'label' => __( 'also see people online', 'oria' ),
+				'note'  => '',
+			);
+		}
 	}
-	$online = count( array_filter( $rows, static fn( array $r ): bool => in_array( $r['format'] ?? '', array( 'online', 'both' ), true ) ) );
-	if ( $online >= 2 && count( $cards ) < 4 ) {
-		$cards[] = array( 'n' => number_format_i18n( $online ), 'label' => __( 'also see people online', 'oria' ) );
-	}
-	return array_slice( $cards, 0, 4 );
+
+	return $out;
 }
 
 /**

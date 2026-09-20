@@ -120,7 +120,7 @@ foreach ( (array) ( $oria_cfg['hub']['moods'] ?? array() ) as $oria_m ) {
 }
 
 $oria_strong  = Area\strongest( $oria_rows, $oria_cslug );
-$oria_glance  = $oria_n >= 2 ? Area\glance( $oria_rows, count( $oria_top ), $oria_strong, $oria_cname ) : array();
+$oria_snap    = $oria_n >= 2 ? Area\snapshot( $oria_rows, count( $oria_top ), $oria_strong, $oria_cname, $oria_term ) : array();
 $oria_rhythm  = Area\rhythm_points( $oria_rows, $oria_strong, $oria_place, $oria_cname, $oria_guide );
 $oria_plans   = Area\plans( $oria_rows, $oria_guide );
 $oria_events  = $oria_term ? Area\events( $oria_term ) : array();
@@ -456,40 +456,99 @@ $oria_all_label = sprintf( __( 'All of %s', 'oria' ), $oria_place );
 </div>
 <?php endif; ?>
 
-<?php if ( $oria_glance ) : ?>
-<!-- 3. At a glance -->
-<section class="wrap xa-glance" aria-labelledby="xaGlanceTitle">
-	<h2 class="sr-only" id="xaGlanceTitle">
-		<?php
-		/* translators: %s: area */
-		printf( esc_html__( '%s at a glance', 'oria' ), esc_html( $oria_place ) );
-		?>
-	</h2>
-	<ul class="xa-glance__row">
-		<?php foreach ( $oria_glance as $oria_g ) : ?>
-			<li class="xa-glance__card<?php echo ! empty( $oria_g['word'] ) ? ' xa-glance__card--word' : ''; ?>">
-				<span class="xa-glance__n"><?php echo esc_html( $oria_g['n'] ); ?></span>
-				<span class="xa-glance__label"><?php echo esc_html( $oria_g['label'] ); ?></span>
-			</li>
-		<?php endforeach; ?>
-	</ul>
-	<details class="xa-glance__about">
-		<summary><?php esc_html_e( 'About these figures', 'oria' ); ?></summary>
-		<div class="xa-glance__body">
-			<?php if ( ! empty( $oria_answer['sentences'] ) ) : ?>
-				<p><?php echo esc_html( implode( ' ', $oria_answer['sentences'] ) ); ?></p>
-			<?php endif; ?>
-			<p>
-				<?php
-				printf(
-					/* translators: %s: date */
-					esc_html__( 'Counted from the places Oria Haven lists here, last updated %s. A place counts once for each kind of practice it offers. Prices are the lowest each practice publishes for a session; many publish none, and every practice sets and changes its own.', 'oria' ),
-					esc_html( $oria_updated )
-				);
-				?>
-			</p>
-		</div>
-	</details>
+<?php if ( ! empty( $oria_snap['stats'] ) ) : ?>
+<!-- 3. At a glance: one insight, with the figures behind it -->
+<section class="wrap xasnap" aria-labelledby="xaGlanceTitle">
+	<header class="xasnap__head">
+		<h2 class="xasnap__title" id="xaGlanceTitle">
+			<?php
+			/* translators: %s: area */
+			printf( esc_html__( '%s at a glance', 'oria' ), esc_html( $oria_place ) );
+			?>
+		</h2>
+		<details class="xasnap__about" data-area-slug="<?php echo esc_attr( $oria_term ? $oria_term->slug : '' ); ?>">
+			<summary data-oria-event="area_snapshot_methodology_open"><?php esc_html_e( 'About these figures', 'oria' ); ?></summary>
+			<div class="xasnap__body">
+				<?php if ( ! empty( $oria_answer['sentences'] ) ) : ?>
+					<p><?php echo esc_html( implode( ' ', $oria_answer['sentences'] ) ); ?></p>
+				<?php endif; ?>
+				<p>
+					<?php
+					printf(
+						/* translators: %s: date */
+						esc_html__( 'Counted from the places Oria Haven lists here, last updated %s. A place counts once for each kind of practice it offers. Prices are the lowest each practice publishes for a session; many publish none, and every practice sets and changes its own.', 'oria' ),
+						esc_html( $oria_updated )
+					);
+					?>
+				</p>
+			</div>
+		</details>
+	</header>
+
+	<div class="xasnap__grid<?php echo empty( $oria_snap['standout'] ) ? ' xasnap__grid--even' : ''; ?>">
+		<?php if ( ! empty( $oria_snap['standout'] ) ) : ?>
+			<?php
+			$oria_so   = $oria_snap['standout'];
+			$oria_pct  = $oria_so['of'] > 0 ? max( 4, min( 100, (int) round( $oria_so['here'] / $oria_so['of'] * 100 ) ) ) : 0;
+			$oria_sent = sprintf(
+				/* translators: 1: count here, 2: count city-wide, 3: city, 4: practice, lower case */
+				__( '%1$d of %3$s\'s %2$d listed %4$s places are here.', 'oria' ),
+				$oria_so['here'],
+				$oria_so['of'],
+				$oria_cname,
+				strtolower( $oria_so['name'] )
+			);
+			?>
+			<div class="xastand">
+				<p class="xastand__eyebrow"><?php esc_html_e( 'Local standout', 'oria' ); ?></p>
+				<p class="xastand__name"><?php echo esc_html( $oria_so['name'] ); ?></p>
+				<p class="xastand__line"><?php echo esc_html( $oria_sent ); ?></p>
+
+				<?php if ( $oria_pct > 0 ) : ?>
+					<?php
+					/*
+					 * The bar repeats the sentence above rather than saying
+					 * anything of its own, so it is hidden from a screen
+					 * reader: a share of a city's listings is not a score,
+					 * and nothing here should be read as one.
+					 */
+					?>
+					<span class="xastand__bar" aria-hidden="true">
+						<span class="xastand__fill" style="width:<?php echo (int) $oria_pct; ?>%"></span>
+					</span>
+				<?php endif; ?>
+
+				<?php if ( '' !== $oria_so['url'] ) : ?>
+					<a class="xastand__cta" href="<?php echo esc_url( $oria_so['url'] ); ?>"
+						data-oria-event="area_snapshot_standout_click"
+						data-area-slug="<?php echo esc_attr( $oria_term ? $oria_term->slug : '' ); ?>"
+						data-term-slug="<?php echo esc_attr( $oria_so['slug'] ); ?>">
+						<?php
+						printf(
+							/* translators: 1: practice, lower case, 2: area */
+							esc_html__( 'Explore %1$s in %2$s', 'oria' ),
+							esc_html( strtolower( $oria_so['name'] ) ),
+							esc_html( $oria_place )
+						);
+						?>
+						<span class="xastand__arrow" aria-hidden="true">&rarr;</span>
+					</a>
+				<?php endif; ?>
+			</div>
+		<?php endif; ?>
+
+		<ul class="xasnap__stats">
+			<?php foreach ( $oria_snap['stats'] as $oria_st ) : ?>
+				<li class="xastat">
+					<span class="xastat__value"><?php echo esc_html( (string) $oria_st['value'] ); ?></span>
+					<span class="xastat__label"><?php echo esc_html( (string) $oria_st['label'] ); ?></span>
+					<?php if ( '' !== (string) $oria_st['note'] ) : ?>
+						<span class="xastat__note"><?php echo esc_html( (string) $oria_st['note'] ); ?></span>
+					<?php endif; ?>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
 </section>
 <?php endif; ?>
 

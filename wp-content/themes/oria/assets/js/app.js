@@ -3904,11 +3904,30 @@
     document.addEventListener("click", function (e) {
       var el = e.target.closest && e.target.closest("a[data-oria-event], button[data-oria-event]");
       if (!el) return;
-      pushEvent(el.getAttribute("data-oria-event"), {
+      var payload = {
         link_url: el.getAttribute("href") || "",
         link_text: (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 100)
-      });
+      };
+      /* Anything the markup chose to say about itself. Cheaper than a tag
+         per link, and the names are the report's names. */
+      if (el.getAttribute("data-area-slug")) payload.area_slug = el.getAttribute("data-area-slug");
+      if (el.getAttribute("data-term-slug")) payload.standout_term_slug = el.getAttribute("data-term-slug");
+      pushEvent(el.getAttribute("data-oria-event"), payload);
     });
+
+    /* A disclosure reports being opened, not being on the page. Without
+       this a <summary> fell through to the render branch below and the
+       event fired for every visitor who scrolled past it -- the same
+       fault the comment above describes for links. */
+    document.addEventListener("toggle", function (e) {
+      var d = e.target;
+      if (!d || d.tagName !== "DETAILS" || !d.open) return;
+      var sum = d.querySelector("summary[data-oria-event]");
+      if (!sum || sum.parentElement !== d) return;
+      pushEvent(sum.getAttribute("data-oria-event"), {
+        area_slug: d.getAttribute("data-area-slug") || ""
+      });
+    }, true);
 
     $$("[data-oria-event]").forEach(function (el) {
       var name = el.getAttribute("data-oria-event");
@@ -3921,8 +3940,8 @@
         });
         return;
       }
-      if (el.tagName === "A" || el.tagName === "BUTTON") {
-        return; // handled by the delegated click above
+      if (el.tagName === "A" || el.tagName === "BUTTON" || el.tagName === "SUMMARY") {
+        return; // handled by the delegated click or toggle above
       }
       pushEvent(name);
     });
