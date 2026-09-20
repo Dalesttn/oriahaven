@@ -3566,33 +3566,130 @@
     try { window.dataLayer.push(payload); } catch (err) { /* never block */ }
   }
 
-  /* Finding a neighbourhood in a long list. The field hides rows it does
-     not match; it never fetches, sorts or rewrites anything, so the list
-     a crawler reads is the list that was served. */
-  function initAreaBrowse() {
-    $$("[data-area-browse]").forEach(function (root) {
-      var q = root.querySelector("[data-area-browse-q]");
-      var none = root.querySelector("[data-area-browse-none]");
-      if (!q) return;
+  /* Finding a neighbourhood.
 
-      function apply() {
-        var term = q.value.trim().toLowerCase();
-        var shown = 0;
-        $$("[data-area-browse-group]", root).forEach(function (group) {
-          var live = 0;
-          $$("[data-area-browse-item]", group).forEach(function (item) {
-            var hit = !term || item.getAttribute("data-area-browse-item").indexOf(term) > -1;
-            item.hidden = !hit;
-            if (hit) live++;
-          });
-          group.hidden = live === 0;
-          shown += live;
-        });
-        if (none) none.hidden = shown > 0;
+     The suggestions are read out of the drawer that is already on the
+     page rather than a second payload: the markup a crawler sees and the
+     list the field searches are the same forty links. Nothing is
+     fetched, and the drawer keeps working with the script switched off,
+     because it is a <details>. */
+  function initHoods() {
+    $$("[data-hoods]").forEach(function (root) {
+      var q = root.querySelector("[data-hoods-q]");
+      var ac = root.querySelector("[data-hoods-ac]");
+      var all = root.querySelector("[data-hoods-all]");
+      if (!q || !ac) return;
+
+      var rows = $$("[data-hood-name]", root).map(function (el) {
+        return {
+          name: el.getAttribute("data-hood-name") || "",
+          region: el.getAttribute("data-hood-region") || "",
+          n: el.getAttribute("data-hood-n") || "0",
+          url: el.getAttribute("href"),
+          slug: el.getAttribute("data-area-slug") || ""
+        };
+      });
+      if (!rows.length) return;
+
+      var items = [], active = -1;
+
+      function close() {
+        ac.hidden = true;
+        ac.innerHTML = "";
+        items = [];
+        active = -1;
+        q.setAttribute("aria-expanded", "false");
       }
 
-      q.addEventListener("input", apply);
-      apply();
+      function mark(i) {
+        items.forEach(function (el, k) {
+          el.classList.toggle("is-on", k === i);
+          el.setAttribute("aria-selected", k === i ? "true" : "false");
+        });
+        active = i;
+      }
+
+      function open(term) {
+        var hits = rows.filter(function (r) {
+          return r.name.toLowerCase().indexOf(term) > -1;
+        }).slice(0, 8);
+
+        ac.innerHTML = "";
+        items = [];
+
+        /* Grouped by region, in the order the matches arrive, so the
+           strongest neighbourhood heads its own group. */
+        var seen = [];
+        hits.forEach(function (r) { if (seen.indexOf(r.region) < 0) seen.push(r.region); });
+
+        seen.forEach(function (region) {
+          var head = document.createElement("p");
+          head.className = "hoods__acreg";
+          head.textContent = region;
+          ac.appendChild(head);
+
+          hits.filter(function (r) { return r.region === region; }).forEach(function (r) {
+            var a = document.createElement("a");
+            a.className = "hoods__acitem";
+            a.href = r.url;
+            a.setAttribute("role", "option");
+            a.setAttribute("aria-selected", "false");
+            a.setAttribute("data-area-promo", "hub-hoods-find");
+            a.setAttribute("data-area-slug", r.slug);
+            a.innerHTML = '<span class="hoods__acname"></span><span class="hoods__acn"></span>';
+            a.firstChild.textContent = r.name;
+            a.lastChild.textContent = r.n + (r.n === "1" ? " place" : " places");
+            ac.appendChild(a);
+            items.push(a);
+          });
+        });
+
+        if (!hits.length) {
+          var none = document.createElement("p");
+          none.className = "hoods__acnone";
+          none.textContent = "No neighbourhood by that name yet.";
+          ac.appendChild(none);
+        }
+
+        /* Always the last way out: the whole list, one click away. */
+        var more = document.createElement("button");
+        more.type = "button";
+        more.className = "hoods__acall";
+        more.setAttribute("role", "option");
+        more.setAttribute("aria-selected", "false");
+        more.textContent = "Browse all neighbourhoods";
+        more.addEventListener("click", function () {
+          if (all) {
+            all.open = true;
+            all.scrollIntoView({ block: "nearest" });
+          }
+          close();
+        });
+        ac.appendChild(more);
+        items.push(more);
+
+        ac.hidden = false;
+        q.setAttribute("aria-expanded", "true");
+        mark(-1);
+      }
+
+      q.addEventListener("input", function () {
+        var term = q.value.trim().toLowerCase();
+        if (term.length < 1) { close(); return; }
+        open(term);
+      });
+
+      q.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") { close(); return; }
+        if (ac.hidden || !items.length) return;
+        if (e.key === "ArrowDown") { e.preventDefault(); mark((active + 1) % items.length); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); mark((active - 1 + items.length) % items.length); }
+        else if (e.key === "Enter" && active > -1) { e.preventDefault(); items[active].click(); }
+      });
+
+      document.addEventListener("click", function (e) {
+        if (!root.contains(e.target)) close();
+      });
     });
   }
 
@@ -5482,7 +5579,7 @@
     initSiteSearch();
     initStickyCta();
     initSave();
-    initAreaBrowse();
+    initHoods();
     initAreaTracking();
     initSaveEvent();
     initSavedEventsPage();

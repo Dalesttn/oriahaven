@@ -97,7 +97,8 @@
         "alt": "Perth CBD towers above Elizabeth Quay",
         "credit": "Photo: Horace Young / Pexels",
         "place_verified": true
-      }
+      },
+      "tagline": "The widest choice in the city, most of it within a walk of the station."
     },
     "central": {
       "image": {
@@ -198,6 +199,22 @@
         "credit": "Photo: Michelle Chadwick / Pexels",
         "place_verified": true
       }
+    },
+    "subiaco": {
+      "tagline": "A village high street of small studios and holistic clinics."
+    },
+    "scarborough": {
+      "tagline": "Beachfront movement, with the coast as the whole reason to come."
+    },
+    "kalamunda": {
+      "tagline": "Bushland and hills air, a drive east of the city."
     }
-  }
+  },
+  "featured": [
+    "fremantle",
+    "perth-cbd",
+    "subiaco",
+    "scarborough",
+    "kalamunda"
+  ]
 }

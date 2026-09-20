@@ -1391,29 +1391,151 @@ html.has-sheet .cmptray { display: none; }
   .areagrid__cards .areacard { flex: 0 0 min(17rem, 80%); scroll-snap-align: start; }
 }
 
-/* The full list, grouped by region. The field only hides rows, so every
-   link is in the HTML whether or not the script ever runs. */
-.areabrowse__head {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: var(--s-4); flex-wrap: wrap;
+/* Explore by neighbourhood: five photographs, a field, and a drawer.
+
+   The mosaic is one tall card and four small ones, which reads as a place
+   worth going rather than a row of equal tiles. Below 60rem it becomes a
+   plain two-column grid with the lead still full width; below 40rem
+   everything stacks, because a 160px photograph of a suburb is not a
+   photograph of anything. */
+.hoods { margin-top: var(--s-6); }
+.hoods__head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: var(--s-4); flex-wrap: wrap; margin-bottom: var(--s-4);
 }
-.areabrowse__head .xc-mesh__title { margin-bottom: 0; }
-.areabrowse__find { margin: 0; flex: 0 1 18rem; }
-.areabrowse__find .input { width: 100%; }
-.areabrowse__group { margin-top: var(--s-4); }
-.areabrowse__group[hidden] { display: none; }
-.areabrowse__region {
-  margin: 0 0 .5rem; font-size: 10px; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--text-soft);
+.hoods__title { margin: 0; }
+.hoods__lede { margin: .4rem 0 0; max-width: 46ch; color: var(--text-soft); font-size: var(--fs-sm); }
+
+/* The field. The icon sits inside it, so the input carries its own
+   padding rather than a wrapper faking one. */
+.hoods__find { position: relative; flex: 0 1 20rem; min-width: 14rem; }
+.hoods__icon {
+  position: absolute; left: .7rem; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; color: var(--text-soft); pointer-events: none;
 }
-.areabrowse__n {
-  margin-left: .4rem; font-variant-numeric: tabular-nums;
-  font-size: var(--fs-xs); color: var(--text-soft);
+.hoods__icon svg { width: 100%; height: 100%; display: block; }
+.hoods__q { width: 100%; padding-left: 2.2rem; }
+.hoods__q::-webkit-search-cancel-button { cursor: pointer; }
+
+.hoods__ac {
+  position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + .35rem);
+  max-height: 20rem; overflow-y: auto;
+  padding: .4rem; border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--surface); box-shadow: var(--sh-2);
 }
-.areabrowse .pill[hidden] { display: none; }
-.areabrowse__none { margin-top: var(--s-4); color: var(--text-soft); }
-.areabrowse__none[hidden] { display: none; }
-.areabrowse__map { margin-top: var(--s-4); }
+.hoods__ac[hidden] { display: none; }
+.hoods__acreg {
+  margin: .45rem .5rem .25rem; font-size: 10px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--text-soft);
+}
+.hoods__acitem, .hoods__acall {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .6rem;
+  width: 100%; padding: .4rem .5rem; border-radius: var(--r-sm);
+  font-size: var(--fs-sm); color: var(--ink); text-decoration: none;
+  background: none; border: 0; text-align: left; cursor: pointer;
+}
+.hoods__acitem:hover, .hoods__acitem.is-on,
+.hoods__acall:hover, .hoods__acall.is-on { background: var(--sand-2); }
+.hoods__acn { flex: none; font-size: var(--fs-xs); color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.hoods__acnone { margin: .5rem; font-size: var(--fs-sm); color: var(--text-soft); }
+.hoods__acall {
+  margin-top: .25rem; padding-top: .55rem; border-top: 1px solid var(--line);
+  border-radius: 0 0 var(--r-sm) var(--r-sm); font-weight: 700;
+}
+
+.hoods__mosaic {
+  display: grid; gap: var(--s-3);
+  grid-template-columns: 1.6fr 1fr 1fr;
+  grid-template-rows: repeat(2, minmax(9rem, 1fr));
+}
+.hoods__mosaic > .hood--lead { grid-row: span 2; }
+
+.hood {
+  position: relative; display: block; overflow: hidden; isolation: isolate;
+  min-height: 9rem; border-radius: var(--r-lg, 18px);
+  background: var(--deep); color: var(--white); text-decoration: none;
+  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
+}
+.hood--lead { min-height: 20rem; }
+.hood:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
+.hood:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 3px; }
+.hood__img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: -2;
+}
+/* Oria green, deepest where the words are. Dark enough at the foot that
+   white type clears AA over any photograph in the set. */
+.hood__veil {
+  position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(to top, rgba(8, 32, 30, .94) 0%, rgba(8, 32, 30, .80) 34%, rgba(8, 32, 30, .30) 68%, rgba(8, 32, 30, .08) 100%);
+}
+.hood--bare .hood__veil { background: none; }
+.hood__body {
+  position: absolute; inset: auto 0 0 0; display: block;
+  padding: var(--s-4);
+}
+.hood__name { display: block; font-size: 1.35rem; line-height: 1.15; letter-spacing: -.01em; }
+.hood--lead .hood__name { font-size: clamp(1.7rem, 3.2vw, 2.4rem); }
+.hood__line {
+  display: block; margin-top: .45rem; max-width: 30ch;
+  font-size: var(--fs-sm); line-height: 1.4; color: rgba(255, 255, 255, .88);
+}
+.hood__n {
+  display: flex; align-items: center; gap: .4rem; margin-top: .5rem;
+  font-size: var(--fs-xs); font-weight: 700; letter-spacing: .04em;
+  color: rgba(255, 255, 255, .86);
+}
+.hood__arrow { transition: transform var(--t-fast, .18s) var(--ease); }
+.hood:hover .hood__arrow { transform: translateX(4px); }
+
+@media (max-width: 60rem) {
+  .hoods__mosaic { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; }
+  .hoods__mosaic > .hood--lead { grid-column: 1 / -1; grid-row: auto; min-height: 15rem; }
+}
+@media (max-width: 40rem) {
+  .hoods__find { flex: 1 1 100%; }
+  .hoods__mosaic { grid-template-columns: minmax(0, 1fr); }
+  .hood { min-height: 11rem; }
+  .hood--lead { min-height: 14rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hood, .hood__arrow { transition: none; }
+  .hood:hover { transform: none; }
+  .hood:hover .hood__arrow { transform: none; }
+}
+
+/* Everything not in the mosaic. A <details>, so it opens with no script
+   and every guide stays in the HTML for a crawler to follow. */
+.hoodall { margin-top: var(--s-4); }
+.hoodall > summary, .hoodreg > summary { cursor: pointer; list-style: none; }
+.hoodall > summary::-webkit-details-marker, .hoodreg > summary::-webkit-details-marker { display: none; }
+.hoodall__toggle {
+  display: flex; align-items: center; justify-content: center; gap: .5rem;
+  padding: .7rem 1rem; border: 1px solid var(--line); border-radius: 999px;
+  font-size: var(--fs-sm); font-weight: 700; color: var(--ink);
+}
+.hoodall__toggle:hover { background: var(--sand-2); }
+.hoodall > summary:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 3px; }
+.hoodall[open] .hoodall__mark { transform: rotate(90deg); }
+.hoodall__mark { display: inline-block; transition: transform var(--t-fast, .18s) var(--ease); }
+.hoodall__body { margin-top: var(--s-3); border-top: 1px solid var(--line); }
+
+.hoodreg { border-bottom: 1px solid var(--line); }
+.hoodreg__toggle {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .85rem .2rem; font-size: var(--fs-sm);
+}
+.hoodreg__toggle:hover { color: var(--deep); }
+.hoodreg > summary:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
+.hoodreg__name { font-weight: 700; }
+.hoodreg__n { margin-left: auto; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.hoodreg__mark { display: inline-block; color: var(--text-soft); transition: transform var(--t-fast, .18s) var(--ease); }
+.hoodreg[open] .hoodreg__mark { transform: rotate(90deg); }
+.hoodreg__chips { padding: 0 0 .9rem; }
+.hoodreg__count { margin-left: .35rem; font-size: var(--fs-xs); color: var(--text-soft); font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) {
+  .hoodall__mark, .hoodreg__mark { transition: none; }
+}
 
 /* The event page's linked suburb, under the venue. */
 .keyfact__area {

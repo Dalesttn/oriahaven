@@ -750,22 +750,49 @@ if ( function_exists( '\Oria\Core\Trends\published' ) && \Oria\Core\Trends\publi
 	<?php
 	/*
 	 * And by neighbourhood -- a region is where somewhere is, a suburb is
-	 * where somebody goes. Every guide is in the HTML; the field only
-	 * hides rows.
+	 * where somebody goes. Five photographs rather than forty pills; the
+	 * rest are behind a drawer that opens without a script, so every
+	 * guide is still in the HTML.
 	 */
 	if ( function_exists( '\Oria\Core\AreaContext\catalogue' ) ) {
-		$oria_hoods = \Oria\Core\AreaContext\catalogue( function_exists( '\Oria\Core\Cities\current' ) ? \Oria\Core\Cities\current() : null );
+		$oria_city  = function_exists( '\Oria\Core\Cities\current' ) ? \Oria\Core\Cities\current() : null;
+		$oria_hoods = \Oria\Core\AreaContext\catalogue( $oria_city );
 		if ( $oria_hoods ) {
+			$oria_by_slug = array_column( $oria_hoods, null, 'slug' );
+
+			// The hand-picked five, in order, dropping any that has since
+			// fallen under the indexing floor or out of this city.
+			$oria_pick = array();
+			if ( function_exists( '\Oria\V4\Area\featured_slugs' ) ) {
+				foreach ( \Oria\V4\Area\featured_slugs() as $oria_slug ) {
+					if ( isset( $oria_by_slug[ $oria_slug ] ) ) {
+						$oria_pick[] = $oria_by_slug[ $oria_slug ];
+					}
+				}
+			}
+			// A short list means the editorial one no longer fits this
+			// city; scoring fills the gap rather than leaving a hole.
+			if ( count( $oria_pick ) < 5 && function_exists( '\Oria\Core\AreaContext\featured' ) ) {
+				foreach ( \Oria\Core\AreaContext\featured( 8, $oria_city ) as $oria_f ) {
+					if ( ! in_array( $oria_f['slug'], array_column( $oria_pick, 'slug' ), true ) ) {
+						$oria_pick[] = $oria_f;
+					}
+					if ( count( $oria_pick ) >= 5 ) {
+						break;
+					}
+				}
+			}
+
 			echo '<div id="browse-areas"></div>';
 			get_template_part(
-				'template-parts/area/area-browse',
+				'template-parts/area/area-hoods',
 				null,
 				array(
-					'areas'   => $oria_hoods,
-					'heading' => __( 'Explore by neighbourhood', 'oria' ),
-					'id'      => 'xc-hoods-title',
-					'map'     => home_url( '/wellness-map/' ),
-					'source'  => 'hub-browse',
+					'areas'    => $oria_hoods,
+					'featured' => array_slice( $oria_pick, 0, 5 ),
+					'heading'  => __( 'Explore by neighbourhood', 'oria' ),
+					'id'       => 'xc-hoods-title',
+					'source'   => 'hub-hoods',
 				)
 			);
 		}

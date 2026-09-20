@@ -223,6 +223,22 @@ function config(): array {
 	return $cfg;
 }
 
+/**
+ * The neighbourhoods chosen for the hub's mosaic, in order.
+ *
+ * Deliberately a list somebody wrote rather than a ranking: the five
+ * biggest would be four of Perth Central and the CBD twice over, which
+ * tells a visitor nothing about the city. Edited in
+ * assets/data/area-guides.json under "featured"; an empty or missing
+ * list leaves the caller to fall back to scoring.
+ *
+ * @return list<string> Area slugs.
+ */
+function featured_slugs(): array {
+	$slugs = (array) ( config()['featured'] ?? array() );
+	return array_values( array_filter( array_map( 'sanitize_title', $slugs ) ) );
+}
+
 /** This area's editorial entry, or an empty array. */
 function guide( \WP_Term $term ): array {
 	return (array) ( config()['areas'][ $term->slug ] ?? array() );
