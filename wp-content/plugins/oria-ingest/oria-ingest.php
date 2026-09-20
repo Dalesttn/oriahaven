@@ -29,10 +29,12 @@ require ORIA_INGEST_DIR . 'includes/pipeline.php';
 require ORIA_INGEST_DIR . 'includes/admin.php';
 require ORIA_INGEST_DIR . 'includes/gone.php';
 require ORIA_INGEST_DIR . 'includes/context.php';
+require ORIA_INGEST_DIR . 'includes/import.php';
 
 Taxonomy\bootstrap();
 Admin\bootstrap();
 Gone\bootstrap();
+Import\bootstrap();
 
 // Daily run, plus a manual "Run now" in the admin.
 add_action( 'oria_ingest_daily', __NAMESPACE__ . '\Pipeline\run' );
