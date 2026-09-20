@@ -17,7 +17,7 @@ get_header();
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span>
-		<a href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ) ); ?>"><?php esc_html_e( 'Workshops/Events', 'oria' ); ?></a>
+		<a href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ) ); ?>"><?php esc_html_e( "What's On", 'oria' ); ?></a>
 		<span aria-hidden="true">/</span><span><?php esc_html_e( 'Finished', 'oria' ); ?></span>
 	</nav>
 	<div style="margin-top:1rem;max-width:44rem">

@@ -90,6 +90,11 @@ function upcoming( array $args = array() ): array {
 			'event_type' => '',
 			'area'       => '',
 			'exclude'    => array(),
+			// A window, for the pages that want one -- "this weekend" wants
+			// both ends, "coming up after it" only the near one. Naive Perth
+			// datetimes, the same form event_start is stored in.
+			'from'       => '',
+			'to'         => '',
 		)
 	);
 
@@ -114,7 +119,7 @@ function upcoming( array $args = array() ): array {
 			'relation' => 'AND',
 			array(
 				'key'     => 'event_start',
-				'value'   => current_time( 'Y-m-d H:i:s' ),
+				'value'   => '' !== (string) $args['from'] ? (string) $args['from'] : current_time( 'Y-m-d H:i:s' ),
 				'compare' => '>=',
 				'type'    => 'DATETIME',
 			),
@@ -127,6 +132,15 @@ function upcoming( array $args = array() ): array {
 			),
 		),
 	);
+
+	if ( '' !== (string) $args['to'] ) {
+		$query['meta_query'][] = array(
+			'key'     => 'event_start',
+			'value'   => (string) $args['to'],
+			'compare' => '<=',
+			'type'    => 'DATETIME',
+		);
+	}
 
 	if ( (int) $args['listing'] > 0 ) {
 		$query['meta_query'][] = array(

@@ -1445,6 +1445,21 @@ a.livesession:hover { background: var(--sand-2); }
 .wkrow__src::before { content: "· "; }
 .featband .wkrows { margin-top: var(--s-3); }
 
+/* A group of one. auto-fill keeps every card the same width, which leaves a
+   single event sitting in the corner of an otherwise empty row; on a wide
+   screen it turns side-on instead and uses the space it has. Only where the
+   count is fixed server-side -- on the archive the visible count changes
+   with the filters, and a card that flips layout mid-filter is worse than
+   one that stays put. */
+.wkrows--one { grid-template-columns: 1fr; }
+@media (min-width: 720px) {
+  .wkrows--one .wkrow { flex-direction: row; align-items: stretch; }
+  .wkrows--one .wkrow__thumb { width: 38%; flex: none; aspect-ratio: auto; min-height: 11rem; }
+  .wkrows--one .wkrow__body { justify-content: center; padding: var(--s-5); }
+  .wkrows--one .wkrow__body b { font-size: 1.1rem; }
+  .wkrows--one .wkrow__price { align-self: center; padding-right: var(--s-5); }
+}
+
 /* --- What's On: browse by type --------------------------------------- */
 /* Picture, name, count. The count is the point: a tile promising events
    that are not there is the thing this row exists to avoid. */

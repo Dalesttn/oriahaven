@@ -31,18 +31,19 @@ $oria_friday = $oria_dow >= 5
 $oria_from = max( $oria_now, (int) strtotime( gmdate( 'Y-m-d 00:00:00', $oria_friday ) ) );
 $oria_to   = (int) strtotime( gmdate( 'Y-m-d 23:59:59', $oria_friday + 2 * DAY_IN_SECONDS ) );
 
-$oria_events = get_posts(
-	array(
-		'post_type'      => 'event',
-		'post_status'    => 'publish',
-		'posts_per_page' => 40,
-		'meta_key'       => 'event_start',
-		'orderby'        => 'meta_value',
-		'order'          => 'ASC',
-		'meta_query'     => array(
-			array( 'key' => 'event_start', 'value' => gmdate( 'Y-m-d H:i:s', $oria_from ), 'compare' => '>=', 'type' => 'DATETIME' ),
-			array( 'key' => 'event_start', 'value' => gmdate( 'Y-m-d H:i:s', $oria_to ), 'compare' => '<=', 'type' => 'DATETIME' ),
-		),
+/*
+ * Asked of \Oria\Core\Events rather than queried here, so this page cannot
+ * disagree with the archive about what is on -- a cancelled event used to
+ * be excluded everywhere else and still appear in the weekend list.
+ */
+$oria_events = array_map(
+	'get_post',
+	\Oria\Core\Events\upcoming(
+		array(
+			'limit' => 40,
+			'from'  => gmdate( 'Y-m-d H:i:s', $oria_from ),
+			'to'    => gmdate( 'Y-m-d H:i:s', $oria_to ),
+		)
 	)
 );
 
@@ -67,17 +68,13 @@ foreach ( $oria_days as &$oria_list ) {
 unset( $oria_list );
 
 // Beyond the weekend, so there is always a next thing to look at.
-$oria_later = get_posts(
-	array(
-		'post_type'      => 'event',
-		'post_status'    => 'publish',
-		'posts_per_page' => 6,
-		'meta_key'       => 'event_start',
-		'orderby'        => 'meta_value',
-		'order'          => 'ASC',
-		'meta_query'     => array(
-			array( 'key' => 'event_start', 'value' => gmdate( 'Y-m-d H:i:s', $oria_to ), 'compare' => '>', 'type' => 'DATETIME' ),
-		),
+$oria_later = array_map(
+	'get_post',
+	\Oria\Core\Events\upcoming(
+		array(
+			'limit' => 6,
+			'from'  => gmdate( 'Y-m-d H:i:s', $oria_to + 1 ),
+		)
 	)
 );
 
@@ -125,12 +122,27 @@ $oria_row = static function ( \WP_Post $oria_ev, int $oria_ts, bool $oria_with_d
 	<a class="wkrow<?php echo $oria_member ? ' wkrow--member' : ''; ?>" href="<?php echo esc_url( get_permalink( $oria_ev ) ); ?>">
 		<span class="wkrow__thumb" aria-hidden="true">
 			<?php if ( has_post_thumbnail( $oria_ev ) ) : ?>
-				<?php echo get_the_post_thumbnail( $oria_ev, 'thumbnail', array( 'loading' => 'lazy', 'alt' => '' ) ); ?>
+				<?php
+				/*
+				 * medium_large, as the archive uses. A 150px thumbnail
+				 * stretched across a card is what made these read as
+				 * broken images rather than photographs.
+				 */
+				echo get_the_post_thumbnail( $oria_ev, 'medium_large', array( 'loading' => 'lazy', 'alt' => '' ) );
+				?>
 			<?php else : ?>
 				<img class="wkrow__scene" src="<?php echo esc_url( \Oria\Theme\event_scene( $oria_ev->ID ) ); ?>" alt="" loading="lazy" decoding="async">
 			<?php endif; ?>
+			<?php
+			/*
+			 * Inside the thumb, not beside it. .wkrow__time is absolutely
+			 * positioned and .wkrow__thumb is the relative box it belongs
+			 * to; as a sibling every badge escaped to the nearest
+			 * positioned ancestor and piled up at the edge of the page.
+			 */
+			?>
+			<time class="wkrow__time"><?php echo esc_html( $oria_when ); ?></time>
 		</span>
-		<time class="wkrow__time"><?php echo esc_html( $oria_when ); ?></time>
 		<span class="wkrow__body">
 			<b><?php echo esc_html( \Oria\Theme\ptitle( $oria_ev ) ); ?></b>
 			<em>
@@ -151,7 +163,7 @@ $oria_range = gmdate( 'j', $oria_friday ) . '–' . gmdate( 'j M', $oria_friday 
 	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
 		<span aria-hidden="true">/</span>
-		<a href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ); ?>"><?php esc_html_e( 'Workshops/Events', 'oria' ); ?></a>
+		<a href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ); ?>"><?php esc_html_e( "What's On", 'oria' ); ?></a>
 		<span aria-hidden="true">/</span><span><?php esc_html_e( 'This weekend', 'oria' ); ?></span>
 	</nav>
 	<div class="row-between" style="align-items:flex-end;margin-top:1rem">
@@ -172,7 +184,7 @@ $oria_range = gmdate( 'j', $oria_friday ) . '–' . gmdate( 'j M', $oria_friday 
 						<?php echo esc_html( gmdate( 'l', (int) strtotime( $oria_day ) ) ); ?>
 						<span class="wkday__date"><?php echo esc_html( gmdate( 'j F', (int) strtotime( $oria_day ) ) ); ?></span>
 					</h2>
-					<div class="wkrows">
+					<div class="wkrows<?php echo 1 === count( $oria_list ) ? ' wkrows--one' : ''; ?>">
 						<?php foreach ( $oria_list as $oria_pair ) { $oria_row( $oria_pair[0], $oria_pair[1] ); } ?>
 					</div>
 				</div>
@@ -190,7 +202,7 @@ $oria_range = gmdate( 'j', $oria_friday ) . '–' . gmdate( 'j M', $oria_friday 
 <section class="wrap section section--top-flush">
 	<div class="row-between" style="margin-bottom:1rem">
 		<h2 class="h3" style="margin:0"><?php esc_html_e( 'Coming up after the weekend', 'oria' ); ?></h2>
-		<a class="btn btn--ghost btn--sm btn--plain" href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ); ?>"><?php esc_html_e( 'All workshops/events', 'oria' ); ?></a>
+		<a class="btn btn--ghost btn--sm btn--plain" href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ); ?>"><?php esc_html_e( "Everything that's on", 'oria' ); ?></a>
 	</div>
 	<div class="wkrows">
 		<?php
