@@ -236,7 +236,7 @@ $oria_tier  = Tiers\tier( $oria_listing );
 		 */
 		?>
 		<p class="mylsecs__more">
-			<?php esc_html_e( 'Photos and your team are still edited in the older screen for now.', 'oria' ); ?>
+			<?php esc_html_e( 'Photos are still added in the older screen for now.', 'oria' ); ?>
 			<a href="<?php echo esc_url( get_edit_post_link( $oria_listing ) ); ?>"><?php esc_html_e( 'Open it', 'oria' ); ?></a>
 		</p>
 	</section>

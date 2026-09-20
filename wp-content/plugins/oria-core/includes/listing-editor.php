@@ -326,6 +326,42 @@ function sections(): array {
 			),
 		),
 
+		'team' => array(
+			'label' => __( 'Your team', 'oria' ),
+			'blurb' => __( 'Named, qualified people are the most convincing thing on the page.', 'oria' ),
+			'icon'  => 'team',
+			'fields' => array(
+				array(
+					'name'     => 'team',
+					'type'     => 'repeater',
+					'layout'   => 'card',
+					'max_rows' => Tiers\TEAM_MAX,
+					'label'    => __( 'Practitioners', 'oria' ),
+					'help'     => __( 'Facts only: what somebody does, what they hold, where they are registered. Never what a treatment can achieve.', 'oria' ),
+					'add'      => __( 'Add a practitioner', 'oria' ),
+					'single'   => __( 'practitioner', 'oria' ),
+					'sub'      => array(
+						array( 'name' => 'name', 'type' => 'text', 'label' => __( 'Name', 'oria' ), 'placeholder' => __( 'Clare Keating', 'oria' ), 'span' => 'half' ),
+						array( 'name' => 'role', 'type' => 'text', 'label' => __( 'Role here', 'oria' ), 'placeholder' => __( 'Remedial massage therapist', 'oria' ), 'span' => 'half' ),
+						array( 'name' => 'photo', 'type' => 'image', 'label' => __( 'Photo', 'oria' ), 'help' => __( 'A headshot. It does not count towards your photo gallery.', 'oria' ) ),
+						array( 'name' => 'years', 'type' => 'number', 'label' => __( 'Years practising', 'oria' ), 'span' => 'third' ),
+						array( 'name' => 'languages', 'type' => 'text', 'label' => __( 'Languages besides English', 'oria' ), 'placeholder' => __( 'Italian, Auslan', 'oria' ), 'span' => 'two-thirds' ),
+						array( 'name' => 'quals', 'type' => 'textarea', 'rows' => 3, 'label' => __( 'Qualifications', 'oria' ), 'help' => __( 'One per line, e.g. "Dip. Remedial Massage (2016)". What they hold, not what they treat.', 'oria' ), 'span' => 'full' ),
+						array( 'name' => 'reg_body', 'type' => 'text', 'label' => __( 'Registered with', 'oria' ), 'placeholder' => 'AHPRA, ATMS, Yoga Australia', 'span' => 'third' ),
+						array( 'name' => 'reg_id', 'type' => 'text', 'label' => __( 'Registration number', 'oria' ), 'span' => 'third' ),
+						array( 'name' => 'reg_url', 'type' => 'url', 'label' => __( 'Link to the register', 'oria' ), 'placeholder' => 'https://', 'span' => 'third' ),
+						array( 'name' => 'specialties', 'type' => 'multi', 'label' => __( 'Specialises in', 'oria' ), 'choices' => 'specialties', 'span' => 'full',
+							'help' => __( 'Picked from what this listing already offers. Add a service first if something is missing.', 'oria' ) ),
+						array( 'name' => 'bio', 'type' => 'textarea', 'rows' => 3, 'max' => 300, 'label' => __( 'Short bio', 'oria' ), 'span' => 'full',
+							'help' => __( 'A couple of sentences on how they work. We cannot publish claims about treating conditions.', 'oria' ) ),
+						array( 'name' => 'consent', 'type' => 'toggle', 'span' => 'full',
+							'label' => __( 'This person has agreed to appear on Oria Haven', 'oria' ),
+							'help'  => __( 'Required. Publishing somebody\'s name, photo and history is publishing their personal information, and it needs their say-so. Anyone left unticked stays off the page.', 'oria' ) ),
+					),
+				),
+			),
+		),
+
 		'offers' => array(
 			'label' => __( 'Offers and social', 'oria' ),
 			'blurb' => __( 'An offer shows on your profile and on every card you appear in.', 'oria' ),
@@ -339,6 +375,58 @@ function sections(): array {
 			),
 		),
 	);
+}
+
+/**
+ * What a practitioner may be marked as specialising in.
+ *
+ * The listing's own service and specialty terms, and nothing else, so a
+ * team profile cannot quietly claim something the practice does not offer.
+ * Team\specialty_choices() does the same job on the admin screen, but it
+ * reads the listing id out of the admin request, so it cannot be reused
+ * here.
+ *
+ * @return array<int, string>
+ */
+function specialty_choices( int $listing ): array {
+	$out = array();
+	foreach ( array( 'service', 'specialty' ) as $taxonomy ) {
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			continue;
+		}
+		$terms = wp_get_post_terms( $listing, $taxonomy );
+		if ( is_wp_error( $terms ) ) {
+			continue;
+		}
+		foreach ( $terms as $term ) {
+			$out[ (int) $term->term_id ] = wp_specialchars_decode( $term->name, ENT_QUOTES );
+		}
+	}
+	asort( $out );
+	return $out;
+}
+
+/**
+ * A field's choices, resolving the markers that depend on the listing.
+ *
+ * The registry is written without a listing in hand, so a field whose
+ * options come from the listing's own data names its source as a string
+ * and has it resolved here -- by the renderer and by the sanitiser alike,
+ * so a posted option is validated against exactly the list that was drawn.
+ *
+ * @param array<string, mixed> $field
+ * @return array<int|string, string>
+ */
+function choices_for( array $field ): array {
+	$choices = $field['choices'] ?? array();
+	if ( is_array( $choices ) ) {
+		return $choices;
+	}
+	if ( 'specialties' === $choices ) {
+		$listing = listing_for( get_current_user_id() );
+		return $listing ? specialty_choices( $listing ) : array();
+	}
+	return array();
 }
 
 /** One section, or an empty array where the slug is not one of ours. */
@@ -496,7 +584,7 @@ function weights(): array {
 		'photos'      => array( 'weight' => 15, 'section' => '',         'fields' => array( 'gallery' ),             'any' => true,  'label' => __( 'Add photos of your space', 'oria' ) ),
 		'suits'       => array( 'weight' => 5,  'section' => 'suits',    'fields' => array( 'reasons', 'amenities' ), 'any' => true, 'label' => __( 'Say who your sessions suit', 'oria' ) ),
 		'answers'     => array( 'weight' => 5,  'section' => 'answers',  'fields' => array( 'faq' ),                 'any' => true,  'label' => __( 'Answer a few common questions', 'oria' ) ),
-		'team'        => array( 'weight' => 5,  'section' => '',         'fields' => array( 'team' ),                'any' => true,  'label' => __( 'Introduce your practitioners', 'oria' ) ),
+		'team'        => array( 'weight' => 5,  'section' => 'team',     'fields' => array( 'team' ),                'any' => true,  'label' => __( 'Introduce your practitioners', 'oria' ) ),
 	);
 }
 
@@ -726,6 +814,24 @@ function clean( array $field, $raw ) {
 			}
 			return $out;
 
+		case 'toggle':
+			return $raw ? 1 : 0;
+
+		case 'image':
+			return clean_image( $raw );
+
+		case 'multi':
+			$in  = is_array( $raw ) ? wp_unslash( $raw ) : array();
+			$out = array();
+			foreach ( $in as $one ) {
+				$one     = (int) $one;
+				$allowed = choices_for( $field );
+				if ( $one > 0 && isset( $allowed[ $one ] ) ) {
+					$out[] = $one;
+				}
+			}
+			return $out;
+
 		case 'repeater':
 			return clean_rows( $field, $raw );
 
@@ -734,6 +840,37 @@ function clean( array $field, $raw ) {
 			$v = sanitize_text_field( (string) wp_unslash( $raw ) );
 			return isset( $field['max'] ) ? mb_substr( $v, 0, (int) $field['max'] ) : $v;
 	}
+}
+
+/**
+ * An uploaded image the owner is actually entitled to use.
+ *
+ * The form posts an attachment id, and an id is trivially edited, so the
+ * number is checked rather than trusted: it must be a real attachment,
+ * it must be an image, and it must be one this person uploaded or one
+ * already attached to their own listing. Otherwise any id in the media
+ * library could be pulled onto a profile.
+ *
+ * @param mixed $raw
+ */
+function clean_image( $raw ): string {
+	$id = (int) $raw;
+	if ( $id < 1 ) {
+		return '';
+	}
+	$post = get_post( $id );
+	if ( ! $post || 'attachment' !== $post->post_type ) {
+		return '';
+	}
+	if ( ! wp_attachment_is_image( $id ) ) {
+		return '';
+	}
+	$user    = get_current_user_id();
+	$listing = listing_for( $user );
+	$mine    = (int) $post->post_author === $user;
+	$theirs  = $listing && (int) $post->post_parent === $listing;
+
+	return ( $mine || $theirs || current_user_can( 'manage_options' ) ) ? (string) $id : '';
 }
 
 /**
@@ -756,12 +893,23 @@ function clean_rows( array $field, $raw ): array {
 		if ( ! is_array( $row ) ) {
 			continue;
 		}
-		$out  = array();
-		$any  = false;
+		$out = array();
+		$any = false;
 		foreach ( $field['sub'] as $sub ) {
-			$val = clean( $sub, $row[ $sub['name'] ] ?? '' );
+			$val                 = clean( $sub, $row[ $sub['name'] ] ?? '' );
 			$out[ $sub['name'] ] = $val;
-			if ( '' !== trim( (string) $val ) ) {
+
+			/*
+			 * A row counts as real when somebody typed something in it. A
+			 * ticked consent box on its own does not: an empty practitioner
+			 * whose only answer is "yes they agreed" is a row somebody
+			 * added and abandoned, and saving it puts a blank card on the
+			 * public profile.
+			 */
+			if ( 'toggle' === $sub['type'] ) {
+				continue;
+			}
+			if ( is_array( $val ) ? array() !== $val : '' !== trim( (string) $val ) ) {
 				$any = true;
 			}
 		}
@@ -769,6 +917,16 @@ function clean_rows( array $field, $raw ): array {
 			$rows[] = $out;
 		}
 	}
+
+	/*
+	 * The cap, enforced here as well as by the Add button. Team\cap_on_save
+	 * runs on acf/save_post, which update_field() does not fire -- so
+	 * without this a crafted post could write a fifth practitioner.
+	 */
+	if ( ! empty( $field['max_rows'] ) ) {
+		$rows = array_slice( $rows, 0, (int) $field['max_rows'] );
+	}
+
 	return $rows;
 }
 

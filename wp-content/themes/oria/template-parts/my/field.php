@@ -151,27 +151,35 @@ $dis       = $open ? '' : ' disabled';
 
 		case 'repeater':
 			$rows = is_array( $val ) ? array_values( $val ) : array();
+			$cap  = (int) ( $f['max_rows'] ?? 0 );
+			$card = 'card' === ( $f['layout'] ?? '' );
 			?>
-			<div class="myrep" data-myrep data-name="<?php echo esc_attr( $name ); ?>" data-single="<?php echo esc_attr( $f['single'] ?? __( 'row', 'oria' ) ); ?>">
+			<div class="myrep<?php echo $card ? ' myrep--card' : ''; ?>" data-myrep
+				data-name="<?php echo esc_attr( $name ); ?>"
+				data-max="<?php echo esc_attr( (string) $cap ); ?>"
+				data-single="<?php echo esc_attr( $f['single'] ?? __( 'row', 'oria' ) ); ?>">
 				<div class="myrep__rows" data-myrep-rows>
 					<?php foreach ( $rows as $i => $row ) : ?>
 						<div class="myrow" data-myrep-row>
+							<?php if ( $card ) : ?>
+								<p class="myrow__n" aria-hidden="true"><?php echo esc_html( (string) ( (int) $i + 1 ) ); ?></p>
+							<?php endif; ?>
 							<div class="myrow__cols">
 								<?php foreach ( $f['sub'] as $sub ) : ?>
-									<?php $rid = $id . '-' . $i . '-' . $sub['name']; ?>
-									<div class="myrow__col myrow__col--<?php echo esc_attr( $sub['type'] ); ?>">
-										<label class="myrow__label" for="<?php echo esc_attr( $rid ); ?>"><?php echo esc_html( $sub['label'] ); ?></label>
-										<?php if ( 'textarea' === $sub['type'] ) : ?>
-											<textarea class="input" id="<?php echo esc_attr( $rid ); ?>" rows="<?php echo esc_attr( (string) ( $sub['rows'] ?? 2 ) ); ?>"
-												name="<?php echo esc_attr( $name ); ?>[<?php echo esc_attr( (string) $i ); ?>][<?php echo esc_attr( $sub['name'] ); ?>]"
-												<?php echo $dis; ?>><?php echo esc_textarea( (string) ( $row[ $sub['name'] ] ?? '' ) ); ?></textarea>
-										<?php else : ?>
-											<input class="input" id="<?php echo esc_attr( $rid ); ?>" type="text"
-												name="<?php echo esc_attr( $name ); ?>[<?php echo esc_attr( (string) $i ); ?>][<?php echo esc_attr( $sub['name'] ); ?>]"
-												value="<?php echo esc_attr( (string) ( $row[ $sub['name'] ] ?? '' ) ); ?>"
-												<?php echo ! empty( $sub['placeholder'] ) ? ' placeholder="' . esc_attr( $sub['placeholder'] ) . '"' : ''; ?><?php echo $dis; ?>>
-										<?php endif; ?>
-									</div>
+									<?php
+									get_template_part(
+										'template-parts/my/subfield',
+										null,
+										array(
+											'sub'      => $sub,
+											'name'     => $name,
+											'index'    => $i,
+											'row'      => $row,
+											'listing'  => $listing,
+											'disabled' => $dis,
+										)
+									);
+									?>
 								<?php endforeach; ?>
 							</div>
 							<?php // Move up/down as well as remove: drag is not the only way to order a list. ?>
@@ -194,23 +202,40 @@ $dis       = $open ? '' : ' disabled';
 					<button class="myrep__add" type="button" data-myrep-add>
 						<span aria-hidden="true">+</span> <?php echo esc_html( $f['add'] ?? __( 'Add', 'oria' ) ); ?>
 					</button>
+					<?php if ( $cap ) : ?>
+						<p class="myrep__cap" data-myrep-cap hidden>
+							<?php
+							printf(
+								/* translators: %d: the most rows allowed */
+								esc_html__( 'That is the most you can add here (%d).', 'oria' ),
+								(int) $cap
+							);
+							?>
+						</p>
+					<?php endif; ?>
 
 					<?php // The blank row the Add button clones. Its indexes are renumbered on insert. ?>
 					<template data-myrep-tpl>
 						<div class="myrow" data-myrep-row>
+							<?php if ( $card ) : ?>
+								<p class="myrow__n" aria-hidden="true"></p>
+							<?php endif; ?>
 							<div class="myrow__cols">
 								<?php foreach ( $f['sub'] as $sub ) : ?>
-									<div class="myrow__col myrow__col--<?php echo esc_attr( $sub['type'] ); ?>">
-										<label class="myrow__label"><?php echo esc_html( $sub['label'] ); ?></label>
-										<?php if ( 'textarea' === $sub['type'] ) : ?>
-											<textarea class="input" rows="<?php echo esc_attr( (string) ( $sub['rows'] ?? 2 ) ); ?>"
-												name="<?php echo esc_attr( $name ); ?>[__i__][<?php echo esc_attr( $sub['name'] ); ?>]"></textarea>
-										<?php else : ?>
-											<input class="input" type="text"
-												name="<?php echo esc_attr( $name ); ?>[__i__][<?php echo esc_attr( $sub['name'] ); ?>]"
-												<?php echo ! empty( $sub['placeholder'] ) ? ' placeholder="' . esc_attr( $sub['placeholder'] ) . '"' : ''; ?>>
-										<?php endif; ?>
-									</div>
+									<?php
+									get_template_part(
+										'template-parts/my/subfield',
+										null,
+										array(
+											'sub'      => $sub,
+											'name'     => $name,
+											'index'    => '__i__',
+											'row'      => array(),
+											'listing'  => $listing,
+											'disabled' => '',
+										)
+									);
+									?>
 								<?php endforeach; ?>
 							</div>
 							<div class="myrow__acts">

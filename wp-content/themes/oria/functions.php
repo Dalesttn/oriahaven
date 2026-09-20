@@ -138,6 +138,17 @@ add_action(
 			 * the footer, and only on the two routes that draw one.
 			 */
 			if ( in_array( \Oria\Core\MyOria\view(), array( 'listing', 'listing-edit' ), true ) ) {
+				/*
+				 * The team photo picker borrows WordPress's own media modal
+				 * rather than building an uploader: the owner already has
+				 * upload_files, and Ownership\own_media_only scopes the
+				 * library to their own uploads. Loaded only on the editor,
+				 * because it is not a small script.
+				 */
+				if ( 'listing-edit' === \Oria\Core\MyOria\view() && current_user_can( 'upload_files' ) ) {
+					wp_enqueue_media();
+				}
+
 				wp_enqueue_script(
 					'oria-my-listing',
 					"{$uri}/assets/js/my-listing.js",

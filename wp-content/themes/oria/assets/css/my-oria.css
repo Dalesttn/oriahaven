@@ -659,3 +659,86 @@
   .mysave__acts { margin-left: 0; width: 100%; }
   .mysave__acts .btn { flex: 1 1 auto; justify-content: center; }
 }
+
+/* -- team: a repeater row as a card, not a row of boxes ------------------- */
+
+/*
+ * A service is one text box, so it lays out as a row. A practitioner is a
+ * name, a headshot, qualifications, a registration, what they specialise
+ * in and a consent tick -- twelve controls, which as a flat auto-fit grid
+ * is an unreadable wall. So a card, with the columns given spans, and a
+ * number in the corner that says which practitioner this is.
+ */
+.myrep--card .myrep__rows { gap: var(--s-4); }
+.myrep--card .myrow {
+  position: relative;
+  flex-direction: column; align-items: stretch;
+  padding: var(--s-5); border-radius: var(--app-r-md);
+}
+.myrep--card .myrow__cols { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--s-4); }
+.myrep--card .myrow__acts {
+  justify-content: flex-end;
+  margin-top: var(--s-4); padding-top: var(--s-4);
+  border-top: 1px solid var(--app-line);
+}
+.myrow__n {
+  position: absolute; top: var(--s-4); right: var(--s-4);
+  margin: 0; font-size: var(--fs-xs); font-weight: 700;
+  color: var(--app-faint); font-variant-numeric: tabular-nums;
+}
+
+/* Column spans inside a card row. Everything stacks below 46rem. */
+.myrow__col { grid-column: span 6; }
+.myrow__col--half       { grid-column: span 3; }
+.myrow__col--third      { grid-column: span 2; }
+.myrow__col--two-thirds { grid-column: span 4; }
+.myrow__col--full       { grid-column: 1 / -1; }
+
+.myrow__set { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: .35rem; }
+.myrow__help { margin: 0; font-size: var(--fs-xs); color: var(--app-muted); line-height: 1.5; }
+.myrow__none { margin: 0; font-size: var(--fs-xs); color: var(--app-faint); }
+
+.myopts--tight { grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: .3rem; }
+.myopt--sm { min-height: 40px; padding: .35rem .6rem; font-size: var(--fs-xs); }
+.myopt--wide { align-items: center; }
+
+/* -- the photo picker -- */
+.mypick { display: flex; align-items: center; gap: var(--s-3); }
+.mypick__frame {
+  flex: none; width: 64px; height: 64px; border-radius: var(--app-r-sm);
+  background: var(--app-sage); display: grid; place-items: center; overflow: hidden;
+}
+.mypick__frame img { width: 100%; height: 100%; object-fit: cover; }
+.mypick__acts { display: flex; flex-wrap: wrap; gap: .4rem; }
+.mypick__btn {
+  min-height: 44px; padding: .5rem .85rem;
+  border: 1px solid var(--app-line); border-radius: var(--r-pill);
+  background: var(--app-surface); color: var(--app-ink);
+  font: inherit; font-size: var(--fs-xs); font-weight: 600; cursor: pointer;
+}
+.mypick__btn:hover { border-color: var(--app-green); color: var(--app-green); }
+.mypick__btn--x:hover { border-color: #A6452F; color: #A6452F; }
+.mypick__btn:disabled { opacity: .5; cursor: default; }
+
+/*
+ * A class that sets display beats the user agent's [hidden] rule, so every
+ * control here that starts or ends up hidden needs saying twice. The Add
+ * button is inline-flex, and without this it stayed on screen after the
+ * fourth practitioner.
+ */
+.mypick__btn[hidden],
+.myrep__add[hidden],
+.myrep__cap[hidden] { display: none !important; }
+
+.myrep__cap { margin: 0; font-size: var(--fs-xs); color: var(--app-muted); }
+
+@media (max-width: 46rem) {
+  .myrep--card .myrow__cols { grid-template-columns: 1fr; }
+  .myrow__col,
+  .myrow__col--half,
+  .myrow__col--third,
+  .myrow__col--two-thirds,
+  .myrow__col--full { grid-column: 1 / -1; }
+  .mypick { flex-wrap: wrap; }
+}
+.mypick__no { font-size: var(--fs-xs); color: var(--app-faint); }
