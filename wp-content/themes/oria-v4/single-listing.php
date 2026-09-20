@@ -1107,6 +1107,24 @@ while ( have_posts() ) :
 			<?php if ( $oria_has_loc && 'online' !== $oria_format ) : ?>
 				<?php $oria_sec++; ?>
 				<section class="xp-sec" id="getting-there" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
+					<?php
+					/*
+					 * The neighbourhood, at the head of the section already
+					 * about where this place is. AreaContext returns null
+					 * for a suburb too thin to have a page, so nothing
+					 * renders rather than something pointing at a 404.
+					 */
+					if ( function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
+						$oria_area_ctx = \Oria\Core\AreaContext\for_post( $oria_id );
+						if ( $oria_area_ctx ) {
+							get_template_part(
+								'template-parts/area/area-strip',
+								null,
+								array( 'area' => $oria_area_ctx, 'source' => 'listing-location' )
+							);
+						}
+					}
+					?>
 					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php echo esc_html( $oria_wk || $oria_hbits ? __( 'Location and hours', 'oria' ) : __( 'Getting there', 'oria' ) ); ?></h2>
 					<div class="xp-loc">
 						<div class="xp-loc__col">
@@ -1658,24 +1676,6 @@ while ( have_posts() ) :
 					<?php endforeach; ?>
 				</dl>
 			</div>
-
-			<?php
-			/*
-			 * The neighbourhood, under everything somebody came here to do.
-			 * A visitor deciding whether to book must not meet a guide to
-			 * the suburb first -- this is what they read afterwards.
-			 */
-			if ( function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
-				$oria_area_ctx = \Oria\Core\AreaContext\for_post( $oria_id );
-				if ( $oria_area_ctx ) {
-					get_template_part(
-						'template-parts/area/area-card',
-						null,
-						array( 'area' => $oria_area_ctx, 'source' => 'listing-rail' )
-					);
-				}
-			}
-			?>
 		</aside>
 	</div><!-- .xp-body -->
 

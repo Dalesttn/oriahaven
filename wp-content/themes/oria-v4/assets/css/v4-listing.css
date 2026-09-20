@@ -1024,13 +1024,8 @@ html.xp-sheet-open { overflow: hidden; }
     padding-top: clamp(2.25rem, 6vw, 3rem);
   }
   /* The hero strip and "Location and hours" already hold everything the
-     rail does; a second copy after all the content would only repeat it.
-     The neighbourhood card is the exception -- it says something no other
-     part of the page says -- so the rail dissolves instead of hiding, and
-     the card lands at the end of the single column. */
-  .xp-rail { display: contents; }
-  .xp-rail > :not(.areacard) { display: none; }
-  .xp-rail > .areacard { margin-top: 2rem; }
+     rail does; a second copy after all the content would only repeat it. */
+  .xp-rail { display: none; }
 
   .xp-decide { grid-template-columns: minmax(0, 1fr); }
   .xp-decide__acts { justify-content: flex-start; }
