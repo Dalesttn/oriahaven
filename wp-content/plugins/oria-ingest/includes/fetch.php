@@ -96,8 +96,15 @@ function events_from_html( string $html, string $page_url ): array {
 			continue;
 		}
 		foreach ( flatten_nodes( $data ) as $node ) {
+			/*
+			 * Not every event says "Event". schema.org has two dozen
+			 * subtypes and the platforms use them: Eventbrite files a
+			 * festival as Festival, which contains none of the letters
+			 * this test was looking for, so the Perth Festival of Healing
+			 * was skipped on every pass.
+			 */
 			$type = (array) ( $node['@type'] ?? array() );
-			if ( ! array_filter( $type, static fn( $t ) => is_string( $t ) && str_contains( $t, 'Event' ) ) ) {
+			if ( ! array_filter( $type, static fn( $t ) => is_string( $t ) && is_event_type( $t ) ) ) {
 				continue;
 			}
 			$loc   = $node['location'] ?? array();
@@ -128,6 +135,19 @@ function events_from_html( string $html, string $page_url ): array {
 				'price_high' => sanitize_text_field( (string) ( is_array( $offer ) ? ( $offer['highPrice'] ?? '' ) : '' ) ),
 				'currency'   => sanitize_text_field( (string) ( is_array( $offer ) ? ( $offer['priceCurrency'] ?? '' ) : '' ) ),
 				'organiser'  => sanitize_text_field( (string) ( is_array( $org ) ? ( $org['name'] ?? '' ) : $org ) ),
+				/*
+				 * Five more facts the platforms already publish for
+				 * exactly this purpose, and which the page had no way to
+				 * say: where precisely, whether it is still happening,
+				 * whether there are tickets left, what the tiers cost,
+				 * and who to read about next.
+				 */
+				'street'     => sanitize_text_field( (string) ( is_array( $addr ) ? ( $addr['streetAddress'] ?? '' ) : '' ) ),
+				'postcode'   => sanitize_text_field( (string) ( is_array( $addr ) ? ( $addr['postalCode'] ?? '' ) : '' ) ),
+				'status'     => sanitize_text_field( basename( (string) ( $node['eventStatus'] ?? '' ) ) ),
+				'availability' => sanitize_text_field( basename( (string) ( is_array( $offer ) ? ( $offer['availability'] ?? '' ) : '' ) ) ),
+				'tiers'      => tiers_from( $node['offers'] ?? array() ),
+				'organiser_url' => esc_url_raw( (string) ( is_array( $org ) ? ( $org['url'] ?? '' ) : '' ) ),
 				'url'        => esc_url_raw( (string) ( $node['url'] ?? $page_url ) ),
 				'image'      => esc_url_raw( is_array( $node['image'] ?? null ) ? (string) ( $node['image'][0] ?? '' ) : (string) ( $node['image'] ?? '' ) ),
 				'source_url' => esc_url_raw( $page_url ),
@@ -135,6 +155,94 @@ function events_from_html( string $html, string $page_url ): array {
 		}
 	}
 	return $out;
+}
+
+/**
+ * Is this schema.org type an Event?
+ *
+ * The subtypes are a closed list on schema.org, so it is written out
+ * rather than guessed at: matching on a substring would let "EventVenue"
+ * and "SaleEvent" through, and matching only "Event" lets nothing but
+ * the base type through.
+ */
+function is_event_type( string $type ): bool {
+	$type = trim( str_replace( 'https://schema.org/', '', $type ) );
+	if ( 'Event' === $type ) {
+		return true;
+	}
+	return in_array(
+		$type,
+		array(
+			'BusinessEvent',
+			'ChildrensEvent',
+			'ComedyEvent',
+			'CourseInstance',
+			'DanceEvent',
+			'DeliveryEvent',
+			'EducationEvent',
+			'ExhibitionEvent',
+			'Festival',
+			'FoodEvent',
+			'Hackathon',
+			'LiteraryEvent',
+			'MusicEvent',
+			'PublicationEvent',
+			'SaleEvent',
+			'ScreeningEvent',
+			'SocialEvent',
+			'SportsEvent',
+			'TheaterEvent',
+			'VisualArtsEvent',
+		),
+		true
+	);
+}
+
+/**
+ * The named ticket tiers, deduplicated, cheapest first.
+ *
+ * "Pay what you can", "Concession $33", "General $55" is a far more
+ * useful thing to tell somebody than "from $0" -- and it is what the
+ * organiser published, not an inference about it. An AggregateOffer
+ * carries no name and is skipped; two tiers with the same name and price
+ * are one tier said twice.
+ *
+ * @return list<array{name: string, price: float}>
+ */
+function tiers_from( $offers ): array {
+	if ( ! is_array( $offers ) ) {
+		return array();
+	}
+	if ( isset( $offers['@type'] ) ) {
+		$offers = array( $offers );
+	}
+
+	/*
+	 * Grouped by name, not by name and price. Organisers publish the same
+	 * tier twice -- one Humanitix event has a "Concession" at $0 and a
+	 * "Concession " at $33 -- and listing both makes our page look wrong
+	 * rather than theirs. One line, and a range where the prices differ.
+	 */
+	$by_name = array();
+	foreach ( $offers as $offer ) {
+		if ( ! is_array( $offer ) ) {
+			continue;
+		}
+		$name = trim( (string) ( $offer['name'] ?? '' ) );
+		if ( '' === $name || ! isset( $offer['price'] ) ) {
+			continue; // an AggregateOffer, or a tier with nothing to say
+		}
+		$key = strtolower( $name );
+		if ( ! isset( $by_name[ $key ] ) ) {
+			$by_name[ $key ] = array( 'name' => sanitize_text_field( $name ), 'price' => (float) $offer['price'], 'high' => (float) $offer['price'] );
+		}
+		$by_name[ $key ]['price'] = min( $by_name[ $key ]['price'], (float) $offer['price'] );
+		$by_name[ $key ]['high']  = max( $by_name[ $key ]['high'], (float) $offer['price'] );
+	}
+
+	$out = array_values( $by_name );
+	usort( $out, static fn( array $a, array $b ): int => $a['price'] <=> $b['price'] );
+	return array_slice( $out, 0, 6 );
 }
 
 /** Walk any JSON-LD shape ( @graph, arrays, nested ) yielding assoc nodes. */

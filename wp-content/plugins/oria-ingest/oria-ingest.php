@@ -30,6 +30,7 @@ require ORIA_INGEST_DIR . 'includes/admin.php';
 require ORIA_INGEST_DIR . 'includes/gone.php';
 require ORIA_INGEST_DIR . 'includes/context.php';
 require ORIA_INGEST_DIR . 'includes/import.php';
+require ORIA_INGEST_DIR . 'includes/enrich.php';
 
 Taxonomy\bootstrap();
 Admin\bootstrap();

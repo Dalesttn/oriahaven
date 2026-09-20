@@ -102,6 +102,28 @@ while ( have_posts() ) :
 	<section class="wrap" style="padding-bottom:var(--s-6)">
 		<?php if ( $oria_hero_id ) : ?>
 			<div class="evhero"><?php echo wp_get_attachment_image( $oria_hero_id, 'oria-wide' ); ?></div>
+			<?php
+			/*
+			 * Where the picture came from. An event image is the
+			 * organiser's, published by them on the page we link to, and
+			 * saying so is both the decent thing and the practical one:
+			 * anyone who wants it taken down can see at a glance that it
+			 * is theirs, and one query finds every image from a source.
+			 */
+			$oria_img_from = (string) get_post_meta( (int) $oria_hero_id, '_oria_img_origin', true );
+			if ( '' !== $oria_img_from ) :
+				$oria_img_host = (string) wp_parse_url( $oria_img_from, PHP_URL_HOST );
+				?>
+				<p class="evhero__credit">
+					<?php
+					printf(
+						/* translators: %s: linked source */
+						esc_html__( 'Event image via %s', 'oria' ),
+						'<a href="' . esc_url( $oria_img_from ) . '" rel="nofollow noopener" target="_blank">' . esc_html( (string) preg_replace( '/^www\./', '', $oria_img_host ) ) . '</a>'
+					);
+					?>
+				</p>
+			<?php endif; ?>
 		<?php else : ?>
 			<?php get_template_part( 'template-parts/event', 'art', array( 'event_id' => get_the_ID() ) ); ?>
 		<?php endif; ?>
@@ -137,6 +159,17 @@ while ( have_posts() ) :
 						<div><div class="keyfact__k"><?php esc_html_e( 'Where', 'oria' ); ?></div>
 							<div class="keyfact__v">
 								<?php echo esc_html( $oria_venue ); ?>
+								<?php
+								/*
+								 * The street, when the organiser published
+								 * one and it says more than the venue line
+								 * already does.
+								 */
+								$oria_street = function_exists( '\Oria\Ingest\Enrich\street' ) ? \Oria\Ingest\Enrich\street( (int) get_the_ID() ) : '';
+								if ( '' !== $oria_street && false === stripos( $oria_venue, (string) strtok( $oria_street, ',' ) ) ) :
+									?>
+									<span class="keyfact__street"><?php echo esc_html( (string) preg_replace( '/,\s*Australia$/i', '', $oria_street ) ); ?></span>
+								<?php endif; ?>
 								<?php
 								/*
 								 * The suburb as a way in, not just an address.
@@ -180,6 +213,62 @@ while ( have_posts() ) :
 						<div><div class="keyfact__k"><?php esc_html_e( 'How long', 'oria' ); ?></div><div class="keyfact__v"><?php echo esc_html( $oria_duration ); ?></div></div>
 					<?php endif; ?>
 				</div>
+
+				<?php
+				/*
+				 * What the organiser publishes about tickets, in their own
+				 * words and their own numbers. "Pay what you can / $33
+				 * concession / $55 general" answers the question "can I
+				 * afford this" that a single "from $0" leaves open.
+				 *
+				 * Every line here was read from the booking page's own
+				 * structured data, which is why the block says when. None
+				 * of it is inferred, and a tier nobody published is not
+				 * shown.
+				 */
+				$oria_tiers  = function_exists( '\Oria\Ingest\Enrich\tiers' ) ? \Oria\Ingest\Enrich\tiers( (int) get_the_ID() ) : array();
+				$oria_avail  = function_exists( '\Oria\Ingest\Enrich\availability' ) ? \Oria\Ingest\Enrich\availability( (int) get_the_ID() ) : '';
+				$oria_e_when = function_exists( '\Oria\Ingest\Enrich\checked_on' ) ? \Oria\Ingest\Enrich\checked_on( (int) get_the_ID() ) : '';
+				?>
+				<?php if ( $oria_tiers && ! $oria_over ) : ?>
+					<div class="evtiers">
+						<p class="evtiers__head"><?php esc_html_e( 'Ticket options', 'oria' ); ?></p>
+						<ul class="evtiers__list">
+							<?php foreach ( $oria_tiers as $oria_tier ) : ?>
+								<li>
+									<span class="evtiers__name"><?php echo esc_html( (string) $oria_tier['name'] ); ?></span>
+									<span class="evtiers__price">
+										<?php
+										$oria_money = static function ( float $n ): string {
+											return $n > 0
+												? '$' . rtrim( rtrim( number_format( $n, 2, '.', '' ), '0' ), '.' )
+												: __( 'free', 'oria' );
+										};
+										$oria_lo    = (float) $oria_tier['price'];
+										$oria_hi    = (float) ( $oria_tier['high'] ?? $oria_tier['price'] );
+										echo esc_html( $oria_hi > $oria_lo ? $oria_money( $oria_lo ) . '–' . $oria_money( $oria_hi ) : $oria_money( $oria_lo ) );
+										?>
+									</span>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+						<?php if ( '' !== $oria_e_when ) : ?>
+							<p class="evtiers__note">
+								<?php
+								printf(
+									/* translators: %s: date */
+									esc_html__( 'From the organiser’s booking page, read %s. Prices are theirs to change.', 'oria' ),
+									esc_html( $oria_e_when )
+								);
+								?>
+							</p>
+						<?php endif; ?>
+					</div>
+				<?php endif; ?>
+
+				<?php if ( 'SoldOut' === $oria_avail && ! $oria_over ) : ?>
+					<p class="evsold"><?php esc_html_e( 'Sold out when we last checked.', 'oria' ); ?></p>
+				<?php endif; ?>
 
 				<?php if ( $oria_booking ) : ?>
 					<a class="btn btn--dark btn--block" href="<?php echo esc_url( $oria_booking ); ?>" rel="nofollow noopener" target="_blank"

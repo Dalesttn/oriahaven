@@ -247,6 +247,15 @@ function query_for( int $post_id ): ?array {
 	 */
 	$address = clean_address( (string) get_field( 'address', $post_id ) );
 	if ( '' === $address ) {
+		/*
+		 * An enriched event carries the street address its own booking
+		 * page publishes -- "2 Thompson Rd, North Fremantle WA 6159" --
+		 * which places a building rather than a suburb. The venue name
+		 * is the fallback for everything that has not been enriched.
+		 */
+		$address = clean_address( (string) get_post_meta( $post_id, '_oria_ev_street', true ) );
+	}
+	if ( '' === $address ) {
 		$address = clean_address( (string) get_field( 'venue', $post_id ) );
 	}
 

@@ -808,10 +808,32 @@ a.livesession:hover { background: var(--sand-2); }
   .wkrows { grid-template-columns: 1fr; }
 }
 
+/* What the organiser publishes about tickets. A list, not a price: the
+   question is "can I afford this", and one number rarely answers it. */
+.evtiers { margin: var(--s-4) 0; padding: var(--s-3) var(--s-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--sand-2); }
+.evtiers__head { margin: 0 0 .4rem; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-soft); }
+.evtiers__list { list-style: none; margin: 0; padding: 0; display: grid; gap: .3rem; }
+.evtiers__list li { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; font-size: var(--fs-sm); }
+.evtiers__name { min-width: 0; }
+.evtiers__price { flex: none; font-weight: 700; color: var(--deep); font-variant-numeric: tabular-nums; }
+.evtiers__note { margin: .5rem 0 0; font-size: var(--fs-xs); line-height: 1.4; color: var(--text-faint); }
+
+/* Said once, where the booking button is about to be pressed. */
+.evsold {
+  margin: var(--s-3) 0; padding: .5rem .75rem;
+  border: 1px solid var(--line); border-left: 3px solid var(--brand-gold);
+  border-radius: var(--r-sm); background: var(--white);
+  font-size: var(--fs-sm); color: var(--ink);
+}
+.keyfact__street { display: block; margin-top: .15rem; font-size: var(--fs-xs); color: var(--text-soft); }
+
 /* Full-width event hero: banners come in every shape, so crop to a calm
    cinematic band instead of letting a tall flyer take over the page. */
 .evhero { border-radius: var(--r-lg); overflow: hidden; }
 .evhero img { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; display: block; }
+.evhero__credit { margin: .4rem 0 0; font-size: var(--fs-xs); color: var(--text-faint); }
+.evhero__credit a { color: inherit; border-bottom: 1px solid var(--line); }
+.evhero__credit a:hover { color: var(--deep); }
 @media (max-width: 720px) { .evhero img { aspect-ratio: 16 / 10; } }
 
 /* --- Shop: hero ------------------------------------------------------- */
