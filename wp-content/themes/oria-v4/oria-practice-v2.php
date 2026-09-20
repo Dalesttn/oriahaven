@@ -1777,57 +1777,70 @@ if ( $oria_facet ) {
 			)
 		);
 	}
-	$oria_links = array();
+	/*
+	 * Regions and suburbs kept apart. They used to share one row, which
+	 * put "Northern Suburbs" beside "Two Rocks" and asked a visitor to
+	 * tell a fifth of the city from a single street.
+	 */
+	$oria_region_links = array();
 	foreach ( $oria_regions as $oria_r ) {
 		$oria_rn = (int) ( $oria_counts['regions'][ $oria_r->slug ] ?? 0 );
 		if ( $oria_rn > 0 ) {
-			$oria_links[] = array( \Oria\Core\PracticesIndex\area_url( $oria_term, $oria_r ), \Oria\Theme\tname( $oria_r ), $oria_rn );
+			$oria_region_links[] = array( \Oria\Core\PracticesIndex\area_url( $oria_term, $oria_r ), \Oria\Theme\tname( $oria_r ), $oria_rn );
 		}
 	}
+	usort( $oria_region_links, static fn( array $a, array $b ): int => $b[2] <=> $a[2] );
+
+	$oria_sub_links = array();
 	foreach ( $oria_counts['suburbs'] as $oria_sname => $oria_rn ) {
 		$oria_s = get_term_by( 'slug', sanitize_title( $oria_sname ), 'area' );
 		if ( $oria_s instanceof WP_Term && 0 !== $oria_s->parent ) {
-			$oria_links[] = array( \Oria\Core\PracticesIndex\area_url( $oria_term, $oria_s ), \Oria\Theme\tname( $oria_s ), $oria_rn );
+			$oria_sub_links[] = array( \Oria\Core\PracticesIndex\area_url( $oria_term, $oria_s ), \Oria\Theme\tname( $oria_s ), (int) $oria_rn );
 		}
 	}
-	// Every row the category offers, at its clean address.
-	$oria_exp_links = array();
-	foreach ( $oria_rows as $oria_r ) {
-		if ( (int) $oria_r['count'] >= 3 ) {
-			$oria_exp_links[] = array( $oria_row_url( $oria_r ), (string) $oria_r['label'], (int) $oria_r['count'] );
-		}
-	}
+	usort( $oria_sub_links, static fn( array $a, array $b ): int => $b[2] <=> $a[2] ?: strcasecmp( $a[1], $b[1] ) );
 
 	/*
-	 * Both lists keep every link -- this is the internal-linking layer,
-	 * and hiding half of it from a crawler to tidy a page would be a poor
-	 * trade. What changed is the reading: the count left the label, where
-	 * it turned a row of places into a row of numbers, and a long list
-	 * now shows its head with the rest one click away.
+	 * The treatments, richest first, each with the line the intent
+	 * registry already carries -- "Firm, focused work, often with a
+	 * health-fund receipt" is somebody's sentence, not a generated one.
+	 *
+	 * A row that merely repeats the category is dropped: somebody on the
+	 * Massage & Bodywork page does not need "Massage" offered back.
 	 */
-	get_template_part(
-		'template-parts/chips',
-		null,
-		array(
-			'items'   => $oria_exp_links,
-			/* translators: %s: category name */
-			'heading' => sprintf( __( '%s by experience', 'oria' ), $oria_psent ),
-			'limit'   => 12,
-			/* translators: %s: how many more */
-			'more'    => __( 'Show %s more', 'oria' ),
-			'event'   => 'category_quick_filter_select',
-		)
+	$oria_self = array_map(
+		static fn( string $part ): string => trim( strtolower( $part ) ),
+		preg_split( '/[&\/,]/', $oria_pname ) ?: array()
 	);
+	$oria_style_links = array();
+	foreach ( $oria_rows as $oria_r ) {
+		if ( (int) $oria_r['count'] < 3 ) {
+			continue;
+		}
+		if ( in_array( trim( strtolower( (string) $oria_r['label'] ) ), $oria_self, true ) ) {
+			continue;
+		}
+		$oria_style_links[] = array(
+			$oria_row_url( $oria_r ),
+			(string) $oria_r['label'],
+			(int) $oria_r['count'],
+			(string) ( $oria_r['note'] ?? '' ),
+		);
+	}
+	usort( $oria_style_links, static fn( array $a, array $b ): int => $b[2] <=> $a[2] );
+
 	get_template_part(
-		'template-parts/chips',
+		'template-parts/explore-tabs',
 		null,
 		array(
-			'items'   => $oria_links,
-			/* translators: %s: category name */
-			'heading' => sprintf( __( '%s by area', 'oria' ), $oria_psent ),
-			'limit'   => 12,
-			/* translators: %s: how many more */
-			'more'    => __( 'Show %s more', 'oria' ),
+			'styles'  => $oria_style_links,
+			'regions' => $oria_region_links,
+			'suburbs' => $oria_sub_links,
+			/* translators: %s: category name, lower case */
+			'heading' => sprintf( __( 'Explore %s', 'oria' ), strtolower( $oria_psent ) ),
+			'what'    => strtolower( $oria_psent ),
+			'id'      => 'xcExplore',
+			'event'   => 'category_quick_filter_select',
 		)
 	);
 	?>

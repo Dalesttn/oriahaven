@@ -1446,14 +1446,129 @@ html.has-sheet .cmptray { display: none; }
   .pcard:hover .pcard__arrow { transform: none; }
 }
 
-/* A chip that carries a count. The number is secondary to the name and
-   reads as such; it used to be "(51)" inside the label, which made a row
-   of these into a table of numbers with words attached. */
-.chip__n {
-  margin-left: .4rem; font-size: var(--fs-xs); font-weight: 400;
-  color: var(--text-soft); font-variant-numeric: tabular-nums;
+/* Explore a category: two tabs, six cards each, a field.
+
+   The colour rule matters more than the layout here. Every option used to
+   be solid deep green, which is this site's way of saying "this filter is
+   on" -- so a wall of them read as everything being selected at once.
+   Green is now reserved for the current thing; a choice not yet made is
+   warm white with a quiet border. */
+.xtabs { margin-top: var(--s-6); }
+.xtabs__title { margin: 0 0 var(--s-4); }
+.xtabs__bar {
+  display: inline-flex; gap: .25rem; margin-bottom: var(--s-5);
+  padding: .25rem; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--sand-2);
 }
-.chip:hover .chip__n { color: inherit; }
+.xtabs__bar[hidden] { display: none; }
+.xtabs__tab {
+  padding: .5rem 1.1rem; border: 0; border-radius: 999px;
+  background: none; color: var(--text-soft); cursor: pointer;
+  font: inherit; font-size: var(--fs-sm); font-weight: 700;
+}
+.xtabs__tab:hover { color: var(--deep); }
+/* Solid green means "this one", and only here. */
+.xtabs__tab[aria-selected="true"] { background: var(--deep); color: var(--white); }
+.xtabs__tab:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
+.xtabs__panel[hidden] { display: none; }
+.xtabs__sub { margin: 0 0 var(--s-3); }
+.xtabs__panel + .xtabs__panel { margin-top: var(--s-6); }
+
+.xtabs__grid { display: grid; gap: var(--s-3); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.xcard {
+  display: grid; align-content: start; gap: .25rem;
+  padding: var(--s-4); min-height: 6.5rem;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--white); color: var(--deep); text-decoration: none;
+  transition: background var(--t-fast, .18s) var(--ease), border-color var(--t-fast, .18s) var(--ease), transform var(--t-fast, .18s) var(--ease);
+}
+.xcard:hover { background: var(--sand-2); border-color: var(--teal-line, var(--line)); transform: translateY(-1px); }
+.xcard:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
+.xcard__name { font-size: var(--fs-md, 1rem); line-height: 1.2; }
+.xcard__note { font-size: var(--fs-sm); line-height: 1.4; color: var(--text-soft); }
+.xcard__foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .5rem; margin-top: auto; padding-top: .5rem;
+  font-size: var(--fs-xs); color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+.xcard__arrow { color: var(--deep); transition: transform var(--t-fast, .18s) var(--ease); }
+.xcard:hover .xcard__arrow { transform: translateX(3px); }
+
+/* The rest of the taxonomy, folded away but still served. */
+.xtabs__all { margin-top: var(--s-4); }
+.xtabs__all > summary { cursor: pointer; list-style: none; display: inline-flex; }
+.xtabs__all > summary::-webkit-details-marker { display: none; }
+.xtabs__all > summary:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 3px; border-radius: 999px; }
+.xtabs__allbtn {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .55rem 1.1rem; border: 1px solid var(--line); border-radius: 999px;
+  font-size: var(--fs-sm); font-weight: 700; color: var(--deep);
+}
+.xtabs__allbtn:hover { background: var(--sand-2); }
+.xtabs__mark { display: inline-block; transition: transform var(--t-fast, .18s) var(--ease); }
+.xtabs__all[open] .xtabs__mark { transform: rotate(90deg); }
+.xtabs__chips { margin: .75rem 0 var(--s-4); }
+.xtabs__group {
+  margin: var(--s-4) 0 0; font-size: 10px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--text-soft);
+}
+
+/* Find somewhere by name, when the five parts of town are not the answer. */
+.xtabs__find { margin-top: var(--s-5); max-width: 26rem; }
+.xtabs__findlabel { display: block; margin-bottom: .4rem; font-size: var(--fs-sm); font-weight: 700; color: var(--ink); }
+.xtabs__findbox { position: relative; }
+.xtabs__findicon {
+  position: absolute; left: .7rem; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; color: var(--text-soft); pointer-events: none;
+}
+.xtabs__findicon svg { width: 100%; height: 100%; display: block; }
+.xtabs__q { width: 100%; padding-left: 2.2rem; }
+.xtabs__ac {
+  position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + .35rem);
+  max-height: 18rem; overflow-y: auto; padding: .4rem;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--surface); box-shadow: var(--sh-2);
+}
+.xtabs__ac[hidden] { display: none; }
+.xtabs__acitem {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .6rem;
+  padding: .4rem .5rem; border-radius: var(--r-sm);
+  font-size: var(--fs-sm); color: var(--ink); text-decoration: none;
+}
+.xtabs__acitem:hover, .xtabs__acitem.is-on { background: var(--sand-2); }
+.xtabs__acn { flex: none; font-size: var(--fs-xs); color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.xtabs__acnone { margin: .5rem; font-size: var(--fs-sm); color: var(--text-soft); }
+
+@media (max-width: 60rem) {
+  .xtabs__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 40rem) {
+  .xtabs__grid { grid-template-columns: minmax(0, 1fr); }
+  .xcard { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xcard, .xcard__arrow, .xtabs__mark { transition: none; }
+  .xcard:hover { transform: none; }
+  .xcard:hover .xcard__arrow { transform: none; }
+}
+
+/* A pill that carries a count. The number is secondary to the name and
+   reads as such: it used to be "(51)" inside the label, which made a row
+   of these into a table of numbers with words attached, and then a bare
+   digit at the far edge, which read as a badge. "51 places" is what
+   somebody would say out loud.
+
+   Not .chip -- that name was already taken by the solid green chip that
+   means "this filter is on", and borrowing it made every link in the
+   mesh look selected. */
+.pill--count { font-weight: 600; }
+.pill__n {
+  margin-left: .1rem; font-size: var(--fs-xs); font-weight: 400;
+  color: var(--text-faint); font-variant-numeric: tabular-nums;
+}
+.pill:hover .pill__n { color: var(--text-soft); }
 
 /* The tail of a long list. Every link is still served; this only decides
    how many are on screen before somebody asks for the rest. */

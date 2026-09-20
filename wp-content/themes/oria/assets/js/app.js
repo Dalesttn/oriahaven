@@ -3693,6 +3693,121 @@
     });
   }
 
+  /* Explore a category: two panels behind two tabs, and a field over the
+     suburbs.
+
+     The panels are both in the HTML and both visible until this runs, so
+     a page with no script -- or a crawler -- gets every link stacked, and
+     the tab bar only appears once there is something to switch. The
+     suggestions are read out of the drawer already on the page rather
+     than a second payload. */
+  function initExploreTabs() {
+    $$("[data-xtabs]").forEach(function (root) {
+      var bar = root.querySelector("[data-xtabs-bar]");
+      var panels = $$("[data-xtabs-panel]", root);
+
+      if (bar && panels.length === 2) {
+        var tabs = $$(".xtabs__tab", bar);
+        bar.hidden = false;
+
+        function show(i) {
+          tabs.forEach(function (t, k) {
+            t.setAttribute("aria-selected", k === i ? "true" : "false");
+            t.tabIndex = k === i ? 0 : -1;
+          });
+          panels.forEach(function (p, k) { p.hidden = k !== i; });
+        }
+
+        tabs.forEach(function (t, i) {
+          t.addEventListener("click", function () { show(i); });
+          t.addEventListener("keydown", function (e) {
+            if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+            e.preventDefault();
+            var next = (i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length;
+            show(next);
+            tabs[next].focus();
+          });
+        });
+        show(0);
+      }
+
+      /* The suburb field. Same shape as the neighbourhood one: it only
+         suggests what is already linked below it. */
+      var q = root.querySelector("[data-xtabs-q]");
+      var ac = root.querySelector("[data-xtabs-ac]");
+      if (!q || !ac) return;
+
+      var rows = $$("[data-xtabs-place]", root).map(function (el) {
+        return {
+          name: el.getAttribute("data-xtabs-place") || "",
+          label: el.childNodes[0] ? el.childNodes[0].textContent.trim() : "",
+          n: (el.querySelector(".pill__n") || {}).textContent || "",
+          url: el.getAttribute("href")
+        };
+      });
+      if (!rows.length) return;
+
+      var items = [], active = -1;
+
+      function close() {
+        ac.hidden = true;
+        ac.innerHTML = "";
+        items = [];
+        active = -1;
+        q.setAttribute("aria-expanded", "false");
+      }
+
+      function mark(i) {
+        items.forEach(function (el, k) {
+          el.classList.toggle("is-on", k === i);
+          el.setAttribute("aria-selected", k === i ? "true" : "false");
+        });
+        active = i;
+      }
+
+      q.addEventListener("input", function () {
+        var term = q.value.trim().toLowerCase();
+        if (!term) { close(); return; }
+        var hits = rows.filter(function (r) { return r.name.indexOf(term) > -1; }).slice(0, 8);
+        ac.innerHTML = "";
+        items = [];
+        hits.forEach(function (r) {
+          var a = document.createElement("a");
+          a.className = "xtabs__acitem";
+          a.href = r.url;
+          a.setAttribute("role", "option");
+          a.setAttribute("aria-selected", "false");
+          a.innerHTML = '<span></span><span class="xtabs__acn"></span>';
+          a.firstChild.textContent = r.label;
+          a.lastChild.textContent = r.n.trim();
+          ac.appendChild(a);
+          items.push(a);
+        });
+        if (!hits.length) {
+          var none = document.createElement("p");
+          none.className = "xtabs__acnone";
+          none.textContent = "Nothing listed in a suburb by that name.";
+          ac.appendChild(none);
+        }
+        ac.hidden = false;
+        q.setAttribute("aria-expanded", "true");
+        mark(-1);
+      });
+
+      q.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") { close(); return; }
+        if (ac.hidden || !items.length) return;
+        if (e.key === "ArrowDown") { e.preventDefault(); mark((active + 1) % items.length); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); mark((active - 1 + items.length) % items.length); }
+        else if (e.key === "Enter" && active > -1) { e.preventDefault(); items[active].click(); }
+      });
+
+      document.addEventListener("click", function (e) {
+        if (!root.contains(e.target)) close();
+      });
+    });
+  }
+
   /* Neighbourhood promotions, wherever they are. One listener rather than
      one per component, and no personal data -- where it was and which area,
      nothing about who clicked. */
@@ -5580,6 +5695,7 @@
     initStickyCta();
     initSave();
     initHoods();
+    initExploreTabs();
     initAreaTracking();
     initSaveEvent();
     initSavedEventsPage();

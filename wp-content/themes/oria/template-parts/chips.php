@@ -44,10 +44,18 @@ $oria_rest  = array_slice( $oria_items, count( $oria_head ) );
 $oria_chip = static function ( array $item, string $event ) {
 	$count = $item[2] ?? null;
 	?>
-	<a class="pill chip" href="<?php echo esc_url( (string) $item[0] ); ?>"<?php echo '' !== $event ? ' data-oria-event="' . esc_attr( $event ) . '"' : ''; ?>>
+	<a class="pill pill--count" href="<?php echo esc_url( (string) $item[0] ); ?>"<?php echo '' !== $event ? ' data-oria-event="' . esc_attr( $event ) . '"' : ''; ?>>
 		<?php echo esc_html( (string) $item[1] ); ?>
 		<?php if ( null !== $count ) : ?>
-			<span class="chip__n"><?php echo esc_html( number_format_i18n( (int) $count ) ); ?></span>
+			<span class="pill__n">
+				<?php
+				printf(
+					/* translators: %s: number of places */
+					esc_html( _n( '%s place', '%s places', (int) $count, 'oria' ) ),
+					esc_html( number_format_i18n( (int) $count ) )
+				);
+				?>
+			</span>
 		<?php endif; ?>
 	</a>
 	<?php
