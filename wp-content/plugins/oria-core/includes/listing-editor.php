@@ -193,10 +193,20 @@ function sections(): array {
 					'help'   => __( 'Multi-session passes, intro offers, memberships -- anything that is not a single session.', 'oria' ),
 					'add'    => __( 'Add a package', 'oria' ),
 					'single' => __( 'package', 'oria' ),
+					/*
+					 * Every column ACF has for a package, not only the ones an
+					 * owner is likely to fill. A repeater row is written whole:
+					 * a column the form does not carry is saved as empty, so a
+					 * package image or booking link set on the admin screen
+					 * would have been wiped by the first save from here.
+					 */
+					'layout' => 'card',
 					'sub'    => array(
-						array( 'name' => 'title', 'type' => 'text', 'label' => __( 'Name', 'oria' ), 'placeholder' => __( 'Five-class pass', 'oria' ) ),
-						array( 'name' => 'price', 'type' => 'text', 'label' => __( 'Price', 'oria' ), 'placeholder' => __( '$140', 'oria' ) ),
-						array( 'name' => 'description', 'type' => 'textarea', 'rows' => 2, 'label' => __( 'What it includes', 'oria' ) ),
+						array( 'name' => 'title', 'type' => 'text', 'label' => __( 'Name', 'oria' ), 'placeholder' => __( 'Five-class pass', 'oria' ), 'span' => 'half' ),
+						array( 'name' => 'price', 'type' => 'text', 'label' => __( 'Price', 'oria' ), 'placeholder' => __( '$140', 'oria' ), 'span' => 'half' ),
+						array( 'name' => 'description', 'type' => 'textarea', 'rows' => 2, 'label' => __( 'What it includes', 'oria' ), 'span' => 'full' ),
+						array( 'name' => 'booking_url', 'type' => 'url', 'label' => __( 'Booking link for this package', 'oria' ), 'placeholder' => 'https://', 'span' => 'two-thirds', 'help' => __( 'Optional. Only if it books somewhere different from your main link.', 'oria' ) ),
+						array( 'name' => 'image', 'type' => 'image', 'label' => __( 'Image', 'oria' ), 'span' => 'third' ),
 					),
 				),
 			),
@@ -1222,12 +1232,23 @@ function drop_row( string $field_name, array $rows ): array {
 	return array_values( $rows );
 }
 
-/** Loose comparison that treats '' and null and [] as the same nothing. */
+/**
+ * Loose comparison that treats '' and null and [] as the same nothing.
+ *
+ * A date is the one value that changes shape on the way round: stored as
+ * Ymd, read back through ACF as Y-m-d. Comparing them as typed made every
+ * offers save log "Runs until" as changed when nothing had.
+ */
 function same( $a, $b ): bool {
 	if ( is_array( $a ) || is_array( $b ) ) {
 		return wp_json_encode( array_values( (array) $a ) ) === wp_json_encode( array_values( (array) $b ) );
 	}
-	return (string) $a === (string) $b;
+	$a = (string) $a;
+	$b = (string) $b;
+	if ( preg_match( '/^\d{4}-?\d{2}-?\d{2}$/', $a ) && preg_match( '/^\d{4}-?\d{2}-?\d{2}$/', $b ) ) {
+		return str_replace( '-', '', $a ) === str_replace( '-', '', $b );
+	}
+	return $a === $b;
 }
 
 /** Tell the directory somebody is waiting on us. */

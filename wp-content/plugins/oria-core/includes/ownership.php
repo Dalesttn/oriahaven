@@ -292,8 +292,16 @@ function scope_to_own_listing( array $caps, string $cap, int $user_id, array $ar
 function login_landing( $redirect, $requested, $user ) {
 	if ( $user instanceof \WP_User && in_array( ROLE, (array) $user->roles, true ) ) {
 		$listing = owned_listing( (int) $user->ID );
-		// Every approved owner can open their listing now — free plan
-		// included — so login lands straight on the edit screen.
+		/*
+		 * Every approved owner can open their listing now -- free plan
+		 * included -- so login lands straight on it. On the My Oria
+		 * dashboard rather than the wp-admin edit screen: that screen is
+		 * now the administrators' tool, and the front door for an owner is
+		 * the manager that was built for them.
+		 */
+		if ( $listing && function_exists( '\Oria\Core\MyOria\url' ) ) {
+			return \Oria\Core\MyOria\url( 'listing' );
+		}
 		if ( $listing ) {
 			return admin_url( 'post.php?post=' . $listing . '&action=edit' );
 		}

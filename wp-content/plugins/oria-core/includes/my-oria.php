@@ -178,9 +178,16 @@ function gate(): void {
 }
 
 function nocache_headers_if_private(): void {
-	if ( is_page() ) {
-		nocache_headers();
+	if ( ! is_page() ) {
+		return;
 	}
+	nocache_headers();
+	/*
+	 * Say it to LiteSpeed in its own words as well. Its private cache for
+	 * signed-in visitors is switched on, and a cached copy of the listing
+	 * editor is a form that shows you the row you just deleted.
+	 */
+	do_action( 'litespeed_control_set_nocache', 'My Oria is per-person and never cached' );
 }
 
 /* ------------------------------------------------------------------- seo */
@@ -266,7 +273,18 @@ function after_login_url( int $user_id ): string {
 	if ( '' !== $to ) {
 		return $to;
 	}
-	return is_member_role( $user_id ) ? url() : admin_url();
+	if ( is_member_role( $user_id ) ) {
+		return url();
+	}
+	/*
+	 * A practitioner who signs in here came for their listing. Send them to
+	 * it; wp-admin is where they used to be sent, and it is no longer where
+	 * an owner does anything.
+	 */
+	if ( function_exists( '\Oria\Core\ListingEditor\listing_for' ) && \Oria\Core\ListingEditor\listing_for( $user_id ) ) {
+		return url( 'listing' );
+	}
+	return admin_url();
 }
 
 /* ------------------------------------------------------------ notices */
