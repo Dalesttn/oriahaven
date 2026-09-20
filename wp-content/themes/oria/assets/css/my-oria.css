@@ -742,3 +742,68 @@
   .mypick { flex-wrap: wrap; }
 }
 .mypick__no { font-size: var(--fs-xs); color: var(--app-faint); }
+
+/* -- photos ---------------------------------------------------------------- */
+
+/*
+ * Order is what this control is for: the first photo leads the profile and
+ * every card the listing appears in. So the tiles carry arrows as well as
+ * a Cover badge -- the badge says which one wins, the arrows are how you
+ * change it without needing a mouse.
+ */
+.mygal { display: grid; gap: var(--s-4); }
+.mygal__grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--s-3);
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+}
+.mygal__item {
+  position: relative; overflow: hidden;
+  border: 1px solid var(--app-line); border-radius: var(--app-r-sm);
+  background: var(--app-sage);
+}
+.mygal__shot { display: block; aspect-ratio: 4 / 3; }
+.mygal__shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.mygal__lead {
+  position: absolute; top: .4rem; left: .4rem;
+  padding: .15rem .5rem; border-radius: var(--r-pill);
+  background: var(--app-green); color: var(--white, #fff);
+  font-size: var(--fs-xs); font-weight: 700; letter-spacing: .02em;
+}
+
+.mygal__acts {
+  position: absolute; right: .4rem; bottom: .4rem;
+  display: flex; gap: .25rem;
+}
+.mygal__btn {
+  width: 40px; height: 40px; display: grid; place-items: center;
+  border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, .92); color: var(--app-ink);
+  cursor: pointer; font-size: .95rem; line-height: 1;
+  box-shadow: 0 1px 3px rgba(20, 32, 30, .25);
+}
+.mygal__btn:hover { background: #fff; color: var(--app-green); }
+.mygal__btn--x:hover { color: #A6452F; }
+.mygal__btn:disabled { opacity: .35; cursor: default; }
+.mygal__btn:focus-visible { outline: 3px solid var(--app-gold); outline-offset: 2px; }
+
+.mygal__none { margin: 0; font-size: var(--fs-sm); color: var(--app-faint); }
+.mygal__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
+.mygal__add {
+  display: inline-flex; align-items: center; gap: .4rem; min-height: 44px;
+  padding: .55rem 1rem; border: 1px dashed var(--app-line); border-radius: var(--r-pill);
+  background: none; color: var(--app-green); font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer;
+}
+.mygal__add:hover { border-color: var(--app-green); border-style: solid; }
+.mygal__count { margin: 0; font-size: var(--fs-xs); color: var(--app-muted); font-variant-numeric: tabular-nums; }
+.mygal__note { margin: 0; font-size: var(--fs-xs); color: var(--app-muted); line-height: 1.5; }
+
+/* A class that sets display beats the UA's [hidden] rule -- say it twice. */
+.mygal__add[hidden],
+.mygal__lead[hidden],
+.mygal__none[hidden] { display: none !important; }
+
+@media (max-width: 46rem) {
+  .mygal__grid { grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr)); }
+}

@@ -284,6 +284,21 @@ function sections(): array {
 			),
 		),
 
+		'photos' => array(
+			'label' => __( 'Photos', 'oria' ),
+			'blurb' => __( 'The room is the first thing people look at.', 'oria' ),
+			'icon'  => 'photos',
+			'fields' => array(
+				array(
+					'name'  => 'gallery',
+					'type'  => 'gallery',
+					'label' => __( 'Your photos', 'oria' ),
+					'help'  => __( 'The space, the experience, the people. Avoid flyers, price lists and pictures that are mostly text.', 'oria' ),
+					'hint'  => __( 'The first photo leads: it is the one shown on your profile header and on every card you appear in.', 'oria' ),
+				),
+			),
+		),
+
 		'suits' => array(
 			'label' => __( 'Who it suits', 'oria' ),
 			'blurb' => __( 'Only tick what is genuinely true of your sessions today.', 'oria' ),
@@ -581,7 +596,7 @@ function weights(): array {
 		'hours'       => array( 'weight' => 10, 'section' => 'hours',    'fields' => array( 'opening_hours' ),       'any' => true,  'label' => __( 'Add your opening hours', 'oria' ) ),
 		'booking'     => array( 'weight' => 10, 'section' => 'hours',    'fields' => array( 'booking_url', 'phone', 'email' ), 'any' => true, 'label' => __( 'Add a way to book or get in touch', 'oria' ) ),
 		'location'    => array( 'weight' => 10, 'section' => 'location', 'fields' => array( 'address' ),             'any' => true,  'label' => __( 'Confirm your address', 'oria' ) ),
-		'photos'      => array( 'weight' => 15, 'section' => '',         'fields' => array( 'gallery' ),             'any' => true,  'label' => __( 'Add photos of your space', 'oria' ) ),
+		'photos'      => array( 'weight' => 15, 'section' => 'photos',   'fields' => array( 'gallery' ),             'any' => true,  'label' => __( 'Add photos of your space', 'oria' ) ),
 		'suits'       => array( 'weight' => 5,  'section' => 'suits',    'fields' => array( 'reasons', 'amenities' ), 'any' => true, 'label' => __( 'Say who your sessions suit', 'oria' ) ),
 		'answers'     => array( 'weight' => 5,  'section' => 'answers',  'fields' => array( 'faq' ),                 'any' => true,  'label' => __( 'Answer a few common questions', 'oria' ) ),
 		'team'        => array( 'weight' => 5,  'section' => 'team',     'fields' => array( 'team' ),                'any' => true,  'label' => __( 'Introduce your practitioners', 'oria' ) ),
@@ -819,6 +834,31 @@ function clean( array $field, $raw ) {
 
 		case 'image':
 			return clean_image( $raw );
+
+		case 'gallery':
+			$in  = is_array( $raw ) ? wp_unslash( $raw ) : array();
+			$out = array();
+			foreach ( $in as $one ) {
+				$id = clean_image( $one );
+				// Same photo twice is somebody double-clicking, not a choice.
+				if ( '' !== $id && ! in_array( (int) $id, $out, true ) ) {
+					$out[] = (int) $id;
+				}
+			}
+
+			/*
+			 * The plan's allowance, applied here as well as in the form.
+			 * Ownership\enforce_gallery_limit is an acf/validate_value
+			 * filter, and update_field() runs no validation at all -- so
+			 * without this a claimed listing could post fifty photos.
+			 * A limit of 0 means Featured, which has none.
+			 */
+			$listing = listing_for( get_current_user_id() );
+			$limit   = $listing ? Tiers\gallery_limit( $listing ) : 0;
+			if ( $limit > 0 ) {
+				$out = array_slice( $out, 0, $limit );
+			}
+			return $out;
 
 		case 'multi':
 			$in  = is_array( $raw ) ? wp_unslash( $raw ) : array();

@@ -232,5 +232,148 @@
 		}
 	} );
 
+	/* ------------------------------------------------------------- gallery */
+
+	/*
+	 * The photo grid. Order is the whole point of it -- the first photo is
+	 * the one that leads the profile and every card the listing appears in
+	 * -- so the tiles move with arrows rather than only by dragging, and
+	 * the first one is labelled Cover so nobody has to infer it.
+	 */
+	var galFrame = null;
+	var galTarget = null;
+
+	function galSync( gal ) {
+		var grid = gal.querySelector( '[data-mygal-grid]' );
+		var items = grid.querySelectorAll( '[data-mygal-item]' );
+		var max = parseInt( gal.getAttribute( 'data-max' ) || '0', 10 );
+		var add = gal.querySelector( '[data-mygal-add]' );
+		var none = gal.querySelector( '[data-mygal-none]' );
+		var count = gal.querySelector( '[data-mygal-count]' );
+
+		Array.prototype.forEach.call( items, function ( item, i ) {
+			var lead = item.querySelector( '[data-mygal-lead]' );
+			if ( lead ) { lead.hidden = 0 !== i; }
+			var up = item.querySelector( '[data-mygal-up]' );
+			var dn = item.querySelector( '[data-mygal-down]' );
+			if ( up ) { up.disabled = 0 === i; }
+			if ( dn ) { dn.disabled = i === items.length - 1; }
+		} );
+
+		if ( none ) { none.hidden = items.length > 0; }
+		if ( add && max > 0 ) { add.hidden = items.length >= max; }
+
+		if ( count ) {
+			if ( ! items.length ) {
+				count.textContent = '';
+			} else if ( max > 0 ) {
+				count.textContent = items.length + ' of ' + max + ' used';
+			} else {
+				count.textContent = items.length + ( 1 === items.length ? ' photo' : ' photos' );
+			}
+		}
+	}
+
+	function galAdd( gal, atts ) {
+		var grid = gal.querySelector( '[data-mygal-grid]' );
+		var name = gal.getAttribute( 'data-name' );
+		var max = parseInt( gal.getAttribute( 'data-max' ) || '0', 10 );
+		var have = [];
+		Array.prototype.forEach.call( grid.querySelectorAll( 'input[type=hidden]' ), function ( i ) {
+			have.push( i.value );
+		} );
+
+		atts.forEach( function ( att ) {
+			if ( max > 0 && grid.querySelectorAll( '[data-mygal-item]' ).length >= max ) { return; }
+			if ( have.indexOf( String( att.id ) ) !== -1 ) { return; }
+			have.push( String( att.id ) );
+
+			var src = ( att.sizes && att.sizes.medium ) ? att.sizes.medium.url : att.url;
+			var li = document.createElement( 'li' );
+			li.className = 'mygal__item';
+			li.setAttribute( 'data-mygal-item', '' );
+			li.innerHTML =
+				'<input type="hidden" name="' + name + '[]" value="' + att.id + '">' +
+				'<span class="mygal__shot"><img src="" alt="" loading="lazy" decoding="async"></span>' +
+				'<span class="mygal__lead" data-mygal-lead hidden>Cover</span>' +
+				'<span class="mygal__acts">' +
+					'<button class="mygal__btn" type="button" data-mygal-up><span aria-hidden="true">←</span><span class="sr-only">Move earlier</span></button>' +
+					'<button class="mygal__btn" type="button" data-mygal-down><span aria-hidden="true">→</span><span class="sr-only">Move later</span></button>' +
+					'<button class="mygal__btn mygal__btn--x" type="button" data-mygal-del><span aria-hidden="true">×</span><span class="sr-only">Remove this photo</span></button>' +
+				'</span>';
+			// src set as a property, never interpolated into the markup above.
+			li.querySelector( 'img' ).src = src;
+			grid.appendChild( li );
+		} );
+
+		galSync( gal );
+		dirty();
+	}
+
+	function openGallery( gal ) {
+		if ( ! window.wp || ! window.wp.media ) { return; }
+		galTarget = gal;
+
+		if ( ! galFrame ) {
+			galFrame = window.wp.media( {
+				title: 'Add photos',
+				library: { type: 'image' },
+				button: { text: 'Add to my listing' },
+				multiple: 'add'
+			} );
+
+			galFrame.on( 'select', function () {
+				if ( ! galTarget ) { return; }
+				galAdd( galTarget, galFrame.state().get( 'selection' ).toJSON() );
+			} );
+		}
+
+		galFrame.open();
+	}
+
+	document.addEventListener( 'click', function ( e ) {
+		if ( ! e.target.closest ) { return; }
+		var gal = e.target.closest( '[data-mygal]' );
+		if ( ! gal ) { return; }
+
+		if ( e.target.closest( '[data-mygal-add]' ) ) {
+			e.preventDefault();
+			openGallery( gal );
+			return;
+		}
+
+		var item = e.target.closest( '[data-mygal-item]' );
+		if ( ! item ) { return; }
+		var pressed = e.target.closest( 'button' );
+
+		if ( e.target.closest( '[data-mygal-del]' ) ) {
+			e.preventDefault();
+			var next = item.nextElementSibling || item.previousElementSibling;
+			item.remove();
+			galSync( gal );
+			dirty();
+			var focusOn = next ? next.querySelector( 'button:not(:disabled)' ) : gal.querySelector( '[data-mygal-add]' );
+			if ( focusOn ) { focusOn.focus(); }
+			return;
+		}
+		if ( e.target.closest( '[data-mygal-up]' ) && item.previousElementSibling ) {
+			e.preventDefault();
+			item.parentNode.insertBefore( item, item.previousElementSibling );
+			galSync( gal );
+			dirty();
+			if ( pressed && ! pressed.disabled ) { pressed.focus(); }
+			return;
+		}
+		if ( e.target.closest( '[data-mygal-down]' ) && item.nextElementSibling ) {
+			e.preventDefault();
+			item.parentNode.insertBefore( item.nextElementSibling, item );
+			galSync( gal );
+			dirty();
+			if ( pressed && ! pressed.disabled ) { pressed.focus(); }
+		}
+	} );
+
+	Array.prototype.forEach.call( document.querySelectorAll( '[data-mygal]' ), galSync );
+
 	Array.prototype.forEach.call( document.querySelectorAll( '[data-myrep]' ), setupRepeater );
 }() );

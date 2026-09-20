@@ -49,7 +49,7 @@ $dis       = $open ? '' : ' disabled';
 
 <div class="myfield myfield--<?php echo esc_attr( $type ); ?><?php echo $open ? '' : ' is-locked'; ?>">
 
-	<?php if ( in_array( $type, array( 'radios', 'checks', 'repeater' ), true ) ) : ?>
+	<?php if ( in_array( $type, array( 'radios', 'checks', 'repeater', 'gallery' ), true ) ) : ?>
 		<?php // A group of controls is labelled by its legend, not by a <label>. ?>
 		<fieldset class="myfield__set"<?php echo $dis; ?>>
 			<legend class="myfield__label"><?php echo esc_html( $f['label'] ); ?></legend>
@@ -145,6 +145,64 @@ $dis       = $open ? '' : ' disabled';
 						<span><?php echo esc_html( (string) $cv ); ?></span>
 					</label>
 				<?php endforeach; ?>
+			</div>
+			<?php
+			break;
+
+		case 'gallery':
+			$shots = array_values( array_filter( array_map( 'intval', (array) $val ) ) );
+			$limit = \Oria\Core\Tiers\gallery_limit( $listing );
+			?>
+			<div class="mygal" data-mygal data-name="<?php echo esc_attr( $name ); ?>" data-max="<?php echo esc_attr( (string) $limit ); ?>">
+				<ul class="mygal__grid" data-mygal-grid>
+					<?php foreach ( $shots as $pos => $shot ) : ?>
+						<?php $thumb = wp_get_attachment_image_url( $shot, 'medium' ); ?>
+						<li class="mygal__item" data-mygal-item>
+							<input type="hidden" name="<?php echo esc_attr( $name ); ?>[]" value="<?php echo esc_attr( (string) $shot ); ?>">
+							<span class="mygal__shot">
+								<?php if ( $thumb ) : ?>
+									<img src="<?php echo esc_url( $thumb ); ?>" alt="" loading="lazy" decoding="async">
+								<?php endif; ?>
+							</span>
+							<?php // The first photo leads everywhere, so it is named rather than merely first. ?>
+							<span class="mygal__lead" data-mygal-lead<?php echo 0 === $pos ? '' : ' hidden'; ?>><?php esc_html_e( 'Cover', 'oria' ); ?></span>
+							<span class="mygal__acts">
+								<button class="mygal__btn" type="button" data-mygal-up<?php echo $dis; ?>>
+									<span aria-hidden="true">&larr;</span><span class="sr-only"><?php esc_html_e( 'Move earlier', 'oria' ); ?></span>
+								</button>
+								<button class="mygal__btn" type="button" data-mygal-down<?php echo $dis; ?>>
+									<span aria-hidden="true">&rarr;</span><span class="sr-only"><?php esc_html_e( 'Move later', 'oria' ); ?></span>
+								</button>
+								<button class="mygal__btn mygal__btn--x" type="button" data-mygal-del<?php echo $dis; ?>>
+									<span aria-hidden="true">&times;</span><span class="sr-only"><?php esc_html_e( 'Remove this photo', 'oria' ); ?></span>
+								</button>
+							</span>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+
+				<?php if ( ! $shots ) : ?>
+					<p class="mygal__none" data-mygal-none><?php esc_html_e( 'No photos yet.', 'oria' ); ?></p>
+				<?php else : ?>
+					<p class="mygal__none" data-mygal-none hidden><?php esc_html_e( 'No photos yet.', 'oria' ); ?></p>
+				<?php endif; ?>
+
+				<?php if ( $open && current_user_can( 'upload_files' ) ) : ?>
+					<div class="mygal__foot">
+						<button class="mygal__add" type="button" data-mygal-add>
+							<span aria-hidden="true">+</span> <?php esc_html_e( 'Add photos', 'oria' ); ?>
+						</button>
+						<p class="mygal__count" data-mygal-count aria-live="polite"></p>
+					</div>
+					<?php
+					$note = \Oria\Core\Tiers\gallery_note( $listing );
+					if ( '' !== $note ) :
+						?>
+						<p class="mygal__note"><?php echo esc_html( $note ); ?></p>
+					<?php endif; ?>
+				<?php elseif ( $open ) : ?>
+					<p class="mygal__note"><?php esc_html_e( 'Ask Oria Haven to add photos to your listing.', 'oria' ); ?></p>
+				<?php endif; ?>
 			</div>
 			<?php
 			break;
@@ -286,7 +344,7 @@ $dis       = $open ? '' : ' disabled';
 		</p>
 	<?php endif; ?>
 
-	<?php if ( in_array( $type, array( 'radios', 'checks', 'repeater' ), true ) ) : ?>
+	<?php if ( in_array( $type, array( 'radios', 'checks', 'repeater', 'gallery' ), true ) ) : ?>
 		</fieldset>
 	<?php endif; ?>
 </div>

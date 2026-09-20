@@ -228,17 +228,6 @@ $oria_tier  = Tiers\tier( $oria_listing );
 			<?php endforeach; ?>
 		</ul>
 
-		<?php
-		/*
-		 * Photographs and practitioners are still edited in the old screen.
-		 * Saying so, with the door open, is better than a section that
-		 * looks editable and is not.
-		 */
-		?>
-		<p class="mylsecs__more">
-			<?php esc_html_e( 'Photos are still added in the older screen for now.', 'oria' ); ?>
-			<a href="<?php echo esc_url( get_edit_post_link( $oria_listing ) ); ?>"><?php esc_html_e( 'Open it', 'oria' ); ?></a>
-		</p>
 	</section>
 
 	<?php if ( 'featured' !== $oria_tier ) : ?>
