@@ -1445,6 +1445,52 @@ a.livesession:hover { background: var(--sand-2); }
 .wkrow__src::before { content: "· "; }
 .featband .wkrows { margin-top: var(--s-3); }
 
+/* --- What's On: results toolbar ------------------------------------- */
+.wotoolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-3); flex-wrap: wrap;
+  margin-top: var(--s-4); padding-top: var(--s-3);
+  border-top: 1px solid var(--line);
+}
+.wotoolbar__count {
+  margin: 0; font-size: var(--fs-xs); font-weight: 600;
+  letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--text-faint);
+}
+.wotoolbar__clear {
+  font: inherit; font-size: var(--fs-xs); font-weight: 600;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  color: var(--text-soft); text-decoration: underline; text-underline-offset: 3px;
+}
+.wotoolbar__clear:hover { color: var(--ink); }
+
+/* The band lays itself out to the number of events it actually has. One
+   featured event becomes a wide editorial card rather than a lonely tile
+   in a third of a panel — the complaint that started this redesign. */
+.featband { margin-top: var(--s-5); }
+.featband--1 .wkrows { grid-template-columns: 1fr; }
+.featband--2 .wkrows { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.featband--3 .wkrows { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (min-width: 720px) {
+  /* A single card turns on its side: picture left, words right. */
+  .featband--1 .wkrow { flex-direction: row; align-items: stretch; }
+  .featband--1 .wkrow__thumb { width: 42%; flex: none; aspect-ratio: auto; }
+  .featband--1 .wkrow__body { justify-content: center; padding: var(--s-5); }
+  .featband--1 .wkrow__body b { font-size: 1.15rem; }
+  .featband--1 .wkrow__price { align-self: center; padding-right: var(--s-5); }
+}
+@media (max-width: 860px) {
+  .featband--2 .wkrows, .featband--3 .wkrows { grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+}
+@media (max-width: 480px) {
+  .featband--2 .wkrows, .featband--3 .wkrows { grid-template-columns: 1fr; }
+}
+/* Paid placement says so, beside the label rather than in the small print. */
+.featband__note {
+  font-size: var(--fs-xs); font-weight: 400; letter-spacing: 0;
+  text-transform: none; color: var(--text-faint);
+}
+@media (max-width: 560px) { .featband__note { display: none; } }
+
 /* --- Journal: single article ----------------------------------------- */
 .readbar {
   position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 200;

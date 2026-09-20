@@ -4190,13 +4190,62 @@
     }
   }
 
-  /* What's On filters: rows carry precomputed tokens, this only matches. */
+  /* What's On filters: rows carry precomputed tokens, this only matches.
+
+     Filter state lives in the URL (?date=&area=&type=&price=), so a chosen
+     view can be bookmarked, shared and reloaded, and Back undoes a filter
+     instead of leaving the page. Only non-default values are written, so
+     the plain archive URL stays clean. */
   function initWhatsOn() {
     var root = document.querySelector("[data-whatson]");
     if (!root) return;
 
+    var PARAM = { when: "date", suburb: "area", type: "type", band: "price" };
+    var DEFAULTS = { when: "all", suburb: "", type: "", band: "" };
     var state = { when: "all", suburb: "", type: "", band: "" };
+
     var empty = root.querySelector("[data-wo-empty]");
+    var countEl = root.querySelector("[data-wo-count]");
+    var feat = root.querySelector("[data-wo-feat]");
+    var clears = $$("[data-wo-clear]", root);
+
+    function isDefault() {
+      return Object.keys(DEFAULTS).every(function (k) { return state[k] === DEFAULTS[k]; });
+    }
+
+    function readUrl() {
+      var q = new URLSearchParams(window.location.search);
+      Object.keys(PARAM).forEach(function (k) {
+        var v = q.get(PARAM[k]);
+        if (v !== null) state[k] = v;
+      });
+    }
+
+    function writeUrl(push) {
+      var q = new URLSearchParams(window.location.search);
+      Object.keys(PARAM).forEach(function (k) {
+        if (state[k] === DEFAULTS[k]) q.delete(PARAM[k]);
+        else q.set(PARAM[k], state[k]);
+      });
+      var qs = q.toString();
+      var url = window.location.pathname + (qs ? "?" + qs : "") + window.location.hash;
+      try {
+        window.history[push ? "pushState" : "replaceState"]({ wo: 1 }, "", url);
+      } catch (e) { /* history blocked; filtering still works */ }
+    }
+
+    /* Controls follow the state, not the other way round, so a URL opened
+       cold shows the same chips pressed as a click would have. */
+    function syncControls() {
+      $$(".fchip", root).forEach(function (c) {
+        var on = state[c.dataset.f] === c.dataset.v;
+        c.classList.toggle("is-on", on);
+        c.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      $$("select[data-f]", root).forEach(function (sel) {
+        if (sel.value !== state[sel.dataset.f]) sel.value = state[sel.dataset.f];
+      });
+    }
 
     function apply() {
       var shown = 0;
@@ -4209,28 +4258,65 @@
         row.hidden = !ok;
         if (ok) shown++;
       });
-      // A day heading with nothing left under it disappears too.
+      // A heading with nothing left under it disappears too — including the
+      // featured band, which should not sit there empty over its own label.
       $$(".wogroup", root).forEach(function (g) {
         g.hidden = !g.querySelector(".wkrow:not([hidden])");
+        // The heading's own count follows what is left under it, rather
+        // than standing there claiming five when one is showing.
+        var gc = g.querySelector("[data-wo-group-count]");
+        if (gc) {
+          var n = $$(".wkrow:not([hidden])", g).length;
+          gc.textContent = (n === 1 ? gc.dataset.one : gc.dataset.many || "%d").replace("%d", n);
+        }
       });
+      if (feat) feat.hidden = !feat.querySelector(".wkrow:not([hidden])");
       if (empty) empty.hidden = shown > 0;
+      if (countEl) {
+        var tpl = shown === 0 ? countEl.dataset.none : shown === 1 ? countEl.dataset.one : countEl.dataset.many;
+        countEl.textContent = (tpl || "%d").replace("%d", shown);
+      }
+      // The toolbar's Clear is only meaningful once something is filtered;
+      // the one inside the empty state is always relevant when it shows.
+      clears.forEach(function (b) {
+        if (b.closest("[data-wo-toolbar]")) b.hidden = isDefault();
+      });
+    }
+
+    function set(key, value, push) {
+      state[key] = value;
+      syncControls();
+      apply();
+      writeUrl(push !== false);
     }
 
     $$(".fchip", root).forEach(function (chip) {
-      chip.addEventListener("click", function () {
-        state[chip.dataset.f] = chip.dataset.v;
-        $$('.fchip[data-f="' + chip.dataset.f + '"]', root).forEach(function (c) {
-          c.classList.toggle("is-on", c === chip);
-        });
-        apply();
-      });
+      chip.addEventListener("click", function () { set(chip.dataset.f, chip.dataset.v); });
     });
     $$("select[data-f]", root).forEach(function (sel) {
-      sel.addEventListener("change", function () {
-        state[sel.dataset.f] = sel.value;
+      sel.addEventListener("change", function () { set(sel.dataset.f, sel.value); });
+    });
+    clears.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        Object.keys(DEFAULTS).forEach(function (k) { state[k] = DEFAULTS[k]; });
+        syncControls();
         apply();
+        writeUrl(true);
       });
     });
+
+    // Back and forward move between filter views rather than off the page.
+    window.addEventListener("popstate", function () {
+      Object.keys(DEFAULTS).forEach(function (k) { state[k] = DEFAULTS[k]; });
+      readUrl();
+      syncControls();
+      apply();
+    });
+
+    readUrl();
+    syncControls();
+    apply();
+    writeUrl(false);
   }
 
   /* Category tiles: eight at a time from a shuffled deck, next window of

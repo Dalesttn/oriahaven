@@ -923,7 +923,10 @@ function filter_params(): array {
 	// sort, view and rating arrived with the category-page redesign: a
 	// shared link keeps the visitor's order and map, and none of it may
 	// become an indexable page of its own.
-	return array( 'aud', 'cat', 'format', 'pg', 'picks', 'price', 'q', 'rating', 'region', 'sort', 'spec', 'suburb', 'svc', 'view' );
+	// date, area and type arrived with the What's On redesign: the events
+	// archive keeps its filter state in the URL so a view can be shared,
+	// and those combinations must not become pages of their own either.
+	return array( 'area', 'aud', 'cat', 'date', 'format', 'pg', 'picks', 'price', 'q', 'rating', 'region', 'sort', 'spec', 'suburb', 'svc', 'type', 'view' );
 }
 
 /**
@@ -940,6 +943,7 @@ function filter_params(): array {
  */
 function is_filtered_view(): bool {
 	$filterable = is_post_type_archive( 'listing' )
+		|| is_post_type_archive( 'event' )
 		|| is_tax( array( Taxonomies\PRACTICE, Taxonomies\SPECIALTY, Taxonomies\AREA ) )
 		|| ( function_exists( '\Oria\Core\PracticesIndex\is_index' ) && \Oria\Core\PracticesIndex\is_index() );
 	if ( ! $filterable ) {
