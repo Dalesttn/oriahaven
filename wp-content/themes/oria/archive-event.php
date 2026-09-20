@@ -107,6 +107,26 @@ foreach ( $oria_events as $oria_ev ) {
 		$oria_suburb      = (string) end( $oria_venue_parts );
 	}
 
+	/*
+	 * Which feelings this event answers, in the Finder's own words. The
+	 * registry that decides what "Stress & relaxation" means on the
+	 * Wellness Finder decides it here too -- a second list of feelings
+	 * would drift from the first within a month.
+	 */
+	$oria_feel = array();
+	if ( function_exists( '\Oria\Core\Finder\needs' ) ) {
+		$oria_ev_slugs = array();
+		foreach ( wp_get_post_terms( $oria_ev->ID, array( 'practice', 'event_type' ) ) as $oria_ev_t ) {
+			$oria_ev_slugs[] = $oria_ev_t->slug;
+		}
+		foreach ( \Oria\Core\Finder\needs() as $oria_fk => $oria_fn ) {
+			$oria_want = array_merge( (array) ( $oria_fn['practices'] ?? array() ), (array) ( $oria_fn['specialties'] ?? array() ) );
+			if ( array_intersect( $oria_ev_slugs, $oria_want ) ) {
+				$oria_feel[] = $oria_fk;
+			}
+		}
+	}
+
 	$oria_type_terms = wp_get_post_terms( $oria_ev->ID, 'event_type' );
 	$oria_type       = ! is_wp_error( $oria_type_terms ) && $oria_type_terms ? $oria_type_terms[0] : null;
 	if ( ! $oria_type ) {
@@ -125,6 +145,7 @@ foreach ( $oria_events as $oria_ev ) {
 	}
 
 	$oria_rows[] = array(
+		'feel'   => implode( ' ', $oria_feel ),
 		'post'   => $oria_ev,
 		'ts'     => $oria_ts,
 		'day'    => gmdate( 'Y-m-d', $oria_ts ),
@@ -224,7 +245,8 @@ $oria_row = static function ( array $r ): void {
 		data-day="<?php echo esc_attr( gmdate( 'Y-m-d', $r['ts'] ) ); ?>"
 		data-suburb="<?php echo esc_attr( sanitize_title( $r['suburb'] ) ); ?>"
 		data-type="<?php echo esc_attr( $r['type'] ? $r['type']->slug : '' ); ?>"
-		data-band="<?php echo esc_attr( $r['band'] ); ?>">
+		data-band="<?php echo esc_attr( $r['band'] ); ?>"
+		data-feel="<?php echo esc_attr( (string) ( $r['feel'] ?? '' ) ); ?>">
 		<span class="wkrow__thumb" aria-hidden="true">
 			<?php if ( has_post_thumbnail( $oria_ev ) ) : ?>
 				<?php
@@ -362,7 +384,60 @@ foreach ( $oria_tile_counts as $oria_slug => $oria_n ) {
 	</section>
 <?php endif; ?>
 
+<?php
+/*
+ * "How do you want to feel?" -- the Finder's question, asked of this
+ * week's events. Only feelings something on this page actually answers:
+ * a tile reading "0 experiences" is an empty shelf with a label on it.
+ */
+$oria_feels = array();
+if ( function_exists( '\Oria\Core\Finder\needs' ) && function_exists( '\Oria\Core\Finder\questions' ) ) {
+	$oria_fq = \Oria\Core\Finder\questions();
+	foreach ( \Oria\Core\Finder\needs() as $oria_fk => $oria_fn ) {
+		$oria_fc = 0;
+		foreach ( $oria_rows as $oria_r ) {
+			if ( in_array( $oria_fk, explode( ' ', (string) ( $oria_r['feel'] ?? '' ) ), true ) ) {
+				++$oria_fc;
+			}
+		}
+		if ( $oria_fc < 1 ) {
+			continue;
+		}
+		$oria_feels[] = array(
+			'key'   => $oria_fk,
+			'label' => (string) ( $oria_fq['for']['options'][ $oria_fk ] ?? $oria_fk ),
+			'count' => $oria_fc,
+		);
+	}
+	usort( $oria_feels, static fn( array $a, array $b ): int => $b['count'] <=> $a['count'] );
+}
+?>
+
 <section class="wrap section section--top-flush" data-whatson>
+	<?php if ( count( $oria_feels ) >= 3 ) : ?>
+		<div class="wofeels">
+			<h2 class="h3 wofeels__title"><?php esc_html_e( 'How do you want to feel?', 'oria' ); ?></h2>
+			<div class="wofeels__row" role="group" aria-label="<?php esc_attr_e( 'Filter by how you want to feel', 'oria' ); ?>">
+				<?php foreach ( $oria_feels as $oria_f ) : ?>
+					<button class="wofeel wofeel--<?php echo esc_attr( $oria_f['key'] ); ?>" type="button"
+						aria-pressed="false" data-f="feel" data-v="<?php echo esc_attr( $oria_f['key'] ); ?>">
+						<span class="wofeel__name"><?php echo esc_html( $oria_f['label'] ); ?></span>
+						<span class="wofeel__n">
+							<?php
+							printf(
+								/* translators: %d: number of events */
+								esc_html( _n( '%d experience', '%d experiences', $oria_f['count'], 'oria' ) ),
+								(int) $oria_f['count']
+							);
+							?>
+						</span>
+					</button>
+				<?php endforeach; ?>
+			</div>
+			<p class="wofeels__now" data-wo-feelnote hidden></p>
+		</div>
+	<?php endif; ?>
+
 	<?php
 	/*
 	 * The next ten days as real dates, each with what is actually on it.
@@ -548,6 +623,114 @@ foreach ( $oria_tile_counts as $oria_slug => $oria_n ) {
 		</div>
 	<?php endif; ?>
 </section>
+
+<?php
+/*
+ * Where this week's events actually are. Counted off the page's own rows
+ * rather than queried again, so the numbers here and the numbers in the
+ * list can never disagree -- and only suburbs whose guide is worth
+ * opening, which is AreaContext's decision, not this template's.
+ */
+$oria_near = array();
+if ( function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
+	foreach ( $oria_rows as $oria_r ) {
+		$oria_ctx = \Oria\Core\AreaContext\for_post( (int) $oria_r['post']->ID );
+		if ( ! $oria_ctx ) {
+			continue;
+		}
+		$oria_k = (string) $oria_ctx['slug'];
+		if ( ! isset( $oria_near[ $oria_k ] ) ) {
+			$oria_near[ $oria_k ] = array(
+				'name'  => (string) $oria_ctx['name'],
+				'url'   => (string) $oria_ctx['url'],
+				'n'     => 0,
+				'next'  => $oria_r['ts'],
+			);
+		}
+		++$oria_near[ $oria_k ]['n'];
+		$oria_near[ $oria_k ]['next'] = min( $oria_near[ $oria_k ]['next'], $oria_r['ts'] );
+	}
+	uasort( $oria_near, static fn( array $a, array $b ): int => $b['n'] <=> $a['n'] ?: $a['next'] <=> $b['next'] );
+	$oria_near = array_slice( $oria_near, 0, 6, true );
+}
+?>
+<?php if ( count( $oria_near ) >= 3 ) : ?>
+	<section class="wrap section section--top-flush" aria-labelledby="woNearTitle">
+		<h2 class="h3" id="woNearTitle" style="margin-bottom:var(--s-4)"><?php esc_html_e( 'What’s happening near you?', 'oria' ); ?></h2>
+		<div class="wonear">
+			<?php foreach ( $oria_near as $oria_slug => $oria_a ) : ?>
+				<a class="wonear__card" href="<?php echo esc_url( $oria_a['url'] ); ?>"
+					data-area-promo="whats-on-near" data-area-slug="<?php echo esc_attr( (string) $oria_slug ); ?>">
+					<b class="wonear__name"><?php echo esc_html( $oria_a['name'] ); ?></b>
+					<span class="wonear__n">
+						<?php
+						printf(
+							/* translators: %d: number of events */
+							esc_html( _n( '%d event coming up', '%d events coming up', (int) $oria_a['n'], 'oria' ) ),
+							(int) $oria_a['n']
+						);
+						?>
+					</span>
+					<span class="wonear__next">
+						<?php
+						printf(
+							/* translators: %s: date of the next event */
+							esc_html__( 'Next on %s', 'oria' ),
+							esc_html( gmdate( 'D j M', (int) $oria_a['next'] ) )
+						);
+						?>
+						<span class="wonear__arrow" aria-hidden="true">&rarr;</span>
+					</span>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	</section>
+<?php endif; ?>
+
+<?php
+/*
+ * The collections that are live today. EventCollections keeps its own
+ * floor -- a collection with too little in it has no page -- so this
+ * shows whatever survived that and nothing else.
+ */
+$oria_colls = array();
+if ( function_exists( '\Oria\Core\EventCollections\all' ) ) {
+	foreach ( \Oria\Core\EventCollections\all() as $oria_cslug => $oria_crow ) {
+		if ( ! \Oria\Core\EventCollections\live( (string) $oria_cslug ) ) {
+			continue;
+		}
+		$oria_colls[] = array(
+			'title' => (string) ( $oria_crow['title'] ?? $oria_cslug ),
+			'url'   => \Oria\Core\EventCollections\url( (string) $oria_cslug ),
+			'count' => count( \Oria\Core\EventCollections\event_ids( (string) $oria_cslug, 50 ) ),
+		);
+	}
+}
+?>
+<?php if ( count( $oria_colls ) >= 2 ) : ?>
+	<section class="wrap section section--top-flush" aria-labelledby="woCollTitle">
+		<h2 class="h3" id="woCollTitle" style="margin-bottom:var(--s-4)"><?php esc_html_e( 'Ways in', 'oria' ); ?></h2>
+		<div class="wocolls">
+			<?php foreach ( $oria_colls as $oria_c ) : ?>
+				<a class="wocoll" href="<?php echo esc_url( (string) $oria_c['url'] ); ?>">
+					<b class="wocoll__name"><?php echo esc_html( (string) $oria_c['title'] ); ?></b>
+					<?php if ( ! empty( $oria_c['count'] ) ) : ?>
+						<span class="wocoll__n">
+							<?php
+							printf(
+								/* translators: %d: number of events */
+								esc_html( _n( '%d event', '%d events', (int) $oria_c['count'], 'oria' ) ),
+								(int) $oria_c['count']
+							);
+							?>
+						</span>
+					<?php endif; ?>
+					<span class="wocoll__arrow" aria-hidden="true">&rarr;</span>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	</section>
+<?php endif; ?>
 
 <section class="evband">
 	<div class="evband__inner">

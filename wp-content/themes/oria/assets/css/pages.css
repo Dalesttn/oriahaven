@@ -4673,6 +4673,89 @@ html.has-sheet { overflow: hidden; }
 }
 .catmap__pop b { display: block; font-weight: 700; margin-bottom: .1rem; }
 .catmap__pop span { display: block; color: var(--text-soft); font-size: .8125rem; margin-bottom: .35rem; }
+/* --- What's On: how do you want to feel ---------------------------------
+
+   The page's one question that is not about logistics, so it is asked in
+   words and answered with a tonal wash rather than seven mini-brands. The
+   colour is a cue, never the only one: a pressed tile also carries
+   aria-pressed and a visible border. */
+.wofeels { margin-bottom: var(--s-5); }
+.wofeels__title { margin: 0 0 var(--s-3); }
+.wofeels__row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.wofeel {
+  display: grid; gap: .1rem; padding: .6rem .95rem;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--white); color: var(--ink); cursor: pointer;
+  font: inherit; text-align: left;
+  transition: background var(--t-fast, .18s) var(--ease), border-color var(--t-fast, .18s) var(--ease);
+}
+.wofeel:hover { border-color: var(--teal-line, var(--line)); background: var(--sand-2); }
+.wofeel:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
+.wofeel__name { font-size: var(--fs-sm); font-weight: 700; }
+.wofeel__n { font-size: var(--fs-xs); color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.wofeel.is-on { border-color: var(--deep); background: var(--deep); color: var(--white); }
+.wofeel.is-on .wofeel__n { color: rgba(255, 255, 255, .8); }
+/* A tint per feeling, drawn from the resting tile rather than the
+   pressed one, so the row reads as one family in seven shades. */
+.wofeel--calm { background: #eef2f3; }
+.wofeel--move { background: #f2f0e8; }
+.wofeel--solo { background: #eff1ee; }
+.wofeel--people { background: #f5efec; }
+.wofeel--outdoors { background: #edf1ec; }
+.wofeel--creative { background: #f1eef3; }
+.wofeel--spirit { background: #eef0f4; }
+.wofeel--hands { background: #f3f0ec; }
+.wofeels__now { margin: .75rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
+.wofeels__now[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .wofeel { transition: none; }
+}
+
+/* --- What's On: where things are, and ways in --------------------------- */
+.wonear { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+.wonear__card {
+  display: grid; align-content: start; gap: .2rem;
+  padding: var(--s-4); border-radius: var(--r-md);
+  border: 1px solid var(--line); background: var(--sand-2);
+  color: var(--deep); text-decoration: none;
+  transition: background var(--t-fast, .18s) var(--ease), transform var(--t-fast, .18s) var(--ease);
+}
+.wonear__card:hover { background: var(--white); transform: translateY(-1px); }
+.wonear__card:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
+.wonear__name { font-size: 1.05rem; line-height: 1.2; }
+.wonear__n { font-size: var(--fs-sm); color: var(--text-soft); }
+.wonear__next {
+  display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+  margin-top: .35rem; font-size: var(--fs-xs); color: var(--text-faint);
+}
+.wonear__arrow { color: var(--deep); transition: transform var(--t-fast, .18s) var(--ease); }
+.wonear__card:hover .wonear__arrow { transform: translateX(3px); }
+
+.wocolls { display: flex; flex-wrap: wrap; gap: .5rem; }
+.wocoll {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .6rem 1rem; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--white); color: var(--deep); text-decoration: none;
+  font-size: var(--fs-sm);
+}
+.wocoll:hover { background: var(--sand-2); }
+.wocoll:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
+.wocoll__name { font-weight: 700; }
+.wocoll__n { color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.wocoll__arrow { color: var(--text-faint); }
+
+@media (max-width: 60rem) {
+  .wonear { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 40rem) {
+  .wonear { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wonear__card, .wonear__arrow { transition: none; }
+  .wonear__card:hover { transform: none; }
+  .wonear__card:hover .wonear__arrow { transform: none; }
+}
+
 .catmap__pop a { font-weight: 600; color: var(--deep); }
 /* The neighbourhood, second. A popup on a phone has room for one
    decision, and the pin was opened for the practice. */

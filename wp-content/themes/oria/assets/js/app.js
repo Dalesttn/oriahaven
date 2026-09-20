@@ -4651,9 +4651,9 @@
     var root = document.querySelector("[data-whatson]");
     if (!root) return;
 
-    var PARAM = { when: "date", suburb: "area", type: "type", band: "price", day: "on" };
-    var DEFAULTS = { when: "all", suburb: "", type: "", band: "", day: "" };
-    var state = { when: "all", suburb: "", type: "", band: "", day: "" };
+    var PARAM = { when: "date", suburb: "area", type: "type", band: "price", day: "on", feel: "feel" };
+    var DEFAULTS = { when: "all", suburb: "", type: "", band: "", day: "", feel: "" };
+    var state = { when: "all", suburb: "", type: "", band: "", day: "", feel: "" };
 
     var empty = root.querySelector("[data-wo-empty]");
     var countEl = root.querySelector("[data-wo-count]");
@@ -4698,9 +4698,32 @@
         b.classList.toggle("is-on", on);
         b.setAttribute("aria-pressed", on ? "true" : "false");
       });
+      $$(".wofeel", root).forEach(function (b) {
+        var on = state.feel === b.dataset.v;
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
       $$("select[data-f]", root).forEach(function (sel) {
         if (sel.value !== state[sel.dataset.f]) sel.value = state[sel.dataset.f];
       });
+    }
+
+    /* What a chosen feeling is showing, said once in words rather than
+       repeated as a coloured state on seven tiles. */
+    var feelNote = root.querySelector("[data-wo-feelnote]");
+    var feelBtns = $$("[data-f='feel']", root);
+
+    function paintFeel(shown) {
+      if (!feelNote) return;
+      /* Silent on an empty result: the empty state below already says so
+         once, and the neighbourhood line says it again -- three ways of
+         reporting the same nothing is two too many. */
+      if (!state.feel || shown < 1) { feelNote.hidden = true; return; }
+      var btn = feelBtns.filter(function (b) { return b.getAttribute("data-v") === state.feel; })[0];
+      var name = btn ? (btn.querySelector(".wofeel__name") || {}).textContent || "" : "";
+      feelNote.hidden = false;
+      feelNote.textContent =
+        "Showing " + shown + (shown === 1 ? " experience" : " experiences") + " for " + name.toLowerCase() + ".";
     }
 
     /* The neighbourhood strip. A suburb filter is a statement of intent --
@@ -4762,7 +4785,11 @@
           (!state.day || row.dataset.day === state.day) &&
           (!state.suburb || row.dataset.suburb === state.suburb) &&
           (!state.type || row.dataset.type === state.type) &&
-          (!state.band || row.dataset.band === state.band);
+          (!state.band || row.dataset.band === state.band) &&
+          /* An event answers several feelings, so this is a set test, not
+             an equality one -- a sound bath is both a way to slow down and
+             time to yourself. */
+          (!state.feel || (row.dataset.feel || "").split(" ").indexOf(state.feel) > -1);
         row.hidden = !ok;
         if (ok) shown++;
       });
@@ -4789,6 +4816,7 @@
       clears.forEach(function (b) {
         if (b.closest("[data-wo-toolbar]")) b.hidden = isDefault();
       });
+      paintFeel(shown);
       paintArea(shown);
     }
 
@@ -4812,6 +4840,13 @@
       btn.addEventListener("click", function () {
         state.when = "all";
         set("day", btn.dataset.v);
+      });
+    });
+    /* A second press on the same tile clears it: a feeling is a mood, not
+       a commitment, and there is no other way back out of one. */
+    $$(".wofeel", root).forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        set("feel", state.feel === btn.dataset.v ? "" : btn.dataset.v);
       });
     });
     $$("select[data-f]", root).forEach(function (sel) {
