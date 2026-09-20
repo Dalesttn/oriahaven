@@ -1,0 +1,52 @@
+{
+  "_comment": "Landing pages for the kinds of event people search for by name. Each one is live only while it holds at least `min` upcoming events; below that it 404s rather than publishing an empty page, and drops out of the sitemap on its own. Intros are qualitative and must never state counts, prices or health outcomes -- the page below them carries the live facts.",
+  "collections": [
+    {
+      "slug": "free-wellness-events-perth",
+      "title": "Free wellness events in Perth",
+      "intro": "Free does not mean lesser here. Most of these are community sessions, park meetings and by-donation circles run by people who wanted the price to stop being the reason somebody stayed home. Turn up early: the free ones fill.",
+      "filter": { "price": "free" },
+      "min": 3
+    },
+    {
+      "slug": "sound-healing-events-perth",
+      "title": "Sound baths and sound healing in Perth",
+      "intro": "You lie on the floor with a blanket and somebody plays gongs, bowls and chimes at you for an hour. Perth runs them in halls, studios, caves and on the foreshore, and the room matters as much as the instruments. Bring something warm; the floor gets cold once you stop moving.",
+      "filter": { "event_type": "sound-healing" },
+      "min": 3,
+      "practice": "sound"
+    },
+    {
+      "slug": "yoga-workshops-perth",
+      "title": "Yoga workshops and courses in Perth",
+      "intro": "A workshop is not a drop-in class. It runs longer, it takes one idea apart slowly, and it usually assumes you want to understand the thing rather than sweat through it. Courses with a start date sit here too, which is where most people new to yoga are better off beginning.",
+      "filter": { "event_type": "yoga" },
+      "min": 3,
+      "practice": "yoga"
+    },
+    {
+      "slug": "breathwork-events-perth",
+      "title": "Breathwork sessions in Perth",
+      "intro": "Sessions run from twenty gentle minutes to two hours of conscious connected breathing, and those are genuinely different afternoons. The listing says which one you are booking; if it does not, ask before you pay.",
+      "filter": { "event_type": "breathwork" },
+      "min": 3,
+      "practice": "breathwork"
+    },
+    {
+      "slug": "meditation-events-perth",
+      "title": "Meditation sittings and courses in Perth",
+      "intro": "Some are a quiet half-hour with a group you never speak to. Others are eight-week courses with homework. Both are called meditation, and knowing which you have booked saves a certain kind of disappointment.",
+      "filter": { "event_type": "meditation" },
+      "min": 3,
+      "practice": "meditation"
+    },
+    {
+      "slug": "perth-day-retreats",
+      "title": "Day retreats near Perth",
+      "intro": "A day retreat is the version that fits around a job: out by mid-morning, back by dinner, usually in the hills or south of the river. Food is often included and phones often are not.",
+      "filter": { "event_type": "retreat" },
+      "min": 3,
+      "practice": "wellness-retreats"
+    }
+  ]
+}

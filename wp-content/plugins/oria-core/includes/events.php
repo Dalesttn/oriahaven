@@ -45,6 +45,12 @@ function bootstrap(): void {
 	foreach ( array( 'updated_post_meta', 'added_post_meta', 'deleted_post_meta' ) as $hook ) {
 		add_action( $hook, __NAMESPACE__ . '\bump_on_meta', 10, 3 );
 	}
+
+	// A finished event is not a search result. It keeps its page and its
+	// links; it just stops asking to be indexed or crawled as current.
+	add_filter( 'wpseo_robots', __NAMESPACE__ . '\past_robots' );
+	add_filter( 'wp_robots', __NAMESPACE__ . '\past_wp_robots' );
+	add_filter( 'wpseo_exclude_from_sitemap_by_post_ids', __NAMESPACE__ . '\sitemap_exclusions' );
 }
 
 /** @param int|string $meta_id @param int $post_id */
@@ -210,6 +216,97 @@ function duration( int $event_id ): string {
 	$days = (int) ceil( $minutes / ( 24 * 60 ) );
 	/* translators: %d: days */
 	return sprintf( _n( '%d day', '%d days', $days, 'oria' ), $days );
+}
+
+/**
+ * Has this event finished?
+ *
+ * The end time decides where there is one -- a weekend retreat is still on
+ * during its Sunday -- and the start time otherwise, with the rest of the
+ * starting day allowed so a morning class is not "finished" by lunchtime.
+ */
+function is_past( int $event_id ): bool {
+	$end = (string) get_post_meta( $event_id, 'event_end', true );
+	if ( '' !== $end ) {
+		return strtotime( $end ) < (int) current_time( 'timestamp' );
+	}
+	$start = (string) get_post_meta( $event_id, 'event_start', true );
+	if ( '' === $start ) {
+		return false;
+	}
+	return (int) strtotime( $start . ' +1 day' ) < (int) current_time( 'timestamp' );
+}
+
+/* ------------------------------------------------- after the event is over */
+
+/** Every finished event still on the site. Cached with everything else. */
+function past_ids(): array {
+	$key   = CACHE_PREFIX . 'past_' . md5( (string) get_option( VERSION_OPTION, '0' ) . gmdate( 'Y-m-d' ) );
+	$found = get_transient( $key );
+	if ( is_array( $found ) ) {
+		return $found;
+	}
+
+	$ids = array_map(
+		'intval',
+		(array) get_posts(
+			array(
+				'post_type'      => 'event',
+				'post_status'    => 'publish',
+				'posts_per_page' => 500,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'meta_query'     => array(
+					array(
+						'key'     => 'event_start',
+						'value'   => current_time( 'Y-m-d H:i:s' ),
+						'compare' => '<',
+						'type'    => 'DATETIME',
+					),
+				),
+			)
+		)
+	);
+	$ids = array_values( array_filter( $ids, __NAMESPACE__ . '\is_past' ) );
+
+	set_transient( $key, $ids, HOUR_IN_SECONDS );
+	return $ids;
+}
+
+/** @param string|array $robots */
+function past_robots( $robots ) {
+	if ( is_singular( 'event' ) && is_past( (int) get_queried_object_id() ) ) {
+		return 'noindex, follow';
+	}
+	return $robots;
+}
+
+/**
+ * The same through core's filter, so it survives Yoast not running.
+ * 'follow' stays: the host and the archive linked from a finished event
+ * are exactly where that visitor should go next.
+ *
+ * @param array $robots
+ */
+function past_wp_robots( $robots ): array {
+	if ( is_singular( 'event' ) && is_past( (int) get_queried_object_id() ) ) {
+		$robots['noindex'] = true;
+		$robots['follow']  = true;
+	}
+	return $robots;
+}
+
+/**
+ * Keep finished events out of the XML sitemap.
+ *
+ * Aggregated events are deleted by the ingest sweep and answer 410, so
+ * this is mostly about the ones we keep on purpose -- a member's own
+ * event, and an organiser's submission.
+ *
+ * @param array $ids
+ */
+function sitemap_exclusions( $ids ): array {
+	return array_values( array_unique( array_merge( (array) $ids, past_ids() ) ) );
 }
 
 /** The day this event's details were last verified, or 0. */

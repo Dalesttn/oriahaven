@@ -4192,6 +4192,8 @@ html.has-sheet { overflow: hidden; }
 .evstatus b::before { content: "— "; font-weight: 400; }
 .evstatus--cancelled { border-color: #c98787; background: #FBEFEF; color: #7a2323; }
 .evstatus--postponed { border-color: var(--gold-soft); background: #FBF6EA; }
+.evstatus--over { border-color: var(--line-strong); background: var(--sand-2); color: var(--text-soft); }
+.evstatus--over a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .evstatus span { color: inherit; opacity: .85; }
 
 .evaside__link { margin: .6rem 0 0; font-size: var(--fs-xs); }

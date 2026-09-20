@@ -703,13 +703,31 @@ function event_schema( int $id ): ?array {
 		}
 	}
 
+	/*
+	 * Midnight means the organiser never published a time, not that the
+	 * event starts at midnight. Google asks for a bare date in that case;
+	 * a bogus 00:00 shows up in results as a 12am start.
+	 */
+	$has_time = '00:00:00' !== substr( $start, 11 );
+
+	/*
+	 * A cancelled or postponed event keeps its markup and changes its
+	 * status. Quietly dropping the details is the thing Google warns
+	 * against, and somebody who booked is searching for exactly this page.
+	 */
+	$status     = function_exists( '\Oria\Core\Events\status' ) ? \Oria\Core\Events\status( $id ) : '';
+	$status_map = array(
+		'cancelled' => 'https://schema.org/EventCancelled',
+		'postponed' => 'https://schema.org/EventPostponed',
+	);
+
 	$out = array(
 		'@context'            => 'https://schema.org',
 		'@type'               => 'Event',
 		'name'                => wp_specialchars_decode( $name ),
 		'url'                 => get_permalink( $id ),
-		'startDate'           => $iso( $start ),
-		'eventStatus'         => 'https://schema.org/EventScheduled',
+		'startDate'           => $has_time ? $iso( $start ) : substr( $start, 0, 10 ),
+		'eventStatus'         => $status_map[ $status ] ?? 'https://schema.org/EventScheduled',
 		'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
 		'location'            => array_filter(
 			array(
@@ -729,7 +747,8 @@ function event_schema( int $id ): ?array {
 
 	$end = (string) get_field( 'event_end', $id );
 	if ( '' !== $end ) {
-		$out['endDate'] = $iso( $end );
+		// Same rule as the start: a time we do not have is not midnight.
+		$out['endDate'] = '00:00:00' !== substr( $end, 11 ) ? $iso( $end ) : substr( $end, 0, 10 );
 	}
 
 	$desc = wp_trim_words( wp_strip_all_tags( (string) get_field( 'event_description', $id ) ), 40, '…' );
@@ -742,17 +761,32 @@ function event_schema( int $id ): ?array {
 		$out['image'] = $image;
 	}
 
-	$price = (string) get_field( 'price', $id );
-	if ( preg_match( '/(\d+(?:\.\d+)?)/', $price, $m ) ) {
+	/*
+	 * Offers. A free event gets a real Offer priced at 0 rather than only
+	 * the isAccessibleForFree flag -- Google wants the numeric offer, and
+	 * "free" is a price a person is searching on.
+	 */
+	$price        = (string) get_field( 'price', $id );
+	$availability = 'sold-out' === $status ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock';
+	$is_free      = (bool) preg_match( '/free|donation/i', $price );
+
+	if ( preg_match( '/(\d+(?:\.\d+)?)/', $price, $m ) && ! $is_free ) {
 		$out['offers'] = array(
 			'@type'         => 'Offer',
 			'price'         => $m[1],
 			'priceCurrency' => 'AUD',
 			'url'           => (string) get_field( 'booking_url', $id ) ?: get_permalink( $id ),
-			'availability'  => 'https://schema.org/InStock',
+			'availability'  => $availability,
 		);
-	} elseif ( preg_match( '/free|donation/i', $price ) ) {
+	} elseif ( $is_free ) {
 		$out['isAccessibleForFree'] = true;
+		$out['offers']              = array(
+			'@type'         => 'Offer',
+			'price'         => '0',
+			'priceCurrency' => 'AUD',
+			'url'           => (string) get_field( 'booking_url', $id ) ?: get_permalink( $id ),
+			'availability'  => $availability,
+		);
 	}
 
 	$listing = (int) get_field( 'listing', $id );

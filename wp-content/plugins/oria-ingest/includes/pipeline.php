@@ -292,6 +292,16 @@ function expire_pass(): int {
 		if ( '' !== $end && $end >= $today ) {
 			continue;
 		}
+		/*
+		 * An event an organiser sent us themselves is not scrape to be
+		 * swept away. It carries their own photo and their own words, it is
+		 * often one of a series, and it is the start of a relationship with
+		 * a practice. It stays, marked finished and out of the index
+		 * (\Oria\Core\Events), rather than becoming a 410.
+		 */
+		if ( 'organiser' === (string) get_post_meta( $id, '_oria_src', true ) ) {
+			continue;
+		}
 		$thumb = (int) get_post_thumbnail_id( $id );
 		if ( $thumb && '' !== (string) get_post_meta( $thumb, '_oria_image_source', true ) ) {
 			wp_delete_attachment( $thumb, true );

@@ -35,6 +35,26 @@ while ( have_posts() ) :
 			<span aria-hidden="true">/</span><span><?php the_title(); ?></span>
 		</nav>
 		<?php
+		/*
+		 * Finished events keep their page: a recurring series, a host worth
+		 * finding, and a link somebody followed all still lead here. What
+		 * the page must not do is let it read as upcoming.
+		 */
+		$oria_over = function_exists( '\Oria\Core\Events\is_past' ) && \Oria\Core\Events\is_past( get_the_ID() );
+		if ( $oria_over ) :
+			$oria_host_id_for_next = (int) get_field( 'listing' );
+			?>
+			<p class="evstatus evstatus--over" role="status">
+				<b><?php esc_html_e( 'This event has finished.', 'oria' ); ?></b>
+				<span>
+					<a href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ) ); ?>"><?php esc_html_e( "See what's on now", 'oria' ); ?></a>
+					<?php if ( $oria_host_id_for_next ) : ?>
+						· <a href="<?php echo esc_url( get_permalink( $oria_host_id_for_next ) ); ?>"><?php esc_html_e( 'Visit the practice that ran it', 'oria' ); ?></a>
+					<?php endif; ?>
+				</span>
+			</p>
+		<?php endif; ?>
+		<?php
 		$oria_status = function_exists( '\Oria\Core\Events\status' ) ? \Oria\Core\Events\status( get_the_ID() ) : '';
 		if ( '' !== $oria_status ) :
 			$oria_status_words = array(
