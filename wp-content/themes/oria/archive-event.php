@@ -145,6 +145,9 @@ foreach ( $oria_events as $oria_ev ) {
 	}
 
 	$oria_rows[] = array(
+		// Added to Oria in the last seven days -- a fact about this list,
+		// never a claim that the event itself is newly announced.
+		'fresh'  => ( $oria_now - (int) get_post_time( 'U', true, $oria_ev ) ) < 7 * DAY_IN_SECONDS,
 		'feel'   => implode( ' ', $oria_feel ),
 		'post'   => $oria_ev,
 		'ts'     => $oria_ts,
@@ -234,13 +237,35 @@ foreach ( $oria_rows as $oria_r ) {
 }
 $oria_total = count( $oria_rows );
 
+/*
+ * "New this week" only where it is news. After a bulk import most of the
+ * page is seven days old and the flag lands on three cards in four, at
+ * which point it has stopped telling anyone anything. Above two fifths
+ * it is dropped entirely rather than shown as decoration.
+ */
+$oria_fresh_n = count( array_filter( $oria_rows, static fn( array $r ): bool => ! empty( $r['fresh'] ) ) );
+if ( $oria_total > 0 && $oria_fresh_n / $oria_total > 0.4 ) {
+	foreach ( $oria_rows as $oria_i => $oria_r ) {
+		$oria_rows[ $oria_i ]['fresh'] = false;
+	}
+	foreach ( $oria_days as $oria_k => $oria_list ) {
+		foreach ( $oria_list as $oria_j => $oria_r ) {
+			$oria_days[ $oria_k ][ $oria_j ]['fresh'] = false;
+		}
+	}
+	// The featured band took its copy before this ran; PHP copies arrays
+	// by value, so it would otherwise keep flags nothing else has.
+	foreach ( $oria_member_rows as $oria_j => $oria_r ) {
+		$oria_member_rows[ $oria_j ]['fresh'] = false;
+	}
+}
+
 /** One row. */
 $oria_row = static function ( array $r ): void {
 	$oria_ev  = $r['post'];
 	$oria_t   = '00:00' === gmdate( 'H:i', $r['ts'] ) ? __( 'TBC', 'oria' ) : gmdate( 'g.ia', $r['ts'] );
 	?>
-	<a class="wkrow<?php echo $r['member'] ? ' wkrow--member' : ''; ?>"
-		href="<?php echo esc_url( get_permalink( $oria_ev ) ); ?>"
+	<div class="wkrow<?php echo $r['member'] ? ' wkrow--member' : ''; ?><?php echo $r['fresh'] ? ' wkrow--fresh' : ''; ?>"
 		data-when="<?php echo esc_attr( $r['when'] ); ?>"
 		data-day="<?php echo esc_attr( gmdate( 'Y-m-d', $r['ts'] ) ); ?>"
 		data-suburb="<?php echo esc_attr( sanitize_title( $r['suburb'] ) ); ?>"
@@ -263,7 +288,11 @@ $oria_row = static function ( array $r ): void {
 			<time class="wkrow__time"><?php echo esc_html( $oria_t ); ?></time>
 		</span>
 		<span class="wkrow__body">
-			<b><?php echo esc_html( \Oria\Theme\ptitle( $oria_ev ) ); ?><?php if ( $r['member'] ) : ?> <i class="wkrow__flag"><?php esc_html_e( 'Featured practice', 'oria' ); ?></i><?php endif; ?></b>
+			<b>
+				<a class="wkrow__link" href="<?php echo esc_url( get_permalink( $oria_ev ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( $oria_ev ) ); ?></a>
+				<?php if ( $r['fresh'] ) : ?><i class="wkrow__new"><?php esc_html_e( 'New this week', 'oria' ); ?></i><?php endif; ?>
+				<?php if ( $r['member'] ) : ?><i class="wkrow__flag"><?php esc_html_e( 'Featured practice', 'oria' ); ?></i><?php endif; ?>
+			</b>
 			<em>
 				<?php
 				// The day, then where and what. The group heading gives the
@@ -278,8 +307,27 @@ $oria_row = static function ( array $r ): void {
 			</em>
 		</span>
 		<?php if ( $r['price'] ) : ?><span class="wkrow__price"><?php echo esc_html( $r['price'] ); ?></span><?php endif; ?>
+		<?php
+		/*
+		 * Saving sits above the card's own link rather than inside it --
+		 * a button in an anchor is invalid, and a tap on it would follow
+		 * the link before it saved anything. Its accessible name carries
+		 * the event's title so a screen reader hears which of twenty-two
+		 * Save buttons this is.
+		 */
+		?>
+		<button class="wksave" type="button" aria-pressed="false"
+			data-save-event="<?php echo (int) $oria_ev->ID; ?>"
+			data-title="<?php echo esc_attr( \Oria\Theme\ptitle( $oria_ev ) ); ?>"
+			data-url="<?php echo esc_url( get_permalink( $oria_ev ) ); ?>"
+			data-when="<?php echo esc_attr( gmdate( 'D j M', $r['ts'] ) . ( '00:00' === gmdate( 'H:i', $r['ts'] ) ? '' : ', ' . $oria_t ) ); ?>"
+			data-where="<?php echo esc_attr( (string) $r['suburb'] ); ?>"
+			aria-label="<?php echo esc_attr( sprintf( /* translators: %s: event title */ __( 'Save %s', 'oria' ), \Oria\Theme\ptitle( $oria_ev ) ) ); ?>">
+			<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 2.75h10a1 1 0 0 1 1 1v13.6a.4.4 0 0 1-.62.33L10 14.3l-5.38 3.38a.4.4 0 0 1-.62-.33V3.75a1 1 0 0 1 1-1Z"/></svg>
+			<span class="xp-vh savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
+		</button>
 		<span class="wkrow__go" aria-hidden="true"><?php echo arrow(); // phpcs:ignore ?></span>
-	</a>
+	</div>
 	<?php
 };
 ?>

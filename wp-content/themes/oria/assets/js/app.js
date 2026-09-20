@@ -3693,6 +3693,31 @@
     });
   }
 
+  /* What this visitor looked at last time on What's On.
+
+     Offered rather than applied. Restoring a filter silently means
+     somebody returns to a page showing eight events of twenty-two with no
+     visible reason, which reads as a broken page rather than a helpful
+     one -- so the choice is put in front of them with a way to forget it. */
+  var WO_PREF = "oria_whatson_pref";
+
+  function woPref() {
+    try {
+      var raw = window.localStorage.getItem(WO_PREF);
+      var o = raw ? JSON.parse(raw) : null;
+      return o && typeof o === "object" ? o : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeWoPref(o) {
+    try {
+      if (o) window.localStorage.setItem(WO_PREF, JSON.stringify(o));
+      else window.localStorage.removeItem(WO_PREF);
+    } catch (e) { /* private window: the page simply does not remember */ }
+  }
+
   /* Explore a category: two panels behind two tabs, and a field over the
      suburbs.
 
@@ -4506,12 +4531,19 @@
       /* The date is already the line above; repeating it here was just
          noise on a small card. */
       var meta = e.where || "";
+      /* Built from the page URL rather than stored: one fewer thing in the
+         snapshot to go stale, and the route has been /calendar.ics since
+         the day it shipped. */
+      var ics = String(e.url || "").replace(/[?#].*$/, "").replace(/\/+$/, "") + "/calendar.ics";
       return (
-        '<a class="evcard" href="' + esc(e.url) + '">' +
+        '<div class="evcard evcard--saved">' +
+        '<a class="evcard__link" href="' + esc(e.url) + '">' +
         (e.when ? '<span class="micro">' + esc(e.when) + "</span>" : "") +
         '<b class="evcard__name">' + esc(e.title) + "</b>" +
         (meta ? '<span class="evcard__meta">' + esc(meta) + "</span>" : "") +
-        "</a>"
+        "</a>" +
+        '<a class="evcard__ics" href="' + esc(ics) + '" download>Add to calendar</a>' +
+        "</div>"
       );
     }).join("");
 
@@ -4825,6 +4857,71 @@
       syncControls();
       apply();
       writeUrl(push !== false);
+      /* Only the two worth remembering. A date is about this week and a
+         price is about this afternoon; where you look and how you want to
+         feel hold from one visit to the next. */
+      if (key === "suburb" || key === "feel") {
+        if (state.suburb || state.feel) writeWoPref({ suburb: state.suburb, feel: state.feel });
+        else writeWoPref(null);
+      }
+    }
+
+    /* The offer, made once, above the results. */
+    function offerPref() {
+      var pref = woPref();
+      if (!pref || (!pref.suburb && !pref.feel)) return;
+      if (state.suburb || state.feel) return; // they have already chosen
+      var host = root.querySelector("[data-wo-toolbar]");
+      if (!host) return;
+
+      /* Never offer a road to an empty page. Fremantle had four
+         breathwork evenings last month and none this one; an invitation
+         to see nothing is worse than no invitation. */
+      var would = $$(".wkrow", root).filter(function (row) {
+        return (!pref.suburb || row.dataset.suburb === pref.suburb) &&
+          (!pref.feel || (row.dataset.feel || "").split(" ").indexOf(pref.feel) > -1);
+      }).length;
+      if (!would) return;
+
+      function nameOf(sel, val) {
+        var el = root.querySelector(sel + "[data-v='" + val + "']");
+        if (el) return (el.querySelector(".wofeel__name") || el).textContent.trim();
+        var opt = root.querySelector("option[value='" + val + "']");
+        return opt ? opt.textContent.trim() : val;
+      }
+
+      /* Three sentences, not one with holes in it: "looking at in
+         Fremantle" is what a joined list gives you when half of it is
+         missing. */
+      var feelName = pref.feel ? nameOf(".wofeel", pref.feel).toLowerCase() : "";
+      var subName = pref.suburb ? nameOf("[data-no-such-thing]", pref.suburb) : "";
+      var what = feelName && subName
+        ? feelName + " in " + subName
+        : (feelName || "events in " + subName);
+
+      var note = document.createElement("p");
+      note.className = "wopref";
+      note.innerHTML =
+        '<span class="wopref__text"></span>' +
+        '<button class="wopref__yes" type="button"></button>' +
+        '<button class="wopref__no" type="button">Forget this</button>';
+      note.querySelector(".wopref__text").textContent = "Last time you were looking at " + what + ".";
+      note.querySelector(".wopref__yes").textContent = "Show me those again";
+
+      note.querySelector(".wopref__yes").addEventListener("click", function () {
+        state.suburb = pref.suburb || "";
+        state.feel = pref.feel || "";
+        syncControls();
+        apply();
+        writeUrl(true);
+        note.remove();
+      });
+      note.querySelector(".wopref__no").addEventListener("click", function () {
+        writeWoPref(null);
+        note.remove();
+      });
+
+      host.parentNode.insertBefore(note, host);
     }
 
     $$(".fchip", root).forEach(function (chip) {
@@ -4873,6 +4970,7 @@
     syncControls();
     apply();
     writeUrl(false);
+    offerPref();
   }
 
   /* Category tiles: eight at a time from a shuffled deck, next window of

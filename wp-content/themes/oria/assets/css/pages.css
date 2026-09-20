@@ -717,6 +717,7 @@ a.livesession:hover { background: var(--sand-2); }
   grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
 }
 .wkrow {
+  position: relative;
   display: flex; flex-direction: column;
   background: var(--white);
   border: 1px solid var(--line);
@@ -725,6 +726,41 @@ a.livesession:hover { background: var(--sand-2); }
   transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
 }
 .wkrow:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
+/* The title's link covers the card, so the whole thing is still one tap.
+   The save button sits above it -- the card is no longer an <a>, because
+   a button inside one is invalid and a tap on it navigated first. */
+.wkrow__link { color: inherit; text-decoration: none; }
+.wkrow__link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.wkrow__link:focus-visible { outline: none; }
+.wkrow:focus-within { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
+
+.wkrow__new {
+  display: inline-block; margin-left: .35rem; padding: .1rem .4rem;
+  border-radius: 999px; background: var(--sand-3, var(--sand-2));
+  font-size: 10px; font-style: normal; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--text-soft);
+  vertical-align: 2px;
+}
+
+.wksave {
+  position: absolute; z-index: 2; top: .5rem; right: .5rem;
+  display: grid; place-items: center; width: 34px; height: 34px;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: rgba(255, 255, 255, .92); color: var(--deep);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .18);
+  transition: background var(--t-fast, .18s) var(--ease), transform var(--t-fast, .18s) var(--ease);
+}
+.wksave svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.wksave:hover { background: var(--white); }
+.wksave:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
+.wksave[aria-pressed="true"] { background: var(--deep); color: var(--white); }
+.wksave[aria-pressed="true"] svg { fill: currentColor; }
+/* One small confirmation, once. */
+.wksave[aria-pressed="true"] { transform: scale(1.06); }
+@media (prefers-reduced-motion: reduce) {
+  .wksave { transition: none; }
+  .wksave[aria-pressed="true"] { transform: none; }
+}
 .wkrow__mark { font-size: 1.15rem; line-height: 1; }
 
 /* 16:9 keeps a wall of cards on one grid line whatever shape the source
@@ -4710,6 +4746,39 @@ html.has-sheet { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .wofeel { transition: none; }
 }
+
+/* The offer to pick up where somebody left off. Deliberately a strip of
+   plain text and two plain buttons: it is a question, not a state. */
+.wopref {
+  display: flex; align-items: center; flex-wrap: wrap; gap: .5rem .75rem;
+  margin: 0 0 var(--s-3); padding: .65rem .9rem;
+  border: 1px solid var(--line); border-left: 3px solid var(--brand-gold);
+  border-radius: var(--r-md); background: var(--sand-2);
+  font-size: var(--fs-sm); color: var(--text-soft);
+}
+.wopref__text { flex: 1 1 14rem; }
+.wopref__yes, .wopref__no {
+  border: 1px solid var(--line); border-radius: 999px; cursor: pointer;
+  padding: .3rem .8rem; font: inherit; font-size: var(--fs-xs); font-weight: 700;
+  background: var(--white); color: var(--deep);
+}
+.wopref__no { background: none; border-color: transparent; color: var(--text-soft); font-weight: 400; }
+.wopref__yes:hover { background: var(--deep); border-color: var(--deep); color: var(--white); }
+.wopref__no:hover { color: var(--deep); }
+.wopref__yes:focus-visible, .wopref__no:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
+
+/* A saved event keeps its own calendar action, so the card is no longer
+   one anchor either. */
+.evcard--saved { position: relative; display: flex; flex-direction: column; }
+.evcard__link { display: contents; color: inherit; text-decoration: none; }
+.evcard__link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.evcard__ics {
+  position: relative; z-index: 2; align-self: flex-start; margin-top: .5rem;
+  font-size: var(--fs-xs); font-weight: 700; color: var(--deep);
+  text-decoration: none; border-bottom: 1px solid var(--teal-line, var(--line));
+}
+.evcard__ics:hover { border-bottom-color: var(--deep); }
+.evcard__ics:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
 
 /* --- What's On: where things are, and ways in --------------------------- */
 .wonear { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
