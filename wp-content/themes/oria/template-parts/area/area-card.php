@@ -15,6 +15,7 @@
  *     @type string $line    One sentence. Falls back to the counts.
  *     @type string $cta     Link text.
  *     @type string $source  Where this card is, for analytics.
+ *     @type string $variant "band" for the short horizontal one.
  * }
  */
 
@@ -54,7 +55,7 @@ if ( '' === $oria_line && $oria_term instanceof WP_Term ) {
 
 $oria_cta = (string) ( $args['cta'] ?? sprintf( /* translators: %s: suburb */ __( 'Explore %s', 'oria' ), $oria_name ) );
 ?>
-<a class="areacard<?php echo '' === $oria_img['src'] ? ' areacard--plain' : ''; ?>"
+<a class="areacard<?php echo '' === $oria_img['src'] ? ' areacard--plain' : ''; ?><?php echo 'band' === ( $args['variant'] ?? '' ) ? ' areacard--band' : ''; ?>"
 	href="<?php echo esc_url( (string) $oria_area['url'] ); ?>"
 	data-area-promo="<?php echo esc_attr( (string) ( $args['source'] ?? 'card' ) ); ?>"
 	data-area-slug="<?php echo esc_attr( (string) ( $oria_area['slug'] ?? '' ) ); ?>"

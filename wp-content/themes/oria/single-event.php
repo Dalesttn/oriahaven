@@ -458,6 +458,8 @@ while ( have_posts() ) :
 					'eyebrow' => __( 'Make a day of it', 'oria' ),
 					'cta'     => sprintf( /* translators: %s: suburb */ __( 'Explore %s', 'oria' ), (string) $oria_day_area['name'] ),
 					'source'  => 'event-day',
+					// A way out of the page, not a second hero for it.
+					'variant' => 'band',
 				)
 			);
 			echo '</section>';

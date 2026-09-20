@@ -1345,6 +1345,31 @@ html.has-sheet .cmptray { display: none; }
 }
 .areacard__cta { display: block; font-size: var(--fs-xs); font-weight: 700; color: var(--white); margin-top: .7rem; }
 .areacard:hover .areacard__cta span { padding-left: 3px; }
+/* The short one. On an event page this is a way out of the page, not a
+   second hero for it: full width, a 16/9 photograph across 1232px made
+   an 861px block under a 200-word event. A band is a thumbnail, three
+   facts and an arrow. */
+.areacard--band {
+  display: grid; grid-template-columns: 13rem minmax(0, 1fr);
+  align-items: stretch; min-height: 8rem;
+}
+.areacard--band .areacard__media { aspect-ratio: auto; height: 100%; }
+.areacard--band .areacard__media::after { background: linear-gradient(90deg, rgba(8, 26, 24, .15), rgba(8, 26, 24, .55)); }
+.areacard--band .areacard__body {
+  display: flex; flex-direction: column; justify-content: center;
+  gap: .15rem; padding: var(--s-4) var(--s-5);
+}
+.areacard--band .areacard__name { font-size: 1.15rem; margin-top: .15rem; }
+/* The written line is what a tall card has room for; a band has the
+   counts, which are the same three facts in fewer words. */
+.areacard--band .areacard__line { display: none; }
+.areacard--band .areacard__cta { margin-top: .45rem; }
+@media (max-width: 40rem) {
+  .areacard--band { grid-template-columns: 7rem minmax(0, 1fr); min-height: 6.5rem; }
+  .areacard--band .areacard__body { padding: var(--s-3) var(--s-4); }
+  .areacard--band .areacard__name { font-size: 1rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .areacard, .areacard__cta span { transition: none; }
   .areacard:hover { transform: none; }
