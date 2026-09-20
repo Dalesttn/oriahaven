@@ -4326,9 +4326,9 @@
     var root = document.querySelector("[data-whatson]");
     if (!root) return;
 
-    var PARAM = { when: "date", suburb: "area", type: "type", band: "price" };
-    var DEFAULTS = { when: "all", suburb: "", type: "", band: "" };
-    var state = { when: "all", suburb: "", type: "", band: "" };
+    var PARAM = { when: "date", suburb: "area", type: "type", band: "price", day: "on" };
+    var DEFAULTS = { when: "all", suburb: "", type: "", band: "", day: "" };
+    var state = { when: "all", suburb: "", type: "", band: "", day: "" };
 
     var empty = root.querySelector("[data-wo-empty]");
     var countEl = root.querySelector("[data-wo-count]");
@@ -4368,6 +4368,11 @@
         c.classList.toggle("is-on", on);
         c.setAttribute("aria-pressed", on ? "true" : "false");
       });
+      $$(".wodate", root).forEach(function (b) {
+        var on = state.day === b.dataset.v;
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
       $$("select[data-f]", root).forEach(function (sel) {
         if (sel.value !== state[sel.dataset.f]) sel.value = state[sel.dataset.f];
       });
@@ -4378,6 +4383,7 @@
       $$(".wkrow", root).forEach(function (row) {
         var ok =
           (row.dataset.when || "").split(" ").indexOf(state.when) > -1 &&
+          (!state.day || row.dataset.day === state.day) &&
           (!state.suburb || row.dataset.suburb === state.suburb) &&
           (!state.type || row.dataset.type === state.type) &&
           (!state.band || row.dataset.band === state.band);
@@ -4417,7 +4423,19 @@
     }
 
     $$(".fchip", root).forEach(function (chip) {
-      chip.addEventListener("click", function () { set(chip.dataset.f, chip.dataset.v); });
+      chip.addEventListener("click", function () {
+        // Picking a period is a different question from picking a day.
+        // Leaving both on produces an empty page and a puzzled visitor.
+        state.day = "";
+        set(chip.dataset.f, chip.dataset.v);
+      });
+    });
+
+    $$(".wodate", root).forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        state.when = "all";
+        set("day", btn.dataset.v);
+      });
     });
     $$("select[data-f]", root).forEach(function (sel) {
       sel.addEventListener("change", function () { set(sel.dataset.f, sel.value); });

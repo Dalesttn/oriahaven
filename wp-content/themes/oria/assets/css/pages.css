@@ -1445,6 +1445,58 @@ a.livesession:hover { background: var(--sand-2); }
 .wkrow__src::before { content: "· "; }
 .featband .wkrows { margin-top: var(--s-3); }
 
+/* --- What's On: browse by type --------------------------------------- */
+/* Picture, name, count. The count is the point: a tile promising events
+   that are not there is the thing this row exists to avoid. */
+.evtypes {
+  display: grid; gap: var(--s-3);
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+.evtype {
+  position: relative; display: block; overflow: hidden;
+  border-radius: var(--r-md); border: 1px solid var(--line);
+  text-decoration: none; color: var(--white);
+  aspect-ratio: 4 / 3;
+  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
+}
+.evtype:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
+.evtype__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* The scrim is on the body rather than the whole tile: a full overlay
+   greys the photograph out, and the photograph is why the tile works. */
+.evtype__body {
+  position: absolute; inset: auto 0 0 0;
+  display: flex; flex-direction: column; gap: 1px;
+  padding: 1.6rem .9rem .75rem;
+  background: linear-gradient(to top, rgba(12, 28, 24, .85), rgba(12, 28, 24, 0));
+}
+.evtype__body b { font-size: var(--fs-sm); font-weight: 600; }
+.evtype__n { font-size: var(--fs-xs); opacity: .8; }
+
+/* --- What's On: the date strip --------------------------------------- */
+/* Ten real dates. A day with nothing on it stays in the row, greyed and
+   unclickable: the gap is information, and dropping empty days makes the
+   strip shuffle every time an event is added. */
+.wodates {
+  display: flex; gap: var(--s-2); overflow-x: auto;
+  padding-bottom: var(--s-2); margin-bottom: var(--s-3);
+  scrollbar-width: thin;
+}
+.wodate {
+  flex: 0 0 auto; width: 4.1rem;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: .5rem .4rem; cursor: pointer;
+  font: inherit; color: var(--text-soft);
+  background: var(--white); border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  transition: border-color var(--t-med) var(--ease), background var(--t-med) var(--ease);
+}
+.wodate:hover:not(:disabled) { border-color: var(--teal); color: var(--ink); }
+.wodate.is-on { background: var(--deep); border-color: var(--deep); color: var(--white); }
+.wodate__top { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.wodate__day { font-size: 1.05rem; font-weight: 600; line-height: 1.1; }
+.wodate__n { font-size: 10px; opacity: .75; }
+.wodate.is-empty { opacity: .45; cursor: default; }
+
 /* --- What's On: results toolbar ------------------------------------- */
 .wotoolbar {
   display: flex; align-items: center; justify-content: space-between;
@@ -4204,6 +4256,19 @@ html.has-sheet { overflow: hidden; }
 .evactions .savebtn[aria-pressed="true"] {
   background: var(--deep); border-color: var(--deep); color: var(--white);
 }
+
+/* The organiser band: full width, so the last thing on the page is an
+   invitation rather than a box in a corner. */
+.evband {
+  margin-top: var(--s-6); padding: var(--s-6) var(--s-4);
+  background: var(--deep); color: var(--white);
+}
+.evband__inner { max-width: 44rem; margin: 0 auto; }
+.evband__inner b { font-size: 1.15rem; }
+.evband__inner p { font-size: .875rem; color: rgba(255, 255, 255, .8); }
+.evband__note { font-size: .8125rem !important; color: rgba(255, 255, 255, .55) !important; margin-top: .6rem; }
+.evband .btn:not(.btn--dark) { background: transparent; border-color: rgba(255, 255, 255, .45); color: var(--white); }
+.evband .btn--dark { background: var(--white); border-color: var(--white); color: var(--deep); }
 
 .evaside__link { margin: .6rem 0 0; font-size: var(--fs-xs); }
 .evaside__link a { text-decoration: underline; text-underline-offset: 3px; }

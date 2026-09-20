@@ -221,6 +221,7 @@ $oria_row = static function ( array $r ): void {
 	<a class="wkrow<?php echo $r['member'] ? ' wkrow--member' : ''; ?>"
 		href="<?php echo esc_url( get_permalink( $oria_ev ) ); ?>"
 		data-when="<?php echo esc_attr( $r['when'] ); ?>"
+		data-day="<?php echo esc_attr( gmdate( 'Y-m-d', $r['ts'] ) ); ?>"
 		data-suburb="<?php echo esc_attr( sanitize_title( $r['suburb'] ) ); ?>"
 		data-type="<?php echo esc_attr( $r['type'] ? $r['type']->slug : '' ); ?>"
 		data-band="<?php echo esc_attr( $r['band'] ); ?>">
@@ -295,7 +296,104 @@ $oria_row = static function ( array $r ): void {
 	</div>
 </section>
 
+
+<?php
+/*
+ * Browse by type. Built from the types that actually have something on,
+ * biggest first, capped at six: a row of eight tiles where three lead to
+ * one event each is a worse page than a row of four that all deliver.
+ *
+ * A tile only appears when it has both events and a picture. The pictures
+ * live in the theme (assets/img/event/), like the category heroes, so they
+ * exist on production the moment the code lands.
+ */
+$oria_tile_counts = array();
+foreach ( $oria_rows as $oria_r ) {
+	if ( $oria_r['type'] ) {
+		$oria_tile_counts[ $oria_r['type']->slug ] = ( $oria_tile_counts[ $oria_r['type']->slug ] ?? 0 ) + 1;
+	}
+}
+arsort( $oria_tile_counts );
+
+$oria_tile_dir = get_stylesheet_directory() . '/assets/img/event/';
+$oria_tile_uri = get_stylesheet_directory_uri() . '/assets/img/event/';
+$oria_tiles    = array();
+foreach ( $oria_tile_counts as $oria_slug => $oria_n ) {
+	if ( count( $oria_tiles ) >= 6 || ! file_exists( $oria_tile_dir . $oria_slug . '-900.webp' ) ) {
+		continue;
+	}
+	$oria_term_obj = get_term_by( 'slug', $oria_slug, 'event_type' );
+	if ( ! $oria_term_obj instanceof WP_Term ) {
+		continue;
+	}
+	$oria_tiles[] = array(
+		'slug'  => $oria_slug,
+		'name'  => \Oria\Theme\tname( $oria_term_obj ),
+		'count' => $oria_n,
+	);
+}
+?>
+<?php if ( count( $oria_tiles ) >= 3 ) : ?>
+	<section class="wrap section section--top-flush">
+		<h2 class="h3" style="margin-bottom:var(--s-4)"><?php esc_html_e( 'What kind of thing are you after?', 'oria' ); ?></h2>
+		<div class="evtypes">
+			<?php foreach ( $oria_tiles as $oria_t ) : ?>
+				<a class="evtype" href="<?php echo esc_url( add_query_arg( 'type', $oria_t['slug'], get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ) ) ); ?>">
+					<img class="evtype__img" src="<?php echo esc_url( $oria_tile_uri . $oria_t['slug'] . '-600.webp' ); ?>"
+						srcset="<?php echo esc_url( $oria_tile_uri . $oria_t['slug'] . '-600.webp' ); ?> 600w, <?php echo esc_url( $oria_tile_uri . $oria_t['slug'] . '-900.webp' ); ?> 900w"
+						sizes="(max-width: 700px) 45vw, 22vw" alt="" loading="lazy" decoding="async" width="600" height="450">
+					<span class="evtype__body">
+						<b><?php echo esc_html( $oria_t['name'] ); ?></b>
+						<span class="evtype__n"><?php echo esc_html( sprintf( _n( '%d event', '%d events', $oria_t['count'], 'oria' ), $oria_t['count'] ) ); ?></span>
+					</span>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	</section>
+<?php endif; ?>
+
 <section class="wrap section section--top-flush" data-whatson>
+	<?php
+	/*
+	 * The next ten days as real dates, each with what is actually on it.
+	 * A day with nothing is shown greyed rather than hidden: the gap is
+	 * information, and hiding it makes the strip jump around as events
+	 * come and go.
+	 */
+	$oria_strip = array();
+	for ( $oria_d = 0; $oria_d < 10; $oria_d++ ) {
+		$oria_dts   = strtotime( 'today +' . $oria_d . ' days', $oria_now );
+		$oria_key   = gmdate( 'Y-m-d', $oria_dts );
+		$oria_count = 0;
+		foreach ( $oria_rows as $oria_r ) {
+			if ( gmdate( 'Y-m-d', $oria_r['ts'] ) === $oria_key ) {
+				++$oria_count;
+			}
+		}
+		$oria_strip[] = array(
+			'key'   => $oria_key,
+			'top'   => 0 === $oria_d ? __( 'Today', 'oria' ) : ( 1 === $oria_d ? __( 'Tmrw', 'oria' ) : gmdate( 'D', $oria_dts ) ),
+			'day'   => gmdate( 'j', $oria_dts ),
+			'count' => $oria_count,
+		);
+	}
+	?>
+	<div class="wodates" role="group" aria-label="<?php esc_attr_e( 'Jump to a date', 'oria' ); ?>">
+		<button class="wodate is-on" type="button" aria-pressed="true" data-f="day" data-v="">
+			<span class="wodate__top"><?php esc_html_e( 'All', 'oria' ); ?></span>
+			<span class="wodate__day"><?php echo esc_html( (string) count( $oria_rows ) ); ?></span>
+		</button>
+		<?php foreach ( $oria_strip as $oria_s ) : ?>
+			<button class="wodate<?php echo 0 === $oria_s['count'] ? ' is-empty' : ''; ?>" type="button" aria-pressed="false"
+				data-f="day" data-v="<?php echo esc_attr( $oria_s['key'] ); ?>"
+				<?php echo 0 === $oria_s['count'] ? 'disabled aria-disabled="true"' : ''; ?>>
+				<span class="wodate__top"><?php echo esc_html( $oria_s['top'] ); ?></span>
+				<span class="wodate__day"><?php echo esc_html( $oria_s['day'] ); ?></span>
+				<span class="wodate__n"><?php echo esc_html( $oria_s['count'] ? (string) $oria_s['count'] : '·' ); ?></span>
+			</button>
+		<?php endforeach; ?>
+	</div>
+
 	<div class="wofilters">
 		<div class="wofilters__row" role="group" aria-label="<?php esc_attr_e( 'Filter by date', 'oria' ); ?>">
 			<?php
@@ -401,8 +499,8 @@ $oria_row = static function ( array $r ): void {
 	<?php endif; ?>
 </section>
 
-<section class="wrap section section--top-flush">
-	<div class="claimprompt" style="max-width:44rem">
+<section class="evband">
+	<div class="evband__inner">
 		<b style="display:block;margin-bottom:.4rem"><?php esc_html_e( 'Run wellness events in Perth?', 'oria' ); ?></b>
 		<p style="font-size:.875rem;color:var(--text-soft)">
 			<?php esc_html_e( 'Tell us about it and we will put it on this page. It is free, there is no account to make, and a person reads every submission.', 'oria' ); ?>
@@ -411,7 +509,7 @@ $oria_row = static function ( array $r ): void {
 			<a class="btn btn--dark btn--sm" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a>
 			<a class="btn btn--sm" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your listing', 'oria' ); ?></a>
 		</p>
-		<p style="font-size:.8125rem;color:var(--text-faint);margin-top:.6rem">
+		<p class="evband__note">
 			<?php esc_html_e( 'Claimed practices also get their events at the top of this page, with a photo and a linked profile.', 'oria' ); ?>
 		</p>
 	</div>

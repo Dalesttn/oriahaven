@@ -184,6 +184,16 @@ while ( have_posts() ) :
 							data-where="<?php echo esc_attr( $oria_venue ); ?>">
 							<span class="savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
 						</button>
+						<?php
+						/*
+						 * The kit, for whoever is running this. Offered on the
+						 * page rather than only by email, because the person
+						 * most likely to promote an event is looking at it.
+						 */
+						if ( function_exists( '\Oria\Core\EventShare\url' ) ) :
+							?>
+							<a class="btn btn--sm" href="<?php echo esc_url( \Oria\Core\EventShare\url( (int) get_the_ID() ) ); ?>"><?php esc_html_e( 'Share', 'oria' ); ?></a>
+						<?php endif; ?>
 					</div>
 				<?php endif; ?>
 

@@ -57,3 +57,22 @@ listed venue. Sub-categories use their parent category's picture.
 | South East (rock pools, not named) | https://www.pexels.com/photo/4577810/ | Rachel Claire |
 | Margaret River town (coast) | https://www.pexels.com/photo/35928299/ | Michelle Chadwick |
 | Home closing picture, close-room-960/1400/1920.webp | https://www.pexels.com/photo/6560308/ | Anna Tarazevich |
+
+## Event type tiles (event/{slug}-900.webp, -600.webp)
+
+One photograph per event type that carries events, used behind the
+"what kind of thing are you after" tiles on /whats-on-perth/. Pexels
+licence; decorative (empty alt); none depicts a listed venue or a real
+Perth event.
+
+| File | Photo | Photographer |
+| --- | --- | --- |
+| event/yoga | https://www.pexels.com/photo/5890302/ | Antoni Shkraba |
+| event/sound-healing | https://www.pexels.com/photo/6252162/ | Antoni Shkraba |
+| event/breathwork | https://www.pexels.com/photo/7596956/ | Pavel Danilyuk |
+| event/retreat | https://www.pexels.com/photo/7363302/ | ArtHouse Studio |
+| event/community | https://www.pexels.com/photo/7972671/ | George Pak |
+| event/fitness | https://www.pexels.com/photo/3984353/ | Gustavo Fring |
+| event/meditation | https://www.pexels.com/photo/8436768/ | Yan Krukau |
+| event/womens-circle | https://www.pexels.com/photo/6539905/ | RDNE Stock project |
+| event/nutrition | https://www.pexels.com/photo/8511799/ | Kampus Production |
