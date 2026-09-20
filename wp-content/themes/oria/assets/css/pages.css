@@ -1460,6 +1460,68 @@ a.livesession:hover { background: var(--sand-2); }
   .wkrows--one .wkrow__price { align-self: center; padding-right: var(--s-5); }
 }
 
+/* --- Events: the header band ------------------------------------------
+   A 16:6 photograph with the page's own words over it. Short on purpose:
+   the events have to stay near the top, so this is a band rather than a
+   hero. The scrim carries the contrast, not the photograph -- the copy is
+   legible if the image never arrives. */
+.evhead {
+  position: relative; isolation: isolate;
+  margin-bottom: var(--s-5);
+  background: var(--deep);
+  min-height: 19rem;
+  display: flex; align-items: flex-end;
+}
+.evhead__img {
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%;
+}
+.evhead__shade {
+  position: absolute; inset: 0; z-index: -1;
+  /* Measured, not guessed: over the beach photograph the first version left
+     the breadcrumb at 3.6:1 and the gold eyebrow at 1.6:1. The upper stops
+     carry most of the change, because that is where those two sit. */
+  background:
+    linear-gradient(to top,
+      rgba(8, 26, 24, var(--evhead-shade-0, .94)) 0%,
+      rgba(8, 26, 24, var(--evhead-shade-45, .86)) 45%,
+      rgba(8, 26, 24, var(--evhead-shade-75, .70)) 75%,
+      rgba(8, 26, 24, var(--evhead-shade-100, .55)) 100%);
+}
+.evhead__inner { padding-block: var(--s-5) var(--s-5); width: 100%; color: var(--white); }
+.evhead__crumbs { margin-bottom: var(--s-3); color: rgba(255, 255, 255, .75); }
+.evhead__crumbs a { color: rgba(255, 255, 255, .85); }
+.evhead__crumbs a:hover { color: var(--white); }
+.evhead__eyebrow { color: #E7C77E; }  /* the brand gold is mixed for pale grounds; this is its light twin */
+.evhead__title { color: var(--white); margin: .2rem 0 0; max-width: 20ch; }
+.evhead__lede { color: rgba(255, 255, 255, .88); max-width: 48ch; margin-top: .7rem; }
+.evhead__acts { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: var(--s-4); }
+.evhead__acts .btn {
+  background: transparent; border-color: rgba(255, 255, 255, .5); color: var(--white);
+}
+.evhead__acts .btn:hover { border-color: var(--white); background: rgba(255, 255, 255, .1); }
+.evhead__acts .btn--dark { background: var(--white); border-color: var(--white); color: var(--deep); }
+.evhead__acts .btn--dark:hover { background: rgba(255, 255, 255, .88); }
+/* A photograph that is already dark needs less help, and the strong scrim
+   crushes it into a flat block: on the night class it cut the visible range
+   of the picture roughly in half. Contrast is still 11:1 here, measured. */
+.evhead--dim {
+  --evhead-shade-0: .88; --evhead-shade-45: .72;
+  --evhead-shade-75: .48; --evhead-shade-100: .34;
+}
+
+/* No photograph: the band keeps its shape and loses the scrim's job. */
+.evhead--bare { min-height: 0; background: transparent; }
+.evhead--bare .evhead__inner { color: inherit; padding-block: var(--s-4) 0; }
+.evhead--bare .evhead__title, .evhead--bare .evhead__lede { color: inherit; }
+.evhead--bare .evhead__crumbs, .evhead--bare .evhead__crumbs a { color: var(--text-soft); }
+.evhead--bare .evhead__eyebrow { color: var(--text-faint); }
+.evhead--bare .evhead__acts .btn { border-color: var(--line-strong); color: var(--text-soft); }
+@media (max-width: 700px) {
+  .evhead { min-height: 16rem; }
+  .evhead__title { max-width: none; }
+}
+
 /* --- What's On: browse by type --------------------------------------- */
 /* Picture, name, count. The count is the point: a tile promising events
    that are not there is the thing this row exists to avoid. */

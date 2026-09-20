@@ -262,13 +262,11 @@ $oria_row = static function ( array $r ): void {
 };
 ?>
 
-<section class="wrap pagehead">
-	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
-		<span aria-hidden="true">/</span><span><?php esc_html_e( "What's On", 'oria' ); ?></span>
-	</nav>
-	<div class="row-between" style="align-items:flex-end;margin-top:1rem">
-		<div>
+<?php
+// The count and the freshness line, built before the header so the band can
+// carry them as its eyebrow.
+ob_start();
+?>
 			<span class="micro">
 				<?php
 				// Count and freshness, both measured rather than asserted.
@@ -283,18 +281,30 @@ $oria_row = static function ( array $r ): void {
 				}
 				?>
 			</span>
-			<h1 class="h1 pagehead__title"><?php esc_html_e( 'Wellness events and workshops in Perth', 'oria' ); ?></h1>
-		</div>
-		<div style="display:flex;flex-direction:column;align-items:flex-end;gap:.9rem">
-			<p class="lede" style="max-width:38ch;margin:0"><?php esc_html_e( 'Sound baths, yoga workshops, breathwork, day retreats and free community sessions — hand-checked, from our member practices and from around Perth.', 'oria' ); ?></p>
-			<div style="display:flex;gap:.6rem;flex-wrap:wrap;justify-content:flex-end">
-				<a class="btn btn--ghost btn--sm btn--plain" href="<?php echo esc_url( home_url( '/this-weekend/' ) ); ?>"><?php esc_html_e( 'Just this weekend', 'oria' ); ?> <?php echo arrow(); // phpcs:ignore ?></a>
-				<?php /* Organisers need this at the top, not buried at the foot of the page. */ ?>
-				<a class="btn btn--sm" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a>
-			</div>
-		</div>
-	</div>
-</section>
+<?php
+$oria_eyebrow = trim( wp_strip_all_tags( (string) ob_get_clean() ) );
+
+ob_start();
+?>
+	<a class="btn btn--sm btn--dark" href="<?php echo esc_url( home_url( '/this-weekend/' ) ); ?>"><?php esc_html_e( 'Just this weekend', 'oria' ); ?></a>
+	<?php /* Organisers need this at the top, not buried at the foot of the page. */ ?>
+	<a class="btn btn--sm" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a>
+<?php
+$oria_actions = (string) ob_get_clean();
+
+get_template_part(
+	'template-parts/event-hero',
+	null,
+	array(
+		'img'     => 'hero',
+		'crumbs'  => array( __( 'Home', 'oria' ) => home_url( '/' ), __( "What's On", 'oria' ) => '' ),
+		'eyebrow' => $oria_eyebrow,
+		'title'   => __( 'Wellness events and workshops in Perth', 'oria' ),
+		'lede'    => __( 'Sound baths, yoga workshops, breathwork, day retreats and free community sessions — hand-checked, from our member practices and from around Perth.', 'oria' ),
+		'actions' => $oria_actions,
+	)
+);
+?>
 
 
 <?php

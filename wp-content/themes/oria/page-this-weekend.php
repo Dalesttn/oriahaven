@@ -159,21 +159,31 @@ $oria_row = static function ( \WP_Post $oria_ev, int $oria_ts, bool $oria_with_d
 $oria_range = gmdate( 'j', $oria_friday ) . '–' . gmdate( 'j M', $oria_friday + 2 * DAY_IN_SECONDS );
 ?>
 
-<section class="wrap pagehead">
-	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
-		<span aria-hidden="true">/</span>
-		<a href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ); ?>"><?php esc_html_e( "What's On", 'oria' ); ?></a>
-		<span aria-hidden="true">/</span><span><?php esc_html_e( 'This weekend', 'oria' ); ?></span>
-	</nav>
-	<div class="row-between" style="align-items:flex-end;margin-top:1rem">
-		<div>
-			<span class="micro"><?php echo esc_html( sprintf( __( 'Fri–Sun · %s', 'oria' ), $oria_range ) ); ?></span>
-			<h1 class="h1 pagehead__title"><?php esc_html_e( 'This weekend in Perth', 'oria' ); ?></h1>
-		</div>
-		<p class="lede" style="max-width:36ch"><?php esc_html_e( 'Every workshop, sitting and session running this weekend, in one place. New every week.', 'oria' ); ?></p>
-	</div>
-</section>
+<?php
+ob_start();
+?>
+	<a class="btn btn--sm btn--dark" href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ) ); ?>"><?php esc_html_e( "Everything that's on", 'oria' ); ?></a>
+	<a class="btn btn--sm" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a>
+<?php
+$oria_actions = (string) ob_get_clean();
+
+get_template_part(
+	'template-parts/event-hero',
+	null,
+	array(
+		'img'     => 'weekend-hero',
+		'crumbs'  => array(
+			__( 'Home', 'oria' )       => home_url( '/' ),
+			__( "What's On", 'oria' )  => get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ),
+			__( 'This weekend', 'oria' ) => '',
+		),
+		'eyebrow' => sprintf( /* translators: %s: date range */ __( 'Fri–Sun · %s', 'oria' ), $oria_range ),
+		'title'   => __( 'This weekend in Perth', 'oria' ),
+		'lede'    => __( 'Every workshop, sitting and session running this weekend, in one place. New every week.', 'oria' ),
+		'actions' => $oria_actions,
+	)
+);
+?>
 
 <section class="wrap section section--top-flush">
 	<?php if ( $oria_days ) : ?>

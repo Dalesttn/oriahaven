@@ -35,30 +35,45 @@ foreach ( $oria_ids as $oria_id ) {
 }
 ?>
 
-<section class="wrap pagehead">
-	<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
-		<span aria-hidden="true">/</span>
-		<a href="<?php echo esc_url( $oria_all ); ?>"><?php esc_html_e( "What's On", 'oria' ); ?></a>
-		<span aria-hidden="true">/</span><span><?php echo esc_html( (string) $oria_row['title'] ); ?></span>
-	</nav>
-	<div style="margin-top:1rem;max-width:56rem">
-		<span class="micro">
-			<?php
-			echo esc_html( sprintf( _n( '%d coming up', '%d coming up', count( $oria_ids ), 'oria' ), count( $oria_ids ) ) );
-			if ( $oria_checked ) {
-				echo ' · ' . esc_html(
-					$oria_checked >= (int) strtotime( 'today', (int) current_time( 'timestamp' ) )
-						? __( 'checked today', 'oria' )
-						: sprintf( /* translators: %s: date */ __( 'last checked %s', 'oria' ), gmdate( 'j F', $oria_checked ) )
-				);
-			}
-			?>
-		</span>
-		<h1 class="h1 pagehead__title"><?php echo esc_html( (string) $oria_row['title'] ); ?></h1>
-		<p class="lede pagehead__lede" style="max-width:60ch"><?php echo esc_html( (string) ( $oria_row['intro'] ?? '' ) ); ?></p>
-	</div>
-</section>
+<?php
+$oria_eyebrow = sprintf( _n( '%d coming up', '%d coming up', count( $oria_ids ), 'oria' ), count( $oria_ids ) );
+if ( $oria_checked ) {
+	$oria_eyebrow .= ' · ' . (
+		$oria_checked >= (int) strtotime( 'today', (int) current_time( 'timestamp' ) )
+			? __( 'checked today', 'oria' )
+			: sprintf( /* translators: %s: date */ __( 'last checked %s', 'oria' ), gmdate( 'j F', $oria_checked ) )
+	);
+}
+
+/*
+ * A collection borrows the tile picture of the type it collects, so a
+ * sound-bath page is headed by gongs rather than by the generic band. It
+ * falls back to the shared one where a collection has no single type --
+ * the free events page, which spans all of them.
+ */
+$oria_hero_img = 'hero';
+$oria_filter   = (array) ( $oria_row['filter'] ?? array() );
+if ( ! empty( $oria_filter['event_type'] )
+	&& is_readable( get_stylesheet_directory() . '/assets/img/event/' . $oria_filter['event_type'] . '-900.webp' ) ) {
+	$oria_hero_img = get_stylesheet_directory_uri() . '/assets/img/event/' . $oria_filter['event_type'] . '-900.webp';
+}
+
+get_template_part(
+	'template-parts/event-hero',
+	null,
+	array(
+		'img'     => $oria_hero_img,
+		'crumbs'  => array(
+			__( 'Home', 'oria' )      => home_url( '/' ),
+			__( "What's On", 'oria' ) => $oria_all,
+			(string) $oria_row['title'] => '',
+		),
+		'eyebrow' => $oria_eyebrow,
+		'title'   => (string) $oria_row['title'],
+		'lede'    => (string) ( $oria_row['intro'] ?? '' ),
+	)
+);
+?>
 
 <section class="wrap section section--top-flush">
 	<div class="evgrid">

@@ -76,3 +76,14 @@ Perth event.
 | event/meditation | https://www.pexels.com/photo/8436768/ | Yan Krukau |
 | event/womens-circle | https://www.pexels.com/photo/6539905/ | RDNE Stock project |
 | event/nutrition | https://www.pexels.com/photo/8511799/ | Kampus Production |
+
+## Event page headers (event/hero-*.webp, event/weekend-hero-*.webp)
+
+The 16:6 band behind the heading on /whats-on-perth/ and /this-weekend/.
+Pexels licence; decorative (empty alt); neither depicts a listed venue or a
+real Perth event.
+
+| File | Photo | Photographer |
+| --- | --- | --- |
+| event/hero-1600/960.webp | https://www.pexels.com/photo/5325476/ | Miguel Delima |
+| event/weekend-hero-1600/960.webp | https://www.pexels.com/photo/6339383/ | Pavel Danilyuk |
