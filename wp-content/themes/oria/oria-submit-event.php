@@ -3,6 +3,10 @@
  * /submit-an-event/ — the free, public route for an organiser to put a
  * Perth wellness event on the site.
  *
+ * Rendered by a route registered in \Oria\Core\EventSubmit, not by a
+ * WordPress page: a page template attaches by slug, and a page somebody
+ * has to remember to create is a page production does not have.
+ *
  * Free, and no account needed: the point is to hear about the Tuesday sound
  * bath, not to sell anything at the door. Submissions arrive as drafts and a
  * person checks them. Handled by \Oria\Core\EventSubmit.

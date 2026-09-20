@@ -30,6 +30,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+const PATH      = 'submit-an-event';
+const QUERY_VAR = 'oria_submit_event';
 const MAX_BYTES = 5 * 1024 * 1024;
 const MIMES     = array( 'image/jpeg', 'image/png', 'image/webp' );
 const THROTTLE  = 5; // submissions per IP per hour
@@ -38,10 +40,81 @@ function bootstrap(): void {
 	add_action( 'admin_post_nopriv_oria_event_submit', __NAMESPACE__ . '\handle' );
 	add_action( 'admin_post_oria_event_submit', __NAMESPACE__ . '\handle' );
 	add_filter( 'display_post_states', __NAMESPACE__ . '\post_state', 10, 2 );
+
+	/*
+	 * The page itself is a route, not a WordPress page. A page template
+	 * attaches by slug, so the form only existed where somebody had
+	 * created that page by hand -- which meant it 404'd on production
+	 * after a deploy that carried every other part of the feature.
+	 */
+	add_action( 'init', __NAMESPACE__ . '\route' );
+	add_filter( 'query_vars', __NAMESPACE__ . '\query_vars' );
+	add_action( 'parse_query', __NAMESPACE__ . '\fix_query' );
+	add_filter( 'template_include', __NAMESPACE__ . '\template' );
+	add_filter( 'wpseo_title', __NAMESPACE__ . '\seo_title', 20 );
+	add_filter( 'wpseo_metadesc', __NAMESPACE__ . '\seo_description', 20 );
+	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\seo_canonical', 20 );
+	add_filter( 'document_title_parts', __NAMESPACE__ . '\core_title', 20 );
+}
+
+function route(): void {
+	add_rewrite_rule( '^' . PATH . '/?$', 'index.php?' . QUERY_VAR . '=1', 'top' );
+}
+
+/** @param string[] $vars @return string[] */
+function query_vars( array $vars ): array {
+	$vars[] = QUERY_VAR;
+	return $vars;
+}
+
+function is_page(): bool {
+	return (bool) get_query_var( QUERY_VAR );
+}
+
+/** A parameterless rule otherwise reads as the home page. */
+function fix_query( \WP_Query $q ): void {
+	if ( ! $q->is_main_query() || ! $q->get( QUERY_VAR ) ) {
+		return;
+	}
+	$q->is_home       = false;
+	$q->is_front_page = false;
+	$q->is_archive    = false;
+	$q->is_singular   = false;
+	$q->is_404        = false;
+	$q->set( 'posts_per_page', 1 );
+}
+
+function template( string $template ): string {
+	if ( ! is_page() ) {
+		return $template;
+	}
+	$found = locate_template( array( 'oria-submit-event.php' ) );
+	return $found ?: $template;
+}
+
+function seo_title( $title ) {
+	return is_page() ? __( 'Submit an event | Oria Haven', 'oria' ) : $title;
+}
+
+function core_title( array $parts ): array {
+	if ( is_page() ) {
+		$parts['title'] = __( 'Submit an event', 'oria' );
+	}
+	return $parts;
+}
+
+function seo_description( $desc ) {
+	return is_page()
+		? __( 'Running a wellness event in Perth? Tell us about it and we will put it on the What\'s On page. Free, no account needed.', 'oria' )
+		: $desc;
+}
+
+function seo_canonical( $canonical ) {
+	return is_page() ? page_url() : $canonical;
 }
 
 function page_url(): string {
-	return home_url( '/submit-an-event/' );
+	return home_url( '/' . PATH . '/' );
 }
 
 /** Marks submitted events in the admin list, so review order is obvious. */

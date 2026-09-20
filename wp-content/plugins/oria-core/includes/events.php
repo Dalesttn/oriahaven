@@ -32,6 +32,16 @@ const VERSION_OPTION = 'oria_events_ver';
 const CACHE_PREFIX   = 'oria_events_';
 const CACHE_LIFE     = 15 * MINUTE_IN_SECONDS;
 
+/*
+ * Bumped whenever an event route changes shape: the submit page, the .ics
+ * file, the share kit, the landing pages. Rewrite rules live in the
+ * database, so a deploy that adds a route leaves it 404ing until somebody
+ * saves the permalinks screen -- which is a step nobody should have to
+ * remember, and the reason /submit-an-event/ was a 404 on production while
+ * working perfectly in development.
+ */
+const ROUTES_VERSION = '2026-09-20-events-1';
+
 function bootstrap(): void {
 	foreach ( array( 'save_post_event', 'deleted_post', 'trashed_post', 'untrashed_post' ) as $hook ) {
 		add_action( $hook, __NAMESPACE__ . '\bump_version' );
@@ -46,6 +56,9 @@ function bootstrap(): void {
 		add_action( $hook, __NAMESPACE__ . '\bump_on_meta', 10, 3 );
 	}
 
+	// Late on init, so every event route has registered itself first.
+	add_action( 'init', __NAMESPACE__ . '\maybe_flush', 99 );
+
 	// A finished event is not a search result. It keeps its page and its
 	// links; it just stops asking to be indexed or crawled as current.
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\past_robots' );
@@ -59,6 +72,21 @@ function bump_on_meta( $meta_id, $post_id, $meta_key ): void {
 		return;
 	}
 	bump_version( (int) $post_id );
+}
+
+/**
+ * Register the event routes with WordPress once per deploy.
+ *
+ * One flush, guarded by a version string, rather than a flush on every
+ * request: flush_rewrite_rules() rebuilds and writes the whole rule set,
+ * which is expensive enough that doing it unconditionally is a known way
+ * to make a site slow.
+ */
+function maybe_flush(): void {
+	if ( get_option( 'oria_event_routes_v' ) !== ROUTES_VERSION ) {
+		flush_rewrite_rules();
+		update_option( 'oria_event_routes_v', ROUTES_VERSION, false );
+	}
 }
 
 /**
