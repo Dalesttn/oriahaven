@@ -69,7 +69,7 @@ foreach ( $oria_areas as $oria_a ) {
 }
 
 /** The asterisk and its screen-reader word, so required is never colour alone. */
-$oria_req = '<span class="sev-req" aria-hidden="true">*</span><span class="xp-vh"> ' . esc_html__( '(required)', 'oria' ) . '</span>';
+$oria_req = '<span class="sev-req" aria-hidden="true">*</span><span class="sr-only"> ' . esc_html__( '(required)', 'oria' ) . '</span>';
 ?>
 
 <section class="wrap pagehead">

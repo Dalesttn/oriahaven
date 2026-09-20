@@ -335,7 +335,7 @@ $oria_row = static function ( array $r ): void {
 			data-where="<?php echo esc_attr( (string) $r['suburb'] ); ?>"
 			aria-label="<?php echo esc_attr( sprintf( /* translators: %s: event title */ __( 'Save %s', 'oria' ), \Oria\Theme\ptitle( $oria_ev ) ) ); ?>">
 			<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 2.75h10a1 1 0 0 1 1 1v13.6a.4.4 0 0 1-.62.33L10 14.3l-5.38 3.38a.4.4 0 0 1-.62-.33V3.75a1 1 0 0 1 1-1Z"/></svg>
-			<span class="xp-vh savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
+			<span class="sr-only savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
 		</button>
 		<span class="wkrow__go" aria-hidden="true"><?php echo arrow(); // phpcs:ignore ?></span>
 	</div>

@@ -101,7 +101,7 @@ $oria_card = static function ( array $area, string $source, bool $lead = false )
 		</div>
 
 		<div class="hoods__find">
-			<label class="xp-vh" for="<?php echo esc_attr( $oria_id ); ?>-q"><?php esc_html_e( 'Find a neighbourhood', 'oria' ); ?></label>
+			<label class="sr-only" for="<?php echo esc_attr( $oria_id ); ?>-q"><?php esc_html_e( 'Find a neighbourhood', 'oria' ); ?></label>
 			<span class="hoods__icon" aria-hidden="true">
 				<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2 17 17" stroke-linecap="round"/></svg>
 			</span>
