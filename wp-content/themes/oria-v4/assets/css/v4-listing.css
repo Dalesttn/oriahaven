@@ -230,6 +230,27 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
   overflow: hidden;
 }
 
+/* The award's corner. Top-left because the photos button owns top-right,
+   and above the shade so it never sinks into a dark photograph. */
+.xp-hero__award {
+  position: absolute; z-index: 3;
+  top: var(--s-4); left: var(--s-4);
+  /* Stops short of the photos button rather than merely inside the panel:
+     a long award title slid straight under it, measured at -163px. */
+  max-width: calc(100% - 14rem);
+}
+@media (max-width: 700px) {
+  .xp-hero__award { top: var(--s-3); left: var(--s-3); }
+  /* On a phone the full badge and the photos button collide -- measured at
+     375px, they overlapped by 2px. The award drops to its one-line form,
+     which the aria-label still announces in full. */
+  .xp-hero__award .badge--best { gap: .45rem; padding: .3rem .7rem .32rem .34rem; }
+  .xp-hero__award .badge--best__disc { width: 1.6rem; height: 1.6rem; }
+  .xp-hero__award .badge--best__mark { font-size: .82rem; }
+  .xp-hero__award .badge--best__eyebrow { display: none; }
+  .xp-hero__award .badge--best__title { margin-top: 0; font-size: .8rem; }
+}
+
 .xp-hero__all {
   position: absolute; z-index: 3;
   top: var(--s-4); right: var(--s-4);

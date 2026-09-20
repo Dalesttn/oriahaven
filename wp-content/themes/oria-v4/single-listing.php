@@ -486,6 +486,19 @@ while ( have_posts() ) :
 				<div class="xp-hero__shade" aria-hidden="true"></div>
 			<?php endif; ?>
 
+			<?php if ( $oria_best_badge ) : ?>
+				<div class="xp-hero__award">
+					<?php
+					echo \Oria\Core\BestOf\badge_html(
+						$oria_best_badge['label'],
+						$oria_best_badge['url'],
+						'',
+						(string) ( $oria_best_badge['year'] ?? '' )
+					); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in badge_html().
+					?>
+				</div>
+			<?php endif; ?>
+
 			<div class="xp-hero__text">
 				<?php
 				$oria_eyebrow = array();
@@ -495,20 +508,14 @@ while ( have_posts() ) :
 				if ( '' !== $oria_area_name ) {
 					$oria_eyebrow[] = esc_html( $oria_area_name );
 				}
-				if ( $oria_best_badge ) {
-					/*
-					 * The full badge here, not the compact one: this is the
-					 * listing's own page, which is where the brief asks for the
-					 * whole "Oria Best of 2026" wording to survive. The compact
-					 * form is for cards, where the practice's name has to win.
-					 */
-					$oria_eyebrow[] = \Oria\Core\BestOf\badge_html(
-						$oria_best_badge['label'],
-						$oria_best_badge['url'],
-						'',
-						(string) ( $oria_best_badge['year'] ?? '' )
-					);
-				}
+				/*
+				 * The award is NOT in this row. It is a two-line badge and
+				 * these are one-line facts, so inline it made the row tower
+				 * over itself -- and an award between "Yoga" and "West Perth"
+				 * reads as a third category. It sits on the photograph
+				 * instead, top left, which is the placement the brief wanted
+				 * and the corner the photos button leaves free.
+				 */
 				?>
 				<?php if ( $oria_eyebrow ) : ?>
 					<p class="xp-hero__eyebrow"><?php echo implode( ' <span class="xp-hero__sep" aria-hidden="true">&middot;</span> ', $oria_eyebrow ); // phpcs:ignore WordPress.Security.EscapeOutput -- built from escaped parts. ?></p>
