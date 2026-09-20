@@ -26,6 +26,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* v5: the record gained the opening hours; the new key retires older
    cache entries cleanly, and the warm cron walks every listing onto it. */
 const META_CACHE   = '_oria_places_v5';
+/* Reviews live in their own row with their own timestamp: they are fetched
+   on a profile view rather than on every refresh, so they expire on their
+   own clock. Same 29-day ceiling -- Google's caching rule applies to them
+   exactly as it does to the rest of the record. */
+const META_REVIEWS = '_oria_places_reviews_v1';
 const CACHE_DAYS   = 29;
 const MAX_PHOTOS   = 3;
 const SEARCH_URL   = 'https://places.googleapis.com/v1/places:searchText';
@@ -163,8 +168,71 @@ function photos_for( int $post_id, int $width = 1200 ): array {
  * @return array<int, array{author: string, author_uri: string, avatar: string, rating: float, when: string, text: string}>
  */
 function reviews_for( int $post_id ): array {
-	$cache = data_for( $post_id );
-	return $cache ? (array) ( $cache['reviews'] ?? array() ) : array();
+	if ( ! enabled() || hidden( $post_id ) ) {
+		return array();
+	}
+
+	$cache = get_post_meta( $post_id, META_REVIEWS, true );
+	if ( is_array( $cache ) && isset( $cache['ts'] )
+		&& ( time() - (int) $cache['ts'] ) < CACHE_DAYS * DAY_IN_SECONDS ) {
+		return (array) ( $cache['items'] ?? array() );
+	}
+
+	/*
+	 * The main record is asked for first because it carries the place-name
+	 * check: reviews belonging to a business we matched wrongly must never
+	 * reach the page, and resolving it also fills in a missing place ID.
+	 */
+	$record = data_for( $post_id );
+	if ( null === $record ) {
+		return array();
+	}
+
+	$place_id = function_exists( 'get_field' ) ? trim( (string) get_field( 'google_place_id', $post_id ) ) : '';
+	if ( '' === $place_id || get_transient( 'oria_places_rev_backoff_' . $post_id ) ) {
+		return array();
+	}
+
+	$items = fetch_reviews( $place_id );
+	if ( null === $items ) {
+		set_transient( 'oria_places_rev_backoff_' . $post_id, 1, DAY_IN_SECONDS );
+		return array();
+	}
+
+	update_post_meta( $post_id, META_REVIEWS, array( 'items' => $items, 'ts' => time() ) );
+	return $items;
+}
+
+/**
+ * One Details call for review text alone.
+ *
+ * Kept apart from fetch() on purpose. Reviews are the priciest field Google
+ * sells, and the daily warm walks every listing whether or not anyone reads
+ * it -- so the warm gets everything else, and this runs only when somebody
+ * actually opens a profile. Null means the call failed, which is not the
+ * same as a place with no reviews (an empty array).
+ *
+ * @return array<int, array<string, mixed>>|null
+ */
+function fetch_reviews( string $place_id ): ?array {
+	$response = wp_remote_get(
+		sprintf( DETAILS_URL, rawurlencode( $place_id ) ),
+		array(
+			'timeout' => 8,
+			'headers' => array(
+				'X-Goog-Api-Key'   => server_key(),
+				'X-Goog-FieldMask' => 'reviews',
+			),
+		)
+	);
+
+	$body = decode( $response );
+	if ( null === $body ) {
+		return null;
+	}
+
+	$packed = pack( $body );
+	return (array) ( $packed['reviews'] ?? array() );
 }
 
 /**
@@ -292,7 +360,10 @@ function fetch( int $post_id, string $place_id ): ?array {
 					'X-Goog-Api-Key'   => $key,
 					// displayName is the point of this change: without it the
 					// response never says which business was matched.
-					'X-Goog-FieldMask' => 'places.id,places.displayName,places.photos,places.rating,places.userRatingCount,places.googleMapsUri,places.reviews,places.regularOpeningHours',
+					// No places.reviews: review text is an Atmosphere field and
+					// prices the whole call a tier higher. reviews_for() asks
+					// for it separately, and only when a profile is rendered.
+					'X-Goog-FieldMask' => 'places.id,places.displayName,places.photos,places.rating,places.userRatingCount,places.googleMapsUri,places.regularOpeningHours',
 				),
 				'body'    => (string) wp_json_encode(
 					array(
@@ -372,7 +443,7 @@ function fetch( int $post_id, string $place_id ): ?array {
 				// displayName here too: the warm() job refreshes forty records a
 				// day through this path, so every existing record picks up a
 				// name within ten days and becomes checkable.
-				'X-Goog-FieldMask' => 'displayName,photos,rating,userRatingCount,googleMapsUri,reviews,regularOpeningHours',
+				'X-Goog-FieldMask' => 'displayName,photos,rating,userRatingCount,googleMapsUri,regularOpeningHours',
 			),
 		)
 	);
@@ -532,10 +603,19 @@ function pack( array $place ): array {
 
 /**
  * A daily walk that refreshes the stalest Places records, forty at a time,
- * so hours (and everything else in the record) exist for every listing
- * without waiting for someone to visit each profile. Forty a day covers
- * the whole directory inside ten days and then keeps every record inside
- * the 29-day cache window forever after.
+ * so hours (and everything else in the record) exist without waiting for
+ * someone to visit each profile.
+ *
+ * It no longer walks the whole directory. Refreshing all 441 listings every
+ * 29 days bought Google data for hundreds of pages nobody opened that month,
+ * and every refresh also re-resolves up to three photo URLs. The warm now
+ * covers what the money is actually for: listings somebody looked at in the
+ * last 30 days, and listings a practitioner pays for -- where stale hours
+ * are our problem rather than a hypothetical visitor's.
+ *
+ * Nothing is lost on the rest. A cold listing's record simply expires, and
+ * the next real visit fetches it through card_photo() or photos_for() as it
+ * always did.
  */
 function bootstrap(): void {
 	add_action( 'oria_places_warm', __NAMESPACE__ . '\\warm' );
@@ -565,8 +645,13 @@ function warm( int $budget = 40 ): array {
 			'order'          => 'ASC',
 		)
 	);
+	$skipped = 0;
 	foreach ( $ids as $id ) {
 		if ( ! $id ) {
+			continue;
+		}
+		if ( ! worth_warming( (int) $id ) ) {
+			++$skipped;
 			continue;
 		}
 		$cache = get_post_meta( (int) $id, META_CACHE, true );
@@ -583,7 +668,29 @@ function warm( int $budget = 40 ): array {
 			++$fresh;
 		}
 	}
-	return array( 'fetched' => $fresh, 'fresh' => $had + $fresh );
+	return array( 'fetched' => $fresh, 'fresh' => $had + $fresh, 'skipped' => $skipped );
+}
+
+/**
+ * Whether the daily warm should spend an API call on this listing.
+ *
+ * Read in last month, or paid for. The window is deliberately generous --
+ * one view keeps a listing warm for the next 30 days, so a page that gets
+ * occasional traffic never falls out -- and the filter lets a site decide
+ * otherwise without touching this file.
+ */
+function worth_warming( int $post_id ): bool {
+	$warm = false;
+
+	if ( function_exists( '\Oria\Core\Ownership\is_paid' ) && \Oria\Core\Ownership\is_paid( $post_id ) ) {
+		$warm = true;
+	} elseif ( function_exists( '\Oria\Core\Analytics\total' ) ) {
+		$warm = \Oria\Core\Analytics\total( $post_id, 'view', 30 ) > 0;
+	} else {
+		$warm = true; // No analytics to judge by: behave as before.
+	}
+
+	return (bool) apply_filters( 'oria_places_worth_warming', $warm, $post_id );
 }
 
 
