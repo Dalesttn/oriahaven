@@ -370,3 +370,292 @@
 @media (prefers-reduced-motion: reduce) {
   .myintent, .myrec, .mycard { transition: none; }
 }
+
+/* ---- 5. the listing manager --------------------------------------------- */
+
+/*
+ * An owner's dashboard, not an editorial page. Same tokens, same green,
+ * same Manrope -- but laid out for somebody with a job to finish rather
+ * than somebody being introduced to the site.
+ *
+ * Completion is never carried by colour alone: every dot has a word beside
+ * it, or where the rail is tight, in an .sr-only span.
+ */
+
+.my-oria-app { --app-amber: #B47B18; --app-amber-soft: #FBF2DF; }
+
+/* -- overview header -- */
+.mylhead {
+  display: grid; gap: var(--s-4) var(--s-5);
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+}
+.mylhead__img {
+  width: 76px; height: 76px; border-radius: var(--app-r-md);
+  object-fit: cover; background: var(--app-sage);
+}
+.mylhead__img--none {
+  display: grid; place-items: center;
+  font-size: 1.9rem; font-weight: 700; color: var(--app-green);
+}
+.mylhead__text { min-width: 0; display: grid; gap: .3rem; }
+.mylhead__name { margin: .15rem 0 0; font-size: clamp(1.5rem, 3.2vw, 2rem); line-height: 1.15; letter-spacing: -0.02em; }
+.mylhead__where { margin: 0; font-size: var(--fs-sm); color: var(--app-muted); }
+.mylhead__note { margin: .2rem 0 0; font-size: var(--fs-sm); color: var(--app-faint); max-width: 48ch; }
+.mylhead__acts { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--s-3); }
+
+.mystatus {
+  justify-self: start; display: inline-flex; align-items: center; gap: .4rem;
+  padding: .2rem .6rem; border-radius: var(--r-pill);
+  font-size: var(--fs-xs); font-weight: 600; letter-spacing: .02em;
+}
+.mystatus::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.mystatus--live   { background: var(--app-sage); color: var(--app-green); }
+.mystatus--thin,
+.mystatus--review { background: var(--app-amber-soft); color: var(--app-amber); }
+.mystatus--paused { background: var(--app-line); color: var(--app-muted); }
+
+/* -- awaiting review -- */
+.mylwait {
+  margin-top: clamp(1.5rem, 3vw, 2rem); padding: var(--s-5);
+  border: 1px solid var(--app-amber); border-radius: var(--app-r-md);
+  background: var(--app-amber-soft);
+}
+.mylwait__h { margin: 0; font-size: 1rem; color: var(--app-amber); }
+.mylwait__p { margin: .35rem 0 0; font-size: var(--fs-sm); color: var(--app-ink); max-width: 60ch; }
+.mylwait__list { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: .5rem; }
+.mylwait__item {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .5rem var(--s-3);
+  padding: .5rem .75rem; background: var(--app-surface);
+  border-radius: var(--app-r-sm); font-size: var(--fs-sm);
+}
+.mylwait__label { font-weight: 600; }
+.mylwait__val { color: var(--app-muted); min-width: 0; overflow-wrap: anywhere; }
+.mylwait__item form { margin-left: auto; }
+.mylwait__undo {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  font: inherit; font-size: var(--fs-xs); color: var(--app-muted);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.mylwait__undo:hover { color: var(--app-ink); }
+
+/* -- strength and performance -- */
+.mylgrid {
+  display: grid; gap: var(--s-5); margin-top: clamp(1.5rem, 3vw, 2rem);
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+}
+.mylcard {
+  padding: var(--s-5); background: var(--app-surface);
+  border: 1px solid var(--app-line); border-radius: var(--app-r-md);
+}
+.mylcard__h { margin: 0 0 var(--s-4); font-size: var(--fs-sm); font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--app-faint); }
+
+.mylstrength__n { margin: 0; display: flex; align-items: baseline; gap: .4rem; }
+.mylstrength__n b { font-size: clamp(2rem, 5vw, 2.6rem); font-weight: 600; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.mylstrength__n span { font-size: var(--fs-sm); color: var(--app-muted); }
+.mylstrength__p { margin: var(--s-3) 0 0; font-size: var(--fs-sm); color: var(--app-muted); }
+
+.mylbar { margin-top: var(--s-3); height: 8px; border-radius: 4px; background: var(--app-line); overflow: hidden; }
+.mylbar__fill { display: block; height: 100%; border-radius: 4px; background: var(--app-gold); }
+
+.myltodo { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: .4rem; }
+.myltodo__a {
+  display: flex; align-items: center; gap: var(--s-3); min-height: 44px;
+  padding: .55rem .75rem; border-radius: var(--app-r-sm);
+  border: 1px solid var(--app-line); background: var(--app-bg);
+  color: var(--app-ink); text-decoration: none; font-size: var(--fs-sm);
+}
+.myltodo__a:hover { border-color: var(--app-green); }
+.myltodo__label { min-width: 0; }
+.myltodo__go { margin-left: auto; color: var(--app-faint); }
+
+.mylhow { margin-top: var(--s-4); font-size: var(--fs-xs); }
+.mylhow summary { cursor: pointer; color: var(--app-muted); }
+.mylhow p { margin: .5rem 0 0; color: var(--app-muted); line-height: 1.6; }
+
+.mylperf__none { margin: 0; font-size: var(--fs-sm); color: var(--app-muted); line-height: 1.6; max-width: 46ch; }
+.mylstats { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.mylstat { display: grid; gap: .1rem; }
+.mylstat__n { font-size: 1.5rem; font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.mylstat__l { font-size: var(--fs-xs); color: var(--app-muted); }
+.mylperf__note { margin: var(--s-4) 0 0; padding-top: var(--s-4); border-top: 1px solid var(--app-line); font-size: var(--fs-sm); color: var(--app-ink); line-height: 1.6; }
+
+/* -- section map -- */
+.mylsecs { margin-top: clamp(2rem, 4vw, 3rem); }
+.mylsecs__h { margin: 0 0 var(--s-4); font-size: 1.1rem; }
+.mylsecs__list { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.mylsec {
+  display: flex; align-items: center; gap: var(--s-4); min-height: 56px;
+  padding: .7rem var(--s-4); border: 1px solid var(--app-line);
+  border-radius: var(--app-r-md); background: var(--app-surface);
+  color: inherit; text-decoration: none;
+}
+.mylsec:hover { border-color: var(--app-green); }
+.mylsec__dot { flex: none; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--app-line); }
+.mylsec.is-done .mylsec__dot   { background: var(--app-green); border-color: var(--app-green); }
+.mylsec.is-part .mylsec__dot   { background: var(--app-gold); border-color: var(--app-gold); }
+.mylsec.is-empty .mylsec__dot  { background: transparent; border-color: var(--app-amber); }
+.mylsec.is-locked .mylsec__dot { background: var(--app-line); border-color: var(--app-line); }
+.mylsec__text { min-width: 0; display: grid; gap: .1rem; }
+.mylsec__name { font-size: var(--fs-sm); }
+.mylsec__blurb { font-size: var(--fs-xs); color: var(--app-muted); }
+.mylsec__state { margin-left: auto; flex: none; font-size: var(--fs-xs); color: var(--app-faint); }
+.mylsecs__more { margin: var(--s-4) 0 0; font-size: var(--fs-xs); color: var(--app-muted); }
+.mylplan { margin: var(--s-5) 0 0; font-size: var(--fs-xs); color: var(--app-faint); }
+
+/* -- the editor -- */
+.myedit__top {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-4);
+  padding-bottom: var(--s-4); border-bottom: 1px solid var(--app-line);
+}
+.myedit__back, .myedit__live { font-size: var(--fs-sm); color: var(--app-muted); text-decoration: none; }
+.myedit__back:hover, .myedit__live:hover { color: var(--app-green); }
+.myedit__live { margin-left: auto; }
+.myedit__name { margin: 0; font-size: var(--fs-sm); font-weight: 700; display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; }
+.myedit__pct { font-weight: 400; color: var(--app-faint); font-variant-numeric: tabular-nums; }
+
+.myflash {
+  margin: var(--s-4) 0 0; padding: .7rem var(--s-4);
+  border: 1px solid var(--app-line); border-radius: var(--app-r-sm);
+  background: var(--app-surface); font-size: var(--fs-sm);
+}
+.myflash--ok   { border-color: var(--app-green); background: var(--app-sage); color: var(--app-green); }
+.myflash--wait { border-color: var(--app-amber); background: var(--app-amber-soft); color: var(--app-amber); }
+
+.myedit__body {
+  display: grid; gap: clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: 15rem minmax(0, 1fr);
+  margin-top: clamp(1.5rem, 3vw, 2rem);
+  align-items: start;
+}
+.myrail2 { position: sticky; top: var(--s-5); }
+.myrail2__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.myrail2__item {
+  /*
+   * Positioned so the .sr-only state word inside it has a containing
+   * block. .sr-only is position:absolute, and an overflow:auto ancestor
+   * only clips a positioned descendant if it is positioned too -- so on a
+   * phone, where the rail scrolls sideways, each hidden label escaped to
+   * roughly 1,000px out and gave the whole document a horizontal scroll.
+   */
+  position: relative;
+  display: flex; align-items: center; gap: var(--s-3); min-height: 44px;
+  padding: .5rem .7rem; border-radius: var(--app-r-sm);
+  color: var(--app-muted); text-decoration: none; font-size: var(--fs-sm);
+}
+.myrail2__item:hover { background: var(--app-surface); color: var(--app-ink); }
+.myrail2__item.is-on { background: var(--app-sage); color: var(--app-green); font-weight: 600; }
+.myrail2__dot { flex: none; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--app-line); }
+.myrail2__item.is-done .myrail2__dot   { background: var(--app-green); border-color: var(--app-green); }
+.myrail2__item.is-part .myrail2__dot   { background: var(--app-gold); border-color: var(--app-gold); }
+.myrail2__item.is-empty .myrail2__dot  { border-color: var(--app-amber); }
+.myrail2__item.is-locked .myrail2__dot { background: var(--app-line); border-color: var(--app-line); }
+.myrail2__label { min-width: 0; }
+
+.myedit__form { min-width: 0; }
+.myedit__head { margin-bottom: var(--s-5); }
+.myedit__h { margin: 0; font-size: clamp(1.4rem, 3vw, 1.8rem); letter-spacing: -0.02em; }
+.myedit__blurb { margin: .35rem 0 0; font-size: var(--fs-sm); color: var(--app-muted); max-width: 54ch; }
+.myedit__fields { display: grid; gap: clamp(1.25rem, 2.5vw, 1.75rem); }
+
+/* -- one field -- */
+.myfield { display: grid; gap: .4rem; min-width: 0; }
+.myfield__set { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: .4rem; }
+.myfield__label { font-size: var(--fs-sm); font-weight: 600; color: var(--app-ink); padding: 0; }
+.myfield__help { margin: 0; font-size: var(--fs-xs); color: var(--app-muted); line-height: 1.55; max-width: 62ch; }
+.myfield__hint, .myfield__pub { margin: 0; font-size: var(--fs-xs); color: var(--app-faint); }
+.myfield .input { font-size: 16px; }
+.myfield__area { line-height: 1.6; resize: vertical; }
+.myfield__money { display: flex; align-items: center; gap: .5rem; }
+.myfield__money .input { max-width: 9rem; }
+.myfield__cur { color: var(--app-faint); }
+.myfield__unit { font-size: var(--fs-sm); color: var(--app-muted); }
+.myfield__select, .myfield__date { max-width: 22rem; }
+
+.myfield.is-locked .myfield__label { color: var(--app-faint); }
+.myfield.is-locked .input { background: var(--app-bg); color: var(--app-faint); }
+.myfield__lock {
+  margin: 0; padding: .5rem .7rem; border-radius: var(--app-r-sm);
+  background: var(--app-amber-soft); font-size: var(--fs-xs); color: var(--app-amber); line-height: 1.55;
+}
+.myfield__lock a { color: inherit; font-weight: 600; }
+
+.myopts { display: grid; gap: .35rem; }
+.myopts--grid { grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+.myopt {
+  display: flex; align-items: flex-start; gap: .6rem; min-height: 44px;
+  padding: .5rem .7rem; border: 1px solid var(--app-line); border-radius: var(--app-r-sm);
+  background: var(--app-surface); font-size: var(--fs-sm); cursor: pointer;
+}
+.myopt:hover { border-color: var(--app-green); }
+.myopt input { margin-top: .2rem; flex: none; width: 18px; height: 18px; accent-color: var(--app-green); }
+.myopt:has(input:checked) { border-color: var(--app-green); background: var(--app-sage); }
+.myopt:has(input:disabled) { cursor: default; opacity: .6; }
+
+/* -- repeaters -- */
+.myrep { display: grid; gap: .6rem; }
+.myrep__rows { display: grid; gap: .6rem; }
+.myrow {
+  display: flex; align-items: flex-end; gap: var(--s-3);
+  padding: var(--s-4); border: 1px solid var(--app-line);
+  border-radius: var(--app-r-sm); background: var(--app-surface);
+}
+.myrow__cols { flex: 1 1 auto; min-width: 0; display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
+.myrow__col { display: grid; gap: .25rem; min-width: 0; }
+.myrow__col--textarea { grid-column: 1 / -1; }
+.myrow__label { font-size: var(--fs-xs); color: var(--app-muted); }
+.myrow__acts { flex: none; display: flex; gap: .25rem; }
+.myrow__btn {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border: 1px solid var(--app-line); border-radius: 50%;
+  background: var(--app-surface); color: var(--app-muted); cursor: pointer; font-size: .9rem;
+}
+.myrow__btn:hover { border-color: var(--app-green); color: var(--app-green); }
+.myrow__btn--x:hover { border-color: #A6452F; color: #A6452F; }
+.myrow__btn:disabled { opacity: .4; cursor: default; }
+.myrep__add {
+  justify-self: start; display: inline-flex; align-items: center; gap: .4rem; min-height: 44px;
+  padding: .55rem 1rem; border: 1px dashed var(--app-line); border-radius: var(--r-pill);
+  background: none; color: var(--app-green); font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer;
+}
+.myrep__add:hover { border-color: var(--app-green); border-style: solid; }
+
+/* -- the save bar -- */
+.mysave {
+  position: sticky; bottom: 0; z-index: 3;
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3);
+  margin-top: clamp(1.5rem, 3vw, 2rem);
+  padding: var(--s-4) 0 calc(var(--s-4) + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to top, var(--app-bg) 70%, transparent);
+}
+.mysave__state { margin: 0; font-size: var(--fs-xs); color: var(--app-muted); }
+.mysave__acts { margin-left: auto; display: flex; flex-wrap: wrap; gap: var(--s-3); }
+.mysave .btn { min-height: 44px; }
+
+@media (max-width: 60rem) {
+  /*
+   * minmax(0, 1fr) rather than 1fr on purpose. A bare 1fr is
+   * minmax(auto, 1fr), and the auto floor is the item's min-content --
+   * which for the scrolling rail below is every section label laid end to
+   * end, about 1,200px. The column refused to shrink under it and the
+   * whole page scrolled sideways on a phone.
+   */
+  .myedit__body { grid-template-columns: minmax(0, 1fr); }
+  .myrail2 { position: static; min-width: 0; }
+  .myrail2__list {
+    grid-auto-flow: column; grid-auto-columns: max-content; gap: .4rem;
+    overflow-x: auto; scrollbar-width: none; padding-bottom: 2px;
+  }
+  .myrail2__list::-webkit-scrollbar { display: none; }
+  .myrail2__item { border: 1px solid var(--app-line); background: var(--app-surface); white-space: nowrap; }
+}
+
+@media (max-width: 46rem) {
+  .mylhead { grid-template-columns: 1fr; }
+  .mylhead__img { width: 60px; height: 60px; }
+  .mylstats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .myrow { flex-direction: column; align-items: stretch; }
+  .myrow__acts { justify-content: flex-end; }
+  .mysave__acts { margin-left: 0; width: 100%; }
+  .mysave__acts .btn { flex: 1 1 auto; justify-content: center; }
+}

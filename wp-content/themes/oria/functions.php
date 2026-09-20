@@ -130,6 +130,22 @@ add_action(
 				array( 'oria-pages' ),
 				(string) filemtime( get_theme_file_path( 'assets/css/my-oria.css' ) )
 			);
+
+			/*
+			 * The listing editor's repeater rows and unsaved-change state.
+			 * The form works without it -- Save is a submit button and the
+			 * rows already on file render from the server -- so it goes in
+			 * the footer, and only on the two routes that draw one.
+			 */
+			if ( in_array( \Oria\Core\MyOria\view(), array( 'listing', 'listing-edit' ), true ) ) {
+				wp_enqueue_script(
+					'oria-my-listing',
+					"{$uri}/assets/js/my-listing.js",
+					array(),
+					(string) filemtime( get_theme_file_path( 'assets/js/my-listing.js' ) ),
+					array( 'in_footer' => true )
+				);
+			}
 		}
 
 		/*

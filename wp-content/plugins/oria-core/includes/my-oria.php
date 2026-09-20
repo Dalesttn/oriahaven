@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 const PATH      = 'my-oria';
 const QUERY_VAR = 'oria_my';
 const VIEW_VAR  = 'oria_my_view';
-const REWRITE_V = '1';
+const REWRITE_V = '2';
 
 /** view slug => needs sign-in */
 const VIEWS = array(
@@ -46,6 +46,10 @@ const VIEWS = array(
 	'saved'    => true,
 	'passport' => true,
 	'profile'  => true,
+	// The owner's listing manager. Private like the rest, and gated again
+	// inside the view on whether this account actually manages a listing.
+	'listing'      => true,
+	'listing-edit' => true,
 	'login'    => false,
 	'register' => false,
 	'reset'    => false,
@@ -153,6 +157,18 @@ function gate(): void {
 	$private = VIEWS[ $v ];
 	if ( $private && ! is_user_logged_in() ) {
 		wp_safe_redirect( add_query_arg( 'redirect_to', rawurlencode( url( $v ) ), url( 'login' ) ), 302 );
+		exit;
+	}
+	/*
+	 * The listing manager belongs to whoever manages a listing, and the
+	 * check is here rather than only in the template: a member who has
+	 * never claimed anything should not be able to reach the shell of an
+	 * editor by typing the URL.
+	 */
+	if ( in_array( $v, array( 'listing', 'listing-edit' ), true )
+		&& is_user_logged_in()
+		&& ! \Oria\Core\ListingEditor\listing_for( get_current_user_id() ) ) {
+		wp_safe_redirect( url(), 302 );
 		exit;
 	}
 	if ( ! $private && 'reset' !== $v && is_user_logged_in() ) {
@@ -552,12 +568,30 @@ function summary( int $user_id ): array {
 
 /** The account tabs, in order. @return list<array{slug:string, label:string, url:string}> */
 function tabs(): array {
-	return array(
+	$tabs = array(
 		array( 'slug' => '', 'label' => __( 'Dashboard', 'oria' ), 'url' => url() ),
 		array( 'slug' => 'saved', 'label' => __( 'Saved', 'oria' ), 'url' => url( 'saved' ) ),
 		array( 'slug' => 'passport', 'label' => __( 'Passport', 'oria' ), 'url' => url( 'passport' ) ),
 		array( 'slug' => 'profile', 'label' => __( 'Profile', 'oria' ), 'url' => url( 'profile' ) ),
 	);
+
+	/*
+	 * Owners get one more destination, and only owners: a navigation item
+	 * that leads somewhere empty is worse than one that is not there.
+	 * Placed second because somebody who runs a practice came here for the
+	 * practice, not for their saved places.
+	 */
+	if ( function_exists( '\Oria\Core\ListingEditor\listing_for' )
+		&& \Oria\Core\ListingEditor\listing_for( get_current_user_id() ) ) {
+		array_splice(
+			$tabs,
+			1,
+			0,
+			array( array( 'slug' => 'listing', 'label' => __( 'My listing', 'oria' ), 'url' => url( 'listing' ) ) )
+		);
+	}
+
+	return $tabs;
 }
 
 function logout_url(): string {

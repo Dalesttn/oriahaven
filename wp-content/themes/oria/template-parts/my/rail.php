@@ -25,6 +25,7 @@ $oria_icon = static function ( string $slug ): string {
 	$paths = array(
 		''         => '<path d="M3 9.5 10 4l7 5.5V16a1 1 0 0 1-1 1h-3.5v-4.5h-5V17H4a1 1 0 0 1-1-1Z"/>',
 		'saved'    => '<path d="M5 3.5h10a.5.5 0 0 1 .5.5v12.4a.3.3 0 0 1-.47.25L10 13.6l-5.03 3.05A.3.3 0 0 1 4.5 16.4V4a.5.5 0 0 1 .5-.5Z"/>',
+			'listing'  => '<path d="M4 7.5h12M4 7.5V16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7.5M4 7.5 5.6 4h8.8l1.6 3.5M8 11h4"/>',
 		'passport' => '<circle cx="10" cy="10" r="6.5"/><path d="M10 3.5v13M3.5 10h13"/>',
 		'profile'  => '<circle cx="10" cy="7" r="3.2"/><path d="M4 16.5c.8-3 3.1-4.5 6-4.5s5.2 1.5 6 4.5"/>',
 	);
