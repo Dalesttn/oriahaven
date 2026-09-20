@@ -66,6 +66,7 @@ while ( have_posts() ) :
 				// Trend to Try after it: the same rules, silent until a
 				// trend is published.
 				get_template_part( 'template-parts/sections/trend-to-try' );
+				get_template_part( 'template-parts/sections/my-oria' );
 			}
 
 		}

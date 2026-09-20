@@ -60,6 +60,12 @@ function review_log(): string {
 	return $wpdb->prefix . 'oria_review_log';
 }
 
+/** What a member did with a listing: saved it, tried it. See Activity. */
+function user_activity(): string {
+	global $wpdb;
+	return $wpdb->prefix . 'oria_user_activity';
+}
+
 /* --------------------------------------------------------------- install */
 
 /**
@@ -122,6 +128,7 @@ function keyed_tables(): array {
 		members()       => 'member_id',
 		member_tokens() => 'token_id',
 		review_log()    => 'log_id',
+		user_activity() => 'id',
 	);
 }
 
@@ -147,6 +154,7 @@ function install(): void {
 	$members = members();
 	$tokens  = member_tokens();
 	$log     = review_log();
+	$activity = user_activity();
 
 	/*
 	 * dbDelta is fussy in ways that are not obvious: two spaces after
@@ -210,6 +218,28 @@ function install(): void {
 		PRIMARY KEY  (log_id),
 		KEY comment_id (comment_id),
 		KEY created_at (created_at)
+	) {$charset};";
+
+	/*
+	 * One row per (member, listing, verb). The unique key is what makes
+	 * "save" idempotent -- a double-click or a retried request lands on the
+	 * same row -- and the two secondary keys serve the two questions asked:
+	 * everything this member did, and everyone who did this to a listing.
+	 */
+	$sql[] = "CREATE TABLE {$activity} (
+		id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+		user_id bigint(20) unsigned NOT NULL,
+		object_id bigint(20) unsigned NOT NULL,
+		object_type varchar(50) NOT NULL,
+		activity_type varchar(50) NOT NULL,
+		metadata longtext NULL DEFAULT NULL,
+		created_at datetime NOT NULL,
+		updated_at datetime NULL DEFAULT NULL,
+		PRIMARY KEY  (id),
+		UNIQUE KEY user_object_activity (user_id,object_id,object_type,activity_type),
+		KEY user_id (user_id),
+		KEY object_id (object_id),
+		KEY activity_type (activity_type)
 	) {$charset};";
 
 	foreach ( $sql as $statement ) {

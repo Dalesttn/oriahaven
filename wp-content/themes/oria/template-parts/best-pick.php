@@ -31,10 +31,17 @@ $oria_from = BestOf\price_from( $oria_id );
 $oria_rate = \Oria\Theme\effective_rating( $oria_id );
 ?>
 <li class="bopick reveal" id="pick-<?php echo esc_attr( (string) $oria_rank ); ?>">
-	<a class="bopick__media" href="<?php echo esc_url( $oria_url ); ?>" tabindex="-1" aria-hidden="true">
-		<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_id, 'oria-card' ) ); ?>" alt="" loading="lazy"
-			onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_id ) ); ?>'">
-	</a>
+	<div class="bopick__media">
+		<a href="<?php echo esc_url( $oria_url ); ?>" tabindex="-1" aria-hidden="true">
+			<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_id, 'oria-card' ) ); ?>" alt="" loading="lazy"
+				onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_id ) ); ?>'">
+		</a>
+		<div class="listing__quick">
+			<button class="qact" type="button" data-card-save="<?php echo esc_attr( (string) get_post_field( 'post_name', $oria_id ) ); ?>" aria-pressed="false" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: practice name */ __( 'Save %s', 'oria' ), \Oria\Theme\ptitle( get_post( $oria_id ) ) ) ); ?>" title="<?php esc_attr_e( 'Save', 'oria' ); ?>">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 8.6a4.9 4.9 0 0 0-8.8-3A4.9 4.9 0 0 0 3.2 8.6c0 4.9 8.8 10.2 8.8 10.2s8.8-5.3 8.8-10.2Z"/></svg>
+			</button>
+		</div>
+	</div>
 	<div class="bopick__body">
 		<?php $oria_seal = BestOf\seal_url( $oria_e['award'] ); ?>
 		<?php if ( $oria_seal ) : ?>
