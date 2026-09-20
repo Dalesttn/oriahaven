@@ -50,7 +50,7 @@ foreach ( $oria_ids as $oria_id ) {
 				echo ' · ' . esc_html(
 					$oria_checked >= (int) strtotime( 'today', (int) current_time( 'timestamp' ) )
 						? __( 'checked today', 'oria' )
-						: sprintf( /* translators: %s: date */ __( 'last checked %s', 'oria' ), wp_date( 'j F', $oria_checked ) )
+						: sprintf( /* translators: %s: date */ __( 'last checked %s', 'oria' ), gmdate( 'j F', $oria_checked ) )
 				);
 			}
 			?>
@@ -72,7 +72,7 @@ foreach ( $oria_ids as $oria_id ) {
 			?>
 			<a class="evcard" href="<?php echo esc_url( (string) get_permalink( $oria_eid ) ); ?>">
 				<?php if ( $oria_start ) : ?>
-					<span class="micro"><?php echo esc_html( wp_date( 'D j M', $oria_start ) . ( '00:00' !== wp_date( 'H:i', $oria_start ) ? ' · ' . wp_date( 'g.ia', $oria_start ) : '' ) ); ?></span>
+					<span class="micro"><?php echo esc_html( gmdate( 'D j M', $oria_start ) . ( '00:00' !== gmdate( 'H:i', $oria_start ) ? ' · ' . gmdate( 'g.ia', $oria_start ) : '' ) ); ?></span>
 				<?php endif; ?>
 				<b class="evcard__name"><?php echo esc_html( \Oria\Theme\ptitle( $oria_eid ) ); ?></b>
 				<span class="evcard__meta"><?php echo esc_html( implode( ' · ', array_filter( array( $oria_type, $oria_venue, $oria_price ) ) ) ); ?></span>

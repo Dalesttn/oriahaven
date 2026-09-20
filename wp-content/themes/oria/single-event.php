@@ -154,7 +154,37 @@ while ( have_posts() ) :
 				</div>
 
 				<?php if ( $oria_booking ) : ?>
-					<a class="btn btn--dark btn--block" href="<?php echo esc_url( $oria_booking ); ?>" rel="nofollow noopener" target="_blank"><?php esc_html_e( 'Book / details', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
+					<a class="btn btn--dark btn--block" href="<?php echo esc_url( $oria_booking ); ?>" rel="nofollow noopener" target="_blank"
+						data-oria-track="book" data-oria-id="<?php echo (int) get_the_ID(); ?>"><?php esc_html_e( 'Book / details', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
+				<?php endif; ?>
+
+				<?php
+				/*
+				 * Keep it, or put it in the calendar you already use. The
+				 * .ics is a plain file rather than a row of Google/Apple/
+				 * Outlook buttons: it works on every device, hands nothing
+				 * to a third party, and suits the person whose calendar is
+				 * none of those three. Both controls are hidden once the
+				 * event is over -- there is nothing to plan for.
+				 */
+				if ( ! $oria_over ) :
+					?>
+					<div class="evactions">
+						<?php if ( $oria_ts && function_exists( '\Oria\Core\EventIcs\url' ) ) : ?>
+							<a class="btn btn--sm" href="<?php echo esc_url( \Oria\Core\EventIcs\url( (int) get_the_ID() ) ); ?>"
+								data-oria-track="cal" data-oria-id="<?php echo (int) get_the_ID(); ?>">
+								<?php esc_html_e( 'Add to calendar', 'oria' ); ?>
+							</a>
+						<?php endif; ?>
+						<button class="btn btn--sm savebtn" type="button" aria-pressed="false"
+							data-save-event="<?php echo (int) get_the_ID(); ?>"
+							data-title="<?php echo esc_attr( wp_specialchars_decode( get_the_title(), ENT_QUOTES ) ); ?>"
+							data-url="<?php echo esc_url( (string) get_permalink() ); ?>"
+							data-when="<?php echo esc_attr( $oria_ts ? gmdate( 'D j M · g.ia', $oria_ts ) : '' ); ?>"
+							data-where="<?php echo esc_attr( $oria_venue ); ?>">
+							<span class="savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
+						</button>
+					</div>
 				<?php endif; ?>
 
 				<?php
@@ -251,7 +281,7 @@ while ( have_posts() ) :
 							</p>
 						<?php endif; ?>
 						<?php if ( $oria_checked ) : ?>
-							<p><?php echo esc_html( sprintf( /* translators: %s: date */ __( 'Last checked %s', 'oria' ), wp_date( 'j F Y', $oria_checked ) ) ); ?></p>
+							<p><?php echo esc_html( sprintf( /* translators: %s: date */ __( 'Last checked %s', 'oria' ), gmdate( 'j F Y', $oria_checked ) ) ); ?></p>
 						<?php endif; ?>
 						<p>
 							<a href="<?php echo esc_url( home_url( '/about/#oform-contact' ) ); ?>"><?php esc_html_e( 'Report incorrect information', 'oria' ); ?></a>
@@ -313,6 +343,16 @@ while ( have_posts() ) :
 	</section>
 		<?php
 	endif;
+
+	/*
+	 * The page's own id, for the view counter and the analytics layer.
+	 * Printed rather than inferred, so a page served from the cache still
+	 * reports itself -- the same reason listing views moved to a beacon.
+	 */
+	printf(
+		'<script>window.ORIA_EVENT=%s;</script>',
+		wp_json_encode( array( 'id' => get_the_ID() ) )
+	);
 endwhile;
 
 get_footer();

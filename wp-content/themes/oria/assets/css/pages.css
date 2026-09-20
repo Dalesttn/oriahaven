@@ -4196,6 +4196,15 @@ html.has-sheet { overflow: hidden; }
 .evstatus--over a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .evstatus span { color: inherit; opacity: .85; }
 
+/* Calendar and save, side by side under the booking button. They wrap
+   rather than shrink: two half-width buttons reading "Add to ca…" is the
+   usual result of squeezing them. */
+.evactions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
+.evactions .btn { flex: 1 1 auto; justify-content: center; }
+.evactions .savebtn[aria-pressed="true"] {
+  background: var(--deep); border-color: var(--deep); color: var(--white);
+}
+
 .evaside__link { margin: .6rem 0 0; font-size: var(--fs-xs); }
 .evaside__link a { text-decoration: underline; text-underline-offset: 3px; }
 

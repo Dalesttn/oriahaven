@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const META_STATS = '_oria_stats';
 const KEEP_DAYS  = 90;
-const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'reel', 'next' );
+const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'reel', 'next', 'cal', 'save' );
 
 /**
  * Which counters each kind of page may carry. Trends to Try reuse the same
@@ -31,6 +31,9 @@ const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'r
 const TYPES_FOR = array(
 	PostTypes\LISTING => array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq' ),
 	PostTypes\TREND   => array( 'view', 'reel', 'next' ),
+	// An event answers a different question: did anyone look, did they go
+	// on to the organiser, and did they intend to turn up (calendar, save).
+	'event'           => array( 'view', 'book', 'cal', 'save' ),
 );
 
 function bootstrap(): void {

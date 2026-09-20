@@ -36,7 +36,7 @@ get_header();
 	 */
 	?>
 	<div class="dir__empty saved__empty" data-saved-empty>
-		<h2 class="h3"><?php esc_html_e( 'Nothing saved yet', 'oria' ); ?></h2>
+		<h2 class="h3"><?php esc_html_e( 'No practices saved yet', 'oria' ); ?></h2>
 		<p class="muted" style="margin-top:.5rem">
 			<?php esc_html_e( 'Press Save on any practice and it will appear here, so you can come back to a shortlist rather than starting again.', 'oria' ); ?>
 		</p>
@@ -49,6 +49,24 @@ get_header();
 	</div>
 
 	<div class="saved__grid" data-saved-list></div>
+</section>
+
+<?php
+/*
+ * Saved events, filled by app.js from the device's own snapshot. Hidden
+ * until there is something in it, so somebody who only saves practices
+ * never sees an empty heading for a feature they have not used.
+ */
+?>
+<section class="wrap section section--top-flush" data-saved-events hidden>
+	<div class="evmod__head">
+		<h2 class="h3"><?php esc_html_e( 'Events you saved', 'oria' ); ?></h2>
+		<a class="evmod__all" href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ) ); ?>"><?php esc_html_e( "See what's on", 'oria' ); ?></a>
+	</div>
+	<div class="evgrid" data-saved-events-list></div>
+	<p class="muted" style="margin-top:var(--s-4);font-size:var(--fs-xs)">
+		<?php esc_html_e( 'Saved on this device only. Check the event page before you go — times and prices are the organiser\'s to change.', 'oria' ); ?>
+	</p>
 </section>
 
 <?php

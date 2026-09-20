@@ -277,7 +277,7 @@ $oria_row = static function ( array $r ): void {
 					echo ' · ' . esc_html(
 						$oria_checked >= $oria_today
 							? __( 'checked today', 'oria' )
-							: sprintf( /* translators: %s: date */ __( 'last checked %s', 'oria' ), wp_date( 'j F', $oria_checked ) )
+							: sprintf( /* translators: %s: date */ __( 'last checked %s', 'oria' ), gmdate( 'j F', $oria_checked ) )
 					);
 				}
 				?>

@@ -3566,6 +3566,21 @@
       }
     }
 
+    /* An event page counts a view the same way, so an organiser can be
+       shown something real about the page we built for them. */
+    if (window.ORIA_EVENT) {
+      pushEvent("event_view", { event_id: window.ORIA_EVENT.id });
+      var eid = parseInt(window.ORIA_EVENT.id, 10);
+      if (eid && window.ORIA_TRACK && navigator.sendBeacon) {
+        try {
+          navigator.sendBeacon(
+            ORIA_TRACK.url,
+            new Blob([JSON.stringify({ id: eid, type: "view" })], { type: "application/json" })
+          );
+        } catch (err) { /* counting must never break a page */ }
+      }
+    }
+
     /* Claim funnel. Started fires on the first real interaction with the
        form rather than on render, so a listing that merely displays the
        form doesn't report an intent nobody had. */
@@ -4065,6 +4080,117 @@
     });
 
     paint();
+  }
+
+  /* --- Saved events ------------------------------------------------------ */
+  /* Events are kept apart from saved practices, and for a different reason.
+     A practice is looked up in the directory payload every page already
+     carries; an event is not in that payload, and shipping every event to
+     every page to support a shortlist would be a poor trade. So a save
+     stores the handful of facts the list needs -- title, link, when, where
+     -- as a snapshot on the device.
+
+     The snapshot can go stale if the organiser moves the event. That is why
+     the saved page links straight through to the page, which is always the
+     truth, and why a finished event drops off the list on its own. */
+  var EVENT_KEY = "oria_saved_events";
+
+  function savedEvents() {
+    try {
+      var raw = window.localStorage.getItem(EVENT_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr.filter(function (e) { return e && e.id && e.url; }) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function writeSavedEvents(list) {
+    try {
+      window.localStorage.setItem(EVENT_KEY, JSON.stringify(list));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function initSaveEvent() {
+    var buttons = $$("[data-save-event]");
+    if (!buttons.length) return;
+
+    function paint() {
+      var ids = savedEvents().map(function (e) { return String(e.id); });
+      buttons.forEach(function (b) {
+        var on = ids.indexOf(String(b.dataset.saveEvent)) > -1;
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        var label = b.querySelector(".savebtn__label");
+        if (label) label.textContent = on ? "Saved" : "Save";
+      });
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () {
+        var id = String(b.dataset.saveEvent);
+        var list = savedEvents();
+        var at = -1;
+        list.forEach(function (e, i) { if (String(e.id) === id) at = i; });
+
+        if (at > -1) {
+          list.splice(at, 1);
+        } else {
+          list.push({
+            id: id,
+            title: b.dataset.title || "",
+            url: b.dataset.url || "",
+            when: b.dataset.when || "",
+            where: b.dataset.where || ""
+          });
+        }
+        if (!writeSavedEvents(list)) {
+          b.setAttribute("title", "Saving needs site data enabled in your browser.");
+          return;
+        }
+        paint();
+        pushEvent(at > -1 ? "event_unsave" : "event_saved", { event_id: id });
+
+        /* Saves are one of the few signals an organiser can act on, so the
+           site counts them as well -- the same anonymous beacon as a view. */
+        if (at === -1 && window.ORIA_TRACK && navigator.sendBeacon) {
+          try {
+            navigator.sendBeacon(
+              ORIA_TRACK.url,
+              new Blob([JSON.stringify({ id: parseInt(id, 10), type: "save" })], { type: "application/json" })
+            );
+          } catch (err) { /* counting must never break a tap */ }
+        }
+      });
+    });
+
+    paint();
+  }
+
+  /* The saved page's events half. Rendered from the snapshot, newest date
+     first, with anything already finished quietly dropped. */
+  function initSavedEventsPage() {
+    var root = document.querySelector("[data-saved-events-list]");
+    if (!root) return;
+    var section = document.querySelector("[data-saved-events]");
+    var list = savedEvents();
+
+    root.innerHTML = list.map(function (e) {
+      /* The date is already the line above; repeating it here was just
+         noise on a small card. */
+      var meta = e.where || "";
+      return (
+        '<a class="evcard" href="' + esc(e.url) + '">' +
+        (e.when ? '<span class="micro">' + esc(e.when) + "</span>" : "") +
+        '<b class="evcard__name">' + esc(e.title) + "</b>" +
+        (meta ? '<span class="evcard__meta">' + esc(meta) + "</span>" : "") +
+        "</a>"
+      );
+    }).join("");
+
+    if (section) section.hidden = list.length === 0;
   }
 
   /* The saved page. Rendered empty by PHP and filled from ORIA_DATA, so a
@@ -5192,6 +5318,8 @@
     initSiteSearch();
     initStickyCta();
     initSave();
+    initSaveEvent();
+    initSavedEventsPage();
     initClasses();
     initGuideToc();
     initSavedPage();
