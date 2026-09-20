@@ -47,6 +47,10 @@ $oria_img     = esc_url( get_template_directory_uri() . '/assets/img' );
 	 */
 	?>
 	<div class="myauth">
+		<a class="myauth__brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+			<?php echo \Oria\Theme\mark( 'small', 30 ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed SVG. ?>
+			<span class="myauth__word"><b>Oria</b><i>&thinsp;Haven</i></span>
+		</a>
 		<main class="myauth__main" id="main">
 <?php else : ?>
 	<div class="myapp">

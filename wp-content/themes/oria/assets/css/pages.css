@@ -7565,17 +7565,11 @@ article.is-spotlit {
 .mydata .micro { display: block; margin-bottom: var(--s-2); }
 .mydata__link { display: inline-block; margin-top: var(--s-3); font-size: var(--fs-sm); color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
-/* Sign-in pages */
-.myauth { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
-.myauth__text .h1 { margin-top: var(--s-3); max-width: 14ch; }
-.myauth__text .lede { margin-top: var(--s-4); max-width: 40ch; }
-.myauth__list { list-style: none; margin: var(--s-5) 0 0; padding: 0; display: grid; gap: .6rem; color: var(--text-soft); }
-.myauth__list span { color: var(--brand-gold); margin-right: .35rem; }
-.myform--auth { margin-top: 0; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: var(--r-xl); background: var(--surface); gap: var(--s-4); }
-.myauth__or { display: flex; align-items: center; gap: var(--s-3); color: var(--text-faint); font-size: var(--fs-xs); }
-.myauth__or::before, .myauth__or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-.myauth__links { font-size: var(--fs-sm); color: var(--text-soft); display: flex; gap: .5rem; flex-wrap: wrap; }
-.myauth__links a { color: var(--ink); }
+/*
+ * Sign-in pages live entirely in my-oria.css now -- they render inside
+ * the app's own shell (header-my.php), not the public one, so the old
+ * two-column layout that used to sit here had nothing left to lay out.
+ */
 
 /* Passport page */
 .passhead__eyebrow { display: block; font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--moss); }
@@ -7656,7 +7650,6 @@ article.is-spotlit {
   .mygrid, .pbadges { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
-  .myauth { grid-template-columns: 1fr; }
   .mystats, .passprog { grid-template-columns: 1fr; }
   .passprog__dots { grid-column: auto; }
 }
