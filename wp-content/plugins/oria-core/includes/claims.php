@@ -211,9 +211,24 @@ function apply_status_filter( \WP_Query $query ): void {
 	$query->set( 'meta_query', $meta ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 }
 
+/**
+ * The tier controls, on the listings table.
+ *
+ * Moving a listing DOWN was the missing half: an administrator could
+ * promote to Claimed or Featured and had no way back short of opening the
+ * listing and finding the Status tab. A plan that can only go one way is
+ * awkward when somebody refunds, tests, or is put on the wrong tier by
+ * mistake.
+ *
+ * Dropping to the free plan clears claim_status and nothing else --
+ * claimed_by stays, so the listing keeps its owner and they keep their
+ * dashboard, with the free plan's fields. Nothing they have written is
+ * touched; the profile simply publishes less of it.
+ */
 function bulk_actions( array $actions ): array {
-	$actions['oria_mark_claimed']  = __( 'Mark claimed', 'oria' );
-	$actions['oria_mark_featured'] = __( 'Mark featured', 'oria' );
+	$actions['oria_mark_claimed']  = __( 'Move to Claimed plan', 'oria' );
+	$actions['oria_mark_featured'] = __( 'Move to Featured plan', 'oria' );
+	$actions['oria_mark_free']     = __( 'Move to Free plan', 'oria' );
 	$actions['oria_mark_verified'] = __( 'Mark verified today', 'oria' );
 	return $actions;
 }
@@ -222,11 +237,31 @@ function handle_bulk( string $redirect, string $action, array $post_ids ): strin
 	$map = array(
 		'oria_mark_claimed'  => 'claimed',
 		'oria_mark_featured' => 'featured',
+		'oria_mark_free'     => 'unclaimed',
 	);
 
 	if ( isset( $map[ $action ] ) ) {
 		foreach ( $post_ids as $id ) {
+			$was = (string) get_post_meta( $id, 'claim_status', true );
+			if ( $was === $map[ $action ] ) {
+				continue;
+			}
 			update_post_meta( $id, 'claim_status', $map[ $action ] );
+
+			// Worth a line in the listing's own history: it changes what
+			// the owner can edit and what the profile publishes.
+			if ( function_exists( '\Oria\Core\Audit\note' ) ) {
+				\Oria\Core\Audit\note(
+					(int) $id,
+					sprintf(
+						/* translators: 1: previous plan, 2: new plan */
+						__( 'Plan changed from %1$s to %2$s', 'oria' ),
+						'' !== $was ? $was : 'unclaimed',
+						$map[ $action ]
+					),
+					get_current_user_id()
+				);
+			}
 		}
 		return add_query_arg( 'oria_bulk', count( $post_ids ), $redirect );
 	}

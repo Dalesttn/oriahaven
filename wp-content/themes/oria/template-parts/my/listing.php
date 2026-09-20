@@ -35,7 +35,6 @@ $oria_area  = ( is_array( $oria_area ) && $oria_area ) ? $oria_area[ count( $ori
 $oria_prac  = get_the_terms( $oria_listing, 'practice' );
 $oria_prac  = ( is_array( $oria_prac ) && $oria_prac ) ? $oria_prac[0]->name : '';
 $oria_thumb = get_the_post_thumbnail_url( $oria_listing, 'medium' );
-$oria_tier  = Tiers\tier( $oria_listing );
 ?>
 
 <section class="my mylist">
@@ -230,16 +229,72 @@ $oria_tier  = Tiers\tier( $oria_listing );
 
 	</section>
 
-	<?php if ( 'featured' !== $oria_tier ) : ?>
-		<p class="mylplan">
+	<?php
+	/*
+	 * What this plan does, and what the next one would.
+	 *
+	 * Said as publishing limits rather than as a wall: nothing an owner
+	 * types is ever lost by being on the free plan, the profile just shows
+	 * fewer of them. The locked fields are named, because "upgrade for more
+	 * features" tells somebody they are being charged without telling them
+	 * what for.
+	 */
+	$oria_plan = Ed\plan( $oria_listing );
+	?>
+	<section class="mylplan">
+		<h2 class="mylplan__h">
 			<?php
 			printf(
 				/* translators: %s: the plan name */
-				esc_html__( 'You are on the %s plan.', 'oria' ),
-				esc_html( ucfirst( $oria_tier ) )
+				esc_html__( 'You are on the %s plan', 'oria' ),
+				'<b>' . esc_html( $oria_plan['label'] ) . '</b>'
 			);
 			?>
-		</p>
-	<?php endif; ?>
+		</h2>
+
+		<ul class="mylplan__list">
+			<li>
+				<?php
+				echo esc_html(
+					$oria_plan['photos'] > 0
+						? sprintf(
+							/* translators: %d: photos published on this plan */
+							_n( 'Publishes %d photo', 'Publishes %d photos', $oria_plan['photos'], 'oria' ),
+							$oria_plan['photos']
+						)
+						: __( 'Publishes as many photos as you like', 'oria' )
+				);
+				?>
+			</li>
+			<li>
+				<?php
+				printf(
+					/* translators: %d: practitioner profiles published on this plan */
+					esc_html( _n( 'Publishes %d practitioner profile', 'Publishes %d practitioner profiles', $oria_plan['team'], 'oria' ) ),
+					(int) $oria_plan['team']
+				);
+				?>
+			</li>
+			<?php if ( $oria_plan['locked'] ) : ?>
+				<li class="mylplan__off">
+					<?php
+					printf(
+						/* translators: %s: comma-separated field names */
+						esc_html__( 'Not on this plan: %s', 'oria' ),
+						esc_html( implode( ', ', $oria_plan['locked'] ) )
+					);
+					?>
+				</li>
+			<?php endif; ?>
+		</ul>
+
+		<?php if ( $oria_plan['upgrade'] ) : ?>
+			<a class="btn btn--ghost" href="<?php echo esc_url( $oria_plan['upgrade'] ); ?>">
+				<?php esc_html_e( 'See what Claimed adds', 'oria' ); ?>
+			</a>
+		<?php endif; ?>
+
+		<p class="mylplan__keep"><?php esc_html_e( 'Anything you have already saved stays saved. A plan decides how much of it your profile shows, never what you are allowed to write down.', 'oria' ); ?></p>
+	</section>
 
 </section>

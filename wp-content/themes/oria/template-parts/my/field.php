@@ -326,6 +326,17 @@ $dis       = $open ? '' : ' disabled';
 		<p class="myfield__hint" id="<?php echo esc_attr( $id ); ?>-hint"><?php echo esc_html( $f['hint'] ); ?></p>
 	<?php endif; ?>
 
+	<?php
+	/*
+	 * A cap on how much of this field the plan PUBLISHES -- distinct from
+	 * the lock below, which is about whether the field opens at all.
+	 */
+	$oria_plan_note = Ed\plan_note( $f, $listing );
+	if ( '' !== $oria_plan_note ) :
+		?>
+		<p class="myfield__plan"><?php echo esc_html( $oria_plan_note ); ?></p>
+	<?php endif; ?>
+
 	<?php if ( ! empty( $f['public'] ) ) : ?>
 		<p class="myfield__pub"><?php esc_html_e( 'This appears on your public profile.', 'oria' ); ?></p>
 	<?php endif; ?>

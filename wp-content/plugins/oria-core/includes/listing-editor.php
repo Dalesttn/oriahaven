@@ -354,6 +354,7 @@ function sections(): array {
 					'label'    => __( 'Practitioners', 'oria' ),
 					'help'     => __( 'Facts only: what somebody does, what they hold, where they are registered. Never what a treatment can achieve.', 'oria' ),
 					'add'      => __( 'Add a practitioner', 'oria' ),
+					'plan_note' => 'team',
 					'single'   => __( 'practitioner', 'oria' ),
 					'sub'      => array(
 						array( 'name' => 'name', 'type' => 'text', 'label' => __( 'Name', 'oria' ), 'placeholder' => __( 'Clare Keating', 'oria' ), 'span' => 'half' ),
@@ -477,18 +478,38 @@ function writable_fields(): array {
 /* ------------------------------------------------------------ permissions */
 
 /**
- * The listing this user manages, or 0.
+ * The listing this user owns, or 0.
  *
  * Every entry point calls this -- the templates to decide whether to draw
  * anything, the save handler before it writes. A control hidden in the
  * interface is not a permission check.
+ *
+ * Owning and paying are two different facts here, and this asks only about
+ * the first. claimed_by records who the listing belongs to; claim_status
+ * records what they pay. With billing switched on, approving a claim sets
+ * claimed_by and leaves claim_status at 'unclaimed' until money arrives
+ * (ClaimRequests\approve), and a cancelled subscription puts it back there
+ * (Billing) -- so the free plan is where an approved owner normally
+ * starts and where a lapsed one returns.
+ *
+ * This used to call Ownership\manages(), which also requires a paid state.
+ * That locked every free-plan owner out of their own listing, which is the
+ * exact opposite of what the tiers are for: free makes it right, paid
+ * makes it work. What the plan decides is which FIELDS open, and
+ * Tiers\field_editable() decides that per field, below.
+ *
+ * Ownership\manages() keeps its stricter meaning for the things that
+ * really are paid-only, such as replying to reviews.
  */
 function listing_for( int $user_id ): int {
 	if ( $user_id < 1 ) {
 		return 0;
 	}
 	$listing = Ownership\owned_listing( $user_id );
-	return ( $listing && Ownership\manages( $user_id, $listing ) ) ? $listing : 0;
+	if ( ! $listing ) {
+		return 0;
+	}
+	return (int) get_post_meta( $listing, 'claimed_by', true ) === $user_id ? $listing : 0;
 }
 
 /** Whether this owner's plan lets them edit this field right now. */
@@ -684,6 +705,82 @@ function section_state( int $listing, string $slug ): string {
 	return $filled === $open ? 'done' : 'part';
 }
 
+/* -------------------------------------------------------------- the plan */
+
+/**
+ * What this listing's plan does, in the owner's terms.
+ *
+ * The tier decides three separate things and they are easy to confuse, so
+ * they are named apart here: which FIELDS open at all, how many photos
+ * PUBLISH, and how many practitioners PUBLISH. Nothing saved is ever lost
+ * by dropping a tier -- the public templates simply show fewer.
+ *
+ * @return array{tier:string, label:string, photos:int, team:int, locked:string[], upgrade:string, next:string}
+ */
+function plan( int $listing ): array {
+	$tier = Tiers\tier( $listing );
+
+	$labels = array(
+		'unclaimed' => __( 'Free', 'oria' ),
+		Tiers\CLAIMED  => __( 'Claimed', 'oria' ),
+		Tiers\FEATURED => __( 'Featured', 'oria' ),
+	);
+
+	// Which of the owner's own fields this plan will not open.
+	$locked = array();
+	foreach ( writable_fields() as $name => $field ) {
+		if ( ! Tiers\field_editable( $listing, $name ) ) {
+			$locked[] = (string) $field['label'];
+		}
+	}
+
+	$upgrade = '';
+	if ( Tiers\CLAIMED !== $tier && Tiers\FEATURED !== $tier
+		&& function_exists( '\Oria\Core\Billing\configured' ) && \Oria\Core\Billing\configured() ) {
+		$upgrade = \Oria\Core\Billing\pay_url( 'claimed', $listing, (string) wp_get_current_user()->user_email );
+	}
+
+	return array(
+		'tier'    => $tier,
+		'label'   => $labels[ $tier ] ?? ucfirst( $tier ),
+		'photos'  => Tiers\gallery_limit( $listing ),
+		'team'    => Tiers\team_limit( $listing ),
+		'locked'  => $locked,
+		'upgrade' => $upgrade,
+		'next'    => Tiers\CLAIMED === $tier ? (string) Tiers\FEATURED : ( Tiers\FEATURED === $tier ? '' : (string) Tiers\CLAIMED ),
+	);
+}
+
+/**
+ * The line under a field whose plan caps how much of it is published.
+ *
+ * Said as a publishing limit rather than a storage one, because that is
+ * what it is: everything typed here is kept, and the profile shows the
+ * first few.
+ */
+function plan_note( array $field, int $listing ): string {
+	$plan = plan( $listing );
+
+	if ( 'team' === ( $field['plan_note'] ?? '' ) ) {
+		$rows = count( (array) ( value( $listing, 'team' ) ?: array() ) );
+		if ( $plan['team'] >= Tiers\TEAM_MAX || $rows <= $plan['team'] ) {
+			return sprintf(
+				/* translators: %d: how many practitioner profiles this plan publishes */
+				_n( 'Your plan publishes %d practitioner.', 'Your plan publishes the first %d.', $plan['team'], 'oria' ),
+				$plan['team']
+			);
+		}
+		return sprintf(
+			/* translators: 1: profiles published, 2: profiles saved */
+			__( 'Your plan publishes the first %1$d of these %2$d. The rest stay saved and appear again on a paid plan.', 'oria' ),
+			$plan['team'],
+			$rows
+		);
+	}
+
+	return '';
+}
+
 /* ------------------------------------------------------------------ status */
 
 /**
@@ -847,16 +944,24 @@ function clean( array $field, $raw ) {
 			}
 
 			/*
-			 * The plan's allowance, applied here as well as in the form.
-			 * Ownership\enforce_gallery_limit is an acf/validate_value
-			 * filter, and update_field() runs no validation at all -- so
-			 * without this a claimed listing could post fifty photos.
-			 * A limit of 0 means Featured, which has none.
+			 * The plan's allowance, applied here as well as in the form,
+			 * because Ownership\enforce_gallery_limit is an
+			 * acf/validate_value filter and update_field() runs no
+			 * validation at all. A limit of 0 means Featured, which has
+			 * none.
+			 *
+			 * It caps what can be ADDED, never what is already stored. The
+			 * public templates publish only the first gallery_limit()
+			 * photos anyway, so a listing that drops to the free plan shows
+			 * fewer -- it does not lose the rest. Trimming here would
+			 * delete somebody's photographs because a card expired, which
+			 * is the wrong way round.
 			 */
 			$listing = listing_for( get_current_user_id() );
 			$limit   = $listing ? Tiers\gallery_limit( $listing ) : 0;
 			if ( $limit > 0 ) {
-				$out = array_slice( $out, 0, $limit );
+				$had = count( (array) ( value( $listing, 'gallery' ) ?: array() ) );
+				$out = array_slice( $out, 0, max( $limit, $had ) );
 			}
 			return $out;
 
