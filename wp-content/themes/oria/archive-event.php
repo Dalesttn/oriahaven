@@ -243,7 +243,11 @@ $oria_row = static function ( array $r ): void {
 		</div>
 		<div style="display:flex;flex-direction:column;align-items:flex-end;gap:.9rem">
 			<p class="lede" style="max-width:36ch;margin:0"><?php esc_html_e( 'Workshops, sittings and sessions across the metro — from our member practices and around the web.', 'oria' ); ?></p>
-			<a class="btn btn--ghost btn--sm btn--plain" href="<?php echo esc_url( home_url( '/this-weekend/' ) ); ?>"><?php esc_html_e( 'Just this weekend', 'oria' ); ?> <?php echo arrow(); // phpcs:ignore ?></a>
+			<div style="display:flex;gap:.6rem;flex-wrap:wrap;justify-content:flex-end">
+				<a class="btn btn--ghost btn--sm btn--plain" href="<?php echo esc_url( home_url( '/this-weekend/' ) ); ?>"><?php esc_html_e( 'Just this weekend', 'oria' ); ?> <?php echo arrow(); // phpcs:ignore ?></a>
+				<?php /* Organisers need this at the top, not buried at the foot of the page. */ ?>
+				<a class="btn btn--sm" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a>
+			</div>
 		</div>
 	</div>
 </section>
@@ -329,8 +333,14 @@ $oria_row = static function ( array $r ): void {
 	<div class="claimprompt" style="max-width:44rem">
 		<b style="display:block;margin-bottom:.4rem"><?php esc_html_e( 'Run wellness events in Perth?', 'oria' ); ?></b>
 		<p style="font-size:.875rem;color:var(--text-soft)">
-			<?php esc_html_e( 'Featured members\' events appear at the top of this page with a photo, a linked practice profile, and a spot in the weekend guide.', 'oria' ); ?>
-			<a href="<?php echo esc_url( home_url( '/claim/' ) ); ?>" style="text-decoration:underline;text-underline-offset:3px"><?php esc_html_e( 'Claim your listing', 'oria' ); ?></a>
+			<?php esc_html_e( 'Tell us about it and we will put it on this page. It is free, there is no account to make, and a person reads every submission.', 'oria' ); ?>
+		</p>
+		<p style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem">
+			<a class="btn btn--dark btn--sm" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a>
+			<a class="btn btn--sm" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your listing', 'oria' ); ?></a>
+		</p>
+		<p style="font-size:.8125rem;color:var(--text-faint);margin-top:.6rem">
+			<?php esc_html_e( 'Claimed practices also get their events at the top of this page, with a photo and a linked profile.', 'oria' ); ?>
 		</p>
 	</div>
 </section>
