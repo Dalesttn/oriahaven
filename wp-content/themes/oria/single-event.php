@@ -31,9 +31,25 @@ while ( have_posts() ) :
 		<nav class="crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
 			<span aria-hidden="true">/</span>
-			<a href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ); ?>"><?php esc_html_e( 'Workshops/Events', 'oria' ); ?></a>
+			<a href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ); ?>"><?php esc_html_e( "What's On", 'oria' ); ?></a>
 			<span aria-hidden="true">/</span><span><?php the_title(); ?></span>
 		</nav>
+		<?php
+		$oria_status = function_exists( '\Oria\Core\Events\status' ) ? \Oria\Core\Events\status( get_the_ID() ) : '';
+		if ( '' !== $oria_status ) :
+			$oria_status_words = array(
+				'cancelled' => __( 'This event has been cancelled.', 'oria' ),
+				'postponed' => __( 'This event has been postponed.', 'oria' ),
+				'sold-out'  => __( 'This event is sold out.', 'oria' ),
+			);
+			?>
+			<p class="evstatus evstatus--<?php echo esc_attr( $oria_status ); ?>" role="status">
+				<b><?php echo esc_html( $oria_status_words[ $oria_status ] ?? '' ); ?></b>
+				<?php if ( 'sold-out' !== $oria_status ) : ?>
+					<span><?php esc_html_e( 'Check with the organiser before making plans around it.', 'oria' ); ?></span>
+				<?php endif; ?>
+			</p>
+		<?php endif; ?>
 		<div class="row-between" style="align-items:flex-end;margin-top:1rem">
 			<div>
 				<?php if ( $oria_ts ) : ?>
@@ -100,6 +116,21 @@ while ( have_posts() ) :
 					<?php if ( $oria_venue ) : ?>
 						<div><div class="keyfact__k"><?php esc_html_e( 'Where', 'oria' ); ?></div><div class="keyfact__v"><?php echo esc_html( $oria_venue ); ?></div></div>
 					<?php endif; ?>
+					<?php
+					/*
+					 * Only for events that run longer than a day. Anything
+					 * shorter already shows its length as a chip under the
+					 * title (Ingest\Context\signals), and saying it twice
+					 * on one screen is just noise -- but a weekend retreat
+					 * or a four-Saturday course says nothing without this.
+					 */
+					$oria_duration = ( $oria_ts && $oria_te && $oria_te - $oria_ts > DAY_IN_SECONDS && function_exists( '\Oria\Core\Events\duration' ) )
+						? \Oria\Core\Events\duration( get_the_ID() )
+						: '';
+					if ( '' !== $oria_duration ) :
+						?>
+						<div><div class="keyfact__k"><?php esc_html_e( 'How long', 'oria' ); ?></div><div class="keyfact__v"><?php echo esc_html( $oria_duration ); ?></div></div>
+					<?php endif; ?>
 				</div>
 
 				<?php if ( $oria_booking ) : ?>
@@ -139,6 +170,73 @@ while ( have_posts() ) :
 						</span>
 						<span class="hostcard__go" aria-hidden="true"><?php echo arrow(); // phpcs:ignore ?></span>
 					</a>
+					<?php
+					// Only offered when the host really has others coming up.
+					$oria_host_more = function_exists( '\Oria\Core\Events\for_listing' )
+						? \Oria\Core\Events\for_listing( $oria_host_id, 4 )
+						: array();
+					$oria_host_more = array_values( array_diff( $oria_host_more, array( get_the_ID() ) ) );
+					if ( $oria_host_more ) :
+						?>
+						<p class="evaside__link">
+							<a href="<?php echo esc_url( get_permalink( $oria_host_id ) . '#events' ); ?>">
+								<?php
+								echo esc_html(
+									sprintf(
+										/* translators: %d: number of other events */
+										_n( '%d more event from this host', '%d more events from this host', count( $oria_host_more ), 'oria' ),
+										count( $oria_host_more )
+									)
+								);
+								?>
+							</a>
+						</p>
+					<?php endif; ?>
+				<?php else : ?>
+					<?php
+					/*
+					 * No linked practice. Say who runs it if the source told
+					 * us, and invite them to connect it -- without implying
+					 * they already own anything here.
+					 */
+					$oria_org = (string) get_post_meta( get_the_ID(), '_oria_organiser', true );
+					?>
+					<div class="hostcard hostcard--plain">
+						<span class="hostcard__body">
+							<span class="micro"><?php esc_html_e( 'Run by', 'oria' ); ?></span>
+							<b class="hostcard__name"><?php echo esc_html( '' !== $oria_org ? $oria_org : __( 'Not listed with us yet', 'oria' ) ); ?></b>
+							<span class="hostcard__meta">
+								<a href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Are you the organiser? Connect your practice.', 'oria' ); ?></a>
+							</span>
+						</span>
+					</div>
+				<?php endif; ?>
+
+				<?php
+				/*
+				 * Where these details came from and when they were last
+				 * checked. A directory that repeats somebody else's times
+				 * owes the reader both, and a way to tell us when they are
+				 * wrong. The source stays the source of truth.
+				 */
+				$oria_src_info = function_exists( '\Oria\Core\Events\source' ) ? \Oria\Core\Events\source( get_the_ID() ) : null;
+				$oria_checked  = function_exists( '\Oria\Core\Events\verified' ) ? \Oria\Core\Events\verified( get_the_ID() ) : 0;
+				if ( $oria_src_info || $oria_checked ) :
+					?>
+					<div class="evsource">
+						<?php if ( $oria_src_info ) : ?>
+							<p>
+								<?php esc_html_e( 'Details from', 'oria' ); ?>
+								<a href="<?php echo esc_url( $oria_src_info['url'] ); ?>" rel="nofollow noopener" target="_blank"><?php echo esc_html( $oria_src_info['host'] ); ?></a>
+							</p>
+						<?php endif; ?>
+						<?php if ( $oria_checked ) : ?>
+							<p><?php echo esc_html( sprintf( /* translators: %s: date */ __( 'Last checked %s', 'oria' ), wp_date( 'j F Y', $oria_checked ) ) ); ?></p>
+						<?php endif; ?>
+						<p>
+							<a href="<?php echo esc_url( home_url( '/about/#oform-contact' ) ); ?>"><?php esc_html_e( 'Report incorrect information', 'oria' ); ?></a>
+						</p>
+					</div>
 				<?php endif; ?>
 			</aside>
 		</div>
@@ -149,9 +247,18 @@ while ( have_posts() ) :
 	 * highest, then venue, then host — so a night with nothing of the same
 	 * kind still offers something rather than an empty heading.
 	 */
+	/*
+	 * Related, in the order the brief asks for: this host's other events
+	 * first -- someone who liked the look of this one most often wants
+	 * another from the same people -- then the ranked similar events.
+	 */
 	$oria_similar = function_exists( '\Oria\Ingest\Context\similar' )
 		? \Oria\Ingest\Context\similar( get_the_ID(), 4 )
 		: array();
+	if ( $oria_listing && function_exists( '\Oria\Core\Events\for_listing' ) ) {
+		$oria_host_events = array_diff( \Oria\Core\Events\for_listing( (int) $oria_listing, 4 ), array( get_the_ID() ) );
+		$oria_similar     = array_slice( array_unique( array_merge( $oria_host_events, $oria_similar ) ), 0, 4 );
+	}
 	if ( $oria_similar ) :
 		?>
 	<section class="wrap section section--top-flush">

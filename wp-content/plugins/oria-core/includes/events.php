@@ -1,0 +1,231 @@
+<?php
+/**
+ * One place that answers "what events are coming up".
+ *
+ * The archive, a practice profile, a category page and a suburb page all
+ * want the same thing with a different filter on it. Before this, each one
+ * would have written its own WP_Query and they would have drifted apart --
+ * one excluding cancelled events, another not; one counting past events by
+ * accident on the day they finished.
+ *
+ * Everything asks here instead. The rules live once:
+ *  - published, still to start, soonest first;
+ *  - cancelled events never appear in an upcoming list;
+ *  - an empty result means the caller renders nothing at all.
+ *
+ * Results are cached per query shape and the whole cache is dropped
+ * whenever any event is saved, trashed or deleted, so an edit shows up
+ * immediately rather than in fifteen minutes.
+ *
+ * @package Oria\Core
+ */
+
+declare(strict_types=1);
+
+namespace Oria\Core\Events;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+const VERSION_OPTION = 'oria_events_ver';
+const CACHE_PREFIX   = 'oria_events_';
+const CACHE_LIFE     = 15 * MINUTE_IN_SECONDS;
+
+function bootstrap(): void {
+	foreach ( array( 'save_post_event', 'deleted_post', 'trashed_post', 'untrashed_post' ) as $hook ) {
+		add_action( $hook, __NAMESPACE__ . '\bump_version' );
+	}
+	/*
+	 * Meta as well as the post. An event's start time, host and status all
+	 * live in meta, and a CLI import or an ACF-only save changes those
+	 * without ever firing save_post -- which left a cancelled event sitting
+	 * in a cached "upcoming" list until the cache expired.
+	 */
+	foreach ( array( 'updated_post_meta', 'added_post_meta', 'deleted_post_meta' ) as $hook ) {
+		add_action( $hook, __NAMESPACE__ . '\bump_on_meta', 10, 3 );
+	}
+}
+
+/** @param int|string $meta_id @param int $post_id */
+function bump_on_meta( $meta_id, $post_id, $meta_key ): void {
+	if ( ! in_array( (string) $meta_key, array( 'event_start', 'event_end', 'event_status', 'listing' ), true ) ) {
+		return;
+	}
+	bump_version( (int) $post_id );
+}
+
+/**
+ * Invalidate every cached list.
+ *
+ * Cheap: one option write. The alternative -- tracking which cached list
+ * each event belongs to -- costs more than the queries it would save.
+ */
+function bump_version( $post_id = 0 ): void {
+	if ( $post_id && 'event' !== get_post_type( (int) $post_id ) ) {
+		return;
+	}
+	update_option( VERSION_OPTION, (string) time(), false );
+}
+
+/**
+ * Upcoming events, filtered.
+ *
+ * @param array{limit?:int, listing?:int, practice?:string, event_type?:string, area?:string, exclude?:int[]} $args
+ * @return int[] Event post IDs, soonest first.
+ */
+function upcoming( array $args = array() ): array {
+	$args = wp_parse_args(
+		$args,
+		array(
+			'limit'      => 3,
+			'listing'    => 0,
+			'practice'   => '',
+			'event_type' => '',
+			'area'       => '',
+			'exclude'    => array(),
+		)
+	);
+
+	$key   = CACHE_PREFIX . md5( (string) get_option( VERSION_OPTION, '0' ) . wp_json_encode( $args ) );
+	$found = get_transient( $key );
+	if ( is_array( $found ) ) {
+		return $found;
+	}
+
+	$query = array(
+		'post_type'        => 'event',
+		'post_status'      => 'publish',
+		'posts_per_page'   => max( 1, (int) $args['limit'] ),
+		'fields'           => 'ids',
+		'post__not_in'     => array_map( 'intval', (array) $args['exclude'] ),
+		'meta_key'         => 'event_start',
+		'orderby'          => 'meta_value',
+		'order'            => 'ASC',
+		'suppress_filters' => false,
+		'no_found_rows'    => true,
+		'meta_query'       => array(
+			'relation' => 'AND',
+			array(
+				'key'     => 'event_start',
+				'value'   => current_time( 'Y-m-d H:i:s' ),
+				'compare' => '>=',
+				'type'    => 'DATETIME',
+			),
+			// A cancelled event still has a page -- somebody who booked it
+			// needs to find that out -- but it is not something to offer.
+			array(
+				'relation' => 'OR',
+				array( 'key' => 'event_status', 'compare' => 'NOT EXISTS' ),
+				array( 'key' => 'event_status', 'value' => 'cancelled', 'compare' => '!=' ),
+			),
+		),
+	);
+
+	if ( (int) $args['listing'] > 0 ) {
+		$query['meta_query'][] = array(
+			'key'   => 'listing',
+			'value' => (int) $args['listing'],
+		);
+	}
+
+	$tax = array();
+	foreach ( array( 'practice' => 'practice', 'event_type' => 'event_type', 'area' => 'area' ) as $arg => $taxonomy ) {
+		if ( '' !== (string) $args[ $arg ] ) {
+			$tax[] = array(
+				'taxonomy'         => $taxonomy,
+				'field'            => 'slug',
+				'terms'            => (string) $args[ $arg ],
+				// An area's children count as the area: an event in Hilton
+				// belongs on Fremantle & South as much as in its own suburb.
+				'include_children' => 'area' === $taxonomy,
+			);
+		}
+	}
+	if ( $tax ) {
+		$query['tax_query'] = $tax;
+	}
+
+	$ids = array_map( 'intval', (array) get_posts( $query ) );
+	set_transient( $key, $ids, CACHE_LIFE );
+
+	return $ids;
+}
+
+/** Upcoming events run by one listing. */
+function for_listing( int $listing_id, int $limit = 3 ): array {
+	return $listing_id > 0 ? upcoming( array( 'listing' => $listing_id, 'limit' => $limit ) ) : array();
+}
+
+/** Upcoming events in one practice category. */
+function for_practice( string $slug, int $limit = 3 ): array {
+	return '' !== $slug ? upcoming( array( 'practice' => $slug, 'limit' => $limit ) ) : array();
+}
+
+/** Upcoming events in one area, its child suburbs included. */
+function for_area( string $slug, int $limit = 3 ): array {
+	return '' !== $slug ? upcoming( array( 'area' => $slug, 'limit' => $limit ) ) : array();
+}
+
+/** How many upcoming events there are in total, for a "view all" line. */
+function total(): int {
+	return count( upcoming( array( 'limit' => 200 ) ) );
+}
+
+/* ------------------------------------------------------------------ facts */
+
+/** 'cancelled', 'postponed', 'sold-out' or '' (going ahead). */
+function status( int $event_id ): string {
+	$status = (string) get_post_meta( $event_id, 'event_status', true );
+	return in_array( $status, array( 'cancelled', 'postponed', 'sold-out' ), true ) ? $status : '';
+}
+
+/**
+ * How long it runs, in words, or '' when the end is not recorded.
+ *
+ * Minutes below an hour, hours where they divide cleanly, and days for a
+ * retreat -- "2 days" reads better than "51 hours" on a weekend away.
+ */
+function duration( int $event_id ): string {
+	$start = strtotime( (string) get_post_meta( $event_id, 'event_start', true ) );
+	$end   = strtotime( (string) get_post_meta( $event_id, 'event_end', true ) );
+	if ( ! $start || ! $end || $end <= $start ) {
+		return '';
+	}
+
+	$minutes = (int) round( ( $end - $start ) / 60 );
+	if ( $minutes < 60 ) {
+		/* translators: %d: minutes */
+		return sprintf( _n( '%d minute', '%d minutes', $minutes, 'oria' ), $minutes );
+	}
+	if ( $minutes < 24 * 60 ) {
+		// floor() returns a float and the division can return an int, so the
+		// comparison has to be made on one type: strict === reported a clean
+		// two-hour workshop as "2.0 hours".
+		$hours = $minutes / 60;
+		$hours = (float) floor( (float) $hours ) === (float) $hours ? (string) (int) $hours : number_format_i18n( $hours, 1 );
+		/* translators: %s: hours */
+		return sprintf( _n( '%s hour', '%s hours', (int) ceil( (float) $hours ), 'oria' ), $hours );
+	}
+	$days = (int) ceil( $minutes / ( 24 * 60 ) );
+	/* translators: %d: days */
+	return sprintf( _n( '%d day', '%d days', $days, 'oria' ), $days );
+}
+
+/** The day this event's details were last verified, or 0. */
+function verified( int $event_id ): int {
+	$stamp = (string) get_post_meta( $event_id, '_oria_verified', true );
+	return $stamp ? (int) strtotime( $stamp ) : 0;
+}
+
+/** Where the details came from: array{url,host} or null. */
+function source( int $event_id ): ?array {
+	$url = (string) get_post_meta( $event_id, '_oria_src_url', true );
+	if ( '' === $url ) {
+		return null;
+	}
+	return array(
+		'url'  => $url,
+		'host' => (string) ( wp_parse_url( $url, PHP_URL_HOST ) ?: __( 'the organiser', 'oria' ) ),
+	);
+}

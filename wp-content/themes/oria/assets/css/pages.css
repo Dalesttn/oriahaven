@@ -4168,6 +4168,50 @@ html.has-sheet { overflow: hidden; }
 .evcard__name { font-weight: 600; font-size: var(--fs-sm); line-height: 1.3; }
 .evcard__meta { font-size: var(--fs-xs); color: var(--text-faint); }
 
+/* --- Events on other pages (practice, category, suburb) -------------- */
+.evmod__head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--s-3); flex-wrap: wrap; margin-bottom: var(--s-4);
+}
+.evmod__all {
+  font-size: var(--fs-xs); font-weight: 600; color: var(--text-soft);
+  text-decoration: underline; text-underline-offset: 3px; white-space: nowrap;
+}
+.evmod__all:hover { color: var(--ink); }
+
+/* --- Single event: status, provenance, host extras ------------------- */
+/* Cancelled and postponed are the two things a visitor most needs to know
+   and the two we have least right to bury. Shape and label carry it, not
+   colour alone. */
+.evstatus {
+  display: flex; flex-wrap: wrap; gap: .4rem .6rem; align-items: baseline;
+  margin: var(--s-4) 0 0; padding: .7rem 1rem;
+  border-radius: var(--r-md); font-size: var(--fs-sm);
+  border: 1px solid var(--line-strong); background: var(--sand-2);
+}
+.evstatus b::before { content: "— "; font-weight: 400; }
+.evstatus--cancelled { border-color: #c98787; background: #FBEFEF; color: #7a2323; }
+.evstatus--postponed { border-color: var(--gold-soft); background: #FBF6EA; }
+.evstatus span { color: inherit; opacity: .85; }
+
+.evaside__link { margin: .6rem 0 0; font-size: var(--fs-xs); }
+.evaside__link a { text-decoration: underline; text-underline-offset: 3px; }
+
+.evsource {
+  margin-top: var(--s-4); padding-top: var(--s-3);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-xs); color: var(--text-faint);
+}
+.evsource p { margin: 0 0 .3rem; }
+.evsource a { color: var(--text-soft); text-decoration: underline; text-underline-offset: 2px; }
+.evsource a:hover { color: var(--ink); }
+
+/* The host card with nobody behind it yet: same shape, no link, so the
+   page doesn't imply a practice has claimed something it hasn't. */
+.hostcard--plain { cursor: default; }
+.hostcard--plain:hover { transform: none; box-shadow: none; }
+.hostcard--plain .hostcard__meta a { text-decoration: underline; text-underline-offset: 3px; }
+
 /* --- Listing hero ----------------------------------------------------- */
 .profile__lede { margin-top: .85rem; max-width: 54ch; }
 .profile__chips { margin-top: 1rem; }

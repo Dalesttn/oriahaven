@@ -1274,21 +1274,17 @@ while ( have_posts() ) :
 			<div class="xp-part"><?php get_template_part( 'template-parts/team', null, array( 'listing_id' => $oria_id ) ); ?></div>
 
 			<?php
-			/* --- Upcoming events run by this listing ----------------------- */
-			$oria_events = get_posts(
-				array(
-					'post_type'      => 'event',
-					'post_status'    => 'publish',
-					'posts_per_page' => 6,
-					'meta_key'       => 'event_start',
-					'orderby'        => 'meta_value',
-					'order'          => 'ASC',
-					'meta_query'     => array(
-						array( 'key' => 'listing', 'value' => $oria_id ),
-						array( 'key' => 'event_start', 'value' => current_time( 'Y-m-d H:i:s' ), 'compare' => '>=', 'type' => 'DATETIME' ),
-					),
-				)
-			);
+			/*
+			 * Upcoming events run by this listing.
+			 *
+			 * Asked of \Oria\Core\Events rather than queried here, so this
+			 * profile, the category page, the suburb page and the archive
+			 * all apply the same rules -- cancelled events excluded, the
+			 * same idea of "upcoming" -- and a change is made once.
+			 */
+			$oria_events = function_exists( '\Oria\Core\Events\for_listing' )
+				? array_map( 'get_post', \Oria\Core\Events\for_listing( $oria_id, 6 ) )
+				: array();
 			?>
 			<?php if ( $oria_events ) : ?>
 				<?php $oria_sec++; ?>

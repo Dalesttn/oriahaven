@@ -1677,6 +1677,27 @@ $oria_fg_name  = $oria_fg_on
 </section>
 
 <?php
+/*
+ * What's on in this category. Only when there is something: an "Upcoming
+ * yoga events" heading over an empty row tells a visitor the category is
+ * dead, which is the opposite of what it is for.
+ */
+if ( $oria_term && function_exists( '\Oria\Core\Events\for_practice' ) ) {
+	get_template_part(
+		'template-parts/events-module',
+		null,
+		array(
+			'ids'       => \Oria\Core\Events\for_practice( $oria_term->slug, 3 ),
+			/* translators: %s: category name, lower case */
+			'title'     => sprintf( __( 'Upcoming %s events in Perth', 'oria' ), strtolower( $oria_pname ) ),
+			'all'       => get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ),
+			'all_label' => __( "See what's on", 'oria' ),
+		)
+	);
+}
+?>
+
+<?php
 // The guides for this practice, as image cards; the journal's latest where
 // none are tagged to it yet.
 get_template_part(

@@ -1067,6 +1067,25 @@ function register_event_fields(): void {
 					'label' => 'Booking / details link',
 					'type'  => 'url',
 				),
+				/*
+				 * A cancelled event keeps its page: somebody who booked it
+				 * searches for exactly that page to find out. It drops out
+				 * of every upcoming list instead, and says so at the top.
+				 * Deleting it leaves that person with a 404 and no answer.
+				 */
+				array(
+					'key'          => 'field_oria_event_status',
+					'name'         => 'event_status',
+					'label'        => 'Status',
+					'type'         => 'select',
+					'allow_null'   => 1,
+					'instructions' => 'Leave empty when the event is going ahead. Cancelled and postponed events keep their page but stop appearing in listings.',
+					'choices'      => array(
+						'cancelled' => 'Cancelled',
+						'postponed' => 'Postponed',
+						'sold-out'  => 'Sold out',
+					),
+				),
 			),
 		)
 	);

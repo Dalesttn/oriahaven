@@ -862,6 +862,25 @@ $oria_links  = array_values( array_filter( (array) ( $oria_guide['links'] ?? arr
 <?php endif; ?>
 
 <?php
+
+/*
+ * What's on near here. The area's child suburbs count as the area, so a
+ * region page is not empty while an event sits in one of its suburbs.
+ */
+if ( $oria_term && function_exists( '\Oria\Core\Events\for_area' ) ) {
+	get_template_part(
+		'template-parts/events-module',
+		null,
+		array(
+			'ids'       => \Oria\Core\Events\for_area( $oria_term->slug, 3 ),
+			/* translators: %s: suburb or region */
+			'title'     => sprintf( __( "What's on near %s", 'oria' ), $oria_place ),
+			'all'       => get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ),
+			'all_label' => __( 'See every event', 'oria' ),
+		)
+	);
+}
+
 // 10. FAQs, as the area pages have always carried them.
 if ( $oria_term ) {
 	get_template_part(
