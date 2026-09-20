@@ -145,6 +145,12 @@ foreach ( $oria_events as $oria_ev ) {
 	}
 
 	$oria_rows[] = array(
+		/*
+		 * Where it is, when we know. Geo refuses a point it cannot place
+		 * inside the area this site covers, so an event either has real
+		 * coordinates or none -- never a guess at the middle of the state.
+		 */
+		'pos'    => function_exists( '\Oria\Core\Geo\position' ) ? \Oria\Core\Geo\position( $oria_ev->ID ) : null,
 		// Added to Oria in the last seven days -- a fact about this list,
 		// never a claim that the event itself is newly announced.
 		'fresh'  => ( $oria_now - (int) get_post_time( 'U', true, $oria_ev ) ) < 7 * DAY_IN_SECONDS,
@@ -271,7 +277,12 @@ $oria_row = static function ( array $r ): void {
 		data-suburb="<?php echo esc_attr( sanitize_title( $r['suburb'] ) ); ?>"
 		data-type="<?php echo esc_attr( $r['type'] ? $r['type']->slug : '' ); ?>"
 		data-band="<?php echo esc_attr( $r['band'] ); ?>"
-		data-feel="<?php echo esc_attr( (string) ( $r['feel'] ?? '' ) ); ?>">
+		data-feel="<?php echo esc_attr( (string) ( $r['feel'] ?? '' ) ); ?>"
+		<?php if ( ! empty( $r['pos'] ) ) : ?>
+			data-lat="<?php echo esc_attr( (string) $r['pos']['lat'] ); ?>"
+			data-lng="<?php echo esc_attr( (string) $r['pos']['lng'] ); ?>"
+			data-precision="<?php echo esc_attr( (string) $r['pos']['precision'] ); ?>"
+		<?php endif; ?>>
 		<span class="wkrow__thumb" aria-hidden="true">
 			<?php if ( has_post_thumbnail( $oria_ev ) ) : ?>
 				<?php
@@ -615,6 +626,39 @@ if ( function_exists( '\Oria\Core\Finder\needs' ) && function_exists( '\Oria\Cor
 			<?php echo esc_html( sprintf( _n( '%d event', '%d events', $oria_total, 'oria' ), $oria_total ) ); ?>
 		</p>
 		<button class="wotoolbar__clear" type="button" data-wo-clear hidden><?php esc_html_e( 'Clear filters', 'oria' ); ?></button>
+		<?php
+		/*
+		 * List or map. The list is the page and stays the page: the map is
+		 * a second way to look at the same filtered rows, it reads their
+		 * coordinates straight off them, and Leaflet is not fetched until
+		 * somebody presses Map. Hidden until the script runs, because
+		 * without it there is nothing behind the button.
+		 */
+		?>
+		<div class="woview" data-wo-view role="group" aria-label="<?php esc_attr_e( 'How to show these events', 'oria' ); ?>" hidden>
+			<button class="woview__btn is-on" type="button" aria-pressed="true" data-wo-mode="list"><?php esc_html_e( 'List', 'oria' ); ?></button>
+			<button class="woview__btn" type="button" aria-pressed="false" data-wo-mode="map"><?php esc_html_e( 'Map', 'oria' ); ?></button>
+		</div>
+	</div>
+
+	<?php
+	/*
+	 * Built in the browser from what this device has saved, because that
+	 * is where the saves live -- nothing about a visitor's interests is
+	 * sent anywhere, and the section simply does not appear for somebody
+	 * who has saved nothing.
+	 */
+	?>
+	<section class="worecs" data-wo-recs hidden aria-labelledby="woRecsTitle">
+		<h2 class="h3 worecs__title" id="woRecsTitle"></h2>
+		<div class="worecs__row" data-wo-recs-row></div>
+	</section>
+
+	<div class="womap" data-wo-map hidden>
+		<div class="womap__canvas" data-wo-map-canvas></div>
+		<p class="womap__note">
+			<?php esc_html_e( 'Pins are the venue where we could place it, and a suburb centre otherwise. A few events have no location we could confirm and are in the list only.', 'oria' ); ?>
+		</p>
 	</div>
 
 	<?php if ( $oria_member_rows ) : ?>

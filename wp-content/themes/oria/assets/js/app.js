@@ -4501,6 +4501,7 @@
           return;
         }
         paint();
+        document.dispatchEvent(new CustomEvent("oria:saved-events"));
         pushEvent(at > -1 ? "event_unsave" : "event_saved", { event_id: id });
 
         /* Saves are one of the few signals an organiser can act on, so the
@@ -4740,6 +4741,191 @@
       });
     }
 
+    /* "Because you saved X". Built here in the browser from this
+       device's own saves, matched against the cards already on the page:
+       nothing about anybody's interests is sent anywhere, and there is no
+       profile to build. Same type or same suburb, which is as far as the
+       data honestly reaches -- two events sharing a category is a real
+       thing to say; a taste model is not.
+
+       It stays hidden until somebody has saved something, and shows only
+       when it can offer more than one thing. */
+    var recsBox = root.querySelector("[data-wo-recs]");
+    var recsRow = root.querySelector("[data-wo-recs-row]");
+
+    function paintRecs() {
+      if (!recsBox || !recsRow) return;
+
+      /* Hiding the box is not the same as emptying it: leave the last
+         render in there and it is stale markup waiting to be shown
+         again by the next thing that unhides it. */
+      function off() { recsBox.hidden = true; recsRow.innerHTML = ""; }
+
+      var saved = savedEvents();
+      if (!saved.length) { off(); return; }
+
+      var savedIdSet = {};
+      saved.forEach(function (e) { savedIdSet[String(e.id)] = true; });
+
+      /* The most recent save that is still on this page -- an event three
+         months gone is a poor reason to suggest anything. */
+      var seedRow = null, seedSave = null;
+      for (var i = saved.length - 1; i >= 0 && !seedRow; i--) {
+        var btn = root.querySelector('[data-save-event="' + saved[i].id + '"]');
+        if (btn) { seedRow = btn.closest(".wkrow"); seedSave = saved[i]; }
+      }
+      if (!seedRow) { off(); return; }
+
+      var type = seedRow.dataset.type || "";
+      var suburb = seedRow.dataset.suburb || "";
+      var picks = $$(".wkrow", root).filter(function (row) {
+        var b = row.querySelector("[data-save-event]");
+        if (!b || savedIdSet[b.dataset.saveEvent]) return false;
+        return (type && row.dataset.type === type) || (suburb && row.dataset.suburb === suburb);
+      }).slice(0, 3);
+
+      if (picks.length < 2) { off(); return; }
+
+      recsBox.querySelector(".worecs__title").textContent = "Because you saved " + (seedSave.title || "that one");
+      recsRow.innerHTML = "";
+      picks.forEach(function (row) {
+        var link = row.querySelector(".wkrow__link");
+        var meta = (row.querySelector(".wkrow__body em") || {}).textContent || "";
+        var a = document.createElement("a");
+        a.className = "worec";
+        a.href = link ? link.getAttribute("href") : "#";
+        a.innerHTML = '<b class="worec__name"></b><span class="worec__meta"></span>';
+        a.querySelector(".worec__name").textContent = link ? link.textContent.trim() : "";
+        a.querySelector(".worec__meta").textContent = meta.replace(/\s+/g, " ").trim();
+        recsRow.appendChild(a);
+      });
+      recsBox.hidden = false;
+    }
+
+    /* The map. A second way to look at the rows already on the page --
+       it reads their coordinates off them, so it cannot disagree with the
+       list, and it redraws whenever the filters do.
+
+       Leaflet arrives the first time somebody presses Map and never
+       otherwise. If it fails to arrive the list is still the whole page,
+       which is the point: the map is never the only way to browse. */
+    var viewBar = root.querySelector("[data-wo-view]");
+    var mapWrap = root.querySelector("[data-wo-map]");
+    var mapHost = root.querySelector("[data-wo-map-canvas]");
+    var listHost = root.querySelector("[data-wo-days]") || root;
+    var theMap = null, layer = null, mapLoading = null, mode = "list";
+
+    function withLeafletWO(cb) {
+      if (window.L) { cb(); return; }
+      var LF = window.ORIA_LEAFLET;
+      if (!LF) return;
+      if (!mapLoading) {
+        mapLoading = new Promise(function (resolve, reject) {
+          var css = document.createElement("link");
+          css.rel = "stylesheet"; css.href = LF.css;
+          document.head.appendChild(css);
+          var js = document.createElement("script");
+          js.src = LF.js; js.onload = resolve; js.onerror = reject;
+          document.head.appendChild(js);
+        });
+        if (mapWrap) mapWrap.setAttribute("aria-busy", "true");
+      }
+      mapLoading.then(function () {
+        if (mapWrap) mapWrap.removeAttribute("aria-busy");
+        cb();
+      }, function () {
+        if (mapWrap) mapWrap.removeAttribute("aria-busy");
+        if (mapHost) mapHost.innerHTML = '<p class="womap__fail">The map could not load just now. Every event is in the list.</p>';
+      });
+    }
+
+    function drawMap() {
+      if (!window.L || !mapHost) return;
+      if (!theMap) {
+        theMap = L.map(mapHost, { scrollWheelZoom: false });
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 18,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(theMap);
+      }
+      if (layer) { theMap.removeLayer(layer); layer = null; }
+
+      var pts = [];
+      $$(".wkrow", root).forEach(function (row) {
+        if (row.hidden || !row.dataset.lat || !row.dataset.lng) return;
+        var link = row.querySelector(".wkrow__link");
+        pts.push({
+          lat: parseFloat(row.dataset.lat),
+          lng: parseFloat(row.dataset.lng),
+          rough: row.dataset.precision !== "address",
+          title: link ? link.textContent.trim() : "",
+          url: link ? link.getAttribute("href") : "#",
+          when: (row.querySelector(".wkrow__body em") || {}).textContent || ""
+        });
+      });
+
+      if (!pts.length) {
+        if (mapHost) mapHost.setAttribute("data-empty", "1");
+        return;
+      }
+      mapHost.removeAttribute("data-empty");
+
+      /* Several events at one venue -- or one suburb centre -- stack
+         exactly on top of each other, so they share a pin and the popup
+         lists them. Anything else would hide events behind events. */
+      var byPoint = {};
+      pts.forEach(function (p) {
+        var k = p.lat.toFixed(4) + "," + p.lng.toFixed(4);
+        (byPoint[k] = byPoint[k] || []).push(p);
+      });
+
+      layer = L.layerGroup();
+      var bounds = [];
+      Object.keys(byPoint).forEach(function (k) {
+        var group = byPoint[k];
+        var here = group[0];
+        bounds.push([here.lat, here.lng]);
+        var mk = L.circleMarker([here.lat, here.lng], {
+          radius: group.length > 1 ? 10 : 7,
+          color: "#fff", weight: 2,
+          fillColor: "#0E3B38", fillOpacity: 0.95
+        });
+        var html = group.map(function (p) {
+          return '<a href="' + esc(p.url) + '"><b>' + esc(p.title) + "</b></a>" +
+            (p.when ? "<span>" + esc(p.when.replace(/\s+/g, " ").trim()) + "</span>" : "");
+        }).join("");
+        if (here.rough) html += '<em class="womap__rough">Shown at the suburb centre</em>';
+        mk.bindPopup('<div class="womap__pop">' + html + "</div>", { minWidth: 190 });
+        if (group.length > 1) {
+          mk.bindTooltip(String(group.length), { permanent: true, direction: "center", className: "womap__count" });
+        }
+        layer.addLayer(mk);
+      });
+      layer.addTo(theMap);
+      theMap.fitBounds(bounds, { padding: [28, 28], maxZoom: 14 });
+      window.setTimeout(function () { theMap.invalidateSize(); }, 0);
+    }
+
+    function setMode(next) {
+      mode = next;
+      if (viewBar) {
+        $$(".woview__btn", viewBar).forEach(function (b) {
+          var on = b.dataset.woMode === mode;
+          b.classList.toggle("is-on", on);
+          b.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+      }
+      if (mapWrap) mapWrap.hidden = mode !== "map";
+      if (mode === "map") withLeafletWO(drawMap);
+    }
+
+    if (viewBar && mapWrap && window.ORIA_LEAFLET) {
+      viewBar.hidden = false;
+      $$(".woview__btn", viewBar).forEach(function (b) {
+        b.addEventListener("click", function () { setMode(b.dataset.woMode); });
+      });
+    }
+
     /* What a chosen feeling is showing, said once in words rather than
        repeated as a coloured state on seven tiles. */
     var feelNote = root.querySelector("[data-wo-feelnote]");
@@ -4850,6 +5036,8 @@
       });
       paintFeel(shown);
       paintArea(shown);
+      paintRecs();
+      if (mode === "map" && theMap) drawMap();
     }
 
     function set(key, value, push) {
@@ -4971,6 +5159,7 @@
     apply();
     writeUrl(false);
     offerPref();
+    document.addEventListener("oria:saved-events", paintRecs);
   }
 
   /* Category tiles: eight at a time from a shuffled deck, next window of

@@ -4747,6 +4747,63 @@ html.has-sheet { overflow: hidden; }
   .wofeel { transition: none; }
 }
 
+/* "Because you saved X" -- three at most, and only when there is more
+   than one thing to say. */
+.worecs { margin-bottom: var(--s-4); padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--sand-2); }
+.worecs[hidden] { display: none; }
+.worecs__title { margin: 0 0 var(--s-3); font-size: 1.05rem; }
+.worecs__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+.worec {
+  display: grid; align-content: start; gap: .2rem;
+  padding: var(--s-3); border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--white); color: var(--deep); text-decoration: none;
+}
+.worec:hover { background: var(--sand-2); }
+.worec:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
+.worec__name { font-size: var(--fs-sm); line-height: 1.25; }
+.worec__meta { font-size: var(--fs-xs); color: var(--text-soft); }
+@media (max-width: 40rem) {
+  .worecs__row { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* List or map. The switch is small and quiet: the list is the page, and
+   the map is a second way to look at the same filtered rows. */
+.woview { display: inline-flex; gap: .2rem; padding: .2rem; border: 1px solid var(--line); border-radius: 999px; background: var(--white); }
+.woview[hidden] { display: none; }
+.woview__btn {
+  padding: .3rem .85rem; border: 0; border-radius: 999px; cursor: pointer;
+  background: none; color: var(--text-soft); font: inherit;
+  font-size: var(--fs-xs); font-weight: 700;
+}
+.woview__btn:hover { color: var(--deep); }
+.woview__btn.is-on { background: var(--deep); color: var(--white); }
+.woview__btn:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 2px; }
+
+.womap { margin-bottom: var(--s-4); }
+.womap[hidden] { display: none; }
+.womap__canvas {
+  height: clamp(20rem, 52vh, 34rem);
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--sand-2);
+}
+.womap__canvas[data-empty]::after {
+  content: "Nothing with a location matches those filters.";
+  display: grid; place-items: center; height: 100%;
+  padding: var(--s-4); text-align: center;
+  font-size: var(--fs-sm); color: var(--text-soft);
+}
+.womap__note { margin: .6rem 0 0; font-size: var(--fs-xs); color: var(--text-faint); }
+.womap__fail { display: grid; place-items: center; height: 100%; padding: var(--s-4); text-align: center; color: var(--text-soft); }
+.womap__pop { display: grid; gap: .15rem; font-size: var(--fs-sm); }
+.womap__pop a { font-weight: 700; color: var(--deep); text-decoration: none; }
+.womap__pop a:hover { text-decoration: underline; }
+.womap__pop span { display: block; font-size: var(--fs-xs); color: var(--text-soft); margin-bottom: .35rem; }
+.womap__rough { display: block; margin-top: .3rem; font-size: 11px; font-style: normal; color: var(--text-faint); }
+.leaflet-tooltip.womap__count {
+  background: none; border: 0; box-shadow: none; padding: 0;
+  color: #fff; font: 700 11px/1 var(--font-sans, system-ui, sans-serif);
+}
+
 /* The offer to pick up where somebody left off. Deliberately a strip of
    plain text and two plain buttons: it is a question, not a state. */
 .wopref {

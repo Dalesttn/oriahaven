@@ -95,7 +95,7 @@ add_action(
 		 * opened (window.ORIA_LEAFLET, below). 162KB off every category
 		 * page view that does not want a map.
 		 */
-		$oria_lazy_map = (bool) get_query_var( 'oria_practice_v2' );
+		$oria_lazy_map = (bool) get_query_var( 'oria_practice_v2' ) || is_post_type_archive( 'event' );
 
 		if ( ( ! $oria_lazy_map && get_query_var( 'oria_practice_v2' ) )
 			|| ( function_exists( '\Oria\Core\PracticesIndex\mode' ) && '' !== \Oria\Core\PracticesIndex\mode() && is_post_type_archive( 'listing' ) && ! is_search() )

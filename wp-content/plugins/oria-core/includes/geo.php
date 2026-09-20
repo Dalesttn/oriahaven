@@ -34,6 +34,16 @@ const META_STAMP     = 'geo_at';
 /** Perth GPO, Forrest Place — the point "from the CBD" is measured to. */
 const CBD = array( -31.9535, 115.8570 );
 
+/*
+ * How far from the CBD a result can be and still be somewhere this site
+ * covers. Margaret River is about 270km; nothing we list is further. A
+ * bounded search still returns a confident answer from the middle of the
+ * desert when it cannot find the venue -- "Pullman Bunker Bay, Margaret
+ * River region, WA" came back 901km out -- and a wrong coordinate is
+ * worse than none, because a map will draw it.
+ */
+const MAX_KM = 400.0;
+
 /** Nominatim asks for a real User-Agent and no more than one call a second. */
 const AGENT    = 'OriaHavenDirectory/1.0 (https://oriahaven.com.au; geocoding own listings)';
 const ENDPOINT = 'https://nominatim.openstreetmap.org/search';
@@ -229,7 +239,16 @@ function query_variants( string $address ): array {
  * @return array{query: string, precision: string}|null
  */
 function query_for( int $post_id ): ?array {
+	/*
+	 * A listing keeps its address in `address`; an event keeps it in
+	 * `venue` -- "North Fremantle Community Hall, North Fremantle". Same
+	 * question, different field name, so this asks for both rather than
+	 * teaching the rest of the file about post types.
+	 */
 	$address = clean_address( (string) get_field( 'address', $post_id ) );
+	if ( '' === $address ) {
+		$address = clean_address( (string) get_field( 'venue', $post_id ) );
+	}
 
 	/*
 	 * A street number means the geocoder can find a building rather than a
@@ -325,6 +344,11 @@ function geocode( int $post_id ): ?array {
 		return null;
 	}
 
+	// Somewhere we do not cover is a miss, not a placement.
+	if ( distance_km( array( $hit[0], $hit[1] ), CBD ) > MAX_KM ) {
+		return null;
+	}
+
 	/*
 	 * Precision describes what was actually found, not what was asked for.
 	 * "45 Central Walk, Joondalup WA 6027" falls back to "Joondalup WA 6027"
@@ -366,20 +390,29 @@ if ( defined( 'WP_CLI' ) && \WP_CLI ) {
 		 * [--limit=<n>]
 		 * : Stop after this many listings.
 		 *
+		 * [--type=<post_type>]
+		 * : What to place. listing (the default) or event.
+		 *
 		 * ## EXAMPLES
 		 *
 		 *     wp oria geocode --dry-run
 		 *     wp oria geocode
 		 *     wp oria geocode --force --limit=20
+		 *     wp oria geocode --type=event --dry-run
 		 */
 		function ( array $args, array $assoc ): void {
 			$dry   = isset( $assoc['dry-run'] );
 			$force = isset( $assoc['force'] );
 			$limit = isset( $assoc['limit'] ) ? max( 0, (int) $assoc['limit'] ) : 0;
+			$type  = isset( $assoc['type'] ) ? sanitize_key( (string) $assoc['type'] ) : PostTypes\LISTING;
+
+			if ( ! in_array( $type, array( PostTypes\LISTING, 'event' ), true ) ) {
+				\WP_CLI::error( 'type must be listing or event.' );
+			}
 
 			$ids = get_posts(
 				array(
-					'post_type'      => PostTypes\LISTING,
+					'post_type'      => $type,
 					'post_status'    => 'publish',
 					'posts_per_page' => -1,
 					'fields'         => 'ids',
