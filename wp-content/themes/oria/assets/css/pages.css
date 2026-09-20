@@ -7461,6 +7461,7 @@ article.is-spotlit {
    version is four times more pixels than the screen can show. */
 @media (max-width: 860px) {
   .appshero-band { --heroband-img: url("../img/apps-hero-1280.webp"); }
+}
 /* ======================================================================
    My Oria -- the member area at /my-oria/ and its buttons elsewhere.
    Prefix my-; the passport uses pass-/pbadge. Calm, editorial, no score.
