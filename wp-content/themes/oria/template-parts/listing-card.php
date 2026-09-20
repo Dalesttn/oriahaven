@@ -67,7 +67,7 @@ $oria_badges = array(
 		$oria_best = function_exists( '\Oria\Core\BestOf\card_badge' ) ? \Oria\Core\BestOf\card_badge( $oria_id ) : null;
 		?>
 		<?php if ( $oria_best ) : ?>
-			<div class="listing__best"><?php echo \Oria\Core\BestOf\badge_html( $oria_best['label'], $oria_best['url'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+			<div class="listing__best"><?php echo \Oria\Core\BestOf\badge_html( $oria_best['label'], $oria_best['url'], '', (string) ( $oria_best['year'] ?? '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 		<?php endif; ?>
 		<div class="listing__head">
 			<div>

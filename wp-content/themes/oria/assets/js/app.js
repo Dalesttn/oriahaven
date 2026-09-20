@@ -2433,11 +2433,17 @@
         "</div>" +
         '<div class="listing__body">' +
           /* One editorial Best Of badge, linked to its guide. Same rule and
-             markup as listing-card.php; the server picks which one. */
+             markup as BestOf\badge_html(); the server picks which one, and
+             sends the year with it. Any change here belongs there too. */
           (l.best && l.best.label
-            ? '<div class="listing__best"><a class="badge badge--best" href="' + esc(l.best.url) +
-              '" title="See the Best Of guide this comes from"><span class="badge--best__mark" aria-hidden="true">&#10022;</span>' +
-              esc(l.best.label) + "</a></div>"
+            ? '<div class="listing__best"><a class="badge--best" href="' + esc(l.best.url) +
+              '" aria-label="' + esc(bestEyebrow(l.best.year) + ": " + l.best.label) +
+              ' — see the Best Of guide it comes from">' +
+              '<span class="badge--best__disc" aria-hidden="true"><span class="badge--best__mark">\u2726</span></span>' +
+              '<span class="badge--best__text">' +
+                '<span class="badge--best__eyebrow">' + esc(bestEyebrow(l.best.year)) + "</span>" +
+                '<span class="badge--best__title">' + esc(l.best.label) + "</span>" +
+              "</span></a></div>"
             : "") +
           '<div class="listing__head">' +
             "<div>" +
@@ -4000,6 +4006,12 @@
         apply(chip.dataset.clsDay);
       });
     });
+  }
+
+  /* The badge's first line. The year is whatever the guide could date
+     itself to; without one the award still has a name and an owner. */
+  function bestEyebrow(year) {
+    return year ? "Oria Best of " + year : "Oria Best of";
   }
 
   /* --- Saved listings --------------------------------------------------- */

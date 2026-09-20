@@ -204,6 +204,23 @@ function reviewed_month( int $guide ): string {
 	return $ts ? wp_date( 'F Y', $ts ) : (string) get_the_modified_date( 'F Y', $guide );
 }
 
+/**
+ * The year an award was made, as a string, or '' when it cannot be known.
+ *
+ * The reviewed date is the editor saying "I checked this on this day", which
+ * is the closest thing the data has to an award date. Nothing is invented:
+ * a guide with neither a reviewed date nor a readable modified date shows
+ * no year at all, and the badge reads "Oria Best of".
+ */
+function award_year( int $guide ): string {
+	$raw = trim( (string) get_field( 'editorially_reviewed_date', $guide ) );
+	$ts  = '' !== $raw ? strtotime( $raw ) : false;
+	if ( ! $ts ) {
+		$ts = (int) get_post_time( 'U', true, $guide );
+	}
+	return $ts ? gmdate( 'Y', $ts ) : '';
+}
+
 /** "Reviewed September 2026", or "Updated …" when nobody has said they reviewed it. */
 function updated( int $guide ): string {
 	$reviewed = '' !== trim( (string) get_field( 'editorially_reviewed_date', $guide ) );
@@ -423,22 +440,56 @@ function card_badge( int $listing ): ?array {
 			break;
 		}
 	}
-	return array( 'label' => $pick['label'], 'url' => (string) get_permalink( $pick['guide'] ) );
+	return array(
+		'label' => $pick['label'],
+		'url'   => (string) get_permalink( $pick['guide'] ),
+		'year'  => award_year( (int) $pick['guide'] ),
+	);
 }
 
 /**
  * The badge markup. One shape everywhere so a reader learns it once.
  *
- * ✦ rather than a dot: the dot is what Featured and Claimed use, and these
- * must not read as the same family.
+ * An award, not a filter. The old badge was a pale pill the size of a
+ * category chip, which is what a category chip looks like -- so it read as
+ * one. This is deep green with a cream disc, and the disc exists for a
+ * reason: the Oria mark is painted in gold (see .badge--best__mark, masked
+ * to logo-mark.svg) and gold on green loses its edges.
+ *
+ * Two lines of text, because "Best ice bath" alone says nothing about who
+ * decided. "Oria Best of 2026" says a person did, in a particular year.
+ *
+ * The ✦ glyph stays inside the mark span: v4 masks it away, and a theme
+ * without that rule still gets a mark rather than an empty circle.
+ *
+ * @param string $label       The award, e.g. "Best ice bath".
+ * @param string $url         The guide it came from; omit for a plain badge.
+ * @param string $extra_class Extra classes -- 'badge--best--sm' for a compact one.
+ * @param string $year        Award year; omitted when the guide cannot date it.
  */
-function badge_html( string $label, string $url = '', string $extra_class = '' ): string {
-	$class = trim( 'badge badge--best ' . $extra_class );
-	$inner = '<span class="badge--best__mark" aria-hidden="true">&#10022;</span>' . esc_html( $label );
+function badge_html( string $label, string $url = '', string $extra_class = '', string $year = '' ): string {
+	$class   = trim( 'badge--best ' . $extra_class );
+	$eyebrow = '' !== $year
+		/* translators: %s: year */
+		? sprintf( __( 'Oria Best of %s', 'oria' ), $year )
+		: __( 'Oria Best of', 'oria' );
+
+	$inner = '<span class="badge--best__disc" aria-hidden="true"><span class="badge--best__mark">&#10022;</span></span>'
+		. '<span class="badge--best__text">'
+		. '<span class="badge--best__eyebrow">' . esc_html( $eyebrow ) . '</span>'
+		. '<span class="badge--best__title">' . esc_html( $label ) . '</span>'
+		. '</span>';
+
+	/* translators: 1: "Oria Best of 2026", 2: the award */
+	$name = sprintf( __( '%1$s: %2$s', 'oria' ), $eyebrow, $label );
+
 	if ( '' === $url ) {
-		return '<span class="' . esc_attr( $class ) . '">' . $inner . '</span>';
+		return '<span class="' . esc_attr( $class ) . '" role="img" aria-label="' . esc_attr( $name ) . '">' . $inner . '</span>';
 	}
-	return '<a class="' . esc_attr( $class ) . '" href="' . esc_url( $url ) . '" title="' . esc_attr__( 'See the Best Of guide this comes from', 'oria' ) . '">' . $inner . '</a>';
+
+	return '<a class="' . esc_attr( $class ) . '" href="' . esc_url( $url ) . '" aria-label="'
+		. esc_attr( sprintf( /* translators: %s: award name */ __( '%s — see the Best Of guide it comes from', 'oria' ), $name ) )
+		. '">' . $inner . '</a>';
 }
 
 /**
@@ -495,7 +546,7 @@ function badges_html( int $listing ): string {
 			continue;
 		}
 		$seen[ $key ] = true;
-		$out         .= badge_html( $row['label'], (string) get_permalink( $row['guide'] ) );
+		$out         .= badge_html( $row['label'], (string) get_permalink( $row['guide'] ), '', award_year( (int) $row['guide'] ) );
 	}
 	return $out;
 }

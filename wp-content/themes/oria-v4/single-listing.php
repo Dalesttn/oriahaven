@@ -496,7 +496,18 @@ while ( have_posts() ) :
 					$oria_eyebrow[] = esc_html( $oria_area_name );
 				}
 				if ( $oria_best_badge ) {
-					$oria_eyebrow[] = '<a class="xp-hero__best" href="' . esc_url( $oria_best_badge['url'] ) . '"><span class="badge--best__mark" aria-hidden="true">&#10022;</span> ' . esc_html( $oria_best_badge['label'] ) . '<span class="xp-vh"> ' . esc_html__( '(see the Best Of guide)', 'oria' ) . '</span></a>';
+					/*
+					 * The full badge here, not the compact one: this is the
+					 * listing's own page, which is where the brief asks for the
+					 * whole "Oria Best of 2026" wording to survive. The compact
+					 * form is for cards, where the practice's name has to win.
+					 */
+					$oria_eyebrow[] = \Oria\Core\BestOf\badge_html(
+						$oria_best_badge['label'],
+						$oria_best_badge['url'],
+						'',
+						(string) ( $oria_best_badge['year'] ?? '' )
+					);
 				}
 				?>
 				<?php if ( $oria_eyebrow ) : ?>

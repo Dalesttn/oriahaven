@@ -1309,14 +1309,77 @@ html.has-sheet .cmptray { display: none; }
 /* Editorial badge: a Best Of award. Deliberately not the Featured family --
    sentence case on sand with a gold mark, where Featured is paid and sits
    uppercase on deep green. A reader must never take one for the other. */
+/* --- The Best Of award badge ------------------------------------------
+   An award, not a filter. The old one was a pale pill the size of a
+   category chip and read as one; this is deep green with a cream disc.
+   The disc is not decoration: the Oria mark is painted in gold, and gold
+   on green loses its edges.
+
+   Deliberately NOT built on .badge -- that base is a small uppercase chip,
+   which is the family this had to leave. */
 .badge--best {
-  background: var(--sand-2); color: var(--deep);
-  border: 1px solid rgba(14, 59, 56, .14);
+  display: inline-flex; align-items: center; gap: .6rem;
+  width: fit-content; max-width: 100%;
+  padding: .45rem .9rem .5rem .5rem;
+  background: var(--deep); color: var(--white);
+  border: 2px solid rgba(255, 255, 255, .92);
+  border-radius: var(--r-pill);
+  box-shadow: 0 8px 20px rgba(14, 59, 56, .20), 0 2px 5px rgba(14, 59, 56, .14);
+  text-decoration: none; line-height: 1;
   text-transform: none; letter-spacing: 0;
-  font-size: var(--fs-xs); font-weight: 600;
-  padding: .3rem .62rem .3rem .5rem; gap: 5px;
-  text-decoration: none;
 }
-.badge--best__mark { color: var(--brand-gold); font-size: .9em; line-height: 1; }
-a.badge--best:hover { border-color: var(--deep); background: var(--white); color: var(--deep); }
+.badge--best__disc {
+  display: grid; place-items: center; flex: none;
+  width: 2.1rem; height: 2.1rem;
+  background: var(--sand-2); border-radius: 50%;
+}
+/* The mark itself. v4 masks this span into the painted Oria logo; the
+   glyph inside is the fallback for a theme without that rule. */
+.badge--best__mark { color: var(--brand-gold); font-size: 1.05rem; line-height: 1; }
+.badge--best__text { display: flex; flex-direction: column; min-width: 0; }
+.badge--best__eyebrow {
+  font-size: .625rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--gold-soft); line-height: 1.15;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.badge--best__title {
+  margin-top: .2rem; font-size: .95rem; font-weight: 700; letter-spacing: -.01em;
+  line-height: 1.15; color: var(--white);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+a.badge--best {
+  transition: background-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), transform var(--t-med) var(--ease);
+}
+a.badge--best:hover {
+  background: var(--deep-2); color: var(--white);
+  box-shadow: 0 12px 26px rgba(14, 59, 56, .26), 0 3px 7px rgba(14, 59, 56, .16);
+  transform: translateY(-1px);
+}
+a.badge--best:focus-visible { outline: 3px solid var(--gold-soft); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  a.badge--best { transition: none; }
+  a.badge--best:hover { transform: none; }
+}
+
+/* Compact: one line, for a row of small facts (the listing hero) and for
+   narrow cards, where the full badge would outweigh the practice's name. */
+.badge--best--sm { gap: .45rem; padding: .3rem .7rem .32rem .34rem; box-shadow: 0 4px 12px rgba(14, 59, 56, .18); }
+.badge--best--sm .badge--best__disc { width: 1.6rem; height: 1.6rem; }
+.badge--best--sm .badge--best__mark { font-size: .82rem; }
+.badge--best--sm .badge--best__eyebrow { display: none; }
+.badge--best--sm .badge--best__title { margin-top: 0; font-size: .8rem; }
+
+@media (max-width: 600px) {
+  .badge--best { gap: .5rem; padding: .4rem .78rem .42rem .42rem; }
+  .badge--best__disc { width: 1.85rem; height: 1.85rem; }
+  .badge--best__mark { font-size: .95rem; }
+  .badge--best__eyebrow { font-size: .56rem; }
+  .badge--best__title { font-size: .875rem; }
+}
+/* The award sits above the name, which is the brief's alternative to
+   overlapping the photograph -- the card's top-left corner already belongs
+   to the Featured/Claimed flag, and an award landing on top of it would be
+   worse than either. The gap is pulled in so the two read as one block:
+   the recognition and the practice it belongs to. */
 .listing__best { display: flex; }
+.listing__best + .listing__head { margin-top: calc(var(--s-2) * -1); }
