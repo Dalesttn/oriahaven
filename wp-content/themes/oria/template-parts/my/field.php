@@ -64,6 +64,14 @@ $dis       = $open ? '' : ' disabled';
 	<?php
 	switch ( $type ) :
 
+		case 'prose':
+			/*
+			 * Stored as paragraphs of HTML; edited as plain text with blank
+			 * lines between paragraphs, which is how the sanitiser reads it
+			 * back. Nobody should have to see a <p> to edit a description.
+			 */
+			$val = trim( wp_strip_all_tags( preg_replace( '#</p>\s*<p[^>]*>#i', "\n\n", (string) $val ) ) );
+			// fall through
 		case 'textarea':
 			?>
 			<textarea class="input myfield__area" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>"

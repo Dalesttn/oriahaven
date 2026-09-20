@@ -75,13 +75,29 @@ function sections(): array {
 			'blurb' => __( 'What you do, and who it is for.', 'oria' ),
 			'icon'  => 'basics',
 			'fields' => array(
+				/*
+				 * Two texts, because the page uses them differently and an
+				 * owner asked where "What it's like" came from. The short one
+				 * is the excerpt: its first sentence leads the page under the
+				 * name. The long one is the post body: it IS the "What it's
+				 * like" section. When there is no long one, the rest of the
+				 * short one stands in.
+				 */
 				array(
 					'name'  => 'listing_description',
 					'type'  => 'textarea',
-					'rows'  => 7,
-					'label' => __( 'About your practice', 'oria' ),
-					'help'  => __( 'In a few sentences: what you offer, where you are, and what the experience is actually like. Write it the way you would say it to someone on the phone.', 'oria' ),
-					'hint'  => __( 'Around 60 to 120 words reads best.', 'oria' ),
+					'rows'  => 4,
+					'label' => __( 'Your introduction', 'oria' ),
+					'help'  => __( 'Two or three sentences. The first one leads your page, right under your name, so make it the reason to come.', 'oria' ),
+					'hint'  => __( 'Around 40 to 80 words.', 'oria' ),
+				),
+				array(
+					'name'  => 'listing_body',
+					'type'  => 'prose',
+					'rows'  => 10,
+					'label' => __( 'What it\'s like', 'oria' ),
+					'help'  => __( 'The full description, shown under the "What it\'s like" heading on your page. The room, the format, the people, what a first visit is like. Blank lines make paragraphs.', 'oria' ),
+					'hint'  => __( 'Describe what happens there, never what it treats or fixes.', 'oria' ),
 				),
 				array(
 					'name'  => 'good_for',
@@ -578,6 +594,10 @@ function key_for( string $name ): string {
  * twice over.
  */
 function value( int $listing, string $name ) {
+	// The long description is the post body, which has no ACF field at all.
+	if ( 'listing_body' === $name ) {
+		return (string) get_post_field( 'post_content', $listing, 'raw' );
+	}
 	$key = key_for( $name );
 	if ( $key && function_exists( 'get_field' ) ) {
 		return get_field( $key, $listing );
@@ -587,6 +607,10 @@ function value( int $listing, string $name ) {
 
 /** Write one field the same way, so the proxies fire. */
 function write( int $listing, string $name, $value ): void {
+	if ( 'listing_body' === $name ) {
+		wp_update_post( array( 'ID' => $listing, 'post_content' => (string) $value ) );
+		return;
+	}
 	$key = key_for( $name );
 	if ( $key && function_exists( 'update_field' ) ) {
 		update_field( $key, $value, $listing );
@@ -621,7 +645,7 @@ function filled( int $listing, string $name ): bool {
  */
 function weights(): array {
 	return array(
-		'description' => array( 'weight' => 10, 'section' => 'basics',   'fields' => array( 'listing_description' ), 'any' => true,  'label' => __( 'Describe your practice', 'oria' ) ),
+		'description' => array( 'weight' => 10, 'section' => 'basics',   'fields' => array( 'listing_description', 'listing_body' ), 'any' => true,  'label' => __( 'Describe your practice', 'oria' ) ),
 		'services'    => array( 'weight' => 15, 'section' => 'services', 'fields' => array( 'services' ),            'any' => true,  'label' => __( 'List what you offer', 'oria' ) ),
 		'price'       => array( 'weight' => 15, 'section' => 'prices',   'fields' => array( 'price_from', 'price_band' ), 'any' => true, 'label' => __( 'Add a starting price', 'oria' ) ),
 		'hours'       => array( 'weight' => 10, 'section' => 'hours',    'fields' => array( 'opening_hours' ),       'any' => true,  'label' => __( 'Add your opening hours', 'oria' ) ),
@@ -889,6 +913,18 @@ function clear_pending( int $listing, string $field ): void {
  */
 function clean( array $field, $raw ) {
 	switch ( $field['type'] ) {
+
+		case 'prose':
+			/*
+			 * Prose keeps its paragraphs. sanitize_textarea_field() would
+			 * flatten the blank lines an owner uses to break the text up;
+			 * wp_kses_post() keeps them and strips anything that is not
+			 * plain writing. Typed text has no <p> tags, so wpautop adds
+			 * them the same way the editor would.
+			 */
+			$v = wp_kses_post( (string) wp_unslash( $raw ) );
+			$v = trim( $v );
+			return '' === $v ? '' : ( str_contains( $v, '<p' ) ? $v : wpautop( $v ) );
 
 		case 'textarea':
 			$v = sanitize_textarea_field( (string) wp_unslash( $raw ) );
