@@ -14,8 +14,22 @@
 }
 .xc-area__credit { margin: 0 var(--gutter); font-size: var(--fs-xs); color: var(--text-faint); }
 @media (min-width: 60rem) {
-  .xc-area { min-height: clamp(560px, 68svh, 720px); }
-  .xc-area .xc-hz__title { font-size: clamp(3rem, 5.6vw, 5.25rem); }
+  /* A banner, not a title page. At 68svh with an 81px name the hero was
+     638px of a 900px screen and the places -- which are what somebody
+     came for -- started below the fold.
+
+     Three cuts, in order of how much they gave back: the copy column is
+     wide enough for the three controls to sit on one row instead of two,
+     the name is set at a size that fits "Wellness in Scarborough" on one
+     line, and the gaps between the parts are the smaller step. The foot
+     padding stays as it was -- the Discovery Dock overlaps into it. */
+  .xc-area { min-height: clamp(380px, 46svh, 500px); }
+  /* Wide enough that the three controls stay on one row for the longest
+     suburb we list -- "Find something in East Victoria Park" is a wider
+     button than most, and a second row costs 58px. The sentence keeps
+     its own 34ch measure, so nothing here sets prose across 800px. */
+  .xc-area .xc-hz__copy { max-width: 52rem; gap: var(--s-3); }
+  .xc-area .xc-hz__title { font-size: clamp(2.25rem, 3.6vw, 3.25rem); }
   .xc-area__plan { color: var(--white); }
   .xc-area__plan:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
   .xc-area__credit {
