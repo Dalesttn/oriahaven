@@ -490,7 +490,15 @@ function save_event( int $id, array $r, array $c, string $fingerprint ): void {
 	update_post_meta( $id, '_oria_fingerprint', $fingerprint );
 	update_post_meta( $id, '_oria_verified', current_time( 'mysql' ) );
 
-	wp_set_object_terms( $id, (string) $r['type'], 'event_type' );
+	/*
+	 * Only a type this site already knows. wp_set_object_terms() with a
+	 * name INVENTS the term when it is missing, which is how production
+	 * ended up with "meditation classes" beside "Meditation" -- one event,
+	 * one orphan term, and a submit form offering both.
+	 */
+	if ( in_array( (string) $r['type'], Taxonomy\slugs(), true ) ) {
+		wp_set_object_terms( $id, (string) $r['type'], 'event_type' );
+	}
 	$practice = Taxonomy\practice_for( (string) $r['type'] );
 	if ( '' !== $practice ) {
 		wp_set_object_terms( $id, $practice, 'practice' );

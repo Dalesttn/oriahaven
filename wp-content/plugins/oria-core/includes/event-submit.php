@@ -236,6 +236,14 @@ function validate( array $in ): array {
 	if ( '' !== $in['suburb'] && ! term_exists( $in['suburb'], 'area' ) ) {
 		$errors[] = 'suburb';
 	}
+	/*
+	 * A cap the form also states. Generous -- three hundred words is far
+	 * more than any event needs -- and its job is to stop a paste of an
+	 * entire website, not to police a wordy organiser.
+	 */
+	if ( str_word_count( $in['description'] ) > 300 ) {
+		$errors[] = 'description';
+	}
 
 	return $errors;
 }
@@ -431,6 +439,33 @@ function stashed(): array {
 	return is_array( $in ) ? $in : array();
 }
 
+/**
+ * Which field each error belongs to.
+ *
+ * The summary above the form links every message to the control that
+ * caused it, which is the difference between "something is wrong" and
+ * "this box is wrong". Codes with no field -- the spam walls, a failed
+ * insert -- are about the submission rather than an input.
+ *
+ * @return array<string, string>
+ */
+function error_fields(): array {
+	return array(
+		'title'        => 'title',
+		'email'        => 'email',
+		'authorised'   => 'authorised',
+		'type'         => 'type',
+		'start'        => 'start_date',
+		'past'         => 'start_date',
+		'end'          => 'end_date',
+		'suburb'       => 'suburb',
+		'image_upload' => 'image',
+		'image_size'   => 'image',
+		'image_type'   => 'image',
+		'description'  => 'description',
+	);
+}
+
 /** Human wording for each error code. @return string[] */
 function messages( string $codes ): array {
 	$all = array(
@@ -448,6 +483,7 @@ function messages( string $codes ): array {
 		'image_upload' => __( 'The image did not upload. Please try again.', 'oria' ),
 		'image_size'   => __( 'Images need to be under 5MB.', 'oria' ),
 		'image_type'   => __( 'Images must be JPEG, PNG or WebP.', 'oria' ),
+		'description'  => __( 'That description is very long — please keep it under about 300 words.', 'oria' ),
 		'failed'       => __( 'Something went wrong at our end. Please try again.', 'oria' ),
 	);
 

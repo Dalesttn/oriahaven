@@ -1,0 +1,176 @@
+/* ==========================================================================
+   Submit an event.
+
+   Loaded only on /submit-an-event/. Everything is namespaced .sev- so none
+   of it can reach another template, and every colour, radius and space is
+   one of the theme's own tokens -- this page should look like the rest of
+   the site, not like a form bolted onto it.
+   ========================================================================== */
+
+.sev { padding-bottom: var(--s-7); }
+
+/* Two columns once there is room for the panel to be useful rather than
+   cramped; one column, panel first, below that. */
+.sev__layout { display: grid; gap: var(--s-5); align-items: start; }
+@media (min-width: 62rem) {
+  .sev__layout { grid-template-columns: minmax(0, 45rem) 21rem; gap: var(--s-6); }
+  .sev__aside { position: sticky; top: calc(var(--header-h, 72px) + var(--s-4)); }
+}
+@media (max-width: 61.999rem) {
+  /* Above the form on a narrow screen: the questions it answers are the
+     ones people have before they start typing. */
+  .sev__aside { order: -1; }
+}
+
+.sev__legend { font-size: var(--fs-sm); color: var(--text-soft); margin: 0 0 var(--s-4); }
+.sev-req { color: var(--brand-gold); font-weight: 700; }
+.sev-opt { color: var(--text-faint); font-weight: 400; }
+
+/* --- Sections ---------------------------------------------------------- */
+.sev-sec { border: 0; padding: 0; margin: 0 0 var(--s-6); }
+.sev-sec + .sev-sec { border-top: 1px solid var(--line); padding-top: var(--s-5); }
+.sev-sec__head {
+  display: flex; align-items: center; gap: .6rem;
+  padding: 0; margin-bottom: var(--s-4);
+}
+.sev-sec__n {
+  display: grid; place-items: center; flex: none;
+  width: 1.75rem; height: 1.75rem; border-radius: 50%;
+  background: var(--deep); color: var(--white);
+  font-size: var(--fs-xs); font-weight: 700;
+}
+.sev-sec__title { font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em; }
+
+.sev-form .field { margin-bottom: var(--s-4); }
+.sev-grid { display: grid; gap: var(--s-4); }
+@media (min-width: 40rem) { .sev-grid { grid-template-columns: 1fr 1fr; } }
+
+/* The free checkbox lines up with the price box beside it rather than
+   floating at the top of its column. */
+.sev-free { display: flex; align-items: flex-end; padding-bottom: .55rem; }
+.field.is-muted { opacity: .55; }
+.sev-auth { margin-top: var(--s-4); align-items: flex-start; }
+
+.sev-count { display: block; font-size: var(--fs-xs); color: var(--text-faint); margin-top: .35rem; }
+.sev-count .is-over { color: var(--gold); font-weight: 600; }
+
+/* --- The searchable suburb box ----------------------------------------- */
+.sev-combo { position: relative; }
+/* The native select stays in the DOM and keeps posting the value; it is
+   simply no longer the thing anybody interacts with. */
+/* Pinned to the wrapper's corner, not left at its static position: without
+   left/top it sat to the right of the full-width input and pushed the page
+   39px wide at 375. Clipped rather than display:none so it still posts. */
+.sev-combo__native {
+  position: absolute; left: 0; top: 0;
+  width: 1px; height: 1px; opacity: 0; pointer-events: none;
+  overflow: hidden; clip-path: inset(50%);
+}
+.sev-combo__list {
+  position: absolute; z-index: 30; inset: calc(100% + 4px) 0 auto 0;
+  max-height: 17rem; overflow-y: auto; margin: 0; padding: .3rem; list-style: none;
+  background: var(--white); border: 1px solid var(--line-strong);
+  border-radius: var(--r-md); box-shadow: var(--sh-2);
+}
+.sev-combo__opt {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .75rem;
+  padding: .5rem .6rem; border-radius: var(--r-sm); cursor: pointer;
+  font-size: var(--fs-sm);
+}
+.sev-combo__opt:hover, .sev-combo__opt.is-active { background: var(--sand-2); }
+.sev-combo__group { font-size: var(--fs-xs); color: var(--text-faint); white-space: nowrap; }
+
+/* --- The image area ---------------------------------------------------- */
+.sev-drop {
+  border: 1.5px dashed var(--line-strong); border-radius: var(--r-md);
+  padding: var(--s-4); text-align: center; background: var(--sand-1, var(--sand-2));
+}
+.sev-drop.is-filled { border-style: solid; border-color: var(--teal); background: var(--white); }
+.sev-drop__preview {
+  display: block; width: 100%; max-height: 13rem; object-fit: cover;
+  border-radius: var(--r-sm); margin-bottom: var(--s-3);
+}
+.sev-drop__pick { display: block; cursor: pointer; }
+.sev-drop__title { display: block; font-weight: 600; }
+.sev-drop__meta { display: block; font-size: var(--fs-xs); color: var(--text-faint); margin-top: .2rem; }
+/* A real file input, not a fake one: it keeps the keyboard and the mobile
+   photo library working. It is only visually folded into the box. */
+.sev-drop__input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.sev-drop__pick:focus-within .sev-drop__title { text-decoration: underline; text-underline-offset: 3px; }
+.sev-drop__name { display: block; font-size: var(--fs-xs); color: var(--text-soft); margin-top: .4rem; word-break: break-all; }
+.sev-drop__remove {
+  margin-top: .5rem; font: inherit; font-size: var(--fs-xs); font-weight: 600;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  color: var(--text-soft); text-decoration: underline; text-underline-offset: 3px;
+}
+.sev-drop__remove:hover { color: var(--ink); }
+.sev-drop__note { display: block; font-size: var(--fs-xs); margin-top: .4rem; }
+.sev-drop__note.is-error { color: #9b2c2c; font-weight: 600; }
+
+/* --- Errors ------------------------------------------------------------ */
+.sev-errors {
+  border: 1px solid #c98787; background: #FBEFEF; color: #7a2323;
+  border-radius: var(--r-md); padding: var(--s-4); margin-bottom: var(--s-5);
+}
+.sev-errors:focus-visible { outline: 3px solid #9b2c2c; outline-offset: 2px; }
+.sev-errors__title { font-size: 1rem; font-weight: 700; margin: 0 0 .5rem; }
+.sev-errors ul { margin: 0; padding-left: 1.1rem; font-size: var(--fs-sm); }
+.sev-errors a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+/* Shape as well as colour: a red border alone is not a message. */
+.sev-form [aria-invalid="true"] { border-color: #c98787; box-shadow: inset 3px 0 0 #9b2c2c; }
+
+/* --- Actions ----------------------------------------------------------- */
+.sev-actions { display: flex; flex-direction: column; gap: .6rem; align-items: flex-start; }
+.btn--lg { padding: .95rem 1.8rem; font-size: 1rem; min-height: 52px; }
+.sev-actions__note { margin: 0; font-size: var(--fs-xs); color: var(--text-faint); }
+[data-submit-button].is-busy { opacity: .75; pointer-events: none; }
+
+/* --- The panel --------------------------------------------------------- */
+.sev-next {
+  border: 1px solid var(--line); border-radius: var(--r-lg, 18px);
+  background: var(--sand-2); padding: var(--s-5);
+}
+.sev-next__title { font-size: 1rem; font-weight: 700; margin: 0 0 var(--s-3); }
+.sev-next__list { margin: 0; padding: 0; list-style: none; counter-reset: sev; }
+.sev-next__list li {
+  counter-increment: sev; position: relative;
+  padding: 0 0 var(--s-4) 2rem; font-size: var(--fs-sm);
+}
+.sev-next__list li:last-child { padding-bottom: 0; }
+.sev-next__list li::before {
+  content: counter(sev);
+  position: absolute; left: 0; top: 0;
+  display: grid; place-items: center;
+  width: 1.4rem; height: 1.4rem; border-radius: 50%;
+  background: var(--white); border: 1px solid var(--line-strong);
+  font-size: 11px; font-weight: 700; color: var(--deep);
+}
+.sev-next__list b { display: block; }
+.sev-next__list span { color: var(--text-soft); }
+.sev-next__note {
+  margin: var(--s-4) 0 0; padding-top: var(--s-3);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-xs); color: var(--text-soft);
+}
+
+/* --- Done -------------------------------------------------------------- */
+.sev-done {
+  max-width: 34rem; text-align: center; margin: 0 auto;
+  border: 1px solid var(--line); border-radius: var(--r-lg, 18px);
+  background: var(--white); padding: var(--s-6) var(--s-5);
+}
+.sev-done__mark { display: inline-grid; place-items: center; color: var(--brand-gold); margin-bottom: var(--s-3); }
+.sev-done p { color: var(--text-soft); margin-top: .6rem; }
+.sev-done__acts { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: center; margin-top: var(--s-5); }
+.sev-done__note { font-size: var(--fs-xs); margin-top: var(--s-4); }
+@media (prefers-reduced-motion: no-preference) {
+  .sev-done__mark { animation: sev-mark 520ms var(--ease, ease-out) both; }
+  @keyframes sev-mark { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
+}
+
+/* iOS zooms a focused input below 16px. Nothing else on the page is worth
+   that, least of all on the form somebody is filling in on a phone. */
+@media (max-width: 40rem) {
+  .sev-form .input, .sev-form .select, .sev-form .textarea, .sev-combo__input { font-size: 16px; }
+  .sev-drop { padding: var(--s-3); }
+}

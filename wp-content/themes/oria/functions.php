@@ -118,6 +118,28 @@ add_action(
 			);
 		}
 
+		/*
+		 * Submit an event: its own stylesheet and its own enhancements,
+		 * loaded only on that route. The form works without the script --
+		 * everything in it is built on a control the server already
+		 * understands -- so it goes in the footer and blocks nothing.
+		 */
+		if ( function_exists( '\Oria\Core\EventSubmit\is_page' ) && \Oria\Core\EventSubmit\is_page() ) {
+			wp_enqueue_style(
+				'oria-submit-event',
+				"{$uri}/assets/css/submit-event.css",
+				array(),
+				(string) filemtime( get_theme_file_path( 'assets/css/submit-event.css' ) )
+			);
+			wp_enqueue_script(
+				'oria-submit-event',
+				"{$uri}/assets/js/submit-event.js",
+				array(),
+				(string) filemtime( get_theme_file_path( 'assets/js/submit-event.js' ) ),
+				array( 'in_footer' => true )
+			);
+		}
+
 		// The week planner needs no map, so it does not pull Leaflet in.
 		if ( is_page( 'plan-my-week' ) ) {
 			wp_enqueue_script(
