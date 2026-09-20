@@ -1,8 +1,16 @@
 <?php
 /**
- * My Oria dashboard: what have I saved, what should I try next, what have
- * I explored. Four blocks, each of which stands down when there is nothing
- * to show and says what would fill it.
+ * My Oria: the dashboard.
+ *
+ * Three questions in order, which is the whole layout: what matters to me
+ * today, what have I saved, and what might I try next. Everything on it is
+ * read from this member's own rows -- no invented metrics, no progress bar
+ * over browsing, and no module that appears before it has something true
+ * to say.
+ *
+ * Deliberately absent: saved events, because those live on the device and
+ * not the account, so this cannot honestly list them; plans and journeys,
+ * because no such data exists yet; and anything resembling a score.
  */
 
 declare(strict_types=1);
@@ -12,177 +20,323 @@ use Oria\Core\MyOria;
 use Oria\Core\Passport;
 use Oria\Core\Recommend;
 
-$oria_uid    = get_current_user_id();
-$oria_name   = MyOria\first_name( $oria_uid );
-$oria_sum    = MyOria\summary( $oria_uid );
-$oria_saved  = Activity\ids( $oria_uid, Activity\SAVED );
-$oria_upnext = array_slice( $oria_saved, 0, 3 );
-$oria_badges = Passport\evaluate( $oria_uid );
-$oria_earned = array_values( array_filter( $oria_badges, static fn( $b ) => $b['earned'] ) );
-$oria_next   = Passport\next_up( $oria_uid );
-$oria_stats  = Passport\stats( $oria_uid );
-$oria_prefs  = Recommend\has_prefs( $oria_uid );
-$oria_recs   = Recommend\for_user( $oria_uid, 6 );
+$oria_uid   = get_current_user_id();
+$oria_name  = MyOria\first_name( $oria_uid );
+$oria_sum   = MyOria\summary( $oria_uid );
+$oria_saved = Activity\ids( $oria_uid, Activity\SAVED );
+$oria_tried = Activity\ids( $oria_uid, Activity\TRIED );
+$oria_next  = Passport\next_up( $oria_uid );
+$oria_stats = Passport\stats( $oria_uid );
+$oria_prefs = Recommend\prefs( $oria_uid );
+$oria_hasp  = Recommend\has_prefs( $oria_uid );
+$oria_recs  = Recommend\for_user( $oria_uid, 3 );
+$oria_dir   = get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' );
+
 if ( function_exists( '\Oria\Theme\prime_listings' ) ) {
-	\Oria\Theme\prime_listings( array_merge( $oria_upnext, $oria_recs ) );
+	\Oria\Theme\prime_listings( array_merge( array_slice( $oria_saved, 0, 4 ), $oria_recs ) );
 }
+
+/*
+ * The one thing worth doing next, ordered by how much it is actually
+ * worth: somebody with nothing saved needs a first save far more than
+ * somebody with four needs a badge. Every branch leads somewhere real --
+ * none of these is a button that does nothing.
+ */
+if ( ! $oria_saved ) {
+	$oria_continue = array(
+		'eyebrow' => __( 'Start here', 'oria' ),
+		'title'   => __( 'Your next favourite place can live here', 'oria' ),
+		'line'    => __( 'Save places while you explore and they will be ready when you are.', 'oria' ),
+		'cta'     => __( 'Explore wellness places', 'oria' ),
+		'url'     => $oria_dir,
+		'kind'    => 'first-save',
+	);
+} elseif ( ! $oria_hasp ) {
+	$oria_continue = array(
+		'eyebrow' => __( 'Two questions', 'oria' ),
+		'title'   => __( 'Tell us what you are after', 'oria' ),
+		'line'    => __( 'Pick a couple of interests and a part of Perth, and what we suggest gets closer to what you want. You can change them any time.', 'oria' ),
+		'cta'     => __( 'Set my interests', 'oria' ),
+		'url'     => MyOria\url( 'profile' ),
+		'kind'    => 'prefs',
+	);
+} elseif ( $oria_next ) {
+	$oria_continue = array(
+		'eyebrow' => __( 'Your passport', 'oria' ),
+		'title'   => (string) $oria_next['label'],
+		'line'    => (string) $oria_next['hint'],
+		'cta'     => __( 'Open my passport', 'oria' ),
+		'url'     => MyOria\url( 'passport' ),
+		'kind'    => 'passport',
+	);
+} else {
+	$oria_continue = array(
+		'eyebrow' => __( 'Where you left off', 'oria' ),
+		'title'   => __( 'Pick up your saved places', 'oria' ),
+		'line'    => __( 'Everything you have kept, in one list, with what you have already tried marked off.', 'oria' ),
+		'cta'     => __( 'Open my saved places', 'oria' ),
+		'url'     => MyOria\url( 'saved' ),
+		'kind'    => 'saved',
+	);
+}
+
+/*
+ * Saved but not yet tried. This is the honest "this week": not a calendar,
+ * which would imply Oria had booked something on somebody's behalf, but
+ * the places they meant to get to and have not.
+ */
+$oria_todo = array_values( array_diff( $oria_saved, $oria_tried ) );
 ?>
-<section class="wrap my">
-	<div class="my__hello">
-		<span class="micro"><?php esc_html_e( 'My Oria', 'oria' ); ?></span>
-		<h1 class="h1"><?php echo esc_html( $oria_name ? sprintf( /* translators: %s: first name */ __( 'Welcome back, %s', 'oria' ), $oria_name ) : __( 'Welcome back', 'oria' ) ); ?></h1>
-		<p class="lede"><?php esc_html_e( 'Your saved places, experiences and wellness journey — all in one place.', 'oria' ); ?></p>
-	</div>
+<div class="myhome">
 
-	<div class="mystats">
-		<a class="mystat" href="<?php echo esc_url( MyOria\url( 'saved' ) ); ?>">
-			<span class="mystat__n" data-my-count="saved"><?php echo esc_html( number_format_i18n( $oria_sum['saved'] ) ); ?></span>
-			<span class="mystat__l"><?php echo esc_html( _n( 'Saved place', 'Saved places', $oria_sum['saved'], 'oria' ) ); ?></span>
-		</a>
-		<a class="mystat" href="<?php echo esc_url( MyOria\url( 'passport' ) ); ?>">
-			<span class="mystat__n" data-my-count="tried"><?php echo esc_html( number_format_i18n( $oria_sum['tried'] ) ); ?></span>
-			<span class="mystat__l"><?php echo esc_html( _n( 'Experience tried', 'Experiences tried', $oria_sum['tried'], 'oria' ) ); ?></span>
-		</a>
-		<a class="mystat" href="<?php echo esc_url( MyOria\url( 'passport' ) . '#badges' ); ?>">
-			<span class="mystat__n" data-my-count="badges"><?php echo esc_html( number_format_i18n( $oria_sum['badges'] ) ); ?></span>
-			<span class="mystat__l"><?php echo esc_html( _n( 'Passport badge', 'Passport badges', $oria_sum['badges'], 'oria' ) ); ?></span>
-		</a>
-	</div>
-</section>
-
-<?php if ( ! $oria_prefs ) : ?>
-	<section class="wrap my">
-		<?php
-		/*
-		 * The optional second step of registration, here rather than in the
-		 * way of it. Two questions, tick what fits, or ignore the block.
-		 */
-		?>
-		<form class="myprefs reveal" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="oria_my_profile">
-			<input type="hidden" name="first_name" value="<?php echo esc_attr( $oria_name ); ?>">
-			<input type="hidden" name="return" value="dashboard">
-			<?php wp_nonce_field( 'oria_my_profile', 'oria_my_nonce' ); ?>
-			<div class="myprefs__q">
-				<span class="micro"><?php esc_html_e( 'Optional', 'oria' ); ?></span>
-				<h2 class="h3"><?php esc_html_e( 'What are you looking for?', 'oria' ); ?></h2>
-				<div class="mychips">
-					<?php foreach ( Recommend\INTENTS as $oria_k => $oria_l ) : ?>
-						<label class="mychip"><input type="checkbox" name="intents[]" value="<?php echo esc_attr( $oria_k ); ?>"><span><?php echo esc_html( $oria_l ); ?></span></label>
-					<?php endforeach; ?>
-				</div>
-			</div>
-			<div class="myprefs__q">
-				<h2 class="h3"><?php esc_html_e( 'What would you like to explore?', 'oria' ); ?></h2>
-				<div class="mychips">
-					<?php foreach ( Recommend\INTERESTS as $oria_k => $oria_i ) : ?>
-						<label class="mychip"><input type="checkbox" name="interests[]" value="<?php echo esc_attr( $oria_k ); ?>"><span><?php echo esc_html( $oria_i['label'] ); ?></span></label>
-					<?php endforeach; ?>
-				</div>
-			</div>
-			<div class="myprefs__acts">
-				<button class="btn btn--dark" type="submit"><?php esc_html_e( 'Save my interests', 'oria' ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></button>
-				<span class="hint"><?php esc_html_e( 'These only shape what we suggest. You can change them on your profile any time.', 'oria' ); ?></span>
-			</div>
-		</form>
-	</section>
-<?php endif; ?>
-
-<section class="wrap my" data-my-section="upnext">
-	<div class="sec-head reveal">
-		<div class="sec-head__text">
-			<span class="micro"><?php esc_html_e( 'Up next', 'oria' ); ?></span>
-			<h2 class="h2"><?php echo $oria_saved ? esc_html( sprintf( /* translators: %s: count */ _n( '%s place you want to try', '%s places you want to try', count( $oria_saved ), 'oria' ), number_format_i18n( count( $oria_saved ) ) ) ) : esc_html__( 'Nothing saved yet', 'oria' ); ?></h2>
-		</div>
-		<?php if ( $oria_saved ) : ?>
-			<a class="btn btn--ghost" href="<?php echo esc_url( MyOria\url( 'saved' ) ); ?>"><?php esc_html_e( 'See my saved places', 'oria' ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
-		<?php endif; ?>
-	</div>
-	<?php if ( $oria_upnext ) : ?>
-		<div class="mygrid">
-			<?php foreach ( $oria_upnext as $oria_id ) : ?>
-				<?php get_template_part( 'template-parts/my/place', null, array( 'id' => $oria_id, 'mode' => 'saved' ) ); ?>
-			<?php endforeach; ?>
-		</div>
-	<?php else : ?>
-		<div class="myempty">
-			<p><?php esc_html_e( 'Explore wellness experiences around Perth and tap the heart to save anything you’d like to try.', 'oria' ); ?></p>
-			<a class="btn btn--dark" href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ); ?>"><?php esc_html_e( 'Explore practices', 'oria' ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
-		</div>
-	<?php endif; ?>
-</section>
-
-<section class="wrap my">
-	<div class="mypass reveal">
-		<div class="mypass__text">
-			<span class="micro"><?php esc_html_e( 'Your passport', 'oria' ); ?></span>
-			<?php if ( $oria_stats['experiences'] ) : ?>
-				<p class="mypass__line">
-					<?php
-					echo esc_html( implode( ' · ', array(
-						sprintf( _n( '%s experience explored', '%s experiences explored', $oria_stats['experiences'], 'oria' ), number_format_i18n( $oria_stats['experiences'] ) ),
-						sprintf( _n( '%s kind of practice', '%s kinds of practice', $oria_stats['types'], 'oria' ), number_format_i18n( $oria_stats['types'] ) ),
-						sprintf( _n( '%s badge earned', '%s badges earned', count( $oria_earned ), 'oria' ), number_format_i18n( count( $oria_earned ) ) ),
-					) ) );
-					?>
-				</p>
-				<ol class="mydots" aria-hidden="true">
-					<?php for ( $oria_i = 0; $oria_i < 10; $oria_i++ ) : ?>
-						<li class="<?php echo $oria_i < $oria_stats['experiences'] ? 'is-on' : ''; ?>"></li>
-					<?php endfor; ?>
-				</ol>
-			<?php else : ?>
-				<p class="mypass__line"><?php esc_html_e( 'Your Wellness Passport is waiting for its first stamp. When you try a place listed here, mark it as tried and it appears in your passport.', 'oria' ); ?></p>
-			<?php endif; ?>
-			<?php if ( $oria_next ) : ?>
-				<p class="mypass__next"><span><?php esc_html_e( 'Next badge:', 'oria' ); ?></span> <?php echo esc_html( $oria_next['label'] ); ?> — <?php echo esc_html( $oria_next['hint'] ); ?></p>
-			<?php endif; ?>
-		</div>
-		<a class="btn btn--light" href="<?php echo esc_url( MyOria\url( 'passport' ) ); ?>"><?php esc_html_e( 'Open my passport', 'oria' ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
-	</div>
-</section>
-
-<?php if ( $oria_recs ) : ?>
-	<section class="wrap my">
-		<div class="sec-head reveal">
-			<div class="sec-head__text">
-				<span class="micro"><?php esc_html_e( 'You might like', 'oria' ); ?></span>
-				<h2 class="h2"><?php esc_html_e( 'Places to try next', 'oria' ); ?></h2>
-			</div>
-			<p class="sec-head__aside muted"><?php echo $oria_prefs ? esc_html__( "Based on what you're interested in and the places you've saved.", 'oria' ) : esc_html__( 'Based on the places you’ve saved and our editors’ picks. Tell us what you’re after on your profile for better ones.', 'oria' ); ?></p>
-		</div>
-		<div class="grid grid-3 mygrid--cards">
+	<section class="myhello" aria-labelledby="myHelloTitle">
+		<h1 class="myhello__h" id="myHelloTitle">
 			<?php
-			global $post;
-			foreach ( $oria_recs as $oria_id ) {
-				$post = get_post( $oria_id ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-				if ( ! $post ) {
-					continue;
-				}
-				setup_postdata( $post );
-				get_template_part( 'template-parts/listing-card' );
-			}
-			wp_reset_postdata();
+			echo esc_html(
+				$oria_name
+					/* translators: %s: member's first name */
+					? sprintf( __( 'Hello, %s', 'oria' ), $oria_name )
+					: __( 'Hello', 'oria' )
+			);
 			?>
-		</div>
-	</section>
-<?php endif; ?>
-
-<section class="wrap my my--last" id="badges">
-	<div class="sec-head reveal">
-		<div class="sec-head__text">
-			<span class="micro"><?php esc_html_e( 'Your badges', 'oria' ); ?></span>
-			<h2 class="h2"><?php echo $oria_earned ? esc_html( sprintf( _n( '%s badge earned', '%s badges earned', count( $oria_earned ), 'oria' ), number_format_i18n( count( $oria_earned ) ) ) ) : esc_html__( 'Your first badge is closer than you think', 'oria' ); ?></h2>
-		</div>
-		<a class="btn btn--ghost" href="<?php echo esc_url( MyOria\url( 'passport' ) . '#badges' ); ?>"><?php esc_html_e( 'All badges', 'oria' ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
-	</div>
-	<?php if ( $oria_earned ) : ?>
-		<div class="pbadges pbadges--row">
-			<?php foreach ( $oria_earned as $oria_b ) : ?>
-				<?php get_template_part( 'template-parts/my/badge', null, array( 'badge' => $oria_b, 'compact' => true ) ); ?>
+		</h1>
+		<p class="myhello__q"><?php esc_html_e( 'What would feel good today?', 'oria' ); ?></p>
+		<div class="myintents">
+			<?php
+			/*
+			 * Each chip is a real filtered search on the public directory,
+			 * using the same intent vocabulary the profile stores -- one
+			 * list of intents on this site, not two.
+			 */
+			foreach ( array_slice( Recommend\INTENTS, 0, 5, true ) as $oria_k => $oria_label ) :
+				?>
+				<a class="myintent" href="<?php echo esc_url( add_query_arg( 'intent', $oria_k, $oria_dir ) ); ?>"
+					data-oria-event="my_oria_intent_click"><?php echo esc_html( $oria_label ); ?></a>
 			<?php endforeach; ?>
 		</div>
-	<?php else : ?>
-		<p class="muted"><?php esc_html_e( 'Try your first wellness experience and mark it as tried to earn First Step.', 'oria' ); ?></p>
+	</section>
+
+	<div class="mygrid mygrid--split">
+		<section class="mycard mycard--feature" aria-labelledby="myContinueTitle">
+			<p class="mycard__eyebrow"><?php echo esc_html( $oria_continue['eyebrow'] ); ?></p>
+			<h2 class="mycard__title" id="myContinueTitle"><?php echo esc_html( $oria_continue['title'] ); ?></h2>
+			<p class="mycard__line"><?php echo esc_html( $oria_continue['line'] ); ?></p>
+			<a class="btn btn--light mycard__cta" href="<?php echo esc_url( $oria_continue['url'] ); ?>"
+				data-oria-event="my_oria_continue_click" data-kind="<?php echo esc_attr( $oria_continue['kind'] ); ?>">
+				<?php echo esc_html( $oria_continue['cta'] ); ?> <span aria-hidden="true">&rarr;</span>
+			</a>
+		</section>
+
+		<section class="mycard" aria-labelledby="myWeekTitle">
+			<p class="mycard__eyebrow"><?php esc_html_e( 'Still waiting', 'oria' ); ?></p>
+			<h2 class="mycard__title" id="myWeekTitle">
+				<?php
+				echo $oria_todo
+					? esc_html(
+						sprintf(
+							/* translators: %s: how many saved places have not been tried */
+							_n( '%s place you have not been to yet', '%s places you have not been to yet', count( $oria_todo ), 'oria' ),
+							number_format_i18n( count( $oria_todo ) )
+						)
+					)
+					: esc_html__( 'Nothing left on your list', 'oria' );
+				?>
+			</h2>
+			<p class="mycard__line">
+				<?php
+				echo $oria_todo
+					? esc_html__( 'Saved, and not yet marked as tried. No rush — the list keeps.', 'oria' )
+					: esc_html__( 'You have been to everything you saved. Somewhere new, perhaps.', 'oria' );
+				?>
+			</p>
+			<a class="mycard__more" href="<?php echo esc_url( $oria_todo ? MyOria\url( 'saved' ) : $oria_dir ); ?>">
+				<?php echo esc_html( $oria_todo ? __( 'See the list', 'oria' ) : __( 'Find somewhere new', 'oria' ) ); ?>
+				<span aria-hidden="true">&rarr;</span>
+			</a>
+		</section>
+	</div>
+
+	<section class="mysec" aria-labelledby="mySavedTitle">
+		<header class="mysec__head">
+			<h2 class="mysec__title" id="mySavedTitle"><?php esc_html_e( 'Saved for later', 'oria' ); ?></h2>
+			<?php if ( count( $oria_saved ) > 4 ) : ?>
+				<a class="mysec__more" href="<?php echo esc_url( MyOria\url( 'saved' ) ); ?>">
+					<?php
+					printf(
+						/* translators: %s: how many saved places */
+						esc_html__( 'View all %s', 'oria' ),
+						esc_html( number_format_i18n( count( $oria_saved ) ) )
+					);
+					?>
+					<span aria-hidden="true">&rarr;</span>
+				</a>
+			<?php endif; ?>
+		</header>
+
+		<?php if ( $oria_saved ) : ?>
+			<div class="myrailcards">
+				<?php foreach ( array_slice( $oria_saved, 0, 4 ) as $oria_id ) : ?>
+					<?php get_template_part( 'template-parts/my/place', null, array( 'id' => $oria_id, 'mode' => 'saved' ) ); ?>
+				<?php endforeach; ?>
+			</div>
+		<?php else : ?>
+			<div class="mycard mycard--empty">
+				<h3 class="mycard__title"><?php esc_html_e( 'Nothing saved yet', 'oria' ); ?></h3>
+				<p class="mycard__line"><?php esc_html_e( 'Tap the heart on any place while you are exploring and it will be here waiting.', 'oria' ); ?></p>
+				<a class="btn btn--dark" href="<?php echo esc_url( $oria_dir ); ?>" data-oria-event="my_oria_empty_state_cta">
+					<?php esc_html_e( 'Explore wellness places', 'oria' ); ?> <span aria-hidden="true">&rarr;</span>
+				</a>
+			</div>
+		<?php endif; ?>
+	</section>
+
+	<div class="mygrid mygrid--split">
+		<section class="mysec mysec--flush" aria-labelledby="myRecsTitle">
+			<header class="mysec__head">
+				<div>
+					<h2 class="mysec__title" id="myRecsTitle"><?php esc_html_e( 'You might like', 'oria' ); ?></h2>
+					<p class="mysec__why">
+						<?php
+						/*
+						 * Why these, in words -- and nothing about health,
+						 * mood or anything inferred. Either they told us,
+						 * or they saved something.
+						 */
+						echo $oria_hasp
+							? esc_html__( 'Because of the interests on your profile', 'oria' )
+							: esc_html__( 'Because of the places you have saved', 'oria' );
+						?>
+						<a class="mysec__edit" href="<?php echo esc_url( MyOria\url( 'profile' ) ); ?>"><?php esc_html_e( 'Edit', 'oria' ); ?></a>
+					</p>
+				</div>
+			</header>
+
+			<?php if ( $oria_recs ) : ?>
+				<ul class="myrecs">
+					<?php foreach ( $oria_recs as $oria_id ) : ?>
+						<?php
+						$oria_r_areas = wp_get_post_terms( (int) $oria_id, 'area' );
+						$oria_r_cats  = wp_get_post_terms( (int) $oria_id, 'practice' );
+						?>
+						<li>
+							<a class="myrec" href="<?php echo esc_url( (string) get_permalink( $oria_id ) ); ?>">
+								<b class="myrec__name"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_id ) ) ); ?></b>
+								<span class="myrec__meta">
+									<?php
+									echo esc_html(
+										implode(
+											' · ',
+											array_filter(
+												array(
+													! is_wp_error( $oria_r_areas ) && $oria_r_areas ? \Oria\Theme\tname( $oria_r_areas[0] ) : '',
+													! is_wp_error( $oria_r_cats ) && $oria_r_cats ? \Oria\Theme\tname( $oria_r_cats[0] ) : '',
+												)
+											)
+										)
+									);
+									?>
+								</span>
+								<span class="myrec__go" aria-hidden="true">&rarr;</span>
+							</a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			<?php else : ?>
+				<p class="mysec__none"><?php esc_html_e( 'Save a place or two and suggestions will start appearing here.', 'oria' ); ?></p>
+			<?php endif; ?>
+		</section>
+
+		<section class="mypassport" aria-labelledby="myPassTitle">
+			<span class="mypassport__seal" aria-hidden="true">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 6.4 2.6" stroke-linecap="round"/></svg>
+			</span>
+			<p class="mypassport__eyebrow"><?php esc_html_e( 'Wellness Passport', 'oria' ); ?></p>
+			<h2 class="mypassport__title" id="myPassTitle">
+				<?php
+				echo $oria_stats['experiences']
+					? esc_html(
+						sprintf(
+							/* translators: %s: how many places tried */
+							_n( '%s place explored', '%s places explored', $oria_stats['experiences'], 'oria' ),
+							number_format_i18n( $oria_stats['experiences'] )
+						)
+					)
+					: esc_html__( 'It starts with one discovery', 'oria' );
+				?>
+			</h2>
+			<p class="mypassport__line">
+				<?php
+				if ( $oria_stats['experiences'] ) {
+					echo esc_html(
+						implode(
+							' · ',
+							array_filter(
+								array(
+									sprintf( _n( '%s kind of practice', '%s kinds of practice', $oria_stats['types'], 'oria' ), number_format_i18n( $oria_stats['types'] ) ),
+									$oria_sum['badges'] ? sprintf( _n( '%s badge', '%s badges', $oria_sum['badges'], 'oria' ), number_format_i18n( $oria_sum['badges'] ) ) : '',
+								)
+							)
+						)
+					);
+				} else {
+					esc_html_e( 'Mark a place as tried and it is kept here — a private record of where you have been.', 'oria' );
+				}
+				?>
+			</p>
+			<a class="mypassport__cta" href="<?php echo esc_url( MyOria\url( 'passport' ) ); ?>">
+				<?php echo esc_html( $oria_stats['experiences'] ? __( 'Open my passport', 'oria' ) : __( 'How it works', 'oria' ) ); ?>
+				<span aria-hidden="true">&rarr;</span>
+			</a>
+		</section>
+	</div>
+
+	<?php
+	/*
+	 * Their own corner of Perth, from the region on their profile -- never
+	 * from where the browser thinks they are. Left out entirely when they
+	 * have not chosen one, rather than guessing at Fremantle.
+	 */
+	$oria_guide = null;
+	if ( '' !== $oria_prefs['area'] && 'anywhere' !== $oria_prefs['area'] && function_exists( '\Oria\Core\AreaContext\for_term' ) ) {
+		$oria_region = get_term_by( 'slug', $oria_prefs['area'], 'area' );
+		if ( $oria_region instanceof WP_Term ) {
+			$oria_guide = \Oria\Core\AreaContext\for_term( $oria_region );
+		}
+	}
+	?>
+	<?php if ( $oria_guide ) : ?>
+		<section class="mylocal" aria-labelledby="myLocalTitle">
+			<p class="mylocal__eyebrow"><?php esc_html_e( 'Your local guide', 'oria' ); ?></p>
+			<h2 class="mylocal__title" id="myLocalTitle">
+				<?php
+				printf(
+					/* translators: %s: area name */
+					esc_html__( 'A slower day in %s', 'oria' ),
+					esc_html( (string) $oria_guide['name'] )
+				);
+				?>
+			</h2>
+			<p class="mylocal__line">
+				<?php
+				printf(
+					/* translators: 1: number of places, 2: area name */
+					esc_html__( '%1$s hand-checked places in %2$s, what is on, and ideas for the day.', 'oria' ),
+					esc_html( number_format_i18n( (int) $oria_guide['places'] ) ),
+					esc_html( (string) $oria_guide['name'] )
+				);
+				?>
+			</p>
+			<a class="btn btn--light" href="<?php echo esc_url( (string) $oria_guide['url'] ); ?>"
+				data-oria-event="my_oria_local_guide_click">
+				<?php
+				printf(
+					/* translators: %s: area name */
+					esc_html__( 'Explore %s', 'oria' ),
+					esc_html( (string) $oria_guide['name'] )
+				);
+				?>
+				<span aria-hidden="true">&rarr;</span>
+			</a>
+		</section>
 	<?php endif; ?>
-</section>
+</div>

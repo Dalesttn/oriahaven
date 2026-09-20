@@ -119,6 +119,20 @@ add_action(
 		}
 
 		/*
+		 * My Oria: the app shell's stylesheet, on My Oria routes only. It
+		 * is namespaced under the body class, so nothing here can reach
+		 * the public site even if it were loaded there by mistake.
+		 */
+		if ( function_exists( '\Oria\Core\MyOria\is_page' ) && \Oria\Core\MyOria\is_page() ) {
+			wp_enqueue_style(
+				'oria-my-oria',
+				"{$uri}/assets/css/my-oria.css",
+				array( 'oria-pages' ),
+				(string) filemtime( get_theme_file_path( 'assets/css/my-oria.css' ) )
+			);
+		}
+
+		/*
 		 * Submit an event: its own stylesheet and its own enhancements,
 		 * loaded only on that route. The form works without the script --
 		 * everything in it is built on a control the server already

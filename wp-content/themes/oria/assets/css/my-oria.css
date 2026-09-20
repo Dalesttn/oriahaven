@@ -1,0 +1,316 @@
+/* ==========================================================================
+   My Oria -- the app shell and the dashboard.
+
+   Loaded only on /my-oria/ routes. Everything here is namespaced under
+   .my-oria-app or .my-oria-auth on <body>, or under a my* class, so the
+   public site cannot inherit any of it.
+
+   The tokens are the site's own: this is Oria laid out for somebody with
+   a task, not a second brand.
+   ========================================================================== */
+
+.my-oria-app,
+.my-oria-auth {
+  --app-bg: var(--sand, #f5f4f0);
+  --app-surface: var(--white, #fffefb);
+  --app-ink: var(--ink, #14201e);
+  --app-muted: var(--text-soft, #5f6d69);
+  --app-faint: var(--text-faint, #7d8a86);
+  --app-green: var(--deep, #0e3b38);
+  --app-sage: var(--sand-2, #dfe9e2);
+  --app-gold: var(--brand-gold, #c9a24b);
+  --app-line: var(--line, #dcd9d0);
+  --app-r-sm: 14px;
+  --app-r-md: 18px;
+  --app-r-lg: 24px;
+  background: var(--app-bg);
+}
+
+/* ---- 1. the shell ------------------------------------------------------- */
+
+.myapp { display: block; min-height: 100vh; }
+.myapp__canvas { min-width: 0; }
+.myapp__main { padding: var(--s-5) var(--s-4) var(--s-6); }
+
+/* The rail is the desktop navigation. Below 64rem it is not shown at all
+   -- the bottom bar is the navigation there, and two navigations for four
+   destinations is one too many. */
+.myrail { display: none; }
+
+.mybottom {
+  position: fixed; z-index: 60; inset: auto 0 0 0;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  border-top: 1px solid var(--app-line);
+  background: var(--app-surface);
+}
+.mybottom__item {
+  display: grid; justify-items: center; gap: .15rem;
+  min-height: 56px; padding: .5rem .25rem;
+  color: var(--app-muted); text-decoration: none;
+  font-size: 11px; font-weight: 600;
+}
+.mybottom__item svg { width: 22px; height: 22px; }
+.mybottom__item.is-on { color: var(--app-green); }
+/* State is never colour alone: the marker above the icon says it too. */
+.mybottom__item.is-on::before {
+  content: ""; position: absolute; margin-top: -.5rem;
+  width: 18px; height: 2px; border-radius: 2px; background: var(--app-green);
+}
+.mybottom__item:focus-visible { outline: 3px solid var(--app-gold); outline-offset: -3px; }
+
+.mytop {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-4); min-height: 68px;
+  padding: var(--s-4) var(--s-4) 0;
+}
+.mytop__eyebrow {
+  margin: 0; font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--app-faint);
+}
+.mytop__page { margin: .1rem 0 0; font-size: 1.15rem; font-weight: 700; color: var(--app-ink); }
+.mytop__out {
+  flex: none; font-size: var(--fs-xs); font-weight: 700;
+  color: var(--app-green); text-decoration: none;
+  border-bottom: 1px solid var(--app-line);
+}
+.mytop__out:hover { border-bottom-color: currentColor; }
+
+.myapp__foot {
+  margin: var(--s-6) 0 0; padding: 0 var(--s-4);
+  font-size: var(--fs-xs); color: var(--app-faint);
+}
+.myapp__foot a { color: inherit; }
+.myapp__foot a:hover { color: var(--app-green); }
+.myapp__footsep { margin: 0 .4rem; }
+
+.mynotice { margin: var(--s-4) var(--s-4) 0; }
+
+/* Room for the bottom bar, plus the home indicator under it. */
+.my-oria-app .myapp { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px) + var(--s-5)); }
+
+/* ---- 2. the dashboard --------------------------------------------------- */
+
+.myhome { display: grid; gap: var(--s-5); max-width: 1280px; }
+
+.myhello__h {
+  margin: 0; font-size: clamp(1.8rem, 4.5vw, 2.4rem); line-height: 1.1;
+  letter-spacing: -.02em; color: var(--app-ink);
+}
+.myhello__q { margin: .35rem 0 var(--s-3); color: var(--app-muted); }
+.myintents { display: flex; flex-wrap: wrap; gap: .45rem; }
+.myintent {
+  display: inline-flex; align-items: center; min-height: 44px;
+  padding: .4rem .95rem; border: 1px solid var(--app-line); border-radius: 999px;
+  background: var(--app-surface); color: var(--app-green);
+  font-size: var(--fs-sm); font-weight: 700; text-decoration: none;
+  transition: background var(--t-fast, .18s) var(--ease), border-color var(--t-fast, .18s) var(--ease);
+}
+.myintent:hover { background: var(--app-sage); border-color: var(--app-green); }
+.myintent:focus-visible { outline: 3px solid var(--app-gold); outline-offset: 2px; }
+
+.mygrid { display: grid; gap: var(--s-4); }
+
+/* One card family, varied by span and weight rather than by colour. */
+.mycard {
+  display: grid; align-content: start; gap: .3rem;
+  padding: var(--s-5); border: 1px solid var(--app-line);
+  border-radius: var(--app-r-md); background: var(--app-surface);
+}
+.mycard__eyebrow {
+  margin: 0; font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--app-faint);
+}
+.mycard__title { margin: .1rem 0 0; font-size: 1.25rem; line-height: 1.25; color: var(--app-ink); }
+.mycard__line { margin: .25rem 0 0; font-size: var(--fs-sm); line-height: 1.5; color: var(--app-muted); }
+.mycard__more, .mysec__more {
+  margin-top: auto; padding-top: .6rem;
+  font-size: var(--fs-sm); font-weight: 700; color: var(--app-green); text-decoration: none;
+}
+.mycard__more:hover, .mysec__more:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* The one card that is meant to be looked at first. */
+.mycard--feature {
+  border-color: transparent;
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 75, .16), transparent 58%),
+    var(--app-green);
+  color: var(--white);
+}
+.mycard--feature .mycard__eyebrow { color: var(--gold-soft, #e3c877); }
+.mycard--feature .mycard__title { color: var(--white); font-size: 1.4rem; }
+.mycard--feature .mycard__line { color: rgba(255, 255, 255, .88); }
+.mycard__cta { justify-self: start; margin-top: var(--s-4); }
+
+.mycard--empty { align-items: start; gap: .4rem; background: var(--app-sage); border-color: transparent; }
+.mycard--empty .btn { justify-self: start; margin-top: var(--s-3); }
+
+.mysec { display: grid; gap: var(--s-3); }
+.mysec--flush { align-content: start; }
+.mysec__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4); }
+.mysec__title { margin: 0; font-size: 1.35rem; line-height: 1.2; color: var(--app-ink); }
+.mysec__why { margin: .2rem 0 0; font-size: var(--fs-xs); color: var(--app-muted); }
+.mysec__edit { margin-left: .4rem; color: var(--app-green); font-weight: 700; }
+.mysec__none { margin: 0; font-size: var(--fs-sm); color: var(--app-muted); }
+
+/* Saved: a rail on a phone with the next card showing, a grid on a desk. */
+.myrailcards {
+  display: flex; gap: var(--s-3); overflow-x: auto;
+  overscroll-behavior-x: contain; scroll-snap-type: x mandatory;
+  margin-inline: calc(var(--s-4) * -1);
+  padding: .25rem var(--s-4) .75rem;
+  scroll-padding-inline: var(--s-4);
+}
+.myrailcards > * { flex: 0 0 min(17rem, 78%); scroll-snap-align: start; }
+
+.myrecs { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; }
+.myrec {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center; gap: .2rem .75rem;
+  padding: .75rem var(--s-4); border: 1px solid var(--app-line);
+  border-radius: var(--app-r-sm); background: var(--app-surface);
+  color: var(--app-ink); text-decoration: none;
+}
+.myrec:hover { border-color: var(--app-green); }
+.myrec:focus-visible { outline: 3px solid var(--app-gold); outline-offset: 2px; }
+.myrec__name { grid-column: 1; font-size: var(--fs-sm); line-height: 1.3; }
+.myrec__meta { grid-column: 1; font-size: var(--fs-xs); color: var(--app-muted); }
+.myrec__go { grid-column: 2; grid-row: 1 / span 2; color: var(--app-green); }
+
+/* The passport: the one distinctive surface, with the mark as its seal. */
+.mypassport {
+  position: relative; display: grid; align-content: start; gap: .3rem;
+  padding: var(--s-5); border-radius: var(--app-r-md);
+  background:
+    radial-gradient(90% 70% at 0% 0%, rgba(201, 162, 75, .14), transparent 60%),
+    var(--app-green);
+  color: var(--white);
+}
+.mypassport__seal {
+  position: absolute; top: var(--s-4); right: var(--s-4);
+  width: 34px; height: 34px; color: var(--app-gold); opacity: .9;
+}
+.mypassport__seal svg { width: 100%; height: 100%; }
+.mypassport__eyebrow {
+  margin: 0; font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gold-soft, #e3c877);
+}
+.mypassport__title { margin: .1rem 0 0; font-size: 1.3rem; line-height: 1.2; color: var(--white); padding-right: 2.5rem; }
+.mypassport__line { margin: .3rem 0 0; font-size: var(--fs-sm); line-height: 1.5; color: rgba(255, 255, 255, .86); }
+.mypassport__cta {
+  margin-top: var(--s-4); font-size: var(--fs-sm); font-weight: 700;
+  color: var(--white); text-decoration: none;
+}
+.mypassport__cta:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.mylocal {
+  display: grid; align-content: center; gap: .25rem;
+  padding: var(--s-5); border-radius: var(--app-r-md);
+  border: 1px solid var(--app-line); background: var(--app-sage);
+}
+.mylocal__eyebrow {
+  margin: 0; font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--app-muted);
+}
+.mylocal__title { margin: .1rem 0 0; font-size: 1.4rem; line-height: 1.2; color: var(--app-ink); }
+.mylocal__line { margin: .25rem 0 0; font-size: var(--fs-sm); color: var(--app-muted); max-width: 46ch; }
+.mylocal .btn { justify-self: start; margin-top: var(--s-3); }
+
+/* ---- 3. the desk -------------------------------------------------------- */
+
+@media (min-width: 64rem) {
+  .myapp { display: grid; grid-template-columns: 248px minmax(0, 1fr); padding-bottom: 0; }
+  .mybottom { display: none; }
+
+  .myrail {
+    display: flex; flex-direction: column; gap: var(--s-5);
+    position: sticky; top: 0; align-self: start;
+    height: 100vh; padding: var(--s-5) var(--s-4);
+    border-right: 1px solid var(--app-line); background: var(--app-surface);
+  }
+  .myrail__brand {
+    display: flex; align-items: center; gap: .5rem;
+    color: var(--app-ink); text-decoration: none; font-size: 1.05rem; font-weight: 700;
+  }
+  .myrail__mark { width: 22px; height: 22px; color: var(--app-green); }
+  .myrail__mark svg { width: 100%; height: 100%; }
+  .myrail__word em { font-style: italic; font-weight: 400; }
+
+  .myrail__list { list-style: none; margin: 0; padding: 0; display: grid; gap: .15rem; }
+  .myrail__item {
+    display: flex; align-items: center; gap: .6rem;
+    min-height: 44px; padding: .5rem .75rem; border-radius: var(--app-r-sm);
+    color: var(--app-muted); text-decoration: none; font-size: var(--fs-sm); font-weight: 600;
+  }
+  .myrail__item:hover { background: var(--app-bg); color: var(--app-green); }
+  .myrail__item:focus-visible { outline: 3px solid var(--app-gold); outline-offset: 2px; }
+  /* A sage capsule, not a solid block -- and the arrow marks it too, so
+     the state is never carried by colour alone. */
+  .myrail__item.is-on { background: var(--app-sage); color: var(--app-green); font-weight: 700; }
+  .myrail__item.is-on::after { content: "›"; margin-left: auto; }
+  .myrail__icon { width: 20px; height: 20px; flex: none; }
+
+  .myrail__foot { margin-top: auto; display: grid; gap: var(--s-3); }
+  .myrail__out { font-size: var(--fs-xs); font-weight: 700; color: var(--app-green); text-decoration: none; }
+  .myrail__out:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .myrail__who {
+    display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: .2rem .6rem;
+    align-items: center; padding-top: var(--s-3); border-top: 1px solid var(--app-line);
+  }
+  .myrail__av {
+    grid-row: 1 / span 2; display: grid; place-items: center;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--app-green); color: var(--white);
+    font-size: var(--fs-xs); font-weight: 700;
+  }
+  .myrail__whoname { font-size: var(--fs-sm); font-weight: 700; color: var(--app-ink); }
+  .myrail__signout { font-size: var(--fs-xs); color: var(--app-muted); }
+  .myrail__signout:hover { color: var(--app-green); }
+
+  .myapp__main { padding: var(--s-4) var(--s-6) var(--s-6); }
+  .mytop { padding: var(--s-5) var(--s-6) 0; }
+  .myapp__foot { padding: 0 var(--s-6); }
+  .mynotice { margin: var(--s-4) var(--s-6) 0; }
+
+  .myhome { gap: var(--s-6); }
+  .myhello__h { font-size: clamp(2rem, 2.6vw, 2.75rem); }
+  .mygrid--split { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); align-items: stretch; }
+  .mycard, .mypassport { min-height: 100%; }
+
+  /* Four across, no rail: there is room, and a scroll region nobody needs
+     to scroll is just a scrollbar. */
+  .myrailcards {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow: visible; margin-inline: 0; padding: 0;
+  }
+  .myrailcards > * { flex: none; }
+
+  .mylocal { grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: var(--s-5); }
+  .mylocal__eyebrow, .mylocal__title, .mylocal__line { grid-column: 1; }
+  .mylocal .btn { grid-column: 2; grid-row: 1 / span 3; margin-top: 0; justify-self: end; }
+}
+
+@media (min-width: 90rem) {
+  .myapp__main, .mytop, .myapp__foot { padding-inline: var(--s-7); }
+}
+
+/* ---- 4. signing in ------------------------------------------------------ */
+
+.myauth {
+  display: grid; align-content: center; gap: var(--s-4);
+  min-height: 100vh; padding: var(--s-5) var(--s-4);
+}
+.myauth__main { width: 100%; max-width: 460px; margin: 0 auto; }
+.myauth__back { margin: 0 auto; font-size: var(--fs-xs); color: var(--app-muted); text-align: center; }
+.myauth__back a { color: inherit; border-bottom: 1px solid var(--app-line); }
+.myauth__back a:hover { color: var(--app-green); }
+
+/* The sign-in form is a form, not a landing page: 460px, not 1,230. */
+.my-oria-auth .my,
+.my-oria-auth .myauthbox { max-width: 460px; margin-inline: auto; }
+.my-oria-auth h1 { font-size: clamp(1.9rem, 5vw, 2.5rem); line-height: 1.1; }
+.my-oria-auth .wrap { padding-inline: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .myintent, .myrec, .mycard { transition: none; }
+}
