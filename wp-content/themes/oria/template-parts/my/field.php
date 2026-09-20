@@ -248,7 +248,19 @@ $dis       = $open ? '' : ' disabled';
 								<button class="myrow__btn" type="button" data-myrep-down<?php echo $dis; ?>>
 									<span aria-hidden="true">&darr;</span><span class="sr-only"><?php esc_html_e( 'Move down', 'oria' ); ?></span>
 								</button>
-								<button class="myrow__btn myrow__btn--x" type="button" data-myrep-del<?php echo $dis; ?>>
+								<?php
+								/*
+								 * A submit, not a plain button. With JavaScript it
+								 * is intercepted and the row disappears at once;
+								 * without it -- a blocked script, a stale cache,
+								 * a listener that never bound -- it posts which row
+								 * to drop and the server drops it. Remove is the one
+								 * control here that must never quietly do nothing.
+								 */
+								?>
+								<button class="myrow__btn myrow__btn--x" type="submit"
+									name="oria_drop" value="<?php echo esc_attr( $name . ':' . $i ); ?>"
+									data-myrep-del<?php echo $dis; ?>>
 									<span aria-hidden="true">&times;</span><span class="sr-only"><?php esc_html_e( 'Remove', 'oria' ); ?></span>
 								</button>
 							</div>
@@ -299,7 +311,7 @@ $dis       = $open ? '' : ' disabled';
 							<div class="myrow__acts">
 								<button class="myrow__btn" type="button" data-myrep-up><span aria-hidden="true">&uarr;</span><span class="sr-only"><?php esc_html_e( 'Move up', 'oria' ); ?></span></button>
 								<button class="myrow__btn" type="button" data-myrep-down><span aria-hidden="true">&darr;</span><span class="sr-only"><?php esc_html_e( 'Move down', 'oria' ); ?></span></button>
-								<button class="myrow__btn myrow__btn--x" type="button" data-myrep-del><span aria-hidden="true">&times;</span><span class="sr-only"><?php esc_html_e( 'Remove', 'oria' ); ?></span></button>
+								<button class="myrow__btn myrow__btn--x" type="submit" name="oria_drop" value="<?php echo esc_attr( $name . ':__i__' ); ?>" data-myrep-del><span aria-hidden="true">&times;</span><span class="sr-only"><?php esc_html_e( 'Remove', 'oria' ); ?></span></button>
 							</div>
 						</div>
 					</template>

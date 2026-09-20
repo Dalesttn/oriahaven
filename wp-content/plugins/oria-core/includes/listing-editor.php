@@ -1127,6 +1127,15 @@ function handle_save(): void {
 
 		$raw   = $_POST[ $name ] ?? ( in_array( $field['type'], array( 'checks', 'repeater' ), true ) ? array() : '' );
 		$value = clean( $field, $raw );
+
+		/*
+		 * A row removed with JavaScript switched off. The Remove button is a
+		 * submit carrying "field:index", so the row is still in the post --
+		 * it is dropped here instead of in the browser.
+		 */
+		if ( 'repeater' === $field['type'] ) {
+			$value = drop_row( $name, $value );
+		}
 		$was   = value( $listing, $name );
 
 		if ( same( $was, $value ) ) {
@@ -1189,6 +1198,28 @@ function handle_withdraw(): void {
 
 	wp_safe_redirect( \Oria\Core\MyOria\url( 'listing' ) );
 	exit;
+}
+
+/**
+ * Remove the row the Remove button named, if it named one in this field.
+ *
+ * @param array<int, array<string, string>> $rows
+ * @return array<int, array<string, string>>
+ */
+function drop_row( string $field_name, array $rows ): array {
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- the caller checked it.
+	$asked = isset( $_POST['oria_drop'] ) ? sanitize_text_field( (string) wp_unslash( $_POST['oria_drop'] ) ) : '';
+	if ( '' === $asked || ! str_contains( $asked, ':' ) ) {
+		return $rows;
+	}
+
+	list( $which, $index ) = explode( ':', $asked, 2 );
+	if ( $which !== $field_name || ! is_numeric( $index ) ) {
+		return $rows;
+	}
+
+	unset( $rows[ (int) $index ] );
+	return array_values( $rows );
 }
 
 /** Loose comparison that treats '' and null and [] as the same nothing. */

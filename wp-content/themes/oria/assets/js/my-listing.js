@@ -23,6 +23,12 @@
 			Array.prototype.forEach.call( row.querySelectorAll( '[name]' ), function ( el ) {
 				el.name = el.name.replace( /\[(?:\d+|__i__)\]/, '[' + i + ']' );
 			} );
+			// The Remove button posts "field:index" for the no-JavaScript
+			// path, so its index has to follow the row as well.
+			var del = row.querySelector( '[data-myrep-del]' );
+			if ( del && del.value ) {
+				del.value = del.value.replace( /:(?:\d+|__i__)$/, ':' + i );
+			}
 		} );
 		// The first row cannot move up and the last cannot move down; saying
 		// so with disabled is clearer than a button that does nothing.
@@ -81,6 +87,9 @@
 			if ( ! row || ! box.contains( row ) ) { return; }
 
 			if ( e.target.closest( '[data-myrep-del]' ) ) {
+				// It is a submit button; with JavaScript we handle it here
+				// rather than letting it post.
+				e.preventDefault();
 				row.remove();
 				reindex( rep );
 				capCheck( rep );
