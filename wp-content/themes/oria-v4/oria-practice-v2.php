@@ -1778,39 +1778,56 @@ if ( $oria_facet ) {
 	foreach ( $oria_regions as $oria_r ) {
 		$oria_rn = (int) ( $oria_counts['regions'][ $oria_r->slug ] ?? 0 );
 		if ( $oria_rn > 0 ) {
-			$oria_links[] = array( \Oria\Core\PracticesIndex\area_url( $oria_term, $oria_r ), sprintf( '%s (%d)', \Oria\Theme\tname( $oria_r ), $oria_rn ) );
+			$oria_links[] = array( \Oria\Core\PracticesIndex\area_url( $oria_term, $oria_r ), \Oria\Theme\tname( $oria_r ), $oria_rn );
 		}
 	}
 	foreach ( $oria_counts['suburbs'] as $oria_sname => $oria_rn ) {
 		$oria_s = get_term_by( 'slug', sanitize_title( $oria_sname ), 'area' );
 		if ( $oria_s instanceof WP_Term && 0 !== $oria_s->parent ) {
-			$oria_links[] = array( \Oria\Core\PracticesIndex\area_url( $oria_term, $oria_s ), sprintf( '%s (%d)', \Oria\Theme\tname( $oria_s ), $oria_rn ) );
+			$oria_links[] = array( \Oria\Core\PracticesIndex\area_url( $oria_term, $oria_s ), \Oria\Theme\tname( $oria_s ), $oria_rn );
 		}
 	}
 	// Every row the category offers, at its clean address.
 	$oria_exp_links = array();
 	foreach ( $oria_rows as $oria_r ) {
 		if ( (int) $oria_r['count'] >= 3 ) {
-			$oria_exp_links[] = array( $oria_row_url( $oria_r ), sprintf( '%s (%d)', (string) $oria_r['label'], (int) $oria_r['count'] ) );
+			$oria_exp_links[] = array( $oria_row_url( $oria_r ), (string) $oria_r['label'], (int) $oria_r['count'] );
 		}
 	}
+
+	/*
+	 * Both lists keep every link -- this is the internal-linking layer,
+	 * and hiding half of it from a crawler to tidy a page would be a poor
+	 * trade. What changed is the reading: the count left the label, where
+	 * it turned a row of places into a row of numbers, and a long list
+	 * now shows its head with the rest one click away.
+	 */
+	get_template_part(
+		'template-parts/chips',
+		null,
+		array(
+			'items'   => $oria_exp_links,
+			/* translators: %s: category name */
+			'heading' => sprintf( __( '%s by experience', 'oria' ), $oria_psent ),
+			'limit'   => 12,
+			/* translators: %s: how many more */
+			'more'    => __( 'Show %s more', 'oria' ),
+			'event'   => 'category_quick_filter_select',
+		)
+	);
+	get_template_part(
+		'template-parts/chips',
+		null,
+		array(
+			'items'   => $oria_links,
+			/* translators: %s: category name */
+			'heading' => sprintf( __( '%s by area', 'oria' ), $oria_psent ),
+			'limit'   => 12,
+			/* translators: %s: how many more */
+			'more'    => __( 'Show %s more', 'oria' ),
+		)
+	);
 	?>
-	<?php if ( $oria_exp_links ) : ?>
-		<h2 class="h4 xc-mesh__title"><?php printf( esc_html__( '%s by experience', 'oria' ), esc_html( $oria_psent ) ); ?></h2>
-		<div class="chips xc-mesh__chips">
-			<?php foreach ( $oria_exp_links as $oria_l ) : ?>
-				<a class="pill" href="<?php echo esc_url( $oria_l[0] ); ?>" data-oria-event="category_quick_filter_select"><?php echo esc_html( $oria_l[1] ); ?></a>
-			<?php endforeach; ?>
-		</div>
-	<?php endif; ?>
-	<?php if ( $oria_links ) : ?>
-		<h2 class="h4 xc-mesh__title"><?php printf( esc_html__( '%s by area', 'oria' ), esc_html( $oria_psent ) ); ?></h2>
-		<div class="chips xc-mesh__chips">
-			<?php foreach ( $oria_links as $oria_l ) : ?>
-				<a class="pill" href="<?php echo esc_url( $oria_l[0] ); ?>"><?php echo esc_html( $oria_l[1] ); ?></a>
-			<?php endforeach; ?>
-		</div>
-	<?php endif; ?>
 </section>
 <?php endif; ?>
 

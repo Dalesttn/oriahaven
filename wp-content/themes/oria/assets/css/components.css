@@ -1391,6 +1391,94 @@ html.has-sheet .cmptray { display: none; }
   .areagrid__cards .areacard { flex: 0 0 min(17rem, 80%); scroll-snap-align: start; }
 }
 
+/* Six practices, as cards rather than pills.
+
+   Same shape as a neighbourhood card and deliberately so -- the hub asks
+   the same question twice, once about what and once about where, and two
+   answers that look alike read as one choice with two axes. The count
+   sits under the name in quiet type: a visitor should read Yoga before
+   they read 51. */
+.pcards { margin-top: var(--s-6); }
+.pcards__head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: var(--s-4); flex-wrap: wrap; margin-bottom: var(--s-4);
+}
+.pcards__title { margin: 0; }
+.pcards__lede { margin: .4rem 0 0; max-width: 46ch; color: var(--text-soft); font-size: var(--fs-sm); }
+.pcards__more { flex: none; }
+.pcards__grid { display: grid; gap: var(--s-3); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.pcard {
+  position: relative; display: block; overflow: hidden; isolation: isolate;
+  min-height: 11rem; border-radius: var(--r-lg, 18px);
+  background: var(--deep); color: var(--white); text-decoration: none;
+  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
+}
+.pcard:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
+.pcard:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 3px; }
+.pcard__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+.pcard__veil {
+  position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(to top, rgba(8, 32, 30, .95) 0%, rgba(8, 32, 30, .88) 38%, rgba(8, 32, 30, .42) 74%, rgba(8, 32, 30, .12) 100%);
+}
+.pcard--bare .pcard__veil { background: none; }
+.pcard__body { position: absolute; inset: auto 0 0 0; display: block; padding: var(--s-4); }
+.pcard__name { display: block; font-size: 1.25rem; line-height: 1.15; letter-spacing: -.01em; }
+.pcard__line { display: block; margin-top: .3rem; font-size: var(--fs-sm); color: rgba(255, 255, 255, .88); }
+.pcard__n {
+  display: flex; align-items: center; gap: .4rem; margin-top: .5rem;
+  font-size: var(--fs-xs); color: rgba(255, 255, 255, .78);
+  font-variant-numeric: tabular-nums;
+}
+.pcard__arrow { transition: transform var(--t-fast, .18s) var(--ease); }
+.pcard:hover .pcard__arrow { transform: translateX(4px); }
+
+@media (max-width: 60rem) {
+  .pcards__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 40rem) {
+  .pcards__grid { grid-template-columns: minmax(0, 1fr); }
+  .pcard { min-height: 9.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcard, .pcard__arrow { transition: none; }
+  .pcard:hover { transform: none; }
+  .pcard:hover .pcard__arrow { transform: none; }
+}
+
+/* A chip that carries a count. The number is secondary to the name and
+   reads as such; it used to be "(51)" inside the label, which made a row
+   of these into a table of numbers with words attached. */
+.chip__n {
+  margin-left: .4rem; font-size: var(--fs-xs); font-weight: 400;
+  color: var(--text-soft); font-variant-numeric: tabular-nums;
+}
+.chip:hover .chip__n { color: inherit; }
+
+/* The tail of a long list. Every link is still served; this only decides
+   how many are on screen before somebody asks for the rest. */
+.chipmore { margin: .25rem 0 var(--s-4); }
+.chipmore > summary { cursor: pointer; list-style: none; display: inline-flex; }
+.chipmore > summary::-webkit-details-marker { display: none; }
+.chipmore > summary:focus-visible { outline: 3px solid var(--brand-gold); outline-offset: 3px; }
+.chipmore__toggle {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: var(--fs-sm); font-weight: 700; color: var(--text-soft);
+}
+.chipmore__toggle:hover { color: var(--deep); }
+.chipmore__mark { display: inline-block; transition: transform var(--t-fast, .18s) var(--ease); }
+.chipmore[open] .chipmore__mark { transform: rotate(90deg); }
+.chipmore__chips { margin-top: .6rem; }
+@media (prefers-reduced-motion: reduce) {
+  .chipmore__mark { transition: none; }
+}
+
+/* The hub's "Browse everything": the same drawer the neighbourhoods use,
+   so the two read as one pattern rather than two inventions. */
+.xc-mesh__all { margin-top: var(--s-6); }
+.xc-mesh__allbody { padding-top: var(--s-3); }
+.xc-mesh__allbody .xc-mesh__title:first-child { margin-top: 0; }
+
 /* Explore by neighbourhood: five photographs, a field, and a drawer.
 
    The mosaic is one tall card and four small ones, which reads as a place

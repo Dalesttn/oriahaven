@@ -1,0 +1,32 @@
+{
+  "_note": "The practice cards on the Explore hub. 'featured' is read in order; a slug that no longer exists or has too few places is skipped. 'lines' are the short human descriptions under each name -- two to four words, no claims about what a practice does.",
+  "featured": [
+    "spa",
+    "bodywork",
+    "yoga",
+    "mind",
+    "fitness",
+    "meditation"
+  ],
+  "lines": {
+    "spa": "Rest and reset",
+    "bodywork": "Hands-on care",
+    "yoga": "Move and unwind",
+    "mind": "Someone to talk to",
+    "fitness": "Get moving again",
+    "meditation": "Learn to sit still",
+    "recovery": "Sauna, ice and sleep",
+    "breathwork": "Breathe differently",
+    "sound": "Sound and float",
+    "natural": "Traditional and herbal",
+    "nutrition": "Eat and feel better",
+    "nature": "Outdoors, close to home",
+    "retreats": "A day away",
+    "community": "Free and low cost",
+    "beauty": "Looked after",
+    "allied": "Clinical and referred",
+    "energy": "Reiki and energy work",
+    "creative": "Make something",
+    "family": "Through the big changes"
+  }
+}

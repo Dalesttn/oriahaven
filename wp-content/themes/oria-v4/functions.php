@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 // The area pages' figures and editorial layer (taxonomy-area.php).
 require_once __DIR__ . '/inc/area-guide.php';
+require_once __DIR__ . '/inc/practice-cards.php';
 \Oria\V4\Area\bootstrap();
 
 add_action(

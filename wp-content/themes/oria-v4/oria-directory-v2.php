@@ -729,23 +729,53 @@ if ( function_exists( '\Oria\Core\Trends\published' ) && \Oria\Core\Trends\publi
 		</div>
 	<?php endif; ?>
 
-	<?php if ( $oria_cats ) : ?>
-		<h2 class="h4 xc-mesh__title"><?php esc_html_e( 'Start with a practice', 'oria' ); ?></h2>
-		<div class="chips xc-mesh__chips">
-			<?php foreach ( $oria_cats as $oria_c ) : ?>
-				<a class="pill" href="<?php echo esc_url( $oria_c['url'] ); ?>" data-oria-event="explore_category_click"><?php echo esc_html( \Oria\Theme\tname( $oria_c['term'] ) . ' (' . (int) $oria_c['count'] . ')' ); ?></a>
-			<?php endforeach; ?>
-		</div>
-	<?php endif; ?>
+	<?php
+	/*
+	 * Six practices, not twenty-six. A row of pills reading "Beauty (47)"
+	 * is a table of numbers with words attached; a visitor should read
+	 * Yoga before they read 51. Which six is an editorial decision kept
+	 * in the theme's practice-cards.json -- the six longest lists would
+	 * open with Beauty and Nutrition, which is not what people come here
+	 * for -- and every category is still one click away in the drawer at
+	 * the foot of this section.
+	 */
+	$oria_by_cat = array();
+	foreach ( $oria_cats as $oria_c ) {
+		$oria_by_cat[ $oria_c['term']->slug ] = $oria_c;
+	}
 
-	<?php if ( $oria_regions ) : ?>
-		<h2 class="h4 xc-mesh__title"><?php esc_html_e( 'Browse by area', 'oria' ); ?></h2>
-		<div class="chips xc-mesh__chips">
-			<?php foreach ( $oria_regions as $oria_r ) : ?>
-				<a class="pill" href="<?php echo esc_url( \Oria\Core\PracticesIndex\region_url( $oria_r ) ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_r ) ); ?></a>
-			<?php endforeach; ?>
-		</div>
-	<?php endif; ?>
+	$oria_pcards = array();
+	if ( function_exists( '\Oria\V4\PracticeCards\featured_slugs' ) ) {
+		foreach ( \Oria\V4\PracticeCards\featured_slugs() as $oria_slug ) {
+			if ( ! isset( $oria_by_cat[ $oria_slug ] ) ) {
+				continue;
+			}
+			$oria_c = $oria_by_cat[ $oria_slug ];
+			$oria_pcards[] = array(
+				'name'  => \Oria\Theme\tname( $oria_c['term'] ),
+				'url'   => (string) $oria_c['url'],
+				'count' => (int) $oria_c['count'],
+				'line'  => \Oria\V4\PracticeCards\line( $oria_slug ),
+				'image' => function_exists( '\Oria\Theme\category_hero_url' )
+					? (string) \Oria\Theme\category_hero_url( $oria_c['term'] )
+					: '',
+			);
+		}
+	}
+
+	get_template_part(
+		'template-parts/practice-cards',
+		null,
+		array(
+			'cards'      => $oria_pcards,
+			'heading'    => __( 'Explore popular practices', 'oria' ),
+			'lede'       => __( 'The rooms people book most often in Perth. Every other practice is in the drawer below.', 'oria' ),
+			'id'         => 'xc-pcards-title',
+			'more'       => \Oria\Core\PracticesIndex\url(),
+			'more_label' => __( 'Explore all practices', 'oria' ),
+		)
+	);
+	?>
 
 	<?php
 	/*
@@ -801,8 +831,12 @@ if ( function_exists( '\Oria\Core\Trends\published' ) && \Oria\Core\Trends\publi
 
 	<?php
 	/*
-	 * Counted over this page's listings, and only the head of the list; the
-	 * toolbar's popover still holds every specialty.
+	 * Everything else, folded away. The regions used to have a pill row
+	 * of their own here; the neighbourhood drawer above already lists
+	 * them, and two ways into the same forty pages is one too many.
+	 *
+	 * Counted over this page's listings, and only the head of the list;
+	 * the toolbar's popover still holds every specialty.
 	 */
 	$oria_spec_tally = array();
 	foreach ( $oria_all as $oria_sid ) {
@@ -815,14 +849,51 @@ if ( function_exists( '\Oria\Core\Trends\published' ) && \Oria\Core\Trends\publi
 	}
 	usort( $oria_spec_tally, static fn( array $a, array $b ): int => $b['n'] <=> $a['n'] ?: strcasecmp( \Oria\Theme\tname( $a['term'] ), \Oria\Theme\tname( $b['term'] ) ) );
 	$oria_spec_terms = array_slice( $oria_spec_tally, 0, 24 );
+
+	$oria_cat_items = array();
+	foreach ( $oria_cats as $oria_c ) {
+		$oria_cat_items[] = array( (string) $oria_c['url'], \Oria\Theme\tname( $oria_c['term'] ), (int) $oria_c['count'] );
+	}
+	$oria_spec_items = array();
+	foreach ( $oria_spec_terms as $oria_row ) {
+		$oria_spec_items[] = array(
+			\Oria\Core\PracticesIndex\specialty_url( $oria_row['term'] ),
+			\Oria\Theme\tname( $oria_row['term'] ),
+			(int) $oria_row['n'],
+		);
+	}
 	?>
-	<?php if ( $oria_spec_terms ) : ?>
-		<h2 class="h4 xc-mesh__title"><?php esc_html_e( 'Browse by specialty', 'oria' ); ?></h2>
-		<div class="chips xc-mesh__chips">
-			<?php foreach ( $oria_spec_terms as $oria_row ) : ?>
-				<a class="pill" href="<?php echo esc_url( \Oria\Core\PracticesIndex\specialty_url( $oria_row['term'] ) ); ?>"><?php echo esc_html( \Oria\Theme\tname( $oria_row['term'] ) . ' (' . (int) $oria_row['n'] . ')' ); ?></a>
-			<?php endforeach; ?>
-		</div>
+	<?php if ( $oria_cat_items || $oria_spec_items ) : ?>
+		<details class="hoodall xc-mesh__all">
+			<summary class="hoodall__toggle">
+				<span><?php esc_html_e( 'Browse everything', 'oria' ); ?></span>
+				<span class="hoodall__mark" aria-hidden="true">&rarr;</span>
+			</summary>
+			<div class="hoodall__body xc-mesh__allbody">
+				<?php
+				get_template_part(
+					'template-parts/chips',
+					null,
+					array(
+						'items'   => $oria_cat_items,
+						'heading' => __( 'Every practice', 'oria' ),
+						'event'   => 'explore_category_click',
+					)
+				);
+				get_template_part(
+					'template-parts/chips',
+					null,
+					array(
+						'items'   => $oria_spec_items,
+						'heading' => __( 'Every specialty', 'oria' ),
+						'limit'   => 12,
+						/* translators: %s: how many more */
+						'more'    => __( 'Show %s more', 'oria' ),
+					)
+				);
+				?>
+			</div>
+		</details>
 	<?php endif; ?>
 </section>
 
