@@ -963,7 +963,42 @@ html.xp-sheet-open { overflow: hidden; }
   background: var(--deep);
   color: var(--surface);
 }
+/* The fold. Collapsed the card is the heading, the free line and a plus;
+   open it is the explanation and the form. The summary is the control, so
+   it carries the 44px target and the focus ring. */
+.xp-claim__fold { grid-column: 1 / -1; }
+.xp-claim__summary {
+  display: flex; align-items: center; gap: var(--s-5);
+  min-height: 44px; padding: .25rem 0;
+  cursor: pointer; list-style: none;
+}
+.xp-claim__summary::-webkit-details-marker { display: none; }
+.xp-claim__summary::marker { content: ""; }
+.xp-claim__summary:focus-visible { outline: 3px solid var(--brand-gold, #c9a24b); outline-offset: 4px; border-radius: 6px; }
+.xp-claim__summarytext { min-width: 0; flex: 1 1 auto; }
+.xp-claim__plus {
+  flex: none; width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .35);
+  display: grid; place-items: center; position: relative;
+  transition: transform .18s var(--ease, ease), border-color .18s var(--ease, ease);
+}
+.xp-claim__plus::before,
+.xp-claim__plus::after {
+  content: ""; position: absolute;
+  background: var(--surface);
+}
+.xp-claim__plus::before { width: 14px; height: 1.5px; }
+.xp-claim__plus::after  { width: 1.5px; height: 14px; }
+.xp-claim__summary:hover .xp-claim__plus { border-color: var(--surface); }
+/* 45 degrees turns the plus into a cross: the same gesture as closing. */
+.xp-claim__fold[open] .xp-claim__plus { transform: rotate(45deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-claim__plus { transition: none; }
+}
+
 .xp-claim__title {
+  display: block;
   margin: 0 0 .4rem;
   font-size: clamp(1.35rem, 2.1vw, 1.65rem);
   font-weight: 800;
@@ -971,20 +1006,24 @@ html.xp-sheet-open { overflow: hidden; }
   color: var(--surface);
 }
 .xp-claim__text { margin: 0; max-width: 40rem; font-size: var(--fs-sm); line-height: 1.55; color: var(--mist); }
-.xp-claim__form { grid-column: 1 / -1; margin-top: var(--s-5); }
+.xp-claim__form { margin-top: var(--s-5); }
+.xp-claim__form .xp-claim__text { margin: 0 0 var(--s-3); }
 
 /* What it costs, said on the card. Quieter than the intro but not hidden:
    this is the line that answers the question stopping most people. */
 .xp-claim__free {
-  margin: var(--s-4) 0 0;
+  display: block;
+  margin: 0;
   max-width: 44rem;
   font-size: var(--fs-sm);
   line-height: 1.55;
-  color: var(--surface);
+  color: var(--mist);
 }
 .xp-claim__line {
-  display: block;
-  margin-top: .3rem;
+  margin: 0 0 var(--s-5);
+  max-width: 44rem;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
   color: var(--mist);
 }
 
