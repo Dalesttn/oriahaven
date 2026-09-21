@@ -1774,7 +1774,10 @@
               var iframe = $("iframe", frame);
               if (iframe) {
                 window.clearInterval(t);
-                iframe.setAttribute("title", "Instagram Reel" + (btn.textContent ? ": " + btn.textContent.trim().replace(/^Watch /, "") : ""));
+                /* The compact card's button reads just "Watch Reel" and carries
+                   the creator in aria-label, so prefer that for the frame title. */
+                var reelName = (btn.getAttribute("aria-label") || btn.textContent || "").trim().replace(/^Watch /, "");
+                iframe.setAttribute("title", "Instagram Reel" + (reelName ? ": " + reelName : ""));
                 var ph = $(".reelrec__placeholder", frame);
                 if (ph) ph.hidden = true;
                 frame.classList.remove("is-loading");

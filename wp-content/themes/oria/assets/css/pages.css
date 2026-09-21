@@ -8082,11 +8082,27 @@ article.is-spotlit {
 .reelrec__takeaways { margin: var(--s-1) 0 var(--s-2); padding-left: 1.2rem; display: grid; gap: 6px; font-size: var(--fs-sm); line-height: 1.55; }
 .reelrec__text .btn { justify-self: start; }
 .reelrec__disclaim { margin: var(--s-2) 0 0; font-size: var(--fs-xs); color: var(--text-faint); }
-.reelrec--compact { grid-template-columns: minmax(0, 220px) minmax(0, 1fr); }
-.reelrec--compact .reelrec__frame, .reelrec--compact .reelrec__fallback { min-height: 380px; }
+/* Compact: a card beside a category's results, not a feature.
+   The frame was 380px tall driving a 438px card, with a 172x129 play blob
+   and four lines of fine print over the photo. Everything here is the same
+   component dialled down -- no second markup, no second component. */
+.reelrec--compact { grid-template-columns: minmax(0, 176px) minmax(0, 1fr); gap: clamp(1rem, 2vw, 1.5rem); padding: clamp(.85rem, 1.6vw, 1.1rem); }
+.reelrec--compact .reelrec__frame, .reelrec--compact .reelrec__fallback { min-height: 268px; }
+.reelrec--compact .reelrec__placeholder { gap: var(--s-2); padding: var(--s-3); }
+.reelrec--compact .reelrec__play { min-height: 38px; padding: .3rem .75rem .3rem .35rem; gap: .4rem; font-size: var(--fs-sm); }
+.reelrec--compact .reelrec__playicon { width: 26px; height: 26px; }
+.reelrec--compact .reelrec__playicon svg { width: 16px; height: 16px; }
+.reelrec--compact .reelrec__note { max-width: 20ch; font-size: 11px; line-height: 1.4; opacity: .85; }
+.reelrec--compact .reelrec__title { font-size: 1.2rem; }
+.reelrec--compact .reelrec__reason { font-size: 1rem; margin-top: 0; }
+.reelrec--compact .reelrec__text { gap: 6px; }
+.reelrec--compact .reelrec__disclaim { margin-top: var(--s-1); }
 @media (max-width: 45rem) {
   .reelrec, .reelrec--compact { grid-template-columns: 1fr; }
   .reelrec__frame { width: 100%; max-width: 420px; justify-self: center; min-height: 520px; }
+  /* Stacked, the compact frame is full width, so it needs the height back --
+     268px is a letterbox once it is no longer a 176px column. */
+  .reelrec--compact .reelrec__frame { max-width: 320px; min-height: 380px; }
   .reelrec__fallback { min-height: 0; }
   .reelrec__frame:has(> .reelrec__fallback:not([hidden])) { min-height: 0; }
 }

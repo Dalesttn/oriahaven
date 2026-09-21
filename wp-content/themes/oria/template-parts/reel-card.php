@@ -42,20 +42,32 @@ $oria_uid   = 'reel-' . $oria_id . '-' . $oria_variant;
 $oria_cover = get_post_thumbnail_id( $oria_id ) ? (string) wp_get_attachment_image_url( get_post_thumbnail_id( $oria_id ), 'oria-portrait' ) : '';
 $oria_who   = '' !== $oria_r['creator'] ? $oria_r['creator'] : ( '' !== $oria_r['handle'] ? '@' . $oria_r['handle'] : '' );
 $oria_cta_l = trim( (string) get_field( 'primary_cta_label', $oria_id ) );
+
+/*
+ * On a category or guide page the frame is a narrow column, and
+ * "Watch Reel by Australia’s South West" wrapped to four lines inside a
+ * pill with a 999px radius -- which rounds a four-line box into a 172x129
+ * blob sitting over the photo. The creator is already named twice in the
+ * text beside it, so the button says the short thing and keeps the full
+ * sentence as its accessible name.
+ */
+$oria_tight     = 'compact' === $oria_variant;
+$oria_play_full = '' !== $oria_who ? sprintf( /* translators: %s: creator name or handle */ __( 'Watch Reel by %s', 'oria' ), $oria_who ) : __( 'Watch Reel', 'oria' );
+$oria_play_text = $oria_tight ? __( 'Watch Reel', 'oria' ) : $oria_play_full;
+$oria_note_text = $oria_tight
+	? __( 'Loads Instagram’s player, which may set cookies.', 'oria' )
+	: __( 'Loads Instagram’s player, which may set its own cookies. No sound until you play it.', 'oria' );
 $oria_cta_u = (string) get_field( 'primary_cta_url', $oria_id );
 ?>
 <section class="reelrec reelrec--<?php echo esc_attr( $oria_variant ); ?>" aria-labelledby="<?php echo esc_attr( $oria_uid ); ?>-h">
 	<div class="reelrec__frame" data-reel data-reel-id="<?php echo (int) $oria_id; ?>" data-reel-url="<?php echo esc_url( $oria_r['url'] ); ?>" data-reel-trend="<?php echo esc_attr( $oria_slug ); ?>" data-reel-where="<?php echo esc_attr( $oria_where ); ?>">
 		<?php if ( $oria_r['show'] ) : ?>
 			<div class="reelrec__placeholder"<?php echo '' !== $oria_cover ? ' style="--reel-cover:url(\'' . esc_url( $oria_cover ) . '\')"' : ''; ?>>
-				<button type="button" class="reelrec__play" data-reel-load aria-describedby="<?php echo esc_attr( $oria_uid ); ?>-note">
+				<button type="button" class="reelrec__play" data-reel-load aria-describedby="<?php echo esc_attr( $oria_uid ); ?>-note"<?php echo $oria_tight ? ' aria-label="' . esc_attr( $oria_play_full ) . '"' : ''; ?>>
 					<span class="reelrec__playicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span>
-					<?php
-					/* translators: %s: creator name or handle */
-					echo esc_html( '' !== $oria_who ? sprintf( __( 'Watch Reel by %s', 'oria' ), $oria_who ) : __( 'Watch Reel', 'oria' ) );
-					?>
+					<span class="reelrec__playlabel"><?php echo esc_html( $oria_play_text ); ?></span>
 				</button>
-				<p class="reelrec__note" id="<?php echo esc_attr( $oria_uid ); ?>-note"><?php esc_html_e( 'Loads Instagram’s player, which may set its own cookies. No sound until you play it.', 'oria' ); ?></p>
+				<p class="reelrec__note" id="<?php echo esc_attr( $oria_uid ); ?>-note"><?php echo esc_html( $oria_note_text ); ?></p>
 			</div>
 		<?php endif; ?>
 		<div class="reelrec__fallback"<?php echo $oria_r['show'] ? ' hidden' : ''; ?> data-reel-fallback>
