@@ -29,6 +29,8 @@ require_once ORIA_CORE_DIR . 'includes/taxonomies.php';
 require_once ORIA_CORE_DIR . 'includes/post-types.php';
 require_once ORIA_CORE_DIR . 'includes/fields.php';
 require_once ORIA_CORE_DIR . 'includes/fields-pages.php';
+require_once ORIA_CORE_DIR . 'includes/fields-journey.php';
+require_once ORIA_CORE_DIR . 'includes/reset.php';
 require_once ORIA_CORE_DIR . 'includes/claims.php';
 require_once ORIA_CORE_DIR . 'includes/audit.php';
 require_once ORIA_CORE_DIR . 'includes/weak-pages.php';
@@ -130,10 +132,12 @@ require_once ORIA_CORE_DIR . 'includes/trends.php';
  */
 add_action( 'init', __NAMESPACE__ . '\Taxonomies\register', 5 );
 add_action( 'init', __NAMESPACE__ . '\PostTypes\register', 6 );
+add_action( 'init', __NAMESPACE__ . '\PostTypes\maybe_flush', 99 );
 
 Db\bootstrap();
 Fields\bootstrap();
 FieldsPages\bootstrap();
+add_action( 'acf/init', __NAMESPACE__ . '\FieldsJourney\register' );
 Claims\bootstrap();
 Audit\bootstrap();
 WeakPages\bootstrap();

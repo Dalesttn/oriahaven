@@ -15,12 +15,15 @@ const LISTING = 'listing';
 const EVENT   = 'event';
 const BEST_OF = 'best_of';
 const TREND   = 'oria_trend';
+const JOURNEY = 'journey';
+const JOURNEY_TYPE = 'journey_type';
 
 function register(): void {
 	register_listing();
 	register_event();
 	register_best_of();
 	register_trend();
+	register_journey();
 }
 
 /**
@@ -128,6 +131,86 @@ function register_event(): void {
 }
 
 /**
+ * A Journey: a planned day, or a short self-guided reset, built from
+ * structured steps rather than prose.
+ *
+ * Its own type for the same reason as Best Of and Trends. A journey was a
+ * journal post carrying a `journey` repeater, and "is this a journey?" had
+ * to be asked of that repeater's row count in four places -- the index, the
+ * permalink, the guides column and the journal's own loop, each carrying a
+ * meta_query to keep journeys out. The type answers it once, and a journey
+ * stops being something an editor can create by accident.
+ *
+ * The address does not move: the rewrite is /journeys/{slug}/, which is
+ * exactly where post-urls.php was putting them.
+ */
+function register_journey(): void {
+	register_post_type(
+		JOURNEY,
+		array(
+			'labels'        => array(
+				'name'               => __( 'Journeys', 'oria' ),
+				'singular_name'      => __( 'Journey', 'oria' ),
+				'menu_name'          => __( 'Journeys', 'oria' ),
+				'add_new'            => __( 'Add journey', 'oria' ),
+				'add_new_item'       => __( 'Add journey', 'oria' ),
+				'edit_item'          => __( 'Edit journey', 'oria' ),
+				'view_item'          => __( 'View journey', 'oria' ),
+				'search_items'       => __( 'Search journeys', 'oria' ),
+				'not_found'          => __( 'No journeys yet', 'oria' ),
+				'not_found_in_trash' => __( 'No journeys in the bin', 'oria' ),
+				'featured_image'     => __( 'Cover image', 'oria' ),
+				'archives'           => __( 'Journeys', 'oria' ),
+			),
+			'public'        => true,
+			'menu_position' => 23,
+			'menu_icon'     => 'dashicons-location-alt',
+			'supports'      => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions' ),
+			// The index at /journeys/ is its own route (includes/journeys.php),
+			// which carries the hero and the copy an archive has nowhere to put.
+			'has_archive'   => false,
+			'rewrite'       => array(
+				'slug'       => 'journeys',
+				'with_front' => false,
+			),
+			'show_in_rest'  => true,
+		)
+	);
+
+	/*
+	 * What kind of journey this is. A day out and a sixty-minute reset want
+	 * the same fields and a different page, and the reader is choosing
+	 * between them -- so it is a term, not a checkbox, and the index can
+	 * group by it.
+	 */
+	register_taxonomy(
+		JOURNEY_TYPE,
+		JOURNEY,
+		array(
+			'labels'            => array(
+				'name'          => __( 'Journey types', 'oria' ),
+				'singular_name' => __( 'Journey type', 'oria' ),
+				'menu_name'     => __( 'Types', 'oria' ),
+			),
+			'public'            => true,
+			'hierarchical'      => true,
+			'show_admin_column' => true,
+			'show_in_rest'      => true,
+			'rewrite'           => array( 'slug' => 'journeys/type', 'with_front' => false ),
+		)
+	);
+}
+
+/** The two kinds that exist, created once so an editor never has to spell them. */
+function seed_journey_types(): void {
+	foreach ( array( 'day-out' => 'Day out', 'micro-reset' => 'Micro Reset' ) as $slug => $name ) {
+		if ( ! term_exists( $slug, JOURNEY_TYPE ) ) {
+			wp_insert_term( $name, JOURNEY_TYPE, array( 'slug' => $slug ) );
+		}
+	}
+}
+
+/**
  * A Best Of guide: an editor's curated shortlist of listings for one need --
  * "Best yoga for beginners in Perth", "Best saunas in Perth".
  *
@@ -216,4 +299,23 @@ function register_trend(): void {
 			'rest_base'     => 'trends',
 		)
 	);
+}
+
+/**
+ * Self-heal the journey routes.
+ *
+ * Rewrite rules live in the database, so /journeys/{slug}/ 404s on a site
+ * that has not re-saved its permalinks since this type was added -- which
+ * on production means every visitor until somebody remembers. Same guard
+ * the event routes use: bump ROUTES_V when the rewrite changes.
+ */
+const ROUTES_V = '1';
+
+function maybe_flush(): void {
+	if ( get_option( 'oria_journey_routes_v' ) === ROUTES_V ) {
+		return;
+	}
+	seed_journey_types();
+	flush_rewrite_rules();
+	update_option( 'oria_journey_routes_v', ROUTES_V );
 }

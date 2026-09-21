@@ -17,6 +17,8 @@ declare(strict_types=1);
 
 namespace Oria\Core\Journeys;
 
+use Oria\Core\PostTypes;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	header( 'HTTP/1.1 403 Forbidden' );
 	exit;
@@ -139,30 +141,24 @@ function exclude_from_journal( \WP_Query $q ): void {
 }
 
 /**
- * Every published article carrying at least one journey step.
+ * Every published journey.
  *
- * ACF writes the row count to the repeater's own meta key, so "has steps" is
- * a numeric test on one row rather than a scan of journey_0_listing and its
- * siblings. Newest first: a journey is a piece of writing, not a ranking.
+ * A journey used to be any article carrying journey steps, which meant this
+ * index, the permalink, the guides column and the journal's own loop each
+ * had to ask the repeater's row count and agree about the answer. It is its
+ * own post type now, so the question is the query. Newest first: a journey
+ * is a piece of writing, not a ranking.
  *
  * @return \WP_Post[]
  */
 function posts(): array {
 	$q = new \WP_Query(
 		array(
-			'post_type'           => 'post',
+			'post_type'           => PostTypes\JOURNEY,
 			'post_status'         => 'publish',
 			'posts_per_page'      => 24,
 			'ignore_sticky_posts' => true,
 			'no_found_rows'       => true,
-			'meta_query'          => array(
-				array(
-					'key'     => 'journey',
-					'value'   => 0,
-					'compare' => '>',
-					'type'    => 'NUMERIC',
-				),
-			),
 		)
 	);
 	return $q->posts;

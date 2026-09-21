@@ -1,0 +1,163 @@
+/* The Micro Reset page.
+ *
+ * Built to be read outdoors on a phone in daylight: large type, real
+ * contrast, generous tap targets, and no card sitting inside another card.
+ * The palette is the site's own -- deep forest on warm off-white, gold used
+ * once. Nothing here celebrates progress with colour a person could not
+ * read in the sun, and nothing moves for its own sake.
+ */
+
+/* --- hero ----------------------------------------------------------------- */
+.rhero { position: relative; display: grid; align-items: end; min-height: 58vh; background: var(--deep); color: var(--white); overflow: hidden; }
+.rhero--img .rhero__img { position: absolute; inset: 0; }
+.rhero--img .rhero__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* The gradient is what makes the words legible over a busy photograph; it
+   sits under the text and over the picture, never the other way round. */
+.rhero--img::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(8, 34, 32, .92) 0%, rgba(8, 34, 32, .72) 38%, rgba(8, 34, 32, .28) 100%);
+}
+.rhero__in { position: relative; z-index: 1; padding-block: clamp(2.5rem, 7vw, 5rem); }
+.rhero__eyebrow { margin: 0 0 var(--s-2); color: var(--brand-gold); letter-spacing: .09em; }
+.rhero__title { margin: 0; font-size: clamp(2.1rem, 6vw, 3.6rem); line-height: 1.06; font-weight: 600; letter-spacing: -0.02em; text-wrap: balance; }
+.rhero__hook { margin: var(--s-3) 0 0; max-width: 34ch; font-family: var(--font-edit); font-size: clamp(1.1rem, 2.4vw, 1.4rem); line-height: 1.45; color: rgba(255, 255, 255, .92); }
+.rhero__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-4); margin: var(--s-5) 0 0; }
+.rhero__alt { color: var(--white); text-decoration: underline; text-underline-offset: 4px; font-weight: 600; }
+
+@media (max-width: 45rem) {
+  .rhero { min-height: 0; }
+  .rhero--img { min-height: 76vw; }
+}
+
+/* --- at a glance ---------------------------------------------------------- */
+.rglance { padding-block: clamp(1.5rem, 4vw, 2.5rem); }
+.rglance__list { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--s-4) var(--s-5); margin: 0; }
+.rglance__item { display: grid; gap: 2px; min-width: 0; }
+.rglance__item dt { margin: 0; font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .07em; color: var(--text-faint); }
+.rglance__item dd { margin: 0; font-weight: 600; color: var(--ink); }
+
+/* --- intro ---------------------------------------------------------------- */
+.rintro { padding-bottom: clamp(1rem, 3vw, 2rem); }
+.rintro p { max-width: 62ch; margin: 0 0 var(--s-3); font-family: var(--font-edit); font-size: 1.1rem; line-height: 1.65; color: var(--ink); }
+
+/* --- seasonal panel ------------------------------------------------------- */
+.rseason { padding-block: clamp(1rem, 3vw, 1.75rem); }
+.rseason__card { padding: clamp(1.1rem, 3vw, 1.6rem); border: 1px solid var(--line); border-left: 3px solid var(--brand-gold); border-radius: var(--r-md); background: var(--white); }
+.rseason--evergreen .rseason__card { border-left-color: var(--line-strong); }
+.rseason__title { margin: 0; font-size: 1.15rem; font-weight: 600; }
+.rseason__body { margin: var(--s-2) 0 0; color: var(--text-soft); line-height: 1.6; max-width: 62ch; }
+.rseason__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); margin: var(--s-3) 0 0; }
+.rseason__alt { font-weight: 600; color: var(--deep); text-decoration: underline; text-underline-offset: 3px; }
+
+/* --- the stages ----------------------------------------------------------- */
+.rstages { padding-block: clamp(2rem, 5vw, 3rem); }
+.rstages__h { margin: 0 0 var(--s-4); font-size: var(--fs-h3); font-weight: 600; }
+.rstages__progress { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-3); margin: 0 0 var(--s-4); font-variant-numeric: tabular-nums; color: var(--text-soft); }
+.rstages__restart { border: 0; background: none; padding: 0; font: inherit; color: var(--deep); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.rstages__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-5); counter-reset: none; }
+
+.rstage { padding: clamp(1.1rem, 3vw, 1.6rem); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--white); }
+/* Done is marked by more than colour: the rule thickens and the label
+   changes, so it still reads on a screen washed out by sunlight. */
+.rstage.is-done { border-color: var(--deep); box-shadow: inset 3px 0 0 var(--deep); }
+.rstage__head { display: grid; gap: 4px; margin-bottom: var(--s-3); }
+.rstage__when { display: flex; flex-wrap: wrap; gap: var(--s-3); margin: 0; font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .07em; color: var(--text-faint); }
+.rstage__mins { font-variant-numeric: tabular-nums; }
+.rstage__title { margin: 0; font-size: 1.3rem; line-height: 1.25; font-weight: 600; }
+.rstage__body { margin: 0; max-width: 60ch; font-family: var(--font-edit); font-size: 1.08rem; line-height: 1.65; color: var(--ink); }
+.rstage__action { margin: var(--s-3) 0 0; max-width: 60ch; color: var(--text-soft); }
+.rstage__safety { margin: var(--s-3) 0 0; padding: .7rem .9rem; max-width: 60ch; border-radius: var(--r-sm); background: var(--sand-2); color: var(--text-soft); font-size: var(--fs-sm); line-height: 1.55; }
+.rstage__done { margin: var(--s-4) 0 0; }
+
+/* --- timers --------------------------------------------------------------- */
+.rtimer { margin: var(--s-4) 0 0; padding: var(--s-3); border: 1px dashed var(--line-strong); border-radius: var(--r-sm); }
+.rtimer.is-done { border-style: solid; border-color: var(--deep); }
+.rtimer__face { margin: 0 0 var(--s-2); font-size: 2rem; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: .02em; color: var(--ink); }
+.rtimer__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); margin: 0; }
+.rtimer__end { border: 0; background: none; padding: 0; font: inherit; color: var(--text-soft); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* --- the private word ----------------------------------------------------- */
+.rpick { margin: var(--s-4) 0 0; padding: 0; border: 0; }
+.rpick__legend { padding: 0; margin: 0 0 var(--s-2); font-size: var(--fs-sm); color: var(--text-soft); }
+.rpick__opts { display: flex; flex-wrap: wrap; gap: .5rem; }
+.rpick__opt { min-height: 40px; padding: .4rem .85rem; border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--ink); font: inherit; font-size: var(--fs-sm); cursor: pointer; }
+.rpick__opt[aria-pressed="true"] { background: var(--deep); border-color: transparent; color: var(--white); font-weight: 600; }
+
+/* --- completion ----------------------------------------------------------- */
+.rdone { margin: var(--s-5) 0 0; padding: clamp(1.2rem, 3vw, 1.8rem); border-radius: var(--r-md); background: var(--deep); color: var(--white); }
+.rdone__h { margin: 0; font-size: 1.3rem; font-weight: 600; }
+.rdone__body { margin: var(--s-2) 0 0; max-width: 58ch; color: rgba(255, 255, 255, .9); line-height: 1.6; }
+.rdone__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); margin: var(--s-4) 0 0; }
+.rdone__alt { color: var(--white); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+
+/* --- plan your walk ------------------------------------------------------- */
+.rplan { padding-block: clamp(2rem, 5vw, 3rem); }
+.rplan__h { margin: 0 0 var(--s-4); font-size: var(--fs-h3); font-weight: 600; }
+.rplan__list { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.rplan__row { display: grid; grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr); gap: var(--s-3) var(--s-5); padding: var(--s-3) 0; border-bottom: 1px solid var(--line); }
+.rplan__row dt { margin: 0; font-weight: 600; color: var(--ink); }
+.rplan__row dd { margin: 0; color: var(--text-soft); line-height: 1.6; }
+.rplan__checked { margin: var(--s-3) 0 0; font-size: var(--fs-sm); color: var(--text-faint); }
+@media (max-width: 34rem) { .rplan__row { grid-template-columns: 1fr; gap: 2px; } }
+
+/* --- care ----------------------------------------------------------------- */
+.rcare { padding-block: clamp(2rem, 5vw, 3rem); }
+.rcare__h { margin: 0 0 var(--s-3); font-size: var(--fs-h3); font-weight: 600; text-wrap: balance; }
+.rcare__list { margin: 0; padding-left: 1.15rem; display: grid; gap: .55rem; max-width: 64ch; color: var(--text-soft); line-height: 1.6; }
+
+/* --- keep exploring ------------------------------------------------------- */
+.rnext { padding-block: clamp(2rem, 5vw, 3rem); }
+.rnext__h { margin: 0 0 var(--s-2); font-size: var(--fs-h3); font-weight: 600; }
+.rnext__why { margin: 0 0 var(--s-4); max-width: 60ch; color: var(--text-soft); }
+.rnext__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: var(--s-3); }
+.rnext__card { display: grid; gap: 2px; padding: var(--s-3); border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--white); color: var(--ink); text-decoration: none; }
+.rnext__card:hover { border-color: var(--deep); }
+.rnext__name { font-weight: 600; }
+.rnext__sub { font-size: var(--fs-sm); color: var(--text-faint); }
+
+.rsource { padding-bottom: clamp(2rem, 5vw, 3rem); }
+.rsource p { margin: 0; max-width: 64ch; font-size: var(--fs-sm); color: var(--text-faint); }
+.rsource a { color: var(--deep); font-weight: 600; }
+
+/* --- the sticky bar ------------------------------------------------------- */
+/* Phones only, and only mid-walk. On a desktop the progress line above the
+   stages already says everything this would. */
+.rbar { display: none; }
+@media (max-width: 45rem) {
+  .rbar {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    padding: .7rem var(--s-4);
+    padding-bottom: calc(.7rem + env(safe-area-inset-bottom, 0px));
+    background: var(--deep); color: var(--white);
+  }
+  .rbar[hidden] { display: none; }
+  .rbar__where { font-size: var(--fs-sm); font-variant-numeric: tabular-nums; }
+  .rbar__go { min-height: 40px; padding: .35rem 1rem; border: 0; border-radius: 999px; background: var(--white); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }
+  /* The bar must not cover the last thing on the page. */
+  .reset { padding-bottom: 4.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reset * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* Outdoors, on a phone, with one hand. The site's small button is 31px
+   tall, which is fine in a quiet interface and not fine here, so every
+   control on this page gets a real target regardless of its size class. */
+@media (max-width: 45rem) {
+  .reset .btn,
+  .reset .rpick__opt,
+  .reset .rtimer__end,
+  .reset .rstages__restart,
+  .reset .rdone__alt,
+  .reset .rhero__alt,
+  .reset .rseason__alt {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .reset .rtimer__end,
+  .reset .rstages__restart { padding-inline: .25rem; }
+}

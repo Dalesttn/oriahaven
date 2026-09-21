@@ -181,6 +181,27 @@ add_action(
 			);
 		}
 
+		/*
+		 * A Micro Reset. The page reads and works without either of these --
+		 * they add the progress, the timers and the sticky bar -- so both
+		 * load in the footer and block nothing on a phone in a park.
+		 */
+		if ( is_singular( 'journey' ) ) {
+			wp_enqueue_style(
+				'oria-reset',
+				"{$uri}/assets/css/reset.css",
+				array(),
+				(string) filemtime( get_theme_file_path( 'assets/css/reset.css' ) )
+			);
+			wp_enqueue_script(
+				'oria-reset',
+				"{$uri}/assets/js/reset.js",
+				array(),
+				(string) filemtime( get_theme_file_path( 'assets/js/reset.js' ) ),
+				array( 'in_footer' => true )
+			);
+		}
+
 		// The week planner needs no map, so it does not pull Leaflet in.
 		if ( is_page( 'plan-my-week' ) ) {
 			wp_enqueue_script(

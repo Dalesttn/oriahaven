@@ -40,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const JOURNAL   = 'journal';
 const JOURNEYS  = 'journeys';
-const REWRITE_V = '1';
+const REWRITE_V = '2';
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\route', 11 );
@@ -59,12 +59,8 @@ function bootstrap(): void {
  * every post is built on nearly every request, and the repeater's own key
  * holds the row count, so one meta read answers it.
  */
-function is_journey( int $post_id ): bool {
-	return (int) get_post_meta( $post_id, 'journey', true ) > 0;
-}
-
-function segment( int $post_id ): string {
-	return is_journey( $post_id ) ? JOURNEYS : JOURNAL;
+function segment(): string {
+	return JOURNAL;
 }
 
 /**
@@ -91,7 +87,7 @@ function link( string $permalink, $post ): string {
 	if ( in_array( $first, array( JOURNAL, JOURNEYS ), true ) ) {
 		return $permalink;
 	}
-	return home_url( '/' . segment( $post->ID ) . '/' . trim( $path, '/' ) . '/' );
+	return home_url( '/' . segment() . '/' . trim( $path, '/' ) . '/' );
 }
 
 /**
@@ -100,13 +96,19 @@ function link( string $permalink, $post ): string {
  * second segment and keep their own rules.
  */
 function route(): void {
-	foreach ( array( JOURNAL, JOURNEYS ) as $seg ) {
-		add_rewrite_rule( '^' . $seg . '/([^/]+)/?$', 'index.php?name=$matches[1]', 'top' );
-		// Feeds and paged comments would otherwise fall through to a 404 at
-		// the new address while still working at the old one.
-		add_rewrite_rule( '^' . $seg . '/([^/]+)/feed/?$', 'index.php?name=$matches[1]&feed=feed', 'top' );
-		add_rewrite_rule( '^' . $seg . '/([^/]+)/comment-page-([0-9]{1,})/?$', 'index.php?name=$matches[1]&cpage=$matches[2]', 'top' );
-	}
+	/*
+	 * Only the journal. These rules resolve to `name`, which WordPress reads
+	 * as a post -- and journeys are their own type now, with their own
+	 * /journeys/{slug}/ rewrite. Leaving JOURNEYS in this loop put a
+	 * post-only rule above the type's at 'top' priority, and every journey
+	 * 404ed.
+	 */
+	$seg = JOURNAL;
+	add_rewrite_rule( '^' . $seg . '/([^/]+)/?$', 'index.php?name=$matches[1]', 'top' );
+	// Feeds and paged comments would otherwise fall through to a 404 at
+	// the new address while still working at the old one.
+	add_rewrite_rule( '^' . $seg . '/([^/]+)/feed/?$', 'index.php?name=$matches[1]&feed=feed', 'top' );
+	add_rewrite_rule( '^' . $seg . '/([^/]+)/comment-page-([0-9]{1,})/?$', 'index.php?name=$matches[1]&cpage=$matches[2]', 'top' );
 }
 
 function maybe_flush(): void {
