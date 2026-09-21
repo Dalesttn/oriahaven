@@ -1583,6 +1583,33 @@ function title( $title ) {
 }
 
 /**
+ * The term a facet is built on, where it has one.
+ *
+ * A facet page is a practice archive locked to one thing: a service, a
+ * specialty, an audience. That thing is usually a term with content of
+ * its own -- an FAQ, an intro -- written before the facet URLs existed
+ * and stranded when they arrived. This hands it back so a facet page can
+ * use it.
+ *
+ * Format, price and area facets are not terms, so they return null.
+ */
+function facet_term( array $facet ): ?\WP_Term {
+	$tax = array(
+		'svc'  => 'service',
+		'spec' => Taxonomies\SPECIALTY,
+		'aud'  => 'audience',
+	)[ (string) ( $facet['key'] ?? '' ) ] ?? '';
+
+	if ( '' === $tax || ! taxonomy_exists( $tax ) ) {
+		return null;
+	}
+
+	$term = get_term_by( 'slug', (string) ( $facet['value'] ?? '' ), $tax );
+
+	return $term instanceof \WP_Term ? $term : null;
+}
+
+/**
  * How many places this facet actually shows, counted once.
  *
  * The title and the meta description used to count separately, and only

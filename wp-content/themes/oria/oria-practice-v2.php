@@ -156,13 +156,30 @@ $oria_events = ( $oria_term && ! $oria_area && function_exists( '\Oria\Theme\cat
 	? \Oria\Theme\category_events( $oria_term, $oria_city )
 	: array();
 
-// The FAQ for this page — the frame's on a facet page, the category's
-// otherwise — worked out here so the spine knows whether to offer a stop.
+// The FAQ for this page — worked out here so the spine knows whether to
+// offer a stop.
 $oria_faqs = array();
 if ( $oria_facet ) {
 	foreach ( (array) ( $oria_frame['faq'] ?? array() ) as $oria_qa ) {
 		if ( ! empty( $oria_qa['q'] ) && ! empty( $oria_qa['a'] ) ) {
 			$oria_faqs[] = array( 'q' => (string) $oria_qa['q'], 'a' => (string) $oria_qa['a'] );
+		}
+	}
+	/*
+	 * A frameless facet used to show no FAQ at all, on the reasoning that
+	 * the CATEGORY's questions do not belong on it -- spa questions on an
+	 * infrared sauna page. That reasoning is right, and it left the facet
+	 * with nothing: the infrared sauna page carried no FAQ and no FAQPage
+	 * markup, though its own term has 31 Perth listings to answer from.
+	 *
+	 * So the fallback is the facet's own term, never the category's.
+	 */
+	if ( ! $oria_faqs
+		&& function_exists( '\Oria\Core\PracticesIndex\facet_term' )
+		&& function_exists( '\Oria\Core\Faq\for_term' ) ) {
+		$oria_facet_term = \Oria\Core\PracticesIndex\facet_term( $oria_facet );
+		if ( $oria_facet_term instanceof \WP_Term ) {
+			$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_facet_term );
 		}
 	}
 } elseif ( $oria_term && function_exists( '\Oria\Core\Faq\for_term' ) ) {
@@ -1032,9 +1049,11 @@ get_template_part(
  * The FAQ part brings its own section and wrap; it has to sit at the top
  * level, not inside another wrap, or it inherits a second gutter and loses
  * its spacing. On a facet page the questions come from the frame where one
- * exists; a frameless facet page shows none rather than the category's.
+ * exists, and otherwise from the facet's own term -- never the category's.
  */
 if ( $oria_facet ) {
+	// Frame questions carry {tokens}; generated ones have none, so the
+	// fill is a no-op on them.
 	$oria_filled = array_map( static fn( array $qa ): array => array( 'q' => $oria_fill( $qa['q'] ), 'a' => $oria_fill( $qa['a'] ) ), $oria_faqs );
 	if ( $oria_filled ) {
 		get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_filled, 'heading' => sprintf( __( '%s — common questions', 'oria' ), $oria_h1 ), 'id' => 'faq' ) );

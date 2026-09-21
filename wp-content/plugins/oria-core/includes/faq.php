@@ -104,6 +104,19 @@ function matching( \WP_Term $term ): array {
 			case Taxonomies\SPECIALTY:
 				$hit = in_array( $slug, (array) ( $row['spec'] ?? array() ), true );
 				break;
+			case 'service':
+				/*
+				 * Services were missing here, so every facet the resolver
+				 * settled on the service side matched zero rows, fell under
+				 * MIN_SAMPLE and rendered no FAQ at all -- infrared sauna
+				 * among them, with 31 in Perth under it. Rows carry service
+				 * slugs in the same shape as specialties.
+				 */
+				$hit = in_array( $slug, (array) ( $row['svc'] ?? array() ), true );
+				break;
+			case 'audience':
+				$hit = in_array( $slug, (array) ( $row['aud'] ?? array() ), true );
+				break;
 			case Taxonomies\AREA:
 				// is_suburb(), not a parent check: regions gained a parent when the
 				// city level was inserted, and a region would otherwise be matched

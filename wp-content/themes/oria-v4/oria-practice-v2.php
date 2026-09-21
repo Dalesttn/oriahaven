@@ -264,6 +264,21 @@ if ( $oria_facet ) {
 	if ( ! $oria_faqs && function_exists( '\Oria\Core\FacetGuides\faqs' ) ) {
 		$oria_faqs = \Oria\Core\FacetGuides\faqs( $oria_facet );
 	}
+	/*
+	 * Still nothing: generate from the facet's OWN term -- never the
+	 * category's, since spa questions do not belong on an infrared sauna
+	 * page. Most guide entries carry a phrase and see_also but no
+	 * questions, so without this a frameless facet shipped no FAQ and no
+	 * FAQPage markup at all.
+	 */
+	if ( ! $oria_faqs
+		&& function_exists( '\Oria\Core\PracticesIndex\facet_term' )
+		&& function_exists( '\Oria\Core\Faq\for_term' ) ) {
+		$oria_facet_term = \Oria\Core\PracticesIndex\facet_term( $oria_facet );
+		if ( $oria_facet_term instanceof \WP_Term ) {
+			$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_facet_term );
+		}
+	}
 } elseif ( $oria_term && function_exists( '\Oria\Core\Faq\for_term' ) ) {
 	$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_term );
 }
