@@ -131,6 +131,13 @@
     "infrared-sauna": {
       "phrase": "Infrared Saunas",
       "description": "Compare {count} infrared sauna studios across Perth by suburb and session price. Photos, maps and booking links, hand-checked and kept current.",
+      "refine": [
+        {
+          "key": "spec",
+          "value": "cold-plunge",
+          "label": "With a cold plunge"
+        }
+      ],
       "see_also": [
         {
           "category": "spa",

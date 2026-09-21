@@ -1891,6 +1891,56 @@
     });
   }
 
+  /* Quick refinements above the results.
+
+     A refine button owns nothing. It ticks the real [data-filter] box the
+     dock already renders and lets the engine re-render, count, chip and
+     write the URL exactly as if the visitor had opened the panel and
+     found it -- which, three taps deep, they did not: the cold plunge
+     filter sat in the dock on every sauna page and went unused.
+
+     State is derived, never stored. After any filter change -- including
+     "Clear all" and the back button -- a button is lit only while its box
+     is still ticked, so the two can never disagree. */
+  function initRefine() {
+    var btns = $$("[data-refine]");
+    if (!btns.length) return;
+
+    function boxFor(btn) {
+      var bits = (btn.dataset.refine || "").split(":");
+      if (bits.length !== 2 || !bits[0] || !bits[1]) return null;
+      return document.querySelector(
+        '[data-filter="' + bits[0] + '"][value="' + bits[1].replace(/"/g, '\\"') + '"]'
+      );
+    }
+
+    function paint() {
+      btns.forEach(function (btn) {
+        var box = boxFor(btn);
+        // No box on this page means nothing to narrow: hide rather than
+        // offer a control that cannot work.
+        if (!box) { btn.hidden = true; return; }
+        btn.setAttribute("aria-pressed", box.checked ? "true" : "false");
+      });
+    }
+
+    btns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var box = boxFor(btn);
+        if (!box) return;
+        box.checked = !box.checked;
+        box.dispatchEvent(new Event("change", { bubbles: true }));
+        paint();
+      });
+    });
+
+    document.addEventListener("change", function (e) {
+      if (e.target && e.target.closest && e.target.closest("[data-filter]")) paint();
+    });
+
+    paint();
+  }
+
   function initGoodFor() {
 
     if (!$("#dirResults")) return;
@@ -6246,6 +6296,7 @@
     initHomeSearch();
     initDirectory();
     initGoodFor();
+    initRefine();
     initDirView();
     initCatMap();
     initCardQuickActions();

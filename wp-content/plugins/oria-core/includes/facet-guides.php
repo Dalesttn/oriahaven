@@ -134,6 +134,71 @@ function description( ?array $facet, int $count = 0 ): string {
 	return '' === $desc ? '' : strtr( $desc, array( '{count}' => number_format_i18n( $count ) ) );
 }
 
+/**
+ * The facet's quick refinements: one-tap narrowings of the result set.
+ *
+ * These are not a new filter engine. Each one names a checkbox the page
+ * already renders -- [data-filter="spec"] or [data-filter="svc"] -- and
+ * the existing engine does the counting, the chips, the URL and "Clear
+ * all". The row exists because those boxes were buried three taps deep
+ * in a dock panel: the cold plunge filter on the infrared sauna page had
+ * been there all along and nobody could find it.
+ *
+ * A refinement is dropped unless it narrows: none of these listings has
+ * it, or all of them do. A control that changes nothing is worse than no
+ * control, and the count beside it has to be true.
+ *
+ * @param list<int> $ids The listing ids the page is showing.
+ * @return list<array{key: string, value: string, label: string, count: int}>
+ */
+function refinements( ?array $facet, array $ids = array() ): array {
+	if ( ! applies( $facet ) || ! $ids || ! function_exists( '\Oria\Theme\listing_data' ) ) {
+		return array();
+	}
+
+	$want = array();
+	foreach ( $ids as $id ) {
+		$slug = get_post_field( 'post_name', (int) $id );
+		if ( is_string( $slug ) && '' !== $slug ) {
+			$want[ $slug ] = true;
+		}
+	}
+
+	$rows = array();
+	foreach ( (array) ( \Oria\Theme\listing_data()['listings'] ?? array() ) as $row ) {
+		if ( isset( $want[ (string) ( $row['id'] ?? '' ) ] ) ) {
+			$rows[] = $row;
+		}
+	}
+	if ( ! $rows ) {
+		return array();
+	}
+
+	$out = array();
+	foreach ( (array) ( entry( $facet )['refine'] ?? array() ) as $ref ) {
+		$key   = (string) ( $ref['key'] ?? '' );
+		$value = (string) ( $ref['value'] ?? '' );
+		$label = trim( (string) ( $ref['label'] ?? '' ) );
+
+		if ( ! in_array( $key, array( 'spec', 'svc' ), true ) || '' === $value || '' === $label ) {
+			continue;
+		}
+
+		$n = 0;
+		foreach ( $rows as $row ) {
+			if ( in_array( $value, (array) ( $row[ $key ] ?? array() ), true ) ) {
+				$n++;
+			}
+		}
+
+		if ( $n > 0 && $n < count( $rows ) ) {
+			$out[] = array( 'key' => $key, 'value' => $value, 'label' => $label, 'count' => $n );
+		}
+	}
+
+	return $out;
+}
+
 function phrase( ?array $facet ): string {
 	return applies( $facet ) ? trim( (string) ( entry( $facet )['phrase'] ?? '' ) ) : '';
 }

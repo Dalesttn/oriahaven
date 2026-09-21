@@ -802,6 +802,30 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 		}
 		?>
 	</h2>
+	<?php
+	/*
+	 * Quick refinements: the boxes the dock already has, brought up to
+	 * where the results are. Each button ticks its real [data-filter]
+	 * input, so the engine keeps owning the count, the chips and the URL.
+	 */
+	$oria_refine = ( $oria_facet && function_exists( '\Oria\Core\FacetGuides\refinements' ) )
+		? \Oria\Core\FacetGuides\refinements( $oria_facet, $oria_ids )
+		: array();
+	if ( $oria_refine ) :
+		?>
+		<div class="xc-refine" role="group" aria-label="<?php esc_attr_e( 'Narrow these results', 'oria' ); ?>">
+			<?php foreach ( $oria_refine as $oria_r ) : ?>
+				<button
+					type="button"
+					class="xc-refine__btn"
+					data-refine="<?php echo esc_attr( $oria_r['key'] . ':' . $oria_r['value'] ); ?>"
+					aria-pressed="false"
+				><?php echo esc_html( $oria_r['label'] ); ?> <span class="xc-refine__n"><?php echo esc_html( number_format_i18n( $oria_r['count'] ) ); ?></span></button>
+			<?php endforeach; ?>
+		</div>
+		<?php
+	endif;
+	?>
 	<div
 		class="dir__results dir__results--wide"
 		id="dirResults"
