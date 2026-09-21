@@ -1579,10 +1579,10 @@ while ( have_posts() ) :
 				<?php if ( ! $oria_contactless && ! ( 'unclaimed' === $oria_status && ! $oria_claimed_by ) ) : ?>
 					<div class="claimprompt">
 						<b style="display:block;margin-bottom:.4rem"><?php esc_html_e( 'Something out of date?', 'oria' ); ?></b>
-						<p style="font-size:.875rem;color:var(--text-soft)">
-							<?php esc_html_e( 'This listing is managed by the owner.', 'oria' ); ?>
-							<a href="<?php echo esc_url( home_url( '/about/#contact' ) ); ?>" style="text-decoration:underline;text-underline-offset:3px"><?php esc_html_e( 'Let us know', 'oria' ); ?></a>
+						<p style="font-size:.875rem;color:var(--text-soft);margin-bottom:.6rem">
+							<?php esc_html_e( 'This listing is looked after by the owner, and we check corrections by hand.', 'oria' ); ?>
 						</p>
+						<?php get_template_part( 'template-parts/correction-form', null, array( 'id' => $oria_id ) ); ?>
 					</div>
 				<?php endif; ?>
 			</div>
@@ -1956,11 +1956,10 @@ while ( have_posts() ) :
 						 * correction never reached the listing.
 						 */
 						?>
-						<p class="xp-claim__alt">
-							<?php esc_html_e( 'Just need something fixed?', 'oria' ); ?>
-							<a href="<?php echo esc_url( home_url( '/about/#contact' ) ); ?>"><?php esc_html_e( 'Tell us what is wrong', 'oria' ); ?></a>
-							<?php esc_html_e( '— no account needed, and we will correct it either way.', 'oria' ); ?>
-						</p>
+						<div class="xp-claim__alt">
+							<p class="xp-claim__altline"><?php esc_html_e( 'Just need something fixed? You do not have to take the page on — tell us, and we will correct it either way.', 'oria' ); ?></p>
+							<?php get_template_part( 'template-parts/correction-form', null, array( 'id' => $oria_id ) ); ?>
+						</div>
 					</div>
 				<?php endif; ?>
 			</div>

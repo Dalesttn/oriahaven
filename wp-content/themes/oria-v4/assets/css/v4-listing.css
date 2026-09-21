@@ -989,18 +989,7 @@ html.xp-sheet-open { overflow: hidden; }
 }
 
 /* The smaller door, under the form. */
-.xp-claim__alt {
-  margin: var(--s-4) 0 0;
-  font-size: var(--fs-sm);
-  line-height: 1.55;
-  color: var(--mist);
-}
-.xp-claim__alt a {
-  color: var(--surface);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.xp-claim__alt a:hover { color: var(--brand-gold, #c9a24b); }
+
 .xp-claim .field__label { color: var(--mist); }
 .xp-claim .xp-form__error { color: var(--brand-gold); }
 .xp-claim .btn--light { color: var(--deep); }
@@ -1328,3 +1317,70 @@ html.xp-sheet-open { overflow: hidden; }
 }
 /* Keep the heading and intro clear of it. */
 .xp-dna-block .xp-dna__head, .xp-dna-block .xp__lede { padding-right: clamp(52px, 7vw, 76px); }
+
+/* -- suggest a correction -------------------------------------------------- */
+
+/*
+ * Folded, because it is not what most visitors came for, and the summary
+ * is a real control rather than a link: 44px, its own focus ring, and a
+ * marker that turns when it opens.
+ *
+ * It appears in two places with opposite grounds -- inside the deep claim
+ * card, and on the light "Something out of date?" prompt -- so the colours
+ * are inherited rather than set, and only the deep context overrides them.
+ */
+.ocorr { margin: 0; }
+.ocorr__fold { border: 0; }
+.ocorr__open {
+  display: inline-flex; align-items: center; gap: .45rem;
+  min-height: 44px; padding: .35rem 0;
+  font-size: var(--fs-sm); font-weight: 600; color: inherit;
+  cursor: pointer; list-style: none;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.ocorr__open::-webkit-details-marker { display: none; }
+.ocorr__open::marker { content: ""; }
+.ocorr__open::before {
+  content: "+"; flex: none;
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1px solid currentColor;
+  display: grid; place-items: center;
+  font-size: .9rem; font-weight: 400; line-height: 1;
+  transition: transform .15s var(--ease, ease);
+}
+.ocorr__fold[open] .ocorr__open::before { content: "\2212"; }
+.ocorr__open:focus-visible { outline: 3px solid var(--brand-gold, #c9a24b); outline-offset: 3px; }
+
+.ocorr__body { margin-top: var(--s-4); max-width: 34rem; }
+.ocorr__note { margin: 0 0 var(--s-4); font-size: var(--fs-xs); line-height: 1.55; opacity: .85; }
+.ocorr__error {
+  margin: 0 0 var(--s-4); padding: .6rem .8rem; border-radius: 10px;
+  background: #FBF2DF; color: #6A4A0A; font-size: var(--fs-sm);
+}
+.ocorr__form { display: grid; gap: var(--s-4); }
+.ocorr__row { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
+.ocorr__what { line-height: 1.55; resize: vertical; }
+.ocorr__form .input { font-size: 16px; }
+.ocorr__send { justify-self: start; min-height: 44px; }
+.ocorr__hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.ocorr__done { margin: 0; }
+.ocorr__thanks { margin: 0; font-size: var(--fs-sm); line-height: 1.55; }
+.ocorr__offer { margin: var(--s-3) 0 0; font-size: var(--fs-sm); line-height: 1.55; }
+.ocorr__offerlink { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+/* On the deep claim card the form sits on dark, so the labels follow. */
+.xp-claim .ocorr__open,
+.xp-claim .ocorr__note,
+.xp-claim .ocorr__thanks,
+.xp-claim .ocorr__offer { color: var(--mist); }
+.xp-claim .ocorr__open { color: var(--surface); }
+.xp-claim .ocorr .field__label { color: var(--mist); }
+.xp-claim .ocorr__offerlink { color: var(--surface); }
+
+.xp-claim__alt { margin: var(--s-5) 0 0; padding-top: var(--s-5); border-top: 1px solid rgba(255, 255, 255, .16); }
+.xp-claim__altline { margin: 0 0 var(--s-3); font-size: var(--fs-sm); line-height: 1.55; color: var(--mist); }
+
+@media (max-width: 46rem) {
+  .ocorr__row { grid-template-columns: 1fr; }
+}
