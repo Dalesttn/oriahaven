@@ -702,6 +702,22 @@ function register_listing_fields(): void {
 					'wrapper'      => array( 'width' => '50' ),
 				),
 				array(
+					/*
+					 * Some practices genuinely have no opening hours: a mobile
+					 * massage therapist, a facilitator who runs four retreats a
+					 * year, anyone who works purely by appointment. For them an
+					 * empty Hours row is not missing data, it is the wrong
+					 * question -- and the profile should stop asking it rather
+					 * than show a gap where a fact belongs.
+					 */
+					'key'          => 'field_oria_hours_hide',
+					'name'         => 'hours_hide',
+					'label'        => 'No set opening hours',
+					'type'         => 'true_false',
+					'ui'           => 1,
+					'instructions' => 'Tick if this practice works by appointment, travels to clients, or runs to a schedule rather than opening hours. The Hours row is left off the profile entirely, and we stop asking for it.',
+				),
+				array(
 					'key'          => 'field_oria_opening_hours',
 					'name'         => 'opening_hours',
 					'label'        => 'Opening hours',

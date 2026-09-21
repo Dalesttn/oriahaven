@@ -53,7 +53,8 @@ $dis       = $open ? '' : ' disabled';
 		<?php // A group of controls is labelled by its legend, not by a <label>. ?>
 		<fieldset class="myfield__set"<?php echo $dis; ?>>
 			<legend class="myfield__label"><?php echo esc_html( $f['label'] ); ?></legend>
-	<?php else : ?>
+	<?php elseif ( 'toggle' !== $type ) : ?>
+		<?php // A toggle carries its label beside the box; a heading above it would say the same thing twice. ?>
 		<label class="myfield__label" for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $f['label'] ); ?></label>
 	<?php endif; ?>
 
@@ -72,6 +73,17 @@ $dis       = $open ? '' : ' disabled';
 			 */
 			$val = trim( wp_strip_all_tags( preg_replace( '#</p>\s*<p[^>]*>#i', "\n\n", (string) $val ) ) );
 			// fall through
+		case 'toggle':
+			?>
+			<label class="myopt myopt--wide">
+				<input type="checkbox" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" value="1"
+					<?php checked( (bool) $val ); ?>
+					<?php echo $described ? ' aria-describedby="' . esc_attr( $described ) . '"' : ''; ?><?php echo $dis; ?>>
+				<span><?php echo esc_html( $f['label'] ); ?></span>
+			</label>
+			<?php
+			break;
+
 		case 'textarea':
 			?>
 			<textarea class="input myfield__area" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>"

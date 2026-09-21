@@ -158,6 +158,9 @@ const FIELD_TIERS = array(
 	// most common way a directory wastes somebody's trip.
 	'good_for'      => 'free',
 	'opening_hours' => 'free',
+	// The switch that says hours do not apply is part of getting the listing
+	// right, so it sits on the free side with the hours themselves.
+	'hours_hide'    => 'free',
 	'transit'       => 'free',
 	'parking'       => 'free',
 	// Nobody researches amenities — the only source is the business ticking

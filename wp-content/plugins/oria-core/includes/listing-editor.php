@@ -246,6 +246,12 @@ function sections(): array {
 					),
 				),
 				array(
+					'name'  => 'hours_hide',
+					'type'  => 'toggle',
+					'label' => __( 'We do not keep set opening hours', 'oria' ),
+					'help'  => __( 'For practices that work by appointment, travel to clients, or run to a schedule instead. Your profile leaves the Hours row off entirely, and we stop asking you for it.', 'oria' ),
+				),
+				array(
 					'name'        => 'booking_url',
 					'type'        => 'url',
 					'label'       => __( 'Booking link', 'oria' ),
@@ -680,6 +686,16 @@ function score( int $listing ): array {
 	$missing = array();
 
 	foreach ( weights() as $key => $area ) {
+		/*
+		 * Hours a practice does not keep are not hours it is missing. Once
+		 * the switch is on, the area leaves the total entirely rather than
+		 * sitting at nought -- otherwise a mobile massage therapist could
+		 * never reach 100% however complete their listing was.
+		 */
+		if ( 'hours' === $key && value( $listing, 'hours_hide' ) ) {
+			continue;
+		}
+
 		// Areas whose every field is locked by the plan do not count either way.
 		$reachable = array_filter(
 			$area['fields'],
@@ -1172,8 +1188,16 @@ function handle_save(): void {
 			continue;
 		}
 
-		// A field the form did not draw is not a field the owner cleared.
-		if ( ! array_key_exists( $name, $_POST ) && 'checks' !== $field['type'] && 'repeater' !== $field['type'] ) {
+		/*
+		 * A field the form did not draw is not a field the owner cleared --
+		 * except for the controls that say nothing when they are off. An
+		 * unticked checkbox posts no key at all, so for these three an
+		 * absent key IS the answer, and reading it as "not drawn" made the
+		 * hours switch one-way: it could be turned on and never off.
+		 */
+		$silent_when_empty = array( 'checks', 'repeater', 'toggle' );
+
+		if ( ! array_key_exists( $name, $_POST ) && ! in_array( $field['type'], $silent_when_empty, true ) ) {
 			continue;
 		}
 

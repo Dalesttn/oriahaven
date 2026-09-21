@@ -77,7 +77,7 @@ while ( have_posts() ) :
 	$oria_format     = (string) ( get_field( 'format', $oria_id ) ?: 'in-person' );
 	$oria_next       = (string) get_field( 'next_session', $oria_id );
 	$oria_good_for   = (string) get_field( 'good_for', $oria_id );
-	$oria_hours      = \Oria\Theme\rows( 'opening_hours', array(), $oria_id );
+	$oria_hours      = \Oria\Theme\hours( $oria_id );
 	$oria_transit    = (string) get_field( 'transit', $oria_id );
 	$oria_parking    = (string) get_field( 'parking', $oria_id );
 	$oria_reviews    = \Oria\Core\Places\reviews_for( $oria_id );
@@ -662,7 +662,7 @@ while ( have_posts() ) :
 				 * the imported listings yet -- the row exists for the owners
 				 * who add them, never as dressing.
 				 */
-				$oria_hrows = \Oria\Theme\rows( 'opening_hours', array(), $oria_id );
+				$oria_hrows = \Oria\Theme\hours( $oria_id );
 				if ( $oria_hrows ) {
 					$oria_hbits = array();
 					foreach ( $oria_hrows as $oria_hr ) {
@@ -681,7 +681,7 @@ while ( have_posts() ) :
 				 * sits in "Getting there"; the panel answers only "can I go
 				 * now", which is the question a glance is for.
 				 */
-				if ( ! $oria_hrows && function_exists( '\Oria\Core\Places\hours_for' ) ) {
+				if ( ! $oria_hrows && ! \Oria\Theme\hours_hidden( $oria_id ) && function_exists( '\Oria\Core\Places\hours_for' ) ) {
 					$oria_today = (string) wp_date( 'l' );
 					foreach ( \Oria\Core\Places\hours_for( $oria_id ) as $oria_ghl ) {
 						if ( 0 === stripos( $oria_ghl, $oria_today ) ) {
@@ -1395,7 +1395,7 @@ while ( have_posts() ) :
 								<?php endif; ?>
 							</div>
 
-							<?php $oria_wk = function_exists( '\Oria\Core\Places\hours_for' ) ? \Oria\Core\Places\hours_for( $oria_id ) : array(); ?>
+							<?php $oria_wk = ! \Oria\Theme\hours_hidden( $oria_id ) && function_exists( '\Oria\Core\Places\hours_for' ) ? \Oria\Core\Places\hours_for( $oria_id ) : array(); ?>
 							<?php if ( $oria_wk ) : ?>
 								<div style="margin-top:1.1rem">
 									<div class="keyfact__k"><?php esc_html_e( 'Opening hours', 'oria' ); ?></div>

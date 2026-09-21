@@ -153,7 +153,7 @@ while ( have_posts() ) :
 	$oria_format      = (string) ( get_field( 'format', $oria_id ) ?: 'in-person' );
 	$oria_next        = trim( (string) get_field( 'next_session', $oria_id ) );
 	$oria_good_for    = (string) get_field( 'good_for', $oria_id );
-	$oria_hours       = \Oria\Theme\rows( 'opening_hours', array(), $oria_id );
+	$oria_hours       = \Oria\Theme\hours( $oria_id );
 	$oria_transit     = (string) get_field( 'transit', $oria_id );
 	$oria_parking     = (string) get_field( 'parking', $oria_id );
 	$oria_kind        = (string) get_field( 'kind', $oria_id );
@@ -330,7 +330,7 @@ while ( have_posts() ) :
 			$oria_hbits[] = $oria_hline;
 		}
 	}
-	$oria_wk     = ! $oria_hbits && function_exists( '\Oria\Core\Places\hours_for' ) ? \Oria\Core\Places\hours_for( $oria_id ) : array();
+	$oria_wk     = ! $oria_hbits && ! \Oria\Theme\hours_hidden( $oria_id ) && function_exists( '\Oria\Core\Places\hours_for' ) ? \Oria\Core\Places\hours_for( $oria_id ) : array();
 	$oria_prec   = function_exists( '\Oria\Core\Places\data_for' ) ? \Oria\Core\Places\data_for( $oria_id, false ) : null;
 	$oria_gts    = $oria_prec ? (int) ( $oria_prec['ts'] ?? 0 ) : 0;
 	$oria_todayw = (string) wp_date( 'l' );

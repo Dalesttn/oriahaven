@@ -920,6 +920,40 @@ function rows( string $name, array $fallback = array(), $post_id = false ): arra
 }
 
 /**
+ * Whether this listing says it keeps no opening hours.
+ *
+ * Asked wherever hours could come from, which is not only the owner's own
+ * rows: when those are empty the profile falls back to Google's week, so
+ * a switch that silenced only the typed rows would have swapped one set
+ * of hours for another and looked like it had done nothing.
+ */
+function hours_hidden( $post_id = false ): bool {
+	$id = $post_id ? (int) $post_id : get_the_ID();
+
+	return (bool) ( $id && get_post_meta( $id, 'hours_hide', true ) );
+}
+
+/**
+ * A listing's opening hours, or nothing when it keeps none.
+ *
+ * One reader for every place hours are shown, because there are four --
+ * the facts strip, the "open now" JSON, the all-week row and the v4 rail
+ * -- and a switch honoured in three of them is worse than no switch.
+ *
+ * The stored rows are left untouched: a practice that ticks this and
+ * unticks it a month later gets its hours back. Only the reading changes.
+ */
+function hours( $post_id = false ): array {
+	$id = $post_id ? (int) $post_id : get_the_ID();
+
+	if ( hours_hidden( $id ) ) {
+		return array();
+	}
+
+	return rows( 'opening_hours', array(), $post_id );
+}
+
+/**
  * Image field -> URL, falling back to a theme asset. Fields return
  * attachment IDs; the fallback names a file in assets/img.
  */
