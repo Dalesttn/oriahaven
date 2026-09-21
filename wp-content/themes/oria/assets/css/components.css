@@ -254,15 +254,23 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
   font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro);
   text-transform: uppercase; color: var(--text-faint); margin-bottom: var(--s-2);
 }
+/* A field that paints its own white background has to paint its own text
+   too. Without the colour it inherited one, which is invisible the moment
+   the field sits on a dark card -- the claim form on a listing was white
+   on white, and people typed into what looked like an empty box. The dark
+   glass variants (.matchband, .enqform, .matchdialog) each set their own
+   colour and are more specific, so they are unaffected. */
 .input, .select, .textarea {
   width: 100%;
   padding: 0.85rem 1.05rem;
   border: 1px solid var(--line-strong);
   border-radius: var(--r-sm);
   background: var(--white);
+  color: var(--text);
   font-size: var(--fs-sm);
   transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
+.input::placeholder, .textarea::placeholder { color: var(--text-faint); }
 .input:focus, .select:focus, .textarea:focus {
   outline: none;
   border-color: var(--deep);
