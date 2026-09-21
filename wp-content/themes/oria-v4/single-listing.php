@@ -1882,8 +1882,8 @@ while ( have_posts() ) :
 
 	<?php
 	/* --- 4. Claim: unclaimed, ownerless, contactable listings only ----------
-	 * The parent's claim form, unchanged. Folded behind a "Claim this page"
-	 * button unless the reader arrived at #claim or is mid-claim. */
+	 * Open, and it says what it costs before it asks for a name.
+	 */
 	?>
 	<?php if ( ! $oria_contactless && 'unclaimed' === $oria_status && ! $oria_claimed_by ) : // Free-plan listings have an owner -- don't invite rival claims. ?>
 		<?php
@@ -1894,9 +1894,26 @@ while ( have_posts() ) :
 		<section class="wrap xp-claimwrap" aria-labelledby="xp-claim-title">
 			<div class="xp-claim on-deep" id="claim">
 				<div class="xp-claim__intro">
-					<h2 class="xp-claim__title" id="xp-claim-title"><?php echo esc_html( '' !== $oria_words['claim_head'] ? $oria_words['claim_head'] : __( 'Is this your business?', 'oria' ) ); ?></h2>
+					<h2 class="xp-claim__title" id="xp-claim-title"><?php echo esc_html( '' !== $oria_words['claim_head'] ? $oria_words['claim_head'] : __( 'Is this your organisation?', 'oria' ) ); ?></h2>
 					<?php if ( 'received' !== $oria_claim_state ) : ?>
-						<p class="xp-claim__text"><?php esc_html_e( 'This listing was built from public information. Request to claim it and, once we\'ve confirmed it\'s you, you can edit every detail yourself.', 'oria' ); ?></p>
+						<p class="xp-claim__text"><?php esc_html_e( 'We built this page from public information. Take it over and keep it right — your contact details, hours, services and photos.', 'oria' ); ?></p>
+						<?php
+						/*
+						 * What free means, said before the decision rather than
+						 * in the approval email afterwards. An owner reading
+						 * "Claim this page" has no way to know it costs nothing,
+						 * and the one thing that stops somebody claiming is the
+						 * suspicion that a card is waiting at the end of it.
+						 *
+						 * The second sentence draws the line the tiers actually
+						 * draw, so the first padlock they meet later is not a
+						 * surprise: correcting what is wrong is always free.
+						 */
+						?>
+						<p class="xp-claim__free">
+							<?php esc_html_e( 'Free, and no card needed — the profile is already here, so there is nothing to set up.', 'oria' ); ?>
+							<span class="xp-claim__line"><?php esc_html_e( 'Correcting anything wrong is always free. The paid plan adds a booking link, offers and your class timetable.', 'oria' ); ?></span>
+						</p>
 					<?php endif; ?>
 				</div>
 				<?php if ( 'received' === $oria_claim_state ) : ?>
@@ -1905,31 +1922,46 @@ while ( have_posts() ) :
 						<span><b><?php esc_html_e( 'Request received.', 'oria' ); ?></b> <?php esc_html_e( 'We check every claim by hand — you\'ll get an email with your log-in once it\'s approved.', 'oria' ); ?></span>
 					</div>
 				<?php else : ?>
-					<details class="xp-claim__fold"<?php echo 'error' === $oria_claim_state ? ' open' : ''; ?>>
-						<summary class="btn btn--light xp-tap xp-claim__open"><?php esc_html_e( 'Claim this page', 'oria' ); ?></summary>
-						<div class="xp-claim__form">
-							<?php if ( 'error' === $oria_claim_state ) : ?>
-								<p class="xp-form__error" role="alert"><?php esc_html_e( 'That didn\'t send — check the name and email and try again.', 'oria' ); ?></p>
-							<?php endif; ?>
-							<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" class="xp-form" data-oria-event="claim_started">
-								<input type="hidden" name="action" value="oria_claim">
-								<input type="hidden" name="listing_id" value="<?php echo (int) $oria_id; ?>">
-								<?php wp_nonce_field( 'oria_claim', 'oria_claim_nonce' ); ?>
-								<input type="text" name="oria_website_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="xp-hp">
-								<div class="xp-form__row">
-									<label class="field"><span class="field__label"><?php esc_html_e( 'Your name', 'oria' ); ?></span><input class="input" type="text" name="claimant_name" autocomplete="name" required></label>
-									<label class="field"><span class="field__label"><?php esc_html_e( 'Email', 'oria' ); ?></span><input class="input" type="email" name="claimant_email" autocomplete="email" required placeholder="<?php esc_attr_e( 'Ideally the one on your website', 'oria' ); ?>"></label>
-								</div>
-								<label class="field"><span class="field__label"><?php esc_html_e( 'Phone (optional)', 'oria' ); ?></span><input class="input" type="text" name="claimant_phone" autocomplete="tel"></label>
-								<label class="field"><span class="field__label"><?php esc_html_e( 'Anything that helps us verify you', 'oria' ); ?></span><textarea class="textarea" name="claimant_note" style="min-height:70px" placeholder="<?php esc_attr_e( 'e.g. your role, or where we can confirm your details', 'oria' ); ?>"></textarea></label>
-								<button class="btn btn--light xp-tap" type="submit"><?php esc_html_e( 'Request to claim', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></button>
-							</form>
-						</div>
-					</details>
-					<script>
-					/* Arriving at #claim (the share page links here) opens the form. */
-					(function () { if (location.hash === '#claim') { var d = document.querySelector('#claim details'); if (d) { d.open = true; } } })();
-					</script>
+					<?php
+					/*
+					 * The form is open. It used to sit behind a <details>
+					 * labelled "Claim this page", which put two clicks and a
+					 * word that sounds like paperwork between an owner and a
+					 * name field, at the bottom of a very long page.
+					 */
+					?>
+					<div class="xp-claim__form" data-oria-event="claim_started">
+						<?php if ( 'error' === $oria_claim_state ) : ?>
+							<p class="xp-form__error" role="alert"><?php esc_html_e( 'That didn\'t send — check the name and email and try again.', 'oria' ); ?></p>
+						<?php endif; ?>
+						<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" class="xp-form">
+							<input type="hidden" name="action" value="oria_claim">
+							<input type="hidden" name="listing_id" value="<?php echo (int) $oria_id; ?>">
+							<?php wp_nonce_field( 'oria_claim', 'oria_claim_nonce' ); ?>
+							<input type="text" name="oria_website_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="xp-hp">
+							<div class="xp-form__row">
+								<label class="field"><span class="field__label"><?php esc_html_e( 'Your name', 'oria' ); ?></span><input class="input" type="text" name="claimant_name" autocomplete="name" required></label>
+								<label class="field"><span class="field__label"><?php esc_html_e( 'Email', 'oria' ); ?></span><input class="input" type="email" name="claimant_email" autocomplete="email" required placeholder="<?php esc_attr_e( 'Ideally the one on your website', 'oria' ); ?>"></label>
+							</div>
+							<label class="field"><span class="field__label"><?php esc_html_e( 'Phone (optional)', 'oria' ); ?></span><input class="input" type="text" name="claimant_phone" autocomplete="tel"></label>
+							<label class="field"><span class="field__label"><?php esc_html_e( 'Anything that helps us verify you (optional)', 'oria' ); ?></span><textarea class="textarea" name="claimant_note" style="min-height:70px" placeholder="<?php esc_attr_e( 'e.g. your role, or where we can confirm your details', 'oria' ); ?>"></textarea></label>
+							<button class="btn btn--light xp-tap" type="submit"><?php esc_html_e( 'Manage this profile free', 'oria' ); ?><?php echo arrow(); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup. ?></button>
+						</form>
+						<?php
+						/*
+						 * The smaller door. Most people who write in do not want
+						 * to run the page, they want one line changed -- and
+						 * until now an unclaimed listing offered them nothing but
+						 * the claim form, so they emailed instead and the
+						 * correction never reached the listing.
+						 */
+						?>
+						<p class="xp-claim__alt">
+							<?php esc_html_e( 'Just need something fixed?', 'oria' ); ?>
+							<a href="<?php echo esc_url( home_url( '/about/#contact' ) ); ?>"><?php esc_html_e( 'Tell us what is wrong', 'oria' ); ?></a>
+							<?php esc_html_e( '— no account needed, and we will correct it either way.', 'oria' ); ?>
+						</p>
+					</div>
 				<?php endif; ?>
 			</div>
 		</section>

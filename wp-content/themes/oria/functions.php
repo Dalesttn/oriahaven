@@ -1399,7 +1399,13 @@ function words( int $post_id ): array {
 	}
 	return array(
 		'contact_head' => __( 'Get in touch', 'oria' ),
-		'claim_head'   => __( 'Is this your business?', 'oria' ),
+		/*
+		 * "Organisation" rather than "business": a meditation centre, a
+		 * sangha or a council-run class is not a business, and being asked
+		 * whether one is yours is a small reason not to answer. The word
+		 * covers a juice bar just as well.
+		 */
+		'claim_head'   => __( 'Is this your organisation?', 'oria' ),
 		'enquiry_note' => __( 'Enquiries go straight to the business', 'oria' ),
 		'share'        => __( 'Share this place', 'oria' ),
 		'similar'      => __( 'Similar places', 'oria' ),

@@ -952,9 +952,11 @@ html.xp-sheet-open { overflow: hidden; }
 
 .xp-claimwrap { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
 .xp-claim {
+  /* One column since the fold went: the intro sits above an open form,
+     where it used to sit beside a button that hid one. */
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
   gap: var(--s-5) var(--s-6);
   padding: clamp(1.75rem, 3.5vw, 2.5rem) clamp(1.5rem, 3.5vw, 2.75rem);
   border-radius: var(--r-xl);
@@ -969,16 +971,36 @@ html.xp-sheet-open { overflow: hidden; }
   color: var(--surface);
 }
 .xp-claim__text { margin: 0; max-width: 40rem; font-size: var(--fs-sm); line-height: 1.55; color: var(--mist); }
-.xp-claim__fold[open] { grid-column: 1 / -1; }
-.xp-claim__open {
-  list-style: none;
-  cursor: pointer;
-  justify-content: center;
-  color: var(--deep);
+.xp-claim__form { grid-column: 1 / -1; margin-top: var(--s-5); }
+
+/* What it costs, said on the card. Quieter than the intro but not hidden:
+   this is the line that answers the question stopping most people. */
+.xp-claim__free {
+  margin: var(--s-4) 0 0;
+  max-width: 44rem;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--surface);
 }
-.xp-claim__open::-webkit-details-marker { display: none; }
-.xp-claim__open::marker { content: ""; }
-.xp-claim__form { margin-top: var(--s-5); }
+.xp-claim__line {
+  display: block;
+  margin-top: .3rem;
+  color: var(--mist);
+}
+
+/* The smaller door, under the form. */
+.xp-claim__alt {
+  margin: var(--s-4) 0 0;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--mist);
+}
+.xp-claim__alt a {
+  color: var(--surface);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.xp-claim__alt a:hover { color: var(--brand-gold, #c9a24b); }
 .xp-claim .field__label { color: var(--mist); }
 .xp-claim .xp-form__error { color: var(--brand-gold); }
 .xp-claim .btn--light { color: var(--deep); }
@@ -1062,8 +1084,8 @@ html.xp-sheet-open { overflow: hidden; }
     scroll-snap-align: start;
   }
 
-  .xp-claim { grid-template-columns: minmax(0, 1fr); }
-  .xp-claim__open { width: 100%; }
+  /* The desktop rule is single-column now, so the override and the
+     fold button it widened have both gone. */
 
   .xp-shop .prodgrid {
     display: flex;
