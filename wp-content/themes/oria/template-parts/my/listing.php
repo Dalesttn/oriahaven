@@ -34,7 +34,11 @@ $oria_area  = get_the_terms( $oria_listing, 'area' );
 $oria_area  = ( is_array( $oria_area ) && $oria_area ) ? $oria_area[ count( $oria_area ) - 1 ]->name : '';
 $oria_prac  = get_the_terms( $oria_listing, 'practice' );
 $oria_prac  = ( is_array( $oria_prac ) && $oria_prac ) ? $oria_prac[0]->name : '';
-$oria_thumb = get_the_post_thumbnail_url( $oria_listing, 'medium' );
+// The practice's own mark leads; the featured photo stands in when there is none.
+$oria_logo  = (int) get_post_meta( $oria_listing, 'logo', true );
+$oria_thumb = $oria_logo && wp_attachment_is_image( $oria_logo )
+	? wp_get_attachment_image_url( $oria_logo, 'thumbnail' )
+	: get_the_post_thumbnail_url( $oria_listing, 'medium' );
 ?>
 
 <section class="my mylist">

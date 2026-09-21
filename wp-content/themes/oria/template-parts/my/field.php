@@ -157,6 +157,33 @@ $dis       = $open ? '' : ' disabled';
 			<?php
 			break;
 
+		case 'image':
+			$img = (int) $val;
+			$src = $img ? wp_get_attachment_image_url( $img, 'thumbnail' ) : '';
+			?>
+			<div class="mypick" data-mypick>
+				<input type="hidden" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( (string) $img ); ?>" data-mypick-val>
+				<span class="mypick__frame mypick__frame--lg" data-mypick-frame>
+					<?php if ( $src ) : ?>
+						<img src="<?php echo esc_url( $src ); ?>" alt="" width="96" height="96" decoding="async">
+					<?php endif; ?>
+				</span>
+				<span class="mypick__acts">
+					<?php if ( $open && current_user_can( 'upload_files' ) ) : ?>
+						<button class="mypick__btn" type="button" data-mypick-choose
+							<?php echo $described ? ' aria-describedby="' . esc_attr( $described ) . '"' : ''; ?>>
+							<?php echo $img ? esc_html__( 'Change', 'oria' ) : esc_html__( 'Choose an image', 'oria' ); ?>
+						</button>
+						<button class="mypick__btn mypick__btn--x" type="button" data-mypick-clear
+							<?php echo $img ? '' : 'hidden'; ?>><?php esc_html_e( 'Remove', 'oria' ); ?></button>
+					<?php elseif ( $open ) : ?>
+						<span class="mypick__no"><?php esc_html_e( 'Ask Oria Haven to add this for you.', 'oria' ); ?></span>
+					<?php endif; ?>
+				</span>
+			</div>
+			<?php
+			break;
+
 		case 'gallery':
 			$shots = array_values( array_filter( array_map( 'intval', (array) $val ) ) );
 			$limit = \Oria\Core\Tiers\gallery_limit( $listing );

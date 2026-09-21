@@ -823,3 +823,4 @@
 .mylplan__off { color: var(--app-muted); }
 .mylplan__off::before { content: "\2014" !important; color: var(--app-faint) !important; }
 .mylplan__keep { margin: 0; font-size: var(--fs-xs); color: var(--app-faint); line-height: 1.55; max-width: 62ch; }
+.mypick__frame--lg { width: 96px; height: 96px; }

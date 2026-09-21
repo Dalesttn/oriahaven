@@ -322,6 +322,12 @@ function sections(): array {
 					'help'  => __( 'The space, the experience, the people. Avoid flyers, price lists and pictures that are mostly text.', 'oria' ),
 					'hint'  => __( 'The first photo leads: it is the one shown on your profile header and on every card you appear in.', 'oria' ),
 				),
+				array(
+					'name'  => 'logo',
+					'type'  => 'image',
+					'label' => __( 'Your logo', 'oria' ),
+					'help'  => __( 'Shown beside your name at the top of Plan your visit. Square, on a plain background, reads best.', 'oria' ),
+				),
 			),
 		),
 
@@ -1173,6 +1179,17 @@ function handle_save(): void {
 
 		$raw   = $_POST[ $name ] ?? ( in_array( $field['type'], array( 'checks', 'repeater' ), true ) ? array() : '' );
 		$value = clean( $field, $raw );
+
+		/*
+		 * An image id that failed the ownership check is not a request to
+		 * remove the image. Only an empty value is. Without this, a
+		 * hand-edited id that was refused would have wiped the stored logo
+		 * on its way through -- a refusal that destroys something is not a
+		 * refusal.
+		 */
+		if ( 'image' === $field['type'] && '' === $value && '' !== trim( (string) $raw ) ) {
+			continue;
+		}
 
 		/*
 		 * A row removed with JavaScript switched off. The Remove button is a

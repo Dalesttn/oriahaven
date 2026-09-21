@@ -665,6 +665,24 @@ function register_listing_fields(): void {
 					'instructions'  => 'First image leads. With three or more, the profile shows the full gallery layout.',
 				),
 				array(
+					/*
+					 * The practice's own mark, distinct from the gallery and
+					 * from the featured image: the gallery is the room, the
+					 * featured image stands in for it on cards, and neither
+					 * is what belongs beside the name at the top of the
+					 * action rail. Square works best; anything is accepted.
+					 */
+					'key'           => 'field_oria_logo',
+					'name'          => 'logo',
+					'label'         => 'Logo',
+					'type'          => 'image',
+					'return_format' => 'id',
+					'preview_size'  => 'thumbnail',
+					'library'       => 'uploadedTo',
+					'instructions'  => 'Shown with the name at the top of Plan your visit. Square, on a plain background, reads best.',
+					'wrapper'       => array( 'width' => '50' ),
+				),
+				array(
 					'key'          => 'field_oria_next_session',
 					'name'         => 'next_session',
 					'label'        => 'Next session',

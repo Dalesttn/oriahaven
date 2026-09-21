@@ -1592,6 +1592,25 @@ while ( have_posts() ) :
 		<!-- The action rail (60rem and up) -->
 		<aside class="xp-rail" aria-labelledby="xp-rail-title">
 			<div class="xp-rail__card">
+				<?php
+				/*
+				 * Who this box belongs to. The name is a long way up the page
+				 * by the time the rail is in use, and an owner asked for
+				 * their mark here. The logo is its own field -- not the
+				 * gallery, not the featured image -- so a listing without one
+				 * simply shows the name.
+				 */
+				$oria_logo_id = (int) get_post_meta( $oria_qid, 'logo', true );
+				?>
+				<div class="xp-rail__brand">
+					<?php if ( $oria_logo_id && wp_attachment_is_image( $oria_logo_id ) ) : ?>
+						<span class="xp-rail__logo">
+							<?php echo wp_get_attachment_image( $oria_logo_id, 'thumbnail', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); ?>
+						</span>
+					<?php endif; ?>
+					<p class="xp-rail__name"><?php echo esc_html( get_the_title( $oria_qid ) ); ?></p>
+				</div>
+
 				<h2 class="xp-rail__title" id="xp-rail-title"><?php esc_html_e( 'Plan your visit', 'oria' ); ?></h2>
 
 				<?php if ( $oria_offer ) : ?>
