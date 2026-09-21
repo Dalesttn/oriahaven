@@ -1565,11 +1565,7 @@ function title( $title ) {
 			$home = 'svc' === $f['key'] ? facet_owner( (string) $f['value'] ) : specialty_home( (string) $f['value'] );
 			if ( $home === $term->slug ) {
 				$lead = function_exists( '\Oria\Core\FacetGuides\phrase' ) ? \Oria\Core\FacetGuides\phrase( $f ) : '';
-				$ids  = facet_ids( $term, $f );
-				if ( function_exists( '\Oria\Core\Cities\filter_ids' ) && function_exists( '\Oria\Core\Cities\current' ) ) {
-					$ids = \Oria\Core\Cities\filter_ids( $ids, \Oria\Core\Cities\current() );
-				}
-				$n = count( $ids );
+				$n = facet_count( $term, $f );
 				return $n > 1
 					? sprintf( '%s in %s — %d Places | %s', '' !== $lead ? $lead : $bare, label_city(), $n, get_bloginfo( 'name' ) )
 					: sprintf( '%s in %s | %s', '' !== $lead ? $lead : $bare, label_city(), get_bloginfo( 'name' ) );
@@ -1586,6 +1582,27 @@ function title( $title ) {
 	return $title;
 }
 
+/**
+ * How many places this facet actually shows, counted once.
+ *
+ * The title and the meta description used to count separately, and only
+ * the title narrowed the set to the current city -- so on any facet with
+ * listings outside it the description said 38 where the title said 36.
+ * Two different numbers for the same page, in the same search result, on
+ * a site whose whole claim is that the counts are checked by hand.
+ *
+ * Anything that states a count for a facet goes through here.
+ */
+function facet_count( \WP_Term $term, array $facet ): int {
+	$ids = facet_ids( $term, $facet );
+
+	if ( function_exists( '\Oria\Core\Cities\filter_ids' ) && function_exists( '\Oria\Core\Cities\current' ) ) {
+		$ids = \Oria\Core\Cities\filter_ids( $ids, \Oria\Core\Cities\current() );
+	}
+
+	return count( $ids );
+}
+
 function description( $desc ) {
 	if ( is_index() ) {
 		return 'Every wellness practice category Oria Haven lists in Perth — massage, yoga and Pilates, breathwork, meditation, recovery, naturopathy and more — with the pages inside each.';
@@ -1597,7 +1614,7 @@ function description( $desc ) {
 			return $own;
 		}
 		$term = get_queried_object();
-		$n    = $term instanceof \WP_Term ? count( facet_ids( $term, $f ) ) : 0;
+		$n    = $term instanceof \WP_Term ? facet_count( $term, $f ) : 0;
 		return sprintf( '%s — %s checked by hand, with timetables, prices and contact details. Counted live from the Oria Haven directory.', $f['label'], $n ? sprintf( _n( '%d practice', '%d practices', $n, 'oria' ), $n ) : 'practices' );
 	}
 	return $desc;
