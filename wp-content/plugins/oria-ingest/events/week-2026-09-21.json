@@ -1,0 +1,52 @@
+{
+  "generated": "2026-09-21",
+  "city": "Perth",
+  "note": "Everlasting Kings Park Festival runs 18 Sep - 4 Oct 2026 and had already begun when this was written, so the festival itself cannot be imported (the importer requires a future start). Moortabiny is its closing event and is still ahead, listed here a night at a time because each performance is its own sitting.",
+  "events": [
+    {
+      "title": "Moortabiny",
+      "start": "2026-10-02 19:00:00",
+      "end": "2026-10-02 20:30:00",
+      "type": "community",
+      "venue": "Kings Park, Pioneer Women's Memorial",
+      "suburb": "west-perth",
+      "price": "$25-$36, $99 family",
+      "free": false,
+      "description": "The closing night of the Everlasting Kings Park Festival: a narrated drone show above the Western Australian Botanic Garden, written and voiced by Noongar author Kim Scott. Walk the gardens first, where sound stations play a score composed from Kings Park research data, then find a spot on the grass. Gates from 6.30pm; bring a picnic and something to sit on.",
+      "booking_url": "https://www.ticketmaster.com.au/moortabiny-tickets/artist/4583309",
+      "source_url": "https://www.bgpa.wa.gov.au/kings-park/events/moortabiny",
+      "organiser": "Kings Park and Botanic Garden",
+      "checked": "2026-09-21"
+    },
+    {
+      "title": "Moortabiny",
+      "start": "2026-10-03 19:00:00",
+      "end": "2026-10-03 20:30:00",
+      "type": "community",
+      "venue": "Kings Park, Pioneer Women's Memorial",
+      "suburb": "west-perth",
+      "price": "$25-$36, $99 family",
+      "free": false,
+      "description": "The closing weekend of the Everlasting Kings Park Festival: a narrated drone show above the Western Australian Botanic Garden, written and voiced by Noongar author Kim Scott. Walk the gardens first, where sound stations play a score composed from Kings Park research data, then find a spot on the grass. Gates from 6.30pm; bring a picnic and something to sit on.",
+      "booking_url": "https://www.ticketmaster.com.au/moortabiny-tickets/artist/4583309",
+      "source_url": "https://www.bgpa.wa.gov.au/kings-park/events/moortabiny",
+      "organiser": "Kings Park and Botanic Garden",
+      "checked": "2026-09-21"
+    },
+    {
+      "title": "Moortabiny",
+      "start": "2026-10-04 19:00:00",
+      "end": "2026-10-04 20:30:00",
+      "type": "community",
+      "venue": "Kings Park, Pioneer Women's Memorial",
+      "suburb": "west-perth",
+      "price": "$25-$36, $99 family",
+      "free": false,
+      "description": "The last night of the Everlasting Kings Park Festival: a narrated drone show above the Western Australian Botanic Garden, written and voiced by Noongar author Kim Scott. Walk the gardens first, where sound stations play a score composed from Kings Park research data, then find a spot on the grass. Gates from 6.30pm; bring a picnic and something to sit on.",
+      "booking_url": "https://www.ticketmaster.com.au/moortabiny-tickets/artist/4583309",
+      "source_url": "https://www.bgpa.wa.gov.au/kings-park/events/moortabiny",
+      "organiser": "Kings Park and Botanic Garden",
+      "checked": "2026-09-21"
+    }
+  ]
+}
