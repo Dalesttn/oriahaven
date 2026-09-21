@@ -112,6 +112,28 @@ function faqs( ?array $facet ): array {
 }
 
 /** What the title leads with ("Ice Baths & Cold Plunges"), or ''. */
+/**
+ * The facet's own meta description, if one has been written for it.
+ *
+ * The generated fallback in PracticesIndex\description() is the same
+ * sentence on every facet page -- "N practices checked by hand, with
+ * timetables, prices and contact details" -- which says nothing a
+ * searcher comparing infrared saunas wants to know, and reads oddly on a
+ * facet with no timetable at all. A guide can write its own.
+ *
+ * {count} is filled with what the page actually shows, so the number in
+ * the description never drifts from the number in the list.
+ */
+function description( ?array $facet, int $count = 0 ): string {
+	if ( ! applies( $facet ) ) {
+		return '';
+	}
+
+	$desc = trim( (string) ( entry( $facet )['description'] ?? '' ) );
+
+	return '' === $desc ? '' : strtr( $desc, array( '{count}' => number_format_i18n( $count ) ) );
+}
+
 function phrase( ?array $facet ): string {
 	return applies( $facet ) ? trim( (string) ( entry( $facet )['phrase'] ?? '' ) ) : '';
 }

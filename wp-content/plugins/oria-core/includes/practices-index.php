@@ -1642,6 +1642,15 @@ function description( $desc ) {
 		}
 		$term = get_queried_object();
 		$n    = $term instanceof \WP_Term ? facet_count( $term, $f ) : 0;
+
+		// A guide's own line, where one has been written for this facet.
+		if ( function_exists( '\Oria\Core\FacetGuides\description' ) ) {
+			$guide = \Oria\Core\FacetGuides\description( $f, $n );
+			if ( '' !== $guide ) {
+				return $guide;
+			}
+		}
+
 		return sprintf( '%s — %s checked by hand, with timetables, prices and contact details. Counted live from the Oria Haven directory.', $f['label'], $n ? sprintf( _n( '%d practice', '%d practices', $n, 'oria' ), $n ) : 'practices' );
 	}
 	return $desc;
