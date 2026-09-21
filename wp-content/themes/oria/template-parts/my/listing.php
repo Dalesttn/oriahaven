@@ -37,7 +37,7 @@ $oria_prac  = ( is_array( $oria_prac ) && $oria_prac ) ? $oria_prac[0]->name : '
 // The practice's own mark leads; the featured photo stands in when there is none.
 $oria_logo  = (int) get_post_meta( $oria_listing, 'logo', true );
 $oria_thumb = $oria_logo && wp_attachment_is_image( $oria_logo )
-	? wp_get_attachment_image_url( $oria_logo, 'thumbnail' )
+	? wp_get_attachment_image_url( $oria_logo, 'medium' ) // medium scales; thumbnail is a 150x150 crop here
 	: get_the_post_thumbnail_url( $oria_listing, 'medium' );
 ?>
 

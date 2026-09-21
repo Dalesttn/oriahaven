@@ -1605,7 +1605,14 @@ while ( have_posts() ) :
 				<div class="xp-rail__brand">
 					<?php if ( $oria_logo_id && wp_attachment_is_image( $oria_logo_id ) ) : ?>
 						<span class="xp-rail__logo">
-							<?php echo wp_get_attachment_image( $oria_logo_id, 'thumbnail', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); ?>
+							<?php
+							/*
+							 * 'medium', never 'thumbnail'. The thumbnail size is a
+							 * 150x150 hard crop on this site, which took the sides
+							 * off a wide wordmark. Medium scales without cropping.
+							 */
+							echo wp_get_attachment_image( $oria_logo_id, 'medium', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) );
+							?>
 						</span>
 					<?php endif; ?>
 					<p class="xp-rail__name"><?php echo esc_html( get_the_title( $oria_qid ) ); ?></p>
