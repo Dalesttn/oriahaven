@@ -1594,31 +1594,28 @@ while ( have_posts() ) :
 			<div class="xp-rail__card">
 				<?php
 				/*
-				 * Who this box belongs to. The name is a long way up the page
-				 * by the time the rail is in use, and an owner asked for
-				 * their mark here. The logo is its own field -- not the
-				 * gallery, not the featured image -- so a listing without one
-				 * simply shows the name.
+				 * Whose box this is, and the card's heading in one. The
+				 * "Plan your visit" eyebrow used to carry the rail's
+				 * accessible name (the aside points at #xp-rail-title), so
+				 * this block takes over the id: a logo, centred, with the
+				 * listing's name as its alt -- or the name itself when there
+				 * is no logo. Either way a screen reader hears the name.
 				 */
 				$oria_logo_id = (int) get_post_meta( $oria_qid, 'logo', true );
+				$oria_has_logo = $oria_logo_id && wp_attachment_is_image( $oria_logo_id );
 				?>
-				<div class="xp-rail__brand">
-					<?php if ( $oria_logo_id && wp_attachment_is_image( $oria_logo_id ) ) : ?>
+				<h2 class="xp-rail__brand<?php echo $oria_has_logo ? ' xp-rail__brand--logo' : ''; ?>" id="xp-rail-title">
+					<?php if ( $oria_has_logo ) : ?>
 						<span class="xp-rail__logo">
 							<?php
-							/*
-							 * 'medium', never 'thumbnail'. The thumbnail size is a
-							 * 150x150 hard crop on this site, which took the sides
-							 * off a wide wordmark. Medium scales without cropping.
-							 */
-							echo wp_get_attachment_image( $oria_logo_id, 'medium', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) );
+							// 'medium' scales; 'thumbnail' is a 150x150 crop on this site.
+							echo wp_get_attachment_image( $oria_logo_id, 'medium', false, array( 'alt' => get_the_title( $oria_qid ), 'loading' => 'lazy', 'decoding' => 'async' ) );
 							?>
 						</span>
+					<?php else : ?>
+						<span class="xp-rail__name"><?php echo esc_html( get_the_title( $oria_qid ) ); ?></span>
 					<?php endif; ?>
-					<p class="xp-rail__name"><?php echo esc_html( get_the_title( $oria_qid ) ); ?></p>
-				</div>
-
-				<h2 class="xp-rail__title" id="xp-rail-title"><?php esc_html_e( 'Plan your visit', 'oria' ); ?></h2>
+				</h2>
 
 				<?php if ( $oria_offer ) : ?>
 					<div class="xp-rail__top">
