@@ -464,6 +464,41 @@ function item_list_schema(): ?array {
 	);
 }
 
+/**
+ * The narrowest schema.org type this listing can honestly claim.
+ *
+ * A subtype tells an answer engine what KIND of place this is, where a
+ * bare LocalBusiness does not. Only three of the sixteen practice
+ * categories map cleanly, and the rest stay LocalBusiness on purpose
+ * rather than being approximated.
+ *
+ * The categories deliberately NOT mapped are the health ones -- allied
+ * health, holistic and natural therapies, mind, family. schema.org's
+ * nearest types for those sit under MedicalBusiness (MedicalClinic,
+ * Physician and friends), and filing a naturopath or a breathwork
+ * facilitator under a medical type asserts in machine-readable form
+ * exactly the clinical framing this directory refuses to imply in its
+ * prose. Australian therapeutic goods advertising rules are why the copy
+ * stays clear of it; the structured data has to stay clear of it too, or
+ * the disclaimer in llms.txt is worth nothing.
+ *
+ * Nutrition is left alone for a duller reason: it holds both dietitians
+ * and juice bars, so no single type fits.
+ */
+function business_type( int $id ): string {
+	if ( ! function_exists( '\Oria\Core\Primary\of' ) ) {
+		return 'LocalBusiness';
+	}
+
+	$map = array(
+		'spa'     => 'DaySpa',
+		'beauty'  => 'BeautySalon',
+		'fitness' => 'ExerciseGym',
+	);
+
+	return $map[ \Oria\Core\Primary\of( $id ) ] ?? 'LocalBusiness';
+}
+
 /** @return array<string, mixed>|null */
 function listing_schema( int $id ): ?array {
 	$name = get_post_field( 'post_title', $id, 'raw' );
@@ -481,7 +516,7 @@ function listing_schema( int $id ): ?array {
 
 	$out = array(
 		'@context' => 'https://schema.org',
-		'@type'    => 'LocalBusiness',
+		'@type'    => business_type( $id ),
 		'@id'      => get_permalink( $id ) . '#business',
 		'name'     => wp_specialchars_decode( $name ),
 		'url'      => get_permalink( $id ),

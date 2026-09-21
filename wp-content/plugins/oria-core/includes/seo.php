@@ -36,6 +36,7 @@ function bootstrap(): void {
 	add_action( 'template_redirect', __NAMESPACE__ . '\legacy_events_url' );
 
 	// Yoast when present, core titles as the fallback.
+	add_filter( 'wpseo_breadcrumb_links', __NAMESPACE__ . '\listing_breadcrumbs' );
 	add_filter( 'wpseo_title', __NAMESPACE__ . '\seo_title' );
 	/*
 	 * One separator site-wide. The titles built here end " | Oria Haven";
@@ -528,6 +529,74 @@ function page_default( string $key ): string {
 		return '';
 	}
 	return (string) $defaults[ $post->post_name ][ $key ];
+}
+
+/**
+ * A listing's breadcrumb trail, following the shape of the site.
+ *
+ * Yoast built Home > Listings > {name} -- three levels for an eight-level
+ * directory, saying nothing about where the place is or what it does.
+ * Since the move to /explore/{city}/{category}/ it also disagreed with the
+ * URL bar, which is the version a crawler trusts least.
+ *
+ * Now: Home > Perth > {Category} > {name}, taken from the listing's own
+ * primary category and the city it sits in, so the trail, the canonical
+ * URL and the ItemList on the category page all describe one hierarchy.
+ *
+ * Only the middle is rebuilt. Yoast's first and last crumbs are kept as it
+ * made them, because the last one carries the current-page marker and
+ * reproducing that by hand is how a trail ends up with two "current"
+ * entries.
+ *
+ * @param array<int, array<string, mixed>> $crumbs
+ * @return array<int, array<string, mixed>>
+ */
+function listing_breadcrumbs( $crumbs ) {
+	if ( ! is_array( $crumbs ) || count( $crumbs ) < 2 ) {
+		return $crumbs;
+	}
+	if ( ! is_singular( 'listing' ) ) {
+		return $crumbs;
+	}
+	if ( ! function_exists( '\Oria\Core\Primary\of' ) || ! function_exists( '\Oria\Core\PracticesIndex\category_url' ) ) {
+		return $crumbs;
+	}
+
+	$slug = \Oria\Core\Primary\of( get_queried_object_id() );
+	$term = '' !== $slug ? get_term_by( 'slug', $slug, Taxonomies\PRACTICE ) : null;
+	if ( ! $term instanceof \WP_Term ) {
+		return $crumbs;
+	}
+
+	$middle = array();
+
+	/*
+	 * The city hub, when there is one to point at. Cities\current() follows
+	 * the city being viewed, so a Margaret River listing does not get a
+	 * Perth crumb.
+	 */
+	if ( function_exists( '\Oria\Core\Explore\base_url' ) && function_exists( '\Oria\Core\Cities\current' ) ) {
+		$city = \Oria\Core\Cities\current();
+		$url  = (string) \Oria\Core\Explore\base_url( $city );
+		$name = function_exists( '\Oria\Core\Cities\name' ) ? (string) \Oria\Core\Cities\name( $city ) : '';
+		if ( '' !== $url && '' !== $name ) {
+			$middle[] = array(
+				'url'  => $url,
+				'text' => $name,
+			);
+		}
+	}
+
+	$middle[] = array(
+		'url'  => \Oria\Core\PracticesIndex\category_url( $term ),
+		'text' => wp_specialchars_decode( $term->name, ENT_QUOTES ),
+	);
+
+	return array_merge(
+		array( $crumbs[0] ),
+		$middle,
+		array( $crumbs[ count( $crumbs ) - 1 ] )
+	);
 }
 
 function seo_title( $title ) {
