@@ -790,6 +790,10 @@ html.xp-sheet-open { overflow: hidden; }
   /* Never taller than the screen, so its foot is always reachable. */
   max-height: calc(100vh - var(--head-h) - 2rem);
   overflow-y: auto;
+  /* Still scrolls when taller than the screen; the bar itself is hidden.
+     A card with a permanent scrollbar reads as a widget, not a card. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   padding: 1.75rem 1.6rem;
   border: 1px solid var(--line);
   border-radius: var(--r-xl);
@@ -802,16 +806,21 @@ html.xp-sheet-open { overflow: hidden; }
   margin: 0 0 1rem; padding-bottom: 1rem;
   border-bottom: 1px solid var(--line);
 }
+/* Sized by height only. Logos are wordmarks as often as they are marks,
+   and a fixed square shrank a wide one to a smudge. No background either:
+   most logos arrive on transparent or white, and a tinted square behind
+   them looked like a mistake. */
 .xp-rail__logo {
-  flex: none; width: 48px; height: 48px; border-radius: 12px; overflow: hidden;
-  background: var(--sand-2, #dfe9e2); display: grid; place-items: center;
+  flex: none; height: 44px; max-width: 150px;
+  display: flex; align-items: center;
 }
-.xp-rail__logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.xp-rail__logo img { height: 100%; width: auto; max-width: 100%; object-fit: contain; display: block; }
 .xp-rail__name {
   margin: 0; min-width: 0;
   font-size: 1.0625rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em;
   color: var(--ink);
 }
+.xp-rail__card::-webkit-scrollbar { display: none; }
 .xp-rail__title {
   margin: 0;
   font-size: .8125rem;

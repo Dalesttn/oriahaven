@@ -45,7 +45,9 @@ $oria_thumb = $oria_logo && wp_attachment_is_image( $oria_logo )
 
 	<header class="mylhead">
 		<?php if ( $oria_thumb ) : ?>
-			<img class="mylhead__img" src="<?php echo esc_url( $oria_thumb ); ?>" alt="" width="96" height="96" loading="lazy" decoding="async">
+			<?php // A logo is shown whole on a plain ground; a photo fills the frame. ?>
+			<img class="mylhead__img<?php echo $oria_logo && wp_attachment_is_image( $oria_logo ) ? ' mylhead__img--logo' : ''; ?>"
+				src="<?php echo esc_url( $oria_thumb ); ?>" alt="" width="96" height="96" loading="lazy" decoding="async">
 		<?php else : ?>
 			<span class="mylhead__img mylhead__img--none" aria-hidden="true"><?php echo esc_html( mb_substr( get_the_title( $oria_listing ), 0, 1 ) ); ?></span>
 		<?php endif; ?>
