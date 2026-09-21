@@ -1321,8 +1321,32 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 			break;
 		}
 	}
-	$oria_note_cmp   = $oria_gcmp ?: $oria_cmp;
-	$oria_note_guide = $oria_guides ? $oria_guides[0] : null;
+	/*
+	 * On a facet page the facet's own pairing wins: the group prompt and
+	 * the category prompt are both about the category above it, which is
+	 * how an infrared sauna page came to offer day spa against massage.
+	 */
+	$oria_note_cmp = $oria_gcmp ?: $oria_cmp;
+	$oria_note_evt = $oria_gcmp ? 'category_compare_group' : 'category_compare';
+	if ( $oria_facet && $oria_term && function_exists( '\Oria\Core\Compare\prompt_for_facet' ) ) {
+		$oria_note_cmp = \Oria\Core\Compare\prompt_for_facet( $oria_term, $oria_facet );
+		// The event has to name the link that is actually there.
+		$oria_note_evt = 'category_compare';
+	}
+	/*
+	 * Not $oria_guides[0]. The family reaches upwards, so Sound & float --
+	 * whose parent is Spa & Recovery -- offered "Sauna, ice bath or float"
+	 * beside its singing bowls. best_for() reorders what the editor has
+	 * already curated here; it never widens the set.
+	 */
+	$oria_note_topic = '';
+	if ( $oria_facet ) {
+		$oria_note_term  = function_exists( '\Oria\Core\PracticesIndex\facet_term' ) ? \Oria\Core\PracticesIndex\facet_term( $oria_facet ) : null;
+		$oria_note_topic = $oria_note_term instanceof \WP_Term ? $oria_note_term->name : (string) ( $oria_facet['value'] ?? '' );
+	}
+	$oria_note_guide = ( $oria_guides && function_exists( '\Oria\Core\Guides\best_for' ) && $oria_term )
+		? \Oria\Core\Guides\best_for( $oria_term, $oria_note_topic, $oria_guides )
+		: ( $oria_guides ? $oria_guides[0] : null );
 	?>
 	<?php if ( ( $oria_note_cfg && ( $oria_note_cmp || $oria_note_guide ) ) || $oria_note_cmp ) : ?>
 		<aside class="xc-note" id="xcNote" aria-labelledby="xcNoteTitle">
@@ -1333,7 +1357,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 			<?php endif; ?>
 			<p class="xc-note__acts">
 				<?php if ( $oria_note_cmp ) : ?>
-					<a class="btn btn--sm btn--dark" href="<?php echo esc_url( $oria_note_cmp['url'] ); ?>" data-oria-event="<?php echo $oria_gcmp ? 'category_compare_group' : 'category_compare'; ?>">
+					<a class="btn btn--sm btn--dark" href="<?php echo esc_url( $oria_note_cmp['url'] ); ?>" data-oria-event="<?php echo esc_attr( $oria_note_evt ); ?>">
 						<?php echo $oria_note_cfg ? esc_html__( 'Compare the experiences', 'oria' ) : esc_html( $oria_note_cmp['label'] ); ?>
 					</a>
 				<?php endif; ?>

@@ -1724,6 +1724,59 @@ function prompt_for_term( \WP_Term $term ): array {
 }
 
 /**
+ * The experience a slug stands for, whichever address the registry filed
+ * it under. Facet slugs and specialty slugs are the same vocabulary, so a
+ * facet can find its own experience without caring which taxonomy the
+ * term it resolved to happens to live in.
+ */
+function experience_by_slug( string $slug ): ?array {
+	if ( '' === $slug ) {
+		return null;
+	}
+
+	foreach ( array( '/perth/' . $slug . '/', '/practices/' . $slug . '/' ) as $want ) {
+		foreach ( experiences() as $e ) {
+			if ( (string) ( $e['url'] ?? '' ) === $want ) {
+				return $e;
+			}
+		}
+	}
+
+	return null;
+}
+
+/**
+ * The compare prompt for a facet page: the facet's own pairing, not its
+ * category's.
+ *
+ * /explore/perth/spa/infrared-sauna/ offered "Compare Day spa with
+ * Massage", because the prompt was built from the category the facet sits
+ * under and the facet itself was never consulted. The registry already
+ * knows what an infrared sauna is compared with.
+ *
+ * Falls back to the category prompt, so a facet the registry has no
+ * experience for is no worse off than before.
+ *
+ * @return array{url: string, label: string, filled: bool}
+ */
+function prompt_for_facet( \WP_Term $term, ?array $facet ): array {
+	$slug = is_array( $facet ) ? (string) ( $facet['value'] ?? $facet['slug'] ?? '' ) : '';
+	$a    = experience_by_slug( $slug );
+	$b    = $a ? by_id( (string) ( $a['pair'] ?? '' ) ) : null;
+
+	if ( $a && $b ) {
+		return array(
+			'url'    => url_for( array( (string) $a['id'], (string) $b['id'] ) ),
+			/* translators: 1: this facet, 2: the counterpart it is compared with */
+			'label'  => sprintf( __( 'Compare %1$s with %2$s', 'oria' ), $a['label'], $b['label'] ),
+			'filled' => true,
+		);
+	}
+
+	return prompt_for_term( $term );
+}
+
+/**
  * The within-category group a practice term owns, if any — Bodywork owns
  * "Types of massage". Keyed off the group's own "parent", so the registry
  * declares the relationship and the template never has to know it.
