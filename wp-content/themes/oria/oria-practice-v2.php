@@ -179,7 +179,7 @@ if ( $oria_facet ) {
 		&& function_exists( '\Oria\Core\Faq\for_term' ) ) {
 		$oria_facet_term = \Oria\Core\PracticesIndex\facet_term( $oria_facet );
 		if ( $oria_facet_term instanceof \WP_Term ) {
-			$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_facet_term );
+			$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_facet_term, $oria_ids );
 		}
 	}
 } elseif ( $oria_term && function_exists( '\Oria\Core\Faq\for_term' ) ) {

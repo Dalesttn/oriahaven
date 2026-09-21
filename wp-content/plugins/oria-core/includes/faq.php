@@ -48,12 +48,12 @@ function bootstrap(): void {
  *
  * @return list<array{q: string, a: string}>
  */
-function for_term( \WP_Term $term ): array {
+function for_term( \WP_Term $term, ?array $only_ids = null ): array {
 	$manual = parse_override( (string) get_term_meta( $term->term_id, META_OVERRIDE, true ) );
 	if ( $manual ) {
 		return $manual;
 	}
-	$rows = matching( $term );
+	$rows = matching( $term, $only_ids );
 	if ( count( $rows ) < MIN_SAMPLE ) {
 		// Too few listings to say anything specific, and a page that thin
 		// should not be padded with filler.
@@ -69,9 +69,27 @@ function for_term( \WP_Term $term ): array {
  *
  * @return list<array<string, mixed>>
  */
-function matching( \WP_Term $term ): array {
+function matching( \WP_Term $term, ?array $only_ids = null ): array {
 	if ( ! function_exists( '\Oria\Theme\listing_data' ) ) {
 		return array();
+	}
+
+	/*
+	 * A facet page hands in the ids it actually shows. Without that the
+	 * answers counted every listing in the term: /explore/perth/spa/
+	 * infrared-sauna/ said "31 practices" above a list of 29, because two
+	 * infrared sauna venues sit outside the spa category. Same fault the
+	 * city filter below already fixed once.
+	 */
+	$only = null;
+	if ( null !== $only_ids ) {
+		$only = array();
+		foreach ( $only_ids as $only_id ) {
+			$slug = get_post_field( 'post_name', (int) $only_id );
+			if ( is_string( $slug ) && '' !== $slug ) {
+				$only[ $slug ] = true;
+			}
+		}
 	}
 	$all  = \Oria\Theme\listing_data()['listings'] ?? array();
 	$out  = array();
@@ -93,6 +111,9 @@ function matching( \WP_Term $term ): array {
 	}
 
 	foreach ( $all as $row ) {
+		if ( null !== $only && ! isset( $only[ (string) ( $row['id'] ?? '' ) ] ) ) {
+			continue;
+		}
 		if ( '' !== $city && isset( $row['city'] ) && $row['city'] !== $city ) {
 			continue;
 		}
