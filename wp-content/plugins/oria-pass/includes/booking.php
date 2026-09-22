@@ -279,6 +279,14 @@ function cancel( int $booking_id, int $by_user_id, bool $by_provider = false ) {
 		}
 	}
 
+	/*
+	 * Re-read before announcing it. $booking is the row as it was BEFORE the
+	 * update above, so its status still says "confirmed" -- and anything
+	 * listening that asks who cancelled would get the wrong answer. That is
+	 * how a studio came to be emailed about its own cancellation.
+	 */
+	$booking = get( $booking_id ) ?: $booking;
+
 	do_action( 'oria_pass_cancelled', $booking, $session, $refund );
 
 	return array( 'refunded' => $refund, 'credits' => $credits );
