@@ -156,8 +156,38 @@ function started( array $session ): void {
  * a missing membership is recorded rather than dropped: without it the
  * credits would vanish silently and somebody would have paid for nothing.
  */
+/**
+ * The subscription an invoice belongs to.
+ *
+ * Stripe moved this. Older API versions carry it at the top level as
+ * `subscription`; newer ones nest it under
+ * `parent.subscription_details.subscription`, and a destination pinned to
+ * a recent version sends only the new shape. Reading just one of them
+ * means a renewal silently grants nothing on half the API versions in
+ * existence, so read whichever arrived. It can also come expanded as an
+ * object rather than an id.
+ */
+function subscription_of( array $invoice ): string {
+	$candidates = array(
+		$invoice['subscription'] ?? null,
+		$invoice['parent']['subscription_details']['subscription'] ?? null,
+		$invoice['lines']['data'][0]['parent']['subscription_item_details']['subscription'] ?? null,
+	);
+
+	foreach ( $candidates as $found ) {
+		if ( is_array( $found ) ) {
+			$found = $found['id'] ?? '';
+		}
+		if ( is_string( $found ) && '' !== $found ) {
+			return $found;
+		}
+	}
+
+	return '';
+}
+
 function paid( array $invoice ): void {
-	$subscription = (string) ( $invoice['subscription'] ?? '' );
+	$subscription = subscription_of( $invoice );
 	$invoice_id   = (string) ( $invoice['id'] ?? '' );
 	if ( '' === $subscription || '' === $invoice_id ) {
 		return;
@@ -189,7 +219,7 @@ function paid( array $invoice ): void {
  * end when Stripe finally gives up.
  */
 function failed( array $invoice ): void {
-	$membership = Membership\by_subscription( (string) ( $invoice['subscription'] ?? '' ) );
+	$membership = Membership\by_subscription( subscription_of( $invoice ) );
 	if ( ! $membership ) {
 		return;
 	}
