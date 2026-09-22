@@ -364,6 +364,12 @@ class Command {
 				'lede'          => "We've written profiles for practices across Perth and Margaret River from public information. Claim yours at no cost, keep your details current and receive the enquiries.",
 			),
 			array(
+				'acf_fc_layout' => 'form_card',
+				'heading'       => 'Start a claim',
+				'sub'           => "Four minutes. We'll come back to you within one working day.",
+				'form'          => '<p><em>Paste your form plugin\'s shortcode into this section to activate the claim form.</em></p>',
+			),
+			array(
 				'acf_fc_layout' => 'steps_split',
 				'eyebrow'       => 'How claiming works',
 				'heading'       => 'Four steps, four minutes.',
@@ -373,24 +379,6 @@ class Command {
 					array( 'title' => "Verify it's you", 'text' => 'We email the address published on your own website, or call the number on your Google Business Profile.' ),
 					array( 'title' => "Keep your details right", 'text' => "Update your address, phone, website and prices on the free plan. The Claimed plan opens up the description, timetable, photos and booking link." ),
 					array( 'title' => "Receive the enquiries", 'text' => "Enquiries come straight to your inbox. The Claimed plan also shows how many people viewed your profile, called, or clicked through to your site." ),
-				),
-			),
-			array(
-				'acf_fc_layout' => 'form_card',
-				'heading'       => 'Start a claim',
-				'sub'           => "Four minutes. We'll come back to you within one working day.",
-				'form'          => '<p><em>Paste your form plugin\'s shortcode into this section to activate the claim form.</em></p>',
-			),
-			array(
-				'acf_fc_layout' => 'pricing',
-				'background'    => 'sand',
-				'eyebrow'       => 'What it costs',
-				'heading'       => "Claiming is free. The paid plans add what you can do with it.",
-				'sub'           => "Every practice gets a free listing, written and checked by us. Claim it at no cost to keep your details current and receive enquiries. The Claimed and Featured plans add editing, photos, analytics and reach. Cancel any time — your listing returns to the free plan with everything you added kept.",
-				'tiers'         => array(
-					array( 'tier_label' => "Free", 'amount' => "\$0", 'suffix' => "/ forever", 'blurb' => "Written and checked by us. Claim it at no cost.", 'features' => "Profile written and checked by us\nClaim it and keep your address, phone and prices current\nEnquiries straight to your inbox\nGoogle rating and reviews\nFound in every search and category page\nOne practitioner profile", 'cta_label' => "Find your listing", 'cta_url' => "/directory/", 'style' => "default" ),
-					array( 'tier_label' => "Claimed plan", 'amount' => "\$29", 'suffix' => "/ month", 'blurb' => "Everything free, plus full control of your profile.", 'features' => "Edit every field yourself\nBooking link, timetable and packages\nUp to 4 gallery photos\nYour email shown on your profile\nSpecial offers on your profile and cards\nOpening hours and social links\nPerformance analytics\nVerified badge and date", 'cta_label' => "Start your claim", 'cta_url' => "#claimform", 'style' => "now" ),
-					array( 'tier_label' => "Featured plan", 'amount' => "\$79", 'suffix' => "/ month", 'blurb' => "Grow with the directory.", 'features' => "Everything in the Claimed plan\nRun workshops & events — photos and booking links\nUnlimited gallery photos\nGold Featured badge\nPriority placement in directory and categories\nFeatured spots on the home and workshops pages", 'cta_label' => "Claim, then upgrade", 'cta_url' => "#claimform", 'style' => "default" ),
 				),
 			),
 			array(
@@ -415,6 +403,18 @@ class Command {
 					array( 'question' => 'Will you ever charge for the free listing?', 'answer' => "No. The free listing stays free, and so does claiming it. The paid plans are optional and add editing, photos, analytics and placement on top." ),
 					array( 'question' => "Does claiming my listing cost anything?", 'answer' => "No. Claiming is free and always will be. A claimed listing on the free plan lets you keep your address, phone, website and prices current and receive enquiries. The Claimed plan, \$29 a month, is optional and adds full editing, photos and analytics." ),
 					array( 'question' => 'Do you take a cut of bookings?', 'answer' => 'No. We link out to your own booking system and take nothing.' ),
+				),
+			),
+			array(
+				'acf_fc_layout' => 'pricing',
+				'background'    => 'sand',
+				'eyebrow'       => 'What it costs',
+				'heading'       => "Claiming is free. The paid plans add what you can do with it.",
+				'sub'           => "Every practice gets a free listing, written and checked by us. Claim it at no cost to keep your details current and receive enquiries. The Claimed and Featured plans add editing, photos, analytics and reach. Cancel any time — your listing returns to the free plan with everything you added kept.",
+				'tiers'         => array(
+					array( 'tier_label' => "Free", 'amount' => "\$0", 'suffix' => "/ forever", 'blurb' => "Written and checked by us. Claim it at no cost.", 'features' => "Profile written and checked by us\nClaim it and keep your address, phone and prices current\nEnquiries straight to your inbox\nGoogle rating and reviews\nFound in every search and category page\nOne practitioner profile", 'cta_label' => "Find your listing", 'cta_url' => "/directory/", 'style' => "default" ),
+					array( 'tier_label' => "Claimed plan", 'amount' => "\$29", 'suffix' => "/ month", 'blurb' => "Everything free, plus full control of your profile.", 'features' => "Edit every field yourself\nBooking link, timetable and packages\nUp to 4 gallery photos\nYour email shown on your profile\nSpecial offers on your profile and cards\nOpening hours and social links\nPerformance analytics\nVerified badge and date", 'cta_label' => "Start your claim", 'cta_url' => "#claimform", 'style' => "now" ),
+					array( 'tier_label' => "Featured plan", 'amount' => "\$79", 'suffix' => "/ month", 'blurb' => "Grow with the directory.", 'features' => "Everything in the Claimed plan\nRun workshops & events — photos and booking links\nUnlimited gallery photos\nGold Featured badge\nPriority placement in directory and categories\nFeatured spots on the home and workshops pages", 'cta_label' => "Claim, then upgrade", 'cta_url' => "#claimform", 'style' => "default" ),
 				),
 			),
 		);

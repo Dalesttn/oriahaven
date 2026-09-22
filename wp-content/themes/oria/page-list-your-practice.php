@@ -54,6 +54,7 @@ $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 		<h1 class="h1 pagehead__title"><?php esc_html_e( 'List your practice', 'oria' ); ?></h1>
 		<p class="lede pagehead__lede"><?php esc_html_e( 'Ten minutes now, approved within 24 hours. Your free listing includes your details, description, up to five services and four photos — and you can upgrade for more reach whenever you like.', 'oria' ); ?></p>
 		<p style="margin-top:.9rem;max-width:56ch;color:var(--text-soft)"><?php esc_html_e( 'Listed practices receive enquiries two ways: straight from your profile, and through our matching service — when a visitor tells us what they\'re after, we introduce them to up to three practices that fit. Enquiries land in your inbox with the person\'s details, ready to reply. Free, and we never take a cut of bookings.', 'oria' ); ?></p>
+		<p style="margin-top:.9rem"><a href="#plans"><?php esc_html_e( 'See what a listing costs', 'oria' ); ?> &darr;</a></p>
 	</div>
 </section>
 
@@ -109,32 +110,6 @@ $oria_plans = array(
 	),
 );
 ?>
-<section class="wrap section section--top-flush">
-	<h2 class="h3" style="margin-bottom:.4rem"><?php esc_html_e( 'What a listing costs', 'oria' ); ?></h2>
-	<p class="hint" style="max-width:52ch;margin-bottom:1.2rem"><?php esc_html_e( 'Listing is free and stays free. We never take a commission on a booking, and nothing here is a lock-in contract — cancel a paid plan and the listing drops back to Free with everything you added still on it.', 'oria' ); ?></p>
-	<div class="plans">
-		<?php foreach ( $oria_plans as $oria_i => $oria_plan ) : ?>
-			<div class="plans__card<?php echo 1 === $oria_i ? ' plans__card--pick' : ''; ?>">
-				<?php if ( 1 === $oria_i ) : ?>
-					<span class="plans__flag"><?php esc_html_e( 'Most practices start here', 'oria' ); ?></span>
-				<?php endif; ?>
-				<h3 class="plans__name"><?php echo esc_html( $oria_plan['name'] ); ?></h3>
-				<p class="plans__price"><?php echo esc_html( $oria_plan['price'] ); ?> <small><?php echo esc_html( $oria_plan['note'] ); ?></small></p>
-				<ul class="plans__list">
-					<?php foreach ( $oria_plan['lines'] as $oria_line ) : ?>
-						<li><?php echo esc_html( $oria_line ); ?></li>
-					<?php endforeach; ?>
-				</ul>
-			</div>
-		<?php endforeach; ?>
-	</div>
-	<p class="hint" style="margin-top:1rem;max-width:52ch">
-		<?php esc_html_e( 'Already listed? You can claim an existing listing rather than creating a second one.', 'oria' ); ?>
-		<a href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your listing', 'oria' ); ?></a>
-	</p>
-</section>
-
-<?php get_template_part( 'template-parts/sections/tier-table' ); ?>
 
 <section class="wrap section section--top-flush">
 	<?php if ( $oria_done ) : ?>
@@ -326,6 +301,46 @@ get_template_part(
 	)
 );
 ?>
+
+<?php
+/*
+ * What it costs, at the bottom on purpose.
+ *
+ * This used to open the page: two plan cards and a full comparison table
+ * before a practice had typed anything. Somebody arriving from "List your
+ * practice" has already decided to be listed -- the first thing they meet
+ * should be the first question of the form, not a price they have to talk
+ * themselves past. The plans still have to be here, and easy to find from
+ * the top, but they answer a question that comes after the decision.
+ */
+?>
+<section class="wrap section section--top-flush" id="plans">
+	<h2 class="h3" style="margin-bottom:.4rem"><?php esc_html_e( 'What a listing costs', 'oria' ); ?></h2>
+	<p class="hint" style="max-width:52ch;margin-bottom:1.2rem"><?php esc_html_e( 'Listing is free and stays free. We never take a commission on a booking, and nothing here is a lock-in contract — cancel a paid plan and the listing drops back to Free with everything you added still on it.', 'oria' ); ?></p>
+	<div class="plans">
+		<?php foreach ( $oria_plans as $oria_i => $oria_plan ) : ?>
+			<div class="plans__card<?php echo 1 === $oria_i ? ' plans__card--pick' : ''; ?>">
+				<?php if ( 1 === $oria_i ) : ?>
+					<span class="plans__flag"><?php esc_html_e( 'Most practices start here', 'oria' ); ?></span>
+				<?php endif; ?>
+				<h3 class="plans__name"><?php echo esc_html( $oria_plan['name'] ); ?></h3>
+				<p class="plans__price"><?php echo esc_html( $oria_plan['price'] ); ?> <small><?php echo esc_html( $oria_plan['note'] ); ?></small></p>
+				<ul class="plans__list">
+					<?php foreach ( $oria_plan['lines'] as $oria_line ) : ?>
+						<li><?php echo esc_html( $oria_line ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+		<?php endforeach; ?>
+	</div>
+	<p class="hint" style="margin-top:1rem;max-width:52ch">
+		<?php esc_html_e( 'Already listed? You can claim an existing listing rather than creating a second one.', 'oria' ); ?>
+		<a href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your listing', 'oria' ); ?></a>
+	</p>
+</section>
+
+<?php get_template_part( 'template-parts/sections/tier-table' ); ?>
+
 
 <?php
 get_footer();
