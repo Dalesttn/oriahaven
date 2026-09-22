@@ -959,3 +959,26 @@
   .passform__row3 { grid-template-columns: 1fr; }
   .passrow__person { flex-wrap: wrap; }
 }
+
+/* ---------------------------------------------------------------------
+   "Where you can use it" — the places open to a member's Pass.
+   A list, not a grid of cards: the member is scanning names and dates,
+   and twelve cards would bury the one thing they came for.
+   --------------------------------------------------------------------- */
+.myplaces { margin-top: 1rem; }
+.myplaces__sub { margin: .3rem 0 1rem; font-size: .9375rem; color: var(--app-soft, #5d6b68); }
+.myplaces__list { list-style: none; margin: 0; padding: 0; display: grid; }
+.myplaces__row {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: .25rem 1rem; padding: .7rem 0;
+  border-top: 1px solid var(--app-line, rgba(8,34,32,.12));
+}
+.myplaces__row:first-child { border-top: 0; }
+.myplaces__name { font-weight: 650; color: var(--app-ink, #14201e); text-decoration: none; }
+.myplaces__name:hover { text-decoration: underline; text-underline-offset: 3px; }
+.myplaces__meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem .8rem; font-size: .8125rem; color: var(--app-soft, #5d6b68); }
+.myplaces__next { font-variant-numeric: tabular-nums; }
+.myplaces__from { color: var(--app-green, #0e3b38); font-weight: 600; }
+.myplaces__count { color: var(--app-faint, #7b8785); }
+.myplaces__fine, .myplaces__none { margin: .9rem 0 0; font-size: .8125rem; color: var(--app-faint, #7b8785); }
+.myplaces__none { margin: .3rem 0 0; font-size: .9375rem; color: var(--app-soft, #5d6b68); }

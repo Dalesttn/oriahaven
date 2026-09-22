@@ -78,6 +78,17 @@ $oria_wrong = array(
 		<h1 class="myhead"><?php esc_html_e( 'Your Oria Pass', 'oria' ); ?></h1>
 		<?php get_template_part( 'template-parts/my/pass-card' ); ?>
 
+		<?php
+		/*
+		 * Where the credits go. Only for somebody holding a live Pass:
+		 * to anybody else this is a list of places they cannot book, and
+		 * the card above is already making the case for joining.
+		 */
+		if ( function_exists( '\Oria\Pass\Membership\is_active' ) && \Oria\Pass\Membership\is_active( $oria_uid ) ) {
+			get_template_part( 'template-parts/my/pass-places' );
+		}
+		?>
+
 		<?php if ( ! function_exists( '\Oria\Pass\Membership\for_user' ) || ! \Oria\Pass\Membership\for_user( $oria_uid ) ) : ?>
 			<p class="myempty">
 				<?php esc_html_e( 'You do not have a Pass yet.', 'oria' ); ?>

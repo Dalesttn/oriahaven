@@ -119,6 +119,41 @@ function upcoming( array $args = array() ): array {
 	return (array) $wpdb->get_results( $wpdb->prepare( $sql, $params ) );
 }
 
+/**
+ * Where a Pass can actually be spent.
+ *
+ * One row per studio rather than per session, because a member deciding
+ * where to go is choosing a place first and a time second. The soonest
+ * session and the cheapest are carried along, so the row can answer "is
+ * there anything this week, and can I afford it" without a second query.
+ *
+ * Only places with a bookable session are returned. A studio that has run
+ * out of places this month is not somewhere you can use your Pass today,
+ * and listing it would be an invitation to a closed door.
+ *
+ * @return array<int, object>
+ */
+function partners( int $limit = 12 ): array {
+	global $wpdb;
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
+	return (array) $wpdb->get_results(
+		$wpdb->prepare(
+			'SELECT listing_id,
+				COUNT(*) AS sessions,
+				MIN(start_at) AS soonest,
+				MIN(credits_required) AS from_credits
+			FROM ' . Db\sessions() . "
+			WHERE status = 'active' AND start_at > %s AND booked_count < pass_capacity
+			GROUP BY listing_id
+			ORDER BY soonest ASC
+			LIMIT %d",
+			current_time( 'mysql' ),
+			$limit
+		)
+	);
+}
+
 /** Everything a provider has on, including what is not yet published. */
 function for_listing( int $listing_id, int $limit = 100 ): array {
 	global $wpdb;
