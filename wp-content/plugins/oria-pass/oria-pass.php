@@ -49,7 +49,9 @@ require_once ORIA_PASS_DIR . 'includes/actions.php';
 require_once ORIA_PASS_DIR . 'includes/notify.php';
 require_once ORIA_PASS_DIR . 'includes/waitlist.php';
 require_once ORIA_PASS_DIR . 'includes/route.php';
+require_once ORIA_PASS_DIR . 'includes/reports.php';
 require_once ORIA_PASS_DIR . 'includes/admin.php';
+require_once ORIA_PASS_DIR . 'includes/admin-reports.php';
 
 Settings\bootstrap();
 Stripe\bootstrap();

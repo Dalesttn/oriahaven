@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Oria\Pass\Admin;
 
+use Oria\Pass\Reports;
 use Oria\Pass\Settings;
 use Oria\Pass\Waitlist;
 
@@ -26,6 +27,7 @@ const CAP = 'manage_options';
 function bootstrap(): void {
 	add_action( 'admin_menu', __NAMESPACE__ . '\menu' );
 	add_action( 'admin_post_oria_pass_export', __NAMESPACE__ . '\export' );
+	add_action( 'admin_post_oria_pass_payouts_csv', __NAMESPACE__ . '\payouts_csv' );
 }
 
 function menu(): void {
@@ -34,11 +36,13 @@ function menu(): void {
 		__( 'Oria Pass', 'oria' ),
 		CAP,
 		'oria-pass',
-		__NAMESPACE__ . '\screen_waitlist',
+		__NAMESPACE__ . '\screen_overview',
 		'dashicons-tickets-alt',
 		26
 	);
-	add_submenu_page( 'oria-pass', __( 'Waitlist', 'oria' ), __( 'Waitlist', 'oria' ), CAP, 'oria-pass', __NAMESPACE__ . '\screen_waitlist' );
+	add_submenu_page( 'oria-pass', __( 'Overview', 'oria' ), __( 'Overview', 'oria' ), CAP, 'oria-pass', __NAMESPACE__ . '\screen_overview' );
+	add_submenu_page( 'oria-pass', __( 'Payouts', 'oria' ), __( 'Payouts', 'oria' ), CAP, 'oria-pass-payouts', __NAMESPACE__ . '\screen_payouts' );
+	add_submenu_page( 'oria-pass', __( 'Waitlist', 'oria' ), __( 'Waitlist', 'oria' ), CAP, 'oria-pass-waitlist', __NAMESPACE__ . '\screen_waitlist' );
 	add_submenu_page( 'oria-pass', __( 'Settings', 'oria' ), __( 'Settings', 'oria' ), CAP, 'oria-pass-settings', __NAMESPACE__ . '\screen_settings' );
 }
 
@@ -57,13 +61,13 @@ function screen_waitlist(): void {
 		'<p>%s &nbsp;|&nbsp; %s</p>',
 		sprintf(
 			'<a href="%s"%s>%s</a>',
-			esc_url( admin_url( 'admin.php?page=oria-pass&kind=member' ) ),
+			esc_url( admin_url( 'admin.php?page=oria-pass-waitlist&kind=member' ) ),
 			'member' === $kind ? ' class="current"' : '',
 			esc_html( sprintf( /* translators: %d: count */ __( 'People (%d)', 'oria' ), Waitlist\count_of( 'member' ) ) )
 		),
 		sprintf(
 			'<a href="%s"%s>%s</a>',
-			esc_url( admin_url( 'admin.php?page=oria-pass&kind=partner' ) ),
+			esc_url( admin_url( 'admin.php?page=oria-pass-waitlist&kind=partner' ) ),
 			'partner' === $kind ? ' class="current"' : '',
 			esc_html( sprintf( /* translators: %d: count */ __( 'Businesses (%d)', 'oria' ), Waitlist\count_of( 'partner' ) ) )
 		)
