@@ -22,9 +22,10 @@ $oria_icon = static function ( string $slug ): string {
 		'saved'    => '<path d="M5 3.5h10a.5.5 0 0 1 .5.5v12.4a.3.3 0 0 1-.47.25L10 13.6l-5.03 3.05A.3.3 0 0 1 4.5 16.4V4a.5.5 0 0 1 .5-.5Z"/>',
 			'listing'  => '<path d="M4 7.5h12M4 7.5V16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7.5M4 7.5 5.6 4h8.8l1.6 3.5M8 11h4"/>',
 		'passport' => '<circle cx="10" cy="10" r="6.5"/><path d="M10 3.5v13M3.5 10h13"/>',
+		'pass'     => '<path d="M3.5 7.2A1.7 1.7 0 0 0 5.2 5.5h9.6a1.7 1.7 0 0 0 1.7 1.7v5.6a1.7 1.7 0 0 0-1.7 1.7H5.2a1.7 1.7 0 0 0-1.7-1.7Z"/><path d="M11.6 5.5v1.6M11.6 9.2v1.6M11.6 12.9v1.6"/>',
 		'profile'  => '<circle cx="10" cy="7" r="3.2"/><path d="M4 16.5c.8-3 3.1-4.5 6-4.5s5.2 1.5 6 4.5"/>',
 	);
-	return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . $paths[ $slug ] . '</svg>';
+	return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . ( $paths[ $slug ] ?? $paths[''] ) . '</svg>';
 };
 ?>
 <nav class="mybottom" aria-label="<?php esc_attr_e( 'My Oria', 'oria' ); ?>">

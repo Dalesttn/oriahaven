@@ -133,6 +133,111 @@ $oria_wrong = array(
 			</div>
 		</div>
 
+		<?php /* ------------------------------------------- the sessions */ ?>
+		<?php if ( $oria_rows ) : ?>
+			<section class="mysec">
+				<h2 class="mysec__title"><?php esc_html_e( 'Your sessions', 'oria' ); ?></h2>
+
+				<?php foreach ( $oria_rows as $oria_s ) : ?>
+					<?php $oria_bookings = Booking\for_session( (int) $oria_s->id ); ?>
+					<article class="mycard passrow">
+						<div class="passrow__body">
+						<div class="passrow__top">
+							<div>
+								<h3 class="passrow__title"><?php echo esc_html( (string) $oria_s->title ); ?></h3>
+								<p class="passrow__when"><?php echo esc_html( Sessions\when( $oria_s ) ); ?></p>
+							</div>
+							<span class="passrow__status passrow__status--<?php echo esc_attr( (string) $oria_s->status ); ?>">
+								<?php echo esc_html( ucfirst( str_replace( '_', ' ', (string) $oria_s->status ) ) ); ?>
+							</span>
+						</div>
+
+						<p class="passrow__facts">
+							<span><?php
+								printf(
+									/* translators: 1: booked, 2: places offered */
+									esc_html__( '%1$d of %2$d places taken', 'oria' ),
+									(int) $oria_s->booked_count,
+									(int) $oria_s->pass_capacity
+								);
+							?></span>
+						</p>
+
+						<?php if ( $oria_bookings ) : ?>
+							<ul class="passrow__who">
+								<?php foreach ( $oria_bookings as $oria_bk ) : ?>
+									<?php
+									/*
+									 * First name and a reference, and nothing else.
+									 * A studio needs to know who is at the door; it
+									 * does not need the rest of somebody's account.
+									 */
+									$oria_person = get_userdata( (int) $oria_bk->user_id );
+									$oria_first  = $oria_person ? ( $oria_person->first_name ?: $oria_person->display_name ) : __( 'A member', 'oria' );
+									?>
+									<li class="passrow__person">
+										<span><?php echo esc_html( $oria_first ); ?> · <code><?php echo esc_html( (string) $oria_bk->booking_reference ); ?></code></span>
+										<?php if ( 'confirmed' === (string) $oria_bk->status ) : ?>
+											<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="passrow__mark">
+												<input type="hidden" name="action" value="oria_pass_mark">
+												<input type="hidden" name="booking_id" value="<?php echo (int) $oria_bk->id; ?>">
+												<?php wp_nonce_field( 'oria_pass_session' ); ?>
+												<button type="submit" name="mark" value="attended"><?php esc_html_e( 'Came', 'oria' ); ?></button>
+												<button type="submit" name="mark" value="no_show"><?php esc_html_e( 'No show', 'oria' ); ?></button>
+											</form>
+										<?php else : ?>
+											<span class="passrow__done"><?php echo esc_html( Booking\label( (string) $oria_bk->status ) ); ?></span>
+										<?php endif; ?>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+						<?php endif; ?>
+
+						<p class="passrow__acts">
+							<a href="<?php echo esc_url( add_query_arg( 'edit', (int) $oria_s->id, \Oria\Core\MyOria\url( 'pass' ) ) . '#add' ); ?>"><?php esc_html_e( 'Edit', 'oria' ); ?></a>
+
+							<?php foreach ( array( 'active' => __( 'Publish', 'oria' ), 'paused' => __( 'Pause', 'oria' ), 'cancelled' => __( 'Call it off', 'oria' ) ) as $oria_to => $oria_label ) : ?>
+								<?php if ( (string) $oria_s->status === $oria_to ) { continue; } ?>
+								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="passrow__inline">
+									<input type="hidden" name="action" value="oria_pass_session_status">
+									<input type="hidden" name="session_id" value="<?php echo (int) $oria_s->id; ?>">
+									<input type="hidden" name="status" value="<?php echo esc_attr( $oria_to ); ?>">
+									<?php wp_nonce_field( 'oria_pass_session' ); ?>
+									<button type="submit"<?php echo 'cancelled' === $oria_to ? ' class="passrow__off"' : ''; ?>>
+										<?php echo esc_html( $oria_label ); ?>
+									</button>
+								</form>
+							<?php endforeach; ?>
+						</p>
+
+						<?php if ( (int) $oria_s->booked_count > 0 ) : ?>
+							<p class="passrow__warn">
+								<?php esc_html_e( 'Calling this off returns everybody their credits and tells them it is off.', 'oria' ); ?>
+							</p>
+						<?php endif; ?>
+						</div>
+
+						<div class="passrow__stub">
+							<b class="passrow__n"><?php echo esc_html( number_format_i18n( (int) $oria_s->credits_required ) ); ?></b>
+							<span class="passrow__nlabel"><?php echo esc_html( _n( 'credit', 'credits', (int) $oria_s->credits_required, 'oria' ) ); ?></span>
+							<?php if ( (float) $oria_s->provider_payout > 0 ) : ?>
+								<span class="passrow__pay"><?php
+									printf(
+										/* translators: %s: payout */
+										esc_html__( 'you get %s each', 'oria' ),
+										esc_html( '$' . number_format_i18n( (float) $oria_s->provider_payout, 2 ) )
+									);
+								?></span>
+							<?php endif; ?>
+						</div>
+					</article>
+				<?php endforeach; ?>
+			</section>
+		<?php else : ?>
+			<p class="myempty"><?php esc_html_e( 'Nothing opened yet. The form below is the whole job — a name, a time, and how many places you can spare.', 'oria' ); ?></p>
+		<?php endif; ?>
+
+
 		<?php /* ---------------------------------------------- the form */ ?>
 		<section class="mycard passform" id="add">
 			<h2 class="mycard__title">
@@ -201,111 +306,6 @@ $oria_wrong = array(
 				</p>
 			</form>
 		</section>
-
-		<?php /* ------------------------------------------- the sessions */ ?>
-		<?php if ( $oria_rows ) : ?>
-			<section class="mysec">
-				<h2 class="mysec__title"><?php esc_html_e( 'Your sessions', 'oria' ); ?></h2>
-
-				<?php foreach ( $oria_rows as $oria_s ) : ?>
-					<?php $oria_bookings = Booking\for_session( (int) $oria_s->id ); ?>
-					<article class="mycard passrow">
-						<div class="passrow__top">
-							<div>
-								<h3 class="passrow__title"><?php echo esc_html( (string) $oria_s->title ); ?></h3>
-								<p class="passrow__when"><?php echo esc_html( Sessions\when( $oria_s ) ); ?></p>
-							</div>
-							<span class="passrow__status passrow__status--<?php echo esc_attr( (string) $oria_s->status ); ?>">
-								<?php echo esc_html( ucfirst( str_replace( '_', ' ', (string) $oria_s->status ) ) ); ?>
-							</span>
-						</div>
-
-						<p class="passrow__facts">
-							<span><?php
-								printf(
-									/* translators: 1: booked, 2: places offered */
-									esc_html__( '%1$d of %2$d places taken', 'oria' ),
-									(int) $oria_s->booked_count,
-									(int) $oria_s->pass_capacity
-								);
-							?></span>
-							<span><?php
-								printf(
-									/* translators: %d: credits */
-									esc_html__( '%d credits', 'oria' ),
-									(int) $oria_s->credits_required
-								);
-							?></span>
-							<?php if ( (float) $oria_s->provider_payout > 0 ) : ?>
-								<span class="passrow__pay"><?php
-									printf(
-										/* translators: %s: payout */
-										esc_html__( 'you get %s each', 'oria' ),
-										esc_html( '$' . number_format_i18n( (float) $oria_s->provider_payout, 2 ) )
-									);
-								?></span>
-							<?php endif; ?>
-						</p>
-
-						<?php if ( $oria_bookings ) : ?>
-							<ul class="passrow__who">
-								<?php foreach ( $oria_bookings as $oria_bk ) : ?>
-									<?php
-									/*
-									 * First name and a reference, and nothing else.
-									 * A studio needs to know who is at the door; it
-									 * does not need the rest of somebody's account.
-									 */
-									$oria_person = get_userdata( (int) $oria_bk->user_id );
-									$oria_first  = $oria_person ? ( $oria_person->first_name ?: $oria_person->display_name ) : __( 'A member', 'oria' );
-									?>
-									<li class="passrow__person">
-										<span><?php echo esc_html( $oria_first ); ?> · <code><?php echo esc_html( (string) $oria_bk->booking_reference ); ?></code></span>
-										<?php if ( 'confirmed' === (string) $oria_bk->status ) : ?>
-											<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="passrow__mark">
-												<input type="hidden" name="action" value="oria_pass_mark">
-												<input type="hidden" name="booking_id" value="<?php echo (int) $oria_bk->id; ?>">
-												<?php wp_nonce_field( 'oria_pass_session' ); ?>
-												<button type="submit" name="mark" value="attended"><?php esc_html_e( 'Came', 'oria' ); ?></button>
-												<button type="submit" name="mark" value="no_show"><?php esc_html_e( 'No show', 'oria' ); ?></button>
-											</form>
-										<?php else : ?>
-											<span class="passrow__done"><?php echo esc_html( Booking\label( (string) $oria_bk->status ) ); ?></span>
-										<?php endif; ?>
-									</li>
-								<?php endforeach; ?>
-							</ul>
-						<?php endif; ?>
-
-						<p class="passrow__acts">
-							<a href="<?php echo esc_url( add_query_arg( 'edit', (int) $oria_s->id, \Oria\Core\MyOria\url( 'pass' ) ) . '#add' ); ?>"><?php esc_html_e( 'Edit', 'oria' ); ?></a>
-
-							<?php foreach ( array( 'active' => __( 'Publish', 'oria' ), 'paused' => __( 'Pause', 'oria' ), 'cancelled' => __( 'Call it off', 'oria' ) ) as $oria_to => $oria_label ) : ?>
-								<?php if ( (string) $oria_s->status === $oria_to ) { continue; } ?>
-								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="passrow__inline">
-									<input type="hidden" name="action" value="oria_pass_session_status">
-									<input type="hidden" name="session_id" value="<?php echo (int) $oria_s->id; ?>">
-									<input type="hidden" name="status" value="<?php echo esc_attr( $oria_to ); ?>">
-									<?php wp_nonce_field( 'oria_pass_session' ); ?>
-									<button type="submit"<?php echo 'cancelled' === $oria_to ? ' class="passrow__off"' : ''; ?>>
-										<?php echo esc_html( $oria_label ); ?>
-									</button>
-								</form>
-							<?php endforeach; ?>
-						</p>
-
-						<?php if ( (int) $oria_s->booked_count > 0 ) : ?>
-							<p class="passrow__warn">
-								<?php esc_html_e( 'Calling this off returns everybody their credits and tells them it is off.', 'oria' ); ?>
-							</p>
-						<?php endif; ?>
-					</article>
-				<?php endforeach; ?>
-			</section>
-		<?php else : ?>
-			<p class="myempty"><?php esc_html_e( 'Nothing opened yet. The form above is the whole job — a name, a time, and how many places you can spare.', 'oria' ); ?></p>
-		<?php endif; ?>
-
 	<?php endif; ?>
 
 </div>
