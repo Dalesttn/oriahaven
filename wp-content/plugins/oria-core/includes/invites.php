@@ -14,7 +14,7 @@
  * can already correct their address, contact details, prices and format —
  * see FIELD_TIERS in tiers.php — and their listing stops reading Unclaimed.
  * Photos, hours, offers and analytics stay paid. The email says exactly
- * that, because a free claim that turns out to cost $29 at the last step
+ * that, because a free claim that turns out to cost money at the last step
  * would be worth less than sending nothing.
  *
  * It is one click. The address we write to is the one the business

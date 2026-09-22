@@ -109,8 +109,8 @@ function tiers(): array {
 	return array(
 		'unclaimed' => __( 'Unclaimed — no owner', 'oria' ),
 		'free'      => __( 'Free plan — owned, not paying', 'oria' ),
-		'claimed'   => __( 'Claimed — $29', 'oria' ),
-		'featured'  => __( 'Featured — $79', 'oria' ),
+		'claimed'   => __( 'Claimed — free', 'oria' ),
+		'featured'  => __( 'Featured — $30', 'oria' ),
 		'showcase'  => __( 'Admin featured (showcase)', 'oria' ),
 	);
 }

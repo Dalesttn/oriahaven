@@ -583,7 +583,7 @@ function upgrade_note( string $name, int $listing ): string {
     $sell = \Oria\Core\Tiers\field_sell( $name );
     $note = '' !== $sell
         ? $sell
-        : __( 'Part of the Claimed plan.', 'oria' );
+        : __( 'Part of the paid plan.', 'oria' );
 
     if ( ! function_exists( '\Oria\Core\Billing\pay_url' ) || ! \Oria\Core\Billing\configured() ) {
         return $note;
@@ -594,8 +594,8 @@ function upgrade_note( string $name, int $listing ): string {
     return sprintf(
         '%s <a href="%s">%s</a>',
         esc_html( $note ),
-        esc_url( \Oria\Core\Billing\pay_url( 'claimed', $listing, $email ) ),
-        esc_html__( 'Unlock it with Claimed, $29/month', 'oria' )
+        esc_url( \Oria\Core\Billing\pay_url( \Oria\Core\Tiers\FEATURED, $listing, $email ) ),
+        esc_html( sprintf( /* translators: %d: monthly price */ __( 'Unlock it for $%d a month', 'oria' ), \Oria\Core\Tiers\PRICES[ \Oria\Core\Tiers\FEATURED ] ) )
     );
 }
 

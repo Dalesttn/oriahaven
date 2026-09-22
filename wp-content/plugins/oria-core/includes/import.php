@@ -337,7 +337,7 @@ class Command {
 				'eyebrow'       => 'Common questions',
 				'heading'       => 'Before you ask.',
 				'items'         => array(
-					array( 'question' => 'Does it cost anything to use?', 'answer' => "No. Browsing, searching and contacting a practice is free and always will be. Practitioners can claim their listing for free too. The Claimed plan (\$29 a month) and Featured plan (\$79 a month) are optional and add editing, photos, analytics and placement." ),
+					array( 'question' => 'Does it cost anything to use?', 'answer' => "No. Browsing, searching and contacting a practice is free and always will be. So is claiming a listing and keeping every detail on it right. The one paid plan, Featured at \$30 a month, is optional and adds events, unlimited photos and priority placement." ),
 					array( 'question' => 'How do listings get here in the first place?', 'answer' => 'We build them from publicly available information and write an original description. The listing is marked unclaimed until the practitioner takes it over.' ),
 					array( 'question' => "I'm listed and I'd rather not be.", 'answer' => "Email us and we'll remove the listing the same day, no questions and no follow-up." ),
 					array( 'question' => 'Is this only for Perth?', 'answer' => "Perth and Margaret River, for now. The platform is built to add other places later." ),
@@ -401,7 +401,7 @@ class Command {
 				'items'         => array(
 					array( 'question' => 'Why is my practice listed without me agreeing to it?', 'answer' => "Because a directory with nothing in it helps nobody. We build listings from information you've already made public, write an original description, and mark it unclaimed until you take it over. One email removes it the same day." ),
 					array( 'question' => 'Will you ever charge for the free listing?', 'answer' => "No. The free listing stays free, and so does claiming it. The paid plans are optional and add editing, photos, analytics and placement on top." ),
-					array( 'question' => "Does claiming my listing cost anything?", 'answer' => "No. Claiming is free and always will be. A claimed listing on the free plan lets you keep your address, phone, website and prices current and receive enquiries. The Claimed plan, \$29 a month, is optional and adds full editing, photos and analytics." ),
+					array( 'question' => "Does claiming my listing cost anything?", 'answer' => "No. Claiming is free and always will be, and so is everything you do with it afterwards - your hours, services, prices, photos, booking link, offers and analytics. The one paid plan, Featured at \$30 a month, is optional and adds events, unlimited photos and priority placement." ),
 					array( 'question' => 'Do you take a cut of bookings?', 'answer' => 'No. We link out to your own booking system and take nothing.' ),
 				),
 			),
@@ -413,8 +413,8 @@ class Command {
 				'sub'           => "Every practice gets a free listing, written and checked by us. Claim it at no cost to keep your details current and receive enquiries. The Claimed and Featured plans add editing, photos, analytics and reach. Cancel any time — your listing returns to the free plan with everything you added kept.",
 				'tiers'         => array(
 					array( 'tier_label' => "Free", 'amount' => "\$0", 'suffix' => "/ forever", 'blurb' => "Written and checked by us. Claim it at no cost.", 'features' => "Profile written and checked by us\nClaim it and keep your address, phone and prices current\nEnquiries straight to your inbox\nGoogle rating and reviews\nFound in every search and category page\nOne practitioner profile", 'cta_label' => "Find your listing", 'cta_url' => "/directory/", 'style' => "default" ),
-					array( 'tier_label' => "Claimed plan", 'amount' => "\$29", 'suffix' => "/ month", 'blurb' => "Everything free, plus full control of your profile.", 'features' => "Edit every field yourself\nBooking link, timetable and packages\nUp to 4 gallery photos\nYour email shown on your profile\nSpecial offers on your profile and cards\nOpening hours and social links\nPerformance analytics\nVerified badge and date", 'cta_label' => "Start your claim", 'cta_url' => "#claimform", 'style' => "now" ),
-					array( 'tier_label' => "Featured plan", 'amount' => "\$79", 'suffix' => "/ month", 'blurb' => "Grow with the directory.", 'features' => "Everything in the Claimed plan\nRun workshops & events — photos and booking links\nUnlimited gallery photos\nGold Featured badge\nPriority placement in directory and categories\nFeatured spots on the home and workshops pages", 'cta_label' => "Claim, then upgrade", 'cta_url' => "#claimform", 'style' => "default" ),
+					array( 'tier_label' => "Free", 'amount' => "\$0", 'suffix' => "forever", 'blurb' => "Claim it, and it is yours to run.", 'features' => "Edit every field yourself\nBooking link, timetable and packages\nUp to 10 gallery photos\nYour email shown on your profile\nSpecial offers on your profile and cards\nOpening hours and social links\nPerformance analytics\nVerified badge and date", 'cta_label' => "Start your claim", 'cta_url' => "#claimform", 'style' => "now" ),
+					array( 'tier_label' => "Featured", 'amount' => "\$30", 'suffix' => "/ month", 'blurb' => "Be seen first.", 'features' => "Everything in Free\nRun workshops & events — photos and booking links\nUnlimited gallery photos\nGold Featured badge\nPriority placement in directory and categories\nFeatured spots on the home and workshops pages", 'cta_label' => "Claim, then upgrade", 'cta_url' => "#claimform", 'style' => "default" ),
 				),
 			),
 		);

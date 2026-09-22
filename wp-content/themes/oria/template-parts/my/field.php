@@ -404,11 +404,11 @@ $dis       = $open ? '' : ' disabled';
 		<p class="myfield__lock" id="<?php echo esc_attr( $id ); ?>-lock">
 			<?php
 			$sell = Tiers\field_sell( $name );
-			echo esc_html( '' !== $sell ? $sell : __( 'Part of the Claimed plan.', 'oria' ) );
+			echo esc_html( '' !== $sell ? $sell : __( 'Part of the paid plan.', 'oria' ) );
 			?>
 			<?php if ( function_exists( '\Oria\Core\Billing\configured' ) && \Oria\Core\Billing\configured() ) : ?>
-				<a href="<?php echo esc_url( \Oria\Core\Billing\pay_url( 'claimed', $listing, (string) wp_get_current_user()->user_email ) ); ?>">
-					<?php esc_html_e( 'Unlock it with Claimed', 'oria' ); ?>
+				<a href="<?php echo esc_url( \Oria\Core\Billing\pay_url( Tiers\FEATURED, $listing, (string) wp_get_current_user()->user_email ) ); ?>">
+					<?php esc_html_e( 'Unlock it with Featured', 'oria' ); ?>
 				</a>
 			<?php endif; ?>
 		</p>

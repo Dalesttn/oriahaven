@@ -52,7 +52,7 @@ $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 	<div style="margin-top:1rem;max-width:56rem">
 		<span class="micro"><?php esc_html_e( 'Free listing', 'oria' ); ?></span>
 		<h1 class="h1 pagehead__title"><?php esc_html_e( 'List your practice', 'oria' ); ?></h1>
-		<p class="lede pagehead__lede"><?php esc_html_e( 'Ten minutes now, approved within 24 hours. Your free listing includes your details, description, up to five services and four photos — and you can upgrade for more reach whenever you like.', 'oria' ); ?></p>
+		<p class="lede pagehead__lede"><?php esc_html_e( 'Ten minutes now, approved within 24 hours. Your free listing is yours to edit — details, description, services, prices, hours, photos and a booking link — and it stays free. The one paid plan adds reach, not permission.', 'oria' ); ?></p>
 		<p style="margin-top:.9rem;max-width:56ch;color:var(--text-soft)"><?php esc_html_e( 'Listed practices receive enquiries two ways: straight from your profile, and through our matching service — when a visitor tells us what they\'re after, we introduce them to up to three practices that fit. Enquiries land in your inbox with the person\'s details, ready to reply. Free, and we never take a cut of bookings.', 'oria' ); ?></p>
 		<p style="margin-top:.9rem"><a href="#plans"><?php esc_html_e( 'See what a listing costs', 'oria' ); ?> &darr;</a></p>
 	</div>
@@ -65,8 +65,7 @@ $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
  * A price hard-coded into a template is a price that goes stale the first
  * time somebody changes the plan and forgets this page exists.
  */
-$oria_claimed_p  = function_exists( '\Oria\Core\Tiers\tier' ) ? \Oria\Core\Tiers\PRICES[ \Oria\Core\Tiers\CLAIMED ] : 29;
-$oria_featured_p = function_exists( '\Oria\Core\Tiers\tier' ) ? \Oria\Core\Tiers\PRICES[ \Oria\Core\Tiers\FEATURED ] : 79;
+$oria_paid_p = function_exists( '\Oria\Core\Tiers\tier' ) ? \Oria\Core\Tiers\PRICES[ \Oria\Core\Tiers\FEATURED ] : 30;
 $oria_plans = array(
 	array(
 		'name'  => __( 'Free', 'oria' ),
@@ -74,35 +73,22 @@ $oria_plans = array(
 		'note'  => __( 'forever, no card', 'oria' ),
 		'lines' => array(
 			__( 'Your listing in the directory, its category and your suburb', 'oria' ),
-			__( 'Address, phone, email and website', 'oria' ),
-			__( 'Price band and format', 'oria' ),
-			__( 'One practitioner profile', 'oria' ),
-			__( 'Enquiries straight to your inbox', 'oria' ),
-			__( 'Introductions from our matching service', 'oria' ),
-		),
-	),
-	array(
-		'name'  => __( 'Claimed', 'oria' ),
-		'price' => '$' . $oria_claimed_p,
-		'note'  => __( 'per month', 'oria' ),
-		'lines' => array(
-			__( 'Everything in Free, plus:', 'oria' ),
-			__( 'Performance stats — views, website clicks, phone taps, booking clicks and enquiries', 'oria' ),
-			__( 'Edit the listing yourself, any time', 'oria' ),
-			__( 'Up to four photos', 'oria' ),
-			__( 'Your services, timetable and opening hours', 'oria' ),
-			__( 'Booking link, Instagram and Facebook', 'oria' ),
-			__( 'A current offer, amenities and getting-there details', 'oria' ),
-			__( 'Up to four practitioner profiles', 'oria' ),
+			__( 'Edit every detail yourself, any time', 'oria' ),
+			__( 'Address, phone, email, website and booking link', 'oria' ),
+			__( 'Your services, prices, timetable and opening hours', 'oria' ),
+			__( 'Up to ten photos and four practitioner profiles', 'oria' ),
+			__( 'A current offer, Instagram and Facebook', 'oria' ),
+			__( 'Performance stats -- views, clicks, calls and enquiries', 'oria' ),
+			__( 'Enquiries straight to your inbox, and introductions from our matching service', 'oria' ),
 		),
 	),
 	array(
 		'name'  => __( 'Featured', 'oria' ),
-		'price' => '$' . $oria_featured_p,
+		'price' => '$' . $oria_paid_p,
 		'note'  => __( 'per month', 'oria' ),
 		'lines' => array(
-			__( 'Everything in Claimed, plus:', 'oria' ),
-			__( 'Featured placement in your category', 'oria' ),
+			__( 'Everything in Free, plus:', 'oria' ),
+			__( 'Featured placement in your category and on the home page', 'oria' ),
 			__( 'A Featured badge on your listing', 'oria' ),
 			__( "Publish your workshops and events on What's On", 'oria' ),
 			__( 'Unlimited photos', 'oria' ),
@@ -275,10 +261,9 @@ get_template_part(
 			array(
 				'q' => __( 'What does a listing cost?', 'oria' ),
 				'a' => sprintf(
-					/* translators: 1: claimed monthly price, 2: featured monthly price */
-					__( 'Nothing for a free listing. Claimed is $%1$s a month and adds performance stats, photos, your timetable, a booking link and the ability to edit everything yourself. Featured is $%2$s a month and adds featured placement, unlimited photos and the ability to publish your events.', 'oria' ),
-					$oria_claimed_p,
-					$oria_featured_p
+					/* translators: %s: monthly price of the paid plan */
+					__( 'Nothing. Listing is free, claiming it is free, and editing every detail — your services, prices, hours, photos, booking link and offers — is free, with the performance stats included. The only paid plan is Featured at $%s a month, which adds featured placement, a badge, unlimited photos and the ability to publish your events on What\'s On.', 'oria' ),
+					$oria_paid_p
 				),
 			),
 			array(
@@ -319,9 +304,9 @@ get_template_part(
 	<p class="hint" style="max-width:52ch;margin-bottom:1.2rem"><?php esc_html_e( 'Listing is free and stays free. We never take a commission on a booking, and nothing here is a lock-in contract — cancel a paid plan and the listing drops back to Free with everything you added still on it.', 'oria' ); ?></p>
 	<div class="plans">
 		<?php foreach ( $oria_plans as $oria_i => $oria_plan ) : ?>
-			<div class="plans__card<?php echo 1 === $oria_i ? ' plans__card--pick' : ''; ?>">
-				<?php if ( 1 === $oria_i ) : ?>
-					<span class="plans__flag"><?php esc_html_e( 'Most practices start here', 'oria' ); ?></span>
+			<div class="plans__card<?php echo 0 === $oria_i ? ' plans__card--pick' : ''; ?>">
+				<?php if ( 0 === $oria_i ) : ?>
+					<span class="plans__flag"><?php esc_html_e( 'Where every practice starts', 'oria' ); ?></span>
 				<?php endif; ?>
 				<h3 class="plans__name"><?php echo esc_html( $oria_plan['name'] ); ?></h3>
 				<p class="plans__price"><?php echo esc_html( $oria_plan['price'] ); ?> <small><?php echo esc_html( $oria_plan['note'] ); ?></small></p>

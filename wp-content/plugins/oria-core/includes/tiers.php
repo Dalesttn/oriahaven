@@ -1,15 +1,24 @@
 <?php
 /**
  * The plan ladder, in one place. Everything that gates a paid feature asks
- * this file, so "what does $29 buy" is never encoded twice.
+ * this file, so "what does $30 buy" is never encoded twice.
  *
- *   free (unclaimed) — the listing exists, built from public information.
- *   claimed  $29/mo  — own it: edit everything, 4 photos, offers, hours,
- *                      socials, analytics, Verified badge.
- *   featured $79/mo  — grow it: everything above plus events, unlimited
- *                      photos, the gold badge, and priority placement on
- *                      the home page, category pages, events page and
- *                      directory sorting.
+ *   unclaimed  free   — the listing exists, built from public information.
+ *   claimed    free   — own it: edit every field on the listing, 10 photos,
+ *                       booking link, offers, timetable, socials, analytics,
+ *                       the Verified badge.
+ *   featured   $30/mo — grow it: everything above plus events on What's On,
+ *                       unlimited photos, the gold badge, and priority
+ *                       placement on the home page, category pages, events
+ *                       page and directory sorting.
+ *
+ * Claiming used to cost $29 and buy the editing. It is free now, which is
+ * the same argument the field gating below was already making and simply
+ * follows it to the end: a directory nobody can correct is worth nothing,
+ * and the owner is the only person who can correct it. What is left to
+ * sell is reach -- being seen first, and being somewhere a listing alone
+ * cannot put you -- which is a straight trade rather than a toll on
+ * accuracy.
  */
 
 declare(strict_types=1);
@@ -24,8 +33,8 @@ const CLAIMED  = 'claimed';
 const FEATURED = 'featured';
 
 const PRICES = array(
-	CLAIMED  => 29,
-	FEATURED => 79,
+	CLAIMED  => 0,
+	FEATURED => 30,
 );
 
 /**
@@ -92,13 +101,16 @@ const FEATURES = array(
 /**
  * Field-level gating for the listing edit screen.
  *
- * The line is: FREE MAKES IT RIGHT, PAID MAKES IT WORK.
+ * The line was FREE MAKES IT RIGHT, PAID MAKES IT WORK, and the right-hand
+ * half has now moved: claiming is free, so every field below is free. What
+ * is paid is reach -- events, placement, the gold badge, photos past ten --
+ * none of which is a field on this form.
  *
  * Anything that decides whether the listing is CORRECT is free — what you
  * offer, when you are open, where to park, what the room has in it. Wrong
  * information is Oria Haven's problem before it is the practice's: a
  * directory nobody can trust is worth nothing, and we do not get to charge
- * a business $29 a month for the privilege of fixing what we got wrong
+ * a business a monthly fee for the privilege of fixing what we got wrong
  * about them. Baolin Acupuncture emailed to say we had them down for Reiki
  * and infrared sauna, neither of which they offer. Under the old gating,
  * claiming their listing for free would not have let them correct it.
@@ -126,8 +138,10 @@ const FIELD_TIERS = array(
 	'email'         => 'free',
 	'website'       => 'free',
 	// The conversion path, and the one thing on this list a practice would
-	// miss most. Kept paid on purpose: it is the clearest thing $29 buys.
-	'booking_url'   => CLAIMED,
+	// miss most. It used to be the clearest thing $29 bought; it is free
+	// now, because a profile that cannot be booked from is a worse profile
+	// and that is our problem too.
+	'booking_url'   => 'free',
 	// What you actually do. Free, because a service list we researched and
 	// got wrong is worse for us than for them -- see the note above.
 	'services'      => 'free',
@@ -137,20 +151,20 @@ const FIELD_TIERS = array(
 	// The two blocks a practice fills in for itself. Nobody can
 	// research somebody else's class list or package prices, so
 	// these exist only where a paying owner has typed them.
-	'classes'       => CLAIMED,
-	'packages'      => CLAIMED,
+	'classes'       => 'free',
+	'packages'      => 'free',
 	// Free-text questions and answers: prose, so the same gate as the
 	// other prose fields.
-	'faq'           => CLAIMED,
-	'instagram_url' => CLAIMED,
-	'facebook_url'  => CLAIMED,
-	'offer_title'   => CLAIMED,
-	'offer_text'    => CLAIMED,
-	'offer_until'   => CLAIMED,
+	'faq'           => 'free',
+	'instagram_url' => 'free',
+	'facebook_url'  => 'free',
+	'offer_title'   => 'free',
+	'offer_text'    => 'free',
+	'offer_until'   => 'free',
 	// Free, capped at four by GALLERY_LIMITS. The cap is the upgrade, not
 	// the permission: a practice can always show its room.
 	'gallery'       => 'free',
-	'next_session'  => CLAIMED,
+	'next_session'  => 'free',
 	// Who a place suits, when it opens, how to get there and what is in the
 	// building. All four are plain facts about the practice, all four are
 	// things a reader is annoyed to find wrong, and none of them are worth
@@ -174,6 +188,12 @@ const FIELD_TIERS = array(
 
 /**
  * What a locked field would actually do for the practice.
+ *
+ * Nothing is locked at field level any more -- claiming is free and every
+ * entry in FIELD_TIERS above says 'free' -- so the two callers that draw a
+ * padlock never run. The lines are kept because the argument they encode is
+ * the useful part, and because the day something is gated again this is
+ * where the sentence belongs.
  *
  * A padlock and the word "upgrade" tells somebody they are being charged
  * without telling them what for. These lines go on the field itself, so

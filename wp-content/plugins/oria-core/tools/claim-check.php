@@ -17,7 +17,7 @@
  * So a listing can show the Claimed badge for two completely different
  * reasons: a payment landed, or billing was never switched on and
  * approval handed out the paid tier. This script says which, because the
- * difference is $29 a month and neither the page nor the admin column
+ * difference is what the listing may publish, and neither the page nor the admin column
  * distinguishes them.
  *
  * It also checks the things that are silently wrong rather than visibly

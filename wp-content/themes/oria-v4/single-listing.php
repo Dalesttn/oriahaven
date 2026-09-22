@@ -1925,7 +1925,7 @@ while ( have_posts() ) :
 
 						<div class="xp-claim__form" data-oria-event="claim_started">
 							<p class="xp-claim__text"><?php esc_html_e( 'We built this page from public information. Take it over and keep it right — your contact details, hours, services and photos.', 'oria' ); ?></p>
-							<p class="xp-claim__line"><?php esc_html_e( 'Correcting anything wrong is always free. The paid plan adds a booking link, offers and your class timetable.', 'oria' ); ?></p>
+							<p class="xp-claim__line"><?php esc_html_e( 'Claiming it is free, and so is everything on it — your hours, services, prices, photos and booking link. The paid plan is only for being seen first.', 'oria' ); ?></p>
 
 							<?php if ( 'error' === $oria_claim_state ) : ?>
 								<p class="xp-form__error" role="alert"><?php esc_html_e( 'That didn\'t send — check the name and email and try again.', 'oria' ); ?></p>
