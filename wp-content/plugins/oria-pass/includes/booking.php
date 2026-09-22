@@ -141,40 +141,97 @@ function book( int $user_id, int $session_id ) {
 	if ( Sessions\has_started( $session ) ) {
 		return fail( 'started', __( 'That session has already started.', 'oria' ) );
 	}
-	$credits = (int) $session->credits_required;
-	$now     = current_time( 'mysql' );
+	$credits   = (int) $session->credits_required;
+	$now       = current_time( 'mysql' );
+	$reference = reference();
 
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-	$ok = $wpdb->insert(
-		Db\bookings(),
-		array(
-			'booking_reference' => reference(),
-			'session_id'        => (int) $session->id,
-			'user_id'           => $user_id,
-			'credits_spent'     => $credits,
-			'provider_payout'   => (float) $session->provider_payout,
-			'status'            => 'confirmed',
-			'booked_at'         => $now,
-			'created_at'        => $now,
-			'updated_at'        => $now,
-		)
+	/*
+	 * Has this person been here before? The unique key on (session, user)
+	 * means there is at most one row, and what it says decides whether this
+	 * is a duplicate tap or somebody changing their mind back.
+	 */
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
+	$prior = $wpdb->get_row(
+		$wpdb->prepare( 'SELECT * FROM ' . Db\bookings() . ' WHERE session_id = %d AND user_id = %d FOR UPDATE', (int) $session->id, $user_id )
 	);
 
-	if ( false === $ok ) {
-		// The unique key on (session, user) is what a second tap hits.
-		if ( str_contains( (string) $wpdb->last_error, 'Duplicate entry' ) ) {
-			return fail( 'already_booked', __( 'You have already booked this one.', 'oria' ) );
-		}
-
-		error_log( sprintf( '[oria-pass] booking insert failed (user %d, session %d): %s', $user_id, $session_id, $wpdb->last_error ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-
-		return fail( 'db', __( 'That did not go through. Nothing has been charged.', 'oria' ) );
+	if ( $prior && ! in_array( (string) $prior->status, array( 'cancelled_by_member', 'cancelled_by_provider', 'refunded' ), true ) ) {
+		return fail( 'already_booked', __( 'You have already booked this one.', 'oria' ) );
 	}
 
-	$booking_id = (int) $wpdb->insert_id;
+	if ( $prior ) {
+		/*
+		 * Cancelling this morning and changing your mind at lunch is an
+		 * ordinary thing to do, and the unique key used to make it
+		 * impossible: Book came back saying you had already booked a session
+		 * you had given up. The row comes back to life rather than a second
+		 * one being inserted beside it, and it takes a fresh reference,
+		 * because the old one may already be on somebody's door list.
+		 */
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$revived = $wpdb->update(
+			Db\bookings(),
+			array(
+				'booking_reference' => $reference,
+				'credits_spent'     => $credits,
+				'provider_payout'   => (float) $session->provider_payout,
+				'status'            => 'confirmed',
+				'booked_at'         => $now,
+				'cancelled_at'      => null,
+				'attended_at'       => null,
+				'updated_at'        => $now,
+			),
+			array( 'id' => (int) $prior->id, 'status' => (string) $prior->status )
+		);
 
+		if ( false === $revived ) {
+			error_log( sprintf( '[oria-pass] could not revive booking %d: %s', (int) $prior->id, $wpdb->last_error ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+
+			return fail( 'db', __( 'That did not go through. Nothing has been charged.', 'oria' ) );
+		}
+
+		$booking_id = (int) $prior->id;
+	} else {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$ok = $wpdb->insert(
+			Db\bookings(),
+			array(
+				'booking_reference' => $reference,
+				'session_id'        => (int) $session->id,
+				'user_id'           => $user_id,
+				'credits_spent'     => $credits,
+				'provider_payout'   => (float) $session->provider_payout,
+				'status'            => 'confirmed',
+				'booked_at'         => $now,
+				'created_at'        => $now,
+				'updated_at'        => $now,
+			)
+		);
+
+		if ( false === $ok ) {
+			// Two taps landing together: the key catches what the read above could not.
+			if ( str_contains( (string) $wpdb->last_error, 'Duplicate entry' ) ) {
+				return fail( 'already_booked', __( 'You have already booked this one.', 'oria' ) );
+			}
+
+			error_log( sprintf( '[oria-pass] booking insert failed (user %d, session %d): %s', $user_id, $session_id, $wpdb->last_error ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+
+			return fail( 'db', __( 'That did not go through. Nothing has been charged.', 'oria' ) );
+		}
+
+		$booking_id = (int) $wpdb->insert_id;
+	}
+
+	/*
+	 * The ledger ref names the ATTEMPT, not the booking. A revived row keeps
+	 * its id, so a ref of book:{id} would collide with the spend from the
+	 * first time round -- the ledger would call it a duplicate, refuse it,
+	 * and hand out a free place. The reference is new every time, so it is
+	 * what makes the ref unique, and it reads back as the booking the member
+	 * was actually given.
+	 */
 	// Joined, not nested: this spends inside the transaction opened above.
-	$spent = Credits\spend( $user_id, $credits, 'book:' . $booking_id, $booking_id, (string) $session->title, true );
+	$spent = Credits\spend( $user_id, $credits, 'book:' . $booking_id . ':' . $reference, $booking_id, (string) $session->title, true );
 
 	if ( is_wp_error( $spent ) ) {
 		return fail( $spent->get_error_code(), $spent->get_error_message() );
@@ -267,14 +324,37 @@ function cancel( int $booking_id, int $by_user_id, bool $by_provider = false ) {
 
 	$credits = 0;
 	if ( $refund ) {
+		/*
+		 * Paired with the spend ref, and for the same reason: a booking that
+		 * was cancelled, re-booked and cancelled again keeps one id, so the
+		 * reference is what tells the two apart. Without it the second
+		 * refund would be read as a repeat of the first and quietly skipped,
+		 * and the member would be told their credits were back when they
+		 * were not.
+		 */
 		$given = Credits\refund(
 			(int) $booking->user_id,
 			(int) $booking->credits_spent,
-			'refund:' . $booking_id,
+			'refund:' . $booking_id . ':' . (string) $booking->booking_reference,
 			$booking_id,
 			$session ? (string) $session->title : ''
 		);
-		if ( ! is_wp_error( $given ) ) {
+
+		if ( is_wp_error( $given ) ) {
+			/*
+			 * Only say the credits came back if they did. already_done means
+			 * an earlier attempt landed, so they are back and the member
+			 * should hear so; anything else is a real failure, and promising
+			 * a refund that never happened is worse than the failure.
+			 */
+			if ( 'already_done' === $given->get_error_code() ) {
+				$credits = (int) $booking->credits_spent;
+			} else {
+				$refund = false;
+
+				error_log( sprintf( '[oria-pass] refund failed for booking %d (user %d): %s', $booking_id, (int) $booking->user_id, $given->get_error_message() ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+			}
+		} else {
 			$credits = (int) $booking->credits_spent;
 		}
 	}
