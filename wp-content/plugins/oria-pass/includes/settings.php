@@ -42,6 +42,8 @@ function defaults(): array {
 		// Phase 3 reads these; they are here now so the policy is written
 		// down before anybody has relied on it.
 		'cancel_cutoff_hrs' => 12,
+		// How long before a session the reminder goes out.
+		'reminder_hours'    => 24,
 		'credit_expiry'     => 'cycle',
 		'support_email'     => (string) get_option( 'admin_email' ),
 		'terms_url'         => '',

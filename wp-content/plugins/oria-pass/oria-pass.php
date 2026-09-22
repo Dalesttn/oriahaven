@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const VERSION  = '0.1.0';
-const DB_VER   = '3';
+const DB_VER   = '4';
 const ROUTES_V = '1';
 
 define( 'ORIA_PASS_FILE', __FILE__ );
@@ -47,6 +47,7 @@ require_once ORIA_PASS_DIR . 'includes/sessions.php';
 require_once ORIA_PASS_DIR . 'includes/booking.php';
 require_once ORIA_PASS_DIR . 'includes/actions.php';
 require_once ORIA_PASS_DIR . 'includes/notify.php';
+require_once ORIA_PASS_DIR . 'includes/reminders.php';
 require_once ORIA_PASS_DIR . 'includes/waitlist.php';
 require_once ORIA_PASS_DIR . 'includes/route.php';
 require_once ORIA_PASS_DIR . 'includes/reports.php';
@@ -57,6 +58,7 @@ Settings\bootstrap();
 Stripe\bootstrap();
 Actions\bootstrap();
 Notify\bootstrap();
+Reminders\bootstrap();
 Waitlist\bootstrap();
 Route\bootstrap();
 Admin\bootstrap();
@@ -70,6 +72,13 @@ Admin\bootstrap();
  */
 register_activation_hook( __FILE__, __NAMESPACE__ . '\install' );
 
+/*
+ * Switching the plugin off must take its scheduled job with it. A cron
+ * event whose callback no longer exists is fired every hour for the life
+ * of the site, and nothing ever says so.
+ */
+register_deactivation_hook( __FILE__, __NAMESPACE__ . '\uninstall_cron' );
+
 function install(): void {
 	Waitlist\create_table();
 	Db\install();
@@ -77,6 +86,11 @@ function install(): void {
 	// Routes are rewrite rules, which live in the database.
 	delete_option( 'oria_pass_routes_v' );
 	flush_rewrite_rules();
+}
+
+/** Deactivating must take the scheduled job with it. */
+function uninstall_cron(): void {
+	Reminders\unschedule();
 }
 
 add_action(

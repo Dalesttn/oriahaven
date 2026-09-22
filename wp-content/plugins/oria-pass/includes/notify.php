@@ -48,6 +48,8 @@ function bootstrap(): void {
 	add_action( 'oria_pass_session_moved', __NAMESPACE__ . '\moved', 10, 2 );
 	add_action( 'oria_pass_session_called_off', __NAMESPACE__ . '\called_off', 10, 2 );
 	add_action( 'oria_pass_marked', __NAMESPACE__ . '\marked', 10, 2 );
+	add_action( 'oria_pass_reminder_member', __NAMESPACE__ . '\reminder_member', 10, 2 );
+	add_action( 'oria_pass_reminder_provider', __NAMESPACE__ . '\reminder_provider', 10, 2 );
 }
 
 /**
@@ -543,6 +545,109 @@ function marked( $booking, string $status ): void {
 			),
 			'',
 			__( 'If you were there and this is wrong, reply to this email and we will put it right with the studio.', 'oria' ),
+		)
+	);
+}
+
+/**
+ * Tomorrow, for the member.
+ *
+ * The one email in the Pass somebody did not ask for, so it earns its
+ * place by being useful rather than cheerful: when, where, the reference
+ * they will be asked for, anything the studio wants them to bring, and
+ * the honest last moment to hand the place back. No marketing, nothing
+ * to click unless they want out.
+ */
+function reminder_member( $booking, $session ): void {
+	if ( ! $booking || ! $session ) {
+		return;
+	}
+
+	$member = get_userdata( (int) $booking->user_id );
+	if ( ! $member ) {
+		return;
+	}
+
+	$first = $member->first_name ?: $member->display_name;
+
+	send(
+		(string) $member->user_email,
+		sprintf(
+			/* translators: %s: session title */
+			__( 'Coming up: %s', 'oria' ),
+			(string) $session->title
+		),
+		__( 'Still on', 'oria' ),
+		array(
+			'' !== $first
+				? sprintf( /* translators: %s: first name */ __( 'Hello %s — this one is nearly here.', 'oria' ), $first )
+				: __( 'This one is nearly here.', 'oria' ),
+			'',
+			(string) $session->title,
+			Sessions\when( $session ),
+			where( $session ),
+			'',
+			sprintf(
+				/* translators: %s: booking reference */
+				__( 'Give %s at the door.', 'oria' ),
+				(string) $booking->booking_reference
+			),
+			'' !== trim( (string) $session->notes ) ? "\n" . (string) $session->notes : '',
+			'',
+			cutoff_line( $session ),
+		)
+	);
+}
+
+/**
+ * Tomorrow, for the studio.
+ *
+ * A head count and the names, so a room is set up for the right number of
+ * people. Sent once per session however many places were taken, because
+ * an email per booking on the morning of a busy class is noise.
+ */
+function reminder_provider( $session, int $coming ): void {
+	$owner = $session ? provider_email( $session ) : '';
+	if ( '' === $owner ) {
+		return;
+	}
+
+	$names = array();
+	foreach ( Booking\for_session( (int) $session->id ) as $booking ) {
+		if ( 'confirmed' !== (string) $booking->status ) {
+			continue;
+		}
+
+		$person  = get_userdata( (int) $booking->user_id );
+		$first   = $person ? ( $person->first_name ?: $person->display_name ) : __( 'A member', 'oria' );
+		$names[] = '  ' . $first . ' — ' . (string) $booking->booking_reference;
+	}
+
+	send(
+		$owner,
+		sprintf(
+			/* translators: %1$d: number booked, %2$s: session title */
+			_n( '%1$d Pass place on %2$s', '%1$d Pass places on %2$s', $coming, 'oria' ),
+			$coming,
+			(string) $session->title
+		),
+		__( 'Coming up', 'oria' ),
+		array_merge(
+			array(
+				sprintf(
+					/* translators: 1: number of members, 2: session title */
+					_n( '%1$d Pass member is booked on %2$s.', '%1$d Pass members are booked on %2$s.', $coming, 'oria' ),
+					$coming,
+					(string) $session->title
+				),
+				Sessions\when( $session ),
+				'',
+			),
+			$names,
+			array(
+				'',
+				__( 'Mark them off in My Oria afterwards, under Pass places — that is what your payout is counted from.', 'oria' ),
+			)
 		)
 	);
 }
