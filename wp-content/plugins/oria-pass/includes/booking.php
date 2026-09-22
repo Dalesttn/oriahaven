@@ -383,7 +383,7 @@ function mark( int $booking_id, string $status ): bool {
 	$now = current_time( 'mysql' );
 
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-	return (bool) $wpdb->update(
+	$done = (bool) $wpdb->update(
 		Db\bookings(),
 		array(
 			'status'      => $status,
@@ -392,6 +392,12 @@ function mark( int $booking_id, string $status ): bool {
 		),
 		array( 'id' => $booking_id, 'status' => 'confirmed' )
 	);
+
+	if ( $done ) {
+		do_action( 'oria_pass_marked', get( $booking_id ), $status );
+	}
+
+	return $done;
 }
 
 /** What a member should be told their booking is. */

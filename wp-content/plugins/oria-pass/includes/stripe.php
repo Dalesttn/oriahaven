@@ -296,6 +296,8 @@ function failed( array $invoice ): void {
 	}
 
 	Membership\set_status( $membership, 'past_due' );
+
+	do_action( 'oria_pass_membership_past_due', (int) $membership->user_id, $membership );
 }
 
 /** The subscription is over. Credits already given are left alone. */

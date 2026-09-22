@@ -187,15 +187,26 @@ function session_status(): void {
 	 * booked it gets their credits back, whenever it happens, because none
 	 * of it was their doing.
 	 */
+	$told = 0;
 	if ( 'cancelled' === $status ) {
 		foreach ( Booking\for_session( (int) $session->id ) as $booking ) {
 			if ( 'confirmed' === (string) $booking->status ) {
 				Booking\cancel( (int) $booking->id, 0, true );
+				++$told;
 			}
 		}
 	}
 
 	Sessions\set_status( (int) $session->id, $status );
+
+	/*
+	 * A receipt for the studio. They have just refunded everybody who had
+	 * booked, and they should be told how many that was by something other
+	 * than counting the rows themselves.
+	 */
+	if ( 'cancelled' === $status ) {
+		do_action( 'oria_pass_session_called_off', $session, $told );
+	}
 
 	back( array( 'pass_ok' => 'cancelled' === $status ? 'session_cancelled' : 'session_saved' ) );
 }

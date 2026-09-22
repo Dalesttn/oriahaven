@@ -43,6 +43,11 @@ function bootstrap(): void {
 	add_action( 'oria_pass_cancelled', __NAMESPACE__ . '\cancelled', 10, 3 );
 	add_action( 'oria_pass_membership_renewed', __NAMESPACE__ . '\renewed', 10, 2 );
 	add_action( 'oria_pass_membership_started', __NAMESPACE__ . '\started', 10, 2 );
+	add_action( 'oria_pass_membership_past_due', __NAMESPACE__ . '\past_due', 10, 2 );
+	add_action( 'oria_pass_membership_ended', __NAMESPACE__ . '\ended', 10, 3 );
+	add_action( 'oria_pass_session_moved', __NAMESPACE__ . '\moved', 10, 2 );
+	add_action( 'oria_pass_session_called_off', __NAMESPACE__ . '\called_off', 10, 2 );
+	add_action( 'oria_pass_marked', __NAMESPACE__ . '\marked', 10, 2 );
 }
 
 /**
@@ -337,4 +342,207 @@ function provider_email( object $session ): string {
 	$owner = $owner_id > 0 ? get_userdata( $owner_id ) : null;
 
 	return $owner ? (string) $owner->user_email : '';
+}
+
+/**
+ * A card was declined.
+ *
+ * Said without alarm and without threat. Stripe retries for days and most
+ * of these recover on their own, so the useful thing is to say what
+ * happened, what it means for their credits, and that there is nothing to
+ * do unless it keeps failing.
+ */
+function past_due( int $user_id, $membership ): void {
+	$member = get_userdata( $user_id );
+	if ( ! $member ) {
+		return;
+	}
+
+	send(
+		(string) $member->user_email,
+		__( 'A payment for your Oria Pass did not go through', 'oria' ),
+		__( 'That payment did not go through', 'oria' ),
+		array(
+			__( 'Your bank turned down this month&#8217;s Oria Pass payment. It is usually nothing — an expired card, or a fraud check on a payment it has not seen before.', 'oria' ),
+			'',
+			__( 'Your credits are untouched and anything you have booked stands. We will try again over the next few days, so there is nothing to do unless it keeps failing.', 'oria' ),
+			'',
+			__( 'If you would rather sort it now, update your card through the payment receipt Stripe emailed you.', 'oria' ),
+		)
+	);
+}
+
+/** The Pass has stopped. */
+function ended( int $user_id, $membership, string $status ): void {
+	$member = get_userdata( $user_id );
+	if ( ! $member || 'paused' === $status ) {
+		return;
+	}
+
+	$balance = Credits\balance( $user_id );
+
+	send(
+		(string) $member->user_email,
+		__( 'Your Oria Pass has ended', 'oria' ),
+		__( 'Your Pass has ended', 'oria' ),
+		array(
+			__( 'Your Oria Pass is now closed and you will not be charged again.', 'oria' ),
+			'',
+			$balance > 0
+				? sprintf(
+					/* translators: %d: credits */
+					__( 'Anything you have already booked still stands. The %d credits left on the account cannot be spent now the Pass has ended.', 'oria' ),
+					$balance
+				)
+				: __( 'Anything you have already booked still stands.', 'oria' ),
+			'',
+			__( 'If you come back, the places are still here:', 'oria' ),
+			\Oria\Pass\Route\url(),
+		)
+	);
+}
+
+/**
+ * The session moved.
+ *
+ * Everyone holding a place is told, with the old time as well as the new
+ * one: somebody skimming needs to recognise which booking this is, and
+ * "we have moved it to Thursday" is useless to a reader who had it down
+ * for Thursday already. The cancellation window is restated because
+ * whether the new time suits them is exactly the decision it governs.
+ */
+function moved( $session, $before ): void {
+	if ( ! $session || ! $before ) {
+		return;
+	}
+
+	$was = date_create_immutable( (string) $before->start_at, wp_timezone() );
+
+	foreach ( Booking\for_session( (int) $session->id ) as $booking ) {
+		if ( 'confirmed' !== (string) $booking->status ) {
+			continue;
+		}
+
+		$member = get_userdata( (int) $booking->user_id );
+		if ( ! $member ) {
+			continue;
+		}
+
+		send(
+			(string) $member->user_email,
+			__( 'A session you booked has moved', 'oria' ),
+			__( 'That one has moved', 'oria' ),
+			array(
+				sprintf(
+					/* translators: %s: session title */
+					__( 'The studio has changed the time of %s.', 'oria' ),
+					(string) $session->title
+				),
+				'',
+				$was
+					? sprintf(
+						/* translators: %s: the old date and time */
+						__( 'It was %s.', 'oria' ),
+						wp_date( 'D j M · g:ia', $was->getTimestamp() )
+					)
+					: '',
+				sprintf(
+					/* translators: %s: the new date and time */
+					__( 'It is now %s.', 'oria' ),
+					Sessions\when( $session )
+				),
+				where( $session ),
+				'',
+				sprintf(
+					/* translators: %s: booking reference */
+					__( 'Your place is still held and your reference has not changed: %s.', 'oria' ),
+					(string) $booking->booking_reference
+				),
+				'',
+				__( 'If the new time does not suit, you can give the place back and take the credits with you.', 'oria' ),
+				cutoff_line( $session ),
+			)
+		);
+	}
+}
+
+/**
+ * The studio called a session off.
+ *
+ * Members have already been told one by one through the cancellation
+ * hook; this is the studio's own receipt, so they know how many people
+ * that was without counting rows themselves.
+ */
+function called_off( $session, int $told ): void {
+	$owner = $session ? provider_email( $session ) : '';
+	if ( '' === $owner ) {
+		return;
+	}
+
+	send(
+		$owner,
+		__( 'You called off an Oria Pass session', 'oria' ),
+		__( 'That session is off', 'oria' ),
+		array(
+			sprintf(
+				/* translators: %s: session title */
+				__( '%s has been called off and is no longer on offer.', 'oria' ),
+				(string) $session->title
+			),
+			Sessions\when( $session ),
+			'',
+			$told > 0
+				? sprintf(
+					/* translators: %d: number of members */
+					_n( '%d member had booked. They have been told and their credits are back.', '%d members had booked. They have been told and their credits are back.', $told, 'oria' ),
+					$told
+				)
+				: __( 'Nobody had booked, so there was nobody to tell.', 'oria' ),
+		)
+	);
+}
+
+/**
+ * Marked at the door.
+ *
+ * Only a no-show is worth an email. "You attended" tells somebody what
+ * they already know; "you were marked as not turning up, and the credits
+ * stayed spent" is a charge they might disagree with, and they should
+ * hear it from us rather than notice it in their balance.
+ */
+function marked( $booking, string $status ): void {
+	if ( ! $booking || 'no_show' !== $status ) {
+		return;
+	}
+
+	$member = get_userdata( (int) $booking->user_id );
+	if ( ! $member ) {
+		return;
+	}
+
+	$session = Sessions\get( (int) $booking->session_id );
+
+	send(
+		(string) $member->user_email,
+		__( 'Your Oria Pass place was marked as missed', 'oria' ),
+		__( 'Marked as missed', 'oria' ),
+		array(
+			$session
+				? sprintf(
+					/* translators: 1: session title, 2: when it ran */
+					__( 'The studio has marked your place on %1$s (%2$s) as not taken up.', 'oria' ),
+					(string) $session->title,
+					Sessions\when( $session )
+				)
+				: __( 'The studio has marked one of your places as not taken up.', 'oria' ),
+			'',
+			sprintf(
+				/* translators: %d: credits */
+				__( 'The %d credits stay spent — the place was held all session and nobody else could take it.', 'oria' ),
+				(int) $booking->credits_spent
+			),
+			'',
+			__( 'If you were there and this is wrong, reply to this email and we will put it right with the studio.', 'oria' ),
+		)
+	);
 }

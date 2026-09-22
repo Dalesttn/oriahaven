@@ -257,6 +257,19 @@ function save( array $in, int $id = 0 ) {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$wpdb->update( Db\sessions(), $row, array( 'id' => $id ) );
 
+		/*
+		 * Moving a session that people have booked is the one edit that
+		 * cannot stay between the studio and the database. Somebody has
+		 * arranged their evening around the old time, and finding out by
+		 * turning up is the worst way to learn. Announced only when the
+		 * time actually moved and only while somebody holds a place.
+		 */
+		$moved = (string) $existing->start_at !== $row['start_at'] || (string) ( $existing->end_at ?? '' ) !== (string) ( $row['end_at'] ?? '' );
+
+		if ( $moved && (int) $existing->booked_count > 0 ) {
+			do_action( 'oria_pass_session_moved', get( $id ), $existing );
+		}
+
 		return $id;
 	}
 
