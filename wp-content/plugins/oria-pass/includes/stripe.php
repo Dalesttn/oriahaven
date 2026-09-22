@@ -106,8 +106,34 @@ function handle( string $type, array $object, array $event ): void {
  * Allocating here as well would give a new member two months on day one.
  */
 function started( array $session ): void {
-	$user_id = user_from_ref( (string) ( $session['client_reference_id'] ?? '' ) );
+	$ref     = (string) ( $session['client_reference_id'] ?? '' );
+	$user_id = user_from_ref( $ref );
+
 	if ( $user_id < 1 || ! get_userdata( $user_id ) ) {
+		/*
+		 * Somebody has paid and we cannot tell who. That happens when the
+		 * Payment Link is opened directly rather than through the button on
+		 * the Pass page, which is what attaches the member's id -- and it
+		 * used to return in silence, so the money was taken, no credits
+		 * arrived, and nothing anywhere said why. It is recorded the same
+		 * way an orphan invoice is, because somebody is out of pocket and
+		 * the answer has to be findable.
+		 */
+		error_log( sprintf( '[oria-pass] checkout %s completed with no member behind client_reference_id "%s"', (string) ( $session['id'] ?? '?' ), $ref ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+
+		update_option(
+			'oria_pass_orphan_checkout',
+			array(
+				'session'      => (string) ( $session['id'] ?? '' ),
+				'reference'    => $ref,
+				'subscription' => (string) ( $session['subscription'] ?? '' ),
+				'customer'     => (string) ( $session['customer'] ?? '' ),
+				'email'        => (string) ( $session['customer_details']['email'] ?? '' ),
+				'at'           => time(),
+			),
+			false
+		);
+
 		return;
 	}
 
