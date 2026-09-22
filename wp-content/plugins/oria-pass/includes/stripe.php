@@ -144,6 +144,15 @@ function started( array $session ): void {
 
 	if ( $membership ) {
 		do_action( 'oria_pass_membership_started', $user_id, $membership );
+
+		/*
+		 * If the invoice beat us here, its credits are waiting. Settled
+		 * after the started hook, so the welcome email goes out before the
+		 * one saying the credits have landed.
+		 */
+		if ( '' !== $subscription ) {
+			drain( $subscription, $membership );
+		}
 	}
 }
 
@@ -186,6 +195,52 @@ function subscription_of( array $invoice ): string {
 	return '';
 }
 
+/**
+ * Invoices that arrived before the member did.
+ *
+ * Stripe does not promise an order, and in practice invoice.paid often
+ * beats checkout.session.completed -- so the credits are granted against
+ * a subscription we have never heard of. The old code logged that and
+ * gave up, which is how somebody came to hold an active membership with
+ * nought credits and no way to tell why.
+ *
+ * Held here instead, keyed by subscription, and applied the moment the
+ * membership shows up. Anything older than a fortnight is dropped: by
+ * then it is not a race, it is a mistake, and the log has it.
+ */
+const PENDING = 'oria_pass_pending_invoices';
+
+function hold( string $subscription, string $invoice_id, ?string $period_end ): void {
+	$queue = (array) get_option( PENDING, array() );
+
+	foreach ( $queue as $ref => $row ) {
+		if ( ! is_array( $row ) || (int) ( $row['at'] ?? 0 ) < time() - 1209600 ) {
+			unset( $queue[ $ref ] );
+		}
+	}
+
+	$queue[ $subscription ] = array( 'invoice' => $invoice_id, 'period_end' => $period_end, 'at' => time() );
+
+	update_option( PENDING, $queue, false );
+}
+
+/** A membership has appeared; settle anything that was waiting for it. */
+function drain( string $subscription, object $membership ): void {
+	$queue = (array) get_option( PENDING, array() );
+	$held  = $queue[ $subscription ] ?? null;
+
+	if ( ! is_array( $held ) || '' === (string) ( $held['invoice'] ?? '' ) ) {
+		return;
+	}
+
+	unset( $queue[ $subscription ] );
+	update_option( PENDING, $queue, false );
+
+	Membership\renew( $membership, (string) $held['invoice'], $held['period_end'] ?? null );
+
+	do_action( 'oria_pass_membership_renewed', (int) $membership->user_id, $membership );
+}
+
 function paid( array $invoice ): void {
 	$subscription = subscription_of( $invoice );
 	$invoice_id   = (string) ( $invoice['id'] ?? '' );
@@ -207,17 +262,19 @@ function paid( array $invoice ): void {
 		return;
 	}
 
-	$membership = Membership\by_subscription( $subscription );
-	if ( ! $membership ) {
-		error_log( sprintf( '[oria-pass] invoice %s paid for unknown subscription %s', $invoice_id, $subscription ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-		update_option( 'oria_pass_orphan_invoice', array( 'invoice' => $invoice_id, 'subscription' => $subscription, 'at' => time() ), false );
-
-		return;
-	}
-
 	$period_end = isset( $invoice['lines']['data'][0]['period']['end'] )
 		? (string) wp_date( 'Y-m-d H:i:s', (int) $invoice['lines']['data'][0]['period']['end'] )
 		: null;
+
+	$membership = Membership\by_subscription( $subscription );
+	if ( ! $membership ) {
+		// Not lost -- held, and applied when the checkout event lands.
+		hold( $subscription, $invoice_id, $period_end );
+
+		error_log( sprintf( '[oria-pass] invoice %s paid before its subscription %s was known; held', $invoice_id, $subscription ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+
+		return;
+	}
 
 	Membership\renew( $membership, $invoice_id, $period_end );
 
