@@ -878,8 +878,10 @@
 .passrow__person { display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-size: .875rem; }
 .passrow__person code { font-size: .8125rem; letter-spacing: .06em; }
 .passrow__mark { display: flex; gap: .5rem; }
-.passrow__mark button, .passrow__inline button { min-height: 40px; padding: 0 .7rem; border: 1px solid var(--app-line, rgba(8,34,32,.18)); border-radius: 999px; background: transparent; font: inherit; font-size: .8125rem; cursor: pointer; }
-.passrow__mark button:hover, .passrow__inline button:hover { border-color: #0E3B38; }
+.passrow__acts > a { text-decoration: none; color: inherit; display: inline-flex; align-items: center; }
+/* Edit is a link and the rest are buttons; the row should not care. */
+.passrow__mark button, .passrow__inline button, .passrow__acts > a { min-height: 40px; padding: 0 .7rem; border: 1px solid var(--app-line, rgba(8,34,32,.18)); border-radius: 999px; background: transparent; font: inherit; font-size: .8125rem; cursor: pointer; }
+.passrow__mark button:hover, .passrow__inline button:hover, .passrow__acts > a:hover { border-color: #0E3B38; }
 .passrow__done { font-size: .8125rem; color: var(--app-faint, #7b8785); }
 .passrow__acts { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin: .9rem 0 0; }
 .passrow__inline { display: inline; }
