@@ -132,7 +132,14 @@ function session_save(): void {
 		back( array( 'pass_err' => $result->get_error_code() ) );
 	}
 
-	back( array( 'pass_ok' => $id > 0 ? 'session_saved' : 'session_added' ) );
+	/*
+	 * The message has to match what actually happened. Saying "it is a
+	 * draft until you publish it" to somebody who just pressed Publish is
+	 * the sort of small lie that makes people distrust the rest.
+	 */
+	$published = 'publish' === ( $_POST['save_as'] ?? '' );
+
+	back( array( 'pass_ok' => $published ? 'session_live' : ( $id > 0 ? 'session_saved' : 'session_draft' ) ) );
 }
 
 /** Pause, publish or call a session off. */

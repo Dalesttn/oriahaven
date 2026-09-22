@@ -847,3 +847,49 @@
 .mybook__when { font-size: .875rem; color: var(--app-soft, #5d6b68); }
 .mybook__ref { font-size: .75rem; letter-spacing: .08em; color: var(--app-faint, #7b8785); font-variant-numeric: tabular-nums; }
 .mybook__cancel { min-height: 44px; padding: 0 .2rem; border: 0; background: none; font: inherit; font-size: .8125rem; color: var(--app-soft, #5d6b68); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* --- Oria Pass: the provider's screen -------------------------------- */
+/* A table and a form. A studio opening two places on a quiet Tuesday
+   wants to type four numbers and leave. */
+.mypass-view .myhead { margin: 0 0 .3rem; }
+.mypass-view .mysub { margin: 0 0 1.4rem; max-width: 60ch; color: var(--app-soft, #5d6b68); line-height: 1.55; }
+
+.passtiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .8rem; margin-bottom: 1.4rem; }
+.passtile { padding: .9rem 1rem; border-radius: 14px; background: var(--app-bg, #f0ebe0); display: grid; gap: 2px; }
+.passtile b { font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.passtile span { font-size: .8125rem; color: var(--app-soft, #5d6b68); }
+
+.passform__form { display: grid; gap: 1rem; margin-top: .8rem; }
+.passform__row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.passform__acts { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; margin: .4rem 0 0; }
+.passform__alt { font-size: .875rem; color: var(--app-soft, #5d6b68); text-decoration: underline; text-underline-offset: 3px; }
+
+.passrow { margin-bottom: 1rem; }
+.passrow__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.passrow__title { margin: 0; font-size: 1.05rem; font-weight: 700; }
+.passrow__when { margin: 2px 0 0; font-size: .875rem; color: var(--app-soft, #5d6b68); }
+.passrow__status { flex: 0 0 auto; padding: .2rem .6rem; border-radius: 999px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; background: var(--app-bg, #f0ebe0); color: var(--app-soft, #5d6b68); }
+.passrow__status--active { background: #0E3B38; color: #fff; }
+.passrow__status--sold_out { background: #C9A24B; color: #1b1b1b; }
+.passrow__status--cancelled { background: #fdecea; color: #7a271a; }
+.passrow__facts { display: flex; flex-wrap: wrap; gap: .3rem 1rem; margin: .7rem 0 0; font-size: .875rem; color: var(--app-soft, #5d6b68); }
+.passrow__pay { font-weight: 600; color: var(--moss, #3F6E60); }
+.passrow__who { list-style: none; margin: .8rem 0 0; padding: .7rem 0 0; border-top: 1px solid var(--app-line, rgba(8,34,32,.12)); display: grid; gap: .5rem; }
+.passrow__person { display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-size: .875rem; }
+.passrow__person code { font-size: .8125rem; letter-spacing: .06em; }
+.passrow__mark { display: flex; gap: .5rem; }
+.passrow__mark button, .passrow__inline button { min-height: 40px; padding: 0 .7rem; border: 1px solid var(--app-line, rgba(8,34,32,.18)); border-radius: 999px; background: transparent; font: inherit; font-size: .8125rem; cursor: pointer; }
+.passrow__mark button:hover, .passrow__inline button:hover { border-color: #0E3B38; }
+.passrow__done { font-size: .8125rem; color: var(--app-faint, #7b8785); }
+.passrow__acts { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin: .9rem 0 0; }
+.passrow__inline { display: inline; }
+.passrow__off { color: #7a271a; }
+.passrow__warn { margin: .6rem 0 0; font-size: .8125rem; color: var(--app-faint, #7b8785); }
+.mynote { padding: .75rem 1rem; border-radius: 12px; margin: 0 0 1.2rem; font-size: .9375rem; }
+.mynote--ok { background: #e8f2ee; color: #14443c; }
+.mynote--bad { background: #fdecea; color: #7a271a; }
+
+@media (max-width: 40rem) {
+  .passform__row3 { grid-template-columns: 1fr; }
+  .passrow__person { flex-wrap: wrap; }
+}

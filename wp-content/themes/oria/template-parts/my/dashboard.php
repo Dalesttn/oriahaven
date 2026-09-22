@@ -122,7 +122,7 @@ $oria_todo = array_values( array_diff( $oria_saved, $oria_tried ) );
 	 * opened this page for. It draws nothing at all for somebody who is not
 	 * a member while the Pass is not yet on sale.
 	 */
-	get_template_part( 'template-parts/my/pass' );
+	get_template_part( 'template-parts/my/pass-card' );
 	?>
 
 	<div class="mygrid mygrid--split">

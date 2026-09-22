@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 const PATH      = 'my-oria';
 const QUERY_VAR = 'oria_my';
 const VIEW_VAR  = 'oria_my_view';
-const REWRITE_V = '2';
+const REWRITE_V = '3';
 
 /** view slug => needs sign-in */
 const VIEWS = array(
@@ -50,6 +50,10 @@ const VIEWS = array(
 	// inside the view on whether this account actually manages a listing.
 	'listing'      => true,
 	'listing-edit' => true,
+	// Oria Pass. One address, two audiences: a provider manages the places
+	// they have opened, a member sees their credits and bookings. Which one
+	// somebody gets is decided inside the view by what they actually are.
+	'pass'         => true,
 	'login'    => false,
 	'register' => false,
 	'reset'    => false,
@@ -606,6 +610,22 @@ function tabs(): array {
 			1,
 			0,
 			array( array( 'slug' => 'listing', 'label' => __( 'My listing', 'oria' ), 'url' => url( 'listing' ) ) )
+		);
+	}
+
+	/*
+	 * Oria Pass, for anybody it means something to: a provider managing the
+	 * places they have opened, or a member with a membership. Somebody who
+	 * is neither gets no tab, for the same reason as above.
+	 */
+	$oria_is_provider = function_exists( '\Oria\Core\ListingEditor\listing_for' ) && \Oria\Core\ListingEditor\listing_for( get_current_user_id() );
+	$oria_is_member   = function_exists( '\Oria\Pass\Membership\for_user' ) && \Oria\Pass\Membership\for_user( get_current_user_id() );
+
+	if ( $oria_is_provider || $oria_is_member ) {
+		$tabs[] = array(
+			'slug'  => 'pass',
+			'label' => $oria_is_provider ? __( 'Pass places', 'oria' ) : __( 'Oria Pass', 'oria' ),
+			'url'   => url( 'pass' ),
 		);
 	}
 
