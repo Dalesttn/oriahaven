@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const VERSION  = '0.1.0';
-const DB_VER   = '2';
+const DB_VER   = '3';
 const ROUTES_V = '1';
 
 define( 'ORIA_PASS_FILE', __FILE__ );
@@ -43,6 +43,8 @@ require_once ORIA_PASS_DIR . 'includes/db.php';
 require_once ORIA_PASS_DIR . 'includes/credits.php';
 require_once ORIA_PASS_DIR . 'includes/membership.php';
 require_once ORIA_PASS_DIR . 'includes/stripe.php';
+require_once ORIA_PASS_DIR . 'includes/sessions.php';
+require_once ORIA_PASS_DIR . 'includes/booking.php';
 require_once ORIA_PASS_DIR . 'includes/waitlist.php';
 require_once ORIA_PASS_DIR . 'includes/route.php';
 require_once ORIA_PASS_DIR . 'includes/admin.php';

@@ -123,6 +123,17 @@ function has_ref( string $ref ): bool {
 function write( int $user_id, string $type, int $change, string $ref, array $extra = array() ) {
 	global $wpdb;
 
+	/*
+	 * A caller already inside a transaction passes joined => true.
+	 *
+	 * MySQL does not nest transactions: a second START TRANSACTION commits
+	 * the first, silently. Booking has to claim a seat and spend the
+	 * credits for it as one indivisible act, so it opens the transaction
+	 * and this joins it -- taking the same row lock, skipping the START and
+	 * the COMMIT, and letting the caller decide the outcome for both.
+	 */
+	$joined = ! empty( $extra['joined'] );
+
 	if ( $user_id < 1 ) {
 		return new \WP_Error( 'no_user', __( 'No member to credit.', 'oria' ) );
 	}
@@ -145,7 +156,9 @@ function write( int $user_id, string $type, int $change, string $ref, array $ext
 	 * transaction ends, so the second request waits and then sees the
 	 * truth. InnoDB only, which is every WordPress install since 2013.
 	 */
-	$wpdb->query( 'START TRANSACTION' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	if ( ! $joined ) {
+		$wpdb->query( 'START TRANSACTION' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	}
 
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
 	$current = (int) $wpdb->get_var(
@@ -153,7 +166,9 @@ function write( int $user_id, string $type, int $change, string $ref, array $ext
 	);
 
 	if ( $change < 0 && $current + $change < 0 ) {
-		$wpdb->query( 'ROLLBACK' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		if ( ! $joined ) {
+			$wpdb->query( 'ROLLBACK' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		}
 
 		return new \WP_Error(
 			'insufficient',
@@ -183,7 +198,9 @@ function write( int $user_id, string $type, int $change, string $ref, array $ext
 
 	if ( false === $ok ) {
 		$duplicate = str_contains( (string) $wpdb->last_error, 'Duplicate entry' );
-		$wpdb->query( 'ROLLBACK' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		if ( ! $joined ) {
+			$wpdb->query( 'ROLLBACK' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		}
 
 		if ( $duplicate ) {
 			// Already written by an earlier attempt. Not a failure.
@@ -195,7 +212,9 @@ function write( int $user_id, string $type, int $change, string $ref, array $ext
 		return new \WP_Error( 'db', __( 'Could not record that. Nothing has been charged.', 'oria' ) );
 	}
 
-	$wpdb->query( 'COMMIT' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	if ( ! $joined ) {
+		$wpdb->query( 'COMMIT' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	}
 
 	return $after;
 }
@@ -221,7 +240,7 @@ function allocate( int $user_id, int $credits, string $ref, int $membership_id =
 }
 
 /** Spend on a booking. Phase 3 calls this; the rules live here. */
-function spend( int $user_id, int $credits, string $ref, int $booking_id = 0, string $what = '' ) {
+function spend( int $user_id, int $credits, string $ref, int $booking_id = 0, string $what = '', bool $joined = false ) {
 	return write(
 		$user_id,
 		'booking',
@@ -230,6 +249,7 @@ function spend( int $user_id, int $credits, string $ref, int $booking_id = 0, st
 		array(
 			'booking_id'  => $booking_id,
 			'description' => '' !== $what ? $what : __( 'Booking', 'oria' ),
+			'joined'      => $joined,
 		)
 	);
 }
