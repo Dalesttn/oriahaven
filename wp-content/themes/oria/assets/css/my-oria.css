@@ -825,3 +825,16 @@
 .mylplan__keep { margin: 0; font-size: var(--fs-xs); color: var(--app-faint); line-height: 1.55; max-width: 62ch; }
 .mypick__frame--lg { width: 96px; height: 96px; }
 .mylhead__img--logo { object-fit: contain; background: var(--app-surface); border: 1px solid var(--app-line); padding: 6px; }
+
+/* --- Oria Pass, in My Oria ------------------------------------------- */
+/* The balance is the number a member opens this page for, so the meter
+   reads at a glance and the log underneath says where it went. */
+.mypass__meter { height: 10px; margin: .6rem 0 .9rem; border-radius: 999px; background: var(--app-bg, #ece7dc); overflow: hidden; }
+.mypass__fill { display: block; height: 100%; background: var(--deep); border-radius: 999px; }
+.mypass__log { list-style: none; margin: .9rem 0 0; padding: 0; display: grid; gap: .4rem; }
+.mypass__log li { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; font-size: .875rem; }
+.mypass__what { color: var(--app-soft, #5d6b68); min-width: 0; }
+.mypass__n { font-weight: 700; font-variant-numeric: tabular-nums; }
+.mypass__n--up { color: var(--moss, #3F6E60); }
+.mypass__n--down { color: var(--app-faint, #7b8785); }
+.mypass--offer .mycard__title { max-width: 22ch; }

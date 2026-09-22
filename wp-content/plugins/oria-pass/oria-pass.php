@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const VERSION  = '0.1.0';
-const DB_VER   = '1';
+const DB_VER   = '2';
 const ROUTES_V = '1';
 
 define( 'ORIA_PASS_FILE', __FILE__ );
@@ -39,11 +39,16 @@ define( 'ORIA_PASS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ORIA_PASS_URL', plugin_dir_url( __FILE__ ) );
 
 require_once ORIA_PASS_DIR . 'includes/settings.php';
+require_once ORIA_PASS_DIR . 'includes/db.php';
+require_once ORIA_PASS_DIR . 'includes/credits.php';
+require_once ORIA_PASS_DIR . 'includes/membership.php';
+require_once ORIA_PASS_DIR . 'includes/stripe.php';
 require_once ORIA_PASS_DIR . 'includes/waitlist.php';
 require_once ORIA_PASS_DIR . 'includes/route.php';
 require_once ORIA_PASS_DIR . 'includes/admin.php';
 
 Settings\bootstrap();
+Stripe\bootstrap();
 Waitlist\bootstrap();
 Route\bootstrap();
 Admin\bootstrap();
@@ -59,6 +64,7 @@ register_activation_hook( __FILE__, __NAMESPACE__ . '\install' );
 
 function install(): void {
 	Waitlist\create_table();
+	Db\install();
 	update_option( 'oria_pass_db_ver', DB_VER );
 	// Routes are rewrite rules, which live in the database.
 	delete_option( 'oria_pass_routes_v' );
@@ -70,6 +76,7 @@ add_action(
 	static function (): void {
 		if ( get_option( 'oria_pass_db_ver' ) !== DB_VER ) {
 			Waitlist\create_table();
+			Db\install();
 			update_option( 'oria_pass_db_ver', DB_VER );
 		}
 	},

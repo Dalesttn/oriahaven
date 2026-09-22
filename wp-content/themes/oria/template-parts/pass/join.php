@@ -35,7 +35,46 @@ $oria_errors = array(
 <section class="wrap pass-join" id="pass-join" aria-labelledby="pass-join-h">
 	<div class="pjoin">
 
-		<?php if ( 'done' === $oria_state ) : ?>
+		<?php
+		/*
+		 * Live mode buys rather than collects. The Stripe reference is the
+		 * member's own id -- it is how the webhook knows whose credits
+		 * these are -- so there has to be an account before there can be a
+		 * checkout. Somebody signed out is sent to make one rather than
+		 * being shown a button that cannot carry them.
+		 */
+		if ( $oria_live && \Oria\Pass\Stripe\configured() ) :
+			$oria_uid = get_current_user_id();
+			?>
+			<h2 class="pass-h" id="pass-join-h"><?php esc_html_e( 'Start your Oria Pass', 'oria' ); ?></h2>
+			<?php if ( $oria_uid > 0 ) : ?>
+				<p class="pjoin__lede">
+					<?php
+					printf(
+						/* translators: 1: credits, 2: price, 3: period */
+						esc_html__( '%1$d credits land in your account as soon as the first payment goes through, then again every %3$s. %2$s a %3$s, cancel whenever you like.', 'oria' ),
+						(int) \Oria\Pass\Settings\get( 'credits_per_cycle' ),
+						esc_html( (string) \Oria\Pass\Settings\get( 'price_display' ) ),
+						esc_html( (string) \Oria\Pass\Settings\get( 'price_period' ) )
+					);
+					?>
+				</p>
+				<p>
+					<a class="btn btn--dark btn--block" href="<?php echo esc_url( \Oria\Pass\Stripe\pay_url( $oria_uid ) ); ?>"
+						data-oria-event="oria_pass_checkout_started">
+						<?php esc_html_e( 'Set up my membership', 'oria' ); ?>
+					</a>
+				</p>
+				<p class="pjoin__fine"><?php esc_html_e( 'Payment is handled by Stripe. Your card details never touch Oria Haven.', 'oria' ); ?></p>
+			<?php else : ?>
+				<p class="pjoin__lede"><?php esc_html_e( 'Your Pass lives in your Oria account, so make one first — it takes a moment, and your credits and bookings will be waiting there.', 'oria' ); ?></p>
+				<p class="pjoin__acts">
+					<a class="btn btn--dark" href="<?php echo esc_url( home_url( '/my-oria/' ) ); ?>"><?php esc_html_e( 'Create an account', 'oria' ); ?></a>
+					<a class="pjoin__alt" href="<?php echo esc_url( home_url( '/my-oria/' ) ); ?>"><?php esc_html_e( 'Already have one? Sign in', 'oria' ); ?></a>
+				</p>
+			<?php endif; ?>
+
+		<?php elseif ( 'done' === $oria_state ) : ?>
 
 			<h2 class="pass-h" id="pass-join-h"><?php esc_html_e( 'You are on the list.', 'oria' ); ?></h2>
 			<p class="pjoin__lede">

@@ -158,6 +158,19 @@ function webhook( \WP_REST_Request $request ): \WP_REST_Response {
 
 	$object = (array) ( $event['data']['object'] ?? array() );
 
+	/*
+	 * Anything else that bills through this endpoint listens here rather
+	 * than being named in the switch below. Oria Pass sells a membership
+	 * through the same Stripe account and the same signed webhook, and it
+	 * has no business being wired into the listing tiers -- its own plugin
+	 * subscribes to this and ignores every event that is not its own.
+	 *
+	 * Fired before the switch so a listener sees the event whatever the
+	 * listing logic makes of it, and passed the whole event because
+	 * idempotency needs the event id.
+	 */
+	do_action( 'oria_stripe_event', (string) $event['type'], $object, $event );
+
 	switch ( (string) $event['type'] ) {
 		case 'checkout.session.completed':
 			activate( $object );

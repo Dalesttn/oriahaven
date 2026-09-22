@@ -168,6 +168,7 @@ function screen_settings(): void {
 		'cancel_cutoff_hrs' => __( 'Cancellation cutoff (hours)', 'oria' ),
 		'support_email'     => __( 'Waitlist notifications to', 'oria' ),
 		'partner_email'     => __( 'Partner enquiries to', 'oria' ),
+		'stripe_link'       => __( 'Stripe Payment Link', 'oria' ),
 		'terms_url'         => __( 'Terms URL', 'oria' ),
 		'privacy_url'       => __( 'Privacy URL', 'oria' ),
 	);

@@ -47,6 +47,9 @@ function defaults(): array {
 		'terms_url'         => '',
 		'privacy_url'       => '',
 		'partner_email'     => (string) get_option( 'admin_email' ),
+		// The recurring Stripe Payment Link for the Pass. The member's id
+		// is appended as client_reference_id so the webhook knows who paid.
+		'stripe_link'       => '',
 	);
 }
 
@@ -137,7 +140,7 @@ function sanitize( $raw ): array {
 		}
 	}
 
-	foreach ( array( 'terms_url', 'privacy_url' ) as $key ) {
+	foreach ( array( 'terms_url', 'privacy_url', 'stripe_link' ) as $key ) {
 		$out[ $key ] = esc_url_raw( (string) ( $in[ $key ] ?? '' ) );
 	}
 
