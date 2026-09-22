@@ -153,7 +153,17 @@ function session_save(): void {
 	 */
 	$published = 'publish' === ( $_POST['save_as'] ?? '' );
 
-	back( array( 'pass_ok' => $published ? 'session_live' : ( $id > 0 ? 'session_saved' : 'session_draft' ) ) );
+	/*
+	 * Back to the sessions, not to the form. What somebody wants to see
+	 * after saving is the thing they saved.
+	 */
+	back(
+		array(
+			'pass_ok' => $published ? 'session_live' : ( $id > 0 ? 'session_saved' : 'session_draft' ),
+			'tab'     => 'upcoming',
+			'edit'    => false,
+		)
+	);
 }
 
 /** Pause, publish or call a session off. */

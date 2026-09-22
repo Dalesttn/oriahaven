@@ -111,17 +111,56 @@ $oria_wrong = array(
 		 * booking are not the same thing, and only attendance is counted
 		 * here so the number never overstates what is owed.
 		 */
-		$oria_earned = 0.0;
+		$oria_earned  = 0.0;
 		$oria_pending = 0;
+
+		/*
+		 * Sessions split by whether they have happened, and the bookings
+		 * gathered once. A provider on this page is doing one of three
+		 * things -- seeing what is on, seeing who is coming, or opening
+		 * something new -- and each tab is one of them. Everything is
+		 * counted here so a tab label can carry its own number: a tab you
+		 * have to open to find out whether it is empty is not navigation.
+		 */
+		$oria_now      = current_time( 'mysql' );
+		$oria_upcoming = array();
+		$oria_past     = array();
+		$oria_people   = array();
+		$oria_coming   = 0;
+
 		foreach ( $oria_rows as $oria_r ) {
-			foreach ( Booking\for_session( (int) $oria_r->id ) as $oria_bk ) {
+			$oria_bk_list = Booking\for_session( (int) $oria_r->id );
+
+			foreach ( $oria_bk_list as $oria_bk ) {
 				if ( 'attended' === (string) $oria_bk->status ) {
 					$oria_earned += (float) $oria_bk->provider_payout;
 				} elseif ( 'confirmed' === (string) $oria_bk->status ) {
 					$oria_pending++;
 				}
 			}
+
+			if ( (string) $oria_r->start_at >= $oria_now && 'cancelled' !== (string) $oria_r->status ) {
+				$oria_upcoming[] = $oria_r;
+
+				$oria_live = array_filter( $oria_bk_list, static fn( $b ): bool => 'confirmed' === (string) $b->status );
+				if ( $oria_live ) {
+					$oria_people[] = array( 'session' => $oria_r, 'bookings' => array_values( $oria_live ) );
+					$oria_coming  += count( $oria_live );
+				}
+			} else {
+				$oria_past[] = $oria_r;
+			}
 		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- which panel to draw.
+		$oria_tab = sanitize_key( (string) ( $_GET['tab'] ?? '' ) );
+		if ( ! in_array( $oria_tab, array( 'upcoming', 'people', 'past', 'add' ), true ) ) {
+			// Editing means the form, whatever the URL forgot to say.
+			$oria_tab = $oria_editing ? 'add' : 'upcoming';
+		}
+
+		$oria_list = 'past' === $oria_tab ? $oria_past : $oria_upcoming;
+		$oria_url  = static fn( string $tab ): string => add_query_arg( 'tab', $tab, \Oria\Core\MyOria\url( 'pass' ) );
 		?>
 
 		<h1 class="myhead"><?php esc_html_e( 'Oria Pass places', 'oria' ); ?></h1>
@@ -144,12 +183,34 @@ $oria_wrong = array(
 			</div>
 		</div>
 
-		<?php /* ------------------------------------------- the sessions */ ?>
-		<?php if ( $oria_rows ) : ?>
-			<section class="mysec">
-				<h2 class="mysec__title"><?php esc_html_e( 'Your sessions', 'oria' ); ?></h2>
+		<?php /* ----------------------------------------------- the tabs */ ?>
+		<nav class="mytabs" aria-label="<?php esc_attr_e( 'Oria Pass places', 'oria' ); ?>">
+			<?php
+			$oria_tabs = array(
+				'upcoming' => array( __( 'On offer', 'oria' ), count( $oria_upcoming ) ),
+				'people'   => array( __( 'Who is coming', 'oria' ), $oria_coming ),
+				'past'     => array( __( 'Been and gone', 'oria' ), count( $oria_past ) ),
+				'add'      => array( $oria_editing ? __( 'Edit session', 'oria' ) : __( 'Open a session', 'oria' ), null ),
+			);
 
-				<?php foreach ( $oria_rows as $oria_s ) : ?>
+			foreach ( $oria_tabs as $oria_slug => $oria_meta ) :
+				$oria_is = $oria_slug === $oria_tab;
+				?>
+				<a class="mytab<?php echo $oria_is ? ' is-on' : ''; ?>" href="<?php echo esc_url( $oria_url( $oria_slug ) ); ?>"<?php echo $oria_is ? ' aria-current="page"' : ''; ?>>
+					<?php echo esc_html( $oria_meta[0] ); ?>
+					<?php if ( null !== $oria_meta[1] ) : ?>
+						<span class="mytab__n"><?php echo esc_html( number_format_i18n( (int) $oria_meta[1] ) ); ?></span>
+					<?php endif; ?>
+				</a>
+			<?php endforeach; ?>
+		</nav>
+
+		<?php /* ------------------------------------------- the sessions */ ?>
+		<?php if ( in_array( $oria_tab, array( 'upcoming', 'past' ), true ) ) : ?>
+		<?php if ( $oria_list ) : ?>
+			<section class="mysec">
+
+				<?php foreach ( $oria_list as $oria_s ) : ?>
 					<?php $oria_bookings = Booking\for_session( (int) $oria_s->id ); ?>
 					<article class="mycard passrow">
 						<div class="passrow__body">
@@ -175,6 +236,15 @@ $oria_wrong = array(
 						</p>
 
 						<?php if ( $oria_bookings ) : ?>
+							<p class="passrow__wholabel">
+								<?php
+								printf(
+									/* translators: %d: number of people booked */
+									esc_html( _n( '%d person booked', '%d people booked', count( $oria_bookings ), 'oria' ) ),
+									count( $oria_bookings )
+								);
+								?>
+							</p>
 							<ul class="passrow__who">
 								<?php foreach ( $oria_bookings as $oria_bk ) : ?>
 									<?php
@@ -205,7 +275,7 @@ $oria_wrong = array(
 						<?php endif; ?>
 
 						<p class="passrow__acts">
-							<a href="<?php echo esc_url( add_query_arg( 'edit', (int) $oria_s->id, \Oria\Core\MyOria\url( 'pass' ) ) . '#add' ); ?>"><?php esc_html_e( 'Edit', 'oria' ); ?></a>
+							<a href="<?php echo esc_url( add_query_arg( array( 'tab' => 'add', 'edit' => (int) $oria_s->id ), \Oria\Core\MyOria\url( 'pass' ) ) ); ?>"><?php esc_html_e( 'Edit', 'oria' ); ?></a>
 
 							<?php foreach ( array( 'active' => __( 'Publish', 'oria' ), 'paused' => __( 'Pause', 'oria' ), 'cancelled' => __( 'Call it off', 'oria' ) ) as $oria_to => $oria_label ) : ?>
 								<?php if ( (string) $oria_s->status === $oria_to ) { continue; } ?>
@@ -245,11 +315,74 @@ $oria_wrong = array(
 				<?php endforeach; ?>
 			</section>
 		<?php else : ?>
-			<p class="myempty"><?php esc_html_e( 'Nothing opened yet. The form below is the whole job — a name, a time, and how many places you can spare.', 'oria' ); ?></p>
+			<p class="myempty">
+				<?php if ( 'past' === $oria_tab ) : ?>
+					<?php esc_html_e( 'Nothing has been and gone yet. Sessions move here once their start time passes, along with who turned up.', 'oria' ); ?>
+				<?php else : ?>
+					<?php esc_html_e( 'Nothing on offer. Opening a session is the whole job — a name, a time, and how many places you can spare.', 'oria' ); ?>
+					<a href="<?php echo esc_url( $oria_url( 'add' ) ); ?>"><?php esc_html_e( 'Open one', 'oria' ); ?></a>
+				<?php endif; ?>
+			</p>
+		<?php endif; ?>
 		<?php endif; ?>
 
+		<?php /* ------------------------------------------ who is coming */ ?>
+		<?php if ( 'people' === $oria_tab ) : ?>
+			<?php if ( ! $oria_people ) : ?>
+				<p class="myempty">
+					<?php esc_html_e( 'Nobody has booked a place yet. They appear here the moment somebody does, with the reference they will give at the door.', 'oria' ); ?>
+				</p>
+			<?php else : ?>
+				<?php foreach ( $oria_people as $oria_group ) : ?>
+					<?php $oria_gs = $oria_group['session']; ?>
+					<section class="mycard mywho">
+						<h2 class="mywho__title"><?php echo esc_html( (string) $oria_gs->title ); ?></h2>
+						<p class="mywho__when"><?php echo esc_html( Sessions\when( $oria_gs ) ); ?></p>
+
+						<ul class="mywho__list">
+							<?php foreach ( $oria_group['bookings'] as $oria_bk ) : ?>
+								<?php
+								/*
+								 * A name and a reference. A studio needs to know
+								 * who is at the door and how to tick them off; it
+								 * does not need the rest of somebody's account,
+								 * and the member gave those details to us rather
+								 * than to them.
+								 */
+								$oria_person = get_userdata( (int) $oria_bk->user_id );
+								$oria_who    = $oria_person ? ( trim( $oria_person->first_name . ' ' . $oria_person->last_name ) ?: $oria_person->display_name ) : __( 'A member', 'oria' );
+								$oria_booked = date_create_immutable( (string) $oria_bk->booked_at, wp_timezone() );
+								?>
+								<li class="mywho__person">
+									<span class="mywho__name"><?php echo esc_html( $oria_who ); ?></span>
+									<code class="mywho__ref"><?php echo esc_html( (string) $oria_bk->booking_reference ); ?></code>
+									<span class="mywho__booked">
+										<?php
+										printf(
+											/* translators: %s: date the place was booked */
+											esc_html__( 'booked %s', 'oria' ),
+											esc_html( $oria_booked ? wp_date( 'j M', $oria_booked->getTimestamp() ) : '' )
+										);
+										?>
+									</span>
+
+									<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="passrow__mark mywho__mark">
+										<input type="hidden" name="action" value="oria_pass_mark">
+										<input type="hidden" name="booking_id" value="<?php echo (int) $oria_bk->id; ?>">
+										<?php wp_nonce_field( 'oria_pass_session' ); ?>
+										<button type="submit" name="mark" value="attended"><?php esc_html_e( 'Came', 'oria' ); ?></button>
+										<button type="submit" name="mark" value="no_show"><?php esc_html_e( 'No show', 'oria' ); ?></button>
+									</form>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					</section>
+				<?php endforeach; ?>
+			<?php endif; ?>
+		<?php endif; ?>
 
 		<?php /* ---------------------------------------------- the form */ ?>
+		<?php if ( 'add' === $oria_tab ) : ?>
 		<section class="mycard passform" id="add">
 			<h2 class="mycard__title">
 				<?php echo esc_html( $oria_editing ? __( 'Edit this session', 'oria' ) : __( 'Open a session', 'oria' ) ); ?>
@@ -312,11 +445,12 @@ $oria_wrong = array(
 					</button>
 					<button class="btn btn--ghost" type="submit" name="save_as" value="draft"><?php esc_html_e( 'Save as draft', 'oria' ); ?></button>
 					<?php if ( $oria_editing ) : ?>
-						<a class="passform__alt" href="<?php echo esc_url( \Oria\Core\MyOria\url( 'pass' ) ); ?>"><?php esc_html_e( 'Cancel editing', 'oria' ); ?></a>
+						<a class="passform__alt" href="<?php echo esc_url( $oria_url( 'upcoming' ) ); ?>"><?php esc_html_e( 'Cancel editing', 'oria' ); ?></a>
 					<?php endif; ?>
 				</p>
 			</form>
 		</section>
+		<?php endif; ?>
 	<?php endif; ?>
 
 </div>

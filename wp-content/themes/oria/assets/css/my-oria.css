@@ -982,3 +982,58 @@
 .myplaces__count { color: var(--app-faint, #7b8785); }
 .myplaces__fine, .myplaces__none { margin: .9rem 0 0; font-size: .8125rem; color: var(--app-faint, #7b8785); }
 .myplaces__none { margin: .3rem 0 0; font-size: .9375rem; color: var(--app-soft, #5d6b68); }
+
+/* ---------------------------------------------------------------------
+   Tabs for the Pass places screen.
+
+   Links with a query string rather than panels toggled by script: each
+   view is then a real address a provider can bookmark or come back to
+   after a save, and it works before any JavaScript does. The count rides
+   in the label so nobody has to open a tab to learn it is empty.
+   --------------------------------------------------------------------- */
+.mytabs {
+  display: flex; flex-wrap: wrap; gap: .4rem;
+  margin: 0 0 1.2rem; padding: 0 0 .1rem;
+  border-bottom: 1px solid var(--app-line, rgba(8,34,32,.12));
+}
+.mytab {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .55rem .9rem; border-radius: 999px 999px 0 0;
+  font-size: .9375rem; font-weight: 600; text-decoration: none;
+  color: var(--app-soft, #5d6b68);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.mytab:hover { color: var(--app-ink, #14201e); }
+.mytab.is-on { color: var(--app-green, #0e3b38); border-bottom-color: var(--app-green, #0e3b38); }
+.mytab__n {
+  min-width: 1.35rem; padding: 0 .35rem; border-radius: 999px;
+  background: var(--app-bg, #f0ebe0); color: var(--app-soft, #5d6b68);
+  font-size: .75rem; font-weight: 700; text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.mytab.is-on .mytab__n { background: var(--app-green, #0e3b38); color: #fff; }
+
+/* Who is coming — one card per session, the people under it. */
+.mywho { margin-bottom: 1rem; }
+.mywho__title { margin: 0; font-size: 1.05rem; font-weight: 700; }
+.mywho__when { margin: 2px 0 .9rem; font-size: .875rem; color: var(--app-soft, #5d6b68); }
+.mywho__list { list-style: none; margin: 0; padding: 0; display: grid; }
+.mywho__person {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .8rem;
+  padding: .7rem 0; border-top: 1px solid var(--app-line, rgba(8,34,32,.12));
+}
+.mywho__name { font-weight: 650; color: var(--app-ink, #14201e); }
+.mywho__ref { font-size: .8125rem; letter-spacing: .06em; }
+.mywho__booked { font-size: .8125rem; color: var(--app-faint, #7b8785); }
+.mywho__mark { margin-left: auto; }
+.passrow__wholabel {
+  margin: .9rem 0 -.2rem; padding-top: .7rem;
+  border-top: 1px solid var(--app-line, rgba(8,34,32,.12));
+  font-size: .75rem; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--app-faint, #7b8785);
+}
+.passrow__wholabel + .passrow__who { border-top: 0; padding-top: .3rem; }
+
+@media (max-width: 34rem) {
+  .mywho__mark { margin-left: 0; width: 100%; }
+}
