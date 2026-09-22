@@ -45,12 +45,14 @@ require_once ORIA_PASS_DIR . 'includes/membership.php';
 require_once ORIA_PASS_DIR . 'includes/stripe.php';
 require_once ORIA_PASS_DIR . 'includes/sessions.php';
 require_once ORIA_PASS_DIR . 'includes/booking.php';
+require_once ORIA_PASS_DIR . 'includes/actions.php';
 require_once ORIA_PASS_DIR . 'includes/waitlist.php';
 require_once ORIA_PASS_DIR . 'includes/route.php';
 require_once ORIA_PASS_DIR . 'includes/admin.php';
 
 Settings\bootstrap();
 Stripe\bootstrap();
+Actions\bootstrap();
 Waitlist\bootstrap();
 Route\bootstrap();
 Admin\bootstrap();

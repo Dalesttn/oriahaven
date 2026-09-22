@@ -130,3 +130,57 @@ $oria_history = Credits\history( $oria_uid, 6 );
 		<?php esc_html_e( 'Find something to book', 'oria' ); ?>
 	</a>
 </section>
+
+<?php
+/*
+ * What they have coming up, and the way out of it.
+ *
+ * The cancel button says what cancelling will actually do at this moment
+ * rather than quoting the policy and leaving them to work it out: inside
+ * the window the credits do not come back, and somebody deserves to know
+ * that before they press it rather than after.
+ */
+$oria_soon = \Oria\Pass\Booking\for_user( $oria_uid, true, 10 );
+if ( $oria_soon ) :
+	?>
+	<section class="mycard mypass__soon" aria-labelledby="myPassSoonTitle">
+		<p class="mycard__eyebrow"><?php esc_html_e( 'Oria Pass', 'oria' ); ?></p>
+		<h2 class="mycard__title" id="myPassSoonTitle"><?php esc_html_e( 'Coming up', 'oria' ); ?></h2>
+
+		<ul class="mybook">
+			<?php foreach ( $oria_soon as $oria_b ) : ?>
+				<?php
+				$oria_sess = \Oria\Pass\Sessions\get( (int) $oria_b->session_id );
+				$oria_back = $oria_sess && \Oria\Pass\Sessions\refundable( $oria_sess );
+				?>
+				<li class="mybook__row">
+					<div class="mybook__what">
+						<span class="mybook__title"><?php echo esc_html( (string) $oria_b->title ); ?></span>
+						<span class="mybook__when">
+							<?php echo esc_html( $oria_sess ? \Oria\Pass\Sessions\when( $oria_sess ) : '' ); ?>
+							<?php if ( (int) $oria_b->listing_id ) : ?>
+								· <a href="<?php echo esc_url( (string) get_permalink( (int) $oria_b->listing_id ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( (int) $oria_b->listing_id ) ) ); ?></a>
+							<?php endif; ?>
+						</span>
+						<span class="mybook__ref"><?php echo esc_html( (string) $oria_b->booking_reference ); ?></span>
+					</div>
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="mybook__act">
+						<input type="hidden" name="action" value="oria_pass_cancel">
+						<input type="hidden" name="booking_id" value="<?php echo (int) $oria_b->id; ?>">
+						<?php wp_nonce_field( 'oria_pass_cancel' ); ?>
+						<button class="mybook__cancel" type="submit" data-oria-event="oria_pass_booking_cancelled">
+							<?php
+							echo esc_html(
+								$oria_back
+									? __( 'Cancel, credits back', 'oria' )
+									: __( 'Cancel, credits not returned', 'oria' )
+							);
+							?>
+						</button>
+					</form>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+	</section>
+	<?php
+endif;

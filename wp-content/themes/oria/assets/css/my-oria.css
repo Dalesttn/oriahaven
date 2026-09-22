@@ -838,3 +838,12 @@
 .mypass__n--up { color: var(--moss, #3F6E60); }
 .mypass__n--down { color: var(--app-faint, #7b8785); }
 .mypass--offer .mycard__title { max-width: 22ch; }
+
+.mybook { list-style: none; margin: .6rem 0 0; padding: 0; display: grid; gap: .7rem; }
+.mybook__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: .7rem; border-bottom: 1px solid var(--app-line, rgba(8,34,32,.12)); }
+.mybook__row:last-child { border-bottom: 0; padding-bottom: 0; }
+.mybook__what { display: grid; gap: 2px; min-width: 0; }
+.mybook__title { font-weight: 600; }
+.mybook__when { font-size: .875rem; color: var(--app-soft, #5d6b68); }
+.mybook__ref { font-size: .75rem; letter-spacing: .08em; color: var(--app-faint, #7b8785); font-variant-numeric: tabular-nums; }
+.mybook__cancel { min-height: 44px; padding: 0 .2rem; border: 0; background: none; font: inherit; font-size: .8125rem; color: var(--app-soft, #5d6b68); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
