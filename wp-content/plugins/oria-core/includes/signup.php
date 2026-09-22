@@ -61,29 +61,21 @@ function handle(): void {
 		bounce( array( 'spam' ) );
 	}
 
+	/*
+	 * Four answers, and three of them are about the person rather than the
+	 * business. Everything the listing itself needs -- category, suburb,
+	 * address, description, services, prices, photos -- is asked for in the
+	 * dashboard instead, where it can be saved a bit at a time and changed
+	 * afterwards. A ten-minute form that had to be finished in one sitting
+	 * was the wrong shape for a job that is never finished in one sitting.
+	 */
 	$in = array(
 		'practice_name' => sanitize_text_field( wp_unslash( (string) ( $_POST['practice_name'] ?? '' ) ) ),
-		'practice_cat'  => sanitize_key( (string) ( $_POST['practice_cat'] ?? '' ) ),
-		'suburb'        => sanitize_title( (string) ( $_POST['suburb'] ?? '' ) ),
-		'address'       => sanitize_text_field( wp_unslash( (string) ( $_POST['address'] ?? '' ) ) ),
 		'phone'         => sanitize_text_field( wp_unslash( (string) ( $_POST['phone'] ?? '' ) ) ),
-		'public_email'  => sanitize_email( wp_unslash( (string) ( $_POST['public_email'] ?? '' ) ) ),
-		'website'       => esc_url_raw( wp_unslash( (string) ( $_POST['website'] ?? '' ) ) ),
-		'description'   => sanitize_textarea_field( wp_unslash( (string) ( $_POST['description'] ?? '' ) ) ),
-		'price_from'    => sanitize_text_field( (string) ( $_POST['price_from'] ?? '' ) ),
-		'price_band'    => sanitize_text_field( wp_unslash( (string) ( $_POST['price_band'] ?? '' ) ) ),
-		'format'        => sanitize_key( (string) ( $_POST['format'] ?? 'in-person' ) ),
 		'account_name'  => sanitize_text_field( wp_unslash( (string) ( $_POST['account_name'] ?? '' ) ) ),
 		'account_email' => sanitize_email( wp_unslash( (string) ( $_POST['account_email'] ?? '' ) ) ),
 		'authorised'    => ! empty( $_POST['authorised'] ),
-		'services'      => array(),
 	);
-	foreach ( array_slice( (array) ( $_POST['services'] ?? array() ), 0, MAX_SERVICES ) as $svc ) {
-		$svc = sanitize_text_field( wp_unslash( (string) $svc ) );
-		if ( '' !== $svc ) {
-			$in['services'][] = $svc;
-		}
-	}
 
 	// An existing account owns anything it submits; only a visitor needs
 	// one built for them.
@@ -91,11 +83,6 @@ function handle(): void {
 
 	$errors = validate( $in, $existing > 0 );
 
-	$files = photos();
-	if ( is_string( $files ) ) {
-		$errors[] = $files;
-		$files    = array();
-	}
 
 	if ( $errors ) {
 		bounce( $errors, $in );
@@ -112,7 +99,7 @@ function handle(): void {
 			// cards, the meta description and the profile all read, and it is
 			// editable in the admin -- which matters most for the one field a
 			// practitioner writes freehand, where an outcome claim would land.
-			'post_excerpt'=> wp_trim_words( $in['description'], 50, '…' ),
+			'post_excerpt'=> '',
 		),
 		true
 	);
@@ -121,14 +108,10 @@ function handle(): void {
 	}
 	$listing = (int) $listing;
 
+	// Phone is the only detail the form still collects; the rest is filled
+	// in from the dashboard.
 	$fields = array(
-		'address'    => array( $in['address'], 'field_oria_address' ),
-		'phone'      => array( $in['phone'], 'field_oria_phone' ),
-		'email'      => array( $in['public_email'], 'field_oria_email' ),
-		'website'    => array( $in['website'], 'field_oria_website' ),
-		'price_from' => array( '' === $in['price_from'] ? '' : (string) max( 0, (int) $in['price_from'] ), 'field_oria_price_from' ),
-		'price_band' => array( $in['price_band'], 'field_oria_price_band' ),
-		'format'     => array( $in['format'], 'field_oria_format' ),
+		'phone' => array( $in['phone'], 'field_oria_phone' ),
 	);
 	foreach ( $fields as $name => $pair ) {
 		if ( '' !== $pair[0] ) {
@@ -137,42 +120,12 @@ function handle(): void {
 		}
 	}
 
-	// Services: ACF repeater rows.
-	update_post_meta( $listing, 'services', count( $in['services'] ) );
-	update_post_meta( $listing, '_services', 'field_oria_services' );
-	foreach ( $in['services'] as $i => $svc ) {
-		update_post_meta( $listing, "services_{$i}_name", $svc );
-		update_post_meta( $listing, "_services_{$i}_name", 'field_oria_service_name' );
-	}
+	/*
+	 * No category, suburb or services yet -- the owner picks those in the
+	 * dashboard. The listing is pending until then, so it is not filed
+	 * anywhere public while it has nothing to file it under.
+	 */
 
-	// Terms: practice category, suburb and its region.
-	wp_set_object_terms( $listing, $in['practice_cat'], 'practice' );
-	$suburb = get_term_by( 'slug', $in['suburb'], 'area' );
-	if ( $suburb instanceof \WP_Term ) {
-		$terms = array( (int) $suburb->term_id );
-		if ( $suburb->parent ) {
-			$terms[] = (int) $suburb->parent;
-		}
-		wp_set_object_terms( $listing, $terms, 'area' );
-	}
-
-	// Photos: validated already; attach and fill the gallery.
-	$gallery = array();
-	require_once ABSPATH . 'wp-admin/includes/media.php';
-	require_once ABSPATH . 'wp-admin/includes/file.php';
-	require_once ABSPATH . 'wp-admin/includes/image.php';
-	foreach ( $files as $file ) {
-		$_FILES['oria_one'] = $file;
-		$att                = media_handle_upload( 'oria_one', $listing );
-		if ( ! is_wp_error( $att ) ) {
-			$gallery[] = (int) $att;
-		}
-	}
-	unset( $_FILES['oria_one'] );
-	if ( $gallery ) {
-		update_post_meta( $listing, 'gallery', $gallery );
-		update_post_meta( $listing, '_gallery', 'field_oria_gallery' );
-	}
 
 	// --- The account. -----------------------------------------------------
 	if ( $existing > 0 ) {
@@ -218,25 +171,6 @@ function validate( array $in, bool $has_account = false ): array {
 	$errors = array();
 	if ( '' === $in['practice_name'] ) {
 		$errors[] = 'name';
-	}
-	if ( ! get_term_by( 'slug', $in['practice_cat'], 'practice' ) ) {
-		$errors[] = 'category';
-	}
-	$suburb = get_term_by( 'slug', $in['suburb'], 'area' );
-	if ( ! $suburb instanceof \WP_Term || ! $suburb->parent ) {
-		$errors[] = 'suburb';
-	}
-	if ( mb_strlen( $in['description'] ) < 40 ) {
-		$errors[] = 'description';
-	}
-	if ( '' !== $in['public_email'] && ! is_email( $in['public_email'] ) ) {
-		$errors[] = 'public_email';
-	}
-	if ( '' !== $in['price_band'] && ! in_array( $in['price_band'], array( 'Free', '$', '$$', '$$$', '$$$$' ), true ) ) {
-		$errors[] = 'price_band';
-	}
-	if ( ! in_array( $in['format'], array( 'in-person', 'online', 'both' ), true ) ) {
-		$errors[] = 'format';
 	}
 	if ( ! $has_account ) {
 		if ( '' === $in['account_name'] ) {
@@ -376,10 +310,8 @@ function admin_email( int $user_id, int $listing, array $in ): void {
 		(string) get_option( 'admin_email' ),
 		sprintf( '[Oria Haven] New practice signup: %s', $in['practice_name'] ),
 		sprintf(
-			"A new practice registered itself and is waiting for review (24-hour promise!).\n\n%s\nCategory: %s · Suburb: %s\nContact: %s\n\nReview and publish:\n%s\n\nPublishing it sends the owner their approval email, including the two upgrade options.",
+			"A new practice registered itself and is waiting for review (24-hour promise!).\n\n%s\nContact: %s\n\nThey fill in the category, suburb and the rest from their dashboard, so the listing may still be bare.\n\nReview and publish:\n%s\n\nPublishing it sends the owner their approval email.",
 			$in['practice_name'],
-			$in['practice_cat'],
-			$in['suburb'],
 			$contact,
 			admin_url( 'post.php?post=' . $listing . '&action=edit' )
 		)

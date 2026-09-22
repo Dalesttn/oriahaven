@@ -50,9 +50,9 @@ $oria_regions   = is_wp_error( $oria_regions ) ? array() : $oria_regions;
 		<span aria-hidden="true">/</span><span><?php esc_html_e( 'List your practice', 'oria' ); ?></span>
 	</nav>
 	<div style="margin-top:1rem;max-width:56rem">
-		<span class="micro"><?php esc_html_e( 'Free listing', 'oria' ); ?></span>
+		<span class="micro"><?php esc_html_e( 'Free listing, two minutes', 'oria' ); ?></span>
 		<h1 class="h1 pagehead__title"><?php esc_html_e( 'List your practice', 'oria' ); ?></h1>
-		<p class="lede pagehead__lede"><?php esc_html_e( 'Ten minutes now, approved within 24 hours. Your free listing is yours to edit — details, description, services, prices, hours, photos and a booking link — and it stays free. The one paid plan adds reach, not permission.', 'oria' ); ?></p>
+		<p class="lede pagehead__lede"><?php esc_html_e( 'Four answers and you are in. We email you a password, and you build the rest of the profile in your own dashboard — category, suburb, address, services, prices, hours and photos — a bit at a time, whenever suits. Free, and it stays free.', 'oria' ); ?></p>
 		<p style="margin-top:.9rem;max-width:56ch;color:var(--text-soft)"><?php esc_html_e( 'Listed practices receive enquiries two ways: straight from your profile, and through our matching service — when a visitor tells us what they\'re after, we introduce them to up to three practices that fit. Enquiries land in your inbox with the person\'s details, ready to reply. Free, and we never take a cut of bookings.', 'oria' ); ?></p>
 		<p style="margin-top:.9rem"><a href="#plans"><?php esc_html_e( 'See what a listing costs', 'oria' ); ?> &darr;</a></p>
 	</div>
@@ -101,7 +101,7 @@ $oria_plans = array(
 	<?php if ( $oria_done ) : ?>
 		<div class="card" style="max-width:44rem"><div class="card__body">
 			<h2 class="h3"><?php esc_html_e( "You're registered 🎉", 'oria' ); ?></h2>
-			<p style="margin-top:.6rem;color:var(--text-soft)"><?php esc_html_e( "Check your inbox: your account is ready now (set your password from the link in the email), and your listing will be reviewed and approved within 24 hours. Once you're in, you can edit your details any time — or upgrade for the full toolkit.", 'oria' ); ?></p>
+			<p style="margin-top:.6rem;color:var(--text-soft)"><?php esc_html_e( "Check your inbox — there is a link in there to set your password. Once you are in, your dashboard is where you choose your category and suburb and add the address, services, prices, hours and photos. Your listing is reviewed and published within 24 hours.", 'oria' ); ?></p>
 		</div></div>
 	<?php else : ?>
 
@@ -123,120 +123,25 @@ $oria_plans = array(
 			<?php wp_nonce_field( 'oria_signup', 'oria_signup_nonce' ); ?>
 			<input type="text" name="oform_website" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
 
-			<h2 class="h3"><?php esc_html_e( 'The practice', 'oria' ); ?></h2>
-
 			<label class="field"><span class="field__label"><?php esc_html_e( 'Practice name', 'oria' ); ?></span>
-				<input class="input" type="text" name="practice_name" required value="<?php echo $oria_v( 'practice_name' ); ?>"></label>
+				<input class="input" type="text" name="practice_name" required autocomplete="organization" value="<?php echo $oria_v( 'practice_name' ); ?>"></label>
 
-			<div class="grid" style="grid-template-columns:1fr 1fr;gap:1rem">
-				<label class="field"><span class="field__label"><?php esc_html_e( 'Category', 'oria' ); ?></span>
-					<select class="select" name="practice_cat" required>
-						<option value=""><?php esc_html_e( 'Choose…', 'oria' ); ?></option>
-						<?php foreach ( $oria_practices as $oria_p ) : ?>
-							<option value="<?php echo esc_attr( $oria_p->slug ); ?>" <?php selected( $oria_v( 'practice_cat' ), $oria_p->slug ); ?>><?php echo esc_html( \Oria\Theme\tname( $oria_p ) ); ?></option>
-						<?php endforeach; ?>
-					</select></label>
-				<label class="field"><span class="field__label"><?php esc_html_e( 'Suburb', 'oria' ); ?></span>
-					<select class="select" name="suburb" required>
-						<option value=""><?php esc_html_e( 'Choose…', 'oria' ); ?></option>
-						<?php foreach ( $oria_regions as $oria_r ) : ?>
-							<optgroup label="<?php echo esc_attr( \Oria\Theme\tname( $oria_r ) ); ?>">
-								<?php foreach ( get_terms( array( 'taxonomy' => 'area', 'hide_empty' => false, 'parent' => $oria_r->term_id ) ) as $oria_s ) : ?>
-									<option value="<?php echo esc_attr( $oria_s->slug ); ?>" <?php selected( $oria_v( 'suburb' ), $oria_s->slug ); ?>><?php echo esc_html( \Oria\Theme\tname( $oria_s ) ); ?></option>
-								<?php endforeach; ?>
-							</optgroup>
-						<?php endforeach; ?>
-					</select></label>
+			<div class="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+				<label class="field"><span class="field__label"><?php esc_html_e( 'Your name', 'oria' ); ?></span>
+					<input class="input" type="text" name="account_name" required autocomplete="name" value="<?php echo $oria_v( 'account_name' ); ?>"></label>
+				<label class="field"><span class="field__label"><?php esc_html_e( 'Phone', 'oria' ); ?></span>
+					<input class="input" type="tel" name="phone" autocomplete="tel" value="<?php echo $oria_v( 'phone' ); ?>"></label>
 			</div>
 
-			<label class="field"><span class="field__label"><?php esc_html_e( 'Street address', 'oria' ); ?> <span style="color:var(--text-faint);font-weight:400">· <?php esc_html_e( 'optional', 'oria' ); ?></span></span>
-				<input class="input" type="text" name="address" value="<?php echo $oria_v( 'address' ); ?>"></label>
-
-			<div class="grid" style="grid-template-columns:1fr 1fr;gap:1rem">
-				<label class="field"><span class="field__label"><?php esc_html_e( 'Phone', 'oria' ); ?> <span style="color:var(--text-faint);font-weight:400">· <?php esc_html_e( 'optional', 'oria' ); ?></span></span>
-					<input class="input" type="tel" name="phone" value="<?php echo $oria_v( 'phone' ); ?>"></label>
-				<label class="field"><span class="field__label"><?php esc_html_e( 'Public email', 'oria' ); ?> <span style="color:var(--text-faint);font-weight:400">· <?php esc_html_e( 'optional', 'oria' ); ?></span></span>
-					<input class="input" type="email" name="public_email" value="<?php echo $oria_v( 'public_email' ); ?>"></label>
-			</div>
-
-			<label class="field"><span class="field__label"><?php esc_html_e( 'Website', 'oria' ); ?> <span style="color:var(--text-faint);font-weight:400">· <?php esc_html_e( 'optional', 'oria' ); ?></span></span>
-				<input class="input" type="url" name="website" placeholder="https://" value="<?php echo $oria_v( 'website' ); ?>"></label>
-
-			<label class="field"><span class="field__label"><?php esc_html_e( 'Description', 'oria' ); ?> <span style="color:var(--text-faint);font-weight:400">· <?php esc_html_e( 'a short paragraph, up to 50 words', 'oria' ); ?></span></span>
-				<textarea class="textarea" name="description" required minlength="40" maxlength="400" style="min-height:130px"
-					placeholder="<?php esc_attr_e( 'What you offer, who it suits, what a first visit looks like. Plain description — no medical claims.', 'oria' ); ?>"><?php echo esc_textarea( (string) ( $oria_old['description'] ?? '' ) ); ?></textarea></label>
-
-			<div class="field">
-				<span class="field__label"><?php esc_html_e( 'Services', 'oria' ); ?> <span style="color:var(--text-faint);font-weight:400">· <?php esc_html_e( 'up to five', 'oria' ); ?></span></span>
-				<div class="stack" style="gap:.5rem">
-					<?php for ( $oria_i = 0; $oria_i < 5; $oria_i++ ) : ?>
-						<input class="input" type="text" name="services[]" placeholder="<?php echo esc_attr( array( 'e.g. Guided meditation', 'e.g. Beginner course', '', '', '' )[ $oria_i ] ); ?>"
-							value="<?php echo esc_attr( (string) ( $oria_old['services'][ $oria_i ] ?? '' ) ); ?>">
-					<?php endfor; ?>
-				</div>
-				<span class="oform-hint"><?php esc_html_e( 'The free plan lists up to five services. Need more? The Claimed plan removes the limit — you can upgrade from your dashboard after signing up.', 'oria' ); ?></span>
-			</div>
-
-			<div class="grid" style="grid-template-columns:1fr 1fr 1fr;gap:1rem">
-				<label class="field"><span class="field__label"><?php esc_html_e( 'Price from (AUD)', 'oria' ); ?></span>
-					<input class="input" type="number" min="0" name="price_from" value="<?php echo $oria_v( 'price_from' ); ?>"></label>
-				<label class="field"><span class="field__label"><?php esc_html_e( 'Price band', 'oria' ); ?></span>
-					<select class="select" name="price_band">
-						<option value=""><?php esc_html_e( 'Choose…', 'oria' ); ?></option>
-						<?php foreach ( array( 'Free' => 'Free / by donation', '$' => '$ — under $25', '$$' => '$$ — $25–60', '$$$' => '$$$ — $60–200', '$$$$' => '$$$$ — $200+' ) as $oria_bv => $oria_bl ) : ?>
-							<option value="<?php echo esc_attr( $oria_bv ); ?>" <?php selected( $oria_v( 'price_band' ), $oria_bv ); ?>><?php echo esc_html( $oria_bl ); ?></option>
-						<?php endforeach; ?>
-					</select></label>
-				<label class="field"><span class="field__label"><?php esc_html_e( 'Format', 'oria' ); ?></span>
-					<select class="select" name="format">
-						<?php foreach ( array( 'in-person' => __( 'In person', 'oria' ), 'online' => __( 'Online', 'oria' ), 'both' => __( 'Both', 'oria' ) ) as $oria_fv => $oria_fl ) : ?>
-							<option value="<?php echo esc_attr( $oria_fv ); ?>" <?php selected( $oria_v( 'format' ) ?: 'in-person', $oria_fv ); ?>><?php echo esc_html( $oria_fl ); ?></option>
-						<?php endforeach; ?>
-					</select></label>
-			</div>
-
-			<label class="field"><span class="field__label"><?php esc_html_e( 'Photos', 'oria' ); ?> <span style="color:var(--text-faint);font-weight:400">· <?php esc_html_e( 'optional, up to four', 'oria' ); ?></span></span>
-				<input class="input" type="file" name="photos[]" multiple accept="image/jpeg,image/png,image/webp" style="padding:.6rem">
-				<span class="oform-hint"><?php esc_html_e( 'Image files only (JPEG, PNG or WebP), under 5MB each. Photos you own the rights to.', 'oria' ); ?></span></label>
-
-			<h2 class="h3" style="margin-top:1rem"><?php esc_html_e( 'Your account', 'oria' ); ?></h2>
-			<?php
-			/*
-			 * Someone already signed in doesn't need a second account, and
-			 * asking for one only to reject it as a duplicate is a dead end.
-			 * The listing attaches to the account they're already using.
-			 */
-			if ( is_user_logged_in() ) :
-				$oria_me = wp_get_current_user();
-				?>
-				<div class="notice" style="background:var(--sand-2);margin-top:.4rem">
-					<span>
-						<?php
-						printf(
-							/* translators: 1: display name, 2: email address */
-							esc_html__( 'Signed in as %1$s (%2$s) — this listing will be added to that account, so there\'s nothing to fill in here.', 'oria' ),
-							esc_html( $oria_me->display_name ?: $oria_me->user_login ),
-							esc_html( $oria_me->user_email )
-						);
-						?>
-					</span>
-				</div>
-			<?php else : ?>
-				<p class="muted" style="font-size:.875rem;margin-top:-.4rem"><?php esc_html_e( "This is how you'll log in to manage the listing. We'll email you a link to set your password.", 'oria' ); ?></p>
-
-				<div class="grid" style="grid-template-columns:1fr 1fr;gap:1rem">
-					<label class="field"><span class="field__label"><?php esc_html_e( 'Your name', 'oria' ); ?></span>
-						<input class="input" type="text" name="account_name" required value="<?php echo $oria_v( 'account_name' ); ?>"></label>
-					<label class="field"><span class="field__label"><?php esc_html_e( 'Your email', 'oria' ); ?></span>
-						<input class="input" type="email" name="account_email" required value="<?php echo $oria_v( 'account_email' ); ?>"></label>
-				</div>
-			<?php endif; ?>
+			<label class="field"><span class="field__label"><?php esc_html_e( 'Email', 'oria' ); ?></span>
+				<input class="input" type="email" name="account_email" required autocomplete="email" value="<?php echo $oria_v( 'account_email' ); ?>">
+				<span class="field__help"><?php esc_html_e( 'We send your password here. It is also how you sign in.', 'oria' ); ?></span></label>
 
 			<label class="check" style="align-items:flex-start"><input type="checkbox" name="authorised" value="1" required>
 				<span style="font-size:.875rem"><?php esc_html_e( "I'm authorised to manage this practice's information.", 'oria' ); ?></span></label>
 
-			<button class="btn btn--dark btn--block" type="submit"><?php esc_html_e( 'Create my free listing', 'oria' ); ?></button>
-			<p class="muted" style="font-size:.8125rem"><?php esc_html_e( 'Free forever for the basics. Reviewed by a human before it goes live — usually well inside 24 hours.', 'oria' ); ?></p>
+			<button class="btn btn--dark btn--block" type="submit"><?php esc_html_e( 'Create my listing', 'oria' ); ?></button>
+			<p class="muted" style="font-size:.8125rem"><?php esc_html_e( 'We email your password the moment you submit. The listing is checked by a person before it goes live, usually well inside 24 hours.', 'oria' ); ?></p>
 		</form>
 	<?php endif; ?>
 </section>
@@ -256,7 +161,7 @@ get_template_part(
 		'faqs'    => array(
 			array(
 				'q' => __( 'How do I list my practice on Oria Haven?', 'oria' ),
-				'a' => __( 'Fill in the form on this page — it takes about ten minutes. The listing is reviewed and published within 24 hours, and your account works straight away. A listing is free and there is no card required to create one.', 'oria' ),
+				'a' => __( 'Four answers on this page: your practice name, your name, your email and a phone number. We email you a password straight away, and everything else — category, suburb, address, services, prices, hours, photos — you fill in from your dashboard whenever you like. The listing is reviewed and published within 24 hours, and no card is needed.', 'oria' ),
 			),
 			array(
 				'q' => __( 'What does a listing cost?', 'oria' ),

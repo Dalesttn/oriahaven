@@ -76,6 +76,19 @@ function sections(): array {
 			'icon'  => 'basics',
 			'fields' => array(
 				/*
+				 * First, because it decides every page the listing appears on
+				 * -- its category pages, its facets, the compare tables. A new
+				 * sign-up arrives without one now, so this is the first thing
+				 * the dashboard asks for.
+				 */
+				array(
+					'name'    => 'practice_cat',
+					'type'    => 'select',
+					'choices' => 'practices',
+					'label'   => __( 'Category', 'oria' ),
+					'help'    => __( 'The one that fits best. It decides which category pages you appear on -- you can add the detail underneath.', 'oria' ),
+				),
+				/*
 				 * Two texts, because the page uses them differently and an
 				 * owner asked where "What it's like" came from. The short one
 				 * is the excerpt: its first sentence leads the page under the
@@ -273,6 +286,13 @@ function sections(): array {
 			'blurb' => __( 'How people reach you, and how they find the door.', 'oria' ),
 			'icon'  => 'location',
 			'fields' => array(
+				array(
+					'name'    => 'suburb',
+					'type'    => 'select',
+					'choices' => 'suburbs',
+					'label'   => __( 'Suburb', 'oria' ),
+					'help'    => __( 'Where people actually come to you. Your region is filed with it, so you show on both.', 'oria' ),
+				),
 				array(
 					'name'   => 'address',
 					'type'   => 'text',
@@ -480,7 +500,45 @@ function choices_for( array $field ): array {
 		$listing = listing_for( get_current_user_id() );
 		return $listing ? specialty_choices( $listing ) : array();
 	}
+	if ( 'practices' === $choices ) {
+		return term_choices( 'practice' );
+	}
+	if ( 'suburbs' === $choices ) {
+		return term_choices( 'area', true );
+	}
 	return array();
+}
+
+/**
+ * Terms as slug => name, for a select an owner fills in.
+ *
+ * $children_only is how the suburb list stays a suburb list: the area
+ * taxonomy holds cities and regions as well, and "Perth" is not an answer
+ * to "which suburb are you in".
+ *
+ * @return array<string, string>
+ */
+function term_choices( string $taxonomy, bool $children_only = false ): array {
+	$terms = get_terms(
+		array(
+			'taxonomy'   => $taxonomy,
+			'hide_empty' => false,
+			'orderby'    => 'name',
+		)
+	);
+	if ( is_wp_error( $terms ) ) {
+		return array();
+	}
+
+	$out = array();
+	foreach ( $terms as $term ) {
+		if ( $children_only && ! $term->parent ) {
+			continue;
+		}
+		$out[ $term->slug ] = html_entity_decode( $term->name, ENT_QUOTES, 'UTF-8' );
+	}
+
+	return $out;
 }
 
 /** One section, or an empty array where the slug is not one of ours. */
@@ -610,6 +668,18 @@ function value( int $listing, string $name ) {
 	if ( 'listing_body' === $name ) {
 		return (string) get_post_field( 'post_content', $listing, 'raw' );
 	}
+	/*
+	 * Category and suburb are taxonomy terms, not fields. They used to be
+	 * asked for once on the sign-up form and never again, which meant the
+	 * two things that decide where a listing appears were the only two an
+	 * owner could not correct.
+	 */
+	if ( 'practice_cat' === $name ) {
+		return first_term_slug( $listing, 'practice' );
+	}
+	if ( 'suburb' === $name ) {
+		return first_term_slug( $listing, 'area', true );
+	}
 	$key = key_for( $name );
 	if ( $key && function_exists( 'get_field' ) ) {
 		return get_field( $key, $listing );
@@ -623,12 +693,57 @@ function write( int $listing, string $name, $value ): void {
 		wp_update_post( array( 'ID' => $listing, 'post_content' => (string) $value ) );
 		return;
 	}
+	/*
+	 * An empty value is never written to either of these. clean() returns ''
+	 * for anything not in the list, and silently un-filing a listing from its
+	 * category -- taking it off every page it appears on -- is not a thing a
+	 * dropdown should be able to do by accident.
+	 */
+	if ( 'practice_cat' === $name ) {
+		if ( '' !== (string) $value ) {
+			wp_set_object_terms( $listing, (string) $value, 'practice' );
+		}
+		return;
+	}
+	if ( 'suburb' === $name ) {
+		$term = '' === (string) $value ? null : get_term_by( 'slug', (string) $value, 'area' );
+		if ( $term instanceof \WP_Term ) {
+			// The region comes with the suburb, the same pairing sign-up made,
+			// so the listing shows on its region page too.
+			$ids = array( (int) $term->term_id );
+			if ( $term->parent ) {
+				$ids[] = (int) $term->parent;
+			}
+			wp_set_object_terms( $listing, $ids, 'area' );
+		}
+		return;
+	}
 	$key = key_for( $name );
 	if ( $key && function_exists( 'update_field' ) ) {
 		update_field( $key, $value, $listing );
 		return;
 	}
 	update_post_meta( $listing, $name, $value );
+}
+
+/**
+ * The slug of the first term in a taxonomy, or ''.
+ *
+ * $children_only picks the suburb out of an area list that also holds the
+ * region and the city it sits in.
+ */
+function first_term_slug( int $listing, string $taxonomy, bool $children_only = false ): string {
+	$terms = get_the_terms( $listing, $taxonomy );
+	if ( ! is_array( $terms ) ) {
+		return '';
+	}
+	foreach ( $terms as $term ) {
+		if ( $children_only && ! $term->parent ) {
+			continue;
+		}
+		return (string) $term->slug;
+	}
+	return '';
 }
 
 /** Whether a field counts as answered. 0 is an answer; '' and [] are not. */
@@ -980,15 +1095,23 @@ function clean( array $field, $raw ) {
 
 		case 'select':
 		case 'radios':
+			/*
+			 * choices_for(), not $field['choices']: a field whose options are
+			 * built at runtime -- the practice categories, the suburbs, this
+			 * listing's own specialties -- stores a token here rather than an
+			 * array, and testing a submitted value against the string 'suburbs'
+			 * rejects every answer.
+			 */
 			$v = sanitize_text_field( (string) wp_unslash( $raw ) );
-			return isset( $field['choices'][ $v ] ) ? $v : '';
+			return isset( choices_for( $field )[ $v ] ) ? $v : '';
 
 		case 'checks':
-			$in  = is_array( $raw ) ? wp_unslash( $raw ) : array();
-			$out = array();
+			$allowed = choices_for( $field );
+			$in      = is_array( $raw ) ? wp_unslash( $raw ) : array();
+			$out     = array();
 			foreach ( $in as $one ) {
 				$one = sanitize_text_field( (string) $one );
-				if ( isset( $field['choices'][ $one ] ) ) {
+				if ( isset( $allowed[ $one ] ) ) {
 					$out[] = $one;
 				}
 			}
