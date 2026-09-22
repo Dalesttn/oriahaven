@@ -190,6 +190,20 @@ function paid( array $invoice ): void {
 	$subscription = subscription_of( $invoice );
 	$invoice_id   = (string) ( $invoice['id'] ?? '' );
 	if ( '' === $subscription || '' === $invoice_id ) {
+		/*
+		 * An invoice we cannot place. Silence here is expensive: this is
+		 * the event that grants the credits, so a member has paid and
+		 * received nothing, and Stripe was told 200. Record it with the
+		 * keys the invoice did carry, which is usually enough to see why.
+		 */
+		error_log( sprintf( '[oria-pass] invoice.paid with no subscription to match (invoice "%s", keys: %s)', $invoice_id, implode( ',', array_keys( $invoice ) ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+
+		update_option(
+			'oria_pass_orphan_invoice',
+			array( 'invoice' => $invoice_id, 'subscription' => '', 'keys' => array_keys( $invoice ), 'at' => time() ),
+			false
+		);
+
 		return;
 	}
 
