@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const STATUSES = array( 'active', 'past_due', 'paused', 'cancelled', 'expired' );
+const STATUSES = array( 'active', 'past_due', 'paused', 'cancelled', 'expired', 'superseded' );
 
 /** The membership row for a person, whatever state it is in. */
 function for_user( int $user_id ): ?object {
@@ -102,6 +102,8 @@ function activate( int $user_id, string $subscription_ref, string $customer_ref 
 			array( 'id' => (int) $existing->id )
 		);
 
+		retire_others( $user_id, (int) $existing->id );
+
 		return by_id( (int) $existing->id );
 	}
 
@@ -122,7 +124,74 @@ function activate( int $user_id, string $subscription_ref, string $customer_ref 
 		)
 	);
 
-	return by_id( (int) $wpdb->insert_id );
+	$new_id = (int) $wpdb->insert_id;
+
+	retire_others( $user_id, $new_id );
+
+	return by_id( $new_id );
+}
+
+/**
+ * One live membership per person.
+ *
+ * Somebody can subscribe twice -- two tabs, an impatient second attempt,
+ * a card that looked declined and was not -- and Stripe will happily bill
+ * both. Nothing stopped a second row being written beside the first, and
+ * two rows are worse than the double charge on their own:
+ *
+ *   - every screen counting status = 'active' counted one person twice;
+ *   - renew() sets a membership back to active and expires the balance
+ *     first, so the SECOND subscription's invoice would have wiped the
+ *     credits of the one in use, halfway through a month somebody had
+ *     paid for.
+ *
+ * The newest row wins, which matches for_user(), and the others are
+ * marked superseded rather than deleted: the money was real, the rows are
+ * how it gets refunded, and a deleted row cannot be reconciled. Recorded
+ * where an admin will see it, because the actual repair -- cancelling the
+ * spare in Stripe -- is not something this code should do on somebody's
+ * behalf.
+ */
+function retire_others( int $user_id, int $keep_id ): int {
+	global $wpdb;
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
+	$others = (array) $wpdb->get_results(
+		$wpdb->prepare(
+			'SELECT id, subscription_ref FROM ' . Db\memberships() . "
+			WHERE user_id = %d AND id <> %d AND status IN ( 'active', 'past_due' )",
+			$user_id,
+			$keep_id
+		)
+	);
+
+	if ( ! $others ) {
+		return 0;
+	}
+
+	$now = current_time( 'mysql' );
+
+	foreach ( $others as $row ) {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$wpdb->update(
+			Db\memberships(),
+			array( 'status' => 'superseded', 'updated_at' => $now ),
+			array( 'id' => (int) $row->id )
+		);
+
+		error_log( sprintf( '[oria-pass] user %d subscribed again; membership %d (%s) superseded and still billing in Stripe', $user_id, (int) $row->id, (string) $row->subscription_ref ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+	}
+
+	$seen                       = (array) get_option( 'oria_pass_duplicates', array() );
+	$seen[ (string) $user_id ]  = array(
+		'at'    => time(),
+		'spare' => wp_list_pluck( $others, 'subscription_ref' ),
+	);
+	update_option( 'oria_pass_duplicates', $seen, false );
+
+	do_action( 'oria_pass_membership_duplicated', $user_id, $others );
+
+	return count( $others );
 }
 
 function by_id( int $id ): ?object {
@@ -157,15 +226,27 @@ function renew( object $membership, string $invoice_ref, ?string $period_end = n
 	 * holds two months at once. Both movements carry the invoice id, which
 	 * is what makes a retried webhook harmless.
 	 */
-	if ( 'cycle' === (string) Settings\get( 'credit_expiry' ) ) {
+	/*
+	 * A superseded row is a subscription still being billed after the
+	 * member subscribed again. They are paying, so the credits are theirs
+	 * -- but this row must not close the live month to open its own, and
+	 * must not climb back to active. Allocate, stay retired, and say so.
+	 */
+	$superseded = 'superseded' === (string) $membership->status;
+
+	if ( ! $superseded && 'cycle' === (string) Settings\get( 'credit_expiry' ) ) {
 		Credits\expire_remaining( (int) $membership->user_id, 'expire:' . $invoice_ref, (int) $membership->id );
+	}
+
+	if ( $superseded ) {
+		error_log( sprintf( '[oria-pass] invoice %s paid on superseded membership %d (user %d); credits granted, subscription still needs cancelling', $invoice_ref, (int) $membership->id, (int) $membership->user_id ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 	}
 
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 	$wpdb->update(
 		Db\memberships(),
 		array(
-			'status'           => 'active',
+			'status'           => $superseded ? 'superseded' : 'active',
 			'cycle_started_at' => $now,
 			'cycle_ends_at'    => $ends,
 			'updated_at'       => $now,
@@ -227,6 +308,8 @@ function label( string $status ): string {
 			return __( 'Cancelled', 'oria' );
 		case 'expired':
 			return __( 'Ended', 'oria' );
+		case 'superseded':
+			return __( 'Replaced by a newer subscription', 'oria' );
 	}
 
 	return $status;

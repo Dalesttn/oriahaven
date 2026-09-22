@@ -83,6 +83,24 @@ function screen_overview(): void {
 		)
 	);
 
+	if ( $o['duplicate'] > 0 ) {
+		/*
+		 * Money is being taken that nobody meant to take, and no code can
+		 * put it back. Said at the top, in the imperative, with the number.
+		 */
+		printf(
+			'<div class="notice notice-warning" style="margin:14px 0;"><p><b>%s</b> %s</p></div>',
+			esc_html(
+				sprintf(
+					/* translators: %d: count */
+					_n( '%d duplicate subscription.', '%d duplicate subscriptions.', (int) $o['duplicate'], 'oria' ),
+					(int) $o['duplicate']
+				)
+			),
+			esc_html__( 'Somebody subscribed twice. The spare membership has been retired here, but Stripe is still charging for it — cancel and refund it in the Stripe dashboard.', 'oria' )
+		);
+	}
+
 	echo '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0;">';
 
 	stat(

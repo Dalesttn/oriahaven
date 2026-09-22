@@ -186,6 +186,13 @@ function overview(): array {
 	};
 
 	$paying = $count( "SELECT COUNT(*) FROM {$m} WHERE status = 'active'" );
+
+	/*
+	 * Subscriptions still billing somebody who subscribed again. The row
+	 * is retired here the moment it happens; the charge is not, and only a
+	 * person in the Stripe dashboard can stop that.
+	 */
+	$spare = $count( "SELECT COUNT(*) FROM {$m} WHERE status = 'superseded'" );
 	$owed   = $count( "SELECT COUNT(*) FROM {$m} WHERE status = 'past_due'" );
 
 	/*
@@ -215,6 +222,7 @@ function overview(): array {
 		'month'     => $month,
 		'paying'    => $paying,
 		'past_due'  => $owed,
+		'duplicate' => $spare,
 		'revenue'   => $paying * $price,
 		'allocated' => $allocated,
 		'used'      => $used,
