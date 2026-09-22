@@ -53,7 +53,7 @@ $oria_says = array(
 );
 ?>
 
-<section class="xpass" aria-labelledby="xpass-h">
+<section class="xpass" id="xpass" aria-labelledby="xpass-h">
 	<div class="xpass__head">
 		<h2 class="xpass__h" id="xpass-h"><?php esc_html_e( 'Available with Oria Pass', 'oria' ); ?></h2>
 		<span class="xpass__badge"><?php esc_html_e( 'Pass partner', 'oria' ); ?></span>

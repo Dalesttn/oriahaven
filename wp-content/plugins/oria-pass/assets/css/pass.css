@@ -231,6 +231,8 @@
   --xp-gold: var(--app-gold, #c9a24b);
   --xp-notch: 10px;
   --xp-stub: 9.5rem;
+  /* Jumped to after a booking, so it must clear the sticky header. */
+  scroll-margin-top: calc(var(--header-h, 72px) + 1.5rem);
   /*
    * The row's own padding, named so the tear line can subtract it. The
    * notches are masked out of the BORDER box; a pseudo-element is placed

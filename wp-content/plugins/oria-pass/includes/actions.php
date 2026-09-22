@@ -34,26 +34,40 @@ function bootstrap(): void {
 	add_action( 'admin_post_oria_pass_mark', __NAMESPACE__ . '\mark' );
 }
 
-/** Back where they came from, with something to show for it. */
-function back( array $args, string $fallback = '' ): void {
+/**
+ * Back where they came from, with something to show for it.
+ *
+ * The fragment matters more than it looks. On a listing page the Pass
+ * block sits well down the page, so a member who books is returned to
+ * the top and sees nothing: no reference, no confirmation, and no reason
+ * to believe it worked. Aiming the redirect at the block puts the answer
+ * where they are looking. A page without that anchor simply ignores it.
+ */
+function back( array $args, string $fallback = '', string $fragment = '' ): void {
 	$to = wp_get_referer() ?: ( $fallback ?: home_url( '/' ) );
-	wp_safe_redirect( add_query_arg( $args, remove_query_arg( array( 'pass_ok', 'pass_err', 'pass_ref' ), $to ) ) );
+	$to = add_query_arg( $args, remove_query_arg( array( 'pass_ok', 'pass_err', 'pass_ref' ), $to ) );
+
+	if ( '' !== $fragment ) {
+		$to .= '#' . rawurlencode( $fragment );
+	}
+
+	wp_safe_redirect( $to );
 	exit;
 }
 
 /** A member takes a place. */
 function book(): void {
 	if ( ! is_user_logged_in() || ! wp_verify_nonce( (string) ( $_POST['_wpnonce'] ?? '' ), 'oria_pass_book' ) ) {
-		back( array( 'pass_err' => 'expired' ) );
+		back( array( 'pass_err' => 'expired' ), '', 'xpass' );
 	}
 
 	$result = Booking\book( get_current_user_id(), (int) ( $_POST['session_id'] ?? 0 ) );
 
 	if ( is_wp_error( $result ) ) {
-		back( array( 'pass_err' => $result->get_error_code() ) );
+		back( array( 'pass_err' => $result->get_error_code() ), '', 'xpass' );
 	}
 
-	back( array( 'pass_ok' => 'booked', 'pass_ref' => $result->booking_reference ) );
+	back( array( 'pass_ok' => 'booked', 'pass_ref' => $result->booking_reference ), '', 'xpass' );
 }
 
 /** A member gives one back. */
