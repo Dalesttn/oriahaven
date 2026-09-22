@@ -209,3 +209,140 @@
   .cmp td { display: inline-flex; align-items: center; gap: .4rem; width: auto; padding: 0 1.4rem 0 0; border: 0; text-align: left; }
   .cmp td::before { content: attr(data-label); font-size: var(--fs-xs); color: var(--text-faint); }
 }
+
+/* ---------------------------------------------------------------------
+   "Available with Oria Pass" — the ticket on a listing page.
+
+   A real ticket rather than a card with a border: a body and a torn-off
+   stub, a perforation between them, and a notch punched at each end of
+   it. The notches are cut with a mask rather than drawn as circles in
+   the page colour, so they stay holes whatever sits behind them.
+
+   The stub carries the two things a ticket stub always carries: what it
+   costs and what it admits you to. Everything else is the body.
+   --------------------------------------------------------------------- */
+
+.xpass {
+  --xp-paper: #fff;
+  --xp-ink: var(--app-ink, #14201e);
+  --xp-muted: var(--app-muted, #5f6d69);
+  --xp-line: var(--app-line, #dcd9d0);
+  --xp-deep: var(--app-green, #0e3b38);
+  --xp-gold: var(--app-gold, #c9a24b);
+  --xp-notch: 10px;
+  --xp-stub: 9.5rem;
+  /*
+   * The row's own padding, named so the tear line can subtract it. The
+   * notches are masked out of the BORDER box; a pseudo-element is placed
+   * against the PADDING box. Hard-coding either one drifts them apart by
+   * exactly this much, which is how the perforation first came out with
+   * its dashes a centimetre to the left of its holes.
+   */
+  --xp-pad: 1.1rem;
+  --xp-pad-v: 1rem;
+  margin: 2.2rem 0;
+}
+
+.xpass__head { display: flex; align-items: baseline; flex-wrap: wrap; gap: .6rem; margin: 0 0 .9rem; }
+.xpass__h { margin: 0; }
+
+.xpass__badge {
+  font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--xp-deep); border: 1px solid var(--xp-gold);
+  border-radius: 999px; padding: .22rem .6rem; white-space: nowrap;
+}
+
+.xpass__list { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; }
+
+.xpass__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr var(--xp-stub);
+  align-items: center;
+  gap: 0;
+  background: var(--xp-paper);
+  border-radius: 14px;
+  padding: var(--xp-pad-v) var(--xp-pad);
+  box-shadow: 0 1px 2px rgba(20, 32, 30, .06), 0 8px 20px -14px rgba(20, 32, 30, .45);
+
+  /* The perforation's two holes, punched top and bottom. */
+  -webkit-mask:
+    radial-gradient(circle var(--xp-notch) at calc(100% - var(--xp-stub)) 0, transparent 97%, #000 100%) top / 100% 51% no-repeat,
+    radial-gradient(circle var(--xp-notch) at calc(100% - var(--xp-stub)) 100%, transparent 97%, #000 100%) bottom / 100% 51% no-repeat;
+  mask:
+    radial-gradient(circle var(--xp-notch) at calc(100% - var(--xp-stub)) 0, transparent 97%, #000 100%) top / 100% 51% no-repeat,
+    radial-gradient(circle var(--xp-notch) at calc(100% - var(--xp-stub)) 100%, transparent 97%, #000 100%) bottom / 100% 51% no-repeat;
+}
+
+/* The tear line, stopping short of each notch. */
+.xpass__row::after {
+  content: "";
+  position: absolute;
+  top: var(--xp-notch); bottom: var(--xp-notch);
+  right: calc(var(--xp-stub) - var(--xp-pad));
+  border-left: 2px dashed var(--xp-line);
+}
+
+.xpass__what { display: flex; flex-direction: column; gap: .2rem; padding-right: 1rem; min-width: 0; }
+
+.xpass__title { font-weight: 650; color: var(--xp-ink); line-height: 1.25; }
+.xpass__when { font-size: .875rem; color: var(--xp-muted); font-variant-numeric: tabular-nums; }
+
+.xpass__left {
+  align-self: flex-start;
+  margin-top: .15rem;
+  font-size: .75rem; letter-spacing: .02em;
+  color: #7a4a10; background: #fdf3e0;
+  border-radius: 999px; padding: .12rem .5rem;
+}
+
+/* The stub. Credits above, the way in below. */
+.xpass__row .pcredit,
+.xpass__row .xpass__go { grid-column: 2; justify-self: center; }
+
+.xpass__row .pcredit {
+  display: flex; flex-direction: column; align-items: center; line-height: 1;
+  margin-bottom: .55rem;
+}
+.xpass__row .pcredit b { font-size: 1.65rem; font-weight: 680; color: var(--xp-deep); font-variant-numeric: tabular-nums; }
+.xpass__row .pcredit span { font-size: .6875rem; letter-spacing: .07em; text-transform: uppercase; color: var(--xp-muted); margin-top: .2rem; }
+
+.xpass__go { margin: 0; }
+
+.xpass__fine { font-size: .8125rem; color: var(--app-faint, #7d8a86); margin: .9rem 0 0; }
+
+.xpass__ok, .xpass__err { border-radius: 12px; padding: .7rem .9rem; margin: 0 0 .9rem; font-size: .9375rem; }
+.xpass__ok { background: #e8f2ee; color: #14443c; }
+.xpass__err { background: #fdecea; color: #7a271a; }
+
+/* Narrow: tear the stub off the bottom instead of the side. */
+@media (max-width: 34rem) {
+  .xpass__row {
+    grid-template-columns: 1fr;
+    /*
+     * Measured, not guessed: the credit figure's top sits 6.31rem above
+     * the row's bottom edge at 375px, so the tear has to fall above that
+     * or it runs straight through the number. The stub carries the price
+     * and the way in; splitting them is not a stub.
+     */
+    --xp-foot: 7.05rem;
+    text-align: left;
+    -webkit-mask:
+      radial-gradient(circle var(--xp-notch) at 0 calc(100% - var(--xp-foot)), transparent 97%, #000 100%) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--xp-notch) at 100% calc(100% - var(--xp-foot)), transparent 97%, #000 100%) right / 51% 100% no-repeat;
+    mask:
+      radial-gradient(circle var(--xp-notch) at 0 calc(100% - var(--xp-foot)), transparent 97%, #000 100%) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--xp-notch) at 100% calc(100% - var(--xp-foot)), transparent 97%, #000 100%) right / 51% 100% no-repeat;
+  }
+  .xpass__row::after {
+    top: auto; right: var(--xp-notch); left: var(--xp-notch);
+    bottom: calc(var(--xp-foot) - var(--xp-pad-v));
+    border-left: 0; border-top: 2px dashed var(--xp-line);
+  }
+  .xpass__what { padding: 0 0 .9rem; }
+  .xpass__row .pcredit,
+  .xpass__row .xpass__go { grid-column: 1; justify-self: start; }
+  .xpass__row .pcredit { flex-direction: row; align-items: baseline; gap: .35rem; margin: .9rem 0 .55rem; }
+  .xpass__row .pcredit b { font-size: 1.35rem; }
+  .xpass__row .pcredit span { margin: 0; }
+}

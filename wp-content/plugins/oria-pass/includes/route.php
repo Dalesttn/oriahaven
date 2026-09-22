@@ -45,7 +45,13 @@ function bootstrap(): void {
  * waits for it.
  */
 function assets(): void {
-	if ( ! is_page() ) {
+	/*
+	 * The Pass pages, and listings -- a listing carries the availability
+	 * ticket, and it is a custom post type rather than a page, so the old
+	 * is_page() test excluded exactly the place the ticket is drawn. It
+	 * rendered unstyled and there was nothing to see in a log.
+	 */
+	if ( ! is_page() && ! is_singular( 'listing' ) ) {
 		return;
 	}
 	$css = ORIA_PASS_DIR . 'assets/css/pass.css';
