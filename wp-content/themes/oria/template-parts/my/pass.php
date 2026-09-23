@@ -437,9 +437,33 @@ $oria_wrong = array(
 						<input class="input" type="number" min="1" name="pass_capacity" required
 							value="<?php echo esc_attr( (string) ( $oria_editing->pass_capacity ?? 2 ) ); ?>">
 						<span class="field__help"><?php esc_html_e( 'Usually a couple. The rest stay yours to sell.', 'oria' ); ?></span></label>
-					<label class="field"><span class="field__label"><?php esc_html_e( 'Credits', 'oria' ); ?></span>
+					<?php
+					/*
+					 * A studio setting a price in a made-up unit deserves to
+					 * see it in money. Rendered here from the credits already
+					 * in the field, so it is right before any script runs and
+					 * stays right if none ever does; the script below only
+					 * keeps it up with typing.
+					 */
+					$oria_worth = Settings\credit_value();
+					$oria_now_c = (int) ( $oria_editing->credits_required ?? 10 );
+					?>
+					<label class="field"><span class="field__label">
+							<?php esc_html_e( 'Credits', 'oria' ); ?>
+							<?php if ( $oria_worth > 0 ) : ?>
+								<span class="field__worth" data-credit-value="<?php echo esc_attr( (string) $oria_worth ); ?>">
+									<?php
+									printf(
+										/* translators: %s: dollar amount a member is spending */
+										esc_html__( 'about %s to a member', 'oria' ),
+										esc_html( '$' . number_format_i18n( $oria_now_c * $oria_worth, 2 ) )
+									);
+									?>
+								</span>
+							<?php endif; ?>
+						</span>
 						<input class="input" type="number" min="1" name="credits_required" required
-							value="<?php echo esc_attr( (string) ( $oria_editing->credits_required ?? 10 ) ); ?>">
+							value="<?php echo esc_attr( (string) $oria_now_c ); ?>">
 						<span class="field__help"><?php esc_html_e( 'What a member spends. Yoga is around 8, a float around 20.', 'oria' ); ?></span></label>
 				</div>
 
@@ -488,6 +512,29 @@ $oria_wrong = array(
 				<label class="field"><span class="field__label"><?php esc_html_e( 'Anything they should know (optional)', 'oria' ); ?></span>
 					<textarea class="textarea" name="notes" rows="2"
 						placeholder="<?php esc_attr_e( 'Bring a towel. Door code 1234.', 'oria' ); ?>"><?php echo esc_textarea( (string) ( $oria_editing->notes ?? '' ) ); ?></textarea></label>
+
+				<?php
+				/*
+				 * Twelve lines rather than an enqueued file: it exists only
+				 * for this one field, and the number is already correct
+				 * without it.
+				 */
+				?>
+				<script>
+				( function () {
+					var worth = document.querySelector( '.field__worth' );
+					var input = document.querySelector( '[name="credits_required"]' );
+					if ( ! worth || ! input ) { return; }
+					var rate = parseFloat( worth.getAttribute( 'data-credit-value' ) );
+					var says = worth.textContent.trim();
+					input.addEventListener( 'input', function () {
+						var n = parseInt( input.value, 10 );
+						worth.textContent = ( n > 0 )
+							? says.replace( /\$[\d,.]+/, '$' + ( n * rate ).toFixed( 2 ) )
+							: '';
+					} );
+				}() );
+				</script>
 
 				<p class="passform__acts">
 					<button class="btn btn--dark" type="submit" name="save_as" value="publish">

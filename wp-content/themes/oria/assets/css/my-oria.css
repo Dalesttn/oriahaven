@@ -1037,3 +1037,12 @@
 @media (max-width: 34rem) {
   .mywho__mark { margin-left: 0; width: 100%; }
 }
+
+/* The dollar value beside the Credits label: a note, not a second label. */
+.field__worth {
+  float: right;
+  font-size: .75rem; font-weight: 500;
+  color: var(--moss, #3F6E60);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0; text-transform: none;
+}

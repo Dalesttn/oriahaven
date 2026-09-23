@@ -60,6 +60,21 @@ function bootstrap(): void {
 }
 
 /** @return array<string, mixed> */
+/**
+ * What one credit is worth to a member, in dollars.
+ *
+ * The membership price divided by the credits it buys, and nothing
+ * cleverer: it is the only number a studio can check against their own
+ * bank statement. Zero when either half is missing, so a caller can tell
+ * "we do not know" from "it is free" and say neither out loud.
+ */
+function credit_value(): float {
+	$price   = (float) preg_replace( '/[^0-9.]/', '', (string) get( 'price_display' ) );
+	$credits = (int) get( 'credits_per_cycle' );
+
+	return ( $price > 0 && $credits > 0 ) ? round( $price / $credits, 4 ) : 0.0;
+}
+
 function all(): array {
 	$saved = get_option( OPTION );
 
