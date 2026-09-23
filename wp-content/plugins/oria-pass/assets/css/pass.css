@@ -446,3 +446,49 @@
   .xcal__day, .xcal__pad { min-height: 2.5rem; }
   .xcal__day { font-size: .8125rem; }
 }
+
+/* ---------------------------------------------------------------------
+   The banner, wherever the Pass is worth mentioning.
+
+   Deliberately quiet: it sits inside pages that are doing their own job,
+   and a promo that shouts over a listing or a category is a promo people
+   learn to skip. One accent, one button, and the rest is the page's own
+   type.
+   --------------------------------------------------------------------- */
+.xbanner {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 1rem 1.6rem;
+  padding: 1.15rem 1.3rem;
+  margin: 2rem 0;
+  border-radius: 16px;
+  background: #f1f5f2;
+  border: 1px solid rgba(14, 59, 56, .12);
+}
+.xbanner--practice { background: #fbf6ea; border-color: rgba(201, 162, 75, .32); }
+
+.xbanner__words { flex: 1 1 22rem; min-width: 0; }
+
+.xbanner__eyebrow {
+  display: inline-block; margin-bottom: .3rem;
+  font-size: .6875rem; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--app-green, #0e3b38);
+}
+.xbanner--practice .xbanner__eyebrow { color: #8a6a1f; }
+
+.xbanner__title { margin: 0; font-size: 1.0625rem; font-weight: 680; line-height: 1.3; color: var(--app-ink, #14201e); text-wrap: balance; }
+.xbanner__says { margin: .35rem 0 0; font-size: .9375rem; line-height: 1.45; color: var(--app-muted, #5f6d69); max-width: 46ch; }
+
+.xbanner__acts { display: flex; flex-direction: column; align-items: flex-start; gap: .45rem; flex: 0 0 auto; }
+.xbanner__alt { font-size: .8125rem; color: var(--app-muted, #5f6d69); }
+a.xbanner__alt { text-decoration: underline; text-underline-offset: 3px; }
+a.xbanner__alt:hover { color: var(--app-green, #0e3b38); }
+
+/* Slim: for a sidebar or a spot where the band would dominate. */
+.xbanner--slim { flex-direction: column; align-items: flex-start; gap: .7rem; padding: 1rem 1.1rem; margin: 1.2rem 0; }
+.xbanner--slim .xbanner__title { font-size: .9375rem; }
+.xbanner--slim .xbanner__says { font-size: .875rem; }
+
+@media (max-width: 40rem) {
+  .xbanner { padding: 1rem 1.05rem; }
+  .xbanner__acts { width: 100%; }
+}

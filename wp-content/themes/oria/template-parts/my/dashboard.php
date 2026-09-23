@@ -123,6 +123,12 @@ $oria_todo = array_values( array_diff( $oria_saved, $oria_tried ) );
 	 * a member while the Pass is not yet on sale.
 	 */
 	get_template_part( 'template-parts/my/pass-card' );
+
+	/*
+	 * And, for somebody who runs a practice here and has not opened a
+	 * place yet, the other side of it. Draws nothing once they have.
+	 */
+	get_template_part( 'template-parts/pass/banner', null, array( 'audience' => 'practice', 'tone' => 'slim', 'where' => 'dashboard' ) );
 	?>
 
 	<div class="mygrid mygrid--split">

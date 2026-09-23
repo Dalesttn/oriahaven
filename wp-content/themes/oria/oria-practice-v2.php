@@ -1051,6 +1051,16 @@ if ( $oria_events ) {
 ?>
 
 <?php
+/*
+ * The Pass, once per category page. Placed after what is on and before
+ * the guides: somebody this far down is browsing rather than searching,
+ * which is the moment a membership is worth mentioning. It draws nothing
+ * for a member who already holds one.
+ */
+get_template_part( 'template-parts/pass/banner', null, array( 'audience' => 'member', 'where' => 'category' ) );
+?>
+
+<?php
 // Floor 4 — the guides for this practice, as image cards; the latest from
 // the journal where none are tagged to it yet, so the floor is always there.
 get_template_part(

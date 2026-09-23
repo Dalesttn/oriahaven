@@ -1795,6 +1795,15 @@ if ( $oria_term && function_exists( '\Oria\Core\Events\for_practice' ) ) {
 ?>
 
 <?php
+/*
+ * The Pass, once per category page. This file shadows the parent theme's
+ * copy wholesale, so the call belongs in BOTH -- a band wired into only
+ * one of them is invisible on whichever theme the server happens to run.
+ */
+get_template_part( 'template-parts/pass/banner', null, array( 'audience' => 'member', 'where' => 'category' ) );
+?>
+
+<?php
 // The guides for this practice, as image cards; the journal's latest where
 // none are tagged to it yet.
 get_template_part(

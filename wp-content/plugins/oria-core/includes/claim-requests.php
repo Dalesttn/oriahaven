@@ -417,6 +417,22 @@ function approved_body( int $listing_id, string $name, bool $new_account = false
 		? __( "\n\nOn the free plan you can keep your address, phone, email, website, prices and session format up to date yourself. If anything else on the listing looks wrong, reply to this email and we'll fix it for you.", 'oria' )
 		: __( "\n\nYou can edit your description, services, photos, hours and contact details whenever you like. If anything looks wrong, reply to this email and we'll sort it out.", 'oria' );
 
+	/*
+	 * The Pass, said once, to somebody who has just proved they own the
+	 * place. This is the first moment we can tell them about something
+	 * that puts people through their door rather than in front of their
+	 * name, and it is a better second sentence than a plan upgrade.
+	 * Left out entirely when the Pass is not installed.
+	 */
+	if ( function_exists( '\Oria\Pass\Route\url' ) ) {
+		$body .= sprintf(
+			/* translators: 1: dashboard url, 2: partners page url */
+			__( "\n\nSomething new, while you are here. We are starting Oria Pass: a monthly membership where people buy credits and spend them across Perth studios. You choose which sessions to open, how many places you can spare, and what each place is worth to you — and you keep every booking you already have. No fee to join, nothing to install.\n\nIt takes about a minute to open your first one:\n%1\$s\n\nHow it works for studios:\n%2\$s", 'oria' ),
+			function_exists( '\Oria\Core\MyOria\url' ) ? add_query_arg( 'tab', 'add', \Oria\Core\MyOria\url( 'pass' ) ) : \Oria\Pass\Route\url(),
+			\Oria\Pass\Route\url( 'partners' )
+		);
+	}
+
 	if ( function_exists( '\Oria\Core\Share\email_block' ) ) {
 		$body .= \Oria\Core\Share\email_block( $listing_id );
 	}

@@ -27,6 +27,9 @@ use Oria\Pass\Membership;
 use Oria\Pass\Sessions;
 use Oria\Pass\Settings;
 
+// Asks for its own stylesheet: a part that draws markup owns its looks.
+wp_enqueue_style( 'oria-pass' );
+
 $oria_listing = (int) ( $args['id'] ?? get_the_ID() );
 $oria_rows    = Sessions\upcoming( array( 'listing_id' => $oria_listing, 'limit' => 60 ) );
 

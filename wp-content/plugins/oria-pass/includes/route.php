@@ -45,19 +45,36 @@ function bootstrap(): void {
  * waits for it.
  */
 function assets(): void {
-	/*
-	 * The Pass pages, and listings -- a listing carries the availability
-	 * ticket, and it is a custom post type rather than a page, so the old
-	 * is_page() test excluded exactly the place the ticket is drawn. It
-	 * rendered unstyled and there was nothing to see in a log.
-	 */
-	if ( ! is_page() && ! is_singular( 'listing' ) ) {
-		return;
-	}
 	$css = ORIA_PASS_DIR . 'assets/css/pass.css';
 	$js  = ORIA_PASS_DIR . 'assets/js/pass.js';
-	wp_enqueue_style( 'oria-pass', ORIA_PASS_URL . 'assets/css/pass.css', array(), (string) filemtime( $css ) );
-	wp_enqueue_script( 'oria-pass', ORIA_PASS_URL . 'assets/js/pass.js', array(), (string) filemtime( $js ), array( 'in_footer' => true ) );
+
+	/*
+	 * Registered everywhere, enqueued where we know it is needed.
+	 *
+	 * Guessing which pages need it has now failed twice: the availability
+	 * ticket lives on a custom post type rather than a page, and the
+	 * conditional tags are not dependable here anyway -- is_page() reads
+	 * false on real pages at this point, presumably because something has
+	 * left the global query pointing elsewhere. So the parts that draw
+	 * Pass markup ask for the stylesheet themselves, which cannot be wrong
+	 * by construction. This list only decides who gets it early enough to
+	 * avoid a flash.
+	 */
+	wp_register_style( 'oria-pass', ORIA_PASS_URL . 'assets/css/pass.css', array(), (string) filemtime( $css ) );
+	wp_register_script( 'oria-pass', ORIA_PASS_URL . 'assets/js/pass.js', array(), (string) filemtime( $js ), array( 'in_footer' => true ) );
+
+	$likely = is_page()
+		|| is_singular( 'listing' )
+		|| is_tax()
+		|| '' !== (string) get_query_var( 'oria_my' )
+		|| '' !== (string) get_query_var( QUERY_VAR );
+
+	if ( ! $likely ) {
+		return;
+	}
+
+	wp_enqueue_style( 'oria-pass' );
+	wp_enqueue_script( 'oria-pass' );
 }
 
 function rules(): void {
