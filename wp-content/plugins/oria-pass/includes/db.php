@@ -144,12 +144,14 @@ function install(): void {
 			provider_payout decimal(10,2) NOT NULL DEFAULT 0.00,
 			cancel_cutoff_hours int(10) unsigned NOT NULL DEFAULT 12,
 			status varchar(20) NOT NULL DEFAULT 'active',
+			series_id varchar(32) NOT NULL DEFAULT '',
 			reminded_at datetime NULL,
 			notes text NULL,
 			created_at datetime NOT NULL,
 			updated_at datetime NOT NULL,
 			PRIMARY KEY  (id),
 			KEY listing_start (listing_id, start_at),
+			KEY series (series_id),
 			KEY status_start (status, start_at)
 		) {$charset};"
 	);

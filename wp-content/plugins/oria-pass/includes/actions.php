@@ -45,7 +45,7 @@ function bootstrap(): void {
  */
 function back( array $args, string $fallback = '', string $fragment = '' ): void {
 	$to = wp_get_referer() ?: ( $fallback ?: home_url( '/' ) );
-	$to = add_query_arg( $args, remove_query_arg( array( 'pass_ok', 'pass_err', 'pass_ref' ), $to ) );
+	$to = add_query_arg( $args, remove_query_arg( array( 'pass_ok', 'pass_err', 'pass_ref', 'pass_made' ), $to ) );
 
 	if ( '' !== $fragment ) {
 		$to .= '#' . rawurlencode( $fragment );
@@ -123,27 +123,45 @@ function session_save(): void {
 	$start = trim( (string) ( $_POST['start_date'] ?? '' ) . ' ' . (string) ( $_POST['start_time'] ?? '' ) );
 	$end   = trim( (string) ( $_POST['end_time'] ?? '' ) );
 
-	$result = Sessions\save(
-		array(
-			'listing_id'          => $listing_id,
-			'provider_user_id'    => get_current_user_id(),
-			'title'               => sanitize_text_field( wp_unslash( (string) ( $_POST['title'] ?? '' ) ) ),
-			'category'            => sanitize_key( (string) ( $_POST['category'] ?? '' ) ),
-			'start_at'            => $start,
-			'end_at'              => '' !== $end ? (string) ( $_POST['start_date'] ?? '' ) . ' ' . $end : '',
-			'total_capacity'      => (int) ( $_POST['total_capacity'] ?? 0 ),
-			'pass_capacity'       => (int) ( $_POST['pass_capacity'] ?? 0 ),
-			'credits_required'    => (int) ( $_POST['credits_required'] ?? 0 ),
-			'provider_payout'     => (float) ( $_POST['provider_payout'] ?? 0 ),
-			'cancel_cutoff_hours' => (int) ( $_POST['cancel_cutoff_hours'] ?? 12 ),
-			'notes'               => wp_unslash( (string) ( $_POST['notes'] ?? '' ) ),
-			'status'              => 'publish' === ( $_POST['save_as'] ?? '' ) ? 'active' : 'draft',
-		),
-		$id
+	$fields = array(
+		'listing_id'          => $listing_id,
+		'provider_user_id'    => get_current_user_id(),
+		'title'               => sanitize_text_field( wp_unslash( (string) ( $_POST['title'] ?? '' ) ) ),
+		'category'            => sanitize_key( (string) ( $_POST['category'] ?? '' ) ),
+		'start_at'            => $start,
+		'end_at'              => '' !== $end ? (string) ( $_POST['start_date'] ?? '' ) . ' ' . $end : '',
+		'total_capacity'      => (int) ( $_POST['total_capacity'] ?? 0 ),
+		'pass_capacity'       => (int) ( $_POST['pass_capacity'] ?? 0 ),
+		'credits_required'    => (int) ( $_POST['credits_required'] ?? 0 ),
+		'provider_payout'     => (float) ( $_POST['provider_payout'] ?? 0 ),
+		'cancel_cutoff_hours' => (int) ( $_POST['cancel_cutoff_hours'] ?? 12 ),
+		'notes'               => wp_unslash( (string) ( $_POST['notes'] ?? '' ) ),
+		'status'              => 'publish' === ( $_POST['save_as'] ?? '' ) ? 'active' : 'draft',
 	);
 
-	if ( is_wp_error( $result ) ) {
-		back( array( 'pass_err' => $result->get_error_code() ) );
+	/*
+	 * Repeating only applies to a session being opened. Editing one
+	 * Tuesday must never quietly write out eleven more, so an edit takes
+	 * the single-session path whatever the form says.
+	 */
+	$repeat = $id > 0 ? 'once' : sanitize_key( (string) ( $_POST['repeat'] ?? 'once' ) );
+	$until  = sanitize_text_field( (string) ( $_POST['repeat_until'] ?? '' ) );
+
+	if ( $id > 0 ) {
+		$result = Sessions\save( $fields, $id );
+		$made   = is_wp_error( $result ) ? 0 : 1;
+
+		if ( is_wp_error( $result ) ) {
+			back( array( 'pass_err' => $result->get_error_code() ) );
+		}
+	} else {
+		$series = Sessions\save_series( $fields, $repeat, $until );
+		$made   = count( $series['ids'] );
+
+		// A series that failed before writing anything is just a failure.
+		if ( $series['error'] && 0 === $made ) {
+			back( array( 'pass_err' => $series['error']->get_error_code() ) );
+		}
 	}
 
 	/*
@@ -159,9 +177,10 @@ function session_save(): void {
 	 */
 	back(
 		array(
-			'pass_ok' => $published ? 'session_live' : ( $id > 0 ? 'session_saved' : 'session_draft' ),
-			'tab'     => 'upcoming',
-			'edit'    => false,
+			'pass_ok'   => $published ? 'session_live' : ( $id > 0 ? 'session_saved' : 'session_draft' ),
+			'pass_made' => $made > 1 ? $made : false,
+			'tab'       => 'upcoming',
+			'edit'      => false,
 		)
 	);
 }

@@ -154,6 +154,180 @@ function partners( int $limit = 12 ): array {
 	);
 }
 
+/** How often a session comes round. */
+const REPEATS = array(
+	'once'   => 'Just once',
+	'daily'  => 'Every day',
+	'weekly' => 'Every week',
+);
+
+/** Nobody needs three years of Tuesdays, and a typo should not make them. */
+const SERIES_MAX = 60;
+
+/**
+ * A repeating session, written out one occurrence at a time.
+ *
+ * Deliberately real rows rather than a rule evaluated later. Everything
+ * the Pass already does -- places, bookings, the cancellation window,
+ * reminders, payouts, calling one off -- happens to a session, and a rule
+ * would mean each of those learning to pretend. Writing them out means a
+ * studio can cancel one wet Tuesday without touching the other eleven.
+ *
+ * They share a series_id so the set can still be spoken about as one
+ * thing. The first failure stops the run: a half-written series is easier
+ * to understand than one with a gap in the middle nobody can explain.
+ *
+ * @return array{ids:array<int,int>, error:?\WP_Error}
+ */
+function save_series( array $in, string $repeat, string $until_date ): array {
+	$repeat = isset( REPEATS[ $repeat ] ) ? $repeat : 'once';
+	$start  = date_create_immutable( (string) ( $in['start_at'] ?? '' ), wp_timezone() );
+
+	if ( 'once' === $repeat || ! $start ) {
+		$id = save( $in );
+
+		return is_wp_error( $id )
+			? array( 'ids' => array(), 'error' => $id )
+			: array( 'ids' => array( (int) $id ), 'error' => null );
+	}
+
+	$until = date_create_immutable( $until_date . ' 23:59:59', wp_timezone() );
+	if ( ! $until || $until->getTimestamp() < $start->getTimestamp() ) {
+		// No end date given, or one before the start: a fortnight is plenty.
+		$until = $start->modify( '+14 days' );
+	}
+
+	$step   = 'daily' === $repeat ? '+1 day' : '+1 week';
+	$series = substr( md5( uniqid( (string) $start->getTimestamp(), true ) ), 0, 32 );
+	// Each occurrence keeps the first one's length, if it was given one.
+	$finish = date_create_immutable( (string) ( $in['end_at'] ?? '' ), wp_timezone() );
+	$length = $finish ? $finish->getTimestamp() - $start->getTimestamp() : 0;
+
+	$ids  = array();
+	$when = $start;
+
+	while ( $when->getTimestamp() <= $until->getTimestamp() && count( $ids ) < SERIES_MAX ) {
+		$one              = $in;
+		$one['start_at']  = $when->format( 'Y-m-d H:i:s' );
+		$one['end_at']    = $length > 0 ? $when->modify( '+' . $length . ' seconds' )->format( 'Y-m-d H:i:s' ) : '';
+		$one['series_id'] = $series;
+
+		$id = save( $one );
+
+		if ( is_wp_error( $id ) ) {
+			return array( 'ids' => $ids, 'error' => $id );
+		}
+
+		$ids[] = (int) $id;
+		$when  = $when->modify( $step );
+	}
+
+	return array( 'ids' => $ids, 'error' => null );
+}
+
+/**
+ * The rest of a series, from a given session onwards.
+ *
+ * Only what is still to come: a studio ending a weekly class is saying
+ * something about next week, not about the ones that already ran.
+ *
+ * @return array<int, object>
+ */
+function series_after( object $session, bool $include_self = true ): array {
+	global $wpdb;
+
+	if ( '' === (string) $session->series_id ) {
+		return $include_self ? array( $session ) : array();
+	}
+
+	$from = $include_self ? (string) $session->start_at : (string) $session->start_at . '.999999';
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
+	return (array) $wpdb->get_results(
+		$wpdb->prepare(
+			'SELECT * FROM ' . Db\sessions() . " WHERE series_id = %s AND start_at >= %s AND status <> 'cancelled' ORDER BY start_at ASC",
+			(string) $session->series_id,
+			$from
+		)
+	);
+}
+
+/**
+ * A month of a studio's bookable days, for the calendar on its listing.
+ *
+ * Keyed by date so the grid can ask "is there anything on the 14th" in one
+ * lookup rather than filtering a list per cell. Carries the cheapest way
+ * in, because a member scanning a month is deciding what they can afford
+ * as much as when they are free.
+ *
+ * Today counts only from now on: a class at 6am is not bookable at noon,
+ * and a calendar saying otherwise sends somebody to a closed door.
+ *
+ * @return array<string, array{count:int, from:int}>
+ */
+function month_days( int $listing_id, string $month ): array {
+	global $wpdb;
+
+	if ( ! preg_match( '/^\d{4}-\d{2}$/', $month ) ) {
+		$month = wp_date( 'Y-m' );
+	}
+
+	$first = date_create_immutable( $month . '-01 00:00:00', wp_timezone() );
+	if ( ! $first ) {
+		return array();
+	}
+
+	$from = max( $first->format( 'Y-m-d H:i:s' ), current_time( 'mysql' ) );
+	$to   = $first->modify( 'first day of next month' )->format( 'Y-m-d H:i:s' );
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
+	$rows = (array) $wpdb->get_results(
+		$wpdb->prepare(
+			'SELECT DATE(start_at) AS day, COUNT(*) AS count, MIN(credits_required) AS cheapest
+			FROM ' . Db\sessions() . "
+			WHERE listing_id = %d AND status = 'active'
+				AND booked_count < pass_capacity
+				AND start_at >= %s AND start_at < %s
+			GROUP BY DATE(start_at)",
+			$listing_id,
+			$from,
+			$to
+		)
+	);
+
+	$days = array();
+	foreach ( $rows as $row ) {
+		$days[ (string) $row->day ] = array( 'count' => (int) $row->count, 'from' => (int) $row->cheapest );
+	}
+
+	return $days;
+}
+
+/**
+ * One day's bookable sessions at a studio.
+ *
+ * @return array<int, object>
+ */
+function on_day( int $listing_id, string $day ): array {
+	global $wpdb;
+
+	if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $day ) ) {
+		return array();
+	}
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
+	return (array) $wpdb->get_results(
+		$wpdb->prepare(
+			'SELECT * FROM ' . Db\sessions() . " WHERE listing_id = %d AND status = 'active'
+				AND DATE(start_at) = %s AND start_at > %s
+			ORDER BY start_at ASC",
+			$listing_id,
+			$day,
+			current_time( 'mysql' )
+		)
+	);
+}
+
 /** Everything a provider has on, including what is not yet published. */
 function for_listing( int $listing_id, int $limit = 100 ): array {
 	global $wpdb;
@@ -233,6 +407,7 @@ function save( array $in, int $id = 0 ) {
 		'provider_payout'     => round( (float) ( $in['provider_payout'] ?? 0 ), 2 ),
 		'cancel_cutoff_hours' => max( 0, (int) ( $in['cancel_cutoff_hours'] ?? Settings\get( 'cancel_cutoff_hrs' ) ) ),
 		'status'              => $status,
+		'series_id'           => sanitize_key( (string) ( $in['series_id'] ?? '' ) ),
 		'notes'               => sanitize_textarea_field( (string) ( $in['notes'] ?? '' ) ),
 		'updated_at'          => $now,
 	);
@@ -253,6 +428,9 @@ function save( array $in, int $id = 0 ) {
 				)
 			);
 		}
+
+		// An edit is to this occurrence; it never changes which series it is in.
+		$row['series_id'] = (string) $existing->series_id;
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$wpdb->update( Db\sessions(), $row, array( 'id' => $id ) );

@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const VERSION  = '0.1.0';
-const DB_VER   = '4';
+const DB_VER   = '5';
 const ROUTES_V = '1';
 
 define( 'ORIA_PASS_FILE', __FILE__ );

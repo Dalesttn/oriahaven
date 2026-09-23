@@ -348,3 +348,58 @@
   .xpass__row .pcredit b { font-size: 1.35rem; }
   .xpass__row .pcredit span { margin: 0; }
 }
+
+/* ---------------------------------------------------------------------
+   The month, for a studio that runs the same thing every week.
+
+   Links with a query string, like every other choice in the Pass, so a
+   day is an address and the grid works before any JavaScript does. Days
+   with nothing on are plain text, not disabled buttons: there is nothing
+   to press, and dressing them up as controls only invites the press.
+   --------------------------------------------------------------------- */
+.xcal { margin: 0 0 1.1rem; }
+.xcal__head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin: 0 0 .6rem; }
+.xcal__month { margin: 0; font-size: 1rem; font-weight: 650; color: var(--xp-ink, #14201e); }
+.xcal__move {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2rem; height: 2rem; border-radius: 999px;
+  border: 1px solid var(--xp-line, #dcd9d0); color: var(--xp-deep, #0e3b38);
+  text-decoration: none; line-height: 1;
+}
+.xcal__move:hover { border-color: var(--xp-deep, #0e3b38); }
+.xcal__move--off { opacity: .28; }
+
+.xcal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.xcal__dow {
+  text-align: center; font-size: .6875rem; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--xp-muted, #5f6d69); padding: .2rem 0 .35rem;
+}
+.xcal__pad { min-height: 2.9rem; }
+
+.xcal__day {
+  /*
+   * A fixed height rather than a square cell: at full width a square
+   * makes the grid taller than the list it introduces, and the calendar
+   * is a way into the sessions rather than the point of the page.
+   */
+  position: relative; min-height: 2.9rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-radius: 10px; font-size: .875rem; font-variant-numeric: tabular-nums;
+  color: var(--xp-muted, #5f6d69); text-decoration: none;
+}
+.xcal__day.is-today { box-shadow: inset 0 0 0 1px var(--xp-line, #dcd9d0); }
+
+.xcal__day--open {
+  color: var(--xp-deep, #0e3b38); font-weight: 650;
+  background: #eef3f0;
+}
+.xcal__day--open:hover { background: #e2ebe6; }
+.xcal__day--open.is-on { background: var(--xp-deep, #0e3b38); color: #fff; }
+
+.xcal__dot { width: 4px; height: 4px; border-radius: 999px; background: currentColor; margin-top: 2px; }
+.xcal__note { margin: .7rem 0 0; font-size: .8125rem; color: var(--app-faint, #7d8a86); }
+.xpass__none { margin: 0 0 .9rem; font-size: .9375rem; color: var(--xp-muted, #5f6d69); }
+
+@media (max-width: 26rem) {
+  .xcal__day { border-radius: 8px; font-size: .8125rem; }
+}

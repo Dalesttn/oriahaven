@@ -39,6 +39,7 @@ $oria_edit = (int) ( $_GET['edit'] ?? 0 );
 
 $oria_said = array(
 	'session_live'      => __( 'Open. Pass members can book it now.', 'oria' ),
+	'session_series'    => __( 'Open. Every date is its own session and each can be changed on its own.', 'oria' ),
 	'session_draft'     => __( 'Saved as a draft. Nobody can see it until you publish it.', 'oria' ),
 	'session_saved'     => __( 'Saved.', 'oria' ),
 	'session_cancelled' => __( 'Session called off. Everyone who had booked has had their credits returned.', 'oria' ),
@@ -61,7 +62,24 @@ $oria_wrong = array(
 <div class="mypass-view">
 
 	<?php if ( '' !== $oria_ok ) : ?>
-		<p class="mynote mynote--ok" role="status"><?php echo esc_html( $oria_said[ $oria_ok ] ?? __( 'Done.', 'oria' ) ); ?></p>
+		<?php
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display state only.
+		$oria_made = (int) ( $_GET['pass_made'] ?? 0 );
+		?>
+		<p class="mynote mynote--ok" role="status">
+			<?php
+			if ( $oria_made > 1 ) {
+				printf(
+					/* translators: %d: number of sessions opened */
+					esc_html( _n( '%d session opened.', '%d sessions opened.', $oria_made, 'oria' ) ),
+					$oria_made
+				);
+				echo ' ' . esc_html( $oria_said['session_series'] );
+			} else {
+				echo esc_html( $oria_said[ $oria_ok ] ?? __( 'Done.', 'oria' ) );
+			}
+			?>
+		</p>
 	<?php elseif ( '' !== $oria_err ) : ?>
 		<p class="mynote mynote--bad" role="alert"><?php echo esc_html( $oria_wrong[ $oria_err ] ?? __( 'That did not save.', 'oria' ) ); ?></p>
 	<?php endif; ?>
@@ -434,6 +452,38 @@ $oria_wrong = array(
 						<input class="input" type="number" min="0" name="cancel_cutoff_hours"
 							value="<?php echo esc_attr( (string) ( $oria_editing->cancel_cutoff_hours ?? Settings\get( 'cancel_cutoff_hrs' ) ) ); ?>"></label>
 				</div>
+
+				<?php
+				/*
+				 * Repeating is only offered when opening something new.
+				 * Editing one Tuesday must never quietly write out eleven
+				 * more, and the handler refuses it too.
+				 */
+				?>
+				<?php if ( ! $oria_editing ) : ?>
+					<div class="passform__repeat">
+						<label class="field"><span class="field__label"><?php esc_html_e( 'Repeats', 'oria' ); ?></span>
+							<select class="input" name="repeat" id="oria-repeat">
+								<?php foreach ( Sessions\REPEATS as $oria_key => $oria_word ) : ?>
+									<option value="<?php echo esc_attr( $oria_key ); ?>"><?php echo esc_html( $oria_word ); ?></option>
+								<?php endforeach; ?>
+							</select></label>
+
+						<label class="field" id="oria-until"><span class="field__label"><?php esc_html_e( 'Repeating until', 'oria' ); ?></span>
+							<input class="input" type="date" name="repeat_until"
+								value="<?php echo esc_attr( wp_date( 'Y-m-d', time() + 28 * DAY_IN_SECONDS ) ); ?>"></label>
+					</div>
+
+					<p class="passform__hint">
+						<?php
+						printf(
+							/* translators: %d: the most sessions one form can open */
+							esc_html__( 'Each date becomes its own session with its own places, so you can call off one week without touching the others. Up to %d at a time.', 'oria' ),
+							(int) Sessions\SERIES_MAX
+						);
+						?>
+					</p>
+				<?php endif; ?>
 
 				<label class="field"><span class="field__label"><?php esc_html_e( 'Anything they should know (optional)', 'oria' ); ?></span>
 					<textarea class="textarea" name="notes" rows="2"
