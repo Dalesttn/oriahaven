@@ -350,14 +350,31 @@
 }
 
 /* ---------------------------------------------------------------------
-   The month, for a studio that runs the same thing every week.
+   The month, as a board.
 
-   Links with a query string, like every other choice in the Pass, so a
-   day is an address and the grid works before any JavaScript does. Days
-   with nothing on are plain text, not disabled buttons: there is nothing
-   to press, and dressing them up as controls only invites the press.
+   Squares alternate, and with seven columns that falls out of the markup
+   for free: each row is an odd number of cells, so nth-child parity flips
+   every row on its own. No row wrappers, no per-cell class, no counting
+   in PHP.
+
+   The squares touch -- a chessboard with gaps between the squares is a
+   grid of chips -- so the rounding goes on the board and the overflow is
+   clipped. The board is capped in width too: a month stretched across a
+   full-width column puts Monday and Sunday a hand's width apart and
+   stops reading as a month at all.
+
+   A day with places is not a third shade of the board; it is on top of
+   it, in the one colour the Pass uses for "this is the thing to press".
    --------------------------------------------------------------------- */
-.xcal { margin: 0 0 1.1rem; }
+.xcal {
+  --xcal-a: #faf8f4;
+  --xcal-b: #e9e3d6;
+  --xcal-open: #dcebe2;
+  --xcal-open-hover: #c9e0d3;
+  margin: 0 0 1.2rem;
+  max-width: 27rem;
+}
+
 .xcal__head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin: 0 0 .6rem; }
 .xcal__month { margin: 0; font-size: 1rem; font-weight: 650; color: var(--xp-ink, #14201e); }
 .xcal__move {
@@ -366,40 +383,66 @@
   border: 1px solid var(--xp-line, #dcd9d0); color: var(--xp-deep, #0e3b38);
   text-decoration: none; line-height: 1;
 }
-.xcal__move:hover { border-color: var(--xp-deep, #0e3b38); }
-.xcal__move--off { opacity: .28; }
+.xcal__move:hover { border-color: var(--xp-deep, #0e3b38); background: var(--xcal-a); }
+.xcal__move--off { opacity: .25; }
 
-.xcal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-.xcal__dow {
-  text-align: center; font-size: .6875rem; letter-spacing: .06em;
-  text-transform: uppercase; color: var(--xp-muted, #5f6d69); padding: .2rem 0 .35rem;
+.xcal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  border: 1px solid var(--xp-line, #dcd9d0);
+  border-radius: 14px;
+  overflow: hidden;
 }
+
+/* The board. Seven columns means parity alternates by itself. */
+.xcal__grid > *:nth-child(even) { background: var(--xcal-b); }
+.xcal__grid > *:nth-child(odd)  { background: var(--xcal-a); }
+
+/* The day letters are a label, not a square. */
+.xcal__grid .xcal__dow {
+  background: #fff;
+  text-align: center;
+  font-size: .625rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--xp-muted, #5f6d69);
+  padding: .45rem 0;
+  border-bottom: 1px solid var(--xp-line, #dcd9d0);
+}
+
 .xcal__pad { min-height: 2.9rem; }
 
 .xcal__day {
-  /*
-   * A fixed height rather than a square cell: at full width a square
-   * makes the grid taller than the list it introduces, and the calendar
-   * is a way into the sessions rather than the point of the page.
-   */
   position: relative; min-height: 2.9rem;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  border-radius: 10px; font-size: .875rem; font-variant-numeric: tabular-nums;
+  font-size: .875rem; font-variant-numeric: tabular-nums;
   color: var(--xp-muted, #5f6d69); text-decoration: none;
 }
-.xcal__day.is-today { box-shadow: inset 0 0 0 1px var(--xp-line, #dcd9d0); }
 
-.xcal__day--open {
-  color: var(--xp-deep, #0e3b38); font-weight: 650;
-  background: #eef3f0;
+/* Today is marked on the board rather than coloured, so it never competes
+   with a day that can actually be booked. */
+.xcal__day.is-today .xcal__n {
+  box-shadow: 0 0 0 1px var(--xp-muted, #5f6d69);
+  border-radius: 999px; padding: 0 .3rem;
 }
-.xcal__day--open:hover { background: #e2ebe6; }
-.xcal__day--open.is-on { background: var(--xp-deep, #0e3b38); color: #fff; }
 
-.xcal__dot { width: 4px; height: 4px; border-radius: 999px; background: currentColor; margin-top: 2px; }
+/* Placed after the board so it wins without needing !important. */
+.xcal__grid .xcal__day--open {
+  background: var(--xcal-open);
+  color: var(--xp-deep, #0e3b38);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px rgba(14, 59, 56, .1);
+}
+.xcal__grid .xcal__day--open:hover { background: var(--xcal-open-hover); }
+.xcal__grid .xcal__day--open.is-on { background: var(--xp-deep, #0e3b38); color: #fff; box-shadow: none; }
+
+.xcal__n { line-height: 1.1; }
+.xcal__dot { width: 4px; height: 4px; border-radius: 999px; background: currentColor; margin-top: 3px; }
+
 .xcal__note { margin: .7rem 0 0; font-size: .8125rem; color: var(--app-faint, #7d8a86); }
+.xcal__note a { color: var(--xp-deep, #0e3b38); }
 .xpass__none { margin: 0 0 .9rem; font-size: .9375rem; color: var(--xp-muted, #5f6d69); }
 
 @media (max-width: 26rem) {
-  .xcal__day { border-radius: 8px; font-size: .8125rem; }
+  .xcal__day, .xcal__pad { min-height: 2.5rem; }
+  .xcal__day { font-size: .8125rem; }
 }

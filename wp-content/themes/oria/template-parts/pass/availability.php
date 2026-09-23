@@ -65,9 +65,24 @@ $oria_days = $oria_calendar ? Sessions\month_days( $oria_listing, $oria_month ) 
  * What the list below shows: the chosen day, or the next few. Never both
  * -- a member who picked the 14th is asking about the 14th.
  */
-$oria_shown = '' !== $oria_day
-	? Sessions\on_day( $oria_listing, $oria_day )
-	: array_slice( $oria_rows, 0, $oria_calendar ? 3 : 4 );
+if ( '' !== $oria_day ) {
+	$oria_shown = Sessions\on_day( $oria_listing, $oria_day );
+} else {
+	/*
+	 * No day picked, so the next few -- but the next few IN THE MONTH ON
+	 * SCREEN. Paging to October and being shown a September class is the
+	 * calendar and the list disagreeing about what the visitor asked, and
+	 * the list wins by being the thing with a Book button on it.
+	 */
+	$oria_month_rows = array_values(
+		array_filter(
+			$oria_rows,
+			static fn( $row ): bool => substr( (string) $row->start_at, 0, 7 ) === $oria_month
+		)
+	);
+
+	$oria_shown = array_slice( $oria_month_rows ?: $oria_rows, 0, $oria_calendar ? 3 : 4 );
+}
 
 $oria_here = static function ( array $args ): string {
 	$url = remove_query_arg( array( 'pass_ok', 'pass_err', 'pass_ref', 'pass_made', 'pass_date', 'pass_month' ), (string) get_permalink() );
