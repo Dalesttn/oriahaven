@@ -630,6 +630,56 @@ function link_to( string $url, string $label = '' ): string {
 	return '<a href="' . esc_url( $url ) . '" style="color:#0E3B38;">' . esc_html( $label ?: $url ) . '</a>';
 }
 
+/**
+ * The Oria Pass, said to a practice that has not claimed yet.
+ *
+ * A second reason to claim, and for a lot of practices a better one than
+ * tidying their opening hours: it is the only part of Oria that puts
+ * people through their door rather than in front of their name.
+ *
+ * It says where the thing actually is. No studio has opened a place yet,
+ * and telling a business their competitors are already booked out when
+ * they are not is the kind of thing that gets found out in one phone
+ * call. Being early is the honest pitch, and it happens to be the true
+ * one.
+ *
+ * Returns '' when the Pass is not installed, so oria-core never depends
+ * on it.
+ */
+function pass_html(): string {
+	if ( ! function_exists( '\Oria\Pass\Route\url' ) ) {
+		return '';
+	}
+
+	$html  = heading( __( 'And if you have classes that do not fill', 'oria' ) );
+	$html .= para(
+		esc_html__( 'We are starting Oria Pass: a monthly membership where people buy credits and spend them across Perth studios. You choose which sessions to open, how many places to spare, and what each place is worth to you. You keep every booking you already have, there is no fee to join and nothing to install.', 'oria' )
+	);
+	$html .= para(
+		sprintf(
+			/* translators: %s: link to the partners page */
+			esc_html__( 'It is early — we are signing up studios before we open it to members, so the practices on it first are the ones members see first. Claiming your listing is what turns it on: %s', 'oria' ),
+			link_to( \Oria\Pass\Route\url( 'partners' ) )
+		)
+	);
+
+	return $html;
+}
+
+/** The same, for the plain-text half. */
+function pass_text(): string {
+	if ( ! function_exists( '\Oria\Pass\Route\url' ) ) {
+		return '';
+	}
+
+	return sprintf(
+		"AND IF YOU HAVE CLASSES THAT DO NOT FILL\n\n" .
+		"We are starting Oria Pass: a monthly membership where people buy credits and spend them across Perth studios. You choose which sessions to open, how many places to spare, and what each place is worth to you. You keep every booking you already have, there is no fee to join and nothing to install.\n\n" .
+		"It is early — we are signing up studios before we open it to members, so the practices on it first are the ones members see first. Claiming your listing is what turns it on:\n\n%s\n\n",
+		\Oria\Pass\Route\url( 'partners' )
+	);
+}
+
 function body_html( int $listing_id, string $token ): string {
 	$name     = wp_specialchars_decode( (string) get_post_field( 'post_title', $listing_id, 'raw' ), ENT_QUOTES );
 	$describe = described( $listing_id );
@@ -682,6 +732,8 @@ function body_html( int $listing_id, string $token ): string {
 			TTL_DAYS
 		)
 	);
+
+	$html .= pass_html();
 
 	$html .= heading( __( 'One more thing worth a look', 'oria' ) );
 	$html .= para(
@@ -768,6 +820,7 @@ function body_text( int $listing_id, string $token ): string {
 		"IF YOU'D LIKE TO LOOK AFTER IT YOURSELF, YOU CAN — FREE.\nClaiming confirms you're the owner. You can then keep your address, phone, email, website, prices and session format current yourself, and the listing stops being marked Unclaimed. There are paid plans that add photos, opening hours, offers and visitor stats, but you never have to take one.\n\n" .
 		"Claim it here:\n%4\$s\n\n" .
 		"That link is just for your listing and works for %5\$d days.\n\n" .
+		"%12\$s" .
 		"ONE MORE THING WORTH A LOOK\nYour listing has a share page — a ready-made social card with your name on it, and a small \"Listed on Oria Haven\" badge you can paste into your own website's footer. The badge links back to your profile, so anyone already on your site can see your hours, reviews and the rest in one click:\n%6\$s\n\n" .
 		"About us: we list %7\$d practices across Perth, from Fremantle to the Hills, all checked by hand. Enquiries go straight to you. We don't take a cut of bookings and we never will.\n\n" .
 		"%8\$s\n\n" .
@@ -790,7 +843,8 @@ function body_text( int $listing_id, string $token ): string {
 			: '',
 		$seen
 			? __( 'No account, no charge. Those visitors are reading whatever we got from your website, so an out-of-date price or a wrong opening time is doing real damage right now — worse than not being listed at all.', 'oria' )
-			: __( 'No account, no charge. An out-of-date price or a wrong opening time is worse for you than not being listed at all.', 'oria' )
+			: __( 'No account, no charge. An out-of-date price or a wrong opening time is worse for you than not being listed at all.', 'oria' ),
+		pass_text()
 	);
 }
 

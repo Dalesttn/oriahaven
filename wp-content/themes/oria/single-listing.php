@@ -772,6 +772,22 @@ while ( have_posts() ) :
 
 <?php // The week grid above is the classes renderer now; the old per-class card list retired with it. ?>
 
+				<?php
+				/*
+				 * Oria Pass availability, above the packages and below the
+				 * timetable -- next to the other ways of actually going. It
+				 * draws nothing at all unless this studio has opened real
+				 * places, so a listing that is not a Pass partner is
+				 * untouched.
+				 *
+				 * This call belongs in BOTH templates. oria-v4 shadows this
+				 * file wholesale, so a block wired into only one of them is
+				 * invisible on whichever theme the server happens to run --
+				 * which is exactly how it came to be missing on staging.
+				 */
+				get_template_part( 'template-parts/pass/availability', null, array( 'id' => $oria_id ) );
+				?>
+
 				<!-- Packages -->
 				<?php if ( $oria_packages ) : ?>
 				<div>

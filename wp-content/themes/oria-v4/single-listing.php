@@ -1002,6 +1002,16 @@ while ( have_posts() ) :
 				</section>
 			<?php endif; ?>
 
+			<?php
+			/*
+			 * Oria Pass availability, above the packages and below the
+			 * timetable -- next to the other ways of actually going. It draws
+			 * nothing at all unless this studio has opened real places, so a
+			 * listing that is not a Pass partner is untouched.
+			 */
+			get_template_part( 'template-parts/pass/availability', null, array( 'id' => $oria_id ) );
+			?>
+
 			<?php /* --- Packages (paid plans only) ------------------------------ */ ?>
 			<?php if ( $oria_packages ) : ?>
 				<?php $oria_sec++; ?>

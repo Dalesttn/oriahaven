@@ -44,6 +44,7 @@ wp-config-local.php
 !/wp-content/plugins/oria-ingest/
 !/wp-content/plugins/oria-shop/
 !/wp-content/plugins/oria-apps/
+!/wp-content/plugins/oria-pass/
 
 # --- Themes: ours only -------------------------------------------------
 /wp-content/themes/*

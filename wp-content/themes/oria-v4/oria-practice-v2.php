@@ -1348,8 +1348,19 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 		? \Oria\Core\Guides\best_for( $oria_term, $oria_note_topic, $oria_guides )
 		: ( $oria_guides ? $oria_guides[0] : null );
 	?>
-	<?php if ( ( $oria_note_cfg && ( $oria_note_cmp || $oria_note_guide ) ) || $oria_note_cmp ) : ?>
-		<aside class="xc-note" id="xcNote" aria-labelledby="xcNoteTitle">
+	<?php
+	/*
+	 * Whether the note draws at all decides where the Pass goes: inside
+	 * it when there is one, and on its own further down when there is
+	 * not. Some categories have no comparison and no guide to point at,
+	 * and removing the standalone band without this left those pages
+	 * with no mention of the Pass whatsoever.
+	 */
+	$oria_note_on = ( $oria_note_cfg && ( $oria_note_cmp || $oria_note_guide ) ) || $oria_note_cmp;
+	?>
+	<?php if ( $oria_note_on ) : ?>
+		<aside class="xc-note xc-note--two" id="xcNote" aria-labelledby="xcNoteTitle">
+			<div class="xc-note__main">
 			<p class="micro xc-note__eyebrow"><?php esc_html_e( 'The Oria note', 'oria' ); ?></p>
 			<h3 class="xc-note__title" id="xcNoteTitle"><?php echo $oria_note_cfg ? esc_html( (string) $oria_note_cfg['heading'] ) : esc_html__( 'Deciding between two?', 'oria' ); ?></h3>
 			<?php if ( ! empty( $oria_note_cfg['copy'] ) ) : ?>
@@ -1365,6 +1376,19 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 					<a class="xc-note__link" href="<?php echo esc_url( (string) get_permalink( $oria_note_guide ) ); ?>" data-oria-event="category_guide_click"><?php esc_html_e( 'Read the full guide', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
 				<?php endif; ?>
 			</p>
+			</div>
+
+			<div class="xc-note__aside">
+				<?php
+				/*
+				 * The Pass, in the half of this card that was doing
+				 * nothing. Here rather than as its own band further down:
+				 * one mention per page, in the place somebody is already
+				 * weighing something up.
+				 */
+				get_template_part( 'template-parts/pass/banner', null, array( 'audience' => 'member', 'tone' => 'bare', 'where' => 'category_note' ) );
+				?>
+			</div>
 		</aside>
 	<?php endif; ?>
 
@@ -1791,6 +1815,13 @@ if ( $oria_term && function_exists( '\Oria\Core\Events\for_practice' ) ) {
 			'all_label' => __( "See what's on", 'oria' ),
 		)
 	);
+}
+?>
+
+<?php
+// No note on this category, so the Pass gets its own band instead.
+if ( empty( $oria_note_on ) ) {
+	get_template_part( 'template-parts/pass/banner', null, array( 'audience' => 'member', 'where' => 'category' ) );
 }
 ?>
 

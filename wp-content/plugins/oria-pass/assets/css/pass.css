@@ -1,0 +1,494 @@
+/* Oria Pass.
+ *
+ * The brief asks for something more app-like than the rest of the site
+ * without leaving the brand. That is done with shape and density rather
+ * than new colour: the same deep forest, sand and gold, but rounder cards,
+ * tighter metadata and a credit token that reads like a price tag on
+ * something good rather than a discount sticker.
+ *
+ * Every token here comes from the site's own tokens.css, so the Pass
+ * follows the brand rather than forking it.
+ */
+
+.pass { --pass-r: 18px; }
+
+/* --- hero ------------------------------------------------------------- */
+.pass-hero { position: relative; background: var(--deep); color: var(--white); overflow: hidden; }
+.pass-hero::after {
+  /* A wash rather than an image: the cards are the picture. */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 80% at 82% 18%, rgba(201,162,75,.20) 0%, rgba(14,59,56,0) 62%);
+}
+.pass-hero__in {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  gap: clamp(2rem, 5vw, 4.5rem); align-items: center;
+  padding-block: clamp(3rem, 8vw, 6rem);
+}
+.pass-hero__in--one { grid-template-columns: minmax(0, 1fr); max-width: 60rem; }
+.pass-hero--slim .pass-hero__in { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+.pass-hero__eyebrow { margin: 0 0 var(--s-3); color: var(--brand-gold); letter-spacing: .2em; }
+.pass-hero__title { margin: 0; font-size: clamp(2.3rem, 6vw, 4rem); line-height: 1.02; font-weight: 700; letter-spacing: -.03em; text-wrap: balance; }
+.pass-hero__lede { margin: var(--s-4) 0 0; max-width: 46ch; font-size: clamp(1.05rem, 2.2vw, 1.25rem); line-height: 1.55; color: rgba(255,255,255,.88); }
+.pass-hero__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); margin: var(--s-6) 0 0; }
+.pass-hero__alt { color: var(--white); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+.pass-hero__price { margin: var(--s-4) 0 0; font-size: var(--fs-sm); color: rgba(255,255,255,.72); }
+.pass-hero__note { margin: var(--s-3) 0 0; font-size: var(--fs-xs); color: rgba(255,255,255,.6); text-align: center; }
+
+/* The card stack: offset, not scattered — it should read as a deck. */
+.pass-hero__stack { display: grid; gap: var(--s-3); }
+.pcard {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+  padding: var(--s-4) var(--s-5); border-radius: var(--pass-r);
+  background: var(--white); color: var(--ink);
+  box-shadow: 0 18px 40px -22px rgba(8,34,32,.65);
+}
+.pcard--float { transform: translateX(calc(var(--i) * 14px)); }
+.pcard__body { min-width: 0; }
+.pcard__name { margin: 0; font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em; }
+.pcard__where { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
+.pcard__when { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+/* --- the credit token ------------------------------------------------- */
+.pcredit {
+  display: inline-grid; place-items: center; gap: 0; flex: 0 0 auto;
+  min-width: 68px; padding: .5rem .7rem; border-radius: 14px;
+  background: var(--sand-2); color: var(--ink); line-height: 1.1;
+}
+.pcredit b { font-size: 1.35rem; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.pcredit span { font-size: var(--fs-xs); color: var(--text-soft); letter-spacing: .04em; }
+
+/* --- shared section furniture ---------------------------------------- */
+.pass-h { margin: 0; font-size: var(--fs-h2, 2rem); line-height: 1.08; font-weight: 700; letter-spacing: -.025em; text-wrap: balance; }
+.pass-sub { margin: var(--s-3) 0 0; max-width: 58ch; color: var(--text-soft); line-height: 1.6; font-size: 1.05rem; }
+.pass-note { margin: var(--s-4) 0 0; max-width: 62ch; font-size: var(--fs-sm); color: var(--text-faint); line-height: 1.55; }
+.pass-value, .pass-kinds, .pass-how, .pass-mood, .pass-plan, .pass-cmp, .pass-prov, .pass-join { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+
+/* --- value bar -------------------------------------------------------- */
+.pass-value__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: var(--s-5); }
+.pass-value__h { margin: 0 0 var(--s-2); font-size: 1.15rem; font-weight: 700; }
+.pass-value__one p { margin: 0; color: var(--text-soft); line-height: 1.6; }
+
+/* --- experience categories ------------------------------------------- */
+.pass-kinds__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: var(--s-3); margin-top: var(--s-6); }
+.kcard {
+  display: grid; gap: 6px; align-content: start;
+  padding: var(--s-4); border-radius: var(--pass-r);
+  background: var(--white); border: 1px solid var(--line);
+  color: var(--ink); text-decoration: none;
+}
+.kcard:hover { border-color: var(--deep); }
+.kcard__name { font-size: 1.1rem; font-weight: 700; }
+.kcard__line { font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.45; }
+.kcard__from { margin-top: 4px; font-size: var(--fs-xs); font-weight: 700; color: var(--moss); letter-spacing: .04em; text-transform: uppercase; }
+
+/* --- how it works ----------------------------------------------------- */
+.pass-how__list { list-style: none; margin: var(--s-6) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: var(--s-5); }
+.hstep__n { display: block; font-size: var(--fs-sm); font-weight: 800; color: var(--brand-gold); letter-spacing: .1em; }
+.hstep__h { margin: var(--s-2) 0 var(--s-2); font-size: 1.15rem; font-weight: 700; }
+.hstep p { margin: 0; color: var(--text-soft); line-height: 1.6; }
+
+/* --- mood ------------------------------------------------------------- */
+.pass-mood__row { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
+.mchip {
+  display: grid; gap: 2px; padding: .8rem 1.15rem; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: transparent; color: var(--ink); text-decoration: none;
+}
+.mchip:hover { border-color: var(--deep); background: var(--sand-2); }
+.mchip b { font-size: 1rem; font-weight: 700; }
+.mchip span { font-size: var(--fs-xs); color: var(--text-faint); }
+
+/* --- the plan --------------------------------------------------------- */
+.plan { margin-top: var(--s-6); max-width: 34rem; padding: clamp(1.5rem, 4vw, 2.25rem); border-radius: calc(var(--pass-r) + 6px); background: var(--deep); color: var(--white); }
+.plan__name { margin: 0; font-size: 1.2rem; font-weight: 700; letter-spacing: .01em; }
+.plan__price { display: flex; align-items: baseline; gap: .4rem; margin: var(--s-2) 0 0; }
+.plan__price b { font-size: clamp(2.6rem, 7vw, 3.4rem); font-weight: 800; letter-spacing: -.03em; color: var(--brand-gold); line-height: 1; }
+.plan__price span { color: rgba(255,255,255,.72); }
+.plan__credits { margin: var(--s-2) 0 0; font-weight: 600; }
+.plan__list { margin: var(--s-5) 0 0; padding-left: 1.15rem; display: grid; gap: .55rem; color: rgba(255,255,255,.88); line-height: 1.55; }
+.plan__act { margin: var(--s-5) 0 0; }
+.plan__fine { margin: var(--s-4) 0 0; font-size: var(--fs-sm); color: rgba(255,255,255,.66); line-height: 1.55; }
+
+/* --- comparison ------------------------------------------------------- */
+.cmp__scroll { overflow-x: auto; margin-top: var(--s-6); min-width: 0; max-width: 100%; }
+.cmp { width: 100%; border-collapse: collapse; min-width: 30rem; }
+.cmp th, .cmp td { padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--line); text-align: left; }
+.cmp thead th { font-size: var(--fs-sm); text-transform: uppercase; letter-spacing: .07em; color: var(--text-faint); }
+.cmp tbody th { font-weight: 500; color: var(--ink); }
+.cmp td { text-align: center; width: 9rem; }
+.cmp__y { color: var(--deep); font-weight: 800; }
+.cmp__n { color: var(--text-faint); }
+
+/* --- provider --------------------------------------------------------- */
+.prov { padding: clamp(1.6rem, 4vw, 2.6rem); border-radius: calc(var(--pass-r) + 6px); background: var(--sand-2); }
+.prov__eyebrow { margin: 0 0 var(--s-2); color: var(--moss); letter-spacing: .18em; }
+.prov__lede { margin: var(--s-3) 0 0; max-width: 58ch; color: var(--text-soft); line-height: 1.6; }
+.prov__list { margin: var(--s-4) 0 0; padding-left: 1.15rem; display: grid; gap: .5rem; max-width: 58ch; color: var(--ink); line-height: 1.55; }
+.prov__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); margin: var(--s-5) 0 0; }
+.prov__alt { font-weight: 600; color: var(--deep); text-decoration: underline; text-underline-offset: 3px; }
+.prov__fine { margin: var(--s-4) 0 0; font-size: var(--fs-sm); color: var(--text-faint); }
+
+/* --- the form --------------------------------------------------------- */
+.pjoin { max-width: 40rem; }
+.pjoin__lede { margin: var(--s-3) 0 var(--s-5); color: var(--text-soft); line-height: 1.6; }
+.pjoin__form { display: grid; gap: var(--s-4); }
+.pjoin__row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+.pjoin__hp { position: absolute; left: -9999px; }
+.pjoin__picks { border: 0; padding: 0; margin: 0; }
+.pjoin__opts { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: var(--s-2); }
+.pjoin__opt { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; padding: .4rem .85rem; border: 1px solid var(--line-strong); border-radius: 999px; font-size: var(--fs-sm); cursor: pointer; }
+.pjoin__opt:has(input:checked) { background: var(--deep); border-color: transparent; color: var(--white); font-weight: 600; }
+.pjoin__opt input { accent-color: var(--brand-gold); }
+.pjoin__consent { align-items: flex-start; font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.5; }
+.pjoin__fine { margin: 0; font-size: var(--fs-sm); color: var(--text-faint); }
+.pjoin__err { margin: 0 0 var(--s-4); padding: .75rem 1rem; border-radius: var(--r-sm); background: #fdecea; color: #7a271a; font-size: var(--fs-sm); }
+.pjoin__after { margin-top: var(--s-4); }
+
+/* --- sticky bar, phones ---------------------------------------------- */
+.pass-sticky { display: none; }
+@media (max-width: 45rem) {
+  .pass-sticky {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
+    padding: .7rem var(--s-4);
+    padding-bottom: calc(.7rem + env(safe-area-inset-bottom, 0px));
+    background: var(--deep); color: var(--white);
+  }
+  .pass-sticky[hidden] { display: none; }
+  .pass-sticky__what { display: grid; line-height: 1.2; }
+  .pass-sticky__what b { font-size: var(--fs-sm); }
+  .pass-sticky__what span { font-size: var(--fs-xs); color: rgba(255,255,255,.7); }
+  .pass-sticky__go { min-height: 44px; display: inline-flex; align-items: center; padding: .4rem 1.1rem; border-radius: 999px; background: var(--white); color: var(--ink); font-weight: 700; font-size: var(--fs-sm); text-decoration: none; }
+  .pass { padding-bottom: 4.5rem; }
+}
+
+/* --- narrow ----------------------------------------------------------- */
+@media (max-width: 60rem) {
+  .pass-hero__in { grid-template-columns: minmax(0, 1fr); }
+  .pcard--float { transform: none; }
+}
+@media (max-width: 34rem) {
+  .pjoin__row { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pass * { animation: none !important; transition: none !important; }
+}
+
+/* Outdoors or one-handed, every control on this page gets a real target.
+   The site's small button is 31px, which is fine in a quiet interface and
+   not fine on a page whose whole job is a single tap. */
+@media (max-width: 45rem) {
+  .pass .btn,
+  .pass .mchip,
+  .pass .kcard,
+  .pass .pass-hero__alt,
+  .pass .prov__alt,
+  .pass .pjoin__opt,
+  .pass-sticky__go {
+    min-height: 44px;
+  }
+  .pass .pass-hero__alt,
+  .pass .prov__alt { display: inline-flex; align-items: center; }
+}
+
+/* The comparison, stacked.
+ *
+ * It used to keep its 30rem min-width and scroll sideways inside its own
+ * container -- which pushed the whole document to 434px on a 375px phone,
+ * because a min-width that large wins over the scroller for the purposes
+ * of the root's scroll area. Three columns of ticks at phone width were
+ * unreadable anyway, so each row becomes a line of its own with the column
+ * names carried on the cells. */
+@media (max-width: 40rem) {
+  .cmp { min-width: 0; }
+  .cmp thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .cmp, .cmp tbody, .cmp tr, .cmp tbody th, .cmp td { display: block; width: auto; }
+  .cmp tr { padding: .85rem 0; border-bottom: 1px solid var(--line); }
+  .cmp tbody th { padding: 0 0 .45rem; border: 0; font-weight: 600; }
+  .cmp td { display: inline-flex; align-items: center; gap: .4rem; width: auto; padding: 0 1.4rem 0 0; border: 0; text-align: left; }
+  .cmp td::before { content: attr(data-label); font-size: var(--fs-xs); color: var(--text-faint); }
+}
+
+/* ---------------------------------------------------------------------
+   "Available with Oria Pass" — the ticket on a listing page.
+
+   A real ticket rather than a card with a border: a body and a torn-off
+   stub, a perforation between them, and a notch punched at each end of
+   it. The notches are cut with a mask rather than drawn as circles in
+   the page colour, so they stay holes whatever sits behind them.
+
+   The stub carries the two things a ticket stub always carries: what it
+   costs and what it admits you to. Everything else is the body.
+   --------------------------------------------------------------------- */
+
+.xpass {
+  --xp-paper: #fff;
+  --xp-ink: var(--app-ink, #14201e);
+  --xp-muted: var(--app-muted, #5f6d69);
+  --xp-line: var(--app-line, #dcd9d0);
+  --xp-deep: var(--app-green, #0e3b38);
+  --xp-gold: var(--app-gold, #c9a24b);
+  --xp-notch: 10px;
+  --xp-stub: 9.5rem;
+  /* Jumped to after a booking, so it must clear the sticky header. */
+  scroll-margin-top: calc(var(--header-h, 72px) + 1.5rem);
+  /*
+   * The row's own padding, named so the tear line can subtract it. The
+   * notches are masked out of the BORDER box; a pseudo-element is placed
+   * against the PADDING box. Hard-coding either one drifts them apart by
+   * exactly this much, which is how the perforation first came out with
+   * its dashes a centimetre to the left of its holes.
+   */
+  --xp-pad: 1.1rem;
+  --xp-pad-v: 1rem;
+  margin: 2.2rem 0;
+}
+
+.xpass__head { display: flex; align-items: baseline; flex-wrap: wrap; gap: .6rem; margin: 0 0 .9rem; }
+.xpass__h { margin: 0; }
+
+.xpass__badge {
+  font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--xp-deep); border: 1px solid var(--xp-gold);
+  border-radius: 999px; padding: .22rem .6rem; white-space: nowrap;
+}
+
+.xpass__list { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; }
+
+.xpass__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr var(--xp-stub);
+  align-items: center;
+  gap: 0;
+  background: var(--xp-paper);
+  border-radius: 14px;
+  padding: var(--xp-pad-v) var(--xp-pad);
+  box-shadow: 0 1px 2px rgba(20, 32, 30, .06), 0 8px 20px -14px rgba(20, 32, 30, .45);
+
+  /* The perforation's two holes, punched top and bottom. */
+  -webkit-mask:
+    radial-gradient(circle var(--xp-notch) at calc(100% - var(--xp-stub)) 0, transparent 97%, #000 100%) top / 100% 51% no-repeat,
+    radial-gradient(circle var(--xp-notch) at calc(100% - var(--xp-stub)) 100%, transparent 97%, #000 100%) bottom / 100% 51% no-repeat;
+  mask:
+    radial-gradient(circle var(--xp-notch) at calc(100% - var(--xp-stub)) 0, transparent 97%, #000 100%) top / 100% 51% no-repeat,
+    radial-gradient(circle var(--xp-notch) at calc(100% - var(--xp-stub)) 100%, transparent 97%, #000 100%) bottom / 100% 51% no-repeat;
+}
+
+/* The tear line, stopping short of each notch. */
+.xpass__row::after {
+  content: "";
+  position: absolute;
+  top: var(--xp-notch); bottom: var(--xp-notch);
+  right: calc(var(--xp-stub) - var(--xp-pad));
+  border-left: 2px dashed var(--xp-line);
+}
+
+.xpass__what { display: flex; flex-direction: column; gap: .2rem; padding-right: 1rem; min-width: 0; }
+
+.xpass__title { font-weight: 650; color: var(--xp-ink); line-height: 1.25; }
+.xpass__when { font-size: .875rem; color: var(--xp-muted); font-variant-numeric: tabular-nums; }
+
+.xpass__left {
+  align-self: flex-start;
+  margin-top: .15rem;
+  font-size: .75rem; letter-spacing: .02em;
+  color: #7a4a10; background: #fdf3e0;
+  border-radius: 999px; padding: .12rem .5rem;
+}
+
+/* The stub. Credits above, the way in below. */
+.xpass__row .pcredit,
+.xpass__row .xpass__go { grid-column: 2; justify-self: center; }
+
+.xpass__row .pcredit {
+  display: flex; flex-direction: column; align-items: center; line-height: 1;
+  margin-bottom: .55rem;
+}
+.xpass__row .pcredit b { font-size: 1.65rem; font-weight: 680; color: var(--xp-deep); font-variant-numeric: tabular-nums; }
+.xpass__row .pcredit span { font-size: .6875rem; letter-spacing: .07em; text-transform: uppercase; color: var(--xp-muted); margin-top: .2rem; }
+
+.xpass__go { margin: 0; }
+
+.xpass__fine { font-size: .8125rem; color: var(--app-faint, #7d8a86); margin: .9rem 0 0; }
+
+.xpass__ok, .xpass__err { border-radius: 12px; padding: .7rem .9rem; margin: 0 0 .9rem; font-size: .9375rem; }
+.xpass__ok { background: #e8f2ee; color: #14443c; }
+.xpass__err { background: #fdecea; color: #7a271a; }
+
+/* Narrow: tear the stub off the bottom instead of the side. */
+@media (max-width: 34rem) {
+  .xpass__row {
+    grid-template-columns: 1fr;
+    /*
+     * Measured, not guessed: the credit figure's top sits 6.31rem above
+     * the row's bottom edge at 375px, so the tear has to fall above that
+     * or it runs straight through the number. The stub carries the price
+     * and the way in; splitting them is not a stub.
+     */
+    --xp-foot: 7.05rem;
+    text-align: left;
+    -webkit-mask:
+      radial-gradient(circle var(--xp-notch) at 0 calc(100% - var(--xp-foot)), transparent 97%, #000 100%) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--xp-notch) at 100% calc(100% - var(--xp-foot)), transparent 97%, #000 100%) right / 51% 100% no-repeat;
+    mask:
+      radial-gradient(circle var(--xp-notch) at 0 calc(100% - var(--xp-foot)), transparent 97%, #000 100%) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--xp-notch) at 100% calc(100% - var(--xp-foot)), transparent 97%, #000 100%) right / 51% 100% no-repeat;
+  }
+  .xpass__row::after {
+    top: auto; right: var(--xp-notch); left: var(--xp-notch);
+    bottom: calc(var(--xp-foot) - var(--xp-pad-v));
+    border-left: 0; border-top: 2px dashed var(--xp-line);
+  }
+  .xpass__what { padding: 0 0 .9rem; }
+  .xpass__row .pcredit,
+  .xpass__row .xpass__go { grid-column: 1; justify-self: start; }
+  .xpass__row .pcredit { flex-direction: row; align-items: baseline; gap: .35rem; margin: .9rem 0 .55rem; }
+  .xpass__row .pcredit b { font-size: 1.35rem; }
+  .xpass__row .pcredit span { margin: 0; }
+}
+
+/* ---------------------------------------------------------------------
+   The month, as a board.
+
+   Squares alternate, and with seven columns that falls out of the markup
+   for free: each row is an odd number of cells, so nth-child parity flips
+   every row on its own. No row wrappers, no per-cell class, no counting
+   in PHP.
+
+   The squares touch -- a chessboard with gaps between the squares is a
+   grid of chips -- so the rounding goes on the board and the overflow is
+   clipped. The board is capped in width too: a month stretched across a
+   full-width column puts Monday and Sunday a hand's width apart and
+   stops reading as a month at all.
+
+   A day with places is not a third shade of the board; it is on top of
+   it, in the one colour the Pass uses for "this is the thing to press".
+   --------------------------------------------------------------------- */
+.xcal {
+  --xcal-a: #faf8f4;
+  --xcal-b: #e9e3d6;
+  --xcal-open: #dcebe2;
+  --xcal-open-hover: #c9e0d3;
+  margin: 0 0 1.2rem;
+  max-width: 27rem;
+}
+
+.xcal__head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin: 0 0 .6rem; }
+.xcal__month { margin: 0; font-size: 1rem; font-weight: 650; color: var(--xp-ink, #14201e); }
+.xcal__move {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2rem; height: 2rem; border-radius: 999px;
+  border: 1px solid var(--xp-line, #dcd9d0); color: var(--xp-deep, #0e3b38);
+  text-decoration: none; line-height: 1;
+}
+.xcal__move:hover { border-color: var(--xp-deep, #0e3b38); background: var(--xcal-a); }
+.xcal__move--off { opacity: .25; }
+
+.xcal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  border: 1px solid var(--xp-line, #dcd9d0);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* The board. Seven columns means parity alternates by itself. */
+.xcal__grid > *:nth-child(even) { background: var(--xcal-b); }
+.xcal__grid > *:nth-child(odd)  { background: var(--xcal-a); }
+
+/* The day letters are a label, not a square. */
+.xcal__grid .xcal__dow {
+  background: #fff;
+  text-align: center;
+  font-size: .625rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--xp-muted, #5f6d69);
+  padding: .45rem 0;
+  border-bottom: 1px solid var(--xp-line, #dcd9d0);
+}
+
+.xcal__pad { min-height: 2.9rem; }
+
+.xcal__day {
+  position: relative; min-height: 2.9rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: .875rem; font-variant-numeric: tabular-nums;
+  color: var(--xp-muted, #5f6d69); text-decoration: none;
+}
+
+/* Today is marked on the board rather than coloured, so it never competes
+   with a day that can actually be booked. */
+.xcal__day.is-today .xcal__n {
+  box-shadow: 0 0 0 1px var(--xp-muted, #5f6d69);
+  border-radius: 999px; padding: 0 .3rem;
+}
+
+/* Placed after the board so it wins without needing !important. */
+.xcal__grid .xcal__day--open {
+  background: var(--xcal-open);
+  color: var(--xp-deep, #0e3b38);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px rgba(14, 59, 56, .1);
+}
+.xcal__grid .xcal__day--open:hover { background: var(--xcal-open-hover); }
+.xcal__grid .xcal__day--open.is-on { background: var(--xp-deep, #0e3b38); color: #fff; box-shadow: none; }
+
+.xcal__n { line-height: 1.1; }
+.xcal__dot { width: 4px; height: 4px; border-radius: 999px; background: currentColor; margin-top: 3px; }
+
+.xcal__note { margin: .7rem 0 0; font-size: .8125rem; color: var(--app-faint, #7d8a86); }
+.xcal__note a { color: var(--xp-deep, #0e3b38); }
+.xpass__none { margin: 0 0 .9rem; font-size: .9375rem; color: var(--xp-muted, #5f6d69); }
+
+@media (max-width: 26rem) {
+  .xcal__day, .xcal__pad { min-height: 2.5rem; }
+  .xcal__day { font-size: .8125rem; }
+}
+
+/* ---------------------------------------------------------------------
+   The banner, wherever the Pass is worth mentioning.
+
+   Deliberately quiet: it sits inside pages that are doing their own job,
+   and a promo that shouts over a listing or a category is a promo people
+   learn to skip. One accent, one button, and the rest is the page's own
+   type.
+   --------------------------------------------------------------------- */
+.xbanner {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 1rem 1.6rem;
+  padding: 1.15rem 1.3rem;
+  margin: 2rem 0;
+  border-radius: 16px;
+  background: #f1f5f2;
+  border: 1px solid rgba(14, 59, 56, .12);
+}
+.xbanner--practice { background: #fbf6ea; border-color: rgba(201, 162, 75, .32); }
+
+.xbanner__words { flex: 1 1 22rem; min-width: 0; }
+
+.xbanner__eyebrow {
+  display: inline-block; margin-bottom: .3rem;
+  font-size: .6875rem; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--app-green, #0e3b38);
+}
+.xbanner--practice .xbanner__eyebrow { color: #8a6a1f; }
+
+.xbanner__title { margin: 0; font-size: 1.0625rem; font-weight: 680; line-height: 1.3; color: var(--app-ink, #14201e); text-wrap: balance; }
+.xbanner__says { margin: .35rem 0 0; font-size: .9375rem; line-height: 1.45; color: var(--app-muted, #5f6d69); max-width: 46ch; }
+
+.xbanner__acts { display: flex; flex-direction: column; align-items: flex-start; gap: .45rem; flex: 0 0 auto; }
+.xbanner__alt { font-size: .8125rem; color: var(--app-muted, #5f6d69); }
+a.xbanner__alt { text-decoration: underline; text-underline-offset: 3px; }
+a.xbanner__alt:hover { color: var(--app-green, #0e3b38); }
+
+/* Slim: for a sidebar or a spot where the band would dominate. */
+.xbanner--slim { flex-direction: column; align-items: flex-start; gap: .7rem; padding: 1rem 1.1rem; margin: 1.2rem 0; }
+.xbanner--slim .xbanner__title { font-size: .9375rem; }
+.xbanner--slim .xbanner__says { font-size: .875rem; }
+
+@media (max-width: 40rem) {
+  .xbanner { padding: 1rem 1.05rem; }
+  .xbanner__acts { width: 100%; }
+}

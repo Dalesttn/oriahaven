@@ -204,6 +204,18 @@ get_template_part(
  * the top, but they answer a question that comes after the decision.
  */
 ?>
+<section class="wrap section section--top-flush">
+	<?php
+	/*
+	 * Before the plans, because it answers a different question. The
+	 * plans say what a listing costs; this says what the listing can
+	 * bring in, which is the thing somebody weighing us up actually
+	 * wants to know.
+	 */
+	get_template_part( 'template-parts/pass/banner', null, array( 'audience' => 'practice', 'where' => 'list_your_practice' ) );
+	?>
+</section>
+
 <section class="wrap section section--top-flush" id="plans">
 	<h2 class="h3" style="margin-bottom:.4rem"><?php esc_html_e( 'What a listing costs', 'oria' ); ?></h2>
 	<p class="hint" style="max-width:52ch;margin-bottom:1.2rem"><?php esc_html_e( 'Listing is free and stays free. We never take a commission on a booking, and nothing here is a lock-in contract — cancel a paid plan and the listing drops back to Free with everything you added still on it.', 'oria' ); ?></p>

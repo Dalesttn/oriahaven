@@ -708,3 +708,32 @@ html.xc-locked { overflow: hidden; }
 .xc-also__name { font-weight: 700; color: var(--deep); }
 .xc-also__line { font-size: var(--fs-sm); color: var(--text-soft); }
 @media (prefers-reduced-motion: reduce) { .xc-also__link { transition: none; } }
+
+/* ---------------------------------------------------------------------
+   The Oria note, with the Pass alongside it.
+
+   The note was a wide card with a short sentence and a button, and most
+   of its width doing nothing. The Pass sits in that space rather than
+   taking another band further down the page — one mention per page, in
+   the place somebody is already deciding something.
+
+   A rule, not a divider, between them: two panels in one card want
+   separating without being made to look like two cards.
+   --------------------------------------------------------------------- */
+.xc-note--two { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--s-5); align-items: start; }
+.xc-note__main { min-width: 0; }
+.xc-note__aside { min-width: 0; padding-left: var(--s-5); border-left: 1px solid color-mix(in srgb, var(--deep) 14%, transparent); }
+
+/* The bare banner takes the note's own type, not its own card. */
+.xc-note__aside .xbanner--bare {
+  display: block; margin: 0; padding: 0;
+  background: none; border: 0; border-radius: 0;
+}
+.xc-note__aside .xbanner__title { font-size: 1.0625rem; color: var(--deep); }
+.xc-note__aside .xbanner__says { font-size: .9375rem; }
+.xc-note__aside .xbanner__acts { margin-top: .75rem; }
+
+@media (max-width: 52rem) {
+  .xc-note--two { grid-template-columns: 1fr; gap: var(--s-4); }
+  .xc-note__aside { padding-left: 0; padding-top: var(--s-4); border-left: 0; border-top: 1px solid color-mix(in srgb, var(--deep) 14%, transparent); }
+}
