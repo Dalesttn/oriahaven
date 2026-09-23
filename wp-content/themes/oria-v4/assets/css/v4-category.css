@@ -737,3 +737,182 @@ html.xc-locked { overflow: hidden; }
   .xc-note--two { grid-template-columns: 1fr; gap: var(--s-4); }
   .xc-note__aside { padding-left: 0; padding-top: var(--s-4); border-left: 0; border-top: 1px solid color-mix(in srgb, var(--deep) 14%, transparent); }
 }
+
+/* =====================================================================
+   "What would feel good right now?" — five doorways, not five boxes.
+
+   The old component was five identical beige rectangles that inverted to
+   solid green when picked. It read as a filter form because every option
+   looked the same and only the border moved; nothing about it suggested
+   that these are five different KINDS of evening.
+
+   The idea here is a doorway. Each option is an arch with light behind
+   it, and the light runs cool to warm across the row -- dusk at Switch
+   off, midday at Move, lamp-gold at Treat yourself. Choosing one opens
+   it: the arch fills with its own light and the doorway widens. The
+   colour is doing the same job the words are, which is what makes it
+   answer "how do you want to feel" rather than "tick a category".
+
+   Rules it keeps: colour is never the only signal (a tick, a border and
+   a weight change carry it too), nothing moves for somebody who asked
+   for less motion, and every tint is a wash behind a line drawing rather
+   than a block of saturated colour.
+   ===================================================================== */
+
+.xc-moods {
+  --mood-ink: var(--deep, #0e3b38);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .55rem;
+  align-items: stretch;
+}
+
+.xc-mood {
+  /* Default light: the neutral doorway, before any feeling is chosen. */
+  --m: #6f7f7a;
+  --m-wash: #e6e4db;
+  --m-tint: #f4f2ec;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .3rem;
+  min-height: 13.5rem;
+  padding: 0 .8rem 1rem;
+  text-align: center;
+  border: 1px solid var(--line, #dcd8cc);
+  border-radius: 18px;
+  background: var(--white, #fff);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+/* The light behind each door. Keyed off the slug the data already
+   carries, so nothing new had to be invented to hold a colour. An
+   unlisted feeling keeps the neutral above rather than breaking. */
+.xc-mood[data-xc-mood="switch-off"]     { --m: #4d5f7d; --m-wash: #dbe3f0; --m-tint: #eef1f8; }
+.xc-mood[data-xc-mood="recover"]        { --m: #9c563c; --m-wash: #f3ddd1; --m-tint: #faefe9; }
+.xc-mood[data-xc-mood="move"]           { --m: #416b43; --m-wash: #dce9da; --m-tint: #eef4ed; }
+.xc-mood[data-xc-mood="connect"]        { --m: #a96a25; --m-wash: #f7e2c6; --m-tint: #fcf1e2; }
+.xc-mood[data-xc-mood="treat-yourself"] { --m: #8d6f1f; --m-wash: #f3e6bd; --m-tint: #faf3df; }
+
+/* The doorway: an arch, not a circle. Square-ish shoulders, round top. */
+.xc-mood__arch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 4.1rem;
+  height: 5.3rem;
+  margin: 0 0 .7rem;
+  padding-top: .9rem;
+  align-items: start;
+  border-radius: 999px 999px 0 0;
+  overflow: hidden;
+  color: var(--m);
+  transition: height 180ms ease, width 180ms ease;
+}
+
+.xc-mood__sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--m-wash) 0%, var(--m-tint) 55%, #fff 100%);
+  transition: background 180ms ease, opacity 180ms ease;
+}
+
+.xc-mood__icon { position: relative; width: 1.5rem; height: 1.5rem; }
+
+.xc-mood__name { font-weight: 650; font-size: 1.0625rem; line-height: 1.25; color: var(--deep, #0e3b38); }
+.xc-mood__line { font-size: .875rem; line-height: 1.45; color: var(--text-soft, #5f6d69); }
+.xc-mood__n {
+  margin-top: auto; padding-top: .45rem;
+  font-size: .8125rem; font-weight: 600; color: var(--m);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The tick, kept out of the way until it means something. */
+.xc-mood__tick {
+  position: absolute; top: .55rem; right: .55rem;
+  display: grid; place-items: center;
+  width: 1.35rem; height: 1.35rem;
+  border-radius: 999px;
+  background: var(--m); color: #fff;
+  opacity: 0; transform: scale(.6);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+.xc-mood__tick svg { width: .85rem; height: .85rem; }
+
+.xc-mood:hover { border-color: var(--m); transform: translateY(-2px); box-shadow: 0 6px 18px -12px rgba(14, 59, 56, .5); }
+.xc-mood:hover .xc-mood__sky { opacity: .85; }
+
+.xc-mood:focus-visible { outline: 3px solid var(--deep, #0e3b38); outline-offset: 3px; }
+
+/* Chosen: the door opens. Three signals, not one -- fill, border and tick. */
+.xc-mood[aria-pressed="true"] {
+  border-color: var(--m);
+  border-width: 2px;
+  padding: 0 calc(.8rem - 1px) calc(1rem - 1px);
+  background: var(--m-wash);
+}
+.xc-mood[aria-pressed="true"] .xc-mood__arch { width: 4.7rem; height: 6rem; }
+.xc-mood[aria-pressed="true"] .xc-mood__sky { background: linear-gradient(180deg, var(--m) 0%, var(--m-wash) 62%, var(--m-tint) 100%); }
+.xc-mood[aria-pressed="true"] .xc-mood__arch { color: #fff; }
+.xc-mood[aria-pressed="true"] .xc-mood__tick { opacity: 1; transform: scale(1); }
+.xc-mood[aria-pressed="true"] .xc-mood__name { font-weight: 720; }
+
+/* The old rule inverted the whole card and prefixed the name with a tick
+   character; both are gone now, so undo them explicitly rather than
+   leaving two systems fighting over the same element. */
+.xc-mood[aria-pressed="true"] .xc-mood__name::before { content: none; }
+.xc-mood[aria-pressed="true"] .xc-mood__line { color: var(--text-soft, #5f6d69); }
+.xc-mood[aria-pressed="true"] .xc-mood__n { color: var(--m); }
+
+.xc-pop__heading { display: grid; gap: .15rem; }
+.xc-pop__helper { margin: 0; font-size: .9375rem; color: var(--text-soft, #5f6d69); }
+
+/* Tablet: three, then two centred on a six-column grid rather than two
+   stranded on the left. */
+@media (max-width: 68rem) {
+  .xc-moods { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .xc-mood { grid-column: span 2; }
+  .xc-mood:nth-child(4) { grid-column: 2 / span 2; }
+  .xc-mood:nth-child(5) { grid-column: 4 / span 2; }
+}
+
+/* Phone: the doorway lies on its side so the row is readable at a glance. */
+@media (max-width: 40rem) {
+  .xc-moods { grid-template-columns: 1fr; gap: .5rem; }
+  .xc-mood, .xc-mood:nth-child(4), .xc-mood:nth-child(5) { grid-column: 1 / -1; }
+  /*
+   * A grid, not a row of flex siblings: the name, the line and the count
+   * are separate elements, so in a row they would sit side by side rather
+   * than stacking beside the doorway. Areas put them where they belong
+   * without touching the markup, and 1fr on the middle column is what
+   * keeps a long description from pushing the card past 320px.
+   */
+  .xc-mood {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "arch name tick" "arch line tick" "arch n tick";
+    align-items: center;
+    text-align: left;
+    min-height: 0; padding: .7rem .8rem; gap: .1rem .75rem; overflow: visible;
+  }
+  .xc-mood__arch { grid-area: arch; width: 2.6rem; height: 3rem; margin: 0; padding-top: .45rem; align-self: center; }
+  .xc-mood__name { grid-area: name; font-size: 1rem; }
+  .xc-mood__line { grid-area: line; font-size: .8125rem; }
+  .xc-mood__n { grid-area: n; margin: 0; padding: .15rem 0 0; }
+  .xc-mood__tick { grid-area: tick; position: static; align-self: center; transform: scale(.6); }
+  .xc-mood[aria-pressed="true"] .xc-mood__tick { transform: scale(1); }
+  .xc-mood[aria-pressed="true"] .xc-mood__tick { transform: translateY(-50%) scale(1); }
+  .xc-mood[aria-pressed="true"] { padding: calc(.7rem - 1px) calc(.8rem - 1px); }
+  .xc-mood[aria-pressed="true"] .xc-mood__arch { width: 2.6rem; height: 3rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xc-mood, .xc-mood__arch, .xc-mood__sky, .xc-mood__tick { transition: none; }
+  .xc-mood[aria-pressed="true"] .xc-mood__arch { width: 4.1rem; height: 5.3rem; }
+  .xc-mood:hover { transform: none; }
+  .xc-mood[aria-pressed="true"] .xc-mood__arch { transform: none; }
+}

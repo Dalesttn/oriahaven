@@ -404,13 +404,20 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 		<?php if ( $oria_moods ) : ?>
 			<div class="xc-pop xc-pop--wide" id="xcWays" role="dialog" aria-labelledby="xcWaysTitle" hidden>
 				<div class="xc-pop__head">
-					<h2 class="xc-pop__title" id="xcWaysTitle"><?php esc_html_e( 'What would feel good right now?', 'oria' ); ?></h2>
-					<button type="button" class="xc-pop__x" data-xc-close aria-label="<?php esc_attr_e( 'Close', 'oria' ); ?>">&times;</button>
+					<div class="xc-pop__heading">
+						<h2 class="xc-pop__title" id="xcWaysTitle"><?php esc_html_e( 'What would feel good right now?', 'oria' ); ?></h2>
+						<p class="xc-pop__helper"><?php esc_html_e( 'Pick a feeling. You can narrow it down after.', 'oria' ); ?></p>
+					</div>
+					<button type="button" class="xc-pop__x" data-xc-close aria-label="<?php esc_attr_e( 'Close preferences', 'oria' ); ?>">&times;</button>
 				</div>
 				<div class="xc-pop__body">
 					<div class="xc-moods" role="group" aria-label="<?php esc_attr_e( 'Moods', 'oria' ); ?>">
 						<?php foreach ( $oria_moods as $oria_m ) : ?>
 							<button type="button" class="xc-mood" aria-pressed="false" data-xc-mood="<?php echo esc_attr( $oria_m['slug'] ); ?>" data-xc-mood-name="<?php echo esc_attr( $oria_m['name'] ); ?>" data-kind="cat" data-items="<?php echo esc_attr( implode( ',', $oria_m['items'] ) ); ?>">
+								<span class="xc-mood__arch" aria-hidden="true">
+									<span class="xc-mood__sky"></span>
+									<?php get_template_part( 'template-parts/mood-icon', null, array( 'slug' => $oria_m['slug'] ) ); ?>
+								</span>
 								<span class="xc-mood__name"><?php echo esc_html( $oria_m['name'] ); ?></span>
 								<?php if ( '' !== $oria_m['line'] ) : ?>
 									<span class="xc-mood__line"><?php echo esc_html( $oria_m['line'] ); ?></span>
@@ -420,6 +427,9 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 									/* translators: %s: number of places */
 									printf( esc_html( _n( '%s place', '%s places', $oria_m['n'], 'oria' ) ), esc_html( number_format_i18n( $oria_m['n'] ) ) );
 									?>
+								</span>
+								<span class="xc-mood__tick" aria-hidden="true">
+									<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m3.5 8.5 3 3 6-6.5"/></svg>
 								</span>
 							</button>
 						<?php endforeach; ?>
