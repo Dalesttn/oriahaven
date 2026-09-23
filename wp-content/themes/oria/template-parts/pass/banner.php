@@ -19,7 +19,11 @@
  *
  * Args:
  *   audience  'practice' | 'member'  Who it is talking to.
- *   tone      'band' (default) | 'slim'
+ *   tone      'band' (default) | 'slim' | 'bare'
+ *
+ * 'bare' drops the card -- background, border and padding -- for when it
+ * is dropped inside something that already is one. A card inside a card
+ * reads as a mistake however well it is coloured.
  *   where     A short slug for analytics, e.g. 'category', 'dashboard'.
  *
  * @package Oria
@@ -39,7 +43,7 @@ use Oria\Pass\Settings;
 wp_enqueue_style( 'oria-pass' );
 
 $oria_audience = 'practice' === ( $args['audience'] ?? '' ) ? 'practice' : 'member';
-$oria_tone     = 'slim' === ( $args['tone'] ?? '' ) ? 'slim' : 'band';
+$oria_tone     = in_array( (string) ( $args['tone'] ?? '' ), array( 'slim', 'bare' ), true ) ? (string) $args['tone'] : 'band';
 $oria_where    = sanitize_key( (string) ( $args['where'] ?? 'site' ) );
 
 $oria_uid      = get_current_user_id();

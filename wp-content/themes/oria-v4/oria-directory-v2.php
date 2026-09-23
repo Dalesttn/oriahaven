@@ -618,7 +618,8 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 	 * The heading and labels are the site's own existing wording.
 	 */
 	?>
-	<aside class="xc-note" id="xcNote" aria-labelledby="xcNoteTitle">
+	<aside class="xc-note xc-note--two" id="xcNote" aria-labelledby="xcNoteTitle">
+		<div class="xc-note__main">
 		<p class="micro xc-note__eyebrow"><?php esc_html_e( 'The Oria note', 'oria' ); ?></p>
 		<h3 class="xc-note__title" id="xcNoteTitle"><?php esc_html_e( 'Not sure which kind of practice suits you?', 'oria' ); ?></h3>
 		<p class="xc-note__acts">
@@ -626,6 +627,11 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 			<a class="xc-note__link" href="<?php echo esc_url( home_url( '/compare/' ) ); ?>" data-oria-event="explore_compare_click"><?php esc_html_e( 'Compare experiences', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
 			<a class="xc-note__link" href="<?php echo esc_url( home_url( '/ask/' ) ); ?>" data-oria-event="category_ask_start"><?php esc_html_e( 'Ask Oria', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
 		</p>
+		</div>
+
+		<div class="xc-note__aside">
+			<?php get_template_part( 'template-parts/pass/banner', null, array( 'audience' => 'member', 'tone' => 'bare', 'where' => 'explore_note' ) ); ?>
+		</div>
 	</aside>
 
 	<?php
