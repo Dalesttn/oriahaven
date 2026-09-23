@@ -49,10 +49,44 @@ $oria_rest_regions = array_slice( $oria_regions, 5 );
  * @param array  $row   [url, label, count, note?].
  * @param string $event Analytics name, or ''.
  */
-$oria_card = static function ( array $row, string $event = '' ) {
+/**
+ * What a treatment feels like, looked up once for the whole section.
+ *
+ * Keyed by the slug at the end of the card's own URL, so the rows did
+ * not have to learn a new field and every caller keeps working.
+ */
+$oria_senses = (array) require get_template_directory() . '/data/sensations.php';
+
+$oria_sense_of = static function ( string $url ) use ( $oria_senses ): array {
+	$slug = basename( untrailingslashit( (string) wp_parse_url( $url, PHP_URL_PATH ) ) );
+
+	return $oria_senses[ $slug ] ?? array( '', '' );
+};
+
+/**
+ * One card. Warm white, a green name, the count spelled out underneath --
+ * not a bare digit at the far edge, which reads as a badge.
+ *
+ * A style card also carries how it feels: a family that tints its edge
+ * and draws its mark, and a one-word cue. A place card does not, because
+ * a suburb has no temperature, and the same function draws both.
+ *
+ * @param array  $row   [url, label, count, note?].
+ * @param string $event Analytics name, or ''.
+ * @param bool   $sense Whether this row is a treatment rather than a place.
+ */
+$oria_card = static function ( array $row, string $event = '', bool $sense = false ) use ( $oria_sense_of ) {
 	$note = (string) ( $row[3] ?? '' );
+	list( $family, $cue ) = $sense ? $oria_sense_of( (string) $row[0] ) : array( '', '' );
 	?>
-	<a class="xcard" href="<?php echo esc_url( (string) $row[0] ); ?>"<?php echo '' !== $event ? ' data-oria-event="' . esc_attr( $event ) . '"' : ''; ?>>
+	<a class="xcard<?php echo $sense ? ' xcard--sense' : ''; ?>" href="<?php echo esc_url( (string) $row[0] ); ?>"<?php echo '' !== $family ? ' data-sense="' . esc_attr( $family ) . '"' : ''; ?><?php echo '' !== $event ? ' data-oria-event="' . esc_attr( $event ) . '"' : ''; ?>>
+		<?php if ( '' !== $family ) : ?>
+			<span class="xcard__wash" aria-hidden="true"></span>
+			<?php get_template_part( 'template-parts/sensation-icon', null, array( 'family' => $family ) ); ?>
+		<?php endif; ?>
+		<?php if ( '' !== $cue ) : ?>
+			<span class="xcard__cue"><?php echo esc_html( $cue ); ?></span>
+		<?php endif; ?>
 		<b class="xcard__name"><?php echo esc_html( (string) $row[1] ); ?></b>
 		<?php if ( '' !== $note ) : ?>
 			<span class="xcard__note"><?php echo esc_html( $note ); ?></span>
@@ -67,7 +101,9 @@ $oria_card = static function ( array $row, string $event = '' ) {
 				);
 				?>
 			</span>
-			<span class="xcard__arrow" aria-hidden="true">&rarr;</span>
+			<span class="xcard__arrow" aria-hidden="true">
+				<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3 8h9"/><path d="m8.5 4.5 3.5 3.5-3.5 3.5"/></svg>
+			</span>
 		</span>
 	</a>
 	<?php
@@ -92,10 +128,10 @@ $oria_card = static function ( array $row, string $event = '' ) {
 	<?php if ( $oria_styles ) : ?>
 		<div class="xtabs__panel" id="<?php echo esc_attr( $oria_id ); ?>-p1" data-xtabs-panel>
 			<h3 class="h4 xtabs__sub"><?php esc_html_e( 'Choose a style', 'oria' ); ?></h3>
-			<div class="xtabs__grid">
+			<div class="xtabs__grid xtabs__grid--sense">
 				<?php
 				foreach ( $oria_lead_styles as $oria_row ) {
-					$oria_card( $oria_row, $oria_event );
+					$oria_card( $oria_row, $oria_event, true );
 				}
 				?>
 			</div>

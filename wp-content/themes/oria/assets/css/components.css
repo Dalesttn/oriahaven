@@ -1854,3 +1854,133 @@ a.badge--best:focus-visible { outline: 3px solid var(--gold-soft); outline-offse
    the recognition and the practice it belongs to. */
 .listing__best { display: flex; }
 .listing__best + .listing__head { margin-top: calc(var(--s-2) * -1); }
+
+/* =====================================================================
+   "Choose a style" — six sensations, not six search results.
+
+   The cards were identical white panels, so heat, cold, light and sound
+   all looked the same and the section scanned as a list. Each style now
+   carries the family it belongs to: a tinted edge, a wash in the upper
+   corner and a line mark, with a one-word cue above the name.
+
+   The colour is an orientation tool, not decoration. It is the same
+   pale family throughout, sits behind nothing that carries text, and a
+   style we have no sensation for simply does not get one -- there are
+   hundreds of service terms and guessing would be worse than staying
+   quiet. Places keep the plain card: a suburb has no temperature.
+   ===================================================================== */
+
+.xtabs__grid--sense { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+@media (min-width: 80rem) {
+  .xtabs__grid--sense { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--s-2, .5rem); }
+}
+
+.xcard--sense {
+  --sense: var(--moss, #3F6E60);
+  --sense-wash: rgba(63, 110, 96, .12);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 10.5rem;
+  /*
+   * The base card is a grid packed to the top (align-content: start), so
+   * the margin-top:auto already on the footer could never do anything and
+   * a short description left the count floating mid-card. A column is the
+   * smallest change that lets the floor be the floor.
+   */
+  display: flex;
+  flex-direction: column;
+}
+
+.xcard--sense[data-sense="heat"]     { --sense: #b06a4c; --sense-wash: rgba(201, 120, 95, .20); }
+.xcard--sense[data-sense="cold"]     { --sense: #5c8494; --sense-wash: rgba(111, 153, 167, .22); }
+.xcard--sense[data-sense="contrast"] { --sense: #8a7a63; --sense-wash: rgba(160, 130, 100, .20); }
+.xcard--sense[data-sense="light"]    { --sense: #a55c5d; --sense-wash: rgba(185, 103, 104, .18); }
+.xcard--sense[data-sense="sound"]    { --sense: #7b6a8c; --sense-wash: rgba(139, 120, 156, .20); }
+.xcard--sense[data-sense="still"]    { --sense: #5f7d70; --sense-wash: rgba(95, 125, 112, .18); }
+.xcard--sense[data-sense="touch"]    { --sense: #a08159; --sense-wash: rgba(181, 139, 77, .20); }
+.xcard--sense[data-sense="move"]     { --sense: #4f7350; --sense-wash: rgba(79, 115, 80, .20); }
+
+/* The atmosphere: one soft pool of light, half outside the card. */
+.xcard__wash {
+  position: absolute;
+  z-index: -1;
+  top: -3.2rem; right: -2.6rem;
+  width: 8.5rem; height: 8.5rem;
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 50%, var(--sense-wash), transparent 68%);
+  transition: opacity var(--t-fast, .18s) var(--ease, ease);
+}
+
+/* The mark lives in the corner light rather than above the cue, where
+   it stacked into the text column and read as clutter. */
+.xcard__icon {
+  position: absolute;
+  top: .95rem; right: 1rem;
+  display: block;
+  color: var(--sense);
+  opacity: .75;
+}
+.xcard__icon svg { width: 1.65rem; height: 1.65rem; display: block; }
+.xcard--sense:hover .xcard__icon { opacity: 1; }
+
+.xcard__cue {
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--sense);
+}
+
+/* The count and arrow sit on the floor of the card, so a short
+   description does not leave them stranded mid-air. */
+.xcard--sense .xcard__foot { margin-top: auto; }
+
+.xcard--sense .xcard__name,
+.xcard--sense .xcard__cue { padding-right: 2.2rem; }
+.xcard--sense .xcard__name { margin-top: .1rem; }
+
+/* The arrow was a stray character at the far edge. Now a control. */
+.xcard__arrow {
+  display: grid; place-items: center;
+  width: 2.1rem; height: 2.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--deep);
+  flex: 0 0 auto;
+  transition: background var(--t-fast, .18s) var(--ease, ease), border-color var(--t-fast, .18s) var(--ease, ease), color var(--t-fast, .18s) var(--ease, ease), transform var(--t-fast, .18s) var(--ease, ease);
+}
+.xcard__arrow svg { width: 1rem; height: 1rem; display: block; }
+
+.xcard--sense { border-color: color-mix(in srgb, var(--sense) 26%, var(--line)); }
+.xcard--sense .xcard__arrow { border-color: color-mix(in srgb, var(--sense) 32%, var(--line)); }
+
+.xcard:hover .xcard__arrow { transform: translateX(2px); }
+.xcard--sense:hover { border-color: var(--sense); }
+.xcard--sense:hover .xcard__wash { opacity: 1.35; }
+.xcard--sense:hover .xcard__arrow { background: var(--sense); border-color: var(--sense); color: #fff; transform: translateX(2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .xcard__arrow, .xcard__wash { transition: none; }
+  .xcard:hover .xcard__arrow, .xcard--sense:hover .xcard__arrow { transform: none; }
+}
+
+/* Narrow: the row becomes a swipe, with the next card peeking. */
+@media (max-width: 48rem) {
+  .xtabs__grid--sense {
+    display: flex;
+    gap: var(--s-3, .75rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: .4rem;
+    margin-inline: calc(var(--s-4, 1rem) * -1);
+    padding-inline: var(--s-4, 1rem);
+  }
+  .xtabs__grid--sense > .xcard {
+    flex: 0 0 84%;
+    scroll-snap-align: start;
+    min-height: 10.5rem;
+  }
+}
