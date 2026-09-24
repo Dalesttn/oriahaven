@@ -3903,6 +3903,79 @@
   /* Neighbourhood promotions, wherever they are. One listener rather than
      one per component, and no personal data -- where it was and which area,
      nothing about who clicked. */
+  /* Rest on a card and the map pin explains itself.
+
+     Two seconds, because anything shorter fires while somebody is sweeping
+     the mouse down a page of results and the page fills with pills nobody
+     asked for. The timer is cleared the moment the pointer leaves, so a
+     pass-over costs nothing.
+
+     Delegated from the results container, not bound per card: app.js
+     redraws every card on a filter, and per-card listeners would be lost
+     with them. Pointer devices only -- on a touch screen the hover state
+     sticks after a tap and the pill would never go away. */
+  function initCardHints() {
+    if (!window.matchMedia || !window.matchMedia("(hover: hover)").matches) return;
+
+    var HINT_TEXT = "View on map";
+    var DELAY = 2000;
+    var timer = null;
+    var shown = null;
+    var pending = null;
+
+    function hide() {
+      if (timer) { clearTimeout(timer); timer = null; }
+      pending = null;
+      if (shown) { shown.classList.remove("is-hinting"); shown = null; }
+    }
+
+    function show(card) {
+      /* Only where the pin is actually on screen -- it is hidden on narrow
+         layouts, and pointing at something invisible is worse than silence. */
+      var pin = card.querySelector(".qact--pin");
+      if (!pin || !pin.offsetParent) return;
+
+      var quick = pin.parentElement;
+      var hint = quick.querySelector(".listing__hint");
+      if (!hint) {
+        hint = document.createElement("span");
+        hint.className = "listing__hint";
+        /* Decorative: the button it points at already carries its own
+           accessible name, and a screen reader that met both would hear
+           the same instruction twice. */
+        hint.setAttribute("aria-hidden", "true");
+        hint.textContent = HINT_TEXT;
+        quick.appendChild(hint);
+      }
+      card.classList.add("is-hinting");
+      shown = card;
+      pending = null;
+    }
+
+    document.addEventListener("mouseover", function (e) {
+      var card = e.target.closest && e.target.closest(".listing");
+      if (!card) { hide(); return; }
+      /* mouseover fires again for every child the pointer crosses. Without
+         this the countdown restarted on each one, so the two seconds only
+         began once the pointer stopped dead -- on a card being read with a
+         moving mouse it never arrived at all. */
+      if (card === shown || card === pending) return;
+      hide();
+      pending = card;
+      timer = setTimeout(function () { show(card); }, DELAY);
+    });
+
+    document.addEventListener("mouseout", function (e) {
+      var card = e.target.closest && e.target.closest(".listing");
+      /* Moving between two children of the same card is not leaving it. */
+      if (card && e.relatedTarget && card.contains(e.relatedTarget)) return;
+      hide();
+    });
+
+    /* Scrolling away from a card leaves the pill behind pointing at nothing. */
+    window.addEventListener("scroll", hide, { passive: true });
+  }
+
   function initAreaTracking() {
     document.addEventListener("click", function (e) {
       var el = e.target.closest && e.target.closest("[data-area-promo]");
@@ -6308,6 +6381,7 @@
     initHoods();
     initExploreTabs();
     initAreaTracking();
+    initCardHints();
     initSaveEvent();
     initSavedEventsPage();
     initClasses();

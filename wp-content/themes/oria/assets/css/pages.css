@@ -4932,6 +4932,52 @@ html.has-sheet { overflow: hidden; }
   gap: .4rem;
   z-index: 2;
 }
+
+/* Rest on a card for a moment and the map pin says what it is for. The pin
+   carries a native title, but that only appears once somebody has already
+   found the icon and pointed at it -- which is the thing they have not done.
+   So the card offers it, after a pause long enough that it never fires while
+   somebody is sweeping the mouse down a page of results.
+
+   Drawn from the card rather than the button so the arrow can point back up
+   at the icon. attr() keeps the wording in the script, where it can be
+   translated, rather than hard-coded in a stylesheet. */
+.listing__hint {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  padding: 6px 10px;
+  border-radius: 9px;
+  background: rgba(8, 34, 32, .95);
+  color: #fff;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity .18s var(--ease, ease), transform .18s var(--ease, ease);
+}
+/* The point of the tooltip, aimed at the pin above it. */
+.listing__hint::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  right: 14px;
+  border: 5px solid transparent;
+  border-bottom-color: rgba(8, 34, 32, .95);
+}
+.listing.is-hinting .listing__hint { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .listing__hint { transition: none; transform: none; }
+}
+/* Touch has no hover: the pause would never end and the pill would sit
+   there permanently after the first tap. */
+@media (hover: none) {
+  .listing__hint { display: none; }
+}
 .qact {
   width: 34px;
   height: 34px;
