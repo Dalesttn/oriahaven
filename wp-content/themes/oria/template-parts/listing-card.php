@@ -92,19 +92,21 @@ $oria_badges = array(
 				<div class="listing__best"><?php echo \Oria\Core\BestOf\badge_html( $oria_best['label'], $oria_best['url'], '', (string) ( $oria_best['year'] ?? '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 			<?php endif; ?>
 			<?php if ( $oria_rated['rating'] > 0 ) : ?>
-			<span class="rating rating--onmedia">
-				<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>
-				<?php echo esc_html( number_format_i18n( $oria_rated['rating'], 1 ) ); ?>
-				<?php if ( $oria_rated['count'] > 0 ) : ?>
-					<?php
-					// Never an unattributed star: a rating is either ours or
-					// Google's, and it always says which.
-					$oria_rating_src = 'google' === $oria_rated['source']
-						? __( 'Google', 'oria' )
-						: __( 'Oria Haven', 'oria' );
-					?>
-					<span class="rating__count">(<?php echo esc_html( (string) $oria_rated['count'] ); ?> · <?php echo esc_html( $oria_rating_src ); ?>)</span>
-				<?php endif; ?>
+				<span class="rating rating--onmedia">
+					<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>
+					<?php echo esc_html( number_format_i18n( $oria_rated['rating'], 1 ) ); ?>
+					<?php if ( $oria_rated['count'] > 0 ) : ?>
+						<?php
+						// Never an unattributed star: a rating is either ours or
+						// Google's, and it always says which.
+						$oria_rating_src = 'google' === $oria_rated['source']
+							? __( 'Google', 'oria' )
+							: __( 'Oria Haven', 'oria' );
+						?>
+						<span class="rating__count">(<?php echo esc_html( (string) $oria_rated['count'] ); ?> · <?php echo esc_html( $oria_rating_src ); ?>)</span>
+					<?php endif; ?>
+				</span>
+			<?php endif; ?>
 		</div>
 		<?php endif; ?>
 	</div>
@@ -133,8 +135,6 @@ $oria_badges = array(
 					?>
 				</p>
 			</div>
-			</span>
-			<?php endif; ?>
 		</div>
 
 		<?php

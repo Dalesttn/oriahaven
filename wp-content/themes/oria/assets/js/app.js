@@ -1268,8 +1268,15 @@
         entries.forEach(function (en) { fab.classList.toggle("is-shown", en.isIntersecting); });
       }, { rootMargin: "-20% 0px -30% 0px" }).observe($("#dirResults") || browse);
     }
-    // A shared link to the map opens on the map.
-    if (new URLSearchParams(window.location.search).get("view") === "map") show("map");
+    /* A shared link to the map opens on the map.
+
+       Read from the address the page was LOADED with, not the one it has by
+       now. The directory syncs its filters into the query on start-up and
+       rebuilds it from filter state alone -- cat, spec, svc, aud, suburb, q,
+       pg -- so `view` was already gone by the time this line ran, and
+       /explore/?view=map opened on the list with the Map tab looking
+       selected and nothing beside it. */
+    if (BOOT_SEARCH.get("view") === "map") show("map");
     $$("[data-open-map]").forEach(function (b) {
       b.addEventListener("click", function () {
         show("map");
@@ -3231,6 +3238,10 @@
       if (state.suburbs.length) p.set("suburb", state.suburbs.join(","));
       if (state.q) p.set("q", state.q);
       if (state.page > 1) p.set("pg", String(state.page));
+      /* The map is part of where you are, not a filter: without this,
+         changing any filter while the map is open dropped `view` from the
+         address and the next reload opened on the list. */
+      if (document.querySelector("#browse.is-map")) p.set("view", "map");
       var qs = p.toString();
       history.replaceState(null, "", qs ? "?" + qs : window.location.pathname);
     }
@@ -3615,6 +3626,11 @@
     dir: "directions_click",
     enq: "enquiry_started"
   };
+
+  /* The query the page was opened with. Several things rewrite the address
+     during start-up; anything that needs to know how the visitor arrived has
+     to have read it before they do. */
+  var BOOT_SEARCH = new URLSearchParams(window.location.search);
 
   function pushEvent(name, params) {
     if (!name) return;
