@@ -1410,7 +1410,7 @@ function words( int $post_id ): array {
 	if ( 'place' !== $kind ) {
 		return array(
 			'contact_head' => __( 'Book a first session', 'oria' ),
-			'claim_head'   => __( 'Is this your practice?', 'oria' ),
+			'claim_head'   => __( 'Do you manage this practice?', 'oria' ),
 			'enquiry_note' => __( 'Enquiries go straight to the practice', 'oria' ),
 			'share'        => __( 'Share this practice', 'oria' ),
 			'similar'      => __( 'Similar practices', 'oria' ),
@@ -1426,7 +1426,7 @@ function words( int $post_id ): array {
 		 * whether one is yours is a small reason not to answer. The word
 		 * covers a juice bar just as well.
 		 */
-		'claim_head'   => __( 'Is this your organisation?', 'oria' ),
+		'claim_head'   => __( 'Do you manage this organisation?', 'oria' ),
 		'enquiry_note' => __( 'Enquiries go straight to the business', 'oria' ),
 		'share'        => __( 'Share this place', 'oria' ),
 		'similar'      => __( 'Similar places', 'oria' ),

@@ -3991,6 +3991,10 @@
          per link, and the names are the report's names. */
       if (el.getAttribute("data-area-slug")) payload.area_slug = el.getAttribute("data-area-slug");
       if (el.getAttribute("data-term-slug")) payload.standout_term_slug = el.getAttribute("data-term-slug");
+      /* Which of two identical triggers was pressed -- the claim link by
+         the business details, or the panel at the bottom. Same event
+         either way; without this the report cannot tell them apart. */
+      if (el.getAttribute("data-oria-placement")) payload.cta_placement = el.getAttribute("data-oria-placement");
       pushEvent(el.getAttribute("data-oria-event"), payload);
     });
 
@@ -4022,7 +4026,8 @@
       if (el.tagName === "A" || el.tagName === "BUTTON" || el.tagName === "SUMMARY") {
         return; // handled by the delegated click or toggle above
       }
-      pushEvent(name);
+      var place = el.getAttribute("data-oria-placement");
+      pushEvent(name, place ? { cta_placement: place } : null);
     });
 
     /* Lead submissions round-trip through a redirect, so the completed

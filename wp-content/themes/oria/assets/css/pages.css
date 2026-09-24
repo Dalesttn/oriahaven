@@ -8237,3 +8237,85 @@ article.is-spotlit {
   margin: var(--s-5) 0 0; max-width: 62ch;
   font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.6;
 }
+
+/* -- owner claim panel + dialogs --------------------------------------- */
+/*
+ * A utility strip, not an advertisement. Cream ground, hairline border,
+ * body typography: the heading is a heading only semantically, because a
+ * page-sized one here would compete with the practice's own name.
+ */
+.oclaim {
+  display: flex; align-items: flex-start; gap: var(--s-4);
+  margin: var(--s-6) 0 0; padding: var(--s-5);
+  background: var(--sand-2); border: 1px solid var(--line); border-radius: var(--r-md);
+}
+.oclaim__icon { flex: none; width: 26px; height: 26px; color: var(--text-faint); }
+.oclaim__icon svg { width: 100%; height: 100%; display: block; }
+.oclaim__body { min-width: 0; }
+.oclaim__head { margin: 0; font-size: 1rem; font-weight: 700; line-height: 1.35; }
+.oclaim__text { margin: .3rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.55; max-width: 48ch; }
+
+.oclaim__acts { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-4); margin-top: var(--s-4); }
+.oclaim__alt { margin: 0; font-size: var(--fs-sm); color: var(--text-soft); }
+
+/* Tertiary on purpose: a text button, not a second call to action. */
+.oclaim__altlink,
+.oclaim__inline {
+  border: 0; background: none; padding: 0; font: inherit; color: inherit;
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.oclaim__altlink:hover, .oclaim__inline:hover { color: var(--deep); }
+.oclaim__inline { font-size: var(--fs-sm); color: var(--text-soft); }
+.oclaim__sent { margin: 0; font-size: var(--fs-sm); line-height: 1.55; }
+
+@media (max-width: 560px) {
+  /* The icon stays beside the text. Dropping it onto its own row cost
+     about 40px of height and bought nothing -- it is a 26px mark, not an
+     illustration, and this is meant to be a strip. */
+  .oclaim { padding: var(--s-4); gap: var(--s-3); }
+  .oclaim__acts { flex-direction: column; align-items: stretch; gap: var(--s-3); }
+  /* Full width only for the primary; 44px minimum on both. */
+  .oclaim__go { width: 100%; }
+  .oclaim__go, .oclaim__altlink, .oclaim__inline { min-height: 44px; }
+  .oclaim__alt { display: flex; align-items: center; gap: .35rem; }
+}
+
+/* The dialogs. Native <dialog>, so the focus trap and Escape are the
+   browser's; only the skin is here. */
+.odlg {
+  width: min(34rem, calc(100vw - 2rem));
+  max-height: min(86vh, 48rem);
+  padding: 0; border: 1px solid var(--line); border-radius: var(--r-lg);
+  background: var(--white); color: var(--ink); overflow: hidden;
+}
+.odlg::backdrop { background: rgba(14, 32, 30, .45); }
+.odlg__in { padding: var(--s-6); overflow-y: auto; max-height: inherit; -webkit-overflow-scrolling: touch; }
+.odlg__x { position: sticky; top: 0; z-index: 1; display: flex; justify-content: flex-end; height: 0; }
+.odlg__close {
+  margin: .5rem .5rem 0 0; width: 40px; height: 40px; flex: none;
+  border: 0; border-radius: 50%; background: var(--sand-2); color: var(--ink);
+  font-size: 1.4rem; line-height: 1; cursor: pointer;
+}
+.odlg__close:hover { background: var(--line); }
+.odlg__head { margin: 0; font-size: 1.3rem; line-height: 1.25; }
+.odlg__for { margin: .3rem 0 0; font-size: var(--fs-sm); font-weight: 600; color: var(--text-soft); }
+.odlg__intro { margin: var(--s-4) 0 0; font-size: var(--fs-sm); line-height: 1.6; color: var(--text-soft); }
+.odlg__gets { margin: var(--s-4) 0 0; padding-left: 1.1rem; display: grid; gap: .4rem; font-size: var(--fs-sm); line-height: 1.5; }
+.odlg__gets li::marker { color: var(--text-faint); }
+.odlg__error { margin: var(--s-4) 0 0; font-size: var(--fs-sm); color: #9b2c2c; }
+.odlg__form { display: grid; gap: var(--s-4); margin-top: var(--s-5); }
+.odlg__row { display: grid; gap: var(--s-4); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 520px) { .odlg__row { grid-template-columns: 1fr; } }
+.odlg__hp { position: absolute; left: -9999px; }
+.odlg__send { justify-self: start; min-height: 44px; }
+.odlg__after { margin: 0; font-size: var(--fs-xs); color: var(--text-soft); line-height: 1.55; }
+.field__hint { display: block; margin-top: .3rem; font-size: var(--fs-xs); color: var(--text-soft); line-height: 1.5; }
+
+/* Inside a dialog the correction form has already been introduced. */
+.odlg .ocorr { margin-top: var(--s-5); }
+.odlg .ocorr__body { padding: 0; border: 0; background: none; }
+/* Focused programmatically on open; the dialog's own border is the cue. */
+.odlg__in:focus { outline: none; }
+/* The contextual trigger, beside the business details. Tertiary by
+   construction: it must lose to Call, Directions, Website, Book and Save. */
+.oclaim__near { margin: var(--s-4) 0 0; }

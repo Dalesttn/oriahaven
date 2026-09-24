@@ -716,6 +716,27 @@ while ( have_posts() ) :
 				</div>
 				<?php endif; ?>
 
+				
+				<?php
+				/*
+				 * The same claim action, up where somebody checking the
+				 * business details would be. It is a trigger and nothing
+				 * more -- the dialogs are printed once, by the panel near
+				 * the bottom, so this adds a button and no logic.
+				 *
+				 * Deliberately quiet: it must not compete with Call,
+				 * Directions, Website, Book or Save, which are what a
+				 * visitor came for.
+				 */
+				if ( ! $oria_contactless && 'unclaimed' === $oria_status && ! (int) get_post_meta( $oria_id, 'claimed_by', true ) ) {
+					?>
+					<p class="oclaim__near">
+						<?php get_template_part( 'template-parts/claim-panel', null, array( 'id' => $oria_id, 'words' => $oria_words, 'mode' => 'link', 'placement' => 'contact_details' ) ); ?>
+					</p>
+					<?php
+				}
+				?>
+
 				<!-- Special offer (paid feature; hides itself when expired or unclaimed) -->
 				<?php $oria_offer = \Oria\Theme\active_offer( $oria_id ); ?>
 				<?php if ( $oria_offer ) : ?>
@@ -1592,46 +1613,22 @@ while ( have_posts() ) :
 					<?php get_template_part( 'template-parts/share-box', null, array( 'id' => $oria_id, 'owner' => false, 'share_label' => $oria_words['share'] ) ); ?>
 				<?php endif; ?>
 
-				<?php if ( $oria_contactless ) : // nobody owns a beach, so neither prompt applies ?>
-				<?php elseif ( 'unclaimed' === $oria_status && ! (int) get_post_meta( $oria_id, 'claimed_by', true ) ) : // Free-plan listings have an owner — don't invite rival claims. ?>
-				<div class="claimprompt" id="claim">
-					<?php if ( '' !== $oria_words['claim_head'] ) : ?>
-					<b style="display:block;margin-bottom:.4rem"><?php echo esc_html( $oria_words['claim_head'] ); ?></b>
-					<?php endif; ?>
-					<?php if ( isset( $_GET['oria_claim'] ) && 'received' === $_GET['oria_claim'] ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-						<div class="notice" style="background:var(--white)" data-oria-event="claim_completed">
-							<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.2l2.4 2.4 4.6-5"/></svg>
-							<span><b><?php esc_html_e( 'Request received.', 'oria' ); ?></b> <?php esc_html_e( 'We check every claim by hand — you\'ll get an email with your log-in once it\'s approved.', 'oria' ); ?></span>
-						</div>
-					<?php else : ?>
-						<p style="font-size:.875rem;color:var(--text-soft);margin-bottom:1rem">
-							<?php esc_html_e( 'This listing was built from public information. Request to claim it and, once we\'ve confirmed it\'s you, you can edit every detail yourself.', 'oria' ); ?>
-						</p>
-						<?php if ( isset( $_GET['oria_claim'] ) && 'error' === $_GET['oria_claim'] ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-							<p style="font-size:.8125rem;color:#9b2c2c;margin-bottom:.75rem"><?php esc_html_e( 'That didn\'t send — check the name and email and try again.', 'oria' ); ?></p>
-						<?php endif; ?>
-						<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" class="stack" style="gap:.75rem" data-oria-event="claim_started">
-							<input type="hidden" name="action" value="oria_claim">
-							<input type="hidden" name="listing_id" value="<?php echo (int) $oria_id; ?>">
-							<?php wp_nonce_field( 'oria_claim', 'oria_claim_nonce' ); ?>
-							<input type="text" name="oria_website_hp" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-							<label class="field"><span class="field__label"><?php esc_html_e( 'Your name', 'oria' ); ?></span><input class="input" type="text" name="claimant_name" required></label>
-							<label class="field"><span class="field__label"><?php esc_html_e( 'Email', 'oria' ); ?></span><input class="input" type="email" name="claimant_email" required placeholder="<?php esc_attr_e( 'Ideally the one on your website', 'oria' ); ?>"></label>
-							<label class="field"><span class="field__label"><?php esc_html_e( 'Phone (optional)', 'oria' ); ?></span><input class="input" type="text" name="claimant_phone"></label>
-							<label class="field"><span class="field__label"><?php esc_html_e( 'Anything that helps us verify you', 'oria' ); ?></span><textarea class="textarea" name="claimant_note" style="min-height:70px" placeholder="<?php esc_attr_e( 'e.g. your role, or where we can confirm your details', 'oria' ); ?>"></textarea></label>
-							<button class="btn btn--dark btn--block" type="submit"><?php esc_html_e( 'Request to claim', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></button>
-						</form>
-					<?php endif; ?>
-				</div>
-				<?php else : ?>
-				<div class="claimprompt">
-					<b style="display:block;margin-bottom:.4rem"><?php esc_html_e( 'Something out of date?', 'oria' ); ?></b>
-					<p style="font-size:.875rem;color:var(--text-soft)">
-						<?php esc_html_e( 'This listing is managed by the owner.', 'oria' ); ?>
-						<a href="<?php echo esc_url( home_url( '/about/#contact' ) ); ?>" style="text-decoration:underline;text-underline-offset:3px"><?php esc_html_e( 'Let us know', 'oria' ); ?></a>
-					</p>
-				</div>
-				<?php endif; ?>
+				<?php
+				/*
+				 * The owner's door. A quiet strip now rather than the tall block
+				 * that used to sit here with the form already unfolded in it --
+				 * everything but the invitation moved into a dialog, and the
+				 * correction form went with it under its own name.
+				 *
+				 * Nothing shows on a claimed listing: the old "Something out of
+				 * date? This listing is managed by the owner" note told a visitor
+				 * the page might be wrong, in the one case where somebody is
+				 * actually looking after it.
+				 */
+				if ( ! $oria_contactless && 'unclaimed' === $oria_status && ! (int) get_post_meta( $oria_id, 'claimed_by', true ) ) {
+					get_template_part( 'template-parts/claim-panel', null, array( 'id' => $oria_id, 'words' => $oria_words, 'placement' => 'bottom_panel' ) );
+				}
+				?>
 
 				<?php
 				/*

@@ -88,6 +88,9 @@ function handle_submission(): void {
 	$name       = sanitize_text_field( (string) ( $_POST['claimant_name'] ?? '' ) );
 	$email      = sanitize_email( (string) ( $_POST['claimant_email'] ?? '' ) );
 	$phone      = sanitize_text_field( (string) ( $_POST['claimant_phone'] ?? '' ) );
+	// Their job at the practice. The strongest signal after the email
+	// domain, and previously only ever arrived buried in the free note.
+	$role       = sanitize_text_field( (string) ( $_POST['claimant_role'] ?? '' ) );
 	$note       = sanitize_textarea_field( (string) ( $_POST['claimant_note'] ?? '' ) );
 
 	$listing = get_post( $listing_id );
@@ -170,6 +173,7 @@ function create( int $listing_id, string $name, string $email, string $phone, st
 	update_post_meta( $request_id, '_name', $name );
 	update_post_meta( $request_id, '_email', $email );
 	update_post_meta( $request_id, '_phone', $phone );
+	update_post_meta( $request_id, '_role', $role );
 	update_post_meta( $request_id, '_note', $note );
 	update_post_meta( $request_id, '_status', 'pending' );
 	update_post_meta( $request_id, '_source', $source );
@@ -744,6 +748,10 @@ function column_content( string $column, int $post_id ): void {
 			}
 			break;
 		case 'oria_note':
+			$role = (string) get_post_meta( $post_id, '_role', true );
+			if ( '' !== $role ) {
+				echo '<b>' . esc_html( $role ) . '</b><br>';
+			}
 			echo esc_html( wp_trim_words( (string) get_post_meta( $post_id, '_note', true ), 18 ) );
 			if ( 'form' === (string) get_post_meta( $post_id, '_source', true ) ) {
 				echo '<br><span style="color:#50575e">' . esc_html__( 'Via the Claim a listing form', 'oria' ) . '</span>';
