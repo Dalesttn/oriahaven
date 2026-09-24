@@ -2522,10 +2522,11 @@
             '<button class="qact qact--pin" type="button" data-card-pin="' + esc(l.url) +
               '" aria-label="Show ' + esc(l.name) + ' on the map" title="Show on map">' + ICON.pin + "</button>" +
           "</div>" +
-        "</div>" +
-        '<div class="listing__body">' +
-          /* One editorial Best Of badge, linked to its guide. Same rule and
-             markup as BestOf\badge_html(); the server picks which one, and
+          /* One editorial Best Of badge, over the picture at the bottom
+             left. Above the name it pushed every other line of the card
+             down and made an awarded card a different shape from the one
+             beside it; on the photograph it costs no height at all. Same
+             markup as BestOf\badge_html(); the server picks which one and
              sends the year with it. Any change here belongs there too. */
           (l.best && l.best.label
             ? '<div class="listing__best"><a class="badge--best" href="' + esc(l.best.url) +
@@ -2537,6 +2538,8 @@
                 '<span class="badge--best__title">' + esc(l.best.label) + "</span>" +
               "</span></a></div>"
             : "") +
+        "</div>" +
+        '<div class="listing__body">' +
           '<div class="listing__head">' +
             "<div>" +
               '<h3 class="listing__name"><a href="' + esc(l.url || '#') + '">' + esc(l.name) + "</a></h3>" +

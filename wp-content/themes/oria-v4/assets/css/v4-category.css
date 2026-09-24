@@ -643,6 +643,30 @@ html.xc-locked { overflow: hidden; }
   #browse.is-map .catmap--view { height: calc(100vh - var(--xc-head-h, 0px) - var(--xc-ribbon-h, 60px) - 36px); min-height: 420px; }
   #browse.is-map #catMapView .nearyou { display: none; }
   #browse.is-map .xc-note, #browse.is-map .xc-local { display: none; }
+
+  /* The list beside the map keeps the row form it always had. A picture on
+     top is right in the grid, where three cards share a line; in a 700px
+     column beside a map it made one 734px card per screen, and the whole
+     point of the map view is scanning a list against pins. So here: small
+     picture left, text right, hairline between, no card chrome. */
+  #browse.is-map #dirResults { gap: 0; border-top: 1px solid var(--line-strong); }
+  #browse.is-map #dirResults .listing {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    grid-template-rows: auto;
+    gap: var(--s-5);
+    padding: var(--s-5) 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 0;
+    box-shadow: none;
+    transform: none;
+  }
+  #browse.is-map #dirResults .listing:hover { transform: none; box-shadow: none; border-color: transparent; border-bottom-color: var(--ink); }
+  #browse.is-map #dirResults .listing__media { aspect-ratio: 4 / 3; border-radius: var(--radius-control); }
+  #browse.is-map #dirResults .listing__media img { aspect-ratio: 4 / 3; }
+  #browse.is-map #dirResults .listing__body { padding: 0; }
+  #browse.is-map #dirResults .listing__foot { border-top: 0; padding-top: 0; margin-top: auto; }
 }
 
 /* --- Editorial moments inside the results ---------------------------------- */

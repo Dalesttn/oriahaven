@@ -44,6 +44,13 @@ $oria_format     = (string) get_field( 'format', $oria_id );
  * and invites the practice to take it over. On a profile that is disclosure.
  * On a card in a scan list it was noise.
  */
+/*
+ * One editorial badge at most, linked to the guide that awarded it. Read
+ * from the Best Of guides, never stored here -- see BestOf\index(). Mirrors
+ * the `best` branch in app.js card().
+ */
+$oria_best = function_exists( '\Oria\Core\BestOf\card_badge' ) ? \Oria\Core\BestOf\card_badge( $oria_id ) : null;
+
 $oria_badges = array(
 	'featured' => '<span class="badge badge--featured"><span class="badge-dot"></span>' . esc_html__( 'Featured', 'oria' ) . '</span>',
 	'claimed'  => '<span class="badge badge--claimed"><span class="badge-dot"></span>' . esc_html__( 'Claimed', 'oria' ) . '</span>',
@@ -68,19 +75,19 @@ $oria_badges = array(
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 8.6a4.9 4.9 0 0 0-8.8-3A4.9 4.9 0 0 0 3.2 8.6c0 4.9 8.8 10.2 8.8 10.2s8.8-5.3 8.8-10.2Z"/></svg>
 			</button>
 		</div>
-	</div>
-	<div class="listing__body">
 		<?php
 		/*
-		 * One editorial badge at most, linked to the guide that awarded it.
-		 * Read from the Best Of guides, never stored here -- see BestOf\index().
-		 * Mirrors the `best` branch in app.js card().
+		 * The award, over the picture at the bottom left. It used to sit
+		 * above the practice's name, where it pushed every other line of
+		 * the card down and made an awarded card a different shape from
+		 * the one beside it. On the photograph it costs no height at all.
 		 */
-		$oria_best = function_exists( '\Oria\Core\BestOf\card_badge' ) ? \Oria\Core\BestOf\card_badge( $oria_id ) : null;
 		?>
 		<?php if ( $oria_best ) : ?>
 			<div class="listing__best"><?php echo \Oria\Core\BestOf\badge_html( $oria_best['label'], $oria_best['url'], '', (string) ( $oria_best['year'] ?? '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 		<?php endif; ?>
+	</div>
+	<div class="listing__body">
 		<div class="listing__head">
 			<div>
 				<h3 class="listing__name"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>

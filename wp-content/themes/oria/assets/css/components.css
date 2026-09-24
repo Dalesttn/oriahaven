@@ -1852,8 +1852,12 @@ a.badge--best:focus-visible { outline: 3px solid var(--gold-soft); outline-offse
    to the Featured/Claimed flag, and an award landing on top of it would be
    worse than either. The gap is pulled in so the two read as one block:
    the recognition and the practice it belongs to. */
-.listing__best { display: flex; }
-.listing__best + .listing__head { margin-top: calc(var(--s-2) * -1); }
+/* The award sits on the photograph now, bottom left. Above the name it
+   pushed every line of the card down, so an awarded card was a different
+   shape from the one beside it; over the picture it costs no height.
+   z-index keeps it above the image without needing a scrim -- the badge
+   carries its own dark pill. */
+.listing__best { position: absolute; left: var(--s-3); bottom: var(--s-3); z-index: 2; display: flex; max-width: calc(100% - var(--s-3) * 2); }
 
 /* =====================================================================
    "Choose a style" — six sensations, not six search results.
