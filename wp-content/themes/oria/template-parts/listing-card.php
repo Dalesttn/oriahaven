@@ -51,7 +51,8 @@ $oria_badges = array(
 ?>
 <article class="listing<?php echo 'featured' === $oria_status ? ' listing--featured' : ''; ?>">
 	<div class="listing__media">
-		<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_id ) ); ?>" alt="<?php echo esc_attr( \Oria\Theme\listing_alt( $oria_id ) ); ?>" loading="lazy"
+		<?php // 4:3, stated so the browser reserves the frame before the photo lands. The CSS decides the real size; these only set the ratio. ?>
+		<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_id ) ); ?>" alt="<?php echo esc_attr( \Oria\Theme\listing_alt( $oria_id ) ); ?>" width="640" height="480" loading="lazy" decoding="async"
 			onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_id ) ); ?>'">
 		<?php if ( isset( $oria_badges[ $oria_status ] ) ) : ?>
 			<div class="listing__flag"><?php echo $oria_badges[ $oria_status ]; // phpcs:ignore WordPress.Security.EscapeOutput ?></div>

@@ -516,26 +516,36 @@ html.xc-locked { overflow: hidden; }
 #browse .listing .btn:focus-visible,
 #browse .qact:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
 
-/* Wider screens: the picture runs the full height of its card, top to
-   bottom, however much text sits beside it. The image fills the frame
-   absolutely, so it never adds height of its own; min-height keeps a short
-   card from squashing it into a strip. Phones keep their 16:10 picture on
-   top (below). */
+/* Wider screens: a fixed frame, filled absolutely so the picture never
+   adds height of its own.
+
+   This used to run the picture the full height of its card, "however much
+   text sits beside it", which was a deliberate choice and a wrong one. It
+   meant the crop was decided by the copy: on one 1440px screen the same
+   230px column rendered images 271, 308, 328, 336 and 414px tall -- five
+   shapes of the same nominal thumbnail, the tallest a portrait slice that
+   cut faces and shopfront signage in half. A card with more tags got a
+   different photograph from the one beside it.
+
+   4/3, with a floor so a short card cannot squash it into a strip. Phones
+   keep their 16:10 picture on top (below). */
 @media (min-width: 44rem) {
   #browse #dirResults .listing__media,
   #browse .xc-feat .listing__media {
-    align-self: stretch;
-    aspect-ratio: auto;
-    min-height: 13rem;
+    position: relative;
+    align-self: start;
+    aspect-ratio: 4 / 3;
+    min-height: 12rem;
   }
   #browse #dirResults .listing__media img,
   #browse .xc-feat .listing__media img {
     position: absolute;
     inset: 0;
+    width: 100%;
     height: 100%;
     aspect-ratio: auto;
+    object-fit: cover;
   }
-  #browse .xc-feat .listing__media { position: relative; }
 }
 
 /* Why this card is here, when a feeling or experience is chosen. It takes

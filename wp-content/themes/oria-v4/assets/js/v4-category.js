@@ -532,8 +532,21 @@
       if (n && n.nodeType === 3 && /View profile/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace("View profile", "View place");
     });
   }
+  /* The first row of results, eagerly -- but only where the first row is
+     actually near the top. On a category page the results start high and
+     this wins a little perceived speed; on the Explore hub they start
+     around 1500px down, behind a hero, a filter bar and a feelings row,
+     and promoting them just pulled two 1600px photographs off the network
+     ahead of things the visitor could actually see. */
   function eagerFirstRow() {
-    $$("#dirResults > article.listing img").forEach(function (img, i) { if (i < 2) img.loading = "eager"; });
+    var reach = window.innerHeight * 1.2;
+    $$("#dirResults > article.listing img").forEach(function (img, i) {
+      if (i > 1) return;
+      var box = img.getBoundingClientRect();
+      /* A hidden card measures 0x0 at top 0, which reads as "at the very
+         top of the page" and passed a proximity test on its own. */
+      if (box.height > 0 && box.top < reach) img.loading = "eager";
+    });
   }
 
   /* The hub's one Featured card. On a category page app.js keeps it out of

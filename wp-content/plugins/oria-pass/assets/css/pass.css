@@ -35,19 +35,31 @@
 .pass-hero__price { margin: var(--s-4) 0 0; font-size: var(--fs-sm); color: rgba(255,255,255,.72); }
 .pass-hero__note { margin: var(--s-3) 0 0; font-size: var(--fs-xs); color: rgba(255,255,255,.6); text-align: center; }
 
-/* The card stack: offset, not scattered — it should read as a deck. */
+/*
+ * The card stack: offset, not scattered -- it should read as a deck.
+ *
+ * Named .passcard, not .pcard. The theme has had a .pcard since before
+ * this file existed -- the category tiles on /explore/ -- and those are
+ * white text on a near-black veil while these are dark text on white.
+ * Both stylesheets load together wherever a Pass panel sits on a page
+ * with category tiles, which is exactly what /explore/ is, and this one
+ * loaded second: the category headings came out dark green on near
+ * black, 1.02:1, effectively invisible. A shared name between two
+ * components that style the same properties in opposite directions is
+ * not a collision waiting to happen, it is one that already had.
+ */
 .pass-hero__stack { display: grid; gap: var(--s-3); }
-.pcard {
+.passcard {
   display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
   padding: var(--s-4) var(--s-5); border-radius: var(--pass-r);
   background: var(--white); color: var(--ink);
   box-shadow: 0 18px 40px -22px rgba(8,34,32,.65);
 }
-.pcard--float { transform: translateX(calc(var(--i) * 14px)); }
-.pcard__body { min-width: 0; }
-.pcard__name { margin: 0; font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em; }
-.pcard__where { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
-.pcard__when { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.passcard--float { transform: translateX(calc(var(--i) * 14px)); }
+.passcard__body { min-width: 0; }
+.passcard__name { margin: 0; font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em; }
+.passcard__where { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
+.passcard__when { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--text-faint); font-variant-numeric: tabular-nums; }
 
 /* --- the credit token ------------------------------------------------- */
 .pcredit {
@@ -165,7 +177,7 @@
 /* --- narrow ----------------------------------------------------------- */
 @media (max-width: 60rem) {
   .pass-hero__in { grid-template-columns: minmax(0, 1fr); }
-  .pcard--float { transform: none; }
+  .passcard--float { transform: none; }
 }
 @media (max-width: 34rem) {
   .pjoin__row { grid-template-columns: 1fr; }

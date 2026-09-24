@@ -67,11 +67,11 @@ $oria_cards = array(
 
 		<div class="pass-hero__stack" aria-label="<?php esc_attr_e( 'Examples of the kind of session Oria Pass will cover', 'oria' ); ?>">
 			<?php foreach ( $oria_cards as $oria_i => $oria_c ) : ?>
-				<article class="pcard pcard--float" style="--i:<?php echo (int) $oria_i; ?>">
-					<div class="pcard__body">
-						<h2 class="pcard__name"><?php echo esc_html( $oria_c[0] ); ?></h2>
-						<p class="pcard__where"><?php echo esc_html( $oria_c[1] ); ?></p>
-						<p class="pcard__when"><?php echo esc_html( $oria_c[2] ); ?></p>
+				<article class="passcard passcard--float" style="--i:<?php echo (int) $oria_i; ?>">
+					<div class="passcard__body">
+						<h2 class="passcard__name"><?php echo esc_html( $oria_c[0] ); ?></h2>
+						<p class="passcard__where"><?php echo esc_html( $oria_c[1] ); ?></p>
+						<p class="passcard__when"><?php echo esc_html( $oria_c[2] ); ?></p>
 					</div>
 					<?php get_template_part( 'template-parts/pass/credit', null, array( 'credits' => $oria_c[3] ) ); ?>
 				</article>
