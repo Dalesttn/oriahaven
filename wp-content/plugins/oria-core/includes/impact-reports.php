@@ -165,13 +165,26 @@ function threshold(): int {
 /**
  * Reports can be turned off site-wide without unscheduling anything.
  *
+ * OFF until somebody switches it on, and that is deliberate. The watermark
+ * starts empty, so the very first report a practice gets covers everything
+ * still in the buckets -- up to KEEP_DAYS, not a week. That is a bigger
+ * and broader send than the steady state, and it is not the sort of thing
+ * that should leave the building at 8:30 on a Monday because a deploy
+ * happened on the Thursday. The admin screen lists exactly who would be
+ * written to while this is off, which is the point: look, then switch on.
+ *
  * Stored as the strings '1' and '0', not as a boolean. update_option()
  * skips the write when the new value matches the old one, and an option
  * that has never been set reads back as false -- so saving boolean false
  * wrote nothing at all and the switch appeared to turn itself back on.
  */
 function enabled(): bool {
-	return (bool) apply_filters( 'oria_practice_impact_enabled', '0' !== (string) get_option( 'oria_impact_enabled', '1' ) );
+	return (bool) apply_filters( 'oria_practice_impact_enabled', '1' === (string) get_option( 'oria_impact_enabled', '0' ) );
+}
+
+/** Whether anybody has made a decision about this yet, either way. */
+function configured(): bool {
+	return in_array( (string) get_option( 'oria_impact_enabled', '' ), array( '0', '1' ), true );
 }
 
 /**
@@ -464,10 +477,29 @@ function heal( int $listing_id, string $upto ): void {
 function run( bool $dry = false, int $only = 0, bool $force = false, int $limit = 400 ): array {
 	$out = array( 'checked' => 0, 'eligible' => 0, 'sent' => 0, 'failed' => 0, 'skipped' => 0, 'lines' => array() );
 
-	if ( ! enabled() && ! $force ) {
-		$out['lines'][] = 'Impact reports are switched off site-wide.';
+	/*
+	 * --force overrides thresholds, not decisions. It gets past the five
+	 * clicks and the seven-day gap, which are rules of thumb; it does not
+	 * get past the site-wide switch or a practice's own opt-out, which are
+	 * somebody's answer to a question. Since reports are off until they are
+	 * deliberately switched on, this is also what stops --force being the
+	 * one keystroke that mass-mails the whole directory.
+	 */
+	if ( ! enabled() ) {
+		$note = configured()
+			? 'Impact reports are switched off site-wide.'
+			: 'Impact reports have never been switched on. Turn them on under Listings -> Impact reports once you have read the list below.';
 
-		return $out;
+		// A dry run sends nothing by definition, so being switched off is no
+		// reason to refuse to SHOW the list -- reading it is exactly what
+		// somebody does before deciding to switch reports on.
+		if ( ! $dry ) {
+			$out['lines'][] = $note;
+
+			return $out;
+		}
+
+		$out['lines'][] = $note . ' Nothing below would be sent until then.';
 	}
 
 	$ids = $only > 0 ? array( $only ) : claimed_listings( $limit );

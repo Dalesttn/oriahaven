@@ -257,7 +257,11 @@ function due_table(): void {
 	if ( ! $live ) {
 		printf(
 			'<div class="notice notice-warning inline" style="margin:1.5em 0"><p>%s</p></div>',
-			esc_html__( 'These reports are switched off, so nothing below will actually be sent. The list is what would go out if you switched them back on.', 'oria' )
+			esc_html(
+				Impact\configured()
+					? __( 'These reports are switched off, so nothing below will actually be sent. The list is what would go out if you switched them back on.', 'oria' )
+					: __( 'These reports have never been switched on, so nothing below will be sent. Read this list first: because nobody has been written to yet, a first report covers everything still in the counters rather than just the past week, so the periods below are long and there are more practices on the list than there will be from then on. Switch them on above once you are happy with it.', 'oria' )
+			)
 		);
 	}
 
