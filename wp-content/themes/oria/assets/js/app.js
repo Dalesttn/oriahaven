@@ -2522,21 +2522,37 @@
             '<button class="qact qact--pin" type="button" data-card-pin="' + esc(l.url) +
               '" aria-label="Show ' + esc(l.name) + ' on the map" title="Show on map">' + ICON.pin + "</button>" +
           "</div>" +
-          /* One editorial Best Of badge, over the picture at the bottom
-             left. Above the name it pushed every other line of the card
-             down and made an awarded card a different shape from the one
-             beside it; on the photograph it costs no height at all. Same
-             markup as BestOf\badge_html(); the server picks which one and
-             sends the year with it. Any change here belongs there too. */
-          (l.best && l.best.label
-            ? '<div class="listing__best"><a class="badge--best" href="' + esc(l.best.url) +
-              '" aria-label="' + esc(bestEyebrow(l.best.year) + ": " + l.best.label) +
-              ' — see the Best Of guide it comes from">' +
-              '<span class="badge--best__disc" aria-hidden="true"><span class="badge--best__mark">\u2726</span></span>' +
-              '<span class="badge--best__text">' +
-                '<span class="badge--best__eyebrow">' + esc(bestEyebrow(l.best.year)) + "</span>" +
-                '<span class="badge--best__title">' + esc(l.best.label) + "</span>" +
-              "</span></a></div>"
+          /* The strip along the foot of the picture: the award on the left,
+             the rating on the right. One row rather than two things pinned
+             to opposite corners -- pinned separately they overlapped by 23px
+             on a phone, where a long award label and a rating carrying its
+             review count together want more than the picture is wide. As a
+             row they cannot: the award gives way and ellipses, the rating
+             never shrinks, because the number is the thing being compared.
+
+             The badge markup matches BestOf\badge_html(); the server picks
+             which award and sends the year with it. Any change here belongs
+             there too. */
+          ((l.best && l.best.label) || l.rating > 0
+            ? '<div class="listing__onmedia">' +
+              (l.best && l.best.label
+                ? '<div class="listing__best"><a class="badge--best" href="' + esc(l.best.url) +
+                  '" aria-label="' + esc(bestEyebrow(l.best.year) + ": " + l.best.label) +
+                  ' — see the Best Of guide it comes from">' +
+                  '<span class="badge--best__disc" aria-hidden="true"><span class="badge--best__mark">✦</span></span>' +
+                  '<span class="badge--best__text">' +
+                    '<span class="badge--best__eyebrow">' + esc(bestEyebrow(l.best.year)) + "</span>" +
+                    '<span class="badge--best__title">' + esc(l.best.label) + "</span>" +
+                  "</span></a></div>"
+                : "") +
+              (l.rating > 0
+                ? '<span class="rating rating--onmedia">' + ICON.star + l.rating.toFixed(1) +
+                  (l.reviews > 0
+                    ? '<span class="rating__count">(' + l.reviews +
+                      (l.rating_src === "google" ? " · Google" : "") + ")</span>"
+                    : "") + "</span>"
+                : "") +
+              "</div>"
             : "") +
         "</div>" +
         '<div class="listing__body">' +
@@ -2546,13 +2562,6 @@
               '<p class="listing__where">' + ICON.pin + esc(l.suburb) + " · " + esc(regionNames[l.region] || "") +
                 (nearLabel(l) ? '<span class="listing__km">' + esc(nearLabel(l)) + "</span>" : "") + "</p>" +
             "</div>" +
-            (l.rating > 0
-              ? '<span class="rating">' + ICON.star + l.rating.toFixed(1) +
-                (l.reviews > 0
-                  ? '<span class="rating__count">(' + l.reviews +
-                    (l.rating_src === "google" ? " · Google" : "") + ")</span>"
-                  : "") + "</span>"
-              : "") +
           "</div>" +
           cardTags(l) +
           '<p class="listing__desc">' + esc(l.blurb) + "</p>" +

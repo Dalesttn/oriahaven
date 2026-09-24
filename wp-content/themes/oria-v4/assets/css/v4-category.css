@@ -667,6 +667,13 @@ html.xc-locked { overflow: hidden; }
   #browse.is-map #dirResults .listing__media img { aspect-ratio: 4 / 3; }
   #browse.is-map #dirResults .listing__body { padding: 0; }
   #browse.is-map #dirResults .listing__foot { border-top: 0; padding-top: 0; margin-top: auto; }
+
+  /* The picture beside the map is 271px, and an award label plus a rating
+     carrying its review count do not both fit: the award was squeezing to
+     81px and truncating mid-word. The count gives way rather than the
+     award -- "5.0" is the comparison, "(42 · Google)" is its provenance,
+     and the provenance is still stated in full on the listing itself. */
+  #browse.is-map #dirResults .rating--onmedia .rating__count { display: none; }
 }
 
 /* --- Editorial moments inside the results ---------------------------------- */
