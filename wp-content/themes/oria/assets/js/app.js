@@ -3894,11 +3894,18 @@
     document.addEventListener("click", function (e) {
       var el = e.target.closest && e.target.closest("[data-area-promo]");
       if (!el) return;
-      pushEvent("area_promo_click", {
+      var promo = {
         component_position: el.getAttribute("data-area-promo") || "",
         area_slug: el.getAttribute("data-area-slug") || "",
         destination_url: el.getAttribute("href") || ""
-      });
+      };
+      /* The discovery card also says how many places it offered and which
+         of its two shapes it was drawn in -- a text card and a card with a
+         photograph are different offers and worth telling apart. Other
+         promos carry neither and send neither. */
+      if (el.getAttribute("data-area-count")) promo.area_count = Number(el.getAttribute("data-area-count"));
+      if (el.getAttribute("data-area-variant")) promo.component_variant = el.getAttribute("data-area-variant");
+      pushEvent("area_promo_click", promo);
     });
   }
 

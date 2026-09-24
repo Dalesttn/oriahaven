@@ -1984,3 +1984,68 @@ a.badge--best:focus-visible { outline: 3px solid var(--gold-soft); outline-offse
     min-height: 10.5rem;
   }
 }
+
+/* The neighbourhood card: the listing page's version of the area offer.
+   The inline .areastrip above stays as it is -- it exists for the places
+   where a card would interrupt somebody mid-scan, which is a different
+   job and four other templates. */
+.areadisc {
+  display: grid; gap: var(--s-5); align-items: center;
+  padding: var(--s-5); margin: var(--s-5) 0 0;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--sand-2);
+}
+/* With a photograph: words beside a picture, the action under the words. */
+.areadisc--img { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); }
+.areadisc--img .areadisc__cta { grid-column: 1; grid-row: 2; justify-self: start; margin-top: calc(var(--s-5) * -1 + var(--s-3)); }
+.areadisc--img .areadisc__img { grid-row: 1 / span 2; }
+
+/* Without one: a row -- mark, words, action -- so the width it takes up is
+   width it uses, rather than a column of text with an empty half beside it. */
+.areadisc--text { grid-template-columns: auto minmax(0, 1fr) auto; column-gap: var(--s-4); }
+
+.areadisc__text { min-width: 0; }
+.areadisc__eyebrow {
+  margin: 0; font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--text-faint);
+}
+/* The mark stands in for the photograph, so it appears only when there is
+   none -- two location cues side by side is one too many. */
+.areadisc__mark {
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px;
+  border-radius: 50%; background: var(--white); color: var(--brand-gold);
+}
+.areadisc__mark svg { width: 22px; height: 22px; display: block; }
+
+.areadisc__head { margin: .3rem 0 0; font-size: 1.15rem; line-height: 1.3; text-wrap: balance; }
+.areadisc__lead { margin: .3rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.55; max-width: 58ch; }
+.areadisc__meta { margin: .4rem 0 0; font-size: var(--fs-xs); color: var(--text-faint); }
+.areadisc__cta { display: inline-flex; align-items: center; gap: .45rem; white-space: nowrap; }
+.areadisc__arrow { transition: transform .18s ease; }
+
+.areadisc__img { border-radius: var(--r-sm); overflow: hidden; aspect-ratio: 4 / 3; }
+.areadisc__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Pointer devices only, and small: the arrow moves, the border firms up.
+   Nothing lifts or zooms -- this is a secondary offer under a page whose
+   own booking and contact actions must stay louder. */
+@media (hover: hover) {
+  .areadisc:hover { border-color: var(--line-strong); }
+  .areadisc:hover .areadisc__arrow { transform: translateX(3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .areadisc__arrow { transition: none; }
+  .areadisc:hover .areadisc__arrow { transform: none; }
+}
+
+@media (max-width: 720px) {
+  .areadisc { padding: var(--s-4); gap: var(--s-4); grid-template-columns: 1fr; }
+  /* The photograph goes above the words, and stays a band rather than
+     becoming a hero -- this is a supporting card, not the top of a page. */
+  .areadisc--img .areadisc__img { order: -1; grid-row: auto; aspect-ratio: 16 / 7; }
+  .areadisc--img .areadisc__cta { grid-column: auto; grid-row: auto; margin-top: 0; }
+  .areadisc__cta { width: 100%; justify-content: center; min-height: 44px; }
+  /* The mark keeps the row it had, beside nothing -- hidden rather than
+     given a line of its own, because it is decoration and this is a phone. */
+  .areadisc--text .areadisc__mark { display: none; }
+}

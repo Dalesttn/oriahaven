@@ -1119,21 +1119,17 @@ while ( have_posts() ) :
 				<section class="xp-sec" id="getting-there" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
 					<?php
 					/*
-					 * The neighbourhood, at the head of the section already
-					 * about where this place is. AreaContext returns null
-					 * for a suburb too thin to have a page, so nothing
-					 * renders rather than something pointing at a 404.
+					 * Resolved here, drawn at the foot of the section. It
+					 * used to sit above the section's own <h2>, which put a
+					 * card's heading before the heading it belongs under,
+					 * and offered the neighbourhood before saying where the
+					 * place actually is. AreaContext returns null for a
+					 * suburb too thin to have a page, so nothing renders
+					 * rather than something pointing at a 404.
 					 */
-					if ( function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
-						$oria_area_ctx = \Oria\Core\AreaContext\for_post( $oria_id );
-						if ( $oria_area_ctx ) {
-							get_template_part(
-								'template-parts/area/area-strip',
-								null,
-								array( 'area' => $oria_area_ctx, 'source' => 'listing-location' )
-							);
-						}
-					}
+					$oria_area_ctx = function_exists( '\Oria\Core\AreaContext\for_post' )
+						? \Oria\Core\AreaContext\for_post( $oria_id )
+						: null;
 					?>
 					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php echo esc_html( $oria_wk || $oria_hbits ? __( 'Location and hours', 'oria' ) : __( 'Getting there', 'oria' ) ); ?></h2>
 					<div class="xp-loc">
@@ -1218,6 +1214,15 @@ while ( have_posts() ) :
 							<span><?php esc_html_e( 'Show the map', 'oria' ); ?><span class="xp-vh"> <?php echo esc_html( sprintf( /* translators: %s: listing name */ __( 'of %s (loads Google Maps)', 'oria' ), $oria_title ) ); ?></span></span>
 						</button>
 					<?php endif; ?>
+					<?php
+					if ( $oria_area_ctx ) {
+						get_template_part(
+							'template-parts/area/area-discovery',
+							null,
+							array( 'area' => $oria_area_ctx, 'source' => 'listing-location' )
+						);
+					}
+					?>
 				</section>
 			<?php endif; ?>
 
