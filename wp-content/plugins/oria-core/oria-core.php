@@ -42,6 +42,7 @@ require_once ORIA_CORE_DIR . 'includes/places.php';
 require_once ORIA_CORE_DIR . 'includes/ownership.php';
 require_once ORIA_CORE_DIR . 'includes/analytics.php';
 require_once ORIA_CORE_DIR . 'includes/analytics-report.php';
+require_once ORIA_CORE_DIR . 'includes/impact-reports.php';
 require_once ORIA_CORE_DIR . 'includes/claim-requests.php';
 require_once ORIA_CORE_DIR . 'includes/admin-ui.php';
 require_once ORIA_CORE_DIR . 'includes/specialties.php';
@@ -151,6 +152,7 @@ ListingEditor\bootstrap();
 Corrections\bootstrap();
 Analytics\bootstrap();
 AnalyticsReport\bootstrap();
+Impact\bootstrap();
 ClaimRequests\bootstrap();
 AdminUI\bootstrap();
 Seo\bootstrap();
@@ -222,6 +224,7 @@ register_activation_hook(
 		Taxonomies\register();
 		PostTypes\register();
 		Db\install();
+		Impact\install();
 		Members\ensure_role();
 		flush_rewrite_rules();
 	}
@@ -231,6 +234,7 @@ register_deactivation_hook(
 	__FILE__,
 	static function (): void {
 		wp_clear_scheduled_hook( 'oria_purge_member_tokens' );
+		Impact\unschedule();
 		flush_rewrite_rules();
 	}
 );

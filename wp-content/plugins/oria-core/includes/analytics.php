@@ -119,7 +119,7 @@ function total( int $post_id, string $type, int $days ): int {
 /* ----------------------------------------------------------------- views */
 
 /**
- * Whether this request should count as a profile view.
+ * Whether this request should be counted at all.
  *
  * Views used to be counted server-side on the `wp` hook, which quietly
  * stopped working: listing pages are served from LiteSpeed's page cache
@@ -181,7 +181,12 @@ function track_endpoint( \WP_REST_Request $request ): \WP_REST_Response {
 	}
 	set_transient( $key, $n + 1, MINUTE_IN_SECONDS );
 
-	if ( ( 'view' === $type || PostTypes\TREND === get_post_type( $post_id ) ) && ! countable_view( $post_id ) ) {
+	// Owners and crawlers are excluded from every type, not only views.
+	// The gate used to name `view` alone, so a studio opening its own
+	// website link from its own profile counted as a stranger's interest.
+	// Harmless in the metabox; wrong in an email that tells that studio
+	// how many people Oria sent them.
+	if ( ! countable_view( $post_id ) ) {
 		return new \WP_REST_Response( null, 204 );
 	}
 

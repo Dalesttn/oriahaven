@@ -480,6 +480,24 @@
 .mylstat__l { font-size: var(--fs-xs); color: var(--app-muted); }
 .mylperf__note { margin: var(--s-4) 0 0; padding-top: var(--s-4); border-top: 1px solid var(--app-line); font-size: var(--fs-sm); color: var(--app-ink); line-height: 1.6; }
 
+/*
+ * The weekly-email switch, under the numbers it reports on. Separated by
+ * the same hairline the note uses, so it reads as a footnote to the card
+ * rather than a second card competing with it.
+ */
+.mylpref { margin: var(--s-4) 0 0; padding-top: var(--s-4); border-top: 1px solid var(--app-line); }
+.mylpref__row { display: flex; align-items: flex-start; gap: .6rem; cursor: pointer; }
+.mylpref__row input { margin: .15rem 0 0; flex: none; accent-color: var(--app-green); width: 1rem; height: 1rem; }
+.mylpref__label { font-size: var(--fs-sm); line-height: 1.5; }
+.mylpref__note { margin: .35rem 0 0 1.6rem; font-size: var(--fs-xs); color: var(--app-muted); line-height: 1.6; }
+.mylpref__save {
+  margin: var(--s-4) 0 0 1.6rem; padding: .45rem 1.1rem; border: 1px solid var(--app-line);
+  border-radius: 999px; background: var(--app-bg); color: var(--app-ink);
+  font: inherit; font-size: var(--fs-xs); cursor: pointer;
+}
+.mylpref__save:hover { border-color: var(--app-green); }
+.mylpref__said { margin: .6rem 0 0 1.6rem; font-size: var(--fs-xs); color: var(--app-green); }
+
 /* -- section map -- */
 .mylsecs { margin-top: clamp(2rem, 4vw, 3rem); }
 .mylsecs__h { margin: 0 0 var(--s-4); font-size: 1.1rem; }

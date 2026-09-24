@@ -16,6 +16,7 @@ declare(strict_types=1);
 use Oria\Core\ListingEditor as Ed;
 use Oria\Core\MyOria;
 use Oria\Core\Tiers;
+use Oria\Core\Impact;
 
 $oria_listing = Ed\listing_for( get_current_user_id() );
 if ( ! $oria_listing ) {
@@ -29,6 +30,7 @@ $oria_pending = Ed\pending( $oria_listing );
 $oria_stats   = Ed\stats( $oria_listing );
 $oria_note    = Ed\stats_note( $oria_listing, $oria_stats );
 $oria_views   = (int) ( array_column( $oria_stats, 'n', 'key' )['view'] ?? 0 );
+$oria_impact  = Impact\state( $oria_listing );
 
 $oria_area  = get_the_terms( $oria_listing, 'area' );
 $oria_area  = ( is_array( $oria_area ) && $oria_area ) ? $oria_area[ count( $oria_area ) - 1 ]->name : '';
@@ -193,6 +195,46 @@ $oria_thumb = $oria_logo && wp_attachment_is_image( $oria_logo )
 				<?php if ( $oria_note ) : ?>
 					<p class="mylperf__note"><?php echo esc_html( $oria_note ); ?></p>
 				<?php endif; ?>
+			<?php endif; ?>
+
+			<?php
+			/*
+			 * The off switch for the weekly email, beside the numbers it
+			 * reports. It sits here rather than in a settings page because
+			 * this is where somebody is when they decide they have had
+			 * enough of hearing from us.
+			 *
+			 * A checkbox posting on change would lose the answer for
+			 * anybody without JavaScript, so it submits properly and says
+			 * what happened when it comes back.
+			 */
+			?>
+			<?php if ( Tiers\allows( $oria_listing, 'analytics' ) ) : ?>
+				<form class="mylpref" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<input type="hidden" name="action" value="oria_impact_pref">
+					<?php wp_nonce_field( 'oria_impact_pref' ); ?>
+					<label class="mylpref__row">
+						<input type="checkbox" name="impact_on" value="1" <?php checked( $oria_impact['enabled'] ); ?>>
+						<span class="mylpref__label"><?php esc_html_e( 'Email me a summary when people have been clicking through to my website', 'oria' ); ?></span>
+					</label>
+					<p class="mylpref__note"><?php esc_html_e( 'At most one a week, and only when there is something to report. Account and billing emails are not affected.', 'oria' ); ?></p>
+					<button class="mylpref__save" type="submit"><?php esc_html_e( 'Save', 'oria' ); ?></button>
+					<?php
+					// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading back our own redirect, nothing is changed.
+					$oria_said = isset( $_GET['impact'] ) ? sanitize_key( (string) wp_unslash( $_GET['impact'] ) ) : '';
+					?>
+					<?php if ( 'on' === $oria_said || 'off' === $oria_said ) : ?>
+						<p class="mylpref__said" role="status">
+							<?php
+							echo esc_html(
+								'on' === $oria_said
+									? __( 'Saved. We will email you when there is something worth reporting.', 'oria' )
+									: __( 'Saved. We will not email you these again.', 'oria' )
+							);
+							?>
+						</p>
+					<?php endif; ?>
+				</form>
 			<?php endif; ?>
 		</section>
 	</div>
