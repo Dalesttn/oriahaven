@@ -1080,11 +1080,30 @@ get_template_part(
 
 <?php
 /*
+ * "Your first visit" -- what to wear, when to turn up, what actually
+ * happens. Sits just before the FAQ because it answers the questions
+ * nobody types into a search box, and above the footer because somebody
+ * still deciding has not scrolled past the listings for nothing.
+ *
+ * Resolution is FirstVisit\for_context, not worked out here: this file
+ * exists twice, in the parent theme and in v4, and a rule written in both
+ * is a rule that will end up written differently in one.
+ */
+$oria_first = function_exists( '\Oria\Core\FirstVisit\for_context' )
+	? \Oria\Core\FirstVisit\for_context( $oria_term, $oria_facet, (bool) $oria_area )
+	: null;
+
+if ( $oria_first ) {
+	get_template_part( 'template-parts/first-visit', null, array( 'guide' => $oria_first, 'id' => 'first-visit' ) );
+}
+
+/*
  * The FAQ part brings its own section and wrap; it has to sit at the top
  * level, not inside another wrap, or it inherits a second gutter and loses
  * its spacing. On a facet page the questions come from the frame where one
  * exists, and otherwise from the facet's own term -- never the category's.
  */
+
 if ( $oria_facet ) {
 	// Frame questions carry {tokens}; generated ones have none, so the
 	// fill is a no-op on them.

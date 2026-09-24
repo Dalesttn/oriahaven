@@ -8185,3 +8185,55 @@ article.is-spotlit {
 .xc-refine__n { font-variant-numeric: tabular-nums; opacity: .7; }
 .xc-refine__btn[aria-pressed="true"] .xc-refine__n { opacity: .85; }
 .xc-refine__btn[hidden] { display: none !important; }
+
+/* -- first visit ------------------------------------------------------- */
+/*
+ * Reads as reassurance, not as a spec sheet. The facts strip is the only
+ * dense thing in it; everything below is prose at a comfortable measure,
+ * because somebody reading this is nervous rather than comparing.
+ */
+.fvisit__h { margin-bottom: .5rem; }
+.fvisit__lede { max-width: 58ch; margin: 0 0 var(--s-5); }
+
+.fvisit__facts {
+  list-style: none; margin: 0 0 var(--s-6); padding: var(--s-5);
+  display: grid; gap: var(--s-4); grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r-md);
+}
+@media (max-width: 860px) { .fvisit__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .fvisit__facts { grid-template-columns: 1fr; } }
+.fvisit__fact { display: grid; gap: 4px; min-width: 0; }
+.fvisit__fact-l {
+  font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro);
+  text-transform: uppercase; color: var(--text-faint);
+}
+.fvisit__fact-v { font-size: var(--fs-sm); font-weight: 700; }
+
+/* Preparation beside the run of the session: two columns that stack early,
+   because neither is readable squeezed. */
+.fvisit__cols { display: grid; gap: var(--s-6); grid-template-columns: minmax(0, 4fr) minmax(0, 5fr); align-items: start; }
+@media (max-width: 860px) { .fvisit__cols { grid-template-columns: 1fr; gap: var(--s-5); } }
+
+.fvisit__prep { display: grid; gap: var(--s-5); }
+.fvisit__prep-row p { margin: .25rem 0 0; max-width: 46ch; line-height: 1.6; }
+.fvisit__sub {
+  margin: 0; font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro);
+  text-transform: uppercase; color: var(--text-faint);
+}
+
+.fvisit__list { margin: .6rem 0 0; padding-left: 1.3rem; display: grid; gap: .6rem; max-width: 56ch; line-height: 1.6; }
+.fvisit__list li::marker { color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+/* The question nobody asks the receptionist. Set apart because it is the
+   one that decides it. */
+.fvisit__worry {
+  margin-top: var(--s-6); padding: var(--s-5);
+  background: var(--sand-2); border-radius: var(--r-md);
+}
+.fvisit__worry-q { margin: 0 0 .4rem; font-size: 1.05rem; }
+.fvisit__worry-a { margin: 0; max-width: 62ch; line-height: 1.65; }
+
+.fvisit__whose {
+  margin: var(--s-5) 0 0; max-width: 62ch;
+  font-size: var(--fs-sm); color: var(--text-soft); line-height: 1.6;
+}

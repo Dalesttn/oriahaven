@@ -81,6 +81,7 @@ require_once ORIA_CORE_DIR . 'includes/hardening.php';
 require_once ORIA_CORE_DIR . 'includes/intent-pages.php';
 require_once ORIA_CORE_DIR . 'includes/practices-index.php';
 require_once ORIA_CORE_DIR . 'includes/facet-guides.php';
+require_once ORIA_CORE_DIR . 'includes/first-visit.php';
 require_once ORIA_CORE_DIR . 'includes/lastmod.php';
 require_once ORIA_CORE_DIR . 'includes/facet-index.php';
 require_once ORIA_CORE_DIR . 'includes/finder.php';

@@ -117,16 +117,41 @@ $oria_faqs = ( $oria_term && function_exists( '\Oria\Core\Faq\for_term' ) )
 $oria_guides = ( $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) )
 	? \Oria\Core\Guides\for_term( $oria_term )
 	: array();
+
+$oria_first = ( $oria_term && function_exists( '\Oria\Core\FirstVisit\for_term' ) )
+	? \Oria\Core\FirstVisit\for_term( $oria_term )
+	: null;
 ?>
 
 <?php if ( $oria_term ) : ?>
 <nav class="spine" aria-label="<?php esc_attr_e( 'Page sections', 'oria' ); ?>">
 	<div class="wrap spine__row">
-		<a href="#decide"><b>1</b> <?php esc_html_e( 'Decide', 'oria' ); ?></a>
-		<a href="#browse"><b>2</b> <?php printf( esc_html__( 'Browse all %s', 'oria' ), esc_html( number_format_i18n( count( $oria_ids ) ) ) ); ?></a>
-		<?php if ( $oria_intro ) : ?><a href="#read"><b>3</b> <?php esc_html_e( 'Read up', 'oria' ); ?></a><?php endif; ?>
-		<?php if ( $oria_guides ) : ?><a href="#guides"><b><?php echo $oria_intro ? 4 : 3; ?></b> <?php esc_html_e( 'Guides', 'oria' ); ?></a><?php endif; ?>
-		<?php if ( $oria_faqs ) : ?><a href="#faq"><b><?php echo ( $oria_intro ? 1 : 0 ) + ( $oria_guides ? 1 : 0 ) + 3; ?></b> <?php esc_html_e( 'FAQ', 'oria' ); ?></a><?php endif; ?>
+		<?php
+		/*
+		 * Numbered by what is actually on the page. This was three nested
+		 * ternaries counting around the optional blocks, which is one
+		 * off-by-one away from a nav that numbers 1, 2, 4.
+		 */
+		$oria_spine = array(
+			array( 'decide', __( 'Decide', 'oria' ) ),
+			array( 'browse', sprintf( __( 'Browse all %s', 'oria' ), number_format_i18n( count( $oria_ids ) ) ) ),
+		);
+		if ( $oria_first ) {
+			$oria_spine[] = array( 'first-visit', __( 'First visit', 'oria' ) );
+		}
+		if ( $oria_intro ) {
+			$oria_spine[] = array( 'read', __( 'Read up', 'oria' ) );
+		}
+		if ( $oria_guides ) {
+			$oria_spine[] = array( 'guides', __( 'Guides', 'oria' ) );
+		}
+		if ( $oria_faqs ) {
+			$oria_spine[] = array( 'faq', __( 'FAQ', 'oria' ) );
+		}
+		?>
+		<?php foreach ( $oria_spine as $oria_i => $oria_step ) : ?>
+			<a href="#<?php echo esc_attr( $oria_step[0] ); ?>"><b><?php echo esc_html( (string) ( $oria_i + 1 ) ); ?></b> <?php echo esc_html( $oria_step[1] ); ?></a>
+		<?php endforeach; ?>
 	</div>
 </nav>
 
@@ -282,8 +307,14 @@ $oria_guides = ( $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) )
 	</div>
 </section>
 
+<?php
+if ( $oria_first ) {
+	get_template_part( 'template-parts/first-visit', null, array( 'guide' => $oria_first, 'id' => 'first-visit' ) );
+}
+?>
+
 <?php if ( $oria_intro ) : ?>
-<!-- Floor 3 — Read -->
+<!-- Read -->
 <section class="wrap section floor" id="read">
 	<h2 class="micro floor__label"><?php esc_html_e( 'Read up', 'oria' ); ?></h2>
 	<h2 class="h3" style="margin-bottom:1rem">

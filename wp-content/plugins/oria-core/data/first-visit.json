@@ -1,0 +1,234 @@
+{
+  "_comment": [
+    "What a first visit is actually like, per kind of session.",
+    "",
+    "WHY THIS IS NOT PER LISTING. Of 441 published listings, 8 are claimed,",
+    "and the fields that would answer these questions sit at 0-4% filled.",
+    "Waiting for practices to fill them in means answering nobody. But what",
+    "happens at a first reformer class barely varies between studios, so the",
+    "honest unit is the KIND of session, and the page says so in as many",
+    "words: this is what these sessions are generally like, ask yours if it",
+    "matters.",
+    "",
+    "WHAT MAY BE SAID HERE. The same rule as every other guide on the site:",
+    "the room and the procedure, never the outcome. Lying face down under a",
+    "towel is an observable fact about the hour. Relieving back pain is a",
+    "therapeutic claim, is made nowhere on this site, and least of all in a",
+    "document written to reassure a beginner.",
+    "",
+    "HEDGING IS NOT WEAKNESS HERE. Usually, at most places and ask yours are",
+    "load-bearing words: a first-timer told flatly that something never",
+    "happens, who then meets it, trusts the next page less. Where practice",
+    "genuinely varies, this says so rather than picking the commoner answer",
+    "and sounding certain.",
+    "",
+    "Keyed by SPECIALTY slug. The registry key names the matching entry in",
+    "compare.json where the two vocabularies differ (cold-plunge is",
+    "ice-bath there); without it the slug is used. A specialty with no entry",
+    "gets no guide rather than a guessed one."
+  ],
+
+  "guides": {
+
+    "massage": {
+      "lede": "A massage appointment is one practitioner, one room, and a table. Nothing is asked of you except that you turn up and say where it hurts.",
+      "arrive": "Five to ten minutes early. The first appointment usually starts with a short written health history — what you do for work, injuries, anything you are being treated for.",
+      "wear": "Whatever you arrived in. You undress in private once the therapist has left the room.",
+      "bring": "Nothing. Towels and everything else are provided.",
+      "steps": [
+        "A few minutes talking first: what you want from the hour, where the trouble is, how much pressure you like.",
+        "The therapist leaves the room while you undress to your comfort and get under the towel.",
+        "You are covered the whole time. Only the part being worked on is uncovered, and it is re-covered before they move on.",
+        "They will check the pressure early and you can change it at any point. Saying it is too much is normal and expected.",
+        "A minute or two to get up slowly at the end, and a glass of water on the way out."
+      ],
+      "worry": {
+        "q": "How much do I have to take off?",
+        "a": "As much or as little as you want. Most people undress to their underwear and keep it on. You are under a towel throughout either way, and a good therapist will work around clothing without comment if you would rather stay dressed."
+      }
+    },
+
+    "remedial-massage": {
+      "lede": "Remedial massage is a treatment appointment rather than an hour off. It starts with questions and often ends with homework.",
+      "arrive": "Ten minutes early for the first one. There is a longer intake form than for a relaxation massage, and it asks about medication and past injuries.",
+      "wear": "Comfortable clothes you can move in — you may be asked to do a few movements before you get on the table.",
+      "bring": "Your health fund card if you are claiming on the spot, and the name of anything you are being treated for elsewhere.",
+      "steps": [
+        "An assessment first: some questions, then watching how you move, stand or turn.",
+        "The therapist explains what they think is going on and what they plan to work on.",
+        "Treatment on the table, usually firmer than a relaxation massage and focused on one or two areas rather than the whole body.",
+        "It can be uncomfortable in places. Uncomfortable and sharp are different things — say so and they will ease off.",
+        "Often a stretch or two to do at home, and a view on whether you need to come back."
+      ],
+      "worry": {
+        "q": "Is it going to hurt?",
+        "a": "Firm work on a tight area can be uncomfortable while it is happening, and practitioners generally aim for a level you can breathe through rather than brace against. You set that level, and you can change it mid-session. You may feel it the next day, the way you would after unfamiliar exercise."
+      }
+    },
+
+    "yoga": {
+      "lede": "A general yoga class expects nothing from you except that you are there. Nobody is looking at you; they are all busy.",
+      "arrive": "Ten minutes early for a first class — enough to sign in, find the mats and props, and tell the teacher it is your first time.",
+      "wear": "Anything you can move and bend in. Bare feet. Leggings or shorts that stay put when you tip upside down.",
+      "bring": "Water. Studios lend mats, blocks and straps, though a hire fee is common, so ask when you book.",
+      "steps": [
+        "Tell the teacher at the door that it is your first class. They will keep half an eye on you and offer easier options as they go.",
+        "Shoes off outside the room. It is usually quiet before class starts — people lie down and wait.",
+        "The class moves through standing and floor postures, with the teacher naming each one and demonstrating.",
+        "You can stop at any time. Sitting down for a round, or resting on your knees, is ordinary and nobody comments.",
+        "It ends lying still for a few minutes with the lights down."
+      ],
+      "worry": {
+        "q": "I am not flexible. Is that a problem?",
+        "a": "No — that is what the blocks and straps in the corner are for, and the teacher will show you where they go. A general or beginner class assumes bodies that do not fold easily. If you want the gentlest start, look for classes named hatha, yin or restorative rather than vinyasa or power."
+      }
+    },
+
+    "pilates": {
+      "lede": "Mat Pilates is a small class on the floor. Reformer Pilates is a small class on a machine, and most studios want you to do an introductory session before joining one.",
+      "arrive": "Ten to fifteen minutes early for a first reformer class. Setting up the bed to your height is done with the instructor.",
+      "wear": "Fitted clothes rather than loose — the instructor needs to see how you are moving. Grip socks are required at most reformer studios and can usually be bought at reception.",
+      "bring": "Water, and grip socks if you have them.",
+      "steps": [
+        "A short chat about injuries and anything you are working around.",
+        "On reformer, the instructor sets your footbar, springs and headrest, and shows you how the carriage moves before anything starts.",
+        "Exercises are called out and demonstrated, then the class works through them together with the instructor walking the room.",
+        "Expect quiet form corrections, usually spoken and sometimes a hand on a shoulder or hip. You can ask for no hands-on and that will be respected.",
+        "Classes are small, so you will be seen — which is the point, not a hazard."
+      ],
+      "worry": {
+        "q": "Do I need to be fit or have done it before?",
+        "a": "For mat classes, no. For reformer, most Perth studios ask newcomers to do an intro or beginner-tagged class first, purely so the machine is explained properly rather than as a fitness test. Check what the studio calls its entry class before booking a general one."
+      }
+    },
+
+    "reformer-pilates": {
+      "registry": "pilates-reformer",
+      "lede": "One machine each, six to twelve people, and an instructor who set your springs before you started.",
+      "arrive": "Fifteen minutes early for a first class. The setup is individual and is not something to rush.",
+      "wear": "Fitted clothes. Grip socks are compulsory at most studios — check the studio page, and expect to be able to buy a pair at reception if you forget.",
+      "bring": "Water and a small towel.",
+      "steps": [
+        "The instructor asks about injuries, pregnancy and anything recent before you get on the bed.",
+        "They set the footbar, headrest and spring tension for your height and strength, and show you which lever does what.",
+        "The class works through a sequence together. Spring changes are called out as you go.",
+        "Corrections are frequent and normal — the resistance makes form matter more than it does on a mat.",
+        "You reset and wipe down the bed at the end."
+      ],
+      "worry": {
+        "q": "Will I be the only one who has no idea what they are doing?",
+        "a": "In a beginner or intro class, no. In a general class it happens, and it is the reason most studios ask you to start with the intro one. If a studio lets you book straight into a general class and you would rather not, ring and ask for their beginner slot — they will have one."
+      }
+    },
+
+    "meditation": {
+      "lede": "A guided session in a quiet room. Someone talks, you sit, and that is most of it.",
+      "arrive": "Five to ten minutes early. Latecomers are sometimes not admitted once a session has started, because the door disturbs the room.",
+      "wear": "Anything comfortable you can sit still in for half an hour. Layers — sitting still gets cold.",
+      "bring": "Nothing. Cushions, chairs and blankets are provided.",
+      "steps": [
+        "People arrive quietly and choose a cushion or a chair. Chairs are always available and using one is not a lesser option.",
+        "A short introduction, often a few words on what the session will involve.",
+        "The guide talks you through it — attention on the breath, the body, or a repeated phrase, depending on the tradition.",
+        "Your mind will wander constantly. Noticing that and coming back is the practice, not a failure at it.",
+        "A few minutes at the end to sit before anyone speaks or moves."
+      ],
+      "worry": {
+        "q": "What if I cannot stop thinking, or I fidget?",
+        "a": "Both are expected and neither is a problem. Nobody can stop thinking, and guides say so in the first five minutes of most beginner sessions. Shifting position is fine, and if sitting on the floor is uncomfortable, take a chair."
+      }
+    },
+
+    "breathwork": {
+      "lede": "You lie down and breathe in a pattern a facilitator sets, usually to music, for an hour or so. It is more physical than it sounds.",
+      "arrive": "Ten minutes early. Facilitators generally ask about heart conditions, pregnancy, epilepsy and recent surgery before starting, so allow time for that conversation.",
+      "wear": "Loose, warm, comfortable clothes. You will be lying still afterwards and body temperature drops.",
+      "bring": "Water, and a blanket or eye mask if you have them — most places provide both.",
+      "steps": [
+        "A screening conversation first. Be straightforward about health conditions and medication; it changes what a facilitator will ask of you.",
+        "Everyone lies down with a blanket. Lights low, music on.",
+        "The facilitator guides the pace of breathing and keeps talking through it.",
+        "Tingling in the hands and face, and sometimes cramping in the fingers, is common with sustained fast breathing. Facilitators name this beforehand so it does not alarm you.",
+        "A long quiet period at the end, and often a chance to talk afterwards if you want to."
+      ],
+      "worry": {
+        "q": "Is it going to be emotional in front of strangers?",
+        "a": "For some people it is, and rooms are set up for that — blankets, eye masks, low light, and a facilitator who stays in the room. Nobody is asked to share afterwards. If that possibility puts you off a group, one-to-one breathwork is widely available and several Perth facilitators start beginners that way."
+      }
+    },
+
+    "sound-healing": {
+      "lede": "You lie on the floor under a blanket while someone plays bowls, gongs and chimes around the room. There is nothing to do.",
+      "arrive": "Ten minutes early to settle. Once a sound bath starts, people are lying down in the dark and a late entry is disruptive.",
+      "wear": "Warm, loose clothes. You will be lying still for an hour and it gets cold.",
+      "bring": "A blanket and a pillow if you like your own; most places have both, plus mats.",
+      "steps": [
+        "Set yourself up on a mat with a blanket. Lying on your back is usual, but on your side or in a chair is fine.",
+        "A short introduction, then the lights go down.",
+        "The facilitator moves around the room playing instruments. Some sounds are loud and close, some are barely there.",
+        "People fall asleep. Snoring happens in every session and nobody minds.",
+        "A slow return — a few minutes of quiet before the lights come up."
+      ],
+      "worry": {
+        "q": "Do I have to believe in anything?",
+        "a": "No. Nothing is asked of you and nothing is claimed of you. Sessions vary in how much spiritual language the facilitator uses, and that is worth checking if it matters either way to you — some are framed as a rest with instruments, others draw on a specific tradition."
+      }
+    },
+
+    "reiki": {
+      "lede": "You lie fully clothed on a table while a practitioner holds their hands on or just above you. It is quiet and it is still.",
+      "arrive": "Five to ten minutes early. There is usually a conversation first about what has brought you in.",
+      "wear": "Your own comfortable clothes. Nothing is removed except shoes.",
+      "bring": "Nothing.",
+      "steps": [
+        "A talk first about what you would like from the session.",
+        "You lie on your back on a treatment table, clothed, usually under a blanket.",
+        "The practitioner works around your head, shoulders, torso and feet, either with hands resting lightly or held above you.",
+        "You will be told beforehand whether there is contact, and you can ask for hands-off. Say if you would rather certain areas were not touched.",
+        "Time at the end to sit up slowly and talk if you want to."
+      ],
+      "worry": {
+        "q": "What if I do not feel anything?",
+        "a": "That is a common report and practitioners will tell you so. People describe warmth, heaviness, or simply an hour of lying still; some describe nothing in particular. None of those is the wrong result, and a practitioner who tells you that you did it wrong is not one to go back to."
+      }
+    },
+
+    "infrared-sauna": {
+      "lede": "A private cabin, booked by the half hour, that you use on your own or with someone you came with.",
+      "arrive": "Five to ten minutes early. Your session time is usually cabin time, so arriving late shortens it.",
+      "wear": "Swimmers, or gym clothes. Some venues allow a towel only, since the room is private — check when booking.",
+      "bring": "Water, more than you think. A change of clothes. Most places supply towels but confirm, as some charge.",
+      "steps": [
+        "Reception shows you to your room and explains the controls and the timer.",
+        "The cabin is usually already warm. Infrared heat feels milder than a traditional sauna at the same number, because the air is cooler.",
+        "You sit or lie for the booked time, stepping out whenever you want to.",
+        "Most rooms have a speaker or screen, and you can usually play your own music.",
+        "A shower afterwards at most venues, then time to cool down before you drive."
+      ],
+      "worry": {
+        "q": "What if I cannot handle the heat for the whole session?",
+        "a": "You step out. The door is not locked, the room is yours, and staff expect first-timers to come out early or in stages. Many venues suggest a shorter first session and a lower temperature, and will set it for you if you say it is your first time."
+      }
+    },
+
+    "cold-plunge": {
+      "registry": "ice-bath",
+      "name": "cold plunge",
+      "lede": "A short, sharp immersion in very cold water, usually sold alongside a sauna as a hot-and-cold circuit.",
+      "arrive": "Ten minutes early for a first visit. Staff generally talk first-timers through it rather than leaving you to work it out.",
+      "wear": "Swimmers. A towel and robe for between rounds.",
+      "bring": "Water, thongs or sandals, and warm clothes for afterwards — you stay cold for a while.",
+      "steps": [
+        "Staff explain the routine: usually a warm-up in the sauna first, then the plunge, repeated a few times.",
+        "You get in slowly. The instinct is to gasp — being told to slow your breathing down is the whole of the coaching.",
+        "First immersions are short. A minute or two is a normal starting point and staff will often time it for you.",
+        "Back to the heat, then repeat. Most circuits finish on the warm side.",
+        "Dress warmly straight afterwards."
+      ],
+      "worry": {
+        "q": "Is it safe to just try it?",
+        "a": "Cold immersion is not for everyone — heart conditions, blood pressure problems and pregnancy are the usual reasons a venue will ask you to check with a doctor first, and reputable ones ask before you get in. Tell staff about any of these and about medication. If you are on your own and unsure, go somewhere supervised for a first attempt rather than a self-serve setup."
+      }
+    }
+  }
+}
