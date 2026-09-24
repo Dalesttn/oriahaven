@@ -162,9 +162,16 @@ function threshold(): int {
 	return max( 1, (int) apply_filters( 'oria_practice_impact_email_threshold', 5 ) );
 }
 
-/** Reports can be turned off site-wide without unscheduling anything. */
+/**
+ * Reports can be turned off site-wide without unscheduling anything.
+ *
+ * Stored as the strings '1' and '0', not as a boolean. update_option()
+ * skips the write when the new value matches the old one, and an option
+ * that has never been set reads back as false -- so saving boolean false
+ * wrote nothing at all and the switch appeared to turn itself back on.
+ */
 function enabled(): bool {
-	return (bool) apply_filters( 'oria_practice_impact_enabled', (bool) get_option( 'oria_impact_enabled', true ) );
+	return (bool) apply_filters( 'oria_practice_impact_enabled', '0' !== (string) get_option( 'oria_impact_enabled', '1' ) );
 }
 
 /**
@@ -495,6 +502,48 @@ function run( bool $dry = false, int $only = 0, bool $force = false, int $limit 
 			'' !== $res['reason'] ? ' (' . $res['reason'] . ')' : ''
 		);
 	}
+
+	return $out;
+}
+
+/**
+ * What a run WOULD do, without doing any of it.
+ *
+ * The admin screen and the CLI both ask the same question, so they ask it
+ * in the same place: a screen that worked out eligibility for itself would
+ * eventually disagree with the job that actually sends, and the disagreement
+ * would only show up as an email nobody expected.
+ *
+ * @return list<array{listing:int, name:string, ok:bool, why:string, data:?array}>
+ */
+function survey( int $limit = 400 ): array {
+	$out = array();
+
+	foreach ( claimed_listings( $limit ) as $listing_id ) {
+		$listing_id = (int) $listing_id;
+		$verdict    = check( $listing_id );
+
+		$out[] = array(
+			'listing' => $listing_id,
+			'name'    => short_name( $listing_id ),
+			'ok'      => (bool) $verdict['ok'],
+			'why'     => (string) $verdict['why'],
+			'data'    => $verdict['data'],
+		);
+	}
+
+	// The ones that would be written to first, then the near misses by how
+	// close they are, then everything with nothing to say.
+	usort(
+		$out,
+		static function ( array $a, array $b ): int {
+			if ( $a['ok'] !== $b['ok'] ) {
+				return $a['ok'] ? -1 : 1;
+			}
+
+			return (int) ( $b['data']['clicks'] ?? -1 ) <=> (int) ( $a['data']['clicks'] ?? -1 );
+		}
+	);
 
 	return $out;
 }
