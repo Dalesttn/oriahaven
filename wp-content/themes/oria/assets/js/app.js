@@ -2485,7 +2485,8 @@
           out.push('<span class="pill pill--cat pill--cat-' + esc(c) + '">' + esc(catNames[c] || c) + "</span>");
         });
       }
-      return out.length ? '<div class="listing__tags">' + out.slice(0, 3).join("") + "</div>" : "";
+      /* Two, matching listing-card.php. Three pills were competing with the practice's own name. */
+      return out.length ? '<div class="listing__tags">' + out.slice(0, 2).join("") + "</div>" : "";
     }
 
     function card(l) {

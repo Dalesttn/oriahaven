@@ -125,7 +125,7 @@ $oria_badges = array(
 
 		<?php
 		/*
-		 * At most three tags, practical ones first -- beginner friendly,
+		 * At most two tags, practical ones first -- beginner friendly,
 		 * online, free, a live offer -- then the wellness-goal tags, then
 		 * the category as the fallback. Mirrors cardTags() in app.js, which
 		 * redraws every one of these cards on a directory page. The UX audit
@@ -156,7 +156,7 @@ $oria_badges = array(
 		}
 		?>
 		<?php if ( $oria_tags ) : ?>
-			<div class="listing__tags"><?php echo implode( '', array_slice( $oria_tags, 0, 3 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- built from escaped parts above ?></div>
+			<div class="listing__tags"><?php echo implode( '', array_slice( $oria_tags, 0, 2 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- built from escaped parts above ?></div>
 		<?php endif; ?>
 
 		<p class="listing__desc"><?php echo esc_html( get_the_excerpt() ); ?></p>

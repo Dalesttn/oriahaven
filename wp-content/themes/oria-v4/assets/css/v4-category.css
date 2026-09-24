@@ -481,33 +481,81 @@ html.xc-locked { overflow: hidden; }
 #browse .xc-feat .listing__body { padding: 0; }
 #browse .xc-feat .listing__flag { display: none; } /* the band says Featured */
 
-/* --- Listing cards: editorial rows ------------------------------------------ */
-#browse #dirResults { gap: 0; border-top: 1px solid var(--line-strong); }
-#browse #dirResults .listing {
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+/* --- Listing cards: picture on top ------------------------------------------
+   These were editorial rows: transparent, hairline-separated, picture beside
+   the text. The rows read as a list to skim rather than a set of places to
+   look at, and the photography -- the thing a person actually chooses a
+   sauna or a studio on -- was a thumbnail off to one side.
+
+   Cards now, with the picture across the top at one ratio. Three to a row
+   where a card still has room to be read, two below that, one on a phone;
+   the body is a column whose footer is pushed to the bottom so prices and
+   actions line up across a row however much text sits above them. */
+#browse #dirResults {
   gap: var(--s-5);
-  padding-block: var(--s-5);
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--line-strong);
-  border-radius: 0;
+  border-top: 0;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+}
+/* Two from 720px: that still leaves each card about 316px, which is the
+   floor at which the name and a tag stop wrapping every line. */
+@media (min-width: 45rem) { #browse #dirResults { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Three across only where each card keeps roughly 360px, which is what the
+   name, two tags and a three-line description need before they start
+   wrapping every line. */
+@media (min-width: 80rem) { #browse #dirResults { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+#browse #dirResults .listing {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-radius: var(--r-lg);
   box-shadow: none;
   transform: none;
-  transition: border-color .2s ease;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
 }
-@media (min-width: 68rem) { #browse #dirResults { column-gap: var(--s-6); align-items: stretch; } }
-#browse #dirResults .listing:hover { box-shadow: none; transform: none; border-bottom-color: var(--ink); }
-#browse #dirResults .listing__media { position: relative; overflow: hidden; align-self: start; aspect-ratio: 4 / 3; border-radius: var(--radius-control); background: var(--sand); }
-#browse #dirResults .listing__media img { width: 100%; height: 100%; aspect-ratio: 4 / 3; min-height: 0; object-fit: cover; transition: transform .5s var(--ease, ease); }
-#browse .listing:hover .listing__media img,
-#browse .listing:focus-within .listing__media img { transform: scale(1.02); }
-#browse .listing .btn__dot { transition: transform .2s ease; }
-#browse .listing:hover .btn--dark .btn__dot,
-#browse .listing .btn--dark:focus-visible .btn__dot { transform: translateX(4px); }
-#browse #dirResults .listing__body { padding: 0; }
-#browse #dirResults .listing__name { font-size: clamp(1.2rem, 1.6vw, 1.45rem); font-weight: 800; color: var(--deep); }
-#browse #dirResults .listing__foot { border-top: 0; padding-top: 0; }
+#browse #dirResults .listing:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: 0 14px 34px rgba(8, 34, 32, .10);
+}
+
+/* The picture sets the height, never the copy beside it. */
+#browse #dirResults .listing__media {
+  position: relative; overflow: hidden;
+  align-self: start; width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 0;
+  background: var(--sand);
+}
+#browse #dirResults .listing__media img {
+  width: 100%; height: 100%; aspect-ratio: 16 / 10; min-height: 0;
+  object-fit: cover; transition: transform .5s var(--ease, ease);
+}
+
+/* A column, so the footer can be pushed to the floor of every card. */
+#browse #dirResults .listing__body {
+  display: flex; flex-direction: column; gap: var(--s-3);
+  padding: var(--s-5);
+}
+#browse #dirResults .listing__desc { margin-bottom: 0; }
+#browse #dirResults .listing__foot {
+  margin-top: auto;
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--line);
+}
+#browse #dirResults .listing__name { font-size: 1.25rem; font-weight: 800; color: var(--deep); line-height: 1.25; }
+/* Two lines, so one long name cannot set the height of a whole row. */
+#browse #dirResults .listing__name a {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+}
 #browse .listing__desc { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+/* Two tags at most: the audit found the pills competing with the name. */
 #browse .listing__tags > :nth-child(n+3) { display: none; }
 #browse .cmpbtn { min-height: 40px; background: transparent; border-color: transparent; color: var(--text-soft); font-weight: 600; }
 #browse .cmpbtn[aria-pressed="true"] { background: var(--sand-2); border-color: var(--deep); color: var(--deep); }
@@ -529,15 +577,16 @@ html.xc-locked { overflow: hidden; }
 
    4/3, with a floor so a short card cannot squash it into a strip. Phones
    keep their 16:10 picture on top (below). */
+/* The lead card keeps its picture beside the text -- it is one card across
+   the full width, not one of a row, so a 16/10 band would be enormous. The
+   result cards no longer appear here: theirs is on top at every width. */
 @media (min-width: 44rem) {
-  #browse #dirResults .listing__media,
   #browse .xc-feat .listing__media {
     position: relative;
     align-self: start;
     aspect-ratio: 4 / 3;
     min-height: 12rem;
   }
-  #browse #dirResults .listing__media img,
   #browse .xc-feat .listing__media img {
     position: absolute;
     inset: 0;
@@ -555,8 +604,9 @@ html.xc-locked { overflow: hidden; }
 #browse .listing.xc-has-match .listing__tags { display: none; }
 
 @media (max-width: 43.99rem) {
-  /* One card per row, the picture on top at 16:10 (brief 12). */
-  #browse #dirResults .listing { grid-template-columns: minmax(0, 1fr); gap: var(--s-3); }
+  /* One card per row. The picture is on top at every width now, so only
+     the padding tightens here. */
+  #browse #dirResults .listing__body { padding: var(--s-4); }
   /* The paid card on a phone: its picture on top at full width in a gold
      frame, like every other card's shape but marked out as Featured. The
      96px thumbnail beside the text left the name and tags in a narrow
