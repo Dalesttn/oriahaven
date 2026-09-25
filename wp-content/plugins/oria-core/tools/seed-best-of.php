@@ -424,6 +424,35 @@ $guides = array(
 		),
 		'find'         => array( 'specialty' => array( 'acupuncture' ) ),
 	),
+	/* ---- life stage ---------------------------------------------------- */
+	array(
+		'slug'         => 'pregnancy-new-parent-perth',
+		'title'        => 'Best pregnancy and new-parent wellness in Perth',
+		'excerpt'      => 'Doulas, private midwives, lactation consultants, pregnancy yoga and pelvic floor physiotherapy across Perth, arranged by where you are in the journey.',
+		'intro'        => "Pregnancy is the one stretch of life where people most want somebody who does this specifically, and it is the hardest thing to search for: a general massage clinic and a birth doula both come back under the same words. These are Perth practices whose work is built around trying to conceive, being pregnant, giving birth and the weeks after it. They are grouped by where you are rather than by what they are called, because that is the order people need them in.",
+		'quick_answer' => "For birth support, Back to Basics Birthing in the CBD covers hypnobirthing and VBAC preparation alongside doula work. For continuity from pregnancy through to the postnatal weeks, Before and After Baby is an endorsed private practice midwife attending both home and hospital births. For feeding and settling afterwards, Baby and Me combines midwifery, child health nursing and lactation consulting in a single visit, and The Gentle Village in Stirling has endorsed midwives and IBCLC lactation consultants in one team. For pregnancy yoga, Bloom Yoga Studio covers the northern suburbs and Small Blessings Yoga the south.",
+		'category'     => 'life-stage',
+		'practice'     => 'family',
+		'featured'     => false,
+		'award'        => 'oria_pick',
+		'reviewed'     => '2026-09-25',
+		'method'       => "We looked for practices whose work is centred on this stage rather than offering it as one service among many, for a named practitioner and a stated qualification where the role carries one, for clarity about what is covered before, during and after a birth, and for whether the practice can be seen outside its own suburb. Every pick is described from what the practice itself publishes. Nothing here is medical advice, nothing is a recommendation about how to give birth, and no practice here has been visited or tested by us.",
+		'faq'          => array(
+			array( 'question' => 'What does a doula do, and how is that different from a midwife?', 'answer' => "A midwife is a registered clinician responsible for the clinical care of you and your baby. A doula is not a clinician: the role is continuous practical and emotional support before, during and after birth, and it sits alongside your medical care rather than replacing any part of it. Some of the people in this guide are one, some the other, and the listing says which." ),
+			array( 'question' => 'When should I start looking?', 'answer' => "Doulas, private midwives and antenatal courses are the ones that fill, and people commonly book them in the first half of a pregnancy. Pregnancy yoga is usually joined from the second trimester. Lactation consultants are mostly found in the first days or weeks after a birth, and several of the practices here see people at home at short notice." ),
+			array( 'question' => 'Can I be seen at home?', 'answer' => "Several here do home visits, and a few work across the whole metropolitan area rather than from one room. Two also offer sessions online, which matters if you are outside the metro or in the early weeks and would rather not travel. Each listing shows whether it is in person, online or both." ),
+			array( 'question' => 'Is pregnancy massage different from ordinary massage?', 'answer' => "It is positioned and pressured differently, and most clinics ask how far along you are before booking. Twenty-five practices across the directory list pregnancy massage as a service; this guide points instead at the places built around this stage, and the full list is linked below." ),
+			array( 'question' => "What is a women’s health physiotherapist for?", 'answer' => "Pelvic floor concerns, which are common both during pregnancy and after it, and which people often assume they have to live with. The Woom in West Perth is the pick here and works across prolapse, urinary leakage and pelvic pain as well as antenatal and postnatal care." ),
+			array( 'question' => 'Where in Perth are these?', 'answer' => "Several of the birth and postnatal practitioners work across the whole metropolitan area rather than from a single suburb. Of the rest, the northern suburbs are covered from Kingsley, Stirling and Alexander Heights, the western suburbs from West Perth, Claremont, Cottesloe and City Beach, and the south from Beaconsfield." ),
+		),
+		'links'        => array(
+			array( 'label' => "All women's, men's & family wellness in Perth", 'url' => home_url( '/explore/perth/family/' ) ),
+			array( 'label' => 'Pregnancy yoga in Perth', 'url' => home_url( '/explore/perth/family/pregnancy-yoga/' ) ),
+			array( 'label' => 'Pregnancy massage in Perth', 'url' => home_url( '/explore/perth/bodywork/pregnancy-massage/' ) ),
+			array( 'label' => 'Best places to relax in Perth', 'url' => home_url( '/best/places-to-relax-perth/' ) ),
+		),
+		'find'         => array( 'specialty' => array( 'doula', 'lactation', 'midwifery', 'pregnancy-yoga', 'fertility-support' ) ),
+	),
 );
 
 /* ------------------------------------------------------------- candidates */

@@ -91,6 +91,7 @@ const CATEGORIES = array(
 	'move'        => 'Move',
 	'social'      => 'Social',
 	'experiences' => 'Special experiences',
+	'life-stage'  => 'Life stage',
 	'places'      => 'Location guides',
 );
 
