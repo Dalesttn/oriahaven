@@ -1,0 +1,37 @@
+{
+  "_note": [
+    "A launch tree, not a gazetteer. Melbourne has some 320 suburbs; these are",
+    "the ones where wellness businesses cluster and where somebody would",
+    "plausibly search by name. Regions are the groupings Melburnians use, not",
+    "Perth's structure translated -- Melbourne has no Hills or Swan Valley and",
+    "Perth has no Inner North.",
+    "",
+    "Slugs are unprefixed where they are free, so the URLs read the way the",
+    "brief's examples do: /area/melbourne/inner-north/fitzroy/. Armadale is the",
+    "single collision -- Perth has one -- so Melbourne's carries a suffix.",
+    "",
+    "Regions and their membership are a judgement call, and Dale's to correct."
+  ],
+  "city": { "slug": "melbourne", "name": "Melbourne" },
+  "regions": [
+    { "slug": "inner-north", "name": "Inner North",
+      "suburbs": [["fitzroy","Fitzroy"],["fitzroy-north","Fitzroy North"],["collingwood","Collingwood"],
+                  ["carlton","Carlton"],["carlton-north","Carlton North"],["brunswick","Brunswick"],
+                  ["brunswick-east","Brunswick East"],["northcote","Northcote"],["thornbury","Thornbury"]] },
+    { "slug": "inner-east", "name": "Inner East",
+      "suburbs": [["richmond","Richmond"],["abbotsford","Abbotsford"],["hawthorn","Hawthorn"],
+                  ["kew","Kew"],["camberwell","Camberwell"]] },
+    { "slug": "inner-south", "name": "Inner South",
+      "suburbs": [["south-yarra","South Yarra"],["prahran","Prahran"],["windsor","Windsor"],
+                  ["armadale-melbourne","Armadale"],["toorak","Toorak"],["south-melbourne","South Melbourne"]] },
+    { "slug": "bayside", "name": "Bayside",
+      "suburbs": [["st-kilda","St Kilda"],["elwood","Elwood"],["port-melbourne","Port Melbourne"],
+                  ["albert-park","Albert Park"],["brighton","Brighton"],["hampton","Hampton"]] },
+    { "slug": "cbd", "name": "Melbourne CBD & Surrounds",
+      "suburbs": [["melbourne-cbd","Melbourne CBD"],["southbank","Southbank"],["docklands","Docklands"],
+                  ["east-melbourne","East Melbourne"],["north-melbourne","North Melbourne"]] },
+    { "slug": "inner-west", "name": "Inner West",
+      "suburbs": [["footscray","Footscray"],["yarraville","Yarraville"],["seddon","Seddon"],
+                  ["williamstown","Williamstown"],["kensington","Kensington"]] }
+  ]
+}

@@ -305,6 +305,14 @@
         "Not one of the seventeen publishes a price. That is the gap. Several list figures on their own sites without saying plainly what the number buys, so the field is empty rather than guessed. None have been claimed by their owners yet either, which means every word here came from the business's own website."
       ],
       "status": "live"
+    },
+    {
+      "slug": "melbourne",
+      "name": "Melbourne",
+      "metro": "the Melbourne metro",
+      "state": "Victoria",
+      "region": "Melbourne, Victoria",
+      "status": "draft"
     }
   ]
 }

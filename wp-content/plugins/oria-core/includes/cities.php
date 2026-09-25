@@ -493,8 +493,8 @@ function guard_draft(): void {
 		return;
 	}
 
-	$slug = (string) get_query_var( QUERY_VAR );
-	if ( '' === $slug || ! exists( $slug ) || is_public( get( $slug ) ) ) {
+	$city = viewing();
+	if ( ! $city || is_public( $city ) ) {
 		return;
 	}
 
@@ -514,13 +514,41 @@ function guard_draft(): void {
  * safe. Draft never gets this far -- it 404s above.
  */
 function wp_robots_city( array $robots ): array {
-	$slug = (string) get_query_var( QUERY_VAR );
-	if ( '' !== $slug && exists( $slug ) && ! is_live( get( $slug ) ) ) {
+	$city = viewing();
+	if ( $city && ! is_live( $city ) ) {
 		$robots['noindex'] = true;
 		unset( $robots['nofollow'] );
 	}
 
 	return $robots;
+}
+
+/**
+ * The city whose content this request is showing, or null.
+ *
+ * Two ways in, because there are two kinds of city URL. /explore/{city}/
+ * carries the city in a query var; /area/{city}/{region}/{suburb}/ carries
+ * it in the term's ancestry and sets no var at all. Reading only the var
+ * left every Melbourne AREA page answering 200 while its explore pages
+ * 404ed -- found by asking for one rather than by reasoning about it.
+ *
+ * Distinct from current(), which falls back to the default city so callers
+ * always have something to scope by. This returns null when the request is
+ * not about a city, because a guard must not treat "no city here" as
+ * "the default city".
+ */
+function viewing(): ?array {
+	$slug = (string) get_query_var( QUERY_VAR );
+	if ( '' !== $slug && exists( $slug ) ) {
+		return get( $slug );
+	}
+
+	$term = get_queried_object();
+	if ( $term instanceof \WP_Term && Taxonomies\AREA === $term->taxonomy ) {
+		return for_area( $term );
+	}
+
+	return null;
 }
 
 /* -------------------------------------------------------------- shortcuts */
