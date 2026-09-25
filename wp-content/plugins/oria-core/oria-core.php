@@ -77,6 +77,7 @@ require_once ORIA_CORE_DIR . 'includes/corrections.php';
 require_once ORIA_CORE_DIR . 'includes/share.php';
 require_once ORIA_CORE_DIR . 'includes/og-default.php';
 require_once ORIA_CORE_DIR . 'includes/alt-text.php';
+require_once ORIA_CORE_DIR . 'includes/local-facts.php';
 require_once ORIA_CORE_DIR . 'includes/badge.php';
 require_once ORIA_CORE_DIR . 'includes/hardening.php';
 require_once ORIA_CORE_DIR . 'includes/intent-pages.php';

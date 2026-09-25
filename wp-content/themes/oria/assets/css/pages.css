@@ -8365,3 +8365,23 @@ article.is-spotlit {
 /* The contextual trigger, beside the business details. Tertiary by
    construction: it must lose to Call, Directions, Website, Book and Save. */
 .oclaim__near { margin: var(--s-4) 0 0; }
+
+/* -- what these places have in common --------------------------------- */
+/*
+ * The counted block on a category-and-suburb page. Quiet: it sits above a
+ * written introduction and should read as observation, not as a callout.
+ */
+.lfacts { margin: var(--s-6) 0 var(--s-5); }
+.lfacts__h { margin: 0 0 var(--s-4); }
+.lfacts__list {
+  margin: 0; padding: 0; list-style: none;
+  display: grid; gap: .55rem; max-width: 62ch;
+  font-size: var(--fs-sm); line-height: 1.55;
+}
+.lfacts__list li { display: flex; gap: .6rem; align-items: baseline; }
+/* A tick rather than a bullet: every line is something that is the case. */
+.lfacts__list li::before {
+  content: ""; flex: none; width: 7px; height: 7px; margin-top: .45rem;
+  border-radius: 50%; background: var(--moss, #4E7F70);
+}
+.lfacts__note { margin: var(--s-4) 0 0; max-width: 62ch; font-size: var(--fs-xs); color: var(--text-faint); line-height: 1.5; }

@@ -1734,6 +1734,30 @@ $oria_fg_name  = $oria_fg_on
 		</p>
 	<?php endif; ?>
 
+	<?php
+	/*
+	 * The countable half of this page, above the category introduction.
+	 *
+	 * That introduction is about the modality and is identical in every
+	 * suburb -- measured across the 51 indexable combos, siblings ran 76%
+	 * alike against 27% for unrelated pages, and the worst were 3% unique.
+	 * These lines are counted from the practices actually listed here, so
+	 * they differ because the practices do, and they say nothing at all
+	 * when nothing can be counted.
+	 */
+	$oria_lfacts = ( $oria_area && function_exists( '\Oria\Core\LocalFacts\for_combo' ) )
+		? \Oria\Core\LocalFacts\for_combo( $oria_term, $oria_area )
+		: array();
+
+	if ( $oria_lfacts ) {
+		get_template_part(
+			'template-parts/local-facts',
+			null,
+			array( 'facts' => $oria_lfacts, 'place' => \Oria\Theme\tname( $oria_area ) )
+		);
+	}
+	?>
+
 	<?php if ( $oria_facet && ! empty( $oria_frame['worth_knowing'] ) ) : ?>
 		<h2 class="h3" style="margin-bottom:1rem"><?php esc_html_e( 'Worth knowing', 'oria' ); ?></h2>
 		<div class="prose prose--intro">
@@ -1761,13 +1785,37 @@ $oria_fg_name  = $oria_fg_on
 			<?php endforeach; ?>
 		</div>
 	<?php elseif ( '' !== $oria_intro_html ) : ?>
+		<?php
+		/*
+		 * On a suburb page, the opening paragraph only. The whole guide is
+		 * the same two or three hundred words in every suburb of the
+		 * category, and repeating it was most of what made those pages
+		 * alike -- 76% similar to each other against 27% for unrelated
+		 * pages. One paragraph orients somebody who arrived from a search;
+		 * the rest is written once, on the category page, and linked.
+		 */
+		$oria_intro_shown = ( $oria_area && function_exists( '\Oria\Core\LocalFacts\first_para' ) )
+			? \Oria\Core\LocalFacts\first_para( $oria_intro_html )
+			: $oria_intro_html;
+		?>
 		<h2 class="h3" style="margin-bottom:1rem">
 			<?php
 			/* translators: 1: category, lower case, 2: city */
 			printf( esc_html__( 'Before you go: %1$s in %2$s', 'oria' ), esc_html( strtolower( $oria_pname ) ), esc_html( $oria_cname ) );
 			?>
 		</h2>
-		<div class="prose prose--intro"><?php echo wp_kses_post( $oria_intro_html ); ?></div>
+		<div class="prose prose--intro"><?php echo wp_kses_post( $oria_intro_shown ); ?></div>
+		<?php if ( $oria_area && $oria_intro_shown !== $oria_intro_html && $oria_term ) : ?>
+			<p class="xc-guide__more">
+				<a href="<?php echo esc_url( (string) get_term_link( $oria_term ) ); ?>">
+					<?php
+					/* translators: 1: category, lower case, 2: city */
+					printf( esc_html__( 'The full guide to %1$s in %2$s', 'oria' ), esc_html( strtolower( $oria_pname ) ), esc_html( $oria_cname ) );
+					?>
+					&rarr;
+				</a>
+			</p>
+		<?php endif; ?>
 	<?php endif; ?>
 
 	<?php if ( $oria_fg_also ) : ?>
