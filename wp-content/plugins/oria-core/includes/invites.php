@@ -425,6 +425,22 @@ function link( string $token, bool $decline = false ): string {
 
 /** The listing a token belongs to, or 0 if it's unknown or stale. */
 function listing_for( string $token ): int {
+	$id = listing_by_token( $token );
+	if ( ! $id ) {
+		return 0;
+	}
+	return (int) get_post_meta( $id, EXPIRES, true ) > time() ? $id : 0;
+}
+
+/**
+ * The listing a token belongs to, with the clock ignored.
+ *
+ * The hash stays in meta until burn(), so a token that has merely run out
+ * of time still identifies its listing -- enough to send somebody to the
+ * right claim form instead of a dead end. Anything that hands over a
+ * listing must still go through listing_for(), which checks the clock.
+ */
+function listing_by_token( string $token ): int {
 	if ( ! $token ) {
 		return 0;
 	}
@@ -443,11 +459,52 @@ function listing_for( string $token ): int {
 			),
 		)
 	);
-	$id = (int) ( $found[0] ?? 0 );
-	if ( ! $id ) {
-		return 0;
+
+	return (int) ( $found[0] ?? 0 );
+}
+
+/**
+ * Where a dead link goes.
+ *
+ * A link is single-use and lasts TTL_DAYS, so the commonest way to reach
+ * here is the slowest reader: somebody who found the email weeks later and
+ * did exactly what it asked. Telling them to reply and wait for a human
+ * was a dead end for the one person still interested.
+ *
+ * The token still names the listing, and the claim form on the listing's
+ * own page is a working second door -- #claim opens it. Only a burned
+ * token cannot be resolved, and that gets a way back rather than a bare
+ * 410.
+ */
+function expired( string $token ): void {
+	$listing_id = listing_by_token( $token );
+
+	if ( $listing_id ) {
+		// An owner already means the claim is done; the page says so, and
+		// signing in is the route from there rather than a second claim.
+		$url = (string) get_permalink( $listing_id );
+		if ( ! (int) get_post_meta( $listing_id, 'claimed_by', true ) ) {
+			$url .= '#claim';
+		}
+		wp_safe_redirect( $url );
+		exit;
 	}
-	return (int) get_post_meta( $id, EXPIRES, true ) > time() ? $id : 0;
+
+	wp_die(
+		wp_kses_post(
+			sprintf(
+				/* translators: %s: link to the directory */
+				__( 'That link has already been used. If the listing is still unclaimed you can take it over from its own page -- find it here: %s', 'oria' ),
+				sprintf(
+					'<a href="%s">%s</a>',
+					esc_url( home_url( '/explore/' ) ),
+					esc_html__( 'browse Oria Haven', 'oria' )
+				)
+			)
+		),
+		esc_html__( 'Link no longer active', 'oria' ),
+		array( 'response' => 410 )
+	);
 }
 
 function burn( int $listing_id ): void {
@@ -733,6 +790,19 @@ function body_html( int $listing_id, string $token ): string {
 		)
 	);
 
+	/*
+	 * A second door. The button above is one address, one use and one
+	 * month; this is none of those. It catches the email forwarded to the
+	 * person who actually decides, and the reader who comes back late.
+	 */
+	$html .= small(
+		sprintf(
+			/* translators: %s: link to the listing's own claim form */
+			esc_html__( 'Not the right person, or the link has stopped working? You can also claim it from %s.', 'oria' ),
+			link_to( (string) get_permalink( $listing_id ) . '#claim', __( 'the listing itself', 'oria' ) )
+		)
+	);
+
 	$html .= pass_html();
 
 	$html .= heading( __( 'One more thing worth a look', 'oria' ) );
@@ -779,6 +849,13 @@ function follow_up_html( int $listing_id, string $token ): string {
 	$html .= button( link( $token ), __( 'Take it over — free', 'oria' ) );
 	$html .= small(
 		sprintf(
+			/* translators: %s: link to the listing's own claim form */
+			esc_html__( 'If that button has stopped working, you can claim it from %s.', 'oria' ),
+			link_to( (string) get_permalink( $listing_id ) . '#claim', __( 'the listing itself', 'oria' ) )
+		)
+	);
+	$html .= small(
+		sprintf(
 			/* translators: %s: opt-out link */
 			esc_html__( 'Rather not be listed? %s.', 'oria' ),
 			link_to( link( $token, true ), __( 'Tell us here', 'oria' ) )
@@ -820,6 +897,7 @@ function body_text( int $listing_id, string $token ): string {
 		"IF YOU'D LIKE TO LOOK AFTER IT YOURSELF, YOU CAN — FREE.\nClaiming confirms you're the owner. You can then keep your address, phone, email, website, prices and session format current yourself, and the listing stops being marked Unclaimed. There are paid plans that add photos, opening hours, offers and visitor stats, but you never have to take one.\n\n" .
 		"Claim it here:\n%4\$s\n\n" .
 		"That link is just for your listing and works for %5\$d days.\n\n" .
+		"Not the right person, or the link has stopped working? You can also claim it from the listing itself:\n%13\$s\n\n" .
 		"%12\$s" .
 		"ONE MORE THING WORTH A LOOK\nYour listing has a share page — a ready-made social card with your name on it, and a small \"Listed on Oria Haven\" badge you can paste into your own website's footer. The badge links back to your profile, so anyone already on your site can see your hours, reviews and the rest in one click:\n%6\$s\n\n" .
 		"About us: we list %7\$d practices across Perth, from Fremantle to the Hills, all checked by hand. Enquiries go straight to you. We don't take a cut of bookings and we never will.\n\n" .
@@ -844,7 +922,8 @@ function body_text( int $listing_id, string $token ): string {
 		$seen
 			? __( 'No account, no charge. Those visitors are reading whatever we got from your website, so an out-of-date price or a wrong opening time is doing real damage right now — worse than not being listed at all.', 'oria' )
 			: __( 'No account, no charge. An out-of-date price or a wrong opening time is worse for you than not being listed at all.', 'oria' ),
-		pass_text()
+		pass_text(),
+		(string) get_permalink( $listing_id ) . '#claim'
 	);
 }
 
@@ -860,13 +939,15 @@ function follow_up_text( int $listing_id, string $token ): string {
 		"Hi again — just once more in case that got buried.\n\n" .
 		"%1\$s's listing: %2\$s\n" .
 		"Take it over (free): %3\$s\n" .
+		"Or claim it from the listing itself: %6\$s\n" .
 		"Rather not be listed: %4\$s\n\n" .
 		"Either way, I won't email again.\n\n%5\$s\n",
 		$name,
 		get_permalink( $listing_id ),
 		link( $token ),
 		link( $token, true ),
-		signature()
+		signature(),
+		(string) get_permalink( $listing_id ) . '#claim'
 	);
 }
 
@@ -1204,18 +1285,23 @@ function handle_link(): void {
 		return;
 	}
 
-	$listing_id = listing_for( $token );
-	if ( ! $listing_id ) {
-		wp_die(
-			esc_html__( 'That link has expired or has already been used. Reply to the email we sent and we\'ll send a fresh one.', 'oria' ),
-			esc_html__( 'Link expired', 'oria' ),
-			array( 'response' => 410 )
-		);
-	}
-
+	/*
+	 * Opt-out first, and without the clock. The expiry protects the claim,
+	 * which hands over a listing; it has no business standing between
+	 * somebody and "stop emailing me".
+	 */
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	if ( isset( $_GET['no'] ) ) {
-		decline( $listing_id );
+		$declining = listing_by_token( $token );
+		if ( $declining ) {
+			decline( $declining );
+			return;
+		}
+	}
+
+	$listing_id = listing_for( $token );
+	if ( ! $listing_id ) {
+		expired( $token );
 		return;
 	}
 
