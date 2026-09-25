@@ -229,7 +229,15 @@ function blank(): array {
 function ask_model( string $q ): ?array {
 	$s = schema();
 
-	$system = "You convert one sentence from a visitor to a Perth wellness directory into search preferences.\n\n"
+	/*
+	 * The model is told which city it is reading for. Without it the framing
+	 * sentence described a Perth directory to a visitor who may be looking
+	 * at Melbourne, and "anywhere in Perth is 25" was the travel hint for
+	 * every city the directory covers.
+	 */
+	$city = function_exists( '\Oria\Core\Cities\name' ) ? \Oria\Core\Cities\name() : 'Perth';
+
+	$system = "You convert one sentence from a visitor to a {$city} wellness directory into search preferences.\n\n"
 		. "Return ONLY a JSON object, no prose, with these keys:\n"
 		. "  kinds: array of zero or more slugs naming WHAT they are after, chosen from the list at the end\n"
 		. '  goals: array of zero or more of ' . wp_json_encode( $s['goals'] ) . "\n"
@@ -240,7 +248,7 @@ function ask_model( string $q ): ?array {
 		. " -- how far they will travel from the centre of town. 0 means they did not say. "
 		. "\"Walking distance\" and \"round the corner\" are 2; \"near the city\" and \"close by\" are 5; "
 		. "\"not too far\" is 10; "
-		. "\"anywhere in Perth\" is 25.\n"
+		. "\"anywhere in {$city}\" is 25.\n"
 		. "  beginner: true if they say they are new, inexperienced or nervous about starting\n"
 		. "  skip_spirit: true only if they say they want to avoid spiritual, religious or new-age content\n"
 		. "  health: true if the sentence mentions a symptom, injury, illness, mental-health condition or medication\n"

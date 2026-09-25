@@ -110,19 +110,35 @@ function centre_for( int $post_id ): array {
 	return CBD;
 }
 
-/** The name of the place that distance is measured from. */
+/**
+ * The name of the place that distance is measured from.
+ *
+ * A city says how it wants to be referred to. "6 km from the CBD" is how
+ * somebody talks about a place with one, and "40 km from Margaret River"
+ * is how they talk about a place without. That used to be a test for the
+ * slug 'perth', which made every other city the exception -- including the
+ * next one, silently.
+ */
 function centre_name( int $post_id ): string {
-	if ( function_exists( '\Oria\Core\Cities\for_area' ) ) {
-		$terms = get_the_terms( $post_id, Taxonomies\AREA );
-		foreach ( is_array( $terms ) ? $terms : array() as $term ) {
-			$city = \Oria\Core\Cities\for_area( $term );
-			if ( is_array( $city ) && ! empty( $city['slug'] ) && 'perth' !== $city['slug'] ) {
-				return \Oria\Core\Cities\name( $city );
-			}
-		}
+	$fallback = __( 'the CBD', 'oria' );
+
+	if ( ! function_exists( '\Oria\Core\Cities\for_area' ) ) {
+		return $fallback;
 	}
 
-	return __( 'the CBD', 'oria' );
+	$terms = get_the_terms( $post_id, Taxonomies\AREA );
+	foreach ( is_array( $terms ) ? $terms : array() as $term ) {
+		$city = \Oria\Core\Cities\for_area( $term );
+		if ( ! is_array( $city ) || empty( $city['slug'] ) ) {
+			continue;
+		}
+
+		$label = trim( (string) ( $city['centre_label'] ?? '' ) );
+
+		return '' !== $label ? $label : \Oria\Core\Cities\name( $city );
+	}
+
+	return $fallback;
 }
 
 function km_from_cbd( int $post_id ): ?float {

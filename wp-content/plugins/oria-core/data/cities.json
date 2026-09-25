@@ -281,7 +281,8 @@
         "Sixty-five offer something online or hybrid. That is worth knowing when the drive is the problem rather than the price.",
         "Seven listings have been claimed by the people who run them. The rest we wrote from public information, and every one of those says so on its own page. Some of them will be out of date, because opening hours change faster than we can check them, and we would rather tell you that than let the page look more official than it is."
       ],
-      "status": "live"
+      "status": "live",
+      "centre_label": "the CBD"
     },
     {
       "slug": "margaret-river",
@@ -312,7 +313,8 @@
       "metro": "the Melbourne metro",
       "state": "Victoria",
       "region": "Melbourne, Victoria",
-      "status": "draft"
+      "status": "draft",
+      "centre_label": "the CBD"
     }
   ]
 }

@@ -48,6 +48,34 @@ function bootstrap(): void {
  *
  * @return list<array{q: string, a: string}>
  */
+/**
+ * The city these answers are about, as the two words they need.
+ *
+ * `name` is what a person calls the place ("Perth", "Melbourne"); `metro`
+ * is what the coverage sentence needs ("the Perth metro", "the Margaret
+ * River region"), and the difference matters -- "listed across 14 suburbs
+ * in Melbourne" and "in the Melbourne metro" are not the same claim.
+ *
+ * Both already live in cities.json. These questions were the last place on
+ * the site still spelling one of them out.
+ *
+ * \return array{name: string, metro: string}
+ */
+function city_words( ?\WP_Term $term = null ): array {
+	$city = null;
+
+	if ( function_exists( '\Oria\Core\Cities\for_area' ) ) {
+		$city = ( $term instanceof \WP_Term && Taxonomies\AREA === $term->taxonomy )
+			? \Oria\Core\Cities\for_area( $term )
+			: \Oria\Core\Cities\current();
+	}
+
+	return array(
+		'name'  => function_exists( '\Oria\Core\Cities\name' ) ? \Oria\Core\Cities\name( $city ) : 'Perth',
+		'metro' => function_exists( '\Oria\Core\Cities\metro' ) ? \Oria\Core\Cities\metro( $city ) : 'the Perth metro',
+	);
+}
+
 function for_term( \WP_Term $term, ?array $only_ids = null ): array {
 	$manual = parse_override( (string) get_term_meta( $term->term_id, META_OVERRIDE, true ) );
 	if ( $manual ) {
@@ -159,6 +187,7 @@ function matching( \WP_Term $term, ?array $only_ids = null ): array {
  * @return list<array{q: string, a: string}>
  */
 function practice_faqs( \WP_Term $term, array $rows ): array {
+	$city = city_words( $term );
 	$name  = strtolower( decoded( $term->name ) );
 	$total = count( $rows );
 	$faqs  = array();
@@ -174,11 +203,12 @@ function practice_faqs( \WP_Term $term, array $rows ): array {
 	 * roughly half the directory.
 	 */
 	$faqs[] = array(
-		'q' => sprintf( 'How many practices offer %s in Perth?', $name ),
+		'q' => sprintf( 'How many practices offer %1$s in %2$s?', $name, $city['name'] ),
 		'a' => sprintf(
-			'Oria Haven lists %1$s across %2$s in the Perth metro. Every entry is checked by hand before it goes live, and the list is updated as practices open, move or close.',
+			'Oria Haven lists %1$s across %2$s in %3$s. Every entry is checked by hand before it goes live, and the list is updated as practices open, move or close.',
 			plural( $total, 'practice', 'practices' ),
-			plural( count( $suburbs ), 'suburb', 'suburbs' )
+			plural( count( $suburbs ), 'suburb', 'suburbs' ),
+			$city['metro']
 		),
 	);
 
@@ -187,7 +217,7 @@ function practice_faqs( \WP_Term $term, array $rows ): array {
 	$clusters = array_slice( array_filter( $suburbs, static fn( $n ) => $n >= 2 ), 0, 3, true );
 	if ( $clusters ) {
 		$faqs[] = array(
-			'q' => sprintf( 'Where in Perth can I find %s?', $name ),
+			'q' => sprintf( 'Where in %2$s can I find %1$s?', $name, $city['name'] ),
 			'a' => sprintf(
 				'%1$s across %2$s. The most choice is in %3$s — use the area filter on this page to narrow it to the side of town you can actually get to.',
 				ucfirst( plural( $total, 'practice', 'practices' ) ),
@@ -200,7 +230,7 @@ function practice_faqs( \WP_Term $term, array $rows ): array {
 	$prices = prices( $rows );
 	if ( count( $prices ) >= MIN_SAMPLE ) {
 		$faqs[] = array(
-			'q' => sprintf( 'What does it cost to book %s in Perth?', $name ),
+			'q' => sprintf( 'What does it cost to book %1$s in %2$s?', $name, $city['name'] ),
 			'a' => sprintf(
 				'Of the %1$d practices here that publish a starting price, sessions begin from %2$s, with a typical starting price around %3$s. Prices come from the practices themselves and change without notice — confirm before you book.',
 				count( $prices ),
@@ -215,7 +245,7 @@ function practice_faqs( \WP_Term $term, array $rows ): array {
 	$free = free_count( $rows );
 	if ( $free >= 2 ) {
 		$faqs[] = array(
-			'q' => sprintf( 'Can I find free %s in Perth?', $name ),
+			'q' => sprintf( 'Can I find free %1$s in %2$s?', $name, $city['name'] ),
 			'a' => sprintf(
 				'%1$d of the %2$d practices listed run sessions that are free or by donation. Sort by price on this page to bring them to the top.',
 				$free,
@@ -227,7 +257,7 @@ function practice_faqs( \WP_Term $term, array $rows ): array {
 	$online = count( array_filter( $rows, static fn( $r ) => in_array( $r['format'] ?? '', array( 'online', 'both' ), true ) ) );
 	if ( $online > 0 ) {
 		$faqs[] = array(
-			'q' => sprintf( 'Can I book %s online in Perth?', $name ),
+			'q' => sprintf( 'Can I book %1$s online in %2$s?', $name, $city['name'] ),
 			'a' => sprintf(
 				'Yes — %1$d of the %2$d practices listed offer online or hybrid sessions. Filter by format above to see only those.',
 				$online,
@@ -313,37 +343,49 @@ function site_faq(): array {
 
 	$categories = (int) wp_count_terms( array( 'taxonomy' => Taxonomies\PRACTICE, 'hide_empty' => true ) );
 
-	$regions = get_terms(
-		array(
-			'taxonomy'   => Taxonomies\AREA,
-			'parent'     => 0,
-			'hide_empty' => false,
-			'orderby'    => 'name',
-		)
-	);
+	/*
+	 * The cities, not the regions.
+	 *
+	 * This asked for area terms at parent 0 and called them regions. That
+	 * was true until cities became the root of the area tree, and then it
+	 * quietly started saying, on the live site: "Which parts of Perth does
+	 * Oria Haven cover? The whole metropolitan area, grouped into 2
+	 * regions: Margaret River and Perth." Perth is not a region of Perth.
+	 *
+	 * The count beside it had the same fault from the other end -- "452
+	 * practices listed in Perth" was the whole corpus, Margaret River
+	 * included. This is the site-wide FAQ, on the pages that deliberately
+	 * show every city, so it should name them all and claim none of them
+	 * as the others.
+	 */
 	$names = array();
-	foreach ( is_wp_error( $regions ) ? array() : $regions as $region ) {
-		$names[] = decoded( $region->name );
+	if ( function_exists( '\Oria\Core\Cities\live' ) ) {
+		foreach ( \Oria\Core\Cities\live() as $city ) {
+			$names[] = decoded( (string) ( $city['name'] ?? '' ) );
+		}
 	}
+	$names = array_values( array_filter( $names ) );
+	$where = $names ? oxford( $names ) : '';
 
 	$faqs = array(
 		array(
-			'q' => 'How many wellness practices are listed in Perth?',
+			'q' => 'How many wellness practices does Oria Haven list?',
 			'a' => sprintf(
-				'Oria Haven lists %d practices across %d categories, from meditation and yoga to remedial massage, breathwork, sound and float, allied health and outdoor wellness. Every one is checked by hand before it goes up, and the number keeps moving as we work through the city.',
+				'Oria Haven lists %1$d practices across %2$d categories%3$s, from meditation and yoga to remedial massage, breathwork, sound and float, allied health and outdoor wellness. Every one is checked by hand before it goes up, and the number keeps moving as we work through each city.',
 				$listings,
-				$categories
+				$categories,
+				'' !== $where ? ' in ' . $where : ''
 			),
 		),
 	);
 
 	if ( $names ) {
 		$faqs[] = array(
-			'q' => 'Which parts of Perth does Oria Haven cover?',
+			'q' => 'Which places does Oria Haven cover?',
 			'a' => sprintf(
-				'The whole metropolitan area, grouped into %d regions: %s. Each has its own page, and so does every suburb we list a practice in.',
-				count( $names ),
-				oxford( $names )
+				'%1$s %2$s. Each city is grouped into regions, every region has its own page, and so does every suburb we list a practice in.',
+				count( $names ) > 1 ? 'Currently' : 'Currently just',
+				$where
 			),
 		);
 	}
@@ -370,7 +412,7 @@ function site_faq(): array {
 function editorial_faq(): array {
 	return array(
 		'q' => 'How does Oria Haven choose which practices to list?',
-		'a' => 'We build the directory ourselves rather than taking paid submissions, so a practice appears because it exists and serves Perth — not because it paid. Practices can claim their listing for nothing and keep it accurate, photos included. Paid plans add booking links, offers and visitor stats. We never take a cut of bookings, and enquiries go straight to the practice.',
+		'a' => 'We build the directory ourselves rather than taking paid submissions, so a practice appears because it exists and serves the people near it — not because it paid. Practices can claim their listing for nothing and keep it accurate, photos included. Paid plans add booking links, offers and visitor stats. We never take a cut of bookings, and enquiries go straight to the practice.',
 	);
 }
 

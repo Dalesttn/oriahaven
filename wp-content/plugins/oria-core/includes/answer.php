@@ -166,9 +166,13 @@ function subject_sentences( \WP_Term $term, ?\WP_Term $area, array $rows ): arra
 	$noun       = $is_spec ? 'practice' : 'wellness practice';
 	$qualifier  = $is_spec ? sprintf( 'offering %s', $name ) : sprintf( 'under %s', $name );
 
+	/*
+	 * No area means the whole city, so name the city rather than assuming
+	 * which one. Falls back to Perth only if Cities is somehow absent.
+	 */
 	$where = $area instanceof \WP_Term
 		? Faq\decoded( $area->name )
-		: 'Perth';
+		: ( function_exists( '\Oria\Core\Cities\name' ) ? \Oria\Core\Cities\name() : 'Perth' );
 
 	$suburbs = Faq\tally( $rows, 'suburb' );
 
