@@ -47,6 +47,8 @@ function bootstrap(): void {
 	add_filter( 'term_link', __NAMESPACE__ . '\specialty_link', 10, 3 );
 	add_action( 'init', __NAMESPACE__ . '\maybe_flush', 20 );
 	add_action( 'pre_get_posts', __NAMESPACE__ . '\scope_archives' );
+	add_action( 'template_redirect', __NAMESPACE__ . '\guard_draft', 1 );
+	add_filter( 'wp_robots', __NAMESPACE__ . '\wp_robots_city', 20 );
 }
 
 /**
@@ -85,9 +87,6 @@ function scope_archives( \WP_Query $q ): void {
 
 	$city   = ( '' !== $slug && exists( $slug ) ) ? (array) get( $slug ) : default_city();
 	$clause = tax_clause( $city );
-	if ( ! $clause ) {
-		return;
-	}
 
 	$tq   = (array) $q->get( 'tax_query' );
 	$tq[] = $clause;
@@ -363,23 +362,33 @@ function area_ids( ?array $city = null ): array {
 }
 
 /**
- * A tax_query clause restricting results to one city, or nothing at all.
+ * A tax_query clause restricting results to one city.
  *
- * Written to be dropped straight into an existing tax_query. Returns an
- * empty array when the city cannot be resolved, so `array_filter` or a
- * simple merge leaves the query untouched rather than impossible.
+ * Written to be dropped straight into an existing tax_query.
+ *
+ * A city with no area terms matches NOTHING, and that is a deliberate
+ * reversal. It used to return an empty array, which every caller reads as
+ * "do not filter" -- the reasoning being that a city halfway through setup
+ * should show everything rather than nothing. That was defensible while a
+ * city was an internal abstraction. It stopped being defensible when a city
+ * slug became a public URL: adding one line to cities.json was enough to
+ * publish /explore/melbourne/ showing all 441 Perth and Margaret River
+ * listings under a Melbourne heading. Verified, not theorised.
+ *
+ * An unfinished city now shows an empty page, which is honest and reads as
+ * unfinished. Both live cities have area terms, so nothing about Perth or
+ * Margaret River changes.
  *
  * @return array<string, mixed>
  */
 function tax_clause( ?array $city = null ): array {
 	$ids = area_ids( $city );
-	if ( ! $ids ) {
-		return array();
-	}
+
 	return array(
 		'taxonomy'         => Taxonomies\AREA,
 		'field'            => 'term_id',
-		'terms'            => $ids,
+		// term 0 exists nowhere, so an unresolved city matches nothing.
+		'terms'            => $ids ?: array( 0 ),
 		'include_children' => false,
 	);
 }
@@ -399,8 +408,8 @@ function tax_clause( ?array $city = null ): array {
  */
 function filter_ids( array $ids, ?array $city = null ): array {
 	$clause = tax_clause( $city );
-	if ( ! $clause || ! $ids ) {
-		return array_values( $ids );
+	if ( ! $ids ) {
+		return array();
 	}
 
 	$keep = get_posts(
@@ -422,6 +431,96 @@ function filter_ids( array $ids, ?array $city = null ): array {
 	return array_values(
 		array_filter( $ids, static fn( $id ): bool => isset( $keep[ (int) $id ] ) )
 	);
+}
+
+/* ------------------------------------------------------------------ status */
+
+/**
+ * Every state a city can be in, least public first.
+ *
+ * `draft`     being built -- 404s, out of every sitemap
+ * `launching` real but quiet -- reachable and noindexed, for review
+ * `live`      indexable, in sitemaps, offered in the switcher
+ */
+const STATUSES = array( 'draft', 'launching', 'live' );
+
+/**
+ * A city's status, defaulting to `draft`.
+ *
+ * Failing closed is the whole point. A record added to cities.json without
+ * a status is a city somebody is midway through creating, and the cost of
+ * guessing wrong in that direction is an unfinished city sitting in Google.
+ * The two live cities say so explicitly in the data.
+ */
+function status( ?array $city = null ): string {
+	$city   = $city ?? current();
+	$status = strtolower( trim( (string) ( $city['status'] ?? '' ) ) );
+
+	return in_array( $status, STATUSES, true ) ? $status : 'draft';
+}
+
+/** Indexable, in sitemaps, offered to visitors. */
+function is_live( ?array $city = null ): bool {
+	return 'live' === status( $city );
+}
+
+/** Reachable at all: anything but a draft. */
+function is_public( ?array $city = null ): bool {
+	return 'draft' !== status( $city );
+}
+
+/**
+ * Every city a visitor may be shown, in data order.
+ *
+ * The switcher, the sitemaps and anything else offering a choice read this
+ * rather than all(), so a city being built is invisible without each of
+ * them having to remember why.
+ *
+ * @return list<array>
+ */
+function live(): array {
+	return array_values( array_filter( all(), __NAMESPACE__ . '\is_live' ) );
+}
+
+/**
+ * A draft city is not a page. 404 rather than an empty directory.
+ *
+ * Runs on template_redirect, late enough that the query has resolved and
+ * early enough that nothing has been sent.
+ */
+function guard_draft(): void {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$slug = (string) get_query_var( QUERY_VAR );
+	if ( '' === $slug || ! exists( $slug ) || is_public( get( $slug ) ) ) {
+		return;
+	}
+
+	global $wp_query;
+	$wp_query->set_404();
+	status_header( 404 );
+	nocache_headers();
+	include get_404_template();
+	exit;
+}
+
+/**
+ * A city that is not live is not for Google.
+ *
+ * `launching` exists so a city can be walked through and reviewed on the
+ * real site before it is offered to anybody; noindex is what makes that
+ * safe. Draft never gets this far -- it 404s above.
+ */
+function wp_robots_city( array $robots ): array {
+	$slug = (string) get_query_var( QUERY_VAR );
+	if ( '' !== $slug && exists( $slug ) && ! is_live( get( $slug ) ) ) {
+		$robots['noindex'] = true;
+		unset( $robots['nofollow'] );
+	}
+
+	return $robots;
 }
 
 /* -------------------------------------------------------------- shortcuts */
