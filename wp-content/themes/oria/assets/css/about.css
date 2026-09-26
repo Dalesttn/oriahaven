@@ -1,0 +1,222 @@
+/*
+ * /about/ -- page-about.php. Loaded on this page only; every rule is scoped
+ * under .oria-about. The site is light-only, so the brief's light tokens
+ * are used as they are. Typefaces are the site's own (tokens.css).
+ */
+.oria-about {
+	--about-ink: #253B36;
+	--about-muted: #5D6D63;
+	--about-paper: #FCFBF7;
+	--about-sage: #EAF0E7;
+	--about-line: #DFE5DC;
+	color: var(--about-ink);
+	background: var(--about-paper);
+}
+.oria-about *,
+.oria-about *::before,
+.oria-about *::after { box-sizing: border-box; }
+
+.oria-about__container { width: min(100% - 48px, 1160px); margin-inline: auto; }
+.oria-about__section { padding-block: clamp(40px, 6vw, 76px); }
+.oria-about__section--tight { padding-block: clamp(24px, 3vw, 36px); }
+.oria-about__section--rule .oria-about__container { border-top: 1px solid var(--about-line); padding-top: clamp(32px, 4vw, 48px); }
+
+.oria-about h1,
+.oria-about h2 {
+	margin: 0;
+	font-family: var(--font-edit);
+	font-weight: 400;
+	color: inherit;
+	text-wrap: balance;
+}
+.oria-about h1 { font-size: clamp(2.125rem, 4.4vw, 3.5rem); line-height: 1.08; letter-spacing: -.02em; margin-bottom: 24px; }
+.oria-about h2 { font-size: clamp(1.625rem, 3vw, 2.25rem); line-height: 1.15; margin-bottom: 18px; }
+.oria-about h3 { margin: 0 0 8px; font-family: var(--font-sans); font-size: 1.125rem; font-weight: 700; line-height: 1.35; color: inherit; }
+
+.oria-about__eyebrow {
+	margin: 0 0 14px;
+	font-size: 12.5px;
+	font-weight: 700;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+	color: #50675B;
+}
+.oria-about__lede { max-width: 58ch; margin: 0 0 16px; font-size: 1.1875rem; line-height: 1.6; }
+.oria-about__copy { max-width: 60ch; margin: 0; font-size: 1.0625rem; line-height: 1.65; color: var(--about-muted); }
+.oria-about__prose { max-width: 65ch; font-size: 1.0625rem; line-height: 1.7; }
+.oria-about__prose p { margin: 0 0 16px; }
+.oria-about__prose p:last-child { margin-bottom: 0; }
+.oria-about__prose--small { font-size: 1rem; color: var(--about-muted); }
+.oria-about__where { margin: 22px 0 0; font-size: 14px; color: var(--about-muted); }
+
+/* Hero: text on ivory, one 4:3 photograph. */
+.oria-about__section--hero { padding-top: clamp(28px, 4vw, 56px); }
+.oria-about__hero {
+	display: grid;
+	grid-template-columns: minmax(0, 1.25fr) minmax(0, .95fr);
+	gap: clamp(28px, 5vw, 64px);
+	align-items: center;
+}
+.oria-about__hero > * { min-width: 0; }
+.oria-about__hero-figure { margin: 0; }
+.oria-about__hero-image {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 4 / 3;
+	object-fit: cover;
+	border-radius: 24px;
+}
+
+/* Buttons: this page's own, so the banner can invert them safely. */
+.oria-about__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 26px; }
+.oria-about__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-height: 48px;
+	padding: 0 22px;
+	border: 1.5px solid transparent;
+	border-radius: 999px;
+	font-family: var(--font-sans);
+	font-size: 15.5px;
+	font-weight: 700;
+	line-height: 1.2;
+	text-decoration: none;
+	transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.oria-about__button--primary { background: var(--about-ink); color: var(--about-paper); }
+.oria-about__button--primary:hover { background: #172824; color: var(--about-paper); }
+.oria-about__button--secondary { border-color: var(--about-ink); color: var(--about-ink); background: transparent; }
+.oria-about__button--secondary:hover { background: var(--about-sage); color: var(--about-ink); }
+.oria-about__button:focus-visible,
+.oria-about__textlink:focus-visible,
+.oria-about a:focus-visible { outline: 2px solid var(--about-ink); outline-offset: 3px; }
+
+.oria-about__textlink {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	font-weight: 600;
+	color: var(--about-ink);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+.oria-about__textlink:hover { text-decoration-thickness: 2px; }
+.oria-about__smalllinks { display: flex; flex-wrap: wrap; align-items: center; gap: 0 10px; margin: 8px 0 0; font-size: 15px; }
+
+/* Three ways we help: open columns on rules, not boxes. */
+.oria-about__steps {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 32px;
+	margin: 12px 0 0;
+	padding: 0;
+	list-style: none;
+}
+.oria-about__step { min-width: 0; padding-top: 22px; border-top: 1px solid var(--about-line); }
+.oria-about__step p { margin: 0; font-size: 15.5px; line-height: 1.65; color: var(--about-muted); }
+.oria-about__num { display: block; margin-bottom: 10px; font-size: 13px; font-weight: 700; letter-spacing: .08em; color: #50675B; font-variant-numeric: tabular-nums; }
+
+/* Oria Pass: the one sage inset. */
+.oria-about__pass {
+	display: grid;
+	grid-template-columns: minmax(0, 1.5fr) minmax(200px, .75fr);
+	gap: clamp(24px, 4vw, 48px);
+	align-items: center;
+	padding: clamp(24px, 4vw, 48px);
+	border-radius: 24px;
+	background: var(--about-sage);
+}
+.oria-about__pass > * { min-width: 0; }
+.oria-about__pass-text > p { max-width: 60ch; margin: 0 0 14px; font-size: 1.0625rem; line-height: 1.65; }
+.oria-about__status { margin: 0 0 12px !important; font-size: 12.5px !important; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #50675B; }
+.oria-about__pass .oria-about__actions { margin-top: 6px; }
+.oria-about__note { margin: 18px 0 0 !important; font-size: 14px !important; line-height: 1.55 !important; color: var(--about-muted); }
+.oria-about__pass-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	aspect-ratio: 1.586;
+	padding: 22px;
+	border-radius: 18px;
+	background: var(--about-ink);
+	color: var(--about-paper);
+}
+.oria-about__pass-brand { font-family: var(--font-edit); font-size: 26px; line-height: 1; }
+.oria-about__pass-brand em { font-style: italic; color: #C9D8C6; }
+.oria-about__pass-state {
+	align-self: flex-start;
+	padding: 6px 12px;
+	border: 1px solid rgba(252, 251, 247, .45);
+	border-radius: 999px;
+	font-size: 12.5px;
+	font-weight: 700;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+}
+
+/* For businesses: a deliberate dark section, not a floating ad. */
+.oria-about__business {
+	display: grid;
+	grid-template-columns: minmax(0, 1.5fr) minmax(230px, .8fr);
+	gap: 36px;
+	align-items: center;
+	padding: clamp(24px, 4vw, 48px);
+	border-radius: 24px;
+	background: var(--about-ink);
+	color: var(--about-paper);
+}
+.oria-about__business > * { min-width: 0; }
+.oria-about__business h2 { color: var(--about-paper); }
+.oria-about__business p { max-width: 62ch; margin: 0 0 12px; font-size: 1.0625rem; line-height: 1.6; color: var(--about-paper); }
+.oria-about__eyebrow--light { color: #C9D8C6; }
+.oria-about__biz-more { margin-top: 18px !important; font-size: 14.5px !important; }
+.oria-about__biz-more a { display: inline-flex; min-height: 44px; align-items: center; color: var(--about-paper); text-decoration: underline; text-underline-offset: 3px; }
+.oria-about__biz-more a:focus-visible,
+.oria-about__business .oria-about__button:focus-visible { outline-color: var(--about-paper); }
+.oria-about__biz-actions { display: flex; flex-direction: column; gap: 12px; }
+.oria-about__button--ivory { background: var(--about-paper); color: var(--about-ink); }
+.oria-about__button--ivory:hover { background: #E3ECDF; color: var(--about-ink); }
+.oria-about__button--outline { border-color: rgba(252, 251, 247, .7); color: var(--about-paper); background: transparent; }
+.oria-about__button--outline:hover { border-color: var(--about-paper); background: rgba(252, 251, 247, .08); color: var(--about-paper); }
+.oria-about__reassure { margin: 4px 0 0 !important; font-size: 14px !important; line-height: 1.5; color: #DCE6DA !important; }
+
+/* Contact: the existing form, beside its introduction. */
+.oria-about__contact {
+	display: grid;
+	grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+	gap: clamp(28px, 5vw, 64px);
+	align-items: start;
+}
+.oria-about__contact > * { min-width: 0; }
+.oria-about__mail { margin: 18px 0 0; font-size: 1.0625rem; }
+.oria-about__mail a { color: var(--about-ink); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.oria-about__form {
+	padding: clamp(20px, 3vw, 32px);
+	border: 1px solid var(--about-line);
+	border-radius: 20px;
+	background: #FFFFFF;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.oria-about__button { transition: none; }
+}
+
+@media (max-width: 50rem) {
+	.oria-about__hero,
+	.oria-about__pass,
+	.oria-about__business,
+	.oria-about__contact { grid-template-columns: 1fr; }
+	.oria-about__hero-image { max-height: 340px; }
+	.oria-about__pass-card { max-width: 320px; }
+}
+@media (max-width: 56rem) {
+	.oria-about__steps { grid-template-columns: 1fr; gap: 24px; }
+}
+@media (max-width: 30rem) {
+	.oria-about__container { width: calc(100% - 40px); }
+	.oria-about__actions > .oria-about__button,
+	.oria-about__biz-actions .oria-about__button { width: 100%; }
+}

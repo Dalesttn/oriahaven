@@ -353,6 +353,16 @@ Panels run left to right; the left one is the one the band fades out.
 | 2 | Close up of a person with an led face mask on | Dinç Tapa | [7216285](https://www.pexels.com/photo/7216285/) |
 | 3 | Photo of woman wearing sunglasses | Klaudia Rak | [3091286](https://www.pexels.com/photo/3091286/) |
 
+## The About page picture
+
+**`about/about-hero-1200.webp` / `about/about-hero-720.webp`** — the `/about/`
+hero. A 4:3 crop of the same photograph the v4 theme uses for
+`world-people-1200.webp`.
+
+| Photograph | Photographer | Pexels |
+|---|---|---|
+| People together outdoors | Ashford Marx | [7150075](https://www.pexels.com/photo/7150075/) |
+
 ## App icons
 
 `oria-apps/assets/icons/*.webp` are each app's own icon, fetched from
