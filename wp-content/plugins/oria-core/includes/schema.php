@@ -486,6 +486,20 @@ function item_list_schema(): ?array {
  * and juice bars, so no single type fits.
  */
 function business_type( int $id ): string {
+	/*
+	 * A running club or a swim group is an organisation you join, not a
+	 * shopfront. Filing one under its category would have made every
+	 * running group an ExerciseGym. SportsOrganization where the activity
+	 * is a sport; plain Organization for a walking group or anything else.
+	 */
+	if ( 'group' === (string) get_post_meta( $id, 'kind', true ) ) {
+		$sport = array( 'running-groups', 'ocean-swimming', 'pickleball' );
+		$cats  = wp_get_post_terms( $id, 'practice', array( 'fields' => 'slugs' ) );
+		return array_intersect( $sport, is_array( $cats ) ? $cats : array() ) ? 'SportsOrganization' : 'Organization';
+	}
+	if ( 'pickleball' === (string) ( function_exists( '\Oria\Core\Primary\of' ) ? \Oria\Core\Primary\of( $id ) : '' ) ) {
+		return 'SportsActivityLocation';
+	}
 	if ( ! function_exists( '\Oria\Core\Primary\of' ) ) {
 		return 'LocalBusiness';
 	}
@@ -545,7 +559,8 @@ function listing_schema( int $id ): ?array {
 		$out['telephone'] = $phone;
 	}
 	$band = (string) get_field( 'price_band', $id );
-	if ( '' !== $band ) {
+	// priceRange belongs to LocalBusiness; an Organization has none.
+	if ( '' !== $band && ! in_array( $out['@type'], array( 'Organization', 'SportsOrganization' ), true ) ) {
 		$out['priceRange'] = $band;
 	}
 	$site = (string) get_field( 'website', $id );

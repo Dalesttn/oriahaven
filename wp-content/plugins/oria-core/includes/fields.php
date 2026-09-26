@@ -377,6 +377,7 @@ function register_listing_fields(): void {
 						'practice' => 'Practice — you book a session',
 						'place'    => 'Place — you turn up',
 						'spot'     => 'Spot — free and public, nobody to contact',
+						'group'    => 'Group — a club or organiser you join',
 					),
 					'default_value' => 'practice',
 					'wrapper'       => array( 'width' => '50' ),

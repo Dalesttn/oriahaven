@@ -1,0 +1,84 @@
+{
+	"_note": "The five activity categories added on 26 September 2026, and the one file every `wp oria sources` command reads. Four are new practice sub-categories; walking groups REUSES the service term that already existed (walking-groups, #382) and deliberately has no practice term of its own, because a second term for the same idea is the duplicate the brief warned against. Sub-category URLs are flat (/explore/perth/{slug}/), so the parent here is an editorial grouping that can move later without changing any address. Pottery sits under Experiences and NOT under creative, because that category is Creative Therapies -- art and music therapists -- and filing a pottery class there would present an ordinary class as therapy. New terms are created PENDING: noindex, out of every sitemap, out of the navigation, until `wp oria sources launch <slug>` after editorial review. Tags are specialties because goodfor.json (the Move/Connect/Relax chips) is keyed by specialty slugs.",
+	"categories": [
+		{
+			"key": "running",
+			"slug": "running-groups",
+			"name": "Running Groups",
+			"taxonomy": "practice",
+			"parent": "fitness",
+			"kind": "group",
+			"feelings": ["move", "connect"],
+			"intro": "Find a running group that matches your pace, schedule and side of Perth. Compare joining details, costs and beginner options where organisers provide them.",
+			"tags": [
+				{ "slug": "social-running", "name": "Social running" },
+				{ "slug": "run-walk", "name": "Run/walk" },
+				{ "slug": "coached-running", "name": "Coached running" }
+			],
+			"details": ["Distance", "Pace bands", "Run/walk option", "Meeting point", "When"]
+		},
+		{
+			"key": "ocean",
+			"slug": "ocean-swimming",
+			"name": "Ocean Swimming & Social Dips",
+			"taxonomy": "practice",
+			"parent": "nature",
+			"kind": "group",
+			"feelings": ["move", "connect", "recharge"],
+			"intro": "Explore organised ocean swims and social dips around Perth. Check the session format, swimming requirements and organiser updates before joining.",
+			"tags": [
+				{ "slug": "social-dip", "name": "Social dip" },
+				{ "slug": "distance-swim", "name": "Distance swim" },
+				{ "slug": "coached-swim", "name": "Coached ocean swim" }
+			],
+			"required_subtype": ["social-dip", "distance-swim", "coached-swim", "unknown"],
+			"details": ["Format", "Swimming ability", "Distance", "Meeting point", "Supervision", "Equipment", "Weather and cancellations"]
+		},
+		{
+			"key": "pickleball",
+			"slug": "pickleball",
+			"name": "Pickleball",
+			"taxonomy": "practice",
+			"parent": "fitness",
+			"kind": "place",
+			"feelings": ["move", "connect"],
+			"intro": "Find places to try pickleball, join a social session or learn the basics. Compare locations, session levels and booking options.",
+			"tags": [
+				{ "slug": "come-and-try", "name": "Come and try" },
+				{ "slug": "social-play", "name": "Social play" },
+				{ "slug": "pickleball-lessons", "name": "Pickleball lessons" }
+			],
+			"details": ["Session levels", "Setting", "Equipment", "Pricing basis"]
+		},
+		{
+			"key": "creative",
+			"slug": "creative-workshops",
+			"name": "Pottery & Creative Workshops",
+			"taxonomy": "practice",
+			"parent": "experiences",
+			"kind": "place",
+			"feelings": ["relax", "reset", "connect"],
+			"intro": "Make time for something creative. Explore pottery and hands-on workshops, with practical details on materials, session formats and booking.",
+			"tags": [
+				{ "slug": "pottery", "name": "Pottery & ceramics" },
+				{ "slug": "wheel-throwing", "name": "Wheel throwing" },
+				{ "slug": "hand-building", "name": "Hand-building" },
+				{ "slug": "painting-workshops", "name": "Painting workshops" }
+			],
+			"details": ["Medium", "Suitability", "Duration", "Materials", "Firing and collection"]
+		},
+		{
+			"key": "walking",
+			"slug": "walking-groups",
+			"name": "Walking Groups",
+			"taxonomy": "service",
+			"reuse_term_id": 382,
+			"home": "community",
+			"kind": "group",
+			"feelings": ["move", "connect", "relax"],
+			"intro": "Find company for your next walk. Explore local groups and compare meeting points, walking distances and joining details.",
+			"tags": [],
+			"details": ["Distance", "Terrain", "Pace", "Meeting point", "Accessibility", "Dogs and prams", "When"]
+		}
+	]
+}

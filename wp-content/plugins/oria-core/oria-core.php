@@ -131,6 +131,8 @@ require_once ORIA_CORE_DIR . 'includes/post-urls.php';
 require_once ORIA_CORE_DIR . 'includes/tiles.php';
 require_once ORIA_CORE_DIR . 'includes/ask.php';
 require_once ORIA_CORE_DIR . 'includes/trends.php';
+require_once ORIA_CORE_DIR . 'includes/sources.php';
+require_once ORIA_CORE_DIR . 'includes/sources-cli.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
@@ -141,6 +143,7 @@ add_action( 'init', __NAMESPACE__ . '\PostTypes\register', 6 );
 add_action( 'init', __NAMESPACE__ . '\PostTypes\maybe_flush', 99 );
 
 Db\bootstrap();
+Sources\bootstrap();
 Fields\bootstrap();
 FieldsPages\bootstrap();
 PublishGuard\bootstrap();
@@ -247,4 +250,5 @@ register_deactivation_hook(
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	\WP_CLI::add_command( 'oria', __NAMESPACE__ . '\Import\Command' );
+	\WP_CLI::add_command( 'oria sources', __NAMESPACE__ . '\Sources\Command' );
 }

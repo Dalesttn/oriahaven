@@ -283,11 +283,16 @@ function navigation(): array {
 			)
 		);
 
+		// A category waiting for editorial launch is not a link anywhere yet.
+		$kids = is_wp_error( $kids ) ? array() : array_values(
+			array_filter( $kids, static fn( \WP_Term $k ): bool => ! \Oria\Core\Sources\is_pending( $k ) )
+		);
+
 		$out[] = array(
 			'term'     => $term,
 			'emoji'    => (string) get_term_meta( (int) $term->term_id, META_EMOJI, true ),
 			'count'    => $n,
-			'children' => is_wp_error( $kids ) ? array() : $kids,
+			'children' => $kids,
 		);
 	}
 

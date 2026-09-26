@@ -1407,6 +1407,21 @@ function words( int $post_id ): array {
 			'contactless'  => '1',
 		);
 	}
+	/*
+	 * A group is a club or an organiser: nobody to book, somebody to join.
+	 * "Practice" would call a running club a healthcare business.
+	 */
+	if ( 'group' === $kind ) {
+		return array(
+			'contact_head' => __( 'How to join', 'oria' ),
+			'claim_head'   => __( 'Do you run this group?', 'oria' ),
+			'enquiry_note' => __( 'Joining details come from the organiser', 'oria' ),
+			'share'        => __( 'Share this group', 'oria' ),
+			'similar'      => __( 'Similar groups', 'oria' ),
+			'noun'         => __( 'group', 'oria' ),
+			'contactless'  => '',
+		);
+	}
 	if ( 'place' !== $kind ) {
 		return array(
 			'contact_head' => __( 'Book a first session', 'oria' ),

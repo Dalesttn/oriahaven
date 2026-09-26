@@ -81,7 +81,8 @@ function missing( int $listing ): array {
 		}
 	}
 
-	return $out;
+	// Sources adds "an editorial review" and "a way to join" for batch listings.
+	return (array) apply_filters( 'oria_publish_missing', $out, $listing );
 }
 
 function guard( int $listing, \WP_Post $post ): void {
@@ -151,10 +152,7 @@ function notice(): void {
 
 	$title = get_the_title( (int) ( $held['listing'] ?? 0 ) );
 	$what  = (array) $held['missing'];
-	$list  = count( $what ) > 1
-		/* translators: 1: first missing thing, 2: second */
-		? sprintf( __( '%1$s and %2$s', 'oria' ), $what[0], $what[1] )
-		: (string) $what[0];
+	$list  = wp_sprintf( '%l', $what );
 
 	printf(
 		'<div class="notice notice-warning"><p><strong>%s</strong> %s</p></div>',
