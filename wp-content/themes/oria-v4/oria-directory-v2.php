@@ -252,6 +252,77 @@ $oria_featured = array_slice( $oria_featured, 0, 1 );
 // Popular shortcuts: the four biggest categories, as links to their pages.
 $oria_popular = array_slice( $oria_top_cats, 0, 4, true );
 
+/*
+ * The chip row follows the dock. Pick a feeling and it offers that
+ * feeling's categories; pick one category and it offers the rooms inside
+ * it -- its sub-categories, or where it has none, the specialties its
+ * listings here carry most. Each set is drawn now and shown by the script,
+ * so every chip is a real link that works without it.
+ *
+ * Each item: url, label, count, and "only" -- the category slug a chip can
+ * narrow the dock to in place, or '' for a plain link to a page.
+ */
+$oria_ctx = array();
+$oria_ctx_item = static function ( string $url, string $label, int $n, string $only = '' ): array {
+	return array( 'url' => $url, 'label' => $label, 'n' => $n, 'only' => $only );
+};
+foreach ( $oria_top_cats as $oria_ts => $oria_tc ) {
+	$oria_items = array();
+	foreach ( $oria_cats as $oria_cc ) {
+		if ( (int) $oria_cc['term']->parent !== (int) $oria_tc['term']->term_id ) {
+			continue;
+		}
+		// A category still waiting for editorial launch is not a link yet.
+		if ( function_exists( '\Oria\Core\Sources\is_pending' ) && \Oria\Core\Sources\is_pending( $oria_cc['term'] ) ) {
+			continue;
+		}
+		$oria_items[] = $oria_ctx_item( (string) $oria_cc['url'], \Oria\Theme\tname( $oria_cc['term'] ), (int) $oria_cc['count'] );
+	}
+	if ( ! $oria_items ) {
+		// No sub-categories: the specialties this category's places carry.
+		$oria_tally = array();
+		foreach ( $oria_cat_ids[ $oria_ts ] ?? array() as $oria_lid ) {
+			foreach ( \Oria\Theme\oria_terms_of( (int) $oria_lid, 'specialty' ) as $oria_st ) {
+				$oria_tally[ $oria_st->term_id ] = array( 'term' => $oria_st, 'n' => ( $oria_tally[ $oria_st->term_id ]['n'] ?? 0 ) + 1 );
+			}
+		}
+		// Two or more, so a chip is never a single business wearing a label.
+		$oria_tally = array_filter( $oria_tally, static fn( array $r ): bool => $r['n'] >= 2 );
+		uasort( $oria_tally, static fn( array $a, array $b ): int => $b['n'] <=> $a['n'] ?: strcasecmp( $a['term']->name, $b['term']->name ) );
+		foreach ( $oria_tally as $oria_r ) {
+			$oria_su = \Oria\Core\PracticesIndex\specialty_url( $oria_r['term'] );
+			if ( '' === $oria_su || is_wp_error( $oria_su ) ) {
+				continue;
+			}
+			$oria_items[] = $oria_ctx_item( $oria_su, \Oria\Theme\tname( $oria_r['term'] ), (int) $oria_r['n'] );
+		}
+	}
+	if ( $oria_items ) {
+		$oria_ctx[ 'cat:' . $oria_ts ] = array(
+			/* translators: %s: category */
+			'label' => sprintf( __( 'Inside %s', 'oria' ), \Oria\Theme\tname( $oria_tc['term'] ) ),
+			'items' => array_slice( $oria_items, 0, 6 ),
+			/* translators: %s: category */
+			'all'   => array( (string) $oria_tc['url'], sprintf( __( 'All of %s', 'oria' ), \Oria\Theme\tname( $oria_tc['term'] ) ) ),
+		);
+	}
+}
+foreach ( $oria_moods as $oria_m ) {
+	$oria_items = array();
+	foreach ( $oria_m['items'] as $oria_it ) {
+		$oria_cc = $oria_cats[ $oria_it ];
+		// Top-level ones narrow the dock in place; a sub-category (the dock
+		// has no box for it) is a link to its own page.
+		$oria_items[] = $oria_ctx_item( (string) $oria_cc['url'], \Oria\Theme\tname( $oria_cc['term'] ), (int) $oria_cc['count'], isset( $oria_top_cats[ $oria_it ] ) ? $oria_it : '' );
+	}
+	$oria_ctx[ 'mood:' . $oria_m['slug'] ] = array(
+		/* translators: %s: feeling */
+		'label' => sprintf( __( 'For %s', 'oria' ), $oria_m['name'] ),
+		'items' => $oria_items,
+		'all'   => null,
+	);
+}
+
 // The snapshot line: figures counted here.
 $oria_snap   = array();
 /* translators: %s: number of places */
@@ -383,8 +454,25 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 				</a>
 			</div>
 			<div class="xc-dock__foot">
+				<?php foreach ( $oria_ctx as $oria_ck => $oria_cset ) : ?>
+					<div class="xc-dock__ctx xc-js" data-xc-ctx="<?php echo esc_attr( $oria_ck ); ?>" hidden>
+						<p class="xc-dock__ctxlabel"><?php echo esc_html( $oria_cset['label'] ); ?></p>
+						<ul class="xc-dock__pop" aria-label="<?php echo esc_attr( $oria_cset['label'] ); ?>">
+							<?php foreach ( $oria_cset['items'] as $oria_ci ) : ?>
+								<li>
+									<a class="xc-pchip" href="<?php echo esc_url( $oria_ci['url'] ); ?>" data-oria-event="explore_category_click"<?php echo '' !== $oria_ci['only'] ? ' data-xc-only="' . esc_attr( $oria_ci['only'] ) . '"' : ''; ?>>
+										<?php echo esc_html( $oria_ci['label'] ); ?> <span class="xc-pchip__n"><?php echo esc_html( number_format_i18n( $oria_ci['n'] ) ); ?></span>
+									</a>
+								</li>
+							<?php endforeach; ?>
+							<?php if ( $oria_cset['all'] ) : ?>
+								<li class="xc-more"><a class="xc-pchip xc-pchip--more" href="<?php echo esc_url( $oria_cset['all'][0] ); ?>"><?php echo esc_html( $oria_cset['all'][1] ); ?> <span aria-hidden="true">&rarr;</span></a></li>
+							<?php endif; ?>
+						</ul>
+					</div>
+				<?php endforeach; ?>
 				<?php if ( $oria_popular ) : ?>
-					<ul class="xc-dock__pop" aria-label="<?php esc_attr_e( 'Popular categories', 'oria' ); ?>">
+					<ul class="xc-dock__pop" data-xc-ctx="default" aria-label="<?php esc_attr_e( 'Popular categories', 'oria' ); ?>">
 						<?php foreach ( $oria_popular as $oria_pc ) : ?>
 							<li>
 								<a class="xc-pchip" href="<?php echo esc_url( $oria_pc['url'] ); ?>" data-oria-event="explore_category_click">

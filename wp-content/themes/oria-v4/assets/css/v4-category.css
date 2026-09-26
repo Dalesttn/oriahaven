@@ -175,9 +175,15 @@
 .xc-pchip__n { font-weight: 400; color: var(--text-faint); font-variant-numeric: tabular-nums; }
 .xc-pchip[aria-pressed="true"] .xc-pchip__n { color: rgba(255, 255, 255, .8); }
 .xc-dock__snap { margin: 0; font-size: var(--fs-xs); color: var(--text-soft); font-variant-numeric: tabular-nums; }
+/* The chip row once a feeling or a category is chosen. */
+.xc-dock__ctx { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .75rem; }
+.xc-dock__ctx[hidden] { display: none; }
+.xc-dock__ctxlabel { margin: 0; font-size: var(--fs-xs); font-weight: 800; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--text-soft); }
 @media (max-width: 49.99rem) {
   /* Two shortcuts and "More" on a phone -- never a sideways scroll. */
   .xc-dock__pop li:nth-child(n+3):not(.xc-more) { display: none; }
+  /* A feeling has at most three categories and no "all" chip: show them. */
+  .xc-dock__ctx[data-xc-ctx^="mood:"] .xc-dock__pop li { display: list-item; }
 }
 @media (min-width: 50rem) {
   .xc-narrow { display: none; }

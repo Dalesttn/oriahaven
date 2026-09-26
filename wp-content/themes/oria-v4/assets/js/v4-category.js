@@ -360,7 +360,31 @@
   }
   function setVal(key, text) { $$('[data-xc-val="' + key + '"]').forEach(function (v) { v.textContent = text; }); }
 
+  /* The chip row follows the dock: a feeling offers its categories, one
+     category offers what is inside it, anything else the popular four.
+     Every set is server-drawn; this only chooses which one shows. */
+  var ctxSets = $$("[data-xc-ctx]");
+  function paintContext() {
+    if (!ctxSets.length) return;
+    var on = ticked();
+    var want = activeMood && on.length > 1 ? "mood:" + activeMood : (on.length === 1 ? "cat:" + on[0] : "default");
+    if (!ctxSets.some(function (s) { return s.getAttribute("data-xc-ctx") === want; })) want = "default";
+    ctxSets.forEach(function (s) { s.hidden = s.getAttribute("data-xc-ctx") !== want; });
+  }
+  // A feeling's category chip narrows the dock to that one category in place
+  // (its link still works for a new tab, or without scripting).
+  doc.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[data-xc-only]");
+    if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button > 0) return;
+    var slug = a.getAttribute("data-xc-only");
+    if (!svcBoxes().some(function (b) { return b.value === slug; })) return;
+    e.preventDefault();
+    setSvc([slug]);
+    paintDock();
+  });
+
   function paintDock() {
+    paintContext();
     moodBtns.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-xc-mood") === activeMood ? "true" : "false"); });
     $$("[data-xc-mood-detail]").forEach(function (d) { d.hidden = d.getAttribute("data-xc-mood-detail") !== activeMood; });
     var mood = moodName(), exp = expSummary();
