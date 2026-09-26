@@ -59,7 +59,15 @@ const REVIEW   = '_oria_review';       // scraped | reviewed | owner-confirmed.
 const REVIEWER = '_oria_reviewer';
 const PROPOSAL = '_oria_src_proposal'; // JSON, on an EXISTING listing: changes nobody applied.
 
-const REVIEW_STATES = array( 'scraped', 'reviewed', 'owner-confirmed' );
+/*
+ * bulk-published: live because an editor chose to publish a batch without
+ * checking each listing. Kept distinct from "reviewed" so the difference
+ * is never lost -- it is the list to work through later.
+ */
+const REVIEW_STATES = array( 'scraped', 'bulk-published', 'reviewed', 'owner-confirmed' );
+
+/** Review states that let a batch listing go live. */
+const LIVE_STATES = array( 'bulk-published', 'reviewed', 'owner-confirmed' );
 
 const COST_STATES = array( 'free', 'paid', 'donation', 'mixed', 'unknown' );
 const TRISTATE    = array( 'yes', 'no', 'unknown' );
@@ -74,6 +82,108 @@ function bootstrap(): void {
 	add_action( 'add_meta_boxes_' . PostTypes\LISTING, __NAMESPACE__ . '\meta_boxes' );
 	// Priority 5: before the publish guard (20) reads the review state.
 	add_action( 'save_post_' . PostTypes\LISTING, __NAMESPACE__ . '\save_review', 5, 1 );
+	add_filter( 'bulk_actions-edit-' . PostTypes\LISTING, __NAMESPACE__ . '\bulk_actions' );
+	add_filter( 'handle_bulk_actions-edit-' . PostTypes\LISTING, __NAMESPACE__ . '\handle_bulk', 10, 3 );
+	add_action( 'admin_notices', __NAMESPACE__ . '\bulk_notice' );
+}
+
+/* ------------------------------------------------------------ bulk publish */
+
+/**
+ * Publish batch drafts without reviewing each one first.
+ *
+ * The editor's call, made knowingly: each listing is stamped bulk-published
+ * (never "reviewed") so the unchecked ones stay findable, and unpublishing
+ * is the ordinary WordPress bulk edit. Everything else the publish guard
+ * asks for -- a category, an area, a way to join -- is still required, so a
+ * listing missing one of those is skipped and named rather than forced.
+ *
+ * @return array{published: array<int, string>, skipped: array<int, string>}
+ */
+function bulk_publish( array $ids, int $user = 0, bool $dry = false ): array {
+	$out = array( 'published' => array(), 'skipped' => array() );
+	foreach ( array_map( 'intval', $ids ) as $id ) {
+		$post = get_post( $id );
+		if ( ! $post instanceof \WP_Post || PostTypes\LISTING !== $post->post_type ) {
+			continue;
+		}
+		$title = $post->post_title;
+		if ( '' === (string) get_post_meta( $id, BATCH, true ) ) {
+			$out['skipped'][ $id ] = $title . ' -- not from a source batch; publish it the normal way';
+			continue;
+		}
+		if ( 'publish' === $post->post_status ) {
+			$out['skipped'][ $id ] = $title . ' -- already published';
+			continue;
+		}
+		$was = (string) get_post_meta( $id, REVIEW, true );
+		if ( ! in_array( $was, LIVE_STATES, true ) ) {
+			update_post_meta( $id, REVIEW, 'bulk-published' );
+		}
+		$short = \Oria\Core\PublishGuard\missing( $id );
+		if ( $short || $dry ) {
+			if ( ! in_array( $was, LIVE_STATES, true ) ) {
+				update_post_meta( $id, REVIEW, $was ); // Put it back: nothing was published.
+			}
+			if ( $short ) {
+				$out['skipped'][ $id ] = $title . ' -- still needs ' . wp_sprintf( '%l', $short );
+			} else {
+				$out['published'][ $id ] = $title;
+			}
+			continue;
+		}
+		update_post_meta( $id, REVIEWER, 'bulk:' . $user );
+		wp_update_post( array( 'ID' => $id, 'post_status' => 'publish' ) );
+		if ( 'publish' === get_post_status( $id ) ) {
+			$out['published'][ $id ] = $title;
+		} else {
+			$out['skipped'][ $id ] = $title . ' -- held by the publish guard';
+		}
+	}
+	return $out;
+}
+
+/** @param array<string, string> $actions */
+function bulk_actions( array $actions ): array {
+	if ( current_user_can( 'publish_posts' ) ) {
+		$actions['oria_src_publish'] = __( 'Publish source drafts (unreviewed)', 'oria' );
+	}
+	return $actions;
+}
+
+function handle_bulk( string $redirect, string $action, array $ids ): string {
+	if ( 'oria_src_publish' !== $action || ! current_user_can( 'publish_posts' ) ) {
+		return $redirect;
+	}
+	$ids = array_values( array_filter( array_map( 'intval', $ids ), static fn( $i ) => current_user_can( 'publish_post', $i ) ) );
+	$res = bulk_publish( $ids, get_current_user_id() );
+	set_transient( 'oria_src_bulk_' . get_current_user_id(), $res, 5 * MINUTE_IN_SECONDS );
+	return add_query_arg( 'oria_src_bulk', count( $res['published'] ), remove_query_arg( 'oria_src_bulk', $redirect ) );
+}
+
+function bulk_notice(): void {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+	if ( ! isset( $_GET['oria_src_bulk'] ) ) {
+		return;
+	}
+	$res = get_transient( 'oria_src_bulk_' . get_current_user_id() );
+	if ( ! is_array( $res ) ) {
+		return;
+	}
+	delete_transient( 'oria_src_bulk_' . get_current_user_id() );
+	printf(
+		'<div class="notice notice-success is-dismissible"><p><strong>%s</strong> %s</p>',
+		esc_html( sprintf( /* translators: %d: count */ _n( '%d listing published.', '%d listings published.', count( $res['published'] ), 'oria' ), count( $res['published'] ) ) ),
+		esc_html__( 'Marked bulk-published, not reviewed. To take one down: tick it, Bulk actions > Edit > Status: Draft.', 'oria' )
+	);
+	if ( $res['skipped'] ) {
+		echo '<p>' . esc_html__( 'Skipped:', 'oria' ) . '</p><ul style="list-style:disc;margin-left:1.5em">';
+		foreach ( $res['skipped'] as $why ) {
+			echo '<li>' . esc_html( $why ) . '</li>';
+		}
+		echo '</ul>';
+	}
+	echo '</div>';
 }
 
 /* ------------------------------------------------------------- the editor */
@@ -265,7 +375,7 @@ function publish_missing( array $missing, int $listing ): array {
 	if ( '' === (string) get_post_meta( $listing, BATCH, true ) ) {
 		return $missing;
 	}
-	if ( ! in_array( (string) get_post_meta( $listing, REVIEW, true ), array( 'reviewed', 'owner-confirmed' ), true ) ) {
+	if ( ! in_array( (string) get_post_meta( $listing, REVIEW, true ), LIVE_STATES, true ) ) {
 		$missing[] = __( 'an editorial review', 'oria' );
 	}
 	$method = (string) get_post_meta( $listing, 'join_method', true );

@@ -9,6 +9,7 @@
  *   wp oria sources import    --batch=<id> [--category=<key>] [--limit=<n>] [--dry-run]
  *   wp oria sources report    --batch=<id>
  *   wp oria sources rollback  --batch=<id> [--dry-run]
+ *   wp oria sources publish   --batch=<id> [--category=<key>] [--skip-flagged] [--dry-run]
  *   wp oria sources launch    <slug> [--dry-run] [--force]
  *   wp oria sources selftest
  *
@@ -1251,6 +1252,67 @@ class Command {
 			$d = substr( $d, 2 );
 		}
 		return strlen( $d ) >= 8 ? substr( $d, -9 ) : '';
+	}
+
+	/* ============================================================== publish */
+
+	/**
+	 * Publish a batch's drafts without per-listing review.
+	 *
+	 * Each is stamped bulk-published, not reviewed. A listing still missing a
+	 * category, an area or a way to join is skipped and named. Categories stay
+	 * pending until launched, so nothing here makes a category indexable.
+	 *
+	 * ## OPTIONS
+	 *
+	 * --batch=<id>
+	 * : Batch.
+	 *
+	 * [--category=<key>]
+	 * : Only this category (running, ocean, pickleball, creative, walking).
+	 *
+	 * [--skip-flagged]
+	 * : Leave drafts that carry a research flag for a person to look at.
+	 *
+	 * [--dry-run]
+	 * : Say what would be published.
+	 */
+	public function publish( array $args, array $assoc ): void {
+		$batch = self::batch( $assoc, false );
+		$cat   = (string) ( $assoc['category'] ?? '' );
+		$row   = '' !== $cat ? category( $cat ) : null;
+		if ( '' !== $cat && ! $row ) {
+			\WP_CLI::error( 'Unknown category ' . $cat );
+		}
+		$dry  = isset( $assoc['dry-run'] );
+		$ids  = array();
+		$held = array();
+
+		foreach ( array_keys( self::journal( $batch )['created'] ) as $id ) {
+			$id = (int) $id;
+			if ( $row && ! has_term( (string) $row['slug'], (string) $row['taxonomy'], $id ) ) {
+				continue;
+			}
+			$flags = (string) get_post_meta( $id, '_oria_src_flags', true );
+			if ( '' !== $flags && isset( $assoc['skip-flagged'] ) ) {
+				$held[] = get_the_title( $id ) . ' -- ' . $flags;
+				continue;
+			}
+			$ids[] = $id;
+		}
+
+		$res = bulk_publish( $ids, get_current_user_id(), $dry );
+		foreach ( $res['published'] as $id => $t ) {
+			$f = (string) get_post_meta( (int) $id, '_oria_src_flags', true );
+			\WP_CLI::log( sprintf( '  %s #%d %s%s', $dry ? 'would publish' : 'published', $id, $t, '' !== $f ? '  [flag: ' . $f . ']' : '' ) );
+		}
+		foreach ( $res['skipped'] as $id => $why ) {
+			\WP_CLI::log( sprintf( '  skipped #%d %s', $id, $why ) );
+		}
+		foreach ( $held as $h ) {
+			\WP_CLI::log( '  held (flagged) ' . $h );
+		}
+		\WP_CLI::success( sprintf( '%s%d published as bulk-published, %d skipped, %d held for flags.', $dry ? '[dry-run] ' : '', count( $res['published'] ), count( $res['skipped'] ), count( $held ) ) );
 	}
 
 	/* ============================================================= rollback */

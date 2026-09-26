@@ -76,6 +76,16 @@ Import writes drafts only. Rerunning refreshes this batch's own *unedited* draft
 7. Set **Review state → reviewed** and publish. The publish guard holds a batch listing at Pending until it is reviewed and has a way to join.
 8. For **Rise and Run Club** and **The Perth Walking Group**, the *Proposed from public sources* box lists what research found. Copy what's right into the fields, then tick *Dismiss*.
 
+## Bulk publishing (skipping per-listing review)
+
+Your call, and reversible. Each listing is stamped **bulk-published**, never "reviewed", so the unchecked ones stay findable in the Public-source research box. Anything still missing a category, an area or a way to join is skipped and named.
+
+- wp-admin: Listings, tick drafts, Bulk actions > **Publish source drafts (unreviewed)**.
+- CLI: `wp oria sources publish --batch=2026-09-26-activities --dry-run`, then without --dry-run. Add `--category=creative` for one category, `--skip-flagged` to leave the 4 flagged drafts for a person.
+- To unpublish: tick, Bulk actions > Edit > Status: Draft.
+
+Publishing listings does not launch their category; that stays noindex until `launch`.
+
 ## Launching a category
 
 When a category has enough reviewed, published listings (5–10 is the brief's target, not a rule):
