@@ -60,6 +60,48 @@ listed venue. Sub-categories use their parent category's picture unless they hav
 | Swan Valley & East (black swans, not named) | https://www.pexels.com/photo/33125605/ | Ajay Lamichhane |
 | South East (rock pools, not named) | https://www.pexels.com/photo/4577810/ | Rachel Claire |
 | Margaret River town (coast) | https://www.pexels.com/photo/35928299/ | Michelle Chadwick |
+| Perth (the Perth city skyline lit up at dusk, reflected in the Swan River) | https://www.pexels.com/photo/12902278/ | David |
+| Margaret River (boranup Beach on the coast south of Margaret River) | https://www.pexels.com/photo/16219934/ | Ross Ogston |
+| Dunsborough & the Capes (the Cape Naturaliste walkway above the rocky coast) | https://www.pexels.com/photo/34783333/ | Harrison Reilly |
+| Dunsborough (turquoise water and granite rocks on the coast at Dunsborough) | https://www.pexels.com/photo/20352351/ | Line Knipst |
+| Subiaco (two people with coffee on a building ledge in Subiaco) | https://www.pexels.com/photo/1478401/ | Amanda Kevin |
+| South Perth (the Perth city skyline across the Swan River; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/17052032/ | Tibor Janas |
+| North Perth (a classic ute parked under street trees in suburban Perth; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/3508085/ | Hc Digital |
+| Scarborough (swimmers and turquoise water at a Perth beach, from above; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/3405464/ | Hc Digital |
+| Claremont (a Perth park lake at sunset, with trees reflected in the water; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/3405467/ | Hc Digital |
+| Cottesloe (cottesloe Beach from above, with swimmers and breaking waves) | https://www.pexels.com/photo/7968254/ | Gregory Mellotte |
+| City Beach (turquoise water and a rocky shoreline on the Perth coast, from above; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/27300857/ | Harrison Reilly |
+| Trigg (a surfer waxing a board on the sand at Trigg Beach) | https://www.pexels.com/photo/1409200/ | Amanda Kevin |
+| Hillarys (a crowd at a waterside event at Hillarys Boat Harbour) | https://www.pexels.com/photo/29684244/ | Stephen Hazelwood |
+| Applecross (the Perth skyline across the water from Applecross at dusk) | https://www.pexels.com/photo/27608818/ | James Wong |
+| Joondalup (two kangaroos on the grass in a Perth park; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/27110778/ | Line Knipst |
+| Leederville (a colourful Perth street with palm trees; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/16693535/ | Tibor Janas |
+| Malaga (an Australian magpie on a branch at sunset; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/39069185/ | Ajay Lamichhane |
+| Mount Lawley (historic brick buildings on a Perth street corner; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/16483663/ | Tibor Janas |
+| East Fremantle (the paddle steamer Rodney on the Swan River near Bicton; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/31291553/ | Harrison Reilly |
+| Bicton (bicton foreshore on the Swan River, with boats and jetties, from above) | https://www.pexels.com/photo/31291545/ | Harrison Reilly |
+| East Perth (the Perth skyline and Matagarup Bridge over the Swan River, from above; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/28480520/ | Harrison Reilly |
+| East Victoria Park (optus Stadium with the Perth skyline behind, from above; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/35355630/ | Philip Williams |
+| Victoria Park (burswood and the Swan River, from above; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/28480519/ | Harrison Reilly |
+| Mount Hawthorn (suburban Perth rooftops with the city skyline beyond, from above; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/36262601/ | Gaurab Shrestha |
+| West Leederville (palm trees in a park with the Perth skyline beyond; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/16693540/ | Tibor Janas |
+| Wembley (palm trees and lawns in a Perth park; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/16229054/ | Tibor Janas |
+| Shenton Park (the Western Australian Botanic Garden in Kings Park; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/29121626/ | Line Knipst |
+| Osborne Park (perth rooftops and green space, from above; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/28458391/ | Dieter Wolff |
+| Stirling (the Perth skyline at sunset over open green space; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/16870060/ | Tibor Janas |
+| Inglewood (calm water and green trees with the Perth skyline beyond; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/17052033/ | Tibor Janas |
+| Bayswater (australian pelicans on a river at sunset; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/39628382/ | Ajay Lamichhane |
+| Cannington (a kangaroo in a green meadow with wildflowers; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/39628369/ | Ajay Lamichhane |
+| Booragoon (a wooden jetty on Bibra Lake at sunset; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/39069198/ | Ajay Lamichhane |
+| Ellenbrook (a kangaroo among Australian bush plants; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/30279570/ | Annalise Clarke |
+| Wangara (two cockatoos perched in a tree; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/39628387/ | Ajay Lamichhane |
+| Kalamunda (dense green forest canopy, from above; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/27300905/ | Harrison Reilly |
+| Serpentine (a fern in a sunlit pine forest near Perth; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/33372555/ | Caleb Jordan-Jones |
+| Rockingham (a rock groyne reaching into turquoise water on the Perth coast, from above; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/27300853/ | Harrison Reilly |
+| Mandurah (australian pelicans resting on a sunlit grassy shore; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/39628364/ | Ajay Lamichhane |
+| South Fremantle (a coastal path and rocks at sunset in South Fremantle) | https://www.pexels.com/photo/1464870/ | Amanda Kevin |
+| North Fremantle (a sandy path to the beach at Fremantle at sunset; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/32079456/ | Nate Biddle |
+| Nedlands (the Blue Boathouse on the Swan River at Crawley; a fitting scene, not claimed as the suburb) | https://www.pexels.com/photo/36765076/ | Afifi Zakaria |
 | Home closing picture, close-room-960/1400/1920.webp | https://www.pexels.com/photo/6560308/ | Anna Tarazevich |
 
 ## Event type tiles (event/{slug}-900.webp, -600.webp)

@@ -293,13 +293,427 @@
       }
     },
     "subiaco": {
-      "tagline": "A village high street of small studios and holistic clinics."
+      "tagline": "A village high street of small studios and holistic clinics.",
+      "image": {
+        "wide": "area/subiaco-1920.webp",
+        "mid": "area/subiaco-960.webp",
+        "pos": "50% 50%",
+        "alt": "Two people with coffee on a building ledge in Subiaco",
+        "credit": "Photo: Amanda Kevin / Pexels",
+        "place_verified": true
+      }
     },
     "scarborough": {
-      "tagline": "Beachfront movement, with the coast as the whole reason to come."
+      "tagline": "Beachfront movement, with the coast as the whole reason to come.",
+      "image": {
+        "wide": "area/scarborough-1920.webp",
+        "mid": "area/scarborough-960.webp",
+        "pos": "50% 50%",
+        "alt": "Swimmers and turquoise water at a Perth beach, from above",
+        "credit": "Photo: Hc Digital / Pexels",
+        "place_verified": false
+      }
     },
     "kalamunda": {
-      "tagline": "Bushland and hills air, a drive east of the city."
+      "tagline": "Bushland and hills air, a drive east of the city.",
+      "image": {
+        "wide": "area/kalamunda-1920.webp",
+        "mid": "area/kalamunda-960.webp",
+        "pos": "50% 50%",
+        "alt": "Dense green forest canopy, from above",
+        "credit": "Photo: Harrison Reilly / Pexels",
+        "place_verified": false
+      }
+    },
+    "perth": {
+      "image": {
+        "wide": "area/perth-1920.webp",
+        "mid": "area/perth-960.webp",
+        "pos": "50% 55%",
+        "alt": "The Perth city skyline lit up at dusk, reflected in the Swan River",
+        "credit": "Photo: David / Pexels",
+        "place_verified": true
+      }
+    },
+    "margaret-river": {
+      "image": {
+        "wide": "area/margaret-river-1920.webp",
+        "mid": "area/margaret-river-960.webp",
+        "pos": "50% 50%",
+        "alt": "Boranup Beach on the coast south of Margaret River",
+        "credit": "Photo: Ross Ogston / Pexels",
+        "place_verified": true
+      }
+    },
+    "capes": {
+      "image": {
+        "wide": "area/capes-1920.webp",
+        "mid": "area/capes-960.webp",
+        "pos": "50% 50%",
+        "alt": "The Cape Naturaliste walkway above the rocky coast",
+        "credit": "Photo: Harrison Reilly / Pexels",
+        "place_verified": true
+      }
+    },
+    "dunsborough": {
+      "image": {
+        "wide": "area/dunsborough-1920.webp",
+        "mid": "area/dunsborough-960.webp",
+        "pos": "50% 55%",
+        "alt": "Turquoise water and granite rocks on the coast at Dunsborough",
+        "credit": "Photo: Line Knipst / Pexels",
+        "place_verified": true
+      }
+    },
+    "south-perth": {
+      "image": {
+        "wide": "area/south-perth-1920.webp",
+        "mid": "area/south-perth-960.webp",
+        "pos": "50% 50%",
+        "alt": "The Perth city skyline across the Swan River",
+        "credit": "Photo: Tibor Janas / Pexels",
+        "place_verified": false
+      }
+    },
+    "north-perth": {
+      "image": {
+        "wide": "area/north-perth-1920.webp",
+        "mid": "area/north-perth-960.webp",
+        "pos": "50% 60%",
+        "alt": "A classic ute parked under street trees in suburban Perth",
+        "credit": "Photo: Hc Digital / Pexels",
+        "place_verified": false
+      }
+    },
+    "claremont": {
+      "image": {
+        "wide": "area/claremont-1920.webp",
+        "mid": "area/claremont-960.webp",
+        "pos": "50% 50%",
+        "alt": "A Perth park lake at sunset, with trees reflected in the water",
+        "credit": "Photo: Hc Digital / Pexels",
+        "place_verified": false
+      }
+    },
+    "cottesloe": {
+      "image": {
+        "wide": "area/cottesloe-1920.webp",
+        "mid": "area/cottesloe-960.webp",
+        "pos": "50% 50%",
+        "alt": "Cottesloe Beach from above, with swimmers and breaking waves",
+        "credit": "Photo: Gregory Mellotte / Pexels",
+        "place_verified": true
+      }
+    },
+    "city-beach": {
+      "image": {
+        "wide": "area/city-beach-1920.webp",
+        "mid": "area/city-beach-960.webp",
+        "pos": "50% 50%",
+        "alt": "Turquoise water and a rocky shoreline on the Perth coast, from above",
+        "credit": "Photo: Harrison Reilly / Pexels",
+        "place_verified": false
+      }
+    },
+    "trigg": {
+      "image": {
+        "wide": "area/trigg-1920.webp",
+        "mid": "area/trigg-960.webp",
+        "pos": "50% 50%",
+        "alt": "A surfer waxing a board on the sand at Trigg Beach",
+        "credit": "Photo: Amanda Kevin / Pexels",
+        "place_verified": true
+      }
+    },
+    "hillarys": {
+      "image": {
+        "wide": "area/hillarys-1920.webp",
+        "mid": "area/hillarys-960.webp",
+        "pos": "50% 50%",
+        "alt": "A crowd at a waterside event at Hillarys Boat Harbour",
+        "credit": "Photo: Stephen Hazelwood / Pexels",
+        "place_verified": true
+      }
+    },
+    "applecross": {
+      "image": {
+        "wide": "area/applecross-1920.webp",
+        "mid": "area/applecross-960.webp",
+        "pos": "50% 50%",
+        "alt": "The Perth skyline across the water from Applecross at dusk",
+        "credit": "Photo: James Wong / Pexels",
+        "place_verified": true
+      }
+    },
+    "joondalup": {
+      "image": {
+        "wide": "area/joondalup-1920.webp",
+        "mid": "area/joondalup-960.webp",
+        "pos": "50% 55%",
+        "alt": "Two kangaroos on the grass in a Perth park",
+        "credit": "Photo: Line Knipst / Pexels",
+        "place_verified": false
+      }
+    },
+    "leederville": {
+      "image": {
+        "wide": "area/leederville-1920.webp",
+        "mid": "area/leederville-960.webp",
+        "pos": "50% 55%",
+        "alt": "A colourful Perth street with palm trees",
+        "credit": "Photo: Tibor Janas / Pexels",
+        "place_verified": false
+      }
+    },
+    "malaga": {
+      "image": {
+        "wide": "area/malaga-1920.webp",
+        "mid": "area/malaga-960.webp",
+        "pos": "50% 45%",
+        "alt": "An Australian magpie on a branch at sunset",
+        "credit": "Photo: Ajay Lamichhane / Pexels",
+        "place_verified": false
+      }
+    },
+    "mount-lawley": {
+      "image": {
+        "wide": "area/mount-lawley-1920.webp",
+        "mid": "area/mount-lawley-960.webp",
+        "pos": "50% 50%",
+        "alt": "Historic brick buildings on a Perth street corner",
+        "credit": "Photo: Tibor Janas / Pexels",
+        "place_verified": false
+      }
+    },
+    "east-fremantle": {
+      "image": {
+        "wide": "area/east-fremantle-1920.webp",
+        "mid": "area/east-fremantle-960.webp",
+        "pos": "50% 55%",
+        "alt": "The paddle steamer Rodney on the Swan River near Bicton",
+        "credit": "Photo: Harrison Reilly / Pexels",
+        "place_verified": false
+      }
+    },
+    "bicton": {
+      "image": {
+        "wide": "area/bicton-1920.webp",
+        "mid": "area/bicton-960.webp",
+        "pos": "50% 50%",
+        "alt": "Bicton foreshore on the Swan River, with boats and jetties, from above",
+        "credit": "Photo: Harrison Reilly / Pexels",
+        "place_verified": true
+      }
+    },
+    "east-perth": {
+      "image": {
+        "wide": "area/east-perth-1920.webp",
+        "mid": "area/east-perth-960.webp",
+        "pos": "50% 50%",
+        "alt": "The Perth skyline and Matagarup Bridge over the Swan River, from above",
+        "credit": "Photo: Harrison Reilly / Pexels",
+        "place_verified": false
+      }
+    },
+    "east-victoria-park": {
+      "image": {
+        "wide": "area/east-victoria-park-1920.webp",
+        "mid": "area/east-victoria-park-960.webp",
+        "pos": "50% 50%",
+        "alt": "Optus Stadium with the Perth skyline behind, from above",
+        "credit": "Photo: Philip Williams / Pexels",
+        "place_verified": false
+      }
+    },
+    "victoria-park": {
+      "image": {
+        "wide": "area/victoria-park-1920.webp",
+        "mid": "area/victoria-park-960.webp",
+        "pos": "50% 50%",
+        "alt": "Burswood and the Swan River, from above",
+        "credit": "Photo: Harrison Reilly / Pexels",
+        "place_verified": false
+      }
+    },
+    "mount-hawthorn": {
+      "image": {
+        "wide": "area/mount-hawthorn-1920.webp",
+        "mid": "area/mount-hawthorn-960.webp",
+        "pos": "50% 50%",
+        "alt": "Suburban Perth rooftops with the city skyline beyond, from above",
+        "credit": "Photo: Gaurab Shrestha / Pexels",
+        "place_verified": false
+      }
+    },
+    "west-leederville": {
+      "image": {
+        "wide": "area/west-leederville-1920.webp",
+        "mid": "area/west-leederville-960.webp",
+        "pos": "50% 55%",
+        "alt": "Palm trees in a park with the Perth skyline beyond",
+        "credit": "Photo: Tibor Janas / Pexels",
+        "place_verified": false
+      }
+    },
+    "wembley": {
+      "image": {
+        "wide": "area/wembley-1920.webp",
+        "mid": "area/wembley-960.webp",
+        "pos": "50% 55%",
+        "alt": "Palm trees and lawns in a Perth park",
+        "credit": "Photo: Tibor Janas / Pexels",
+        "place_verified": false
+      }
+    },
+    "shenton-park": {
+      "image": {
+        "wide": "area/shenton-park-1920.webp",
+        "mid": "area/shenton-park-960.webp",
+        "pos": "50% 55%",
+        "alt": "The Western Australian Botanic Garden in Kings Park",
+        "credit": "Photo: Line Knipst / Pexels",
+        "place_verified": false
+      }
+    },
+    "osborne-park": {
+      "image": {
+        "wide": "area/osborne-park-1920.webp",
+        "mid": "area/osborne-park-960.webp",
+        "pos": "50% 50%",
+        "alt": "Perth rooftops and green space, from above",
+        "credit": "Photo: Dieter Wolff / Pexels",
+        "place_verified": false
+      }
+    },
+    "stirling": {
+      "image": {
+        "wide": "area/stirling-1920.webp",
+        "mid": "area/stirling-960.webp",
+        "pos": "50% 55%",
+        "alt": "The Perth skyline at sunset over open green space",
+        "credit": "Photo: Tibor Janas / Pexels",
+        "place_verified": false
+      }
+    },
+    "inglewood": {
+      "image": {
+        "wide": "area/inglewood-1920.webp",
+        "mid": "area/inglewood-960.webp",
+        "pos": "50% 50%",
+        "alt": "Calm water and green trees with the Perth skyline beyond",
+        "credit": "Photo: Tibor Janas / Pexels",
+        "place_verified": false
+      }
+    },
+    "bayswater": {
+      "image": {
+        "wide": "area/bayswater-1920.webp",
+        "mid": "area/bayswater-960.webp",
+        "pos": "50% 50%",
+        "alt": "Australian pelicans on a river at sunset",
+        "credit": "Photo: Ajay Lamichhane / Pexels",
+        "place_verified": false
+      }
+    },
+    "cannington": {
+      "image": {
+        "wide": "area/cannington-1920.webp",
+        "mid": "area/cannington-960.webp",
+        "pos": "50% 50%",
+        "alt": "A kangaroo in a green meadow with wildflowers",
+        "credit": "Photo: Ajay Lamichhane / Pexels",
+        "place_verified": false
+      }
+    },
+    "booragoon": {
+      "image": {
+        "wide": "area/booragoon-1920.webp",
+        "mid": "area/booragoon-960.webp",
+        "pos": "50% 55%",
+        "alt": "A wooden jetty on Bibra Lake at sunset",
+        "credit": "Photo: Ajay Lamichhane / Pexels",
+        "place_verified": false
+      }
+    },
+    "ellenbrook": {
+      "image": {
+        "wide": "area/ellenbrook-1920.webp",
+        "mid": "area/ellenbrook-960.webp",
+        "pos": "50% 45%",
+        "alt": "A kangaroo among Australian bush plants",
+        "credit": "Photo: Annalise Clarke / Pexels",
+        "place_verified": false
+      }
+    },
+    "wangara": {
+      "image": {
+        "wide": "area/wangara-1920.webp",
+        "mid": "area/wangara-960.webp",
+        "pos": "50% 45%",
+        "alt": "Two cockatoos perched in a tree",
+        "credit": "Photo: Ajay Lamichhane / Pexels",
+        "place_verified": false
+      }
+    },
+    "serpentine": {
+      "image": {
+        "wide": "area/serpentine-1920.webp",
+        "mid": "area/serpentine-960.webp",
+        "pos": "50% 55%",
+        "alt": "A fern in a sunlit pine forest near Perth",
+        "credit": "Photo: Caleb Jordan-Jones / Pexels",
+        "place_verified": false
+      }
+    },
+    "rockingham": {
+      "image": {
+        "wide": "area/rockingham-1920.webp",
+        "mid": "area/rockingham-960.webp",
+        "pos": "50% 50%",
+        "alt": "A rock groyne reaching into turquoise water on the Perth coast, from above",
+        "credit": "Photo: Harrison Reilly / Pexels",
+        "place_verified": false
+      }
+    },
+    "mandurah": {
+      "image": {
+        "wide": "area/mandurah-1920.webp",
+        "mid": "area/mandurah-960.webp",
+        "pos": "50% 55%",
+        "alt": "Australian pelicans resting on a sunlit grassy shore",
+        "credit": "Photo: Ajay Lamichhane / Pexels",
+        "place_verified": false
+      }
+    },
+    "south-fremantle": {
+      "image": {
+        "wide": "area/south-fremantle-1920.webp",
+        "mid": "area/south-fremantle-960.webp",
+        "pos": "50% 55%",
+        "alt": "A coastal path and rocks at sunset in South Fremantle",
+        "credit": "Photo: Amanda Kevin / Pexels",
+        "place_verified": true
+      }
+    },
+    "north-fremantle": {
+      "image": {
+        "wide": "area/north-fremantle-1920.webp",
+        "mid": "area/north-fremantle-960.webp",
+        "pos": "50% 55%",
+        "alt": "A sandy path to the beach at Fremantle at sunset",
+        "credit": "Photo: Nate Biddle / Pexels",
+        "place_verified": false
+      }
+    },
+    "nedlands": {
+      "image": {
+        "wide": "area/nedlands-1920.webp",
+        "mid": "area/nedlands-960.webp",
+        "pos": "50% 55%",
+        "alt": "The Blue Boathouse on the Swan River at Crawley",
+        "credit": "Photo: Afifi Zakaria / Pexels",
+        "place_verified": false
+      }
     }
   },
   "featured": [
