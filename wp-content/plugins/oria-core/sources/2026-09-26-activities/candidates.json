@@ -1,0 +1,2527 @@
+{
+	"batch": "2026-09-26-activities",
+	"_note": "One record per organisation (or per verified distinct location, marked branch). status: candidate = import as a draft once verified; manual = real and relevant but not verifiable automatically -- an editor researches it by hand; rejected = out of scope, with the reason. Every material value carries evidence: the cached page it came from and words on that page that support it. Blurbs are our own summaries. Unknown stays unknown. Personal names and personal phone numbers on organiser pages were deliberately not collected.",
+	"candidates": [
+		{
+			"key": "perth-urban-runners",
+			"category": "running",
+			"status": "candidate",
+			"name": "Perth Urban Runners",
+			"kind": "group",
+			"website": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+			"source_urls": [
+				"https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners"
+			],
+			"suburb": "",
+			"region": "central",
+			"meeting_point": "",
+			"meeting_varies": false,
+			"blurb": "A free social running group run by The Running Centre, meeting twice a week in central Perth for 6-10km runs split into smaller pace groups.",
+			"join": {
+				"method": "turn-up",
+				"url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners"
+			},
+			"cost": "free",
+			"price_note": "",
+			"schedule": "Tuesdays and Thursdays, 6pm.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"social-running"
+			],
+			"details": [
+				{
+					"label": "Distance",
+					"value": "6-10km"
+				},
+				{
+					"label": "Pace bands",
+					"value": "Smaller groups from about 6:30 to 4:30 min/km"
+				},
+				{
+					"label": "Meeting point",
+					"value": "Central Perth; training plans go out by mailing list and Facebook"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+					"excerpt": "Perth Urban Runners is a social running club"
+				},
+				{
+					"field": "activity",
+					"url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+					"excerpt": "social running club that is open to all levels and completely free"
+				},
+				{
+					"field": "cost",
+					"url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+					"excerpt": "open to all levels and completely free"
+				},
+				{
+					"field": "schedule",
+					"url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+					"excerpt": "The runs currently are on Tuesday nights (6pm) and Thursday (6pm)"
+				},
+				{
+					"field": "beginner",
+					"url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+					"excerpt": "New runners: no need to register, just turn up and come running with us"
+				},
+				{
+					"field": "join",
+					"url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+					"excerpt": "no need to register, just turn up"
+				},
+				{
+					"field": "tag:social-running",
+					"url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+					"excerpt": "social running club"
+				},
+				{
+					"field": "detail:Distance",
+					"url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+					"excerpt": "The training runs vary in distances from 6km to 10km"
+				},
+				{
+					"field": "detail:Pace bands",
+					"url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+					"excerpt": "we split off into smaller groups with varying paces (usually 6:30 up to 4:30 pace)"
+				},
+				{
+					"field": "detail:Meeting point",
+					"url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+					"excerpt": "We meet centrally a couple times a week"
+				}
+			]
+		},
+		{
+			"key": "perth-running-club",
+			"category": "running",
+			"status": "candidate",
+			"name": "Perth Running Club",
+			"kind": "group",
+			"website": "https://www.perthrunningclub.com.au/",
+			"source_urls": [
+				"https://www.perthrunningclub.com.au/",
+				"https://www.perthrunningclub.com.au/adults-running"
+			],
+			"suburb": "",
+			"region": "central",
+			"meeting_point": "",
+			"meeting_varies": true,
+			"blurb": "A coached running club offering small-group adult interval and gym sessions at four venues across Perth, on a monthly membership or casual basis.",
+			"join": {
+				"method": "email",
+				"url": "https://www.perthrunningclub.com.au/adults-running"
+			},
+			"cost": "paid",
+			"price_note": "",
+			"schedule": "Mon 6-7pm Perry Lakes; Wed 6-6:50am West Leederville (gym); Thu 6-7am Matilda Bay; Sat 7-8am Lake Monger.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"coached-running"
+			],
+			"details": [
+				{
+					"label": "Format",
+					"value": "Coached small-group interval sessions"
+				},
+				{
+					"label": "Pricing basis",
+					"value": "Monthly membership or casual drop-in"
+				}
+			],
+			"contact": {
+				"email": "coach@perthrunningclub.com.au",
+				"phone": ""
+			},
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.perthrunningclub.com.au/",
+					"excerpt": "© 2026 Perth Running Club"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.perthrunningclub.com.au/adults-running",
+					"excerpt": "We offer small group recreational run and gym sessions for adults"
+				},
+				{
+					"field": "cost",
+					"url": "https://www.perthrunningclub.com.au/adults-running",
+					"excerpt": "We offer a monthly membership for those who'd like to attend regularly, or a flexible casual option"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.perthrunningclub.com.au/adults-running",
+					"excerpt": "MON NIGHT INTERVALS 6:00 – 7:00 pm Perry Lakes WED MORNING GYM 6:00 – 6:50 am West Leederville THU MORNING INTERVALS 6:00 – 7:00 am Matilda Bay SAT MORNING INTERVALS 7:00 – 8:00 am Lake Monger"
+				},
+				{
+					"field": "beginner",
+					"url": "https://www.perthrunningclub.com.au/adults-running",
+					"excerpt": "Sessions are inclusive, supportive and tailored to all fitness levels"
+				},
+				{
+					"field": "join",
+					"url": "https://www.perthrunningclub.com.au/adults-running",
+					"excerpt": "CONTACT US coach@perthrunningclub.com.au"
+				},
+				{
+					"field": "tag:coached-running",
+					"url": "https://www.perthrunningclub.com.au/",
+					"excerpt": "Our coaches deliver training sessions"
+				},
+				{
+					"field": "detail:Format",
+					"url": "https://www.perthrunningclub.com.au/adults-running",
+					"excerpt": "FOUR SESSIONS. FOUR LOCATIONS."
+				},
+				{
+					"field": "detail:Pricing basis",
+					"url": "https://www.perthrunningclub.com.au/adults-running",
+					"excerpt": "monthly membership for those who'd like to attend regularly, or a flexible casual option if you prefer to drop in"
+				}
+			]
+		},
+		{
+			"key": "perth-trail-series-social-runs",
+			"category": "running",
+			"status": "candidate",
+			"name": "Perth Trail Series",
+			"kind": "group",
+			"website": "https://perthtrailseries.com.au/",
+			"source_urls": [
+				"https://perthtrailseries.com.au/"
+			],
+			"suburb": "",
+			"region": "central",
+			"meeting_point": "Front of Aspects Restaurant, Kings Park",
+			"meeting_varies": false,
+			"blurb": "The trail-race organiser also runs a free social trail run in Kings Park every Thursday evening, 8-10km with the group staying together.",
+			"join": {
+				"method": "turn-up",
+				"url": "https://perthtrailseries.com.au/"
+			},
+			"cost": "free",
+			"price_note": "",
+			"schedule": "Thursdays; meet 5:55pm for a 6pm start, finishing 7pm.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"social-running"
+			],
+			"details": [
+				{
+					"label": "Distance",
+					"value": "8-10km, trail"
+				},
+				{
+					"label": "Pace bands",
+					"value": "One group, staying together"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://perthtrailseries.com.au/",
+					"excerpt": "introduce yourself to the Perth Trail Series family"
+				},
+				{
+					"field": "activity",
+					"url": "https://perthtrailseries.com.au/",
+					"excerpt": "FREE SOCIAL RUNS EVERY THURSDAY"
+				},
+				{
+					"field": "cost",
+					"url": "https://perthtrailseries.com.au/",
+					"excerpt": "It's fun, social, and free"
+				},
+				{
+					"field": "schedule",
+					"url": "https://perthtrailseries.com.au/",
+					"excerpt": "We meet at the front of Aspects Restaurant at 5.55pm for 6pm start and finish at 7pm"
+				},
+				{
+					"field": "beginner",
+					"url": "https://perthtrailseries.com.au/",
+					"excerpt": "Oldies and Newbies welcome"
+				},
+				{
+					"field": "location",
+					"url": "https://perthtrailseries.com.au/",
+					"excerpt": "King's Park - EVERY Thursday We meet at the front of Aspects Restaurant"
+				},
+				{
+					"field": "join",
+					"url": "https://perthtrailseries.com.au/",
+					"excerpt": "No need to register, just come and join the fun"
+				},
+				{
+					"field": "tag:social-running",
+					"url": "https://perthtrailseries.com.au/",
+					"excerpt": "Our social runs are the perfect way to introduce yourself"
+				},
+				{
+					"field": "detail:Distance",
+					"url": "https://perthtrailseries.com.au/",
+					"excerpt": "8-10kms trot staying together"
+				},
+				{
+					"field": "detail:Pace bands",
+					"url": "https://perthtrailseries.com.au/",
+					"excerpt": "trot staying together"
+				}
+			]
+		},
+		{
+			"key": "rise-and-run-club",
+			"category": "running",
+			"status": "candidate",
+			"name": "Rise and Run Club",
+			"kind": "group",
+			"website": "https://riseandrunclub.com.au/",
+			"source_urls": [
+				"https://riseandrunclub.com.au/"
+			],
+			"suburb": "Cottesloe",
+			"region": "",
+			"meeting_point": "Grass area opposite il Lido, Cottesloe",
+			"meeting_varies": false,
+			"blurb": "A Cottesloe running and walking group that meets on the grass opposite il Lido for short out-and-back runs, with walkers and dogs welcome.",
+			"join": {
+				"method": "turn-up",
+				"url": "https://riseandrunclub.com.au/"
+			},
+			"cost": "unknown",
+			"price_note": "",
+			"schedule": "Fridays 6am (20 minutes out and back); every second Sunday 7am (30 minutes out and back); last Wednesday of the month 5:30pm.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"social-running",
+				"run-walk"
+			],
+			"details": [
+				{
+					"label": "Distance",
+					"value": "Time-based: 15-30 minutes out and back"
+				},
+				{
+					"label": "Dogs",
+					"value": "Dogs welcome"
+				}
+			],
+			"flags": [
+				"Most of the organiser's site is affiliate product listings -- confirm the group is currently active before publishing"
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://riseandrunclub.com.au/",
+					"excerpt": "Welcome to Rise and Run Club!"
+				},
+				{
+					"field": "activity",
+					"url": "https://riseandrunclub.com.au/",
+					"excerpt": "we are a dynamic community open to runners, walkers, and even your furry friends"
+				},
+				{
+					"field": "schedule",
+					"url": "https://riseandrunclub.com.au/",
+					"excerpt": "Every Second Sunday Start Time: 7 am 30 minutes in one direction and back"
+				},
+				{
+					"field": "beginner",
+					"url": "https://riseandrunclub.com.au/",
+					"excerpt": "suitable for all ages and abilities"
+				},
+				{
+					"field": "location",
+					"url": "https://riseandrunclub.com.au/",
+					"excerpt": "Where to Meet: Grass area opposite il Lido, Cottesloe"
+				},
+				{
+					"field": "join",
+					"url": "https://riseandrunclub.com.au/",
+					"excerpt": "Join the Club"
+				},
+				{
+					"field": "tag:social-running",
+					"url": "https://riseandrunclub.com.au/",
+					"excerpt": "move their bodies in a social, inclusive environment"
+				},
+				{
+					"field": "tag:run-walk",
+					"url": "https://riseandrunclub.com.au/",
+					"excerpt": "open to runners, walkers"
+				},
+				{
+					"field": "detail:Distance",
+					"url": "https://riseandrunclub.com.au/",
+					"excerpt": "Friday Morning Fun Start Time: 6 am 20 minutes in one direction and back"
+				},
+				{
+					"field": "detail:Dogs",
+					"url": "https://riseandrunclub.com.au/",
+					"excerpt": "and even your furry friends"
+				}
+			]
+		},
+		{
+			"key": "manning-park-trail-runners",
+			"category": "running",
+			"status": "candidate",
+			"name": "Manning Park Trail Runners",
+			"kind": "group",
+			"website": "https://www.facebook.com/groups/1487953351215248",
+			"source_urls": [
+				"https://www.wamc.org.au/training"
+			],
+			"suburb": "Spearwood",
+			"region": "",
+			"meeting_point": "Manning Stairs carpark, Azelia Rd, Manning Park",
+			"meeting_varies": false,
+			"blurb": "A free Thursday-evening trail running session in Manning Park, Spearwood, with pace groups running from hiking and hike/jog up to fast.",
+			"join": {
+				"method": "turn-up",
+				"url": ""
+			},
+			"cost": "free",
+			"price_note": "",
+			"schedule": "Thursdays: 6pm main session after a 15-minute group warm-up, on the trails until 7:15pm (a kids group runs 5-6pm).",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"social-running",
+				"run-walk"
+			],
+			"details": [
+				{
+					"label": "Pace bands",
+					"value": "Hiking, hike/jog, easy, medium, fast"
+				},
+				{
+					"label": "Duration",
+					"value": "About an hour on the trails"
+				}
+			],
+			"flags": [
+				"Verified from the WA Marathon Club's training directory; the group's own page is a Facebook group"
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.wamc.org.au/training",
+					"excerpt": "Manning Park Trail Runners Where:Manning Park"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.wamc.org.au/training",
+					"excerpt": "FREE Trail Running session every Thursday night open to everyone"
+				},
+				{
+					"field": "cost",
+					"url": "https://www.wamc.org.au/training",
+					"excerpt": "FREE Trail Running session every Thursday night"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.wamc.org.au/training",
+					"excerpt": "Then 6pm for our Main Session. We do a 15min group warm up then head out on the trails for 1hr till 7:15pm"
+				},
+				{
+					"field": "beginner",
+					"url": "https://www.wamc.org.au/training",
+					"excerpt": "We cater for all paces"
+				},
+				{
+					"field": "location",
+					"url": "https://www.wamc.org.au/training",
+					"excerpt": "Manning Park – Manning Stairs carpark on Azelia Rd Spearwood"
+				},
+				{
+					"field": "tag:social-running",
+					"url": "https://www.wamc.org.au/training",
+					"excerpt": "Come for the run, stay for the community"
+				},
+				{
+					"field": "tag:run-walk",
+					"url": "https://www.wamc.org.au/training",
+					"excerpt": "from a hiking group, hike/jog, easy, medium, fast"
+				},
+				{
+					"field": "detail:Pace bands",
+					"url": "https://www.wamc.org.au/training",
+					"excerpt": "a range of different paced groups from a hiking group, hike/jog, easy, medium, fast and podium getters"
+				},
+				{
+					"field": "detail:Duration",
+					"url": "https://www.wamc.org.au/training",
+					"excerpt": "head out on the trails for 1hr"
+				}
+			]
+		},
+		{
+			"key": "befriend-manning-walk-run",
+			"category": "walking",
+			"also": [
+				"running"
+			],
+			"status": "candidate",
+			"branch": true,
+			"name": "Manning Walk & Run",
+			"kind": "group",
+			"website": "https://befriend.org.au/",
+			"source_urls": [
+				"https://befriend.org.au/meet/whats-on/"
+			],
+			"suburb": "Manning",
+			"region": "",
+			"meeting_point": "Manning Laneway, Welwyn Ave (at the shops)",
+			"meeting_varies": false,
+			"blurb": "A weekly early-morning walk or run from the Manning shops, hosted by the community organisation Befriend, finishing with coffee nearby.",
+			"join": {
+				"method": "turn-up",
+				"url": "https://befriend.org.au/meet/whats-on/"
+			},
+			"cost": "unknown",
+			"price_note": "",
+			"schedule": "Weekly, 6am-7am (listed on Monday 21 September 2026 as the 'Weekstarter').",
+			"beginner": "unknown",
+			"come_alone": "unknown",
+			"tags": [
+				"run-walk"
+			],
+			"details": [
+				{
+					"label": "Distance",
+					"value": "Walk around 3km, or run up to 5km"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "Manning Walk & Run - Weekstarter"
+				},
+				{
+					"field": "activity",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "Join us for a weekly walk or run"
+				},
+				{
+					"field": "schedule",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "6:00 am: Manning Walk & Run - Weekstarter 6:00 am – 7:00 am September 21, 2026"
+				},
+				{
+					"field": "location",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "Meet in the Manning Laneway, Welwyn Ave Manning (at the shops)"
+				},
+				{
+					"field": "join",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "Look out for the bright yellow Befriend sign"
+				},
+				{
+					"field": "tag:run-walk",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "We will walk for around 3km, or run up to 5km"
+				},
+				{
+					"field": "detail:Distance",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "We will walk for around 3km, or run up to 5km"
+				}
+			]
+		},
+		{
+			"key": "perth-frontrunners",
+			"category": "running",
+			"status": "manual",
+			"name": "Perth Frontrunners",
+			"kind": "group",
+			"source_urls": [
+				"https://www.perthfrontrunners.org/"
+			],
+			"reject_reason": "Weekly Saturday stroll/roll/run confirmed on the organiser's site, but no meeting point is published there (the events calendar needs JavaScript); add the location by hand"
+		},
+		{
+			"key": "parkrun-perth",
+			"category": "running",
+			"status": "manual",
+			"name": "parkrun (Perth events)",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "parkrun.com.au refused automated requests (HTTP 403); one listing per verified event location could be added by hand"
+		},
+		{
+			"key": "the-440",
+			"category": "running",
+			"status": "manual",
+			"name": "The 440",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "Instagram-only; Cottesloe Saturday run found in roundups, not verifiable from an organiser page"
+		},
+		{
+			"key": "the-early-ones",
+			"category": "running",
+			"status": "manual",
+			"name": "The Early Ones",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "Instagram-only; Scarborough run-dip-sip found in roundups"
+		},
+		{
+			"key": "bbc-run-club",
+			"category": "running",
+			"status": "manual",
+			"name": "BBC Run Club",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "Instagram-only; South Fremantle Wednesday run found in roundups"
+		},
+		{
+			"key": "wa-marathon-club",
+			"category": "running",
+			"status": "rejected",
+			"name": "West Australian Marathon Club",
+			"kind": "group",
+			"source_urls": [
+				"https://www.wamc.org.au/"
+			],
+			"reject_reason": "Primarily a race organiser and membership club; its recurring training groups are listed separately (Manning Park Trail Runners taken from its training page)"
+		},
+		{
+			"key": "podsquad-north-cottesloe",
+			"category": "ocean",
+			"status": "candidate",
+			"name": "PodSquad",
+			"kind": "group",
+			"website": "https://podsquadnorthcott.com.au/swimming/",
+			"source_urls": [
+				"https://podsquadnorthcott.com.au/swimming/"
+			],
+			"suburb": "Cottesloe",
+			"region": "",
+			"meeting_point": "North Cottesloe Beach",
+			"meeting_varies": false,
+			"blurb": "An informal ocean swimming community that swims a 2km return from North Cottesloe to the Cottesloe groyne every day of the year, followed by coffee.",
+			"join": {
+				"method": "turn-up",
+				"url": "https://podsquadnorthcott.com.au/swimming/"
+			},
+			"cost": "unknown",
+			"price_note": "",
+			"schedule": "Every day. Summer (Sept-April): main group weekdays 6:15am, weekends 7am. Winter (May-August): main group weekdays 6:45am, weekends 7:30am. Earlier groups swim further.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"distance-swim"
+			],
+			"details": [
+				{
+					"label": "Format",
+					"value": "Distance swim"
+				},
+				{
+					"label": "Distance",
+					"value": "2km return (main group)"
+				},
+				{
+					"label": "Swimming ability",
+					"value": "Only enter the water if comfortable and capable in the conditions; fins suggested for newcomers"
+				},
+				{
+					"label": "Supervision",
+					"value": "None -- no water safety or lifeguards; everyone swims at their own risk (organiser's words)"
+				},
+				{
+					"label": "Equipment",
+					"value": "Fins suggested for first swims; wetsuits welcome"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "PodSquad is a welcoming and inclusive community of ocean lovers"
+				},
+				{
+					"field": "activity",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "We swim every day of the year from North Cott to the Cottesloe groyne and back"
+				},
+				{
+					"field": "schedule",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "Summer (Sept – April) Weekdays (including Flipper Fridays)"
+				},
+				{
+					"field": "beginner",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "is the one where new swimmers commence"
+				},
+				{
+					"field": "location",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "swim 365 days a year from the beautiful North Cottesloe Beach marine park"
+				},
+				{
+					"field": "join",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "no need to sign up, just show up"
+				},
+				{
+					"field": "tag:distance-swim",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "a distance of 2km"
+				},
+				{
+					"field": "detail:Format",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "Swim distances for every level"
+				},
+				{
+					"field": "detail:Distance",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "Main Pod 🚂 (2km)"
+				},
+				{
+					"field": "detail:Swimming ability",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "Only enter the water if you feel comfortable and are capable in the prevailing conditions"
+				},
+				{
+					"field": "detail:Supervision",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "There is no official water safety or lifeguard supervision, and no insurance is provided"
+				},
+				{
+					"field": "detail:Equipment",
+					"url": "https://podsquadnorthcott.com.au/swimming/",
+					"excerpt": "Wetsuits are welcome"
+				}
+			]
+		},
+		{
+			"key": "rockingham-penguins",
+			"category": "ocean",
+			"status": "candidate",
+			"name": "Rockingham Penguins",
+			"kind": "group",
+			"website": "https://www.rockinghampenguins.com/",
+			"source_urls": [
+				"https://www.rockinghampenguins.com/"
+			],
+			"suburb": "Rockingham",
+			"region": "",
+			"meeting_point": "Rockingham Foreshore",
+			"meeting_varies": false,
+			"blurb": "A not-for-profit cold-water group that meets on the Rockingham foreshore at 6am every morning for a swim or dip and a coffee.",
+			"join": {
+				"method": "turn-up",
+				"url": "https://www.rockinghampenguins.com/"
+			},
+			"cost": "unknown",
+			"price_note": "",
+			"schedule": "Every morning, 6am.",
+			"beginner": "unknown",
+			"come_alone": "unknown",
+			"tags": [
+				"social-dip"
+			],
+			"details": [
+				{
+					"label": "Format",
+					"value": "Social dip or swim, then coffee"
+				}
+			],
+			"contact": {
+				"email": "rockinghampenguins@gmail.com",
+				"phone": ""
+			},
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.rockinghampenguins.com/",
+					"excerpt": "Rockingham Penguins are based in Rockingham Perth WA"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.rockinghampenguins.com/",
+					"excerpt": "We are a not for profit group that uses cold water and breathwork"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.rockinghampenguins.com/",
+					"excerpt": "We swim at 6 am every morning"
+				},
+				{
+					"field": "location",
+					"url": "https://www.rockinghampenguins.com/",
+					"excerpt": "Early morning at 6 am we meet at the Rockingham Foreshore"
+				},
+				{
+					"field": "join",
+					"url": "https://www.rockinghampenguins.com/",
+					"excerpt": "Just pop on down at 6 AM every morning at Rockingham Foreshore"
+				},
+				{
+					"field": "tag:social-dip",
+					"url": "https://www.rockinghampenguins.com/",
+					"excerpt": "For a swim/dip, a coffee social group"
+				},
+				{
+					"field": "detail:Format",
+					"url": "https://www.rockinghampenguins.com/",
+					"excerpt": "For a swim/dip, a coffee social group at Rockingham foreshore"
+				}
+			]
+		},
+		{
+			"key": "open-water-swimming-mastery",
+			"category": "ocean",
+			"status": "manual",
+			"name": "Open Water Swimming Mastery",
+			"kind": "practice",
+			"source_urls": [
+				"https://openwaterswimmingmastery.com/"
+			],
+			"reject_reason": "Stale: the season on the page 'starts Wednesday 2/10/2024'; squad swims are at a pool (Newman College) with sea sessions for members -- confirm current open-water sessions"
+		},
+		{
+			"key": "swimclan",
+			"category": "ocean",
+			"status": "manual",
+			"name": "Swimclan",
+			"kind": "practice",
+			"source_urls": [],
+			"reject_reason": "robots.txt could not be read, so the site was not fetched; coached small ocean sessions per search results"
+		},
+		{
+			"key": "port-beach-polar-bears",
+			"category": "ocean",
+			"status": "manual",
+			"name": "Port Beach Polar Bears",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "Found only in directories (oceanswims.com, My Community Directory); no organiser page to verify the daily Port Beach swim"
+		},
+		{
+			"key": "cold-water-club",
+			"category": "ocean",
+			"status": "manual",
+			"name": "Cold Water Club",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "Directory and social media only"
+		},
+		{
+			"key": "cold-nips",
+			"category": "ocean",
+			"status": "manual",
+			"name": "Cold Nips",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "Instagram-only; weekly location announced there"
+		},
+		{
+			"key": "sea-gals",
+			"category": "ocean",
+			"status": "manual",
+			"name": "Sea Gals",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "Instagram-only women's sunrise swim group"
+		},
+		{
+			"key": "cottesloe-crabs",
+			"category": "ocean",
+			"status": "rejected",
+			"name": "Cottesloe Crabs Winter Swimming Club",
+			"kind": "group",
+			"source_urls": [
+				"http://www.wsaainc.com/cottesloe-crabs.html"
+			],
+			"reject_reason": "Swims at HBF Stadium (a pool); pool-only swimming is outside this batch"
+		},
+		{
+			"key": "wow-swims",
+			"category": "ocean",
+			"status": "rejected",
+			"name": "WOW Swims",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "A series of dated open-water events, not a recurring group -- belongs in the events system"
+		},
+		{
+			"key": "swim-smooth-perth",
+			"category": "ocean",
+			"status": "rejected",
+			"name": "Swim Smooth Perth",
+			"kind": "practice",
+			"source_urls": [],
+			"reject_reason": "Squad sessions at Claremont Pool (pool-based); the page also redirected to a domain outside the allowlist"
+		},
+		{
+			"key": "george-burnett-leisure-centre-pickleball",
+			"category": "pickleball",
+			"status": "candidate",
+			"name": "George Burnett Leisure Centre",
+			"kind": "place",
+			"website": "https://southperth.wa.gov.au/community/facilities/george-burnett-leisure-centre",
+			"source_urls": [
+				"https://southperth.wa.gov.au/community/services/social-pickleball",
+				"https://southperth.wa.gov.au/community/facilities/george-burnett-leisure-centre"
+			],
+			"suburb": "",
+			"region": "central",
+			"meeting_point": "George Burnett Leisure Centre, George Burnett Park, Karawara",
+			"meeting_varies": false,
+			"blurb": "The City of South Perth's leisure centre in Karawara runs a drop-in social pickleball session on Sunday afternoons, open to all ages and skill levels.",
+			"join": {
+				"method": "turn-up",
+				"url": "https://southperth.wa.gov.au/community/services/social-pickleball"
+			},
+			"cost": "paid",
+			"price_note": "$7.50 per player, per session",
+			"schedule": "Sundays 12:30-3pm.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"social-play"
+			],
+			"details": [
+				{
+					"label": "Session levels",
+					"value": "All ages and skill levels; no coaching provided"
+				},
+				{
+					"label": "Setting",
+					"value": "Indoor sports hall"
+				},
+				{
+					"label": "Equipment",
+					"value": "Limited paddles and balls available"
+				},
+				{
+					"label": "Pricing basis",
+					"value": "Per player, per session; drop-in only, capped at 24"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://southperth.wa.gov.au/community/facilities/george-burnett-leisure-centre",
+					"excerpt": "George Burnett Leisure Centre is the City of South Perth's multi-purpose leisure facility"
+				},
+				{
+					"field": "activity",
+					"url": "https://southperth.wa.gov.au/community/services/social-pickleball",
+					"excerpt": "enjoy a friendly game of pickleball at GBLC"
+				},
+				{
+					"field": "cost",
+					"url": "https://southperth.wa.gov.au/community/services/social-pickleball",
+					"excerpt": "$7.50 per player"
+				},
+				{
+					"field": "price",
+					"url": "https://southperth.wa.gov.au/community/services/social-pickleball",
+					"excerpt": "$7.50 per player"
+				},
+				{
+					"field": "schedule",
+					"url": "https://southperth.wa.gov.au/community/services/social-pickleball",
+					"excerpt": "Sundays 12.30 - 3pm"
+				},
+				{
+					"field": "beginner",
+					"url": "https://southperth.wa.gov.au/community/services/social-pickleball",
+					"excerpt": "Suitable for all ages and skill levels, no coaching provided"
+				},
+				{
+					"field": "location",
+					"url": "https://southperth.wa.gov.au/community/facilities/george-burnett-leisure-centre",
+					"excerpt": "Located at George Burnett Park in Karawara, it offers a sports hall with pickleball"
+				},
+				{
+					"field": "join",
+					"url": "https://southperth.wa.gov.au/community/services/social-pickleball",
+					"excerpt": "To join, see reception on arrival and collect a wristband for entry"
+				},
+				{
+					"field": "tag:social-play",
+					"url": "https://southperth.wa.gov.au/community/services/social-pickleball",
+					"excerpt": "Grab some friends, get active and enjoy a friendly game of pickleball"
+				},
+				{
+					"field": "detail:Session levels",
+					"url": "https://southperth.wa.gov.au/community/services/social-pickleball",
+					"excerpt": "Suitable for all ages and skill levels, no coaching provided"
+				},
+				{
+					"field": "detail:Setting",
+					"url": "https://southperth.wa.gov.au/community/facilities/george-burnett-leisure-centre",
+					"excerpt": "it offers a sports hall with pickleball"
+				},
+				{
+					"field": "detail:Equipment",
+					"url": "https://southperth.wa.gov.au/community/services/social-pickleball",
+					"excerpt": "Limited paddles and balls available"
+				},
+				{
+					"field": "detail:Pricing basis",
+					"url": "https://southperth.wa.gov.au/community/services/social-pickleball",
+					"excerpt": "Drop in only on a first-come basis and capped at 24 attendees"
+				}
+			]
+		},
+		{
+			"key": "pickleball-perth",
+			"category": "pickleball",
+			"status": "candidate",
+			"name": "Pickleball Perth",
+			"kind": "place",
+			"website": "https://www.pickleballperth.com.au/",
+			"source_urls": [
+				"https://www.pickleballperth.com.au/",
+				"https://www.pickleballperth.com.au/play.html"
+			],
+			"suburb": "",
+			"region": "north",
+			"meeting_point": "Craigie Leisure Centre, 751 Whitfords Avenue, Craigie",
+			"meeting_varies": false,
+			"blurb": "A Craigie-based pickleball coach and equipment retailer running social sessions and private lessons in Perth's northern suburbs.",
+			"join": {
+				"method": "website",
+				"url": "https://www.pickleballperth.com.au/play.html"
+			},
+			"cost": "paid",
+			"price_note": "Social $10/session (Craigie) or $5/session (Ocean Ridge Tennis Club); private lessons from $40 for 30 minutes",
+			"price_from": 5,
+			"schedule": "Social: Sunday afternoons 3-5pm at Craigie Leisure Centre; Monday evenings 6:30-8pm at Ocean Ridge Tennis Club, Heathridge.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"social-play",
+				"pickleball-lessons"
+			],
+			"details": [
+				{
+					"label": "Session levels",
+					"value": "People of all ages and abilities"
+				},
+				{
+					"label": "Pricing basis",
+					"value": "Per session; lessons per 30 or 60 minutes"
+				}
+			],
+			"flags": [
+				"Possibly stale: the site footer says 2018 and a listed tournament has no year",
+				"Contradiction: Perth'ect Pickleball Academy lists the same Craigie Leisure Centre Sunday 3-5pm slot -- confirm who runs it now"
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.pickleballperth.com.au/",
+					"excerpt": "Pickleball Perth was established in 2018"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.pickleballperth.com.au/play.html",
+					"excerpt": "Lessons, Leagues, socials & Tournaments"
+				},
+				{
+					"field": "cost",
+					"url": "https://www.pickleballperth.com.au/play.html",
+					"excerpt": "Cost: $10/session"
+				},
+				{
+					"field": "price",
+					"url": "https://www.pickleballperth.com.au/play.html",
+					"excerpt": "Cost: $5/session"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.pickleballperth.com.au/play.html",
+					"excerpt": "When: Sunday afternoons from 3.00-5.00pm Where: Craigie Leisure Centre"
+				},
+				{
+					"field": "beginner",
+					"url": "https://www.pickleballperth.com.au/",
+					"excerpt": "We cater to people of all ages and abilities"
+				},
+				{
+					"field": "location",
+					"url": "https://www.pickleballperth.com.au/",
+					"excerpt": "CRAIGIE LEISURE CENTRE 751 Whitfords Avenue Craigie"
+				},
+				{
+					"field": "join",
+					"url": "https://www.pickleballperth.com.au/play.html",
+					"excerpt": "Join us for social Pickleball!"
+				},
+				{
+					"field": "tag:social-play",
+					"url": "https://www.pickleballperth.com.au/play.html",
+					"excerpt": "Looking to have a bit of fun and meet other Picklers?"
+				},
+				{
+					"field": "tag:pickleball-lessons",
+					"url": "https://www.pickleballperth.com.au/play.html",
+					"excerpt": "Private lessons with one of our certified Pickleball coaches"
+				},
+				{
+					"field": "detail:Session levels",
+					"url": "https://www.pickleballperth.com.au/",
+					"excerpt": "We cater to people of all ages and abilities"
+				},
+				{
+					"field": "detail:Pricing basis",
+					"url": "https://www.pickleballperth.com.au/play.html",
+					"excerpt": "30 minutes (1 player) 1 hour (1 player) 1 hour (3+ players) $40 $70 $80"
+				}
+			]
+		},
+		{
+			"key": "playtennis-perth-pickleball",
+			"category": "pickleball",
+			"status": "candidate",
+			"name": "PlayTennis Perth",
+			"kind": "place",
+			"website": "https://playtennisperth.com.au/",
+			"source_urls": [
+				"https://playtennisperth.com.au/pickleball"
+			],
+			"suburb": "Mount Lawley",
+			"region": "",
+			"meeting_point": "Mt Lawley Tennis Club",
+			"meeting_varies": false,
+			"blurb": "Social pickleball sessions at Mt Lawley Tennis Club, run by PlayTennis Perth with an instructor on hand to organise play and offer tips.",
+			"join": {
+				"method": "booking",
+				"url": "https://playtennisperth.com.au/pickleball"
+			},
+			"cost": "unknown",
+			"price_note": "",
+			"schedule": "Eight sessions a week: Mon-Thu 6-7:30pm, Fri 5:30-7pm; mornings Tue, Fri and Sat from 9am.",
+			"beginner": "unknown",
+			"come_alone": "unknown",
+			"tags": [
+				"social-play"
+			],
+			"details": [
+				{
+					"label": "Session levels",
+					"value": "Social sessions plus a Monday drills-and-skills night"
+				},
+				{
+					"label": "Setting",
+					"value": "Tennis club courts, with the club bar open"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://playtennisperth.com.au/pickleball",
+					"excerpt": "PlayTennis Perth is proud to offer Pickleball at Mt Lawley Tennis Club"
+				},
+				{
+					"field": "activity",
+					"url": "https://playtennisperth.com.au/pickleball",
+					"excerpt": "The sessions are social and one of our instructors will be on hand to organise the group"
+				},
+				{
+					"field": "schedule",
+					"url": "https://playtennisperth.com.au/pickleball",
+					"excerpt": "Currently we have 8 pickleball sessions running from Monday to Saturday. Afternoon sessions from Monday to Thursday 6pm-7:30pm and Friday 5:30-7pm, whilst morning sessions running on Tuesday, Friday and Saturday starting at 9am"
+				},
+				{
+					"field": "location",
+					"url": "https://playtennisperth.com.au/pickleball",
+					"excerpt": "offer Pickleball at Mt Lawley Tennis Club"
+				},
+				{
+					"field": "join",
+					"url": "https://playtennisperth.com.au/pickleball",
+					"excerpt": "Book in https://allsquads.com.au/classes"
+				},
+				{
+					"field": "tag:social-play",
+					"url": "https://playtennisperth.com.au/pickleball",
+					"excerpt": "The sessions are social"
+				},
+				{
+					"field": "detail:Session levels",
+					"url": "https://playtennisperth.com.au/pickleball",
+					"excerpt": "Pickleball drills and skills Monday night 6pm - 7:30pm"
+				},
+				{
+					"field": "detail:Setting",
+					"url": "https://playtennisperth.com.au/pickleball",
+					"excerpt": "The bar will be open so players are invited to stay for a drink"
+				}
+			]
+		},
+		{
+			"key": "perthect-pickleball-academy",
+			"category": "pickleball",
+			"status": "candidate",
+			"name": "Perth'ect Pickleball Academy",
+			"kind": "place",
+			"website": "https://www.perthectpickleballacademy.com/home",
+			"source_urls": [
+				"https://www.perthectpickleballacademy.com/Social-Sessions/social-sessions",
+				"https://www.perthectpickleballacademy.com/Price",
+				"https://www.perthectpickleballacademy.com/Booking"
+			],
+			"suburb": "",
+			"region": "central",
+			"meeting_point": "",
+			"meeting_varies": true,
+			"blurb": "Social pickleball sessions at five Perth venues through the week, from Forrestfield and Belmont to Carine, Jolimont and Craigie, with equipment supplied.",
+			"join": {
+				"method": "message",
+				"url": "https://www.perthectpickleballacademy.com/Booking"
+			},
+			"cost": "paid",
+			"price_note": "$20 a session, or $150 for a 10-session card",
+			"price_from": 20,
+			"schedule": "Tue 6:45-8:45pm Hartfield Recreation Centre, Forrestfield; Wed and Fri 6:30-8:30pm Belmont Oasis Leisure Centre and Carine Senior High School; Sat 4-6pm Gold Netball Centre, Jolimont; Sun 3-5pm Craigie Leisure Centre.",
+			"beginner": "unknown",
+			"come_alone": "unknown",
+			"tags": [
+				"social-play"
+			],
+			"details": [
+				{
+					"label": "Equipment",
+					"value": "All equipment supplied"
+				},
+				{
+					"label": "Pricing basis",
+					"value": "Per session, or a 10-session card"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.perthectpickleballacademy.com/Social-Sessions/social-sessions",
+					"excerpt": "Perth'ect Pickleball Academy - Social Sessions"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.perthectpickleballacademy.com/Social-Sessions/social-sessions",
+					"excerpt": "HARTFIELD RECREATION CENTRE Address: 199 Hale Rd, Forrestfield WA 6058 Every Tuesday 6.45Pm To 8.45Pm"
+				},
+				{
+					"field": "cost",
+					"url": "https://www.perthectpickleballacademy.com/Price",
+					"excerpt": "20$ For all sessions"
+				},
+				{
+					"field": "price",
+					"url": "https://www.perthectpickleballacademy.com/Price",
+					"excerpt": "150$ for 10 SESSIONS"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.perthectpickleballacademy.com/Social-Sessions/social-sessions",
+					"excerpt": "GOLD NETBALL CENTRE Address: 200 Selby St, Jolimont WA 6014 Every Saturday 4Pm To 6Pm CRAIGIE LEISURE CENTRE Address: 751 Whitfords Ave, Craigie WA 6025 Every Sunday 3Pm To 5Pm"
+				},
+				{
+					"field": "join",
+					"url": "https://www.perthectpickleballacademy.com/Booking",
+					"excerpt": "Reserve your spot: WhatsApp Evening and Weekend Sessions"
+				},
+				{
+					"field": "tag:social-play",
+					"url": "https://www.perthectpickleballacademy.com/Social-Sessions/social-sessions",
+					"excerpt": "Perth'ect Pickleball Academy - Social Sessions"
+				},
+				{
+					"field": "detail:Equipment",
+					"url": "https://www.perthectpickleballacademy.com/Price",
+					"excerpt": "All equipment supplied"
+				},
+				{
+					"field": "detail:Pricing basis",
+					"url": "https://www.perthectpickleballacademy.com/Price",
+					"excerpt": "PPA CARD AVAILABLE= 150$ for 10 SESSIONS"
+				}
+			]
+		},
+		{
+			"key": "perth-pickleball-centre",
+			"category": "pickleball",
+			"status": "manual",
+			"name": "Perth Pickleball Centre",
+			"kind": "place",
+			"source_urls": [],
+			"reject_reason": "Refuses automated requests on every host (HTTP 403). Search results describe 9 dedicated courts, daily socials and a $14 Come & Try -- verify by hand; likely the strongest pickleball listing"
+		},
+		{
+			"key": "all-things-pickleball",
+			"category": "pickleball",
+			"status": "manual",
+			"name": "All Things Pickleball",
+			"kind": "place",
+			"source_urls": [
+				"https://allthingspickleball.com.au/",
+				"https://allthingspickleball.com.au/pickleball-perth-venues/"
+			],
+			"reject_reason": "Contradictory: home page says sessions run at NetX Sports Arena; venues page says a new venue is 'to be announced shortly' and a Rottnest launch in December 2025. Confirm the current venue"
+		},
+		{
+			"key": "manning-tennis-club-pickleball",
+			"category": "pickleball",
+			"status": "rejected",
+			"name": "Manning Tennis Club",
+			"kind": "place",
+			"source_urls": [
+				"https://www.manningtennisclub.com.au/single-post/come-play-pickleball-with-us"
+			],
+			"reject_reason": "Only evidence is a one-off pickleball night in July 2020"
+		},
+		{
+			"key": "claymake-studio",
+			"category": "creative",
+			"status": "candidate",
+			"name": "ClayMake Studio",
+			"kind": "place",
+			"website": "https://www.claymakestudio.com.au/",
+			"source_urls": [
+				"https://www.claymakestudio.com.au/",
+				"https://www.claymakestudio.com.au/casual-classes.html",
+				"https://www.claymakestudio.com.au/workshops.html"
+			],
+			"suburb": "Maylands",
+			"region": "",
+			"meeting_point": "",
+			"address": "65 Ferguson St, Maylands WA 6051",
+			"meeting_varies": false,
+			"blurb": "An open-access ceramics studio in Maylands running casual, no-commitment wheel and hand-building classes each weekend, plus workshops and studio membership.",
+			"join": {
+				"method": "booking",
+				"url": "https://www.claymakestudio.com.au/casual-classes.html"
+			},
+			"cost": "paid",
+			"price_note": "Casual wheel-work or hand-building class $80 (3 hours); guided glazing $40",
+			"price_from": 40,
+			"schedule": "Casual wheel-work Saturdays 1:30-4:30pm and Sundays 10am-1pm; casual hand-building Saturdays 10am-1pm.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"pottery",
+				"wheel-throwing",
+				"hand-building"
+			],
+			"details": [
+				{
+					"label": "Medium",
+					"value": "Clay: wheel-work, hand-building and sculpture"
+				},
+				{
+					"label": "Duration",
+					"value": "3-hour casual classes"
+				}
+			],
+			"flags": [
+				"Contradiction to check: casual wheel-work is listed on Sundays 10am-1pm, while the studio's opening hours say Sunday closed"
+			],
+			"contact": {
+				"email": "",
+				"phone": ""
+			},
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.claymakestudio.com.au/",
+					"excerpt": "CLAYMAKE STUDIO is an independently run open-access ceramic studio"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.claymakestudio.com.au/casual-classes.html",
+					"excerpt": "we offer Casual Classes - classes that run every week but with no commitments"
+				},
+				{
+					"field": "cost",
+					"url": "https://www.claymakestudio.com.au/casual-classes.html",
+					"excerpt": "Sunday: 10:00am - 1:00 pm, 3 h Price: $80"
+				},
+				{
+					"field": "price",
+					"url": "https://www.claymakestudio.com.au/casual-classes.html",
+					"excerpt": "2:00 pm - 4:30 pm, 2.5 h Price: $40"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.claymakestudio.com.au/casual-classes.html",
+					"excerpt": "Casual Wheel-work Saturday: 1:30 pm - 4:30 pm, 3 h Sunday: 10:00am - 1:00 pm, 3 h"
+				},
+				{
+					"field": "beginner",
+					"url": "https://www.claymakestudio.com.au/casual-classes.html",
+					"excerpt": "These classes have full instruction and are suitable for total beginners"
+				},
+				{
+					"field": "location",
+					"url": "https://www.claymakestudio.com.au/casual-classes.html",
+					"excerpt": "Address 65 Ferguson St Maylands WA 6051"
+				},
+				{
+					"field": "join",
+					"url": "https://www.claymakestudio.com.au/casual-classes.html",
+					"excerpt": "Casual Hand-building & Sculpture Day: Saturdays"
+				},
+				{
+					"field": "tag:pottery",
+					"url": "https://www.claymakestudio.com.au/",
+					"excerpt": "Our doors are open to everyone with an interest in clay and ceramics"
+				},
+				{
+					"field": "tag:wheel-throwing",
+					"url": "https://www.claymakestudio.com.au/casual-classes.html",
+					"excerpt": "Casual Wheel-work"
+				},
+				{
+					"field": "tag:hand-building",
+					"url": "https://www.claymakestudio.com.au/casual-classes.html",
+					"excerpt": "Casual Hand-building & Sculpture"
+				},
+				{
+					"field": "detail:Medium",
+					"url": "https://www.claymakestudio.com.au/casual-classes.html",
+					"excerpt": "Casual Hand-building & Sculpture"
+				},
+				{
+					"field": "detail:Duration",
+					"url": "https://www.claymakestudio.com.au/casual-classes.html",
+					"excerpt": "Time: 10:00 am - 1:00 pm, 3 h"
+				}
+			]
+		},
+		{
+			"key": "hound-ceramics-studio",
+			"category": "creative",
+			"status": "candidate",
+			"name": "Hound Ceramics Studio",
+			"kind": "place",
+			"website": "https://houndceramicsstudio.com.au/",
+			"source_urls": [
+				"https://houndceramicsstudio.com.au/collections/workshops",
+				"https://houndceramicsstudio.com.au/collections/wheel-throwing-pottery-workshops",
+				"https://houndceramicsstudio.com.au/pages/contact"
+			],
+			"suburb": "Fremantle",
+			"region": "",
+			"meeting_point": "",
+			"address": "17b Blinco Street, Fremantle (entrance on Amherst Street)",
+			"meeting_varies": false,
+			"blurb": "A Fremantle ceramics studio running small-group wheel-throwing and hand-building workshops and beginner courses, plus memberships for independent potters.",
+			"join": {
+				"method": "booking",
+				"url": "https://houndceramicsstudio.com.au/collections/workshops"
+			},
+			"cost": "paid",
+			"price_note": "Casual 3-hour wheel workshop $149; 4-week beginner wheel course $410; 6-week beginner wheel course $600",
+			"price_from": 149,
+			"schedule": "Dated workshops through the month; beginner wheel courses in October/November on Wednesday 6-9pm, Sunday 10am-1pm and Friday 6-9pm.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"pottery",
+				"wheel-throwing",
+				"hand-building"
+			],
+			"details": [
+				{
+					"label": "Suitability",
+					"value": "First-timers through to experienced potters"
+				},
+				{
+					"label": "Class size",
+					"value": "Small groups"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://houndceramicsstudio.com.au/pages/contact",
+					"excerpt": "Hound Ceramics Studio acknowledge the Whadjuk Noongar people"
+				},
+				{
+					"field": "activity",
+					"url": "https://houndceramicsstudio.com.au/collections/workshops",
+					"excerpt": "our hands-on classes cover everything from beginner wheel-throwing and hand-building to advanced glazing techniques"
+				},
+				{
+					"field": "cost",
+					"url": "https://houndceramicsstudio.com.au/collections/wheel-throwing-pottery-workshops",
+					"excerpt": "Casual Wheel Workshops – 3 Hours $149.00 AUD"
+				},
+				{
+					"field": "price",
+					"url": "https://houndceramicsstudio.com.au/collections/wheel-throwing-pottery-workshops",
+					"excerpt": "4 Week Beginner Introduction Wheel Course - October / November (Wednesdays 6pm - 9pm) $410.00 AUD"
+				},
+				{
+					"field": "schedule",
+					"url": "https://houndceramicsstudio.com.au/collections/wheel-throwing-pottery-workshops",
+					"excerpt": "6 Week Beginner Wheel Course - October / November (Sundays 10AM - 1PM)"
+				},
+				{
+					"field": "beginner",
+					"url": "https://houndceramicsstudio.com.au/collections/workshops",
+					"excerpt": "Whether you're trying pottery for the first time or refining your practice"
+				},
+				{
+					"field": "location",
+					"url": "https://houndceramicsstudio.com.au/pages/contact",
+					"excerpt": "We're located at 17b Blinco Street, Fremantle, with the main entrance around the corner on Amherst Street"
+				},
+				{
+					"field": "join",
+					"url": "https://houndceramicsstudio.com.au/collections/workshops",
+					"excerpt": "Spaces are limited, so plan ahead and secure your spot early"
+				},
+				{
+					"field": "tag:pottery",
+					"url": "https://houndceramicsstudio.com.au/collections/workshops",
+					"excerpt": "Discover our upcoming pottery workshops and ceramics classes"
+				},
+				{
+					"field": "tag:wheel-throwing",
+					"url": "https://houndceramicsstudio.com.au/collections/workshops",
+					"excerpt": "Wheel Throwing Pottery Workshops"
+				},
+				{
+					"field": "tag:hand-building",
+					"url": "https://houndceramicsstudio.com.au/collections/workshops",
+					"excerpt": "Handbuilding Pottery Workshops"
+				},
+				{
+					"field": "detail:Suitability",
+					"url": "https://houndceramicsstudio.com.au/collections/workshops",
+					"excerpt": "Whether you're trying pottery for the first time or refining your practice"
+				},
+				{
+					"field": "detail:Class size",
+					"url": "https://houndceramicsstudio.com.au/collections/workshops",
+					"excerpt": "with small groups to ensure personal guidance"
+				}
+			]
+		},
+		{
+			"key": "perth-pottery-co",
+			"category": "creative",
+			"status": "candidate",
+			"name": "Perth Pottery Co",
+			"kind": "place",
+			"website": "https://www.perthpotterycompany.com/",
+			"source_urls": [
+				"https://www.perthpotterycompany.com/",
+				"https://www.perthpotterycompany.com/classes",
+				"https://www.perthpotterycompany.com/contact"
+			],
+			"suburb": "Inglewood",
+			"region": "",
+			"meeting_point": "",
+			"address": "890 Beaufort Street, Inglewood, WA 6052",
+			"meeting_varies": false,
+			"blurb": "A Beaufort Street hand-building pottery studio running 90-minute sessions, including a wine-and-clay evening and a Sunday morning coffee session.",
+			"join": {
+				"method": "booking",
+				"url": "https://www.perthpotterycompany.com/classes"
+			},
+			"cost": "paid",
+			"price_note": "Sip & Pot $95; Sunday Morning Coffee, Clay & Community $85 (90 minutes each)",
+			"price_from": 85,
+			"schedule": "",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"pottery",
+				"hand-building"
+			],
+			"details": [
+				{
+					"label": "Duration",
+					"value": "1 hour 30 minutes"
+				},
+				{
+					"label": "Materials",
+					"value": "Clay, tools and smocks provided"
+				},
+				{
+					"label": "Firing and collection",
+					"value": "Firing included in the class price"
+				}
+			],
+			"contact": {
+				"email": "info@perthpotterycompany.com",
+				"phone": "0435 874 453"
+			},
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.perthpotterycompany.com/classes",
+					"excerpt": "Perth Pottery Co. est 2022"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.perthpotterycompany.com/",
+					"excerpt": "Our studio focus is on developing hand-building techniques"
+				},
+				{
+					"field": "cost",
+					"url": "https://www.perthpotterycompany.com/classes",
+					"excerpt": "1 hr 30 min 95 Australian dollars $95"
+				},
+				{
+					"field": "price",
+					"url": "https://www.perthpotterycompany.com/classes",
+					"excerpt": "Sunday Morning, Coffee, Clay & Community Clay, coffee and community..... Read More 1 hr 30 min 85 Australian dollars $85"
+				},
+				{
+					"field": "beginner",
+					"url": "https://www.perthpotterycompany.com/",
+					"excerpt": "Whether you're a seasoned potter or a complete beginner"
+				},
+				{
+					"field": "location",
+					"url": "https://www.perthpotterycompany.com/contact",
+					"excerpt": "Address: 890 Beaufort Street, Inglewood, WA 6052"
+				},
+				{
+					"field": "join",
+					"url": "https://www.perthpotterycompany.com/classes",
+					"excerpt": "BOOK YOUR CLASS OR COURSE BELOW"
+				},
+				{
+					"field": "tag:pottery",
+					"url": "https://www.perthpotterycompany.com/classes",
+					"excerpt": "Sip and Pot Pottery Workshop"
+				},
+				{
+					"field": "tag:hand-building",
+					"url": "https://www.perthpotterycompany.com/",
+					"excerpt": "Hand-building with clay gives you the opportunity"
+				},
+				{
+					"field": "detail:Duration",
+					"url": "https://www.perthpotterycompany.com/classes",
+					"excerpt": "1 hr 30 min"
+				},
+				{
+					"field": "detail:Materials",
+					"url": "https://www.perthpotterycompany.com/",
+					"excerpt": "We provide all the clay, tools, and smocks you'll need"
+				},
+				{
+					"field": "detail:Firing and collection",
+					"url": "https://www.perthpotterycompany.com/",
+					"excerpt": "the firing process is included in the cost of your class"
+				}
+			]
+		},
+		{
+			"key": "studio-p",
+			"category": "creative",
+			"status": "candidate",
+			"name": "Studio P",
+			"kind": "place",
+			"website": "https://www.studiop.net.au/",
+			"source_urls": [
+				"https://www.studiop.net.au/about",
+				"https://www.studiop.net.au/coursesandworkshops"
+			],
+			"suburb": "Mount Hawthorn",
+			"region": "",
+			"meeting_point": "",
+			"address": "4/139 Buxton Street, Mount Hawthorn",
+			"meeting_varies": false,
+			"blurb": "A community pottery studio in Mount Hawthorn with intro workshops, four- and seven-week wheel and hand-building courses, and open studio access.",
+			"join": {
+				"method": "booking",
+				"url": "https://www.studiop.net.au/coursesandworkshops"
+			},
+			"cost": "paid",
+			"price_note": "Intro workshop $95 (2.5 hours); 4-week course $295; 7-week course $445",
+			"price_from": 95,
+			"schedule": "Courses are released one to three months ahead; intro workshops run on Saturday mornings (10am-12:30pm) through November 2026.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"pottery",
+				"wheel-throwing",
+				"hand-building"
+			],
+			"details": [
+				{
+					"label": "Suitability",
+					"value": "Absolute beginners through to experienced potters"
+				},
+				{
+					"label": "Duration",
+					"value": "Intro workshops 2.5 hours; courses 4 or 7 weeks"
+				}
+			],
+			"flags": [
+				"Many listed sessions are sold out at fetch time"
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.studiop.net.au/about",
+					"excerpt": "Studio P is a community pottery studio"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.studiop.net.au/about",
+					"excerpt": "The studio hosts a range of hand building and wheel throwing classes"
+				},
+				{
+					"field": "cost",
+					"url": "https://www.studiop.net.au/coursesandworkshops",
+					"excerpt": "Intro Workshop 14. November 2026 (10-12:30pm) A$95.00"
+				},
+				{
+					"field": "price",
+					"url": "https://www.studiop.net.au/coursesandworkshops",
+					"excerpt": "4-Week Courses NOVEMBER 2026 A$295.00"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.studiop.net.au/coursesandworkshops",
+					"excerpt": "Courses are released 1 - 3 months in advance"
+				},
+				{
+					"field": "beginner",
+					"url": "https://www.studiop.net.au/about",
+					"excerpt": "for the absolute beginner through to experienced potter"
+				},
+				{
+					"field": "location",
+					"url": "https://www.studiop.net.au/about",
+					"excerpt": "the studio moved back to Mount Hawthorn, where it's currently operating at 4/139 Buxton Street"
+				},
+				{
+					"field": "join",
+					"url": "https://www.studiop.net.au/coursesandworkshops",
+					"excerpt": "We offer flexible workshop and class options to suit your lifestyle"
+				},
+				{
+					"field": "tag:pottery",
+					"url": "https://www.studiop.net.au/coursesandworkshops",
+					"excerpt": "Studio P is a fun, young, and creative Pottery Studio"
+				},
+				{
+					"field": "tag:wheel-throwing",
+					"url": "https://www.studiop.net.au/coursesandworkshops",
+					"excerpt": "learn the art of wheel-throwing and hand-building"
+				},
+				{
+					"field": "tag:hand-building",
+					"url": "https://www.studiop.net.au/coursesandworkshops",
+					"excerpt": "learn the art of wheel-throwing and hand-building"
+				},
+				{
+					"field": "detail:Suitability",
+					"url": "https://www.studiop.net.au/about",
+					"excerpt": "for the absolute beginner through to experienced potter"
+				},
+				{
+					"field": "detail:Duration",
+					"url": "https://www.studiop.net.au/coursesandworkshops",
+					"excerpt": "7-Week Courses OCTOBER/NOVEMBER 2026 A$445.00"
+				}
+			]
+		},
+		{
+			"key": "porch-ceramics-north-fremantle",
+			"category": "creative",
+			"status": "candidate",
+			"name": "Porch Ceramics",
+			"kind": "place",
+			"website": "https://www.porchceramics.com/north-fremantle",
+			"source_urls": [
+				"https://www.porchceramics.com/north-fremantle",
+				"https://www.porchceramics.com/shop/events",
+				"https://www.porchceramics.com/contact"
+			],
+			"suburb": "North Fremantle",
+			"region": "",
+			"meeting_point": "",
+			"address": "2/12 Pamment St, North Fremantle WA 6159",
+			"meeting_varies": false,
+			"blurb": "A North Fremantle ceramics studio and shop running small group wheel lessons and hand-building sessions for groups.",
+			"join": {
+				"method": "booking",
+				"url": "https://www.porchceramics.com/shop/events"
+			},
+			"cost": "paid",
+			"price_note": "Group wheel lesson $120 per person (2 hours); group hand-building from $80 per person (1.5 hours, 8-24 people)",
+			"price_from": 80,
+			"schedule": "Weekly classes with individual spots; next listed group wheel session Saturday 3 October, 12pm.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"pottery",
+				"wheel-throwing",
+				"hand-building"
+			],
+			"details": [
+				{
+					"label": "Class size",
+					"value": "Wheel lessons 6 or fewer; hand-building sessions for 8-24"
+				},
+				{
+					"label": "Firing and collection",
+					"value": "Hand-built pieces are glazed and fired for you to keep"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.porchceramics.com/north-fremantle",
+					"excerpt": "Our North Fremantle Studio is home to both Porch Ceramics and Cisco & the Sun"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.porchceramics.com/north-fremantle",
+					"excerpt": "We specialise in ceramic design and production, host group workshops"
+				},
+				{
+					"field": "cost",
+					"url": "https://www.porchceramics.com/north-fremantle",
+					"excerpt": "Group wheel lesson $120pp"
+				},
+				{
+					"field": "price",
+					"url": "https://www.porchceramics.com/north-fremantle",
+					"excerpt": "Group hand-building $80pp"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.porchceramics.com/shop/events",
+					"excerpt": "Group Pottery Wheel Session SATURDAY 3RD OCTOBER 12PM $120.00"
+				},
+				{
+					"field": "beginner",
+					"url": "https://www.porchceramics.com/north-fremantle",
+					"excerpt": "Learn throwing & clay basics"
+				},
+				{
+					"field": "location",
+					"url": "https://www.porchceramics.com/contact",
+					"excerpt": "2/12 Pamment St North Fremantle WA 6159"
+				},
+				{
+					"field": "join",
+					"url": "https://www.porchceramics.com/north-fremantle",
+					"excerpt": "individual spots are available in our schedule of weekly classes"
+				},
+				{
+					"field": "tag:pottery",
+					"url": "https://www.porchceramics.com/north-fremantle",
+					"excerpt": "In the ceramics studio"
+				},
+				{
+					"field": "tag:wheel-throwing",
+					"url": "https://www.porchceramics.com/north-fremantle",
+					"excerpt": "Our wheel lessons are small groups (6 or under)"
+				},
+				{
+					"field": "tag:hand-building",
+					"url": "https://www.porchceramics.com/north-fremantle",
+					"excerpt": "Learn clay hand-building basics"
+				},
+				{
+					"field": "detail:Class size",
+					"url": "https://www.porchceramics.com/north-fremantle",
+					"excerpt": "Our wheel lessons are small groups (6 or under)"
+				},
+				{
+					"field": "detail:Firing and collection",
+					"url": "https://www.porchceramics.com/north-fremantle",
+					"excerpt": "make your own mug that will be glazed and fired for you to keep"
+				}
+			]
+		},
+		{
+			"key": "winterwares-fremantle",
+			"category": "creative",
+			"status": "candidate",
+			"name": "Winterwares",
+			"kind": "place",
+			"website": "https://winterwares.com.au/",
+			"source_urls": [
+				"https://winterwares.com.au/collections/workshops"
+			],
+			"suburb": "Fremantle",
+			"region": "",
+			"meeting_point": "West End, Fremantle",
+			"meeting_varies": false,
+			"blurb": "A small ceramics studio in Fremantle's West End running hand-building workshops where you make a single functional piece, such as a mug, bowl or vase.",
+			"join": {
+				"method": "booking",
+				"url": "https://winterwares.com.au/collections/workshops"
+			},
+			"cost": "paid",
+			"price_note": "Workshops from $145 (make a vase, or a mug or soup bowl) to $265 (breakfast set)",
+			"price_from": 145,
+			"schedule": "",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"pottery",
+				"hand-building"
+			],
+			"details": [
+				{
+					"label": "Medium",
+					"value": "Hand-building functional pieces"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://winterwares.com.au/collections/workshops",
+					"excerpt": "Winterwares Workshops"
+				},
+				{
+					"field": "activity",
+					"url": "https://winterwares.com.au/collections/workshops",
+					"excerpt": "focus on hand-building techniques to create functional pieces"
+				},
+				{
+					"field": "cost",
+					"url": "https://winterwares.com.au/collections/workshops",
+					"excerpt": "Make a Vase $145.00"
+				},
+				{
+					"field": "price",
+					"url": "https://winterwares.com.au/collections/workshops",
+					"excerpt": "Make a Breakfast Set $265.00"
+				},
+				{
+					"field": "beginner",
+					"url": "https://winterwares.com.au/collections/workshops",
+					"excerpt": "for participants of all skill levels"
+				},
+				{
+					"field": "location",
+					"url": "https://winterwares.com.au/collections/workshops",
+					"excerpt": "in the hospitable West End of Fremantle"
+				},
+				{
+					"field": "join",
+					"url": "https://winterwares.com.au/collections/workshops",
+					"excerpt": "Private Pottery Workshop from $120.00"
+				},
+				{
+					"field": "tag:pottery",
+					"url": "https://winterwares.com.au/collections/workshops",
+					"excerpt": "Discover the art of pottery in our welcoming ceramic studio"
+				},
+				{
+					"field": "tag:hand-building",
+					"url": "https://winterwares.com.au/collections/workshops",
+					"excerpt": "focus on hand-building techniques"
+				},
+				{
+					"field": "detail:Medium",
+					"url": "https://winterwares.com.au/collections/workshops",
+					"excerpt": "focus on hand-building techniques to create functional pieces"
+				}
+			]
+		},
+		{
+			"key": "walyalup-fremantle-arts-centre",
+			"category": "creative",
+			"status": "candidate",
+			"name": "Walyalup Fremantle Arts Centre",
+			"kind": "place",
+			"website": "https://wfac.org.au/",
+			"source_urls": [
+				"https://wfac.org.au/art-classes/adults/"
+			],
+			"suburb": "Fremantle",
+			"region": "",
+			"meeting_point": "",
+			"meeting_varies": false,
+			"blurb": "Fremantle's arts centre runs term-based adult courses in ceramics, drawing, painting and more, including an open wheelwork and hand-building studio.",
+			"join": {
+				"method": "booking",
+				"url": "https://wfac.org.au/art-classes/adults/"
+			},
+			"cost": "paid",
+			"price_note": "Term courses priced per course, e.g. Open Studio: Wheelwork and Handbuilding $408 (19 Oct - 7 Dec 2026)",
+			"schedule": "Multi-week courses by term; the current term runs from 19 October 2026.",
+			"beginner": "yes",
+			"come_alone": "unknown",
+			"tags": [
+				"pottery",
+				"wheel-throwing",
+				"hand-building"
+			],
+			"details": [
+				{
+					"label": "Suitability",
+					"value": "Courses are graded beginner, intermediate or advanced"
+				},
+				{
+					"label": "Duration",
+					"value": "One-day to multi-week courses"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "Adults • Walyalup Fremantle Arts Centre"
+				},
+				{
+					"field": "activity",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "$408 Open Studio: Wheelwork and Handbuilding"
+				},
+				{
+					"field": "cost",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "Ceramics & Sculpture 19 Oct 2026 - 7 Dec 2026 $408 Open Studio: Wheelwork and Handbuilding"
+				},
+				{
+					"field": "price",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "$408 Open Studio: Wheelwork and Handbuilding"
+				},
+				{
+					"field": "schedule",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "19 Oct 2026 - 7 Dec 2026"
+				},
+				{
+					"field": "beginner",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "Difficulty All Difficulties All Difficulties Beginner Intermediate Advanced"
+				},
+				{
+					"field": "location",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "Walyalup Fremantle Arts Centre"
+				},
+				{
+					"field": "join",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "Art Classes Art Classes For Adults"
+				},
+				{
+					"field": "tag:pottery",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "Ceramics & Sculpture"
+				},
+				{
+					"field": "tag:wheel-throwing",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "Open Studio: Wheelwork and Handbuilding"
+				},
+				{
+					"field": "tag:hand-building",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "Handbuilding Decorative"
+				},
+				{
+					"field": "detail:Suitability",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "Beginner Intermediate Advanced"
+				},
+				{
+					"field": "detail:Duration",
+					"url": "https://wfac.org.au/art-classes/adults/",
+					"excerpt": "All Durations One Day Multi-day Weekend Multi-week"
+				}
+			]
+		},
+		{
+			"key": "canning-arts-group",
+			"category": "creative",
+			"status": "candidate",
+			"name": "Canning Arts Group",
+			"kind": "place",
+			"website": "https://www.canningartswa.org.au/",
+			"source_urls": [
+				"https://www.canningartswa.org.au/"
+			],
+			"suburb": "",
+			"region": "southeast",
+			"meeting_point": "Canning Arts Centre, 72 Riley Road, Riverton",
+			"meeting_varies": false,
+			"blurb": "A not-for-profit community arts group in Riverton running term classes and workshops in pottery (wheel and hand work), painting and crafts for adults.",
+			"join": {
+				"method": "booking",
+				"url": "https://www.canningartswa.org.au/"
+			},
+			"cost": "paid",
+			"price_note": "",
+			"schedule": "Term classes; Term 4 enrolments opened 14 September 2026.",
+			"beginner": "unknown",
+			"come_alone": "unknown",
+			"tags": [
+				"pottery",
+				"wheel-throwing",
+				"hand-building",
+				"painting-workshops"
+			],
+			"details": [
+				{
+					"label": "Medium",
+					"value": "Pottery (wheel and hand work), painting, framing and crafts"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.canningartswa.org.au/",
+					"excerpt": "Canning Arts Group is a not-for-profit self funded community based organisation"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.canningartswa.org.au/",
+					"excerpt": "Art Classes and Workshops are offered to members and the general public including adults and children"
+				},
+				{
+					"field": "cost",
+					"url": "https://www.canningartswa.org.au/",
+					"excerpt": "Classes must be paid for in full prior to the start of the course"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.canningartswa.org.au/",
+					"excerpt": "Term 4 Enrolments open @ 12 noon on 14 September 2026"
+				},
+				{
+					"field": "location",
+					"url": "https://www.canningartswa.org.au/",
+					"excerpt": "72 Riley Road, Riverton WA"
+				},
+				{
+					"field": "join",
+					"url": "https://www.canningartswa.org.au/",
+					"excerpt": "Adult Pottery & Art Classes + Workshops"
+				},
+				{
+					"field": "tag:pottery",
+					"url": "https://www.canningartswa.org.au/",
+					"excerpt": "learn some great skills in pottery (wheel and hand work)"
+				},
+				{
+					"field": "tag:wheel-throwing",
+					"url": "https://www.canningartswa.org.au/",
+					"excerpt": "pottery (wheel and hand work)"
+				},
+				{
+					"field": "tag:hand-building",
+					"url": "https://www.canningartswa.org.au/",
+					"excerpt": "pottery (wheel and hand work)"
+				},
+				{
+					"field": "tag:painting-workshops",
+					"url": "https://www.canningartswa.org.au/",
+					"excerpt": "painting (all mediums)"
+				},
+				{
+					"field": "detail:Medium",
+					"url": "https://www.canningartswa.org.au/",
+					"excerpt": "pottery (wheel and hand work), painting (all mediums), framing and crafts"
+				}
+			]
+		},
+		{
+			"key": "rediscover-ceramics",
+			"category": "creative",
+			"status": "manual",
+			"name": "Rediscover Ceramics",
+			"kind": "place",
+			"source_urls": [
+				"https://www.rediscovering.com.au/upcoming-events/pottery-class-wheel-throwing"
+			],
+			"reject_reason": "The only class page found is dated 18 September 2022; the current events page lists exhibitions. Confirm current adult classes"
+		},
+		{
+			"key": "prickly-pear-studios",
+			"category": "creative",
+			"status": "manual",
+			"name": "Prickly Pear Studios",
+			"kind": "place",
+			"source_urls": [],
+			"reject_reason": "robots.txt could not be read, so the booking page was not fetched"
+		},
+		{
+			"key": "kracking-ceramics",
+			"category": "creative",
+			"status": "manual",
+			"name": "Kracking Ceramics",
+			"kind": "place",
+			"source_urls": [],
+			"reject_reason": "robots.txt could not be read, so the workshops page was not fetched"
+		},
+		{
+			"key": "perth-artists-collective",
+			"category": "creative",
+			"status": "manual",
+			"name": "Perth Artists' Collective",
+			"kind": "place",
+			"source_urls": [
+				"https://perthartistscollective.com.au/"
+			],
+			"reject_reason": "Primarily a retail artists' collective; regular adult classes not verified"
+		},
+		{
+			"key": "the-perth-walking-group",
+			"category": "walking",
+			"status": "candidate",
+			"name": "The Perth Walking Group",
+			"kind": "group",
+			"website": "https://www.meetup.com/perth-city-walking-group/",
+			"source_urls": [
+				"https://www.meetup.com/perth-city-walking-group/"
+			],
+			"suburb": "",
+			"region": "central",
+			"meeting_point": "",
+			"meeting_varies": true,
+			"blurb": "A long-running free walking group with walks of 60-90 minutes, mostly on weekend mornings at different places around Perth, usually followed by coffee.",
+			"join": {
+				"method": "register",
+				"url": "https://www.meetup.com/perth-city-walking-group/"
+			},
+			"cost": "free",
+			"price_note": "",
+			"schedule": "Mostly Saturday and Sunday mornings; some weekday walks.",
+			"beginner": "yes",
+			"come_alone": "yes",
+			"tags": [],
+			"details": [
+				{
+					"label": "Duration",
+					"value": "Generally 60-90 minutes"
+				},
+				{
+					"label": "Pace",
+					"value": "All levels of fitness"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.meetup.com/perth-city-walking-group/",
+					"excerpt": "Welcome to the Perth Walking Group"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.meetup.com/perth-city-walking-group/",
+					"excerpt": "walks are mostly scheduled for Saturday and Sunday mornings at various convenient locations around Perth"
+				},
+				{
+					"field": "cost",
+					"url": "https://www.meetup.com/perth-city-walking-group/",
+					"excerpt": "There are no fees in joining and walking"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.meetup.com/perth-city-walking-group/",
+					"excerpt": "Walks on weekdays are also scheduled subject to sufficient interest"
+				},
+				{
+					"field": "beginner",
+					"url": "https://www.meetup.com/perth-city-walking-group/",
+					"excerpt": "we cater to all levels of fitness"
+				},
+				{
+					"field": "come_alone",
+					"url": "https://www.meetup.com/perth-city-walking-group/",
+					"excerpt": "for people who are shy please don't be the group is very friendly"
+				},
+				{
+					"field": "join",
+					"url": "https://www.meetup.com/perth-city-walking-group/",
+					"excerpt": "A profile picture is required for us to approve your request to join"
+				},
+				{
+					"field": "detail:Duration",
+					"url": "https://www.meetup.com/perth-city-walking-group/",
+					"excerpt": "Walks are generally about 60-90 minutes"
+				},
+				{
+					"field": "detail:Pace",
+					"url": "https://www.meetup.com/perth-city-walking-group/",
+					"excerpt": "we cater to all levels of fitness"
+				}
+			]
+		},
+		{
+			"key": "walking-mates-wa",
+			"category": "walking",
+			"status": "candidate",
+			"name": "Walking Mates - Western Australia",
+			"kind": "group",
+			"website": "https://www.meetup.com/walking-mates-australia-east-perth-team/",
+			"source_urls": [
+				"https://www.meetup.com/walking-mates-australia-east-perth-team/"
+			],
+			"suburb": "",
+			"region": "central",
+			"meeting_point": "",
+			"meeting_varies": true,
+			"blurb": "A large social walking group running walks and hikes at different places around Perth each week, including a brisk Sunday-afternoon loop in Kings Park.",
+			"join": {
+				"method": "register",
+				"url": "https://www.meetup.com/walking-mates-australia-east-perth-team/"
+			},
+			"cost": "unknown",
+			"price_note": "",
+			"schedule": "Several walks a week; e.g. Sundays 4:30pm from the Flame of Remembrance, Kings Park.",
+			"beginner": "unknown",
+			"come_alone": "unknown",
+			"tags": [],
+			"details": [
+				{
+					"label": "Distance",
+					"value": "Varies by walk; the Sunday Kings Park walk is about 6km with hill climbs"
+				},
+				{
+					"label": "Pace",
+					"value": "Varies; the Sunday Kings Park walk is brisk and for fit walkers"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.meetup.com/walking-mates-australia-east-perth-team/",
+					"excerpt": "Walking Mates - Western Australia | Meetup"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.meetup.com/walking-mates-australia-east-perth-team/",
+					"excerpt": "Walking Mates Australia is a forward walking and forward thinking social group"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.meetup.com/walking-mates-australia-east-perth-team/",
+					"excerpt": "Our meeting point is the Flame of Remembrance and we get underway at 4.30pm sharp"
+				},
+				{
+					"field": "join",
+					"url": "https://www.meetup.com/walking-mates-australia-east-perth-team/",
+					"excerpt": "Upcoming events 12 See all"
+				},
+				{
+					"field": "detail:Distance",
+					"url": "https://www.meetup.com/walking-mates-australia-east-perth-team/",
+					"excerpt": "a brisk 6km (approx) walk including hill climbs"
+				},
+				{
+					"field": "detail:Pace",
+					"url": "https://www.meetup.com/walking-mates-australia-east-perth-team/",
+					"excerpt": "This one is for the fit walkers"
+				}
+			]
+		},
+		{
+			"key": "western-walking-club",
+			"category": "walking",
+			"status": "candidate",
+			"name": "Western Walking Club",
+			"kind": "group",
+			"website": "https://www.westernwalkingclub.org.au/",
+			"source_urls": [
+				"https://www.westernwalkingclub.org.au/"
+			],
+			"suburb": "",
+			"region": "central",
+			"meeting_point": "",
+			"meeting_varies": true,
+			"blurb": "WA's longest-established bushwalking club, walking every Sunday: graded hills bushwalks from May to October and park and foreshore walks in the warmer months.",
+			"join": {
+				"method": "register",
+				"url": "https://www.westernwalkingclub.org.au/"
+			},
+			"cost": "unknown",
+			"price_note": "",
+			"schedule": "Sundays year-round: two walks each Sunday May-October; one Sunday walk November-April.",
+			"beginner": "unknown",
+			"come_alone": "unknown",
+			"tags": [
+				"hiking"
+			],
+			"details": [
+				{
+					"label": "Terrain",
+					"value": "Winter bushwalking in the hills; summer walks by the river, ocean or suburban parks"
+				},
+				{
+					"label": "Pace",
+					"value": "Easy, medium or difficult grades"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://www.westernwalkingclub.org.au/",
+					"excerpt": "Welcome to The Western Walking Club Inc"
+				},
+				{
+					"field": "activity",
+					"url": "https://www.westernwalkingclub.org.au/",
+					"excerpt": "we are a friendly, inclusive group who enjoy walks 52 weeks of the year"
+				},
+				{
+					"field": "schedule",
+					"url": "https://www.westernwalkingclub.org.au/",
+					"excerpt": "Every Sunday from May to October we conduct two walks"
+				},
+				{
+					"field": "join",
+					"url": "https://www.westernwalkingclub.org.au/",
+					"excerpt": "New members and visitors always welcome"
+				},
+				{
+					"field": "tag:hiking",
+					"url": "https://www.westernwalkingclub.org.au/",
+					"excerpt": "Winter bushwalking in the hills"
+				},
+				{
+					"field": "detail:Terrain",
+					"url": "https://www.westernwalkingclub.org.au/",
+					"excerpt": "Summer walks by the river, the ocean or suburban parks"
+				},
+				{
+					"field": "detail:Pace",
+					"url": "https://www.westernwalkingclub.org.au/",
+					"excerpt": "Easy medium or difficult walks to suit differing needs"
+				}
+			]
+		},
+		{
+			"key": "befriend-ellenbrook-mall-walking",
+			"category": "walking",
+			"status": "candidate",
+			"branch": true,
+			"name": "Weekly Mall Walking - Ellenbrook Central",
+			"kind": "group",
+			"website": "https://befriend.org.au/",
+			"source_urls": [
+				"https://befriend.org.au/meet/whats-on/"
+			],
+			"suburb": "Ellenbrook",
+			"region": "",
+			"meeting_point": "Ellenbrook Central Community Space, bottom of the escalator between Coles and Kmart",
+			"meeting_varies": false,
+			"blurb": "An indoor, air-conditioned walk inside Ellenbrook Central every Thursday morning with Befriend hosts: roughly one-kilometre laps, with a cuppa after.",
+			"join": {
+				"method": "turn-up",
+				"url": "https://befriend.org.au/meet/whats-on/"
+			},
+			"cost": "unknown",
+			"price_note": "",
+			"schedule": "Thursdays, 8am.",
+			"beginner": "unknown",
+			"come_alone": "unknown",
+			"tags": [],
+			"details": [
+				{
+					"label": "Distance",
+					"value": "Laps of about 1km; the goal is 4, and sitting a lap out is fine"
+				},
+				{
+					"label": "Terrain",
+					"value": "Indoors, inside the shopping centre"
+				}
+			],
+			"evidence": [
+				{
+					"field": "name",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "Weekly Mall Walking - Ellenbrook Central Shopping Centre"
+				},
+				{
+					"field": "activity",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "Walk with one of our Ellenbrook Mile hosts as we circle inside the shopping centre in air-conditioned comfort"
+				},
+				{
+					"field": "schedule",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "join us every Thursday morning at 8.00am"
+				},
+				{
+					"field": "location",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "at the Ellenbrook Central Community Space (at the bottom of the escalator) between Coles and K-mart"
+				},
+				{
+					"field": "join",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "Here is your chance to get active!"
+				},
+				{
+					"field": "detail:Distance",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "Each lap is approximately one kilometre & our goal is to complete 4 laps"
+				},
+				{
+					"field": "detail:Terrain",
+					"url": "https://befriend.org.au/meet/whats-on/",
+					"excerpt": "circle inside the shopping centre in air-conditioned comfort"
+				}
+			]
+		},
+		{
+			"key": "heart-foundation-walking-perth",
+			"category": "walking",
+			"status": "manual",
+			"name": "Heart Foundation Walking",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "Already listed (#374). walking.heartfoundation.org.au's robots.txt could not be read, so individual groups were not fetched; add verified local groups by hand"
+		},
+		{
+			"key": "befriend-belmont-miles-park",
+			"category": "walking",
+			"status": "manual",
+			"name": "Befriend walk, Miles Park Cloverdale",
+			"kind": "group",
+			"source_urls": [
+				"https://befriend.org.au/meet/whats-on/"
+			],
+			"reject_reason": "Dog-friendly walk at Miles Park, but the listing names individual volunteers and does not say it recurs"
+		},
+		{
+			"key": "on-my-feet",
+			"category": "walking",
+			"status": "rejected",
+			"name": "On My Feet",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "Participants are recruited through shelters for people at risk of homelessness; not open to public enquiries"
+		},
+		{
+			"key": "perth-bushwalkers-club",
+			"category": "walking",
+			"status": "rejected",
+			"name": "Perth Bushwalkers Club",
+			"kind": "group",
+			"source_urls": [],
+			"reject_reason": "Bushwalking/hiking club; kept distinct from walking groups"
+		}
+	]
+}

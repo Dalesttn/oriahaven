@@ -108,6 +108,18 @@ class Command {
 			if ( $term ) {
 				\WP_CLI::log( sprintf( '  exists %-20s %s #%d%s', $row['slug'], $tax, $term->term_id, is_pending( $term ) ? ' (pending launch)' : '' ) );
 				$n['existing']++;
+				/*
+				 * The page's meta description. seo.php prefers the term's own
+				 * description over its generic "verified practices" line, which
+				 * says the wrong thing about a running club. Only ever filled
+				 * when empty, so an editor's wording is never overwritten.
+				 */
+				if ( '' === trim( (string) $term->description ) && '' !== (string) ( $row['description'] ?? '' ) ) {
+					if ( ! $dry ) {
+						wp_update_term( (int) $term->term_id, $tax, array( 'description' => (string) $row['description'] ) );
+					}
+					\WP_CLI::log( sprintf( '         %s description', $dry ? 'would set' : 'set' ) );
+				}
 			} else {
 				$parent = get_term_by( 'slug', (string) $row['parent'], $tax );
 				if ( ! $parent instanceof \WP_Term ) {
@@ -117,7 +129,7 @@ class Command {
 				if ( $dry ) {
 					\WP_CLI::log( sprintf( '  would create %-14s under %s, pending launch', $row['slug'], $parent->slug ) );
 				} else {
-					$made = wp_insert_term( (string) $row['name'], $tax, array( 'slug' => (string) $row['slug'], 'parent' => (int) $parent->term_id ) );
+					$made = wp_insert_term( (string) $row['name'], $tax, array( 'slug' => (string) $row['slug'], 'parent' => (int) $parent->term_id, 'description' => (string) ( $row['description'] ?? '' ) ) );
 					if ( is_wp_error( $made ) ) {
 						\WP_CLI::warning( $row['slug'] . ': ' . $made->get_error_message() );
 						continue;
@@ -226,6 +238,15 @@ class Command {
 		$done  = 0;
 		$hosts = array();
 
+		// A host that refused us on an earlier run stays refused: asking again
+		// every run is exactly the persistence a 403 is asking us not to have.
+		$refused = array();
+		foreach ( (array) $log['requests'] as $r ) {
+			if ( in_array( $r['state'] ?? '', array( 'stopped', 'blocked' ), true ) ) {
+				$refused[ self::host( (string) $r['url'] ) ] = (string) ( $r['note'] ?? '' );
+			}
+		}
+
 		foreach ( (array) ( $manifest['sources'] ?? array() ) as $src ) {
 			if ( '' !== $cat && $cat !== ( $src['category'] ?? '' ) ) {
 				continue;
@@ -244,6 +265,10 @@ class Command {
 				if ( ! self::allowed( $url, $allow ) ) {
 					$log['requests'][] = self::entry( $url, 'refused', 'not on the manifest allowlist' );
 					\WP_CLI::warning( "not allowlisted: {$url}" );
+					continue;
+				}
+				if ( isset( $refused[ $host ] ) && ! $refresh ) {
+					\WP_CLI::log( "  skip     {$url}  -- refused on an earlier run ({$refused[ $host ]}); --refresh to ask again" );
 					continue;
 				}
 				if ( ( $hosts[ $host ] ?? 0 ) >= MAX_PER_HOST ) {
@@ -932,18 +957,30 @@ class Command {
 				update_post_meta( $id, $name, $value );
 			}
 		};
-		$acf( 'kind', (string) $c['kind'] );
-		$acf( 'claim_status', 'unclaimed' );
-		$acf( 'format', 'in-person' );
-		$acf( 'website', (string) ( $c['website'] ?? '' ) );
+		/*
+		 * Every field by KEY. By name, ACF resolves to whichever field of that
+		 * name it finds first: "kind" landed on the Classes repeater's
+		 * sub-field, "format" on the reset tool's, "email" on a page section's.
+		 * The value survived, the reference meta did not.
+		 */
+		$acf( 'field_oria_kind', (string) $c['kind'] );
+		$acf( 'field_oria_claim_status', 'unclaimed' );
+		$acf( 'field_oria_format', 'in-person' );
+		$acf( 'field_oria_website', (string) ( $c['website'] ?? '' ) );
 		// Public organisation contact only; never a person's.
-		$acf( 'phone', (string) ( $c['contact']['phone'] ?? '' ) );
-		$acf( 'email', (string) ( $c['contact']['email'] ?? '' ) );
+		$acf( 'field_oria_phone', (string) ( $c['contact']['phone'] ?? '' ) );
+		$acf( 'field_oria_email', (string) ( $c['contact']['email'] ?? '' ) );
 		// A fixed address only when the meeting point is fixed and known.
-		$acf( 'address', empty( $c['meeting_varies'] ) ? (string) ( $c['address'] ?? '' ) : '' );
-		if ( isset( $c['price_from'] ) && is_numeric( $c['price_from'] ) ) {
-			$acf( 'price_from', (int) $c['price_from'] );
+		$acf( 'field_oria_address', empty( $c['meeting_varies'] ) ? (string) ( $c['address'] ?? '' ) : '' );
+		// The band cards already read: "Free" covers free and by-donation.
+		if ( in_array( $c['cost'] ?? '', array( 'free', 'donation' ), true ) ) {
+			$acf( 'field_oria_price_band', 'Free' );
 		}
+		// price_from prints as "$X / session", so it is only set by a candidate
+		// whose price genuinely is a whole-dollar per-session figure.
+		// Absent means empty: this only ever runs on the batch's own drafts,
+		// so clearing a figure an earlier run wrote is correct, not a loss.
+		$acf( 'field_oria_price_from', isset( $c['price_from'] ) && is_numeric( $c['price_from'] ) ? (int) $c['price_from'] : '' );
 		// The new fields by KEY: ACF resolves names unreliably off-admin.
 		$acf( 'field_oria_join_method', (string) ( $c['join']['method'] ?? 'unknown' ) );
 		$acf( 'field_oria_join_url', (string) ( $c['join']['url'] ?? '' ) );
@@ -1099,6 +1136,18 @@ class Command {
 
 	/** @return array{id: int, title: string, on: string, certainty: string}|null */
 	private static function match( array $c, array $ix, string $batch = '' ): ?array {
+		/*
+		 * "branch": true declares a distinct, separately verified location of
+		 * an organisation whose other groups share its website -- Befriend's
+		 * walks, say. URL and phone then prove nothing, so only the name is
+		 * compared. The declaration is visible in the candidate file, never
+		 * inferred.
+		 */
+		if ( ! empty( $c['branch'] ) ) {
+			$c['website']          = '';
+			$c['join']['url']      = '';
+			$c['contact']['phone'] = '';
+		}
 		// Earlier in this same run?
 		$mine = array( 'name:' . self::name_key( (string) $c['name'] ) );
 		foreach ( array( (string) ( $c['website'] ?? '' ), (string) ( $c['join']['url'] ?? '' ) ) as $u ) {
@@ -1307,7 +1356,9 @@ class Command {
 			$k = (string) $c['category'];
 			$rows[ $k ] = $rows[ $k ] ?? array( 'found' => 0, 'draft' => 0, 'match' => 0, 'review' => 0, 'rejected' => 0 );
 			$rows[ $k ]['found']++;
-			$orgs[ self::name_key( (string) $c['name'] ) ][] = $k;
+			foreach ( array_merge( array( $k ), (array) ( $c['also'] ?? array() ) ) as $ck ) {
+				$orgs[ self::name_key( (string) $c['name'] ) ][] = (string) $ck;
+			}
 			$status = (string) ( $c['status'] ?? '' );
 			if ( 'rejected' === $status ) {
 				$rows[ $k ]['rejected']++;
@@ -1325,7 +1376,12 @@ class Command {
 				$exc[] = sprintf( '| %s | %s | flag | %s |', $k, $c['name'], $f );
 			}
 		}
+		// One row per URL: the latest attempt, not one per run.
+		$latest = array();
 		foreach ( $log['requests'] as $r ) {
+			$latest[ (string) $r['url'] ] = $r;
+		}
+		foreach ( $latest as $r ) {
 			if ( in_array( $r['state'], array( 'blocked', 'stopped', 'refused', 'error' ), true ) ) {
 				$exc[] = sprintf( '| fetch | %s | %s | %s |', $r['url'], $r['state'], $r['note'] );
 			}
@@ -1343,7 +1399,7 @@ class Command {
 			$tot  = array( $tot[0] + $r['found'], $tot[1] + $r['draft'], $tot[2] + $r['match'], $tot[3] + $r['review'], $tot[4] + $r['rejected'] );
 		}
 		$md[] = vsprintf( '| **Total** | **%d** | **%d** | **%d** | **%d** | **%d** |', $tot );
-		$multi = array_filter( $orgs, static fn( $v ) => count( $v ) > 1 );
+		$multi = array_filter( $orgs, static fn( $v ) => count( array_unique( $v ) ) > 1 );
 		$md[]  = '';
 		$md[]  = sprintf( 'Unique organisations: %d. Appearing in more than one category: %d%s.', count( $orgs ), count( $multi ), $multi ? ' (' . implode( ', ', array_map( static fn( $k, $v ) => $k . ': ' . implode( '+', $v ), array_keys( $multi ), $multi ) ) . ')' : '' );
 		$md[]  = '';

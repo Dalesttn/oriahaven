@@ -992,6 +992,16 @@ while ( have_posts() ) :
 				</section>
 			<?php endif; ?>
 
+			<?php
+			/* --- How to join (groups, clubs, class venues) ---------------------
+			 * Joining details researched from the organiser's pages. Renders
+			 * nothing for a listing that has none, which is nearly all of them. */
+			if ( function_exists( '\Oria\Core\Sources\has_joining' ) && \Oria\Core\Sources\has_joining( (int) $oria_id ) ) {
+				$oria_sec++;
+				get_template_part( 'template-parts/joining', null, array( 'id' => (int) $oria_id, 'sec' => $oria_sec, 'slug' => $oria_slugname ) );
+			}
+			?>
+
 			<?php /* --- The week, from the Classes repeater --------------------- */ ?>
 			<?php if ( $oria_week ) : ?>
 				<?php $oria_sec++; ?>

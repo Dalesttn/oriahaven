@@ -179,6 +179,9 @@ $oria_badges = array(
 			<span class="listing__price">
 				<?php if ( (int) $oria_price_from > 0 ) : ?>
 					$<?php echo esc_html( (string) (int) $oria_price_from ); ?> <span>/ <?php esc_html_e( 'session', 'oria' ); ?></span>
+				<?php elseif ( 'Free' === (string) get_field( 'price_band', $oria_id ) ) : ?>
+					<?php // Free is a published price; "not published" beside a Free pill contradicted itself. ?>
+					<?php esc_html_e( 'Free', 'oria' ); ?>
 				<?php else : ?>
 					<span class="listing__price--none"><?php esc_html_e( 'Price not published', 'oria' ); ?></span>
 				<?php endif; ?>

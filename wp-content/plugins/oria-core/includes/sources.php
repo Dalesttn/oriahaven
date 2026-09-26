@@ -71,6 +71,107 @@ function bootstrap(): void {
 	add_filter( 'wpseo_exclude_from_sitemap_by_term_ids', __NAMESPACE__ . '\sitemap_exclude' );
 	add_filter( 'oria_publish_missing', __NAMESPACE__ . '\publish_missing', 10, 2 );
 	add_action( 'acf/init', __NAMESPACE__ . '\fields' );
+	add_action( 'add_meta_boxes_' . PostTypes\LISTING, __NAMESPACE__ . '\meta_boxes' );
+	// Priority 5: before the publish guard (20) reads the review state.
+	add_action( 'save_post_' . PostTypes\LISTING, __NAMESPACE__ . '\save_review', 5, 1 );
+}
+
+/* ------------------------------------------------------------- the editor */
+
+function meta_boxes( \WP_Post $post ): void {
+	if ( '' !== (string) get_post_meta( $post->ID, BATCH, true ) ) {
+		add_meta_box( 'oria-src-evidence', __( 'Public-source research', 'oria' ), __NAMESPACE__ . '\evidence_box', null, 'side', 'high' );
+	}
+	if ( '' !== (string) get_post_meta( $post->ID, PROPOSAL, true ) ) {
+		add_meta_box( 'oria-src-proposal', __( 'Proposed from public sources', 'oria' ), __NAMESPACE__ . '\proposal_box', null, 'normal', 'high' );
+	}
+}
+
+/**
+ * Where each fact came from, and the switch that allows publishing.
+ * Admin-only: evidence snippets are never printed on the site.
+ */
+function evidence_box( \WP_Post $post ): void {
+	wp_nonce_field( 'oria_src_review', 'oria_src_review_nonce' );
+	$state = (string) get_post_meta( $post->ID, REVIEW, true );
+	$flags = (string) get_post_meta( $post->ID, '_oria_src_flags', true );
+	$ev    = json_decode( (string) get_post_meta( $post->ID, EVIDENCE, true ), true );
+
+	printf( '<p><strong>%s</strong> %s<br><strong>%s</strong> %s</p>', esc_html__( 'Batch:', 'oria' ), esc_html( (string) get_post_meta( $post->ID, BATCH, true ) ), esc_html__( 'Checked:', 'oria' ), esc_html( (string) get_post_meta( $post->ID, CHECKED, true ) ) );
+	if ( '' !== $flags ) {
+		printf( '<p style="color:#b32d2e"><strong>%s</strong> %s</p>', esc_html__( 'Check before publishing:', 'oria' ), esc_html( $flags ) );
+	}
+	echo '<p><label for="oria_src_review"><strong>' . esc_html__( 'Review state', 'oria' ) . '</strong></label><br><select name="oria_src_review" id="oria_src_review">';
+	foreach ( REVIEW_STATES as $s ) {
+		printf( '<option value="%1$s"%2$s>%1$s</option>', esc_attr( $s ), selected( $state, $s, false ) );
+	}
+	echo '</select></p><p class="description">' . esc_html__( 'Publishing is held until this says reviewed: every fact below checked against its page, and the join link working.', 'oria' ) . '</p>';
+
+	if ( is_array( $ev ) && $ev ) {
+		echo '<details><summary>' . esc_html( sprintf( /* translators: %d: count */ __( '%d evidence excerpts', 'oria' ), count( $ev ) ) ) . '</summary><ul style="margin-left:1em;list-style:disc">';
+		foreach ( $ev as $e ) {
+			printf( '<li><code>%s</code> &ldquo;%s&rdquo; <a href="%s" target="_blank" rel="noopener">%s</a></li>', esc_html( (string) $e['field'] ), esc_html( (string) $e['excerpt'] ), esc_url( (string) $e['url'] ), esc_html__( 'page', 'oria' ) );
+		}
+		echo '</ul></details>';
+	}
+}
+
+/** What a batch found for a listing someone else already owns. Never applied automatically. */
+function proposal_box( \WP_Post $post ): void {
+	wp_nonce_field( 'oria_src_review', 'oria_src_review_nonce' );
+	$all = json_decode( (string) get_post_meta( $post->ID, PROPOSAL, true ), true );
+	if ( ! is_array( $all ) ) {
+		return;
+	}
+	echo '<p>' . esc_html__( 'Research found this listing again. Nothing here has been applied -- copy what is right into the fields, then dismiss.', 'oria' ) . '</p>';
+	foreach ( $all as $batch => $p ) {
+		printf( '<h4>%s <small>(%s)</small></h4><table class="widefat striped"><tbody>', esc_html( (string) $batch ), esc_html( (string) ( $p['at'] ?? '' ) ) );
+		$rows = array(
+			__( 'Categories', 'oria' ) => implode( ', ', (array) ( $p['categories'] ?? array() ) ),
+			__( 'Tags', 'oria' )       => implode( ', ', (array) ( $p['tags'] ?? array() ) ),
+			__( 'Join', 'oria' )       => trim( ( $p['join']['method'] ?? '' ) . ' ' . ( $p['join']['url'] ?? '' ) ),
+			__( 'Cost', 'oria' )       => trim( ( $p['cost'] ?? '' ) . ' ' . ( $p['price_note'] ?? '' ) ),
+			__( 'When', 'oria' )       => (string) ( $p['schedule'] ?? '' ),
+		);
+		foreach ( (array) ( $p['details'] ?? array() ) as $d ) {
+			$rows[ (string) $d['label'] ] = (string) $d['value'];
+		}
+		foreach ( $rows as $k => $v ) {
+			if ( '' !== trim( (string) $v ) ) {
+				printf( '<tr><th style="width:9rem">%s</th><td>%s</td></tr>', esc_html( $k ), esc_html( $v ) );
+			}
+		}
+		echo '</tbody></table>';
+		foreach ( (array) ( $p['sources'] ?? array() ) as $u ) {
+			printf( '<p><a href="%1$s" target="_blank" rel="noopener">%1$s</a></p>', esc_url( (string) $u ) );
+		}
+		printf( '<p><label><input type="checkbox" name="oria_src_dismiss[]" value="%1$s"> %2$s</label></p>', esc_attr( (string) $batch ), esc_html__( 'Dismiss this proposal on save', 'oria' ) );
+	}
+}
+
+function save_review( int $post_id ): void {
+	if ( wp_is_post_revision( $post_id ) || ! isset( $_POST['oria_src_review_nonce'] ) ) {
+		return;
+	}
+	if ( ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['oria_src_review_nonce'] ) ), 'oria_src_review' ) || ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+	if ( isset( $_POST['oria_src_review'] ) ) {
+		$state = sanitize_key( wp_unslash( $_POST['oria_src_review'] ) );
+		if ( in_array( $state, REVIEW_STATES, true ) && get_post_meta( $post_id, REVIEW, true ) !== $state ) {
+			update_post_meta( $post_id, REVIEW, $state );
+			update_post_meta( $post_id, REVIEWER, get_current_user_id() );
+		}
+	}
+	if ( ! empty( $_POST['oria_src_dismiss'] ) ) {
+		$all = json_decode( (string) get_post_meta( $post_id, PROPOSAL, true ), true );
+		if ( is_array( $all ) ) {
+			foreach ( array_map( 'sanitize_key', (array) wp_unslash( $_POST['oria_src_dismiss'] ) ) as $b ) {
+				unset( $all[ $b ] );
+			}
+			$all ? update_post_meta( $post_id, PROPOSAL, wp_slash( (string) wp_json_encode( $all, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ) ) : delete_post_meta( $post_id, PROPOSAL );
+		}
+	}
 }
 
 /* ---------------------------------------------------------------- the plan */

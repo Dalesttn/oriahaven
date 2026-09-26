@@ -1,0 +1,479 @@
+{
+    "batch": "2026-09-26-activities",
+    "requests": [
+        {
+            "url": "https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+            "at": "2026-09-26T04:41:16+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3838 chars of text"
+        },
+        {
+            "url": "https://therunningcentre.com.au/pages/running-buddies",
+            "at": "2026-09-26T04:41:20+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3987 chars of text"
+        },
+        {
+            "url": "https://www.perthrunningclub.com.au/",
+            "at": "2026-09-26T04:41:22+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1654 chars of text"
+        },
+        {
+            "url": "https://www.perthfrontrunners.org/",
+            "at": "2026-09-26T04:41:23+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2100 chars of text"
+        },
+        {
+            "url": "https://perthtrailseries.com.au/",
+            "at": "2026-09-26T04:41:25+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3658 chars of text"
+        },
+        {
+            "url": "https://riseandrunclub.com.au/",
+            "at": "2026-09-26T04:41:27+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3864 chars of text"
+        },
+        {
+            "url": "https://www.parkrun.com.au/claisebrookcove/",
+            "at": "2026-09-26T04:41:29+00:00",
+            "state": "stopped",
+            "status": 403,
+            "note": "HTTP 403 -- access refused, not retried"
+        },
+        {
+            "url": "https://www.parkrun.com.au/claisebrookcove/course/",
+            "at": "2026-09-26T04:41:29+00:00",
+            "state": "skipped",
+            "note": "ten-page limit for this domain reached"
+        },
+        {
+            "url": "https://www.perthrunningclub.com.au/adults-running",
+            "at": "2026-09-26T04:42:22+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1635 chars of text"
+        },
+        {
+            "url": "https://www.perthfrontrunners.org/events",
+            "at": "2026-09-26T04:42:23+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "839 chars of text"
+        },
+        {
+            "url": "https://www.wamc.org.au/",
+            "at": "2026-09-26T04:42:25+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "4773 chars of text"
+        },
+        {
+            "url": "https://www.wamc.org.au/programme/",
+            "at": "2026-09-26T04:42:27+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "6370 chars of text"
+        },
+        {
+            "url": "https://www.parkrun.com.au/claisebrookcove/",
+            "at": "2026-09-26T04:42:29+00:00",
+            "state": "stopped",
+            "status": 403,
+            "note": "HTTP 403 -- access refused, not retried"
+        },
+        {
+            "url": "https://www.parkrun.com.au/claisebrookcove/course/",
+            "at": "2026-09-26T04:42:29+00:00",
+            "state": "skipped",
+            "note": "ten-page limit for this domain reached"
+        },
+        {
+            "url": "https://www.wamc.org.au/training",
+            "at": "2026-09-26T04:42:56+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "9897 chars of text"
+        },
+        {
+            "url": "https://podsquadnorthcott.com.au/swimming/",
+            "at": "2026-09-26T04:42:58+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "18688 chars of text"
+        },
+        {
+            "url": "https://www.rockinghampenguins.com/",
+            "at": "2026-09-26T04:43:01+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "877 chars of text"
+        },
+        {
+            "url": "http://www.wsaainc.com/cottesloe-crabs.html",
+            "at": "2026-09-26T04:43:06+00:00",
+            "state": "fetched",
+            "status": 200,
+            "final": "https://www.wsaainc.com/cottesloe-crabs.html",
+            "note": "1868 chars of text"
+        },
+        {
+            "url": "https://members.perthpickleballcentre.com.au/programs/come-and-try",
+            "at": "2026-09-26T04:43:08+00:00",
+            "state": "stopped",
+            "status": 403,
+            "note": "HTTP 403 -- access refused, not retried"
+        },
+        {
+            "url": "https://members.perthpickleballcentre.com.au/programs/social-session-dropin",
+            "at": "2026-09-26T04:43:08+00:00",
+            "state": "skipped",
+            "note": "ten-page limit for this domain reached"
+        },
+        {
+            "url": "https://members.perthpickleballcentre.com.au/",
+            "at": "2026-09-26T04:43:08+00:00",
+            "state": "skipped",
+            "note": "ten-page limit for this domain reached"
+        },
+        {
+            "url": "https://southperth.wa.gov.au/community/services/social-pickleball",
+            "at": "2026-09-26T04:43:09+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "7550 chars of text"
+        },
+        {
+            "url": "https://www.pickleballperth.com.au/play.html",
+            "at": "2026-09-26T04:43:11+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1273 chars of text"
+        },
+        {
+            "url": "https://www.pickleballperth.com.au/",
+            "at": "2026-09-26T04:43:14+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1153 chars of text"
+        },
+        {
+            "url": "https://allthingspickleball.com.au/",
+            "at": "2026-09-26T04:43:16+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "6148 chars of text"
+        },
+        {
+            "url": "https://playtennisperth.com.au/pickleball",
+            "at": "2026-09-26T04:43:20+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "4071 chars of text"
+        },
+        {
+            "url": "https://www.perthectpickleballacademy.com/Social-Sessions/social-sessions",
+            "at": "2026-09-26T04:43:23+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1209 chars of text"
+        },
+        {
+            "url": "https://www.manningtennisclub.com.au/single-post/come-play-pickleball-with-us",
+            "at": "2026-09-26T04:43:29+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3495 chars of text"
+        },
+        {
+            "url": "https://www.claymakestudio.com.au/",
+            "at": "2026-09-26T04:43:31+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3324 chars of text"
+        },
+        {
+            "url": "https://houndceramicsstudio.com.au/collections/workshops",
+            "at": "2026-09-26T04:43:34+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2818 chars of text"
+        },
+        {
+            "url": "https://pricklypearstudios.com.au/book",
+            "at": "2026-09-26T04:43:34+00:00",
+            "state": "blocked",
+            "note": "robots.txt could not be read -- treated as disallowed"
+        },
+        {
+            "url": "https://www.rediscovering.com.au/upcoming-events/pottery-class-wheel-throwing",
+            "at": "2026-09-26T04:43:37+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3197 chars of text"
+        },
+        {
+            "url": "https://www.rediscovering.com.au/upcoming-events",
+            "at": "2026-09-26T04:43:40+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "20688 chars of text"
+        },
+        {
+            "url": "https://www.perthpotterycompany.com/",
+            "at": "2026-09-26T04:43:42+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3021 chars of text"
+        },
+        {
+            "url": "https://www.krackingceramics.com.au/workshops",
+            "at": "2026-09-26T04:43:42+00:00",
+            "state": "blocked",
+            "note": "robots.txt could not be read -- treated as disallowed"
+        },
+        {
+            "url": "https://www.studiop.net.au/",
+            "at": "2026-09-26T04:43:45+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1129 chars of text"
+        },
+        {
+            "url": "https://www.studiop.net.au/about",
+            "at": "2026-09-26T04:43:49+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "6027 chars of text"
+        },
+        {
+            "url": "https://www.porchceramics.com/north-fremantle",
+            "at": "2026-09-26T04:43:52+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3604 chars of text"
+        },
+        {
+            "url": "https://www.porchceramics.com/shop/events",
+            "at": "2026-09-26T04:43:55+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "910 chars of text"
+        },
+        {
+            "url": "https://wfac.org.au/art-classes/adults/",
+            "at": "2026-09-26T04:43:58+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "5869 chars of text"
+        },
+        {
+            "url": "https://wfac.org.au/product/wheel-work-open-studio-beginners-to-advanced/",
+            "at": "2026-09-26T04:44:01+00:00",
+            "state": "error",
+            "status": 404,
+            "note": "HTTP 404"
+        },
+        {
+            "url": "https://winterwares.com.au/collections/workshops",
+            "at": "2026-09-26T04:44:03+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2663 chars of text"
+        },
+        {
+            "url": "https://www.canningartswa.org.au/",
+            "at": "2026-09-26T04:44:06+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2131 chars of text"
+        },
+        {
+            "url": "https://perthartistscollective.com.au/",
+            "at": "2026-09-26T04:44:08+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "85857 chars of text"
+        },
+        {
+            "url": "https://www.meetup.com/perth-city-walking-group/",
+            "at": "2026-09-26T04:44:09+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "4870 chars of text"
+        },
+        {
+            "url": "https://www.meetup.com/walking-mates-australia-east-perth-team/",
+            "at": "2026-09-26T04:44:12+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "11122 chars of text"
+        },
+        {
+            "url": "https://walking.heartfoundation.org.au/walking/location/perth-c-wa-6000",
+            "at": "2026-09-26T04:44:13+00:00",
+            "state": "blocked",
+            "note": "robots.txt could not be read -- treated as disallowed"
+        },
+        {
+            "url": "https://befriend.org.au/meet/whats-on/",
+            "at": "2026-09-26T04:44:15+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "39499 chars of text"
+        },
+        {
+            "url": "https://befriend.org.au/",
+            "at": "2026-09-26T04:44:18+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "13804 chars of text"
+        },
+        {
+            "url": "https://www.westernwalkingclub.org.au/",
+            "at": "2026-09-26T04:44:22+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2490 chars of text"
+        },
+        {
+            "url": "https://www.swimclan.com.au/",
+            "at": "2026-09-26T04:45:27+00:00",
+            "state": "blocked",
+            "note": "robots.txt could not be read -- treated as disallowed"
+        },
+        {
+            "url": "https://openwaterswimmingmastery.com/",
+            "at": "2026-09-26T04:45:33+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "5994 chars of text"
+        },
+        {
+            "url": "https://www.swimsmooth.com/perth",
+            "at": "2026-09-26T04:45:41+00:00",
+            "state": "refused",
+            "note": "redirected off the allowlist to swimsmooth.coach"
+        },
+        {
+            "url": "https://www.perthpickleballcentre.com.au/",
+            "at": "2026-09-26T04:45:43+00:00",
+            "state": "stopped",
+            "status": 403,
+            "note": "HTTP 403 -- access refused, not retried"
+        },
+        {
+            "url": "https://www.swimsmooth.com/perth",
+            "at": "2026-09-26T04:47:58+00:00",
+            "state": "refused",
+            "note": "redirected off the allowlist to swimsmooth.coach"
+        },
+        {
+            "url": "https://southperth.wa.gov.au/community/facilities/george-burnett-leisure-centre",
+            "at": "2026-09-26T04:47:59+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "18300 chars of text"
+        },
+        {
+            "url": "https://allthingspickleball.com.au/pickleball-perth-venues/",
+            "at": "2026-09-26T04:48:01+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "636 chars of text"
+        },
+        {
+            "url": "https://www.perthectpickleballacademy.com/Price",
+            "at": "2026-09-26T04:48:03+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "729 chars of text"
+        },
+        {
+            "url": "https://www.perthectpickleballacademy.com/Booking",
+            "at": "2026-09-26T04:48:05+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "883 chars of text"
+        },
+        {
+            "url": "https://www.claymakestudio.com.au/casual-classes.html",
+            "at": "2026-09-26T04:48:06+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2038 chars of text"
+        },
+        {
+            "url": "https://www.claymakestudio.com.au/workshops.html",
+            "at": "2026-09-26T04:48:09+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1459 chars of text"
+        },
+        {
+            "url": "https://www.claymakestudio.com.au/contact-us.html",
+            "at": "2026-09-26T04:48:11+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1255 chars of text"
+        },
+        {
+            "url": "https://houndceramicsstudio.com.au/pages/contact",
+            "at": "2026-09-26T04:48:12+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1597 chars of text"
+        },
+        {
+            "url": "https://houndceramicsstudio.com.au/collections/wheel-throwing-pottery-workshops",
+            "at": "2026-09-26T04:48:15+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3020 chars of text"
+        },
+        {
+            "url": "https://www.perthpotterycompany.com/classes",
+            "at": "2026-09-26T04:48:16+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "747 chars of text"
+        },
+        {
+            "url": "https://www.perthpotterycompany.com/contact",
+            "at": "2026-09-26T04:48:20+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "467 chars of text"
+        },
+        {
+            "url": "https://www.studiop.net.au/coursesandworkshops",
+            "at": "2026-09-26T04:48:24+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3684 chars of text"
+        },
+        {
+            "url": "https://www.porchceramics.com/contact",
+            "at": "2026-09-26T04:48:25+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "735 chars of text"
+        },
+        {
+            "url": "https://wfac.org.au/product/wheel-work-open-studio-beginners-to-advanced/",
+            "at": "2026-09-26T04:48:27+00:00",
+            "state": "error",
+            "status": 404,
+            "note": "HTTP 404"
+        }
+    ]
+}

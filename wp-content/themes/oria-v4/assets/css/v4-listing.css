@@ -608,6 +608,27 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 .xp-amenity + .xp-source { margin-top: var(--s-4); }
 .xp-source { font-size: var(--fs-xs); }
 
+/* How to join -- groups, clubs and class venues. Chips only for what the
+   organiser actually said; the dl reuses the first-visit tiles. */
+.xp-join__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 var(--s-4);
+  padding: 0;
+  list-style: none;
+}
+.xp-join__chips li {
+  padding: .35rem .8rem;
+  border-radius: var(--radius-pill);
+  background: var(--sand-2);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--deep);
+}
+.xp-join__act { margin: var(--s-5) 0 0; }
+.xp-join__src { margin-top: var(--s-4); font-size: var(--fs-xs); }
+
 /* The parent's team part opens its own .section: flatten it into the flow. */
 .xp-part:empty { display: none; }
 .xp-part .section { padding-block: 0; }

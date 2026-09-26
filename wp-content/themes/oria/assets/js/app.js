@@ -2576,7 +2576,9 @@
             '<span class="listing__price">' +
               (l.priceFrom > 0
                 ? "$" + l.priceFrom + ' <span>/ session</span>'
-                : '<span class="listing__price--none">Price not published</span>') +
+                : l.priceBand === "Free"
+                  ? "Free"
+                  : '<span class="listing__price--none">Price not published</span>') +
               (l.next ? '<span class="listing__next">Next: ' + esc(l.next) + "</span>" : "") +
             "</span>" +
             /* Compare toggle, mirroring listing-card.php. The pressed state

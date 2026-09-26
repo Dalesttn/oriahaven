@@ -12,7 +12,12 @@
         "float-therapy",
         "infrared-sauna",
         "aromatherapy",
-        "reflexology"
+        "reflexology",
+        "pottery",
+        "hand-building",
+        "wheel-throwing",
+        "painting-workshops",
+        "walking-groups"
       ]
     },
     {
@@ -38,7 +43,9 @@
         "float-therapy",
         "breathwork",
         "sound-healing",
-        "wellness-retreats"
+        "wellness-retreats",
+        "social-dip",
+        "hand-building"
       ]
     },
     {
@@ -63,7 +70,8 @@
         "infrared-sauna",
         "cold-plunge",
         "red-light-therapy",
-        "hyperbaric-oxygen"
+        "hyperbaric-oxygen",
+        "social-dip"
       ]
     },
     {
@@ -93,7 +101,15 @@
         "ashtanga-yoga",
         "vinyasa-yoga",
         "pregnancy-yoga",
-        "yin-yoga"
+        "yin-yoga",
+        "social-running",
+        "run-walk",
+        "coached-running",
+        "distance-swim",
+        "coached-swim",
+        "social-play",
+        "come-and-try",
+        "pickleball-lessons"
       ]
     },
     {
@@ -125,7 +141,13 @@
         "dance",
         "parenting-support",
         "workshops",
-        "support-groups"
+        "support-groups",
+        "social-running",
+        "social-dip",
+        "social-play",
+        "come-and-try",
+        "pottery",
+        "painting-workshops"
       ]
     },
     {

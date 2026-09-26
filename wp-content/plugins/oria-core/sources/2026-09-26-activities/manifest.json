@@ -1,0 +1,452 @@
+{
+	"batch": "2026-09-26-activities",
+	"_note": "Every domain considered for the first activities batch. decision: fetch = permitted and allowlisted for the collector; discovery = used only to find candidates, never as evidence; manual = official presence exists but automated collection is not appropriate (social platforms, terms, or JS-only), so an editor researches it by hand; reject = considered and ruled out, with the reason. Discovery came from web search results and the brief's starting points, never from scraping a search engine.",
+	"sources": [
+		{
+			"category": "running",
+			"domain": "therunningcentre.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://therunningcentre.com.au/pages/free-community-running-group-perth-urban-runners",
+				"https://therunningcentre.com.au/pages/running-buddies"
+			]
+		},
+		{
+			"category": "running",
+			"domain": "perthrunningclub.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.perthrunningclub.com.au/",
+				"https://www.perthrunningclub.com.au/adults-running"
+			]
+		},
+		{
+			"category": "running",
+			"domain": "perthfrontrunners.org",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.perthfrontrunners.org/",
+				"https://www.perthfrontrunners.org/events"
+			]
+		},
+		{
+			"category": "running",
+			"domain": "wamc.org.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.wamc.org.au/",
+				"https://www.wamc.org.au/programme/",
+				"https://www.wamc.org.au/training"
+			]
+		},
+		{
+			"category": "running",
+			"domain": "instagram.com",
+			"type": "social",
+			"decision": "manual",
+			"note": "The Early Ones (Scarborough) and BBC Run Club (South Fremantle) -- found in roundups, Instagram-only presence"
+		},
+		{
+			"category": "running",
+			"domain": "perthtrailseries.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://perthtrailseries.com.au/"
+			]
+		},
+		{
+			"category": "running",
+			"domain": "riseandrunclub.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://riseandrunclub.com.au/"
+			]
+		},
+		{
+			"category": "running",
+			"domain": "parkrun.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.parkrun.com.au/claisebrookcove/",
+				"https://www.parkrun.com.au/claisebrookcove/course/"
+			]
+		},
+		{
+			"category": "running",
+			"domain": "instagram.com",
+			"type": "social",
+			"decision": "manual",
+			"note": "The 440 (Cottesloe, Saturdays) -- Instagram only; not collected automatically"
+		},
+		{
+			"category": "running",
+			"domain": "visitperth.com",
+			"type": "directory",
+			"decision": "discovery",
+			"note": "run-club roundup used to find candidates only"
+		},
+		{
+			"category": "running",
+			"domain": "livelighter.com.au",
+			"type": "directory",
+			"decision": "discovery",
+			"note": "free walking/running/swimming roundups used to find candidates only"
+		},
+		{
+			"category": "ocean",
+			"domain": "podsquadnorthcott.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://podsquadnorthcott.com.au/swimming/"
+			]
+		},
+		{
+			"category": "ocean",
+			"domain": "rockinghampenguins.com",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.rockinghampenguins.com/"
+			]
+		},
+		{
+			"category": "ocean",
+			"domain": "wsaainc.com",
+			"type": "organiser",
+			"decision": "reject",
+			"urls": [
+				"http://www.wsaainc.com/cottesloe-crabs.html"
+			],
+			"note": "Cottesloe Crabs swim at HBF Stadium pool; pool-only swimming is outside this batch"
+		},
+		{
+			"category": "ocean",
+			"domain": "swimclan.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.swimclan.com.au/"
+			]
+		},
+		{
+			"category": "ocean",
+			"domain": "openwaterswimmingmastery.com",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://openwaterswimmingmastery.com/"
+			]
+		},
+		{
+			"category": "ocean",
+			"domain": "swimsmooth.com",
+			"type": "organiser",
+			"decision": "reject",
+			"note": "Swim Smooth Perth squads are pool-based (Claremont Pool); the page redirects to swimsmooth.coach, outside the allowlist"
+		},
+		{
+			"category": "ocean",
+			"domain": "wa.swimming.org.au",
+			"type": "organiser",
+			"decision": "reject",
+			"note": "Swimming WA open water clinics and the OWS Series are dated events, not a recurring group -- events system material"
+		},
+		{
+			"category": "pickleball",
+			"domain": "perthpickleballcentre.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.perthpickleballcentre.com.au/"
+			]
+		},
+		{
+			"category": "ocean",
+			"domain": "wowswims.com.au",
+			"type": "organiser",
+			"decision": "reject",
+			"note": "WOW Swims is a series of six dated open-water events (Nov-Mar), not a recurring group: belongs in the events system, not as a provider listing"
+		},
+		{
+			"category": "ocean",
+			"domain": "oceanswims.com",
+			"type": "directory",
+			"decision": "discovery",
+			"note": "ocean swim group directory: identified Port Beach Polar Bears and Cold Water Club; neither verified from an organiser page"
+		},
+		{
+			"category": "ocean",
+			"domain": "instagram.com",
+			"type": "social",
+			"decision": "manual",
+			"note": "Cold Nips, Sea Gals, Cold Water Club -- Instagram/social only"
+		},
+		{
+			"category": "pickleball",
+			"domain": "perthpickleballcentre.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://members.perthpickleballcentre.com.au/programs/come-and-try",
+				"https://members.perthpickleballcentre.com.au/programs/social-session-dropin",
+				"https://members.perthpickleballcentre.com.au/"
+			]
+		},
+		{
+			"category": "pickleball",
+			"domain": "southperth.wa.gov.au",
+			"type": "council",
+			"decision": "fetch",
+			"urls": [
+				"https://southperth.wa.gov.au/community/services/social-pickleball",
+				"https://southperth.wa.gov.au/community/facilities/george-burnett-leisure-centre"
+			]
+		},
+		{
+			"category": "pickleball",
+			"domain": "pickleballperth.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.pickleballperth.com.au/play.html",
+				"https://www.pickleballperth.com.au/"
+			]
+		},
+		{
+			"category": "pickleball",
+			"domain": "allthingspickleball.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://allthingspickleball.com.au/",
+				"https://allthingspickleball.com.au/pickleball-perth-venues/"
+			]
+		},
+		{
+			"category": "pickleball",
+			"domain": "playtennisperth.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://playtennisperth.com.au/pickleball"
+			]
+		},
+		{
+			"category": "pickleball",
+			"domain": "perthectpickleballacademy.com",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.perthectpickleballacademy.com/Social-Sessions/social-sessions",
+				"https://www.perthectpickleballacademy.com/Price",
+				"https://www.perthectpickleballacademy.com/Booking"
+			]
+		},
+		{
+			"category": "pickleball",
+			"domain": "manningtennisclub.com.au",
+			"type": "organiser",
+			"decision": "reject",
+			"urls": [
+				"https://www.manningtennisclub.com.au/single-post/come-play-pickleball-with-us"
+			],
+			"note": "only evidence is a one-off 2020 pickleball social night"
+		},
+		{
+			"category": "creative",
+			"domain": "claymakestudio.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.claymakestudio.com.au/",
+				"https://www.claymakestudio.com.au/casual-classes.html",
+				"https://www.claymakestudio.com.au/workshops.html",
+				"https://www.claymakestudio.com.au/contact-us.html"
+			]
+		},
+		{
+			"category": "creative",
+			"domain": "houndceramicsstudio.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://houndceramicsstudio.com.au/collections/workshops",
+				"https://houndceramicsstudio.com.au/pages/contact",
+				"https://houndceramicsstudio.com.au/collections/wheel-throwing-pottery-workshops"
+			]
+		},
+		{
+			"category": "creative",
+			"domain": "pricklypearstudios.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://pricklypearstudios.com.au/book"
+			]
+		},
+		{
+			"category": "creative",
+			"domain": "rediscovering.com.au",
+			"type": "organiser",
+			"decision": "manual",
+			"urls": [
+				"https://www.rediscovering.com.au/upcoming-events/pottery-class-wheel-throwing",
+				"https://www.rediscovering.com.au/upcoming-events"
+			],
+			"note": "only class page found is dated 18 September 2022; current Workshops & Events page lists exhibitions -- confirm current adult classes by hand"
+		},
+		{
+			"category": "creative",
+			"domain": "perthpotterycompany.com",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.perthpotterycompany.com/",
+				"https://www.perthpotterycompany.com/classes",
+				"https://www.perthpotterycompany.com/contact"
+			]
+		},
+		{
+			"category": "creative",
+			"domain": "krackingceramics.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.krackingceramics.com.au/workshops"
+			]
+		},
+		{
+			"category": "creative",
+			"domain": "studiop.net.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.studiop.net.au/",
+				"https://www.studiop.net.au/about",
+				"https://www.studiop.net.au/coursesandworkshops"
+			]
+		},
+		{
+			"category": "creative",
+			"domain": "porchceramics.com",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.porchceramics.com/north-fremantle",
+				"https://www.porchceramics.com/shop/events",
+				"https://www.porchceramics.com/contact"
+			]
+		},
+		{
+			"category": "creative",
+			"domain": "wfac.org.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://wfac.org.au/art-classes/adults/"
+			]
+		},
+		{
+			"category": "creative",
+			"domain": "winterwares.com.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://winterwares.com.au/collections/workshops"
+			]
+		},
+		{
+			"category": "creative",
+			"domain": "canningartswa.org.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.canningartswa.org.au/"
+			]
+		},
+		{
+			"category": "creative",
+			"domain": "perthartistscollective.com.au",
+			"type": "organiser",
+			"decision": "manual",
+			"urls": [
+				"https://perthartistscollective.com.au/"
+			],
+			"note": "primarily a retail artists' collective; workshops page not verified as regular adult classes"
+		},
+		{
+			"category": "creative",
+			"domain": "classbento.com.au",
+			"type": "directory",
+			"decision": "discovery",
+			"note": "marketplace; used only to find studios"
+		},
+		{
+			"category": "walking",
+			"domain": "meetup.com",
+			"type": "social",
+			"decision": "fetch",
+			"urls": [
+				"https://www.meetup.com/perth-city-walking-group/",
+				"https://www.meetup.com/walking-mates-australia-east-perth-team/"
+			]
+		},
+		{
+			"category": "walking",
+			"domain": "heartfoundation.org.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://walking.heartfoundation.org.au/walking/location/perth-c-wa-6000"
+			]
+		},
+		{
+			"category": "walking",
+			"domain": "befriend.org.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://befriend.org.au/meet/whats-on/",
+				"https://befriend.org.au/"
+			]
+		},
+		{
+			"category": "walking",
+			"domain": "westernwalkingclub.org.au",
+			"type": "organiser",
+			"decision": "fetch",
+			"urls": [
+				"https://www.westernwalkingclub.org.au/"
+			]
+		},
+		{
+			"category": "walking",
+			"domain": "onmyfeet.org.au",
+			"type": "organiser",
+			"decision": "reject",
+			"note": "Footsteps program recruits participants through shelters and community partners for people at risk of homelessness -- not open to public enquiries"
+		},
+		{
+			"category": "walking",
+			"domain": "perthbushwalkers.asn.au",
+			"type": "organiser",
+			"decision": "reject",
+			"note": "bushwalking/hiking club: kept distinct from walking groups per the brief; belongs with the existing hiking specialty"
+		},
+		{
+			"category": "walking",
+			"domain": "facebook.com",
+			"type": "social",
+			"decision": "manual",
+			"note": "Perth Community Walking Group -- private Facebook group"
+		}
+	]
+}

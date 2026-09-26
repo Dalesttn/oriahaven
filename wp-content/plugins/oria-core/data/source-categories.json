@@ -8,14 +8,33 @@
 			"taxonomy": "practice",
 			"parent": "fitness",
 			"kind": "group",
-			"feelings": ["move", "connect"],
+			"feelings": [
+				"move",
+				"connect"
+			],
 			"intro": "Find a running group that matches your pace, schedule and side of Perth. Compare joining details, costs and beginner options where organisers provide them.",
 			"tags": [
-				{ "slug": "social-running", "name": "Social running" },
-				{ "slug": "run-walk", "name": "Run/walk" },
-				{ "slug": "coached-running", "name": "Coached running" }
+				{
+					"slug": "social-running",
+					"name": "Social running"
+				},
+				{
+					"slug": "run-walk",
+					"name": "Run/walk"
+				},
+				{
+					"slug": "coached-running",
+					"name": "Coached running"
+				}
 			],
-			"details": ["Distance", "Pace bands", "Run/walk option", "Meeting point", "When"]
+			"details": [
+				"Distance",
+				"Pace bands",
+				"Run/walk option",
+				"Meeting point",
+				"When"
+			],
+			"description": "Running groups in Perth: social runs, run/walk groups and coached sessions, with meeting points, costs and beginner options from each organiser."
 		},
 		{
 			"key": "ocean",
@@ -24,15 +43,42 @@
 			"taxonomy": "practice",
 			"parent": "nature",
 			"kind": "group",
-			"feelings": ["move", "connect", "recharge"],
+			"feelings": [
+				"move",
+				"connect",
+				"recharge"
+			],
 			"intro": "Explore organised ocean swims and social dips around Perth. Check the session format, swimming requirements and organiser updates before joining.",
 			"tags": [
-				{ "slug": "social-dip", "name": "Social dip" },
-				{ "slug": "distance-swim", "name": "Distance swim" },
-				{ "slug": "coached-swim", "name": "Coached ocean swim" }
+				{
+					"slug": "social-dip",
+					"name": "Social dip"
+				},
+				{
+					"slug": "distance-swim",
+					"name": "Distance swim"
+				},
+				{
+					"slug": "coached-swim",
+					"name": "Coached ocean swim"
+				}
 			],
-			"required_subtype": ["social-dip", "distance-swim", "coached-swim", "unknown"],
-			"details": ["Format", "Swimming ability", "Distance", "Meeting point", "Supervision", "Equipment", "Weather and cancellations"]
+			"required_subtype": [
+				"social-dip",
+				"distance-swim",
+				"coached-swim",
+				"unknown"
+			],
+			"details": [
+				"Format",
+				"Swimming ability",
+				"Distance",
+				"Meeting point",
+				"Supervision",
+				"Equipment",
+				"Weather and cancellations"
+			],
+			"description": "Ocean swimming and social dip groups around Perth, with session format, swimming ability, meeting point and supervision as each organiser states it."
 		},
 		{
 			"key": "pickleball",
@@ -41,14 +87,32 @@
 			"taxonomy": "practice",
 			"parent": "fitness",
 			"kind": "place",
-			"feelings": ["move", "connect"],
+			"feelings": [
+				"move",
+				"connect"
+			],
 			"intro": "Find places to try pickleball, join a social session or learn the basics. Compare locations, session levels and booking options.",
 			"tags": [
-				{ "slug": "come-and-try", "name": "Come and try" },
-				{ "slug": "social-play", "name": "Social play" },
-				{ "slug": "pickleball-lessons", "name": "Pickleball lessons" }
+				{
+					"slug": "come-and-try",
+					"name": "Come and try"
+				},
+				{
+					"slug": "social-play",
+					"name": "Social play"
+				},
+				{
+					"slug": "pickleball-lessons",
+					"name": "Pickleball lessons"
+				}
 			],
-			"details": ["Session levels", "Setting", "Equipment", "Pricing basis"]
+			"details": [
+				"Session levels",
+				"Setting",
+				"Equipment",
+				"Pricing basis"
+			],
+			"description": "Where to play pickleball in Perth: social sessions, come-and-try and lessons, with venues, session levels, equipment and prices."
 		},
 		{
 			"key": "creative",
@@ -57,15 +121,38 @@
 			"taxonomy": "practice",
 			"parent": "experiences",
 			"kind": "place",
-			"feelings": ["relax", "reset", "connect"],
+			"feelings": [
+				"relax",
+				"reset",
+				"connect"
+			],
 			"intro": "Make time for something creative. Explore pottery and hands-on workshops, with practical details on materials, session formats and booking.",
 			"tags": [
-				{ "slug": "pottery", "name": "Pottery & ceramics" },
-				{ "slug": "wheel-throwing", "name": "Wheel throwing" },
-				{ "slug": "hand-building", "name": "Hand-building" },
-				{ "slug": "painting-workshops", "name": "Painting workshops" }
+				{
+					"slug": "pottery",
+					"name": "Pottery & ceramics"
+				},
+				{
+					"slug": "wheel-throwing",
+					"name": "Wheel throwing"
+				},
+				{
+					"slug": "hand-building",
+					"name": "Hand-building"
+				},
+				{
+					"slug": "painting-workshops",
+					"name": "Painting workshops"
+				}
 			],
-			"details": ["Medium", "Suitability", "Duration", "Materials", "Firing and collection"]
+			"details": [
+				"Medium",
+				"Suitability",
+				"Duration",
+				"Materials",
+				"Firing and collection"
+			],
+			"description": "Pottery and creative workshops in Perth for adults: wheel throwing, hand-building and painting, with prices, class lengths and booking links."
 		},
 		{
 			"key": "walking",
@@ -75,10 +162,22 @@
 			"reuse_term_id": 382,
 			"home": "community",
 			"kind": "group",
-			"feelings": ["move", "connect", "relax"],
+			"feelings": [
+				"move",
+				"connect",
+				"relax"
+			],
 			"intro": "Find company for your next walk. Explore local groups and compare meeting points, walking distances and joining details.",
 			"tags": [],
-			"details": ["Distance", "Terrain", "Pace", "Meeting point", "Accessibility", "Dogs and prams", "When"]
+			"details": [
+				"Distance",
+				"Terrain",
+				"Pace",
+				"Meeting point",
+				"Accessibility",
+				"Dogs and prams",
+				"When"
+			]
 		}
 	]
 }
