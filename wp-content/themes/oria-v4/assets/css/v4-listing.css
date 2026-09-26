@@ -743,6 +743,7 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
   --ov-ink: #253B36;
   --ov-soft: #5D6D63;
   --ov-rule: #E1E6DD;
+  --ov-gold: var(--brand-gold, #C9A24B);
   color: var(--ov-ink);
 }
 .oh-experience .ov-shell {
@@ -797,6 +798,20 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 .oh-experience .ov-act { padding: 16px 0; border-top: 1px solid var(--ov-rule); min-width: 0; }
 .oh-experience .ov-act:first-child { border-top: 0; padding-top: 6px; }
 .oh-experience .ov-act__name { margin: 0; font-family: inherit; font-size: 17px; font-weight: 600; line-height: 1.35; color: inherit; }
+/* Gold accents: a short rule under each heading and the link arrows.
+   Rules, not text underlines, so a heading never reads as a link. */
+.oh-experience .ov-h::after,
+.oh-experience .ov-act__name::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 3px;
+  margin-top: 14px;
+  border-radius: 2px;
+  background: var(--ov-gold);
+}
+.oh-experience .ov-act__name::after { width: 32px; height: 2px; margin: 8px 0 4px; }
+.oh-experience .ov-related span[aria-hidden] { color: var(--ov-gold); }
 .oh-experience .ov-act__note { max-width: 60ch; margin: 4px 0 0; font-size: 14px; line-height: 1.55; color: var(--ov-soft); }
 .oh-experience .ov-act .ov-related { margin-top: 2px; }
 .oh-experience .ov-also { margin: 14px 0 0; font-size: 14px; line-height: 1.55; color: var(--ov-soft); }
