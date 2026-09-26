@@ -18,7 +18,7 @@ of the parent theme's own scene images (see oria/assets/img/CREDITS.md).
 
 One photograph per top-level practice category, used full-bleed behind the
 category heading. Pexels licence; decorative (empty alt); none depicts a
-listed venue. Sub-categories use their parent category's picture.
+listed venue. Sub-categories use their parent category's picture unless they have their own; running-groups, ocean-swimming, pickleball and creative-workshops do (added 26 September 2026).
 
 | Category slug | Photo | Photographer |
 | --- | --- | --- |
@@ -28,6 +28,10 @@ listed venue. Sub-categories use their parent category's picture.
 | bodywork | https://www.pexels.com/photo/7235064/ | cottonbro studio |
 | fitness | https://www.pexels.com/photo/25596676/ | Ahmet Kurt |
 | experiences | https://www.pexels.com/photo/18327707/ | Eclipse Chasers |
+| running-groups | https://www.pexels.com/photo/37191727/ | Cara Denison |
+| ocean-swimming | https://www.pexels.com/photo/28275688/ | Sean Gallagher |
+| pickleball | https://www.pexels.com/photo/37143606/ | K |
+| creative-workshops | https://www.pexels.com/photo/10111544/ | Henlynn |
 | energy | https://www.pexels.com/photo/6013473/ | Anastasia  Shuraeva |
 | natural | https://www.pexels.com/photo/5480037/ | Yan Krukau |
 | beauty | https://www.pexels.com/photo/37229302/ | DΛVΞ GΛRCIΛ |
