@@ -228,7 +228,7 @@ while ( have_posts() ) :
 	$oria_expect = function_exists( '\Oria\Theme\expect_chips' ) ? \Oria\Theme\expect_chips( $oria_id ) : array();
 	$oria_echips = array();
 	foreach ( $oria_expect as $oria_e ) {
-		// Price and distance live in the hero and Location; how you book lives in "Before your first visit".
+		// Price and distance live in the hero and Location; how you book lives in "The experience".
 		if ( ! in_array( $oria_e['kind'], array( 'price', 'where', 'book' ), true ) ) {
 			$oria_echips[] = $oria_e;
 		}
@@ -904,68 +904,65 @@ while ( have_posts() ) :
 			}
 			$oria_svc_show = 4;
 			?>
-			<?php if ( $oria_cards || $oria_srest || $oria_comefor || $oria_reasons ) : ?>
-				<?php $oria_sec++; ?>
-				<section class="xp-sec" id="services" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
-					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php echo esc_html( $oria_is_classes ? __( 'Classes you’ll find here', 'oria' ) : __( 'What you’ll find here', 'oria' ) ); ?></h2>
-					<?php if ( $oria_cards ) : ?>
-						<p class="xp-sec__hint"><?php printf( esc_html__( 'Each one leads to everywhere else in %s that offers it.', 'oria' ), esc_html( $oria_cityw ) ); ?></p>
-						<ul class="xp-svc" id="xp-svc-list" data-xp-svc="<?php echo (int) $oria_svc_show; ?>">
-							<?php foreach ( $oria_cards as $oria_ci => $oria_c ) : ?>
-								<?php
-								$oria_cimg  = \Oria\Theme\facet_image( (string) $oria_c['slug'] );
-								$oria_ccard = function_exists( '\Oria\Core\Services\card' )
-									? \Oria\Core\Services\card( (string) $oria_c['slug'] )
-									: array( 'traits' => array() );
-								// Two facts at most, and never one that repeats the card's name or its one-line note.
-								$oria_ctraits = array_slice( array_values( array_filter(
-									(array) ( $oria_ccard['traits'] ?? array() ),
-									static fn( $oria_tr ) => '' !== trim( (string) $oria_tr )
-										&& false === stripos( (string) $oria_tr, (string) $oria_c['label'] )
-										&& false === stripos( (string) $oria_c['note'], trim( (string) $oria_tr ) )
-								) ), 0, 2 );
-								?>
-								<li class="xp-svc__item"<?php echo $oria_ci >= $oria_svc_show ? ' data-xp-extra' : ''; ?>>
-									<a class="xp-svc__card" href="<?php echo esc_url( $oria_c['url'] ); ?>">
-										<?php if ( $oria_cimg ) : ?>
-											<img class="xp-svc__img" src="<?php echo esc_url( $oria_cimg ); ?>" alt="" loading="lazy" decoding="async" width="160" height="160">
-										<?php else : ?>
-											<span class="xp-svc__img xp-svc__img--none" aria-hidden="true"></span>
-										<?php endif; ?>
-										<span class="xp-svc__body">
-											<b class="xp-svc__name"><?php echo esc_html( $oria_c['label'] ); ?></b>
-											<?php if ( '' !== $oria_c['note'] ) : ?>
-												<span class="xp-svc__note"><?php echo esc_html( $oria_c['note'] ); ?></span>
-											<?php endif; ?>
-											<?php if ( $oria_ctraits ) : ?>
-												<span class="xp-svc__facts">
-													<?php foreach ( $oria_ctraits as $oria_tr ) : ?>
-														<span class="xp-svc__fact"><span aria-hidden="true">&#10003;</span> <?php echo esc_html( (string) $oria_tr ); ?></span>
-													<?php endforeach; ?>
-												</span>
-											<?php endif; ?>
-											<span class="xp-svc__go"><?php printf( esc_html__( 'More places in %s', 'oria' ), esc_html( $oria_cityw ) ); ?> <span aria-hidden="true">&rarr;</span></span>
-										</span>
-									</a>
-								</li>
-							<?php endforeach; ?>
-						</ul>
-						<?php if ( count( $oria_cards ) > $oria_svc_show ) : ?>
-							<?php // Revealed by v4-listing.js, which also folds the extra cards; without it every card simply shows. ?>
-							<button type="button" class="btn btn--ghost xp-tap xp-svc__all" data-xp-svc-all aria-controls="xp-svc-list" aria-expanded="false" hidden
-								data-less="<?php esc_attr_e( 'Show fewer services', 'oria' ); ?>">
-								<?php printf( esc_html__( 'Show all services (%d)', 'oria' ), count( $oria_cards ) ); ?>
-							</button>
-						<?php endif; ?>
-					<?php endif; ?>
-					<?php if ( $oria_srest ) : ?>
-						<ul class="xp-tags xp-tags--services" aria-label="<?php esc_attr_e( 'Also offered', 'oria' ); ?>">
-							<?php foreach ( $oria_srest as $oria_r ) : ?>
-								<li class="xp-tag"><?php echo esc_html( $oria_r ); ?></li>
-							<?php endforeach; ?>
-						</ul>
-					<?php endif; ?>
-
+			<?php
+			/* --- The experience ---------------------------------------------
+			 * "What you'll find here" and "Before your first visit", as one
+			 * panel (template-parts/experience.php): the activities, the
+			 * practice's session facts, amenities and where it all came from.
+			 * Each fact has one home, so the old first-visit section is gone. */
+			$oria_ex_acts = array();
+			foreach ( $oria_cards as $oria_c ) {
+				$oria_ccard = function_exists( '\Oria\Core\Services\card' )
+					? \Oria\Core\Services\card( (string) $oria_c['slug'] )
+					: array( 'traits' => array() );
+				$oria_ex_acts[] = array(
+					'label'  => (string) $oria_c['label'],
+					'url'    => (string) $oria_c['url'],
+					'note'   => (string) $oria_c['note'],
+					// Two facts at most, and never one that repeats the name or the description.
+					'traits' => array_slice( array_values( array_filter(
+						(array) ( $oria_ccard['traits'] ?? array() ),
+						static fn( $oria_tr ) => '' !== trim( (string) $oria_tr )
+							&& false === stripos( (string) $oria_tr, (string) $oria_c['label'] )
+							&& false === stripos( (string) $oria_c['note'], trim( (string) $oria_tr ) )
+					) ), 0, 2 ),
+				);
+			}
+			// Session length and group size get their own row; the rest of the first-visit facts follow it.
+			$oria_ex_extra = array_values( array_filter(
+				$oria_first,
+				static fn( $oria_fv ) => ! in_array( $oria_fv[0], array( __( 'Typical session', 'oria' ), __( 'Group size', 'oria' ) ), true )
+			) );
+			$oria_sec++;
+			ob_start();
+			get_template_part(
+				'template-parts/experience',
+				null,
+				array(
+					'id'         => (int) $oria_id,
+					'sec'        => $oria_sec,
+					'activities' => $oria_ex_acts,
+					'also'       => $oria_srest,
+					'minutes'    => $oria_mins,
+					'group'      => $oria_group,
+					'extra'      => $oria_ex_extra,
+					'amenities'  => $oria_amenities,
+					'status'     => $oria_status,
+					'verified'   => $oria_verified,
+					'is_classes' => $oria_is_classes,
+					'city'       => $oria_cityw,
+					'icon'       => $oria_practice instanceof WP_Term ? $oria_practice->slug : '',
+				)
+			);
+			$oria_ex_html = (string) ob_get_clean();
+			if ( '' === trim( $oria_ex_html ) ) {
+				--$oria_sec; // Nothing to show: the number goes back unused.
+			} else {
+				echo $oria_ex_html; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in the template part
+			}
+			?>
+			<?php if ( $oria_comefor || $oria_reasons ) : ?>
+				<div class="xp-ex-extra">
 					<?php if ( $oria_comefor ) : ?>
 						<div class="xp-sub">
 							<h3 class="h3 xp-sub__title"><?php esc_html_e( 'People come here for', 'oria' ); ?></h3>
@@ -989,7 +986,7 @@ while ( have_posts() ) :
 							<p class="hint"><?php esc_html_e( 'Told to us by the practice.', 'oria' ); ?></p>
 						</div>
 					<?php endif; ?>
-				</section>
+				</div>
 			<?php endif; ?>
 
 			<?php
@@ -1060,58 +1057,6 @@ while ( have_posts() ) :
 							</article>
 						<?php endforeach; ?>
 					</div>
-				</section>
-			<?php endif; ?>
-
-			<?php
-			/* --- Before your first visit ------------------------------------
-			 * Stored first-visit fields and ticked amenities only; empty
-			 * fields are not shown. Where the details came from is said
-			 * plainly, with a date only when a real one is stored. */
-			?>
-			<?php if ( $oria_first || $oria_amenities ) : ?>
-				<?php $oria_sec++; ?>
-				<section class="xp-sec" id="first-visit" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
-					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Before your first visit', 'oria' ); ?></h2>
-					<?php if ( $oria_first ) : ?>
-						<dl class="xp-first">
-							<?php foreach ( $oria_first as $oria_fv ) : ?>
-								<div class="xp-first__item">
-									<dt><?php echo esc_html( $oria_fv[0] ); ?></dt>
-									<dd><?php echo esc_html( $oria_fv[1] ); ?></dd>
-								</div>
-							<?php endforeach; ?>
-						</dl>
-					<?php endif; ?>
-					<?php if ( $oria_amenities ) : ?>
-						<div class="amenity xp-amenity" id="amenities">
-							<?php foreach ( $oria_amenities as $oria_grp ) : ?>
-								<div class="amenity__group">
-									<h3 class="micro amenity__label"><?php echo esc_html( $oria_grp['label'] ); ?></h3>
-									<ul class="amenity__list">
-										<?php foreach ( $oria_grp['items'] as $oria_item ) : ?>
-											<li>
-												<?php echo \Oria\Theme\amenity_icon( (string) $oria_item['slug'] ); // phpcs:ignore WordPress.Security.EscapeOutput -- built SVG, no user input. ?>
-												<span><?php echo esc_html( (string) $oria_item['label'] ); ?></span>
-											</li>
-										<?php endforeach; ?>
-									</ul>
-								</div>
-							<?php endforeach; ?>
-						</div>
-					<?php endif; ?>
-					<p class="hint xp-source">
-						<?php
-						if ( 'unclaimed' === $oria_status ) {
-							esc_html_e( 'From public sources such as their website and Google listing, checked by hand. Not yet confirmed by the practice — worth checking with them before you go.', 'oria' );
-						} elseif ( $oria_verified ) {
-							/* translators: %s: date */
-							echo esc_html( sprintf( __( 'Told to us by the practice. Last confirmed %s.', 'oria' ), mysql2date( 'j F Y', $oria_verified ) ) );
-						} else {
-							esc_html_e( 'Told to us by the practice.', 'oria' );
-						}
-						?>
-					</p>
 				</section>
 			<?php endif; ?>
 

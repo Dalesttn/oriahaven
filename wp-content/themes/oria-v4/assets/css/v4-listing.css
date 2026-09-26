@@ -735,6 +735,154 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 .oh-glance .oh-safety strong { display: block; margin-bottom: 3px; font-size: 14px; font-weight: 600; }
 .oh-glance .oh-src { margin: 0; padding: 0 28px 22px; font-size: 13px; line-height: 1.55; color: var(--oh-soft); }
 
+/* The experience -- template-parts/experience.php. What this place offers,
+   the practice's session facts, amenities and provenance in one panel.
+   Shares the At a glance surface and ink; light-only like the rest of the
+   site, so the spec's light values are used directly. */
+.oh-experience {
+  --ov-ink: #253B36;
+  --ov-soft: #5D6D63;
+  --ov-rule: #E1E6DD;
+  color: var(--ov-ink);
+}
+.oh-experience .ov-shell {
+  min-width: 0;
+  background: #FCFBF7;
+  border: 1px solid #DCE3D9;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.oh-experience .ov-main { padding: 28px; }
+.oh-experience .ov-eyebrow {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #56695D;
+}
+.oh-experience .ov-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 12px; }
+.oh-experience .ov-h {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-edit);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: inherit;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.oh-experience .ov-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #EAF0E5;
+  color: #47614E;
+}
+.oh-experience .ov-icon svg { width: 24px; height: 24px; }
+.oh-experience .ov-description { max-width: 52ch; margin: 0; font-size: 15px; line-height: 1.6; color: var(--ov-soft); }
+.oh-experience .ov-traits { max-width: 60ch; margin: 6px 0 0; font-size: 13px; line-height: 1.55; color: var(--ov-soft); }
+
+/* Several activities: compact rows under one heading, each with its own link. */
+.oh-experience .ov-acts { margin: 4px 0 0; padding: 0; list-style: none; }
+.oh-experience .ov-act { padding: 16px 0; border-top: 1px solid var(--ov-rule); min-width: 0; }
+.oh-experience .ov-act:first-child { border-top: 0; padding-top: 6px; }
+.oh-experience .ov-act__name { margin: 0; font-family: inherit; font-size: 17px; font-weight: 600; line-height: 1.35; color: inherit; }
+.oh-experience .ov-act__note { max-width: 60ch; margin: 4px 0 0; font-size: 14px; line-height: 1.55; color: var(--ov-soft); }
+.oh-experience .ov-act .ov-related { margin-top: 2px; }
+.oh-experience .ov-also { margin: 14px 0 0; font-size: 14px; line-height: 1.55; color: var(--ov-soft); }
+.oh-experience .ov-also__k { font-weight: 600; color: var(--ov-ink); }
+
+.oh-experience .ov-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 24px;
+  margin: 24px 0 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--ov-rule);
+}
+.oh-experience .ov-fact { min-width: 0; }
+.oh-experience .ov-label { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-size: 13px; color: var(--ov-soft); }
+.oh-experience .ov-ico { flex-shrink: 0; width: 17px; height: 17px; }
+.oh-experience .ov-value { margin: 0; font-size: 24px; font-weight: 500; line-height: 1.2; overflow-wrap: anywhere; }
+.oh-experience .ov-unit { font-size: 15px; }
+.oh-experience .ov-note { margin: 6px 0 0; font-size: 12px; line-height: 1.5; color: var(--ov-soft); }
+
+.oh-experience .ov-more { display: grid; gap: 10px; margin: 20px 0 0; }
+.oh-experience .ov-facts + .ov-more { padding-top: 18px; border-top: 1px solid var(--ov-rule); }
+.oh-experience .ov-more__row { display: grid; grid-template-columns: minmax(7rem, max-content) 1fr; gap: 4px 16px; font-size: 14px; line-height: 1.5; }
+.oh-experience .ov-more__row dt { font-weight: 600; }
+.oh-experience .ov-more__row dd { margin: 0; color: var(--ov-soft); min-width: 0; overflow-wrap: anywhere; }
+
+.oh-experience .ov-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin: 0;
+  padding: 19px 28px;
+  list-style: none;
+  background: #EDF1E8;
+  font-size: 14px;
+}
+.oh-experience .ov-option { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.oh-experience .ov-option svg { flex-shrink: 0; width: 18px; height: 18px; }
+
+.oh-experience .ov-source { padding: 12px 28px 14px; background: #F8F7F2; font-size: 13px; line-height: 1.6; color: var(--ov-soft); }
+.oh-experience .ov-source summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  list-style: none;
+  cursor: pointer;
+}
+.oh-experience .ov-source summary::-webkit-details-marker { display: none; }
+.oh-experience .ov-source summary::before {
+  content: "";
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-right: 1.6px solid currentColor;
+  border-bottom: 1.6px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform .15s ease;
+}
+.oh-experience .ov-source[open] > summary::before { transform: rotate(45deg); }
+.oh-experience .ov-source p { max-width: 70ch; margin: 2px 0 4px; }
+
+.oh-experience .ov-after { margin: 14px 0 0; }
+.oh-experience .ov-related {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--deep);
+  text-decoration: none;
+}
+.oh-experience .ov-related:hover { text-decoration: underline; text-underline-offset: 3px; }
+.oh-experience .ov-related:focus-visible,
+.oh-experience .ov-source summary:focus-visible { outline: 2px solid var(--deep); outline-offset: 3px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { .oh-experience .ov-source summary::before { transition: none; } }
+
+.xp-ex-extra { margin-top: var(--s-5); }
+
+@media (max-width: 26.875rem) {
+  .oh-experience .ov-main { padding: 22px; }
+  .oh-experience .ov-h { font-size: 26px; }
+  .oh-experience .ov-options { padding: 16px 22px; }
+  .oh-experience .ov-source { padding: 10px 22px 12px; }
+  .oh-experience .ov-facts { gap: 16px; }
+  .oh-experience .ov-more__row { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 35rem) {
   .oh-glance .oh-top { padding: 24px 22px; }
   .oh-glance .oh-content { grid-template-columns: 1fr; gap: 24px; padding: 22px; }
