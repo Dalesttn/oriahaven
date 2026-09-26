@@ -417,10 +417,11 @@ a.xa-stop__name:hover { text-decoration-color: currentColor; }
 .oag-textlink:hover { text-decoration-thickness: 2px; }
 .oag a:focus-visible, .oag button:focus-visible, .oag summary:focus-visible { outline: 3px solid var(--brand-gold, #C9A24B); outline-offset: 3px; }
 
-/* 1. Hero: text on ivory, the photograph beside it. */
-.oag-hero { padding-block: clamp(20px, 3vw, 36px) clamp(24px, 4vw, 44px); }
-.oag-hero__grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
-.oag-hero--text .oag-hero__grid { grid-template-columns: minmax(0, 1fr); max-width: 60rem; }
+/* 1. Hero: the place's own photograph edge to edge, the words on a shade.
+   An area without its own photograph keeps the plain ivory version. */
+.oag-hero { position: relative; padding-block: clamp(20px, 3vw, 36px) clamp(24px, 4vw, 44px); }
+.oag-hero__grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+.oag-hero--text .oag-hero__grid { max-width: 60rem; }
 .oag-hero__grid > * { min-width: 0; }
 .oag-crumbs { margin: 0 0 18px; font-size: 13.5px; color: var(--oag-muted); }
 .oag-crumbs a { color: var(--oag-muted); }
@@ -429,9 +430,44 @@ a.xa-stop__name:hover { text-decoration-color: currentColor; }
 .oag-hero__intro { max-width: 54ch; margin: 18px 0 0; font-size: 1.0625rem; line-height: 1.6; }
 .oag-hero__acts { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; margin-top: 24px; }
 .oag-hero__meta { margin: 16px 0 0; font-size: 14px; color: var(--oag-muted); }
-.oag-hero__figure { margin: 0; }
-.oag-hero__img { display: block; width: 100%; height: auto; max-height: 440px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 22px; }
-.oag-hero__credit { margin-top: 8px; font-size: 12.5px; color: var(--oag-muted); }
+
+.oag-hero--photo {
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(460px, 44vw, 600px);
+  padding-block: clamp(84px, 9vw, 120px) clamp(36px, 5vw, 64px);
+  overflow: hidden;
+  color: #FCFBF7;
+  background: #1D2E2A;
+}
+.oag-hero__media { position: absolute; inset: 0; }
+.oag-hero__img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--oag-pos, 50% 50%); }
+.oag-hero__shade {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, rgba(20, 33, 30, .86) 0%, rgba(20, 33, 30, .7) 38%, rgba(20, 33, 30, .18) 72%, rgba(20, 33, 30, 0) 100%),
+    linear-gradient(0deg, rgba(20, 33, 30, .45) 0%, rgba(20, 33, 30, 0) 40%);
+}
+.oag-hero--photo .oag-hero__grid { position: relative; z-index: 1; width: 100%; }
+.oag-hero--photo .oag-hero__copy { max-width: 40rem; }
+.oag-hero--photo .oag-crumbs,
+.oag-hero--photo .oag-crumbs a,
+.oag-hero--photo .oag-hero__meta { color: rgba(252, 251, 247, .82); }
+.oag-hero--photo .oag-eyebrow { color: #E4CE95; }
+.oag-hero--photo .oag-hero__title,
+.oag-hero--photo .oag-hero__intro { color: #FCFBF7; }
+.oag-hero--photo .oag-hero__sub { color: #D9E4D6; }
+.oag-hero--photo .oag-btn--primary { background: #FCFBF7; color: var(--oag-ink); }
+.oag-hero--photo .oag-btn--primary:hover { background: #E3ECDF; color: var(--oag-ink); }
+.oag-hero--photo .oag-btn--secondary { border-color: rgba(252, 251, 247, .8); color: #FCFBF7; }
+.oag-hero--photo .oag-btn--secondary:hover { background: rgba(252, 251, 247, .12); color: #FCFBF7; }
+.oag-hero--photo .oag-textlink { color: #FCFBF7; }
+.oag-hero--photo a:focus-visible,
+.oag-hero--photo button:focus-visible { outline-color: #E9C788; }
+.oag-hero__credit {
+  position: absolute; z-index: 1; right: var(--gutter); bottom: 10px;
+  margin: 0; font-size: 12px; color: rgba(252, 251, 247, .75);
+}
 
 /* 2. In-page links and the local paragraph. */
 .oag-intro { padding-bottom: clamp(8px, 2vw, 16px); }
@@ -546,8 +582,12 @@ a.xa-stop__name:hover { text-decoration-color: currentColor; }
   .oag-tiles, .oag-visit, .oag-local { grid-template-columns: 1fr; }
 }
 @media (max-width: 50rem) {
-  .oag-hero__grid { grid-template-columns: 1fr; }
-  .oag-hero__img { aspect-ratio: 16 / 9; max-height: 320px; }
+  /* Phones: the shade comes up from the bottom, where the words sit. */
+  .oag-hero--photo { min-height: 560px; padding-top: 140px; }
+  .oag-hero__shade {
+    background: linear-gradient(0deg, rgba(20, 33, 30, .92) 0%, rgba(20, 33, 30, .8) 55%, rgba(20, 33, 30, .25) 85%, rgba(20, 33, 30, .1) 100%);
+  }
+  .oag-hero__credit { right: auto; left: var(--gutter); top: 10px; bottom: auto; }
 }
 @media (max-width: 30rem) {
   .oag-groups { grid-template-columns: 1fr; }

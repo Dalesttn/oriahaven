@@ -55,7 +55,7 @@ if ( $oria_photo ) {
 		'wp_head',
 		static function () use ( $oria_hz ): void {
 			if ( '' !== $oria_hz['mid'] ) {
-				printf( '<link rel="preload" as="image" href="%1$s" imagesrcset="%2$s 960w, %1$s 1920w" imagesizes="(max-width: 50rem) 100vw, 45vw" fetchpriority="high">' . "\n", esc_url( $oria_hz['wide'] ), esc_url( $oria_hz['mid'] ) );
+				printf( '<link rel="preload" as="image" href="%1$s" imagesrcset="%2$s 960w, %1$s 1920w" imagesizes="100vw" fetchpriority="high">' . "\n", esc_url( $oria_hz['wide'] ), esc_url( $oria_hz['mid'] ) );
 			} else {
 				printf( '<link rel="preload" as="image" href="%s" fetchpriority="high">' . "\n", esc_url( $oria_hz['wide'] ) );
 			}
@@ -224,7 +224,14 @@ $oria_region_name = ( $oria_region && $oria_term && $oria_region->term_id !== $o
 <div class="oag" data-xc-root>
 
 <!-- 1. The place -->
-<section class="oag-hero<?php echo $oria_photo ? '' : ' oag-hero--text'; ?>" id="decide" aria-labelledby="oagTitle">
+<section class="oag-hero<?php echo $oria_photo ? ' oag-hero--photo' : ' oag-hero--text'; ?>" id="decide" aria-labelledby="oagTitle"<?php echo $oria_photo ? ' style="--oag-pos:' . esc_attr( $oria_hz['pos'] ) . '"' : ''; ?>>
+	<?php if ( $oria_photo ) : ?>
+		<?php // The place's own photograph, edge to edge; the shade keeps the words readable. ?>
+		<div class="oag-hero__media">
+			<img class="oag-hero__img" src="<?php echo esc_url( $oria_hz['wide'] ); ?>"<?php echo '' !== $oria_hz['mid'] ? ' srcset="' . esc_url( $oria_hz['mid'] ) . ' 960w, ' . esc_url( $oria_hz['wide'] ) . ' 1920w" sizes="100vw"' : ''; ?> width="1920" height="1280" alt="<?php echo esc_attr( $oria_hz['alt'] ); ?>" fetchpriority="high" decoding="async">
+		</div>
+		<div class="oag-hero__shade" aria-hidden="true"></div>
+	<?php endif; ?>
 	<div class="oag-wrap oag-hero__grid">
 		<div class="oag-hero__copy">
 			<nav class="crumbs oag-crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
@@ -277,15 +284,10 @@ $oria_region_name = ( $oria_region && $oria_term && $oria_region->term_id !== $o
 				</p>
 			<?php endif; ?>
 		</div>
-		<?php if ( $oria_photo ) : ?>
-			<figure class="oag-hero__figure">
-				<img class="oag-hero__img" src="<?php echo esc_url( $oria_hz['wide'] ); ?>"<?php echo '' !== $oria_hz['mid'] ? ' srcset="' . esc_url( $oria_hz['mid'] ) . ' 960w, ' . esc_url( $oria_hz['wide'] ) . ' 1920w" sizes="(max-width: 50rem) 100vw, 45vw"' : ''; ?> width="1920" height="1280" alt="<?php echo esc_attr( $oria_hz['alt'] ); ?>" style="object-position:<?php echo esc_attr( $oria_hz['pos'] ); ?>" fetchpriority="high" decoding="async">
-				<?php if ( '' !== $oria_hz['credit'] ) : ?>
-					<figcaption class="oag-hero__credit"><?php echo esc_html( $oria_hz['credit'] ); ?></figcaption>
-				<?php endif; ?>
-			</figure>
-		<?php endif; ?>
 	</div>
+	<?php if ( $oria_photo && '' !== $oria_hz['credit'] ) : ?>
+		<p class="oag-hero__credit"><?php echo esc_html( $oria_hz['credit'] ); ?></p>
+	<?php endif; ?>
 </section>
 
 <!-- 2. The way round the page, and the place in a paragraph -->
