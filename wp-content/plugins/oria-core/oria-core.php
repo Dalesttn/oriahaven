@@ -134,6 +134,7 @@ require_once ORIA_CORE_DIR . 'includes/ask.php';
 require_once ORIA_CORE_DIR . 'includes/trends.php';
 require_once ORIA_CORE_DIR . 'includes/sources.php';
 require_once ORIA_CORE_DIR . 'includes/sources-cli.php';
+require_once ORIA_CORE_DIR . 'includes/glance.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them

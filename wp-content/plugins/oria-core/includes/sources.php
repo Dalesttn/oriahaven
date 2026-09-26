@@ -80,6 +80,7 @@ function bootstrap(): void {
 	add_filter( 'oria_publish_missing', __NAMESPACE__ . '\publish_missing', 10, 2 );
 	add_action( 'acf/init', __NAMESPACE__ . '\fields' );
 	add_action( 'add_meta_boxes_' . PostTypes\LISTING, __NAMESPACE__ . '\meta_boxes' );
+	add_filter( 'oria_places_hidden', __NAMESPACE__ . '\places_hidden', 10, 2 );
 	// Priority 5: before the publish guard (20) reads the review state.
 	add_action( 'save_post_' . PostTypes\LISTING, __NAMESPACE__ . '\save_review', 5, 1 );
 	add_filter( 'bulk_actions-edit-' . PostTypes\LISTING, __NAMESPACE__ . '\bulk_actions' );
@@ -186,6 +187,29 @@ function bulk_notice(): void {
 	echo '</div>';
 }
 
+/* ---------------------------------------------------------- Google match */
+
+/** Meta: '1' once an editor has checked the Google match is this organisation. */
+const PLACES_OK = '_oria_places_ok';
+
+/**
+ * Google photos, rating and reviews stay off a research listing until an
+ * editor confirms the match.
+ *
+ * Places matches by name, and a name is weak evidence for an organisation
+ * nobody has claimed: on the first batch it picked a different business
+ * for four of eight listings -- a learn-to-swim school's pool and 117
+ * reviews for an ocean swim group, a competitor for a pickleball coach, a
+ * park for a walking group. Another business's photographs and stars on
+ * the page are worse than none.
+ */
+function places_hidden( bool $hidden, int $post_id ): bool {
+	if ( $hidden || '' === (string) get_post_meta( $post_id, BATCH, true ) ) {
+		return $hidden;
+	}
+	return '1' !== (string) get_post_meta( $post_id, PLACES_OK, true );
+}
+
 /* ------------------------------------------------------------- the editor */
 
 function meta_boxes( \WP_Post $post ): void {
@@ -216,6 +240,13 @@ function evidence_box( \WP_Post $post ): void {
 		printf( '<option value="%1$s"%2$s>%1$s</option>', esc_attr( $s ), selected( $state, $s, false ) );
 	}
 	echo '</select></p><p class="description">' . esc_html__( 'Publishing is held until this says reviewed: every fact below checked against its page, and the join link working.', 'oria' ) . '</p>';
+
+	printf(
+		'<p><label><input type="checkbox" name="oria_src_places_ok" value="1"%1$s> %2$s</label></p><p class="description">%3$s</p>',
+		checked( '1', (string) get_post_meta( $post->ID, PLACES_OK, true ), false ),
+		esc_html__( 'Show Google photos and reviews', 'oria' ),
+		esc_html__( 'Off until ticked. Automatic matching picked a different business for half the first batch. After ticking, view the page and check the photos and rating belong to this organisation; if not, untick and clear the Google Place ID field.', 'oria' )
+	);
 
 	if ( is_array( $ev ) && $ev ) {
 		echo '<details><summary>' . esc_html( sprintf( /* translators: %d: count */ __( '%d evidence excerpts', 'oria' ), count( $ev ) ) ) . '</summary><ul style="margin-left:1em;list-style:disc">';
@@ -272,6 +303,9 @@ function save_review( int $post_id ): void {
 			update_post_meta( $post_id, REVIEW, $state );
 			update_post_meta( $post_id, REVIEWER, get_current_user_id() );
 		}
+	}
+	if ( '' !== (string) get_post_meta( $post_id, BATCH, true ) ) {
+		empty( $_POST['oria_src_places_ok'] ) ? delete_post_meta( $post_id, PLACES_OK ) : update_post_meta( $post_id, PLACES_OK, '1' );
 	}
 	if ( ! empty( $_POST['oria_src_dismiss'] ) ) {
 		$all = json_decode( (string) get_post_meta( $post_id, PROPOSAL, true ), true );
@@ -451,7 +485,22 @@ function cost_label( string $cost ): string {
 }
 
 /** The word for the join action, from the method the organiser uses. */
-function join_label( string $method ): string {
+function join_label( string $method, string $url = '' ): string {
+	/*
+	 * "Email the organiser" on a link that opens a web page is a small lie.
+	 * The email and message wordings are kept for links that really do
+	 * that; anything else is the page that explains how to join.
+	 */
+	if ( '' !== $url ) {
+		$scheme = strtolower( (string) wp_parse_url( $url, PHP_URL_SCHEME ) );
+		$host   = strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) );
+		if ( 'email' === $method && 'mailto' !== $scheme ) {
+			$method = 'website';
+		}
+		if ( 'message' === $method && ! in_array( $host, array( 'wa.me', 'chat.whatsapp.com', 'm.me' ), true ) ) {
+			$method = 'website';
+		}
+	}
 	$map = array(
 		'booking'  => __( 'Book a session', 'oria' ),
 		'register' => __( 'Register to join', 'oria' ),

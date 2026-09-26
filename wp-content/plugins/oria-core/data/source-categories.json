@@ -34,7 +34,17 @@
 				"Meeting point",
 				"When"
 			],
-			"description": "Running groups in Perth: social runs, run/walk groups and coached sessions, with meeting points, costs and beginner options from each organiser."
+			"description": "Running groups in Perth: social runs, run/walk groups and coached sessions, with meeting points, costs and beginner options from each organiser.",
+			"glance": {
+				"eyebrow": "Your run at a glance",
+				"heading": "Know the pace before you head out.",
+				"when": "When to run",
+				"summary": [
+					"Distance",
+					"Pace bands",
+					"recurrence"
+				]
+			}
 		},
 		{
 			"key": "ocean",
@@ -78,7 +88,21 @@
 				"Equipment",
 				"Weather and cancellations"
 			],
-			"description": "Ocean swimming and social dip groups around Perth, with session format, swimming ability, meeting point and supervision as each organiser states it."
+			"description": "Ocean swimming and social dip groups around Perth, with session format, swimming ability, meeting point and supervision as each organiser states it.",
+			"glance": {
+				"eyebrow": "Your swim at a glance",
+				"heading": "A little planning. More ocean time.",
+				"when": "When to meet",
+				"summary": [
+					"Distance",
+					"recurrence",
+					"Format"
+				],
+				"ask_supervision": true,
+				"rename": {
+					"Equipment": "What to bring"
+				}
+			}
 		},
 		{
 			"key": "pickleball",
@@ -112,7 +136,17 @@
 				"Equipment",
 				"Pricing basis"
 			],
-			"description": "Where to play pickleball in Perth: social sessions, come-and-try and lessons, with venues, session levels, equipment and prices."
+			"description": "Where to play pickleball in Perth: social sessions, come-and-try and lessons, with venues, session levels, equipment and prices.",
+			"glance": {
+				"eyebrow": "Your session at a glance",
+				"heading": "Know the session before you arrive.",
+				"when": "Session times",
+				"summary": [
+					"Session levels",
+					"Duration",
+					"cost"
+				]
+			}
 		},
 		{
 			"key": "creative",
@@ -152,7 +186,17 @@
 				"Materials",
 				"Firing and collection"
 			],
-			"description": "Pottery and creative workshops in Perth for adults: wheel throwing, hand-building and painting, with prices, class lengths and booking links."
+			"description": "Pottery and creative workshops in Perth for adults: wheel throwing, hand-building and painting, with prices, class lengths and booking links.",
+			"glance": {
+				"eyebrow": "Your workshop at a glance",
+				"heading": "What to expect in the studio.",
+				"when": "Workshop times",
+				"summary": [
+					"Medium",
+					"Duration",
+					"cost"
+				]
+			}
 		},
 		{
 			"key": "walking",
@@ -177,7 +221,17 @@
 				"Accessibility",
 				"Dogs and prams",
 				"When"
-			]
+			],
+			"glance": {
+				"eyebrow": "Your walk at a glance",
+				"heading": "Where to meet, and how far.",
+				"when": "When to meet",
+				"summary": [
+					"Distance",
+					"Pace",
+					"recurrence"
+				]
+			}
 		}
 	]
 }

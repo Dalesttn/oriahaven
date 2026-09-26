@@ -608,26 +608,148 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 .xp-amenity + .xp-source { margin-top: var(--s-4); }
 .xp-source { font-size: var(--fs-xs); }
 
-/* How to join -- groups, clubs and class venues. Chips only for what the
-   organiser actually said; the dl reuses the first-visit tiles. */
-.xp-join__chips {
+/* At a glance -- an activity listing's joining details (template-parts/joining.php).
+   One panel: a sage header for short facts, the timetable beside what to
+   prepare, and a supervision notice only when the organiser says there is
+   none. Everything scoped under .oh-glance; the site is light-only, so the
+   spec's light values are used as they are. */
+.oh-glance {
+  --oh-ink: #253B36;
+  --oh-soft: #5D6D63;
+  --oh-rule: #E4E8DF;
+  color: var(--oh-ink);
+}
+.oh-glance .oh-panel {
+  min-width: 0;
+  background: #FCFBF7;
+  border: 1px solid #DFE5DC;
+  border-radius: 22px;
+  overflow: hidden;
+}
+.oh-glance .oh-top { padding: 26px 28px; background: #EAF0E7; }
+.oh-glance .oh-eyebrow {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #50675B;
+}
+.oh-glance .oh-title {
+  margin: 0 0 18px;
+  font-family: var(--font-edit);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: inherit;
+  text-wrap: balance;
+}
+.oh-glance .oh-ico { flex-shrink: 0; width: 18px; height: 18px; }
+.oh-glance .oh-location { display: flex; align-items: flex-start; gap: 8px; margin: 0 0 20px; font-size: 16px; line-height: 1.4; overflow-wrap: anywhere; }
+.oh-glance .oh-location .oh-ico { margin-top: 2px; }
+.oh-glance .oh-top > :last-child { margin-bottom: 0; }
+.oh-glance .oh-metrics { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 0; padding: 0; list-style: none; }
+.oh-glance .oh-metric { display: flex; align-items: center; gap: 9px; min-width: 0; font-size: 14px; line-height: 1.4; }
+.oh-glance .oh-metric strong { font-size: 17px; font-weight: 600; }
+
+.oh-glance .oh-content { display: grid; grid-template-columns: 1.15fr 1fr; gap: 28px; padding: 26px 28px; }
+.oh-glance .oh-content--one { grid-template-columns: 1fr; }
+.oh-glance .oh-content > * { min-width: 0; }
+.oh-glance .oh-h { display: flex; align-items: center; gap: 8px; margin: 0 0 16px; font-family: inherit; font-size: 16px; font-weight: 600; line-height: 1.3; color: inherit; }
+.oh-glance .oh-kicker { margin: 0 0 4px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: #5A6A60; }
+.oh-glance .oh-line {
   display: flex;
   flex-wrap: wrap;
-  gap: .5rem;
-  margin: 0 0 var(--s-4);
-  padding: 0;
-  list-style: none;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--oh-rule);
+  font-size: 14px;
 }
-.xp-join__chips li {
-  padding: .35rem .8rem;
-  border-radius: var(--radius-pill);
-  background: var(--sand-2);
-  font-size: var(--fs-sm);
+.oh-glance .oh-time { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.oh-glance .oh-rows + .oh-kicker { margin-top: 18px; }
+.oh-glance .oh-text { margin: 0 0 10px; font-size: 15px; line-height: 1.5; }
+.oh-glance .oh-more { margin-top: 12px; font-size: 14px; }
+.oh-glance .oh-more summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 0;
+  font-weight: 600;
+  color: #3C6150;
+  cursor: pointer;
+}
+/* display:flex drops the native marker, so the disclosure draws its own. */
+.oh-glance .oh-more summary { list-style: none; gap: 10px; }
+.oh-glance .oh-more summary::-webkit-details-marker { display: none; }
+.oh-glance .oh-more summary::before {
+  content: "";
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  margin-left: 2px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform .15s ease;
+}
+.oh-glance .oh-more[open] > summary::before { transform: rotate(45deg); }
+@media (prefers-reduced-motion: reduce) { .oh-glance .oh-more summary::before { transition: none; } }
+.oh-glance .oh-more summary:focus-visible,
+.oh-glance .oh-link:focus-visible { outline: 2px solid var(--deep); outline-offset: 3px; border-radius: 4px; }
+.oh-glance .oh-small { margin: 12px 0 0; font-size: 13px; line-height: 1.55; color: var(--oh-soft); }
+.oh-glance .oh-act { margin: 16px 0 0; }
+.oh-glance .oh-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
-.xp-join__act { margin: var(--s-5) 0 0; }
-.xp-join__src { margin-top: var(--s-4); font-size: var(--fs-xs); }
+
+.oh-glance .oh-prep { border-left: 1px solid var(--oh-rule); padding-left: 28px; }
+.oh-glance .oh-content--one .oh-prep { border-left: 0; padding-left: 0; }
+.oh-glance .oh-items { margin: 0; }
+.oh-glance .oh-item { margin: 0 0 17px; font-size: 14px; line-height: 1.5; }
+.oh-glance .oh-item:last-child { margin-bottom: 0; }
+.oh-glance .oh-item dt { margin: 0 0 3px; font-weight: 600; }
+.oh-glance .oh-item dd { margin: 0; color: var(--oh-soft); overflow-wrap: anywhere; }
+
+.oh-glance .oh-safety {
+  display: flex;
+  gap: 12px;
+  margin: 0 28px 26px;
+  padding: 17px 20px;
+  border-radius: 12px;
+  background: #F5ECDC;
+  color: #6A4B28;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.oh-glance .oh-safety .oh-ico { margin-top: 2px; }
+.oh-glance .oh-safety strong { display: block; margin-bottom: 3px; font-size: 14px; font-weight: 600; }
+.oh-glance .oh-src { margin: 0; padding: 0 28px 22px; font-size: 13px; line-height: 1.55; color: var(--oh-soft); }
+
+@media (max-width: 35rem) {
+  .oh-glance .oh-top { padding: 24px 22px; }
+  .oh-glance .oh-content { grid-template-columns: 1fr; gap: 24px; padding: 22px; }
+  .oh-glance .oh-prep { padding-left: 0; padding-top: 22px; border-left: 0; border-top: 1px solid var(--oh-rule); }
+  .oh-glance .oh-content--one .oh-prep { padding-top: 0; border-top: 0; }
+  .oh-glance .oh-safety { margin: 0 22px 22px; }
+  .oh-glance .oh-src { padding: 0 22px 20px; }
+  .oh-glance .oh-title { font-size: 25px; }
+}
+@media (max-width: 22rem) {
+  .oh-glance .oh-top { padding: 22px 18px; }
+  .oh-glance .oh-content { padding: 20px 18px; }
+  .oh-glance .oh-safety { margin: 0 18px 20px; padding: 15px 16px; }
+  .oh-glance .oh-src { padding: 0 18px 18px; }
+}
 
 /* The parent's team part opens its own .section: flatten it into the flow. */
 .xp-part:empty { display: none; }

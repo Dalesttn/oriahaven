@@ -950,8 +950,21 @@ function rows( string $name, array $fallback = array(), $post_id = false ): arra
  */
 function hours_hidden( $post_id = false ): bool {
 	$id = $post_id ? (int) $post_id : get_the_ID();
+	if ( ! $id ) {
+		return false;
+	}
 
-	return (bool) ( $id && get_post_meta( $id, 'hours_hide', true ) );
+	/*
+	 * A group -- a running club, a swim group -- has session times, not
+	 * opening hours. Google's hours for whatever it matched ("Hours today
+	 * 12-5pm" beside a 6:15am swim) are not the group's and contradict the
+	 * timetable, so when we hold its schedule, business hours are not shown.
+	 */
+	if ( 'group' === (string) get_post_meta( $id, 'kind', true ) && '' !== trim( (string) get_post_meta( $id, 'schedule_text', true ) ) ) {
+		return true;
+	}
+
+	return (bool) get_post_meta( $id, 'hours_hide', true );
 }
 
 /**

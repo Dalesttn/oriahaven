@@ -72,7 +72,7 @@ Import writes drafts only. Rerunning refreshes this batch's own *unedited* draft
 3. Resolve the flags — Rise and Run (affiliate-heavy site), Pickleball Perth vs Perth'ect (same Craigie slot), ClayMake (Sunday class vs Sunday closed), Manning Park Trail Runners (verified via WAMC).
 4. Click the join link. It must work.
 5. Unknown stays unknown. Don't turn a blank price into Free or a blank into "beginners welcome".
-6. Check what Google Places pulls in once the page renders (photos, rating). It matches by name; for a group whose Google match is a venue rather than the organisation, tick *Do not show Google reviews or photos here*.
+6. Google photos, rating and reviews are **off** on research listings until you tick *Show Google photos and reviews* in the research box. Automatic matching picked a different business for 4 of the first 8 (PodSquad got a learn-to-swim school's pool and 117 reviews; Pickleball Perth got Perth Pickleball Centre). After ticking, view the page and check the photos belong to this organisation; if not, untick and clear the Google Place ID field.
 7. Set **Review state → reviewed** and publish. The publish guard holds a batch listing at Pending until it is reviewed and has a way to join.
 8. For **Rise and Run Club** and **The Perth Walking Group**, the *Proposed from public sources* box lists what research found. Copy what's right into the fields, then tick *Dismiss*.
 

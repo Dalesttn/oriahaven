@@ -715,6 +715,10 @@ function hidden( int $post_id ): bool {
 	if ( (bool) get_field( 'places_hide', $post_id ) ) {
 		return true;
 	}
+	// Other modules may hold a listing back (Sources: unconfirmed research drafts).
+	if ( (bool) apply_filters( 'oria_places_hidden', false, $post_id ) ) {
+		return true;
+	}
 
 	return 'off' === strtolower( trim( (string) get_field( 'google_place_id', $post_id ) ) );
 }

@@ -1492,6 +1492,31 @@ class Command {
 			$fails += $ok ? 0 : 1;
 		};
 
+		// Schedules: only explicit patterns become timetables; seasons only
+		// when the dates allow it.
+		$pod = 'Every day. Summer (Sept-April): main group weekdays 6:15am, weekends 7am. Winter (May-August): main group weekdays 6:45am, weekends 7:30am. Earlier groups swim further.';
+		$at  = static fn( string $d ): \DateTimeImmutable => new \DateTimeImmutable( $d . ' 09:00', new \DateTimeZone( 'Australia/Perth' ) );
+		$sc  = \Oria\Core\Glance\schedule( $pod, $at( '2026-10-15' ) );
+		$t( 2 === count( $sc['seasons'] ) && 'Summer' === $sc['seasons'][0]['name'] && ! $sc['open_all'], 'mid-October shows Summer first, Winter folded' );
+		$t( '6:15 am' === ( $sc['seasons'][0]['rows'][0]['time'] ?? '' ) && 'Weekends' === ( $sc['seasons'][0]['rows'][1]['label'] ?? '' ), 'rows read as Weekdays 6:15 am / Weekends 7:00 am' );
+		$t( 'Every day' === $sc['recurrence'] && in_array( 'Earlier groups swim further.', $sc['notes'], true ) && in_array( 'Times shown are for the main group.', $sc['notes'], true ), 'recurrence and both qualifying notes are kept' );
+		$sc = \Oria\Core\Glance\schedule( $pod, $at( '2026-06-15' ) );
+		$t( 'Winter' === $sc['seasons'][0]['name'] && ! $sc['open_all'], 'mid-June shows Winter first' );
+		$sc = \Oria\Core\Glance\schedule( $pod, $at( '2026-04-27' ) );
+		$t( $sc['open_all'], 'late April (a week before Winter) shows both seasons open' );
+		$sc = \Oria\Core\Glance\schedule( $pod, $at( '2026-08-30' ) );
+		$t( $sc['open_all'], 'end of August shows both seasons open' );
+		$sc = \Oria\Core\Glance\schedule( 'Summer (Sept-April): weekdays 6am. Winter (April-August): weekdays 7am.', $at( '2026-10-15' ) );
+		$t( $sc['open_all'], 'overlapping month ranges choose no season' );
+		$sc = \Oria\Core\Glance\schedule( 'Summer (Dec-Feb): weekdays 6am. Winter (Jun-Aug): weekdays 7am.', $at( '2026-10-15' ) );
+		$t( $sc['open_all'], 'a month no season covers chooses no season' );
+		$sc = \Oria\Core\Glance\schedule( 'Summer (Sept-April): weekdays 6:15am, except public holidays.', $at( '2026-10-15' ) );
+		$t( ! $sc['seasons'] && 1 === count( $sc['lines'] ) && false !== strpos( $sc['lines'][0], 'except public holidays' ), 'an exception is never parsed away: the text is shown as written' );
+		$sc = \Oria\Core\Glance\schedule( 'Tuesdays and Thursdays, 6pm.', $at( '2026-10-15' ) );
+		$t( ! $sc['seasons'] && array( 'Tuesdays and Thursdays, 6pm.' ) === $sc['lines'], 'prose stays prose' );
+		$sc = \Oria\Core\Glance\schedule( 'Mon 6-7pm Perry Lakes; Wed 6am West Leederville; Sat 7am Lake Monger.', $at( '2026-10-15' ) );
+		$t( 3 === count( $sc['lines'] ), 'a semicolon list becomes one line per entry, words unchanged' );
+
 		// A fixture page, so verify has something real to check against.
 		$url = 'https://selftest.invalid/page';
 		self::store( $url, array( 'url' => $url, 'title' => 'Selftest', 'desc' => '', 'jsonld' => array(), 'links' => array(), 'text' => 'ZZ Selftest Runners meet in Hyde Park every Saturday at 7am. Free to join. Social running for all paces.', 'fetched_at' => gmdate( 'c' ) ) );
