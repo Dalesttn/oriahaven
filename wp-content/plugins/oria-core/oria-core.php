@@ -62,6 +62,7 @@ require_once ORIA_CORE_DIR . 'includes/search.php';
 require_once ORIA_CORE_DIR . 'includes/admin-import.php';
 require_once ORIA_CORE_DIR . 'includes/billing.php';
 require_once ORIA_CORE_DIR . 'includes/import.php';
+require_once ORIA_CORE_DIR . 'includes/acf-refs.php';
 require_once ORIA_CORE_DIR . 'includes/compare.php';
 require_once ORIA_CORE_DIR . 'includes/discover.php';
 require_once ORIA_CORE_DIR . 'includes/events.php';

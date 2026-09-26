@@ -1582,21 +1582,30 @@ class Command {
 	}
 
 	private function write_meta( int $post_id, array $row ): void {
+		/*
+		 * Every ACF field by KEY, never by name. By name, ACF resolves to the
+		 * first field of that name it finds: "kind" landed on the Classes
+		 * repeater's sub-field (field_oria_cls_kind), "format" on the reset
+		 * tool's, "email" on a page section's. The value survived, the
+		 * reference meta did not. Same rule as SourcesCli::write_listing().
+		 */
 		$scalar = array(
-			'claim_status' => (string) ( $row['status'] ?? 'unclaimed' ),
-			'address'      => (string) ( $row['address'] ?? '' ),
-			'phone'        => (string) ( $row['phone'] ?? '' ),
-			'email'        => (string) ( $row['email'] ?? '' ),
-			'website'      => (string) ( $row['web'] ?? '' ),
-			'price_from'   => $row['priceFrom'] ?? '',
-			'price_band'   => (string) ( $row['priceBand'] ?? '' ),
-			'format'       => (string) ( $row['format'] ?? 'in-person' ),
+			'field_oria_claim_status' => (string) ( $row['status'] ?? 'unclaimed' ),
+			'field_oria_address'      => (string) ( $row['address'] ?? '' ),
+			'field_oria_phone'        => (string) ( $row['phone'] ?? '' ),
+			'field_oria_email'        => (string) ( $row['email'] ?? '' ),
+			'field_oria_website'      => (string) ( $row['web'] ?? '' ),
+			'field_oria_price_from'   => $row['priceFrom'] ?? '',
+			'field_oria_price_band'   => (string) ( $row['priceBand'] ?? '' ),
+			'field_oria_format'       => (string) ( $row['format'] ?? 'in-person' ),
 			// practice unless the seed says otherwise -- see Theme\\words().
-			'kind'         => in_array( $row['kind'] ?? '', array( 'practice', 'place', 'spot' ), true ) ? (string) $row['kind'] : 'practice',
-			'rating'       => $row['rating'] ?? '',
-			'review_count' => $row['reviews'] ?? '',
-			'next_session' => (string) ( $row['next'] ?? '' ),
+			'field_oria_kind'         => in_array( $row['kind'] ?? '', array( 'practice', 'place', 'spot' ), true ) ? (string) $row['kind'] : 'practice',
+			'field_oria_next_session' => (string) ( $row['next'] ?? '' ),
 		);
+
+		// Plain post meta: rating/review_count have no ACF field behind them.
+		update_post_meta( $post_id, 'rating', $row['rating'] ?? '' );
+		update_post_meta( $post_id, 'review_count', $row['reviews'] ?? '' );
 
 		// The seed names a theme scene image (e.g. "scene-hall"); keep it so
 		// the templates can show art-directed placeholders until the listing
@@ -1609,7 +1618,7 @@ class Command {
 			if ( function_exists( 'update_field' ) ) {
 				update_field( $key, $value, $post_id );
 			} else {
-				update_post_meta( $post_id, $key, $value );
+				update_post_meta( $post_id, substr( $key, strlen( 'field_oria_' ) ), $value );
 			}
 		}
 
@@ -1630,7 +1639,7 @@ class Command {
 				continue;
 			}
 			if ( function_exists( 'update_field' ) ) {
-				update_field( $key, $row[ $key ], $post_id );
+				update_field( 'field_oria_' . $key, $row[ $key ], $post_id );
 			} else {
 				update_post_meta( $post_id, $key, $row[ $key ] );
 			}
@@ -1650,7 +1659,7 @@ class Command {
 			(array) ( $row['services'] ?? array() )
 		);
 		if ( function_exists( 'update_field' ) ) {
-			update_field( 'services', $services, $post_id );
+			update_field( 'field_oria_services', $services, $post_id );
 		}
 	}
 }
