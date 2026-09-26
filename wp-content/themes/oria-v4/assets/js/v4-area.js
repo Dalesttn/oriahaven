@@ -7,8 +7,9 @@
      1. "Swap" on a reset-plan stop: the next place that fits that stop,
         from the candidates the server listed (all real listings here),
         announced politely for screen readers;
-     2. "Explore the map" in the hero and the Where panel: v4-category.js
-        switches the results to the map; this brings them into view.
+     2. "View map" in the hero and the Where panel: v4-category.js
+        switches the results to the map; this brings them into view;
+     3. a link to #plan-... opens that day plan's stops.
    ========================================================================== */
 (function () {
   "use strict";
@@ -47,4 +48,15 @@
       if (target) target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
     }, 60);
   });
+
+  /* ---- 3. a shared plan link opens that plan ------------------------------ */
+  function openPlan() {
+    var id = window.location.hash.slice(1);
+    if (id.indexOf("plan-") !== 0) return;
+    var card = doc.getElementById(id);
+    var more = card && card.querySelector("[data-oag-plan]");
+    if (more) more.open = true;
+  }
+  openPlan();
+  window.addEventListener("hashchange", openPlan);
 })();

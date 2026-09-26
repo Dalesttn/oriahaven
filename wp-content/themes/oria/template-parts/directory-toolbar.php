@@ -31,6 +31,9 @@ $oria_term = $args['term'] ?? null;
  */
 $oria_mode  = (string) ( $args['mode'] ?? '' );
 $oria_cat   = 'category' === $oria_mode;
+// An area guide borrows two of the category toolbar's parts -- the price
+// filter and "More filters" -- without its search or sort changes.
+$oria_guide = ! empty( $args['guide'] );
 $oria_style = (string) ( $args['style_label'] ?? '' );
 $oria_style = '' !== $oria_style ? $oria_style : __( 'Style & specialty', 'oria' );
 $oria_ids  = isset( $args['ids'] ) && is_array( $args['ids'] )
@@ -207,7 +210,7 @@ $oria_band_labels = array(
 );
 $oria_band_n = array();
 $oria_online = 0;
-if ( $oria_cat ) {
+if ( $oria_cat || $oria_guide ) {
 	foreach ( $oria_ids as $oria_lid ) {
 		$oria_b = (string) get_field( 'price_band', (int) $oria_lid );
 		if ( isset( $oria_band_labels[ $oria_b ] ) ) {
@@ -300,7 +303,7 @@ if ( isset( $oria_auds['beginners'] ) ) {
 	</details>
 	<?php endif; ?>
 
-	<?php if ( $oria_cat && $oria_band_n ) : ?>
+	<?php if ( ( $oria_cat || $oria_guide ) && $oria_band_n ) : ?>
 	<details class="popover" data-popover>
 		<summary class="btn btn--ghost btn--sm"><?php esc_html_e( 'Price', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
 		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'Price', 'oria' ); ?>">
@@ -326,7 +329,7 @@ if ( isset( $oria_auds['beginners'] ) ) {
 	</details>
 	<?php endif; ?>
 
-	<?php if ( $oria_cat ) : ?>
+	<?php if ( $oria_cat || $oria_guide ) : ?>
 	<?php
 	/*
 	 * More filters: the wellness goals and online availability. On a

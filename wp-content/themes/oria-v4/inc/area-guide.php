@@ -87,6 +87,11 @@ function title( $title ) {
 	if ( ! $term || has_override( $term, 'wpseo_title' ) ) {
 		return $title;
 	}
+	// A guide's own title, written with its day ideas in mind.
+	$own = (string) ( guide( $term )['seo_title'] ?? '' );
+	if ( '' !== $own ) {
+		return $own;
+	}
 	$n    = count( rows( $term ) );
 	$name = in_name( $term );
 	return indexable( $term ) && $n > 1
@@ -100,6 +105,10 @@ function description( $desc ) {
 	$term = term();
 	if ( ! $term || has_override( $term, 'wpseo_metadesc' ) ) {
 		return $desc;
+	}
+	$own = (string) ( guide( $term )['seo_description'] ?? '' );
+	if ( '' !== $own ) {
+		return $own;
 	}
 	$rows = rows( $term );
 	$n    = count( $rows );
@@ -123,7 +132,7 @@ function description( $desc ) {
 	$list = count( $names ) > 1 ? implode( ', ', array_slice( $names, 0, -1 ) ) . ' ' . __( 'and', 'oria' ) . ' ' . end( $names ) : (string) ( $names[0] ?? '' );
 	return sprintf(
 		/* translators: 1: count, 2: area, 3: list of practices */
-		__( '%1$d hand-checked wellness places in %2$s, including %3$s. Compare prices and reviews.', 'oria' ),
+		__( '%1$d wellness places in %2$s, including %3$s. Compare what they offer, what they cost and how to visit.', 'oria' ),
 		$n,
 		in_name( $term ),
 		$list
@@ -846,191 +855,395 @@ function practice_groups( \WP_Term $term, array $rows, ?array $city ): array {
 	return $out;
 }
 
+/* ------------------------------------------------------- destination guide */
+
+/*
+ * The area page as a destination guide: the reviewed outing ideas, the
+ * places to leave room for, the FAQ and the figures, all from the same rows
+ * as the listings above them. Nothing here is generated to fill a slot --
+ * an area without reviewed records simply shows fewer sections.
+ */
+
 /**
- * "Plan a local reset" (brief 15): three example days, each stop a real
- * listing here (or a public place the guide names), with the other listings
- * that could take the same stop so a visitor can swap one out. Editorial
- * inspiration only -- no availability, no travel times, no outcomes.
+ * Practices that are clinical care. A dietitian, a physio or a counsellor
+ * is a real service but never a casual stop in a day out, and a nutrition
+ * category does not make somewhere a place to eat.
+ */
+const CLINICAL = array( 'allied', 'nutrition', 'mind' );
+
+/**
+ * Of those, the families whose every sub-category is clinical too. "mind"
+ * is not one: breathwork and meditation sit under it, while a listing filed
+ * under "mind" itself is counselling or psychotherapy.
+ */
+const CLINICAL_FAMILIES = array( 'allied', 'nutrition' );
+
+/**
+ * Wording that means a place is not a one-off visit: a course, a series,
+ * an assessment before anything else. Read from what the listing itself
+ * says, so the rule follows the evidence rather than the category.
+ */
+const SERIES_RE = '/\b(twelve|ten|six|multi)[- ]?series\b|\bseries rather than\b|\bcourse of\b|\bblock of \d|\binitial (consultation|assessment) (is )?required\b|\bby referral\b/i';
+
+/** A day of the week in a schedule line: "Saturdays 6.30am". */
+const WEEKDAY_RE = '/\b(mon|tues|wednes|thurs|fri|satur|sun)days?\b/i';
+
+/**
+ * This area's rows, keyed by the listing's slug.
  *
  * @param list<array<string, mixed>> $rows
- * @return list<array{name: string, line: string, stops: list<array<string, mixed>>}>
+ * @return array<string, array<string, mixed>>
  */
-function plans( array $rows, array $guide ): array {
-	if ( count( $rows ) < MIN_PATTERN ) {
-		return array();
-	}
-	$h       = hours( $rows );
-	$evening = array_flip( $h['evening'] );
-	$walks   = array_values( array_filter( (array) ( $guide['walks'] ?? array() ), static fn( $w ): bool => is_array( $w ) && ! empty( $w['label'] ) ) );
-
-	// Members first, then the better-reviewed, then the name: the same order
-	// every visitor sees on a given day.
-	$rank = static function ( array $a, array $b ): int {
-		$ma = 'unclaimed' === ( $a['status'] ?? 'unclaimed' ) ? 1 : 0;
-		$mb = 'unclaimed' === ( $b['status'] ?? 'unclaimed' ) ? 1 : 0;
-		$sa = (float) ( $a['rating'] ?? 0 ) * log( 2 + (int) ( $a['reviews'] ?? 0 ) );
-		$sb = (float) ( $b['rating'] ?? 0 ) * log( 2 + (int) ( $b['reviews'] ?? 0 ) );
-		return array( $ma, -$sb, (string) $a['name'] ) <=> array( $mb, -$sa, (string) $b['name'] );
-	};
-	/*
-	 * The places that fit a stop. Those whose MAIN practice fits come first --
-	 * a men's circle also filed under Experiences is not the obvious "go
-	 * inward" -- then the rest, each group in the order above.
-	 */
-	$pick = static function ( array $cats, ?array $only = null ) use ( $rows, $rank ): array {
-		$main = array();
-		$also = array();
-		foreach ( $rows as $r ) {
-			if ( null !== $only && ! isset( $only[ post_id( $r ) ] ) ) {
-				continue;
-			}
-			if ( in_array( (string) ( $r['cat'] ?? '' ), $cats, true ) ) {
-				$main[] = $r;
-				continue;
-			}
-			foreach ( $cats as $c ) {
-				if ( in_practice( $r, $c ) ) {
-					$also[] = $r;
-					break;
-				}
-			}
-		}
-		usort( $main, $rank );
-		usort( $also, $rank );
-		return array_slice( array_merge( $main, $also ), 0, 5 );
-	};
-
-	$calm  = array( 'breathwork', 'meditation', 'mind', 'energy', 'sound', 'yoga' );
-	$hands = array( 'bodywork', 'spa', 'recovery', 'float', 'natural' );
-	$move  = array( 'yoga', 'fitness', 'pilates' );
-	$food  = array( 'nutrition' );
-
-	$defs = array(
-		array(
-			'name'  => __( 'A quiet morning', 'oria' ),
-			'line'  => __( 'Something slow to start, some air, then hands-on care.', 'oria' ),
-			'stops' => array( array( 'kind' => 'listing', 'what' => __( 'Start gently', 'oria' ), 'cats' => $calm ), array( 'kind' => 'walk', 'i' => 0 ), array( 'kind' => 'listing', 'what' => __( 'Then a treatment', 'oria' ), 'cats' => $hands ) ),
-		),
-		array(
-			'name'  => __( 'After-work reset', 'oria' ),
-			'line'  => __( 'Places that publish evening hours, for after the day is done.', 'oria' ),
-			'stops' => array( array( 'kind' => 'listing', 'what' => __( 'Move or be moved', 'oria' ), 'cats' => array_merge( $move, $hands ), 'evening' => true ), array( 'kind' => 'walk', 'i' => 1 ), array( 'kind' => 'listing', 'what' => __( 'Wind down', 'oria' ), 'cats' => $calm, 'evening' => true ) ),
-		),
-		array(
-			'name'  => __( 'A deeper day', 'oria' ),
-			'line'  => __( 'Longer, slower, with a proper break in the middle.', 'oria' ),
-			'stops' => array( array( 'kind' => 'listing', 'what' => __( 'Go inward', 'oria' ), 'cats' => array( 'meditation', 'retreats', 'experiences', 'energy', 'breathwork' ) ), array( 'kind' => 'listing', 'what' => __( 'Eat well', 'oria' ), 'cats' => $food ), array( 'kind' => 'listing', 'what' => __( 'Finish with care', 'oria' ), 'cats' => $hands ) ),
-		),
-	);
-
-	$plans = array();
-	$seen  = array(); // places already leading a stop in an earlier plan
-	foreach ( $defs as $def ) {
-		$stops = array();
-		$used  = array();
-		foreach ( $def['stops'] as $s ) {
-			if ( 'walk' === $s['kind'] ) {
-				$w = $walks[ $s['i'] ] ?? ( $walks[0] ?? null );
-				if ( $w ) {
-					$stops[] = array( 'kind' => 'walk', 'what' => __( 'Get some air', 'oria' ), 'label' => (string) $w['label'], 'line' => (string) ( $w['line'] ?? '' ) );
-				}
-				continue;
-			}
-			$cands = array_values( array_filter( $pick( $s['cats'], ! empty( $s['evening'] ) ? $evening : null ), static fn( array $r ): bool => ! isset( $used[ (string) $r['id'] ] ) ) );
-			if ( ! $cands ) {
-				$stops = array();
-				break; // a plan with a hole in it is not a plan
-			}
-			// Three plans that open on three different places where the area
-			// has them; the others stay as swaps.
-			usort( $cands, static fn( array $a, array $b ): int => (int) isset( $seen[ (string) $a['id'] ] ) <=> (int) isset( $seen[ (string) $b['id'] ] ) );
-			$used[ (string) $cands[0]['id'] ] = true;
-			$seen[ (string) $cands[0]['id'] ] = true;
-			$stops[] = array(
-				'kind'  => 'listing',
-				'what'  => $s['what'],
-				'cands' => array_map(
-					static fn( array $r ): array => array(
-						'name' => html_entity_decode( (string) $r['name'], ENT_QUOTES, 'UTF-8' ),
-						'url'  => (string) $r['url'],
-						'cat'  => pname( (string) $r['cat'] ),
-						'blurb' => wp_trim_words( (string) ( $r['blurb'] ?? '' ), 16, '…' ),
-					),
-					$cands
-				),
-			);
-		}
-		$listing_stops = array_filter( $stops, static fn( array $s ): bool => 'listing' === $s['kind'] );
-		if ( count( $listing_stops ) >= 2 ) {
-			$plans[] = array( 'name' => $def['name'], 'line' => $def['line'], 'stops' => $stops );
+function by_slug( array $rows ): array {
+	$out = array();
+	foreach ( $rows as $r ) {
+		$id = post_id( $r );
+		if ( $id > 0 ) {
+			$out[ (string) get_post_field( 'post_name', $id ) ] = $r;
 		}
 	}
-	return $plans;
+	return $out;
 }
 
 /**
- * Events in this area -- tagged with it or a suburb inside it -- not over
- * yet. Never Perth-wide events to fill the space (brief 16).
- *
- * @return list<array{id: int, ts: int, now: bool, suburb: string, src: string, cat: string}>
+ * Whether a row is clinical care, by its MAIN practice or that practice's
+ * parent. A sauna also filed under nutrition is still a sauna.
  */
-function events( \WP_Term $term, int $limit = 3 ): array {
-	$now     = (int) current_time( 'timestamp' );
-	$now_sql = gmdate( 'Y-m-d H:i:s', $now );
-	$ids     = get_posts(
-		array(
-			'post_type'      => 'event',
-			'post_status'    => 'publish',
-			'posts_per_page' => $limit * 3,
-			'fields'         => 'ids',
-			'meta_key'       => 'event_start', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-			'orderby'        => 'meta_value',
-			'order'          => 'ASC',
-			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-				'relation' => 'OR',
-				array( 'key' => 'event_start', 'value' => $now_sql, 'compare' => '>=', 'type' => 'DATETIME' ),
-				array( 'key' => 'event_end', 'value' => $now_sql, 'compare' => '>=', 'type' => 'DATETIME' ),
-			),
-			'tax_query'      => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-				array( 'taxonomy' => 'area', 'field' => 'term_id', 'terms' => array( (int) $term->term_id ), 'include_children' => true ),
-			),
-		)
+function is_clinical( array $row ): bool {
+	$cat = (string) ( $row['cat'] ?? '' );
+	if ( in_array( $cat, CLINICAL, true ) ) {
+		return true;
+	}
+	$t = '' !== $cat ? get_term_by( 'slug', $cat, 'practice' ) : null;
+	if ( $t instanceof \WP_Term && $t->parent ) {
+		$parent = get_term( (int) $t->parent, 'practice' );
+		return $parent instanceof \WP_Term && in_array( $parent->slug, CLINICAL_FAMILIES, true );
+	}
+	return false;
+}
+
+/** Whether a row describes itself as a series, a course or referral-first. */
+function is_series( array $row ): bool {
+	$id   = post_id( $row );
+	$text = (string) ( $row['blurb'] ?? '' ) . ' ' . ( $id ? wp_strip_all_tags( (string) get_post_field( 'post_content', $id ) ) : '' );
+	return (bool) preg_match( SERIES_RE, $text );
+}
+
+/** A street-address point for a row, or '' when it has none on file. */
+function row_point( array $row ): string {
+	if ( 'address' !== ( $row['geo'] ?? '' ) || ! is_numeric( $row['lat'] ?? null ) || ! is_numeric( $row['lng'] ?? null ) ) {
+		return '';
+	}
+	return round( (float) $row['lat'], 6 ) . ',' . round( (float) $row['lng'], 6 );
+}
+
+/**
+ * Why a stop cannot stand, or '' when it can. Public so the checks can be
+ * run from WP-CLI against the real data.
+ *
+ * @param array<string, mixed>               $stop   The record's stop.
+ * @param array<string, array<string, mixed>> $rows   by_slug() rows.
+ * @param array<string, array<string, mixed>> $places The guide's places.
+ * @param string                              $when   The plan's stated day, if any.
+ */
+function stop_problem( array $stop, array $rows, array $places, string $when ): string {
+	$role = (string) ( $stop['role'] ?? '' );
+
+	if ( in_array( $role, array( 'outdoors', 'heritage' ), true ) ) {
+		$p = $places[ (string) ( $stop['place'] ?? '' ) ] ?? null;
+		if ( ! $p || empty( $p['name'] ) ) {
+			return 'unknown place';
+		}
+		return (string) ( $p['kind'] ?? '' ) === $role ? '' : 'place is not ' . $role;
+	}
+
+	if ( 'refresh' === $role ) {
+		if ( ! empty( $stop['place'] ) ) {
+			$p = $places[ (string) $stop['place'] ] ?? null;
+			return ( $p && 'refresh' === ( $p['kind'] ?? '' ) ) ? '' : 'place is not a food venue';
+		}
+		$row = $rows[ (string) ( $stop['listing'] ?? '' ) ] ?? null;
+		if ( ! $row ) {
+			return 'listing not in this area';
+		}
+		// A venue, not a practice: a dietitian is filed under nutrition too.
+		return 'place' === (string) get_post_meta( post_id( $row ), 'kind', true ) ? '' : 'listing is not a venue';
+	}
+
+	if ( in_array( $role, array( 'experience', 'group' ), true ) ) {
+		$row = $rows[ (string) ( $stop['listing'] ?? '' ) ] ?? null;
+		if ( ! $row ) {
+			return 'listing not in this area';
+		}
+		if ( is_clinical( $row ) ) {
+			return 'clinical care';
+		}
+		if ( 'online' === ( $row['format'] ?? '' ) ) {
+			return 'online only';
+		}
+		if ( is_series( $row ) ) {
+			return 'series or assessment first';
+		}
+		// A Saturday-only session belongs in a plan that says Saturday.
+		if ( preg_match( WEEKDAY_RE, (string) ( $row['next'] ?? '' ), $m ) && false === stripos( $when, $m[1] ) ) {
+			return 'runs on a set day the plan does not name';
+		}
+		if ( 'group' === $role && empty( $stop['join'] ) ) {
+			return 'group without joining details';
+		}
+		return '';
+	}
+
+	return 'unknown role';
+}
+
+/**
+ * "Make a day of it": the area's reviewed outing records, each stop checked
+ * against the live listings. A record with any stop that fails is dropped
+ * whole -- a plan with a hole in it is not a plan -- and there is no
+ * generated fallback.
+ *
+ * @param list<array<string, mixed>> $rows
+ * @return list<array<string, mixed>>
+ */
+function outings( array $rows, array $guide ): array {
+	$records = array_values( array_filter( (array) ( $guide['outings'] ?? array() ), 'is_array' ) );
+	if ( ! $records ) {
+		return array();
+	}
+	$index  = by_slug( $rows );
+	$places = (array) ( $guide['places'] ?? array() );
+	$labels = array(
+		'experience' => __( 'Booked experience', 'oria' ),
+		'group'      => __( 'Group activity', 'oria' ),
+		'outdoors'   => __( 'Outdoors', 'oria' ),
+		'heritage'   => __( 'Art and heritage', 'oria' ),
+		'refresh'    => __( 'Coffee or a meal', 'oria' ),
 	);
+
 	$out = array();
-	foreach ( $ids as $id ) {
-		$id = (int) $id;
-		$ts = strtotime( (string) get_post_meta( $id, 'event_start', true ) );
-		if ( ! $ts ) {
-			continue;
-		}
-		$end    = strtotime( (string) get_post_meta( $id, 'event_end', true ) ) ?: 0;
-		$suburb = '';
-		foreach ( (array) wp_get_post_terms( $id, 'area' ) as $at ) {
-			if ( $at instanceof \WP_Term ) {
-				$suburb = \Oria\Theme\tname( $at );
-				if ( $at->parent ) {
-					break;
-				}
-			}
-		}
-		$cat = '';
-		foreach ( (array) wp_get_post_terms( $id, 'practice' ) as $pt ) {
-			if ( $pt instanceof \WP_Term ) {
-				$cat = \Oria\Theme\tname( $pt );
+	foreach ( $records as $rec ) {
+		$when   = (string) ( $rec['when'] ?? '' );
+		$stops  = array();
+		$points = array();
+		$ok     = ! empty( $rec['name'] ) && ! empty( $rec['checked'] );
+		foreach ( (array) ( $rec['stops'] ?? array() ) as $s ) {
+			if ( ! $ok || ! is_array( $s ) || '' !== stop_problem( $s, $index, $places, $when ) ) {
+				$ok = false;
 				break;
 			}
+			$role  = (string) $s['role'];
+			$row   = $index[ (string) ( $s['listing'] ?? '' ) ] ?? null;
+			$place = $places[ (string) ( $s['place'] ?? '' ) ] ?? null;
+			$meet  = $places[ (string) ( $s['meet'] ?? '' ) ] ?? null;
+
+			if ( $row ) {
+				$name  = html_entity_decode( (string) $row['name'], ENT_QUOTES, 'UTF-8' );
+				$url   = (string) $row['url'];
+				$point = row_point( $row );
+				if ( '' === $point && $meet && ! empty( $meet['query'] ) ) {
+					$point = (string) $meet['query'];
+				}
+			} else {
+				$name  = (string) $place['name'];
+				$url   = '';
+				$point = (string) ( $place['query'] ?? '' );
+			}
+			$points[] = $point;
+			$stops[]  = array(
+				'role'   => $role,
+				'label'  => $labels[ $role ] ?? '',
+				'name'   => $name,
+				'url'    => $url,
+				'detail' => (string) ( $s['detail'] ?? ( $place['line'] ?? '' ) ),
+				'join'   => (string) ( $s['join'] ?? '' ),
+				'kind'   => in_array( $role, array( 'experience', 'group' ), true ) ? 'booked' : ( 'refresh' === $role ? 'food' : 'public' ),
+			);
 		}
+		$booked = array_filter( $stops, static fn( array $s ): bool => 'booked' === $s['kind'] );
+		if ( ! $ok || count( $stops ) < 2 || ! $booked ) {
+			continue;
+		}
+
+		// Directions only when every stop has a place we can stand behind.
+		$directions = '';
+		if ( ! in_array( '', $points, true ) && count( $points ) >= 2 ) {
+			$args = array(
+				'api'         => '1',
+				'origin'      => $points[0],
+				'destination' => $points[ count( $points ) - 1 ],
+			);
+			if ( count( $points ) > 2 ) {
+				$args['waypoints'] = implode( '|', array_slice( $points, 1, -1 ) );
+			}
+			$directions = 'https://www.google.com/maps/dir/?' . http_build_query( $args, '', '&', PHP_QUERY_RFC3986 );
+		}
+
+		$ts    = strtotime( (string) $rec['checked'] );
 		$out[] = array(
-			'id'     => $id,
-			'ts'     => $ts,
-			'now'    => $ts < $now && $end >= $now,
-			'suburb' => $suburb,
-			'src'    => (string) get_post_meta( $id, '_oria_src', true ),
-			'cat'    => $cat,
+			'slug'       => sanitize_title( (string) ( $rec['slug'] ?? $rec['name'] ) ),
+			'name'       => (string) $rec['name'],
+			'line'       => (string) ( $rec['line'] ?? '' ),
+			'when'       => $when,
+			'cost'       => (string) ( $rec['cost'] ?? __( 'Costs vary. Check each place.', 'oria' ) ),
+			'duration'   => (string) ( $rec['duration'] ?? '' ),
+			'checked'    => $ts ? wp_date( 'j F Y', $ts ) : '',
+			'stops'      => $stops,
+			'directions' => $directions,
 		);
-		if ( count( $out ) >= $limit ) {
+	}
+	return $out;
+}
+
+/**
+ * "Leave room for a little exploring": a handful of real places around the
+ * listings, from the guide, each checked the same way as an outing stop.
+ *
+ * @param list<array<string, mixed>> $rows
+ * @return list<array{kind: string, name: string, line: string, url: string, maps: string}>
+ */
+function explore( array $rows, array $guide ): array {
+	$index  = by_slug( $rows );
+	$places = (array) ( $guide['places'] ?? array() );
+	$labels = array(
+		'outdoors' => __( 'Walk or sit outdoors', 'oria' ),
+		'refresh'  => __( 'Coffee or a meal', 'oria' ),
+		'heritage' => __( 'Art and heritage', 'oria' ),
+	);
+	$out = array();
+	foreach ( (array) ( $guide['explore'] ?? array() ) as $e ) {
+		if ( ! is_array( $e ) || ! isset( $labels[ (string) ( $e['role'] ?? '' ) ] ) ) {
+			continue;
+		}
+		if ( '' !== stop_problem( $e, $index, $places, '' ) ) {
+			continue;
+		}
+		$row   = $index[ (string) ( $e['listing'] ?? '' ) ] ?? null;
+		$place = $places[ (string) ( $e['place'] ?? '' ) ] ?? null;
+		$point = $row ? row_point( $row ) : (string) ( $place['query'] ?? '' );
+		$out[] = array(
+			'kind'  => (string) $e['role'],
+			'label' => $labels[ (string) $e['role'] ],
+			'name'  => $row ? html_entity_decode( (string) $row['name'], ENT_QUOTES, 'UTF-8' ) : (string) $place['name'],
+			'line'  => (string) ( $e['line'] ?? ( $place['line'] ?? '' ) ),
+			'url'   => $row ? (string) $row['url'] : '',
+			'maps'  => '' !== $point ? 'https://www.google.com/maps/search/?' . http_build_query( array( 'api' => '1', 'query' => $point ), '', '&', PHP_QUERY_RFC3986 ) : '',
+		);
+		if ( count( $out ) >= 3 ) {
 			break;
 		}
 	}
 	return $out;
+}
+
+/**
+ * Listings filed here that the guide has checked meet somewhere else: a
+ * collective based in town whose hikes are across the city. They stay in
+ * the results; this is the honest label beside them.
+ *
+ * @param list<array<string, mixed>> $rows
+ * @return list<array{name: string, url: string, note: string}>
+ */
+function elsewhere( array $rows, array $guide ): array {
+	$index = by_slug( $rows );
+	$out   = array();
+	foreach ( (array) ( $guide['elsewhere'] ?? array() ) as $slug => $note ) {
+		$row = $index[ (string) $slug ] ?? null;
+		if ( $row && '' !== trim( (string) $note ) ) {
+			$out[] = array(
+				'name' => html_entity_decode( (string) $row['name'], ENT_QUOTES, 'UTF-8' ),
+				'url'  => (string) $row['url'],
+				'note' => (string) $note,
+			);
+		}
+	}
+	return $out;
+}
+
+/**
+ * The area's FAQ, counted from the same rows as everything else on the
+ * page. The shared generator tallies only each listing's main practice,
+ * which made the page say four breathwork places in one sentence and five
+ * in the next. A hand-written FAQ on the term still wins.
+ *
+ * @param list<array<string, mixed>>                     $rows
+ * @param array<string, array{term: \WP_Term, count: int}> $top Top-level practices here, most first.
+ * @return list<array{q: string, a: string}>
+ */
+function faqs( \WP_Term $term, array $rows, array $top ): array {
+	if ( function_exists( '\Oria\Core\Faq\parse_override' ) && defined( '\Oria\Core\Faq\META_OVERRIDE' ) ) {
+		$manual = \Oria\Core\Faq\parse_override( (string) get_term_meta( $term->term_id, \Oria\Core\Faq\META_OVERRIDE, true ) );
+		if ( $manual ) {
+			return $manual;
+		}
+	}
+	$n = count( $rows );
+	if ( $n < 3 ) {
+		return array();
+	}
+	$place = in_name( $term );
+	$out   = array();
+
+	$most = array();
+	foreach ( array_slice( $top, 0, 3, true ) as $t ) {
+		$most[] = sprintf( '%s (%d)', \Oria\Theme\tname( $t['term'] ), (int) $t['count'] );
+	}
+	$list = count( $most ) > 1 ? implode( ', ', array_slice( $most, 0, -1 ) ) . ' ' . __( 'and', 'oria' ) . ' ' . end( $most ) : (string) ( $most[0] ?? '' );
+	$out[] = array(
+		/* translators: %s: area */
+		'q' => sprintf( __( 'What wellness is there in %s?', 'oria' ), $place ),
+		'a' => sprintf(
+			/* translators: 1: count, 2: area, 3: number of kinds, 4: list */
+			__( 'Oria Haven lists %1$d places in %2$s across %3$d kinds of practice. The most common are %4$s. A place counts once for each kind of practice it offers.', 'oria' ),
+			$n,
+			$place,
+			count( $top ),
+			$list
+		),
+	);
+
+	$prices = prices( $rows );
+	if ( count( $prices ) >= 2 ) {
+		$out[] = array(
+			/* translators: %s: area */
+			'q' => sprintf( __( 'What do sessions cost in %s?', 'oria' ), $place ),
+			'a' => sprintf(
+				/* translators: 1: count with a price, 2: count, 3: lowest, 4: highest */
+				__( '%1$d of the %2$d places publish a starting price, from $%3$d to $%4$d. What you pay depends on the experience, and each place sets and changes its own, so check the listing before you go.', 'oria' ),
+				count( $prices ),
+				$n,
+				min( $prices ),
+				max( $prices )
+			),
+		);
+	}
+
+	$free = count( array_filter( $rows, static fn( array $r ): bool => 'Free' === ( $r['priceBand'] ?? '' ) ) );
+	if ( $free >= 1 ) {
+		$out[] = array(
+			/* translators: %s: area */
+			'q' => sprintf( __( 'Is anything free in %s?', 'oria' ), $place ),
+			'a' => sprintf(
+				/* translators: 1: count, 2: total */
+				_n( '%1$d of the %2$d places lists its sessions as free or by donation.', '%1$d of the %2$d places list their sessions as free or by donation.', $free, 'oria' ),
+				$free,
+				$n
+			),
+		);
+	}
+
+	if ( function_exists( '\Oria\Core\Faq\editorial_faq' ) ) {
+		$out[] = \Oria\Core\Faq\editorial_faq();
+	}
+	return $out;
+}
+
+/**
+ * Whether a What's On link can open filtered to this area. The events page
+ * filters by suburb name, so only a suburb with at least one event can.
+ */
+function events_url( \WP_Term $term, bool $has_events ): string {
+	$base = (string) ( get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ) );
+	$sub  = function_exists( '\Oria\Core\Taxonomies\is_suburb' ) && \Oria\Core\Taxonomies\is_suburb( $term );
+	return ( $sub && $has_events ) ? add_query_arg( 'area', sanitize_title( \Oria\Theme\tname( $term ) ), $base ) : $base;
 }

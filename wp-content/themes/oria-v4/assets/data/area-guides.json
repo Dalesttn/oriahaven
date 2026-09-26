@@ -77,7 +77,99 @@
         }
       ],
       "reviewed": "",
-      "editor": "Oria Haven"
+      "editor": "Oria Haven",
+      "subtitle": "Make a little time for yourself in Freo.",
+      "intro": "Explore local classes, treatments and places to pause, then shape an outing around what interests you. Find an experience, leave room for a walk or coffee, and discover Fremantle at your own pace.",
+      "local_heading": "A different pace, close to the city.",
+      "local_intro": "Build your visit around one experience that interests you, then leave space to explore. This guide brings together wellness listings and ideas for the time around them, so you can plan a short visit or something more leisurely.",
+      "seo_title": "Wellness in Fremantle | Local Experiences & Day Ideas | Oria Haven",
+      "seo_description": "Explore wellness in Fremantle, from local classes and treatments to ideas for a relaxed outing. Find places, events and practical visiting information.",
+      "places": {
+        "bathers-beach": {
+          "kind": "outdoors",
+          "name": "Bathers Beach",
+          "line": "The small beach below the Round House, at the edge of the West End.",
+          "query": "Bathers Beach, Fremantle WA"
+        },
+        "esplanade-reserve": {
+          "kind": "outdoors",
+          "name": "Esplanade Reserve",
+          "line": "The big lawn under the Norfolk pines, between the town and the Fishing Boat Harbour.",
+          "query": "Esplanade Reserve, Fremantle WA"
+        },
+        "round-house": {
+          "kind": "heritage",
+          "name": "The Round House",
+          "line": "Built in 1831 on Arthur Head, the oldest public building still standing in Western Australia.",
+          "query": "The Round House, Fremantle WA"
+        }
+      },
+      "outings": [
+        {
+          "slug": "come-for-the-company",
+          "name": "Come for the company",
+          "line": "A free group meditation by the water, then breakfast nearby if you want it.",
+          "when": "Saturday mornings",
+          "cost": "The meditation is free. Anything at the cafe is optional.",
+          "checked": "2026-09-26",
+          "stops": [
+            {
+              "role": "group",
+              "listing": "meditationhq-sunrise-saturdays-fremantle",
+              "meet": "bathers-beach",
+              "detail": "Saturdays at 6.30am: a welcome circle, a 20-minute guided meditation, then a closing circle. Open to beginners.",
+              "join": "Free and no registration. Meet at the hut in front of the art centre on Mews Road."
+            },
+            {
+              "role": "refresh",
+              "listing": "moore-and-moore-fremantle",
+              "detail": "A courtyard cafe in a West End warehouse, serving wholefood breakfasts and lunches daily until 3pm. Its opening time is not listed, so check before you go."
+            }
+          ]
+        },
+        {
+          "slug": "time-to-unwind",
+          "name": "Time to unwind",
+          "line": "A private sauna session, some time under the pines, then something to eat.",
+          "cost": "Costs vary. The sauna is booked online, and the cafe is optional.",
+          "checked": "2026-09-26",
+          "stops": [
+            {
+              "role": "experience",
+              "listing": "the-neighbourhood-sauna-fremantle",
+              "detail": "The South Terrace studio runs private infrared rooms for thirty minutes, and a private magnesium bath and sauna for sixty. Booking is online."
+            },
+            {
+              "role": "outdoors",
+              "place": "esplanade-reserve"
+            },
+            {
+              "role": "refresh",
+              "listing": "moore-and-moore-fremantle",
+              "detail": "Wholefood breakfasts and lunches daily until 3pm, with vegan and gluten-free options."
+            }
+          ]
+        }
+      ],
+      "explore": [
+        {
+          "role": "outdoors",
+          "place": "bathers-beach"
+        },
+        {
+          "role": "refresh",
+          "listing": "moore-and-moore-fremantle",
+          "line": "A courtyard cafe in a West End warehouse. Wholefood breakfasts and lunches, daily until 3pm."
+        },
+        {
+          "role": "heritage",
+          "place": "round-house"
+        }
+      ],
+      "elsewhere": {
+        "resonate-mens-collective": "Based in Fremantle, but meets across Perth: hikes in John Forrest National Park and Ellis Brook Valley, beach meetups at Trigg and walks around Lake Monger.",
+        "the-neighbourhood-sauna-fremantle": "The studio is on South Terrace. Its beachside saunas at Leighton and Hillarys Boat Harbour are outside Fremantle."
+      }
     },
     "freo": {
       "image": {

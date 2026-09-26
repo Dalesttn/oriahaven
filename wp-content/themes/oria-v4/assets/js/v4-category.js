@@ -40,7 +40,8 @@
   var root = $("#dirResults");
   // Category pages (data-mode="category") and the Explore hub (app.js's
   // directory mode): both carry the Horizon hero.
-  if (!root || !$(".xc-hz")) return;
+  // The area guide has its own hero and says so with data-xc-root.
+  if (!root || !($(".xc-hz") || $("[data-xc-root]"))) return;
   var CAT = root.getAttribute("data-mode") === "category";
 
   var phone = window.matchMedia("(max-width: 50rem)");
