@@ -728,6 +728,7 @@ $oria_region_name = ( $oria_region && $oria_term && $oria_region->term_id !== $o
 <?php
 // 10. FAQs, counted from the same rows as everything above.
 if ( $oria_term && $oria_faqs ) {
+	echo '<div class="oag-faq">';
 	get_template_part(
 		'template-parts/faq',
 		null,
@@ -737,6 +738,7 @@ if ( $oria_term && $oria_faqs ) {
 			'heading' => sprintf( __( 'Wellness in %s: common questions', 'oria' ), $oria_place ),
 		)
 	);
+	echo '</div>';
 }
 
 get_footer();

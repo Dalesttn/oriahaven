@@ -593,3 +593,33 @@ a.xa-stop__name:hover { text-decoration-color: currentColor; }
   .oag-groups { grid-template-columns: 1fr; }
   .oag-hero__acts .oag-btn, .oag-biz__acts .oag-btn { width: 100%; }
 }
+
+/* 10. FAQs: the shared block, given room on the area guide. Heading beside
+   the questions on wide screens, stacked on phones. */
+.oag-faq { background: #FCFBF7; color: #253B36; }
+.oag-faq > .section {
+  display: grid;
+  grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr);
+  gap: 20px clamp(32px, 5vw, 72px);
+  align-items: start;
+  padding-top: clamp(48px, 6vw, 80px);
+  padding-bottom: clamp(56px, 7vw, 96px);
+}
+.oag-faq .faq__title {
+  margin: 0;
+  font-family: var(--font-edit);
+  font-size: clamp(1.5625rem, 3vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #253B36;
+  text-wrap: balance;
+}
+.oag-faq .faq { max-width: none; border-top-color: #DFE5DC; }
+.oag-faq .faq__item { border-bottom-color: #DFE5DC; }
+.oag-faq .faq__q { padding: 22px 0; font-size: 1.0625rem; font-weight: 600; line-height: 1.45; }
+.oag-faq .faq__q::after { margin-top: .35em; }
+.oag-faq .faq__a { padding: 0 0 26px; max-width: 64ch; }
+.oag-faq .faq__a p { font-size: 1rem; line-height: 1.7; color: #5D6D63; }
+@media (max-width: 56rem) {
+  .oag-faq > .section { grid-template-columns: 1fr; gap: 24px; }
+}
