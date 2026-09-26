@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace Oria\Pass\Waitlist;
 
+use Oria\Pass\Route;
 use Oria\Pass\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -108,9 +109,65 @@ function recent( string $kind = '', int $limit = 200 ): array {
 	return (array) $wpdb->get_results( $wpdb->prepare( $sql . ' ORDER BY created_at DESC LIMIT %d', $limit ) );
 }
 
-function back( array $args ): void {
-	wp_safe_redirect( add_query_arg( $args, home_url( '/oria-pass/' ) ) . '#pass-join' );
+/**
+ * Back to the form that was sent, with its state.
+ *
+ * On an error the person's answers go with them, so a refused submission
+ * does not also cost them their typing: a short-lived transient, keyed by
+ * a random token in the address, read once by the template. Nothing is
+ * kept after ten minutes, and nothing at all on success.
+ */
+function back( array $args, string $kind = 'member', bool $keep = false ): void {
+	if ( $keep ) {
+		$token = strtolower( wp_generate_password( 20, false ) );
+		set_transient( 'oria_pw_' . $token, kept_values(), 10 * MINUTE_IN_SECONDS );
+		$args['pv'] = $token;
+	}
+
+	$base = 'partner' === $kind ? Route\url( 'partners' ) : Route\url();
+	wp_safe_redirect( add_query_arg( $args, $base ) . '#pass-join' );
 	exit;
+}
+
+/** What was typed, cleaned, for re-filling the form after an error. */
+function kept_values(): array {
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- handed back to the same person only.
+	$interests = array();
+	foreach ( (array) ( $_POST['interests'] ?? array() ) as $one ) {
+		$one = sanitize_key( (string) $one );
+		if ( isset( INTERESTS[ $one ] ) ) {
+			$interests[] = $one;
+		}
+	}
+
+	$out = array(
+		'name'      => sanitize_text_field( wp_unslash( (string) ( $_POST['name'] ?? '' ) ) ),
+		'email'     => sanitize_text_field( wp_unslash( (string) ( $_POST['email'] ?? '' ) ) ),
+		'suburb'    => sanitize_text_field( wp_unslash( (string) ( $_POST['suburb'] ?? '' ) ) ),
+		'business'  => sanitize_text_field( wp_unslash( (string) ( $_POST['business'] ?? '' ) ) ),
+		'note'      => sanitize_textarea_field( wp_unslash( (string) ( $_POST['note'] ?? '' ) ) ),
+		'interests' => $interests,
+	);
+	// phpcs:enable
+
+	return $out;
+}
+
+/**
+ * The answers kept by back(), once. Empty when there are none.
+ *
+ * @return array<string, mixed>
+ */
+function recall(): array {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a random token, display only.
+	$token = sanitize_key( (string) ( $_GET['pv'] ?? '' ) );
+	if ( '' === $token ) {
+		return array();
+	}
+	$kept = get_transient( 'oria_pw_' . $token );
+	delete_transient( 'oria_pw_' . $token );
+
+	return is_array( $kept ) ? $kept : array();
 }
 
 /**
@@ -121,29 +178,29 @@ function back( array $args ): void {
  * list is exactly what a bot wants to fill.
  */
 function handle(): void {
+	$kind = 'partner' === ( $_POST['kind'] ?? '' ) ? 'partner' : 'member';
+
 	if ( ! wp_verify_nonce( (string) ( $_POST['oria_pass_nonce'] ?? '' ), 'oria_pass_waitlist' ) ) {
-		back( array( 'pass' => 'expired' ) );
+		back( array( 'pass' => 'expired' ), $kind, true );
 	}
 	if ( '' !== (string) ( $_POST['oria_website'] ?? '' ) ) {
-		back( array( 'pass' => 'done' ) ); // A bot is told it worked.
+		back( array( 'pass' => 'done', 'kind' => $kind ), $kind ); // A bot is told it worked.
 	}
 	if ( time() - (int) ( $_POST['oria_ts'] ?? 0 ) < 3 ) {
-		back( array( 'pass' => 'spam' ) );
+		back( array( 'pass' => 'spam' ), $kind, true );
 	}
-
-	$kind = 'partner' === ( $_POST['kind'] ?? '' ) ? 'partner' : 'member';
 
 	$name  = sanitize_text_field( wp_unslash( (string) ( $_POST['name'] ?? '' ) ) );
 	$email = sanitize_email( wp_unslash( (string) ( $_POST['email'] ?? '' ) ) );
 
 	if ( '' === $name ) {
-		back( array( 'pass' => 'name' ) );
+		back( array( 'pass' => 'name' ), $kind, true );
 	}
 	if ( ! is_email( $email ) ) {
-		back( array( 'pass' => 'email' ) );
+		back( array( 'pass' => 'email' ), $kind, true );
 	}
 	if ( empty( $_POST['consent'] ) ) {
-		back( array( 'pass' => 'consent' ) );
+		back( array( 'pass' => 'consent' ), $kind, true );
 	}
 
 	$interests = array();
@@ -180,12 +237,12 @@ function handle(): void {
 	 * quietly and the thank-you is the same.
 	 */
 	if ( false === $ok && ! str_contains( (string) $wpdb->last_error, 'Duplicate entry' ) ) {
-		back( array( 'pass' => 'server' ) );
+		back( array( 'pass' => 'server' ), $kind, true );
 	}
 
 	notify( $row );
 
-	back( array( 'pass' => 'done', 'kind' => $kind ) );
+	back( array( 'pass' => 'done', 'kind' => $kind ), $kind );
 }
 
 /** Exactly what the person agreed to, kept with the row. */

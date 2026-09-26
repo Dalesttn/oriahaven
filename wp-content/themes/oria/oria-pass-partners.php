@@ -19,6 +19,19 @@ use Oria\Pass\Waitlist;
 $oria_state = sanitize_key( (string) ( $_GET['pass'] ?? '' ) );
 // phpcs:enable
 
+// A refused submission comes back here with what was typed (Waitlist\back).
+$oria_kept = function_exists( '\Oria\Pass\Waitlist\recall' ) ? Waitlist\recall() : array();
+$oria_val  = static fn( string $k ): string => (string) ( $oria_kept[ $k ] ?? '' );
+
+$oria_errors = array(
+	'expired' => __( 'That form sat open too long. Please send it again.', 'oria' ),
+	'spam'    => __( 'That was sent very quickly, so it looked automated. Please check your details and send it again.', 'oria' ),
+	'name'    => __( 'Add your name so we know who to reply to.', 'oria' ),
+	'email'   => __( 'That email address does not look right. Check it and try again.', 'oria' ),
+	'consent' => __( 'Tick the box so we can contact you about becoming a partner.', 'oria' ),
+	'server'  => __( 'Something went wrong on our side. Please try again in a minute.', 'oria' ),
+);
+
 get_header();
 ?>
 
@@ -69,6 +82,10 @@ get_header();
 				<h2 class="pass-h" id="prov-join-h"><?php esc_html_e( 'Become a founding partner', 'oria' ); ?></h2>
 				<p class="pjoin__lede"><?php esc_html_e( 'Tell us a little about your studio and we will start the conversation. Founding partners help set how this works.', 'oria' ); ?></p>
 
+				<?php if ( isset( $oria_errors[ $oria_state ] ) ) : ?>
+					<p class="pjoin__err" role="alert"><?php echo esc_html( $oria_errors[ $oria_state ] ); ?></p>
+				<?php endif; ?>
+
 				<form class="pjoin__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<input type="hidden" name="action" value="oria_pass_waitlist">
 					<input type="hidden" name="kind" value="partner">
@@ -78,19 +95,19 @@ get_header();
 
 					<div class="pjoin__row">
 						<label class="field"><span class="field__label"><?php esc_html_e( 'Your name', 'oria' ); ?></span>
-							<input class="input" type="text" name="name" required autocomplete="name"></label>
+							<input class="input" type="text" name="name" required autocomplete="name" value="<?php echo esc_attr( $oria_val( 'name' ) ); ?>"></label>
 						<label class="field"><span class="field__label"><?php esc_html_e( 'Email', 'oria' ); ?></span>
-							<input class="input" type="email" name="email" required autocomplete="email"></label>
+							<input class="input" type="email" name="email" required autocomplete="email" value="<?php echo esc_attr( $oria_val( 'email' ) ); ?>"></label>
 					</div>
 					<div class="pjoin__row">
 						<label class="field"><span class="field__label"><?php esc_html_e( 'Business name', 'oria' ); ?></span>
-							<input class="input" type="text" name="business" autocomplete="organization"></label>
+							<input class="input" type="text" name="business" autocomplete="organization" value="<?php echo esc_attr( $oria_val( 'business' ) ); ?>"></label>
 						<label class="field"><span class="field__label"><?php esc_html_e( 'Suburb', 'oria' ); ?></span>
-							<input class="input" type="text" name="suburb" autocomplete="address-level2"></label>
+							<input class="input" type="text" name="suburb" autocomplete="address-level2" value="<?php echo esc_attr( $oria_val( 'suburb' ) ); ?>"></label>
 					</div>
 					<label class="field"><span class="field__label"><?php esc_html_e( 'What would you be able to open up? (optional)', 'oria' ); ?></span>
 						<textarea class="textarea" name="note" rows="3"
-							placeholder="<?php esc_attr_e( 'e.g. two spots on weekday morning classes', 'oria' ); ?>"></textarea></label>
+							placeholder="<?php esc_attr_e( 'e.g. two spots on weekday morning classes', 'oria' ); ?>"><?php echo esc_textarea( $oria_val( 'note' ) ); ?></textarea></label>
 
 					<label class="check pjoin__consent">
 						<input type="checkbox" name="consent" value="1" required>

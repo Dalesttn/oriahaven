@@ -1,0 +1,414 @@
+/*
+ * /oria-pass/ -- the landing page (oria-pass.php). Loaded on that page only;
+ * every rule is scoped under .oria-pl so nothing here reaches the partners
+ * page or the Pass parts elsewhere, which keep the plugin's pass.css.
+ * The site is light-only, so the brief's light tokens are used as they are.
+ * Typefaces are the site's own (tokens.css).
+ */
+.oria-pl {
+	--pl-ink: #253B36;
+	--pl-muted: #586C60;
+	--pl-paper: #FCFBF7;
+	--pl-sage: #EDF2E8;
+	--pl-line: #DCE3D8;
+	--pl-card: #284B3B;
+	--pl-card-ink: #F6F4E9;
+	--pl-label: #50675B;
+	--pl-error: #9B2C1F;
+	color: var(--pl-ink);
+	background: var(--pl-paper);
+}
+.oria-pl *,
+.oria-pl *::before,
+.oria-pl *::after { box-sizing: border-box; }
+
+.oria-pl__container { width: min(100% - 48px, 1160px); margin-inline: auto; }
+.oria-pl__section { padding-block: clamp(40px, 6vw, 72px); }
+.oria-pl__section--tight { padding-block: clamp(20px, 3vw, 32px); }
+.oria-pl__section--rule .oria-pl__container { border-top: 1px solid var(--pl-line); padding-top: clamp(36px, 5vw, 56px); }
+.oria-pl__section--rule { padding-top: 0; }
+.oria-pl__section--last { padding-bottom: clamp(44px, 7vw, 80px); }
+
+.oria-pl h1,
+.oria-pl h2 {
+	margin: 0;
+	font-family: var(--font-edit);
+	font-weight: 400;
+	color: inherit;
+	text-wrap: balance;
+}
+.oria-pl h1 { font-size: clamp(2.25rem, 5vw, 4rem); line-height: 1.04; letter-spacing: -.025em; margin-bottom: 22px; }
+.oria-pl h2 { font-size: clamp(1.5625rem, 3vw, 2.25rem); line-height: 1.15; margin-bottom: 14px; }
+.oria-pl h3 { margin: 0 0 6px; font-family: var(--font-sans); font-size: 1.0625rem; font-weight: 700; line-height: 1.35; color: inherit; }
+
+.oria-pl__eyebrow {
+	margin: 0 0 14px;
+	font-size: 12.5px;
+	font-weight: 700;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+	color: var(--pl-label);
+}
+.oria-pl__lede { max-width: 54ch; margin: 0; font-size: 1.125rem; line-height: 1.6; }
+.oria-pl__copy { max-width: 60ch; margin: 0; font-size: 1.0625rem; line-height: 1.6; color: var(--pl-muted); }
+.oria-pl__note { max-width: 70ch; margin: 22px 0 0; font-size: 14px; line-height: 1.55; color: var(--pl-muted); }
+.oria-pl__fine { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: var(--pl-muted); }
+.oria-pl__reassure { margin: 14px 0 0; font-size: 14px; color: var(--pl-muted); }
+
+/* Buttons: the page's own, so the dark banner can invert them safely. */
+.oria-pl__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; margin-top: 28px; }
+.oria-pl__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-height: 48px;
+	padding: 0 22px;
+	border: 1.5px solid transparent;
+	border-radius: 11px;
+	font-family: var(--font-sans);
+	font-size: 15.5px;
+	font-weight: 700;
+	line-height: 1.2;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.oria-pl__button svg { width: 16px; height: 16px; flex: none; }
+.oria-pl__button--primary { background: var(--pl-card); color: var(--pl-card-ink); }
+.oria-pl__button--primary:hover { background: #1D3A2D; color: var(--pl-card-ink); }
+.oria-pl__button--secondary { border-color: var(--pl-ink); background: transparent; color: var(--pl-ink); }
+.oria-pl__button--secondary:hover { background: var(--pl-paper); color: var(--pl-ink); }
+.oria-pl__button--ivory { background: var(--pl-card-ink); color: var(--pl-ink); }
+.oria-pl__button--ivory:hover { background: #E3ECDF; color: var(--pl-ink); }
+.oria-pl__textlink {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	font-weight: 600;
+	color: var(--pl-ink);
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+.oria-pl__textlink:hover { text-decoration-thickness: 2px; }
+.oria-pl a:focus-visible,
+.oria-pl button:focus-visible,
+.oria-pl summary:focus-visible,
+.oria-pl input:focus-visible { outline: 3px solid #967133; outline-offset: 3px; }
+
+/* A. Hero: text left, a level membership card right. */
+.oria-pl__section--hero { padding-top: clamp(28px, 5vw, 64px); }
+.oria-pl__hero {
+	display: grid;
+	grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+	gap: clamp(32px, 5vw, 56px);
+	align-items: center;
+}
+.oria-pl__hero > * { min-width: 0; }
+.oria-pl__card {
+	justify-self: end;
+	width: min(100%, 440px);
+	padding: clamp(24px, 3vw, 32px);
+	border-radius: 22px;
+	background: var(--pl-card);
+	color: var(--pl-card-ink);
+	box-shadow: 0 14px 30px rgba(36, 67, 49, .14);
+}
+.oria-pl__card p { margin: 0; }
+.oria-pl__card-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.oria-pl__card-brand { font-family: var(--font-edit); font-size: 26px; line-height: 1; }
+.oria-pl__card-brand em { font-style: italic; color: #C9D8C6; }
+.oria-pl__card-badge {
+	padding: 5px 9px;
+	border: 1px solid #93AD97;
+	border-radius: 6px;
+	font-size: 11.5px;
+	font-weight: 700;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+}
+.oria-pl__card-price { margin-top: 34px !important; font-family: var(--font-edit); font-size: clamp(2.5rem, 5vw, 3.25rem); line-height: 1.05; }
+.oria-pl__card-price small { font-family: var(--font-sans); font-size: 14px; font-weight: 600; letter-spacing: .02em; }
+.oria-pl__card-credits { margin-top: 6px !important; font-size: 17px; font-weight: 600; }
+.oria-pl__card-foot { margin-top: 26px; padding-top: 16px; border-top: 1px solid #65816C; font-size: 14px; line-height: 1.55; color: #DCE6DA; }
+
+/* B. Steps: open columns on thin rules. */
+.oria-pl__steps {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 32px;
+	margin: 22px 0 0;
+	padding: 0;
+	list-style: none;
+}
+.oria-pl__step { min-width: 0; padding-top: 18px; border-top: 1px solid var(--pl-line); }
+.oria-pl__step p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--pl-muted); }
+.oria-pl__num { display: block; margin-bottom: 10px; font-size: 13px; font-weight: 700; letter-spacing: .08em; color: var(--pl-label); font-variant-numeric: tabular-nums; }
+
+/* C. The example mix: one sage panel. */
+.oria-pl__mix {
+	display: grid;
+	grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+	gap: clamp(24px, 4vw, 48px);
+	align-items: start;
+	padding: clamp(24px, 4vw, 40px);
+	border-radius: 22px;
+	background: var(--pl-sage);
+}
+.oria-pl__mix > * { min-width: 0; }
+.oria-pl__mix-note {
+	margin: 18px 0 0;
+	padding: 12px 14px;
+	border-left: 3px solid var(--pl-card);
+	background: rgba(252, 251, 247, .7);
+	font-size: 14px;
+	line-height: 1.55;
+	color: var(--pl-ink);
+}
+.oria-pl__mix-hint { margin: 0 0 12px; font-size: 14px; color: var(--pl-muted); }
+.oria-pl__choices {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.oria-pl__choice {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+	width: 100%;
+	min-height: 76px;
+	padding: 14px 16px;
+	border: 1.5px solid #C6D4C5;
+	border-radius: 11px;
+	background: var(--pl-paper);
+	color: var(--pl-ink);
+	font: inherit;
+	font-size: 14.5px;
+	line-height: 1.35;
+	text-align: left;
+	cursor: pointer;
+}
+.oria-pl__choice strong { font-size: 16px; font-weight: 700; }
+.oria-pl__choice[aria-pressed="true"] { border-color: var(--pl-card); background: var(--pl-card); color: var(--pl-card-ink); }
+.oria-pl__choice[aria-pressed="true"] strong::after { content: " \2713"; }
+.oria-pl__choice:disabled { cursor: default; }
+.oria-pl__choice[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
+.oria-pl__total { margin: 16px 0 0; font-size: 16px; line-height: 1.5; font-variant-numeric: tabular-nums; }
+.oria-pl__limit { display: block; margin-top: 4px; font-size: 14px; color: var(--pl-muted); }
+.oria-pl__limit:empty { display: none; }
+
+/* D. Experience types. */
+.oria-pl__kinds {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 14px;
+	margin: 26px 0 0;
+	padding: 0;
+	list-style: none;
+}
+.oria-pl__kind {
+	display: flex;
+	gap: 16px;
+	min-width: 0;
+	padding: 20px;
+	border: 1px solid var(--pl-line);
+	border-radius: 20px;
+	background: #FFFFFF;
+}
+.oria-pl__kind-icon { flex: none; width: 56px; height: 56px; border-radius: 14px; }
+.oria-pl__kind-text { min-width: 0; }
+.oria-pl__kind p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--pl-muted); }
+.oria-pl__kind-link {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	font-size: 14.5px;
+	font-weight: 600;
+	color: var(--pl-ink);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+/* E. The waitlist: one pale-sage feature, a narrow form. */
+.oria-pl__join {
+	max-width: 760px;
+	margin-inline: auto;
+	padding: clamp(24px, 4vw, 40px);
+	border-radius: 22px;
+	background: var(--pl-sage);
+	scroll-margin-top: 90px;
+}
+#pass-join { scroll-margin-top: 80px; }
+.oria-pl__join h2:focus { outline: none; }
+.oria-pl__join-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; margin: 22px 0 0; }
+.oria-pl__error {
+	margin: 18px 0 0;
+	padding: 12px 14px;
+	border-radius: 10px;
+	border: 1px solid #E3B9B1;
+	background: #FBEFEC;
+	color: var(--pl-error);
+	font-weight: 600;
+}
+.oria-pl__form { display: grid; gap: 18px; margin-top: 24px; }
+.oria-pl__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.oria-pl__field { display: grid; gap: 6px; margin: 0; min-width: 0; }
+.oria-pl__field--narrow { max-width: 360px; }
+.oria-pl__field label,
+.oria-pl__picks legend { font-size: 15px; font-weight: 700; }
+.oria-pl__opt { font-weight: 400; color: var(--pl-muted); }
+.oria-pl__field input {
+	width: 100%;
+	min-height: 48px;
+	padding: 10px 14px;
+	border: 1.5px solid #B9C7B8;
+	border-radius: 10px;
+	background: #FFFFFF;
+	color: var(--pl-ink);
+	font: inherit;
+	font-size: 16px;
+}
+.oria-pl__field input[aria-invalid="true"] { border-color: var(--pl-error); }
+.oria-pl__picks { margin: 0; padding: 0; border: 0; min-width: 0; }
+.oria-pl__picks legend { padding: 0; margin-bottom: 10px; }
+.oria-pl__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.oria-pl__chip { position: relative; display: inline-flex; }
+.oria-pl__chip input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.oria-pl__chip span {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	min-height: 44px;
+	padding: 0 16px;
+	border: 1.5px solid #B9C7B8;
+	border-radius: 999px;
+	background: #FFFFFF;
+	font-size: 15px;
+	font-weight: 600;
+}
+.oria-pl__chip span::before { content: "+"; font-weight: 700; color: var(--pl-label); }
+.oria-pl__chip input:checked + span { border-color: var(--pl-card); background: var(--pl-card); color: var(--pl-card-ink); }
+.oria-pl__chip input:checked + span::before { content: "\2713"; color: inherit; }
+.oria-pl__chip input:focus-visible + span { outline: 3px solid #967133; outline-offset: 3px; }
+.oria-pl__consent { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 1.5; cursor: pointer; }
+.oria-pl__consent input { flex: none; width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--pl-card); }
+.oria-pl__consent a { color: var(--pl-ink); text-underline-offset: 3px; }
+.oria-pl__submit { justify-self: start; min-width: 220px; }
+.oria-pl__hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; }
+
+/* F. FAQ: native disclosures beside a short introduction. */
+.oria-pl__faq {
+	display: grid;
+	grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+	gap: clamp(24px, 5vw, 64px);
+	align-items: start;
+}
+.oria-pl__faq > * { min-width: 0; }
+.oria-pl__faq-list { border-top: 1px solid var(--pl-line); }
+.oria-pl__qa { border-bottom: 1px solid var(--pl-line); }
+.oria-pl__qa summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	min-height: 56px;
+	padding: 12px 0;
+	font-size: 16.5px;
+	font-weight: 700;
+	cursor: pointer;
+	list-style: none;
+}
+.oria-pl__qa summary::-webkit-details-marker { display: none; }
+.oria-pl__qa summary::after { content: "+"; flex: none; font-size: 22px; font-weight: 400; line-height: 1; color: var(--pl-label); }
+.oria-pl__qa[open] summary::after { content: "\2212"; }
+.oria-pl__qa p { max-width: 62ch; margin: 0 0 18px; font-size: 16px; line-height: 1.6; color: var(--pl-muted); }
+
+/* G. For businesses: a deliberate dark section. */
+.oria-pl__biz {
+	display: grid;
+	grid-template-columns: minmax(0, 1.5fr) minmax(240px, .8fr);
+	gap: 36px;
+	align-items: center;
+	padding: clamp(24px, 4vw, 44px);
+	border-radius: 22px;
+	background: var(--pl-card);
+	color: var(--pl-card-ink);
+}
+.oria-pl__biz > * { min-width: 0; }
+.oria-pl__biz h2 { color: var(--pl-card-ink); }
+.oria-pl__biz p { max-width: 60ch; margin: 0; font-size: 1.0625rem; line-height: 1.6; }
+.oria-pl__eyebrow--light { color: #C9D8C6; }
+.oria-pl__biz .oria-pl__biz-note { margin-top: 12px; font-size: 14px; color: #DCE6DA; }
+.oria-pl__biz-actions { display: flex; flex-direction: column; gap: 8px; }
+.oria-pl__biz-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--pl-card-ink); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+.oria-pl__biz a:focus-visible { outline-color: #E9C788; }
+
+/* The phone-only sticky bar. */
+.oria-pl__sticky { display: none; }
+@media (max-width: 47.99rem) {
+	.oria-pl__sticky:not([hidden]) {
+		position: fixed;
+		z-index: 40;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+		border-top: 1px solid var(--pl-line);
+		background: var(--pl-paper);
+		box-shadow: 0 -6px 18px rgba(36, 67, 49, .08);
+	}
+	.oria-pl__sticky-what { display: grid; font-size: 14px; line-height: 1.3; }
+	.oria-pl__sticky-what span { color: var(--pl-muted); }
+	.oria-pl__sticky-go {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		padding: 0 16px;
+		border-radius: 10px;
+		background: var(--pl-card);
+		color: var(--pl-card-ink);
+		font-weight: 700;
+		font-size: 15px;
+		text-decoration: none;
+		white-space: nowrap;
+	}
+	.oria-pl.has-sticky { padding-bottom: 76px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.oria-pl__button { transition: none; }
+}
+
+@media (max-width: 56rem) {
+	.oria-pl__steps { grid-template-columns: 1fr; gap: 20px; }
+	.oria-pl__kinds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.oria-pl__mix,
+	.oria-pl__faq { grid-template-columns: 1fr; }
+}
+@media (max-width: 50rem) {
+	.oria-pl__hero,
+	.oria-pl__biz { grid-template-columns: 1fr; }
+	.oria-pl__card { justify-self: start; }
+}
+@media (max-width: 36rem) {
+	.oria-pl__kinds,
+	.oria-pl__row { grid-template-columns: 1fr; }
+	.oria-pl__section { padding-block: 38px; }
+	.oria-pl__section--tight { padding-block: 16px; }
+}
+@media (max-width: 30rem) {
+	.oria-pl__container { width: calc(100% - 32px); }
+	.oria-pl__actions > .oria-pl__button,
+	.oria-pl__biz-actions .oria-pl__button,
+	.oria-pl__submit { width: 100%; }
+	.oria-pl__choices { grid-template-columns: 1fr 1fr; }
+	.oria-pl__choice { padding: 12px; }
+}

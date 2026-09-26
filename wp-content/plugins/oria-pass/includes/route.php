@@ -159,7 +159,9 @@ function core_title( array $parts ): array {
 function description( $desc ) {
 	switch ( which() ) {
 		case 'landing':
-			return __( 'Discover yoga, Pilates, sauna, breathwork, recovery, sound healing and more with one flexible wellness membership across participating Perth providers.', 'oria' );
+			return Settings\is_live()
+				? __( 'Oria Pass is a wellness membership for Perth: monthly credits to try yoga, Pilates, sauna, float, breathwork and more with participating businesses.', 'oria' )
+				: __( 'Oria Pass is an upcoming wellness membership for Perth: credits to try yoga, Pilates, sauna, float, breathwork and more with participating businesses. Join the waitlist.', 'oria' );
 		case 'partners':
 			return __( 'Put spare capacity to work. Oria Pass introduces your studio to Perth locals looking for something new, on the sessions you choose to release.', 'oria' );
 	}

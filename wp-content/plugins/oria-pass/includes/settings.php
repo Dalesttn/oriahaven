@@ -52,7 +52,45 @@ function defaults(): array {
 		// The recurring Stripe Payment Link for the Pass. The member's id
 		// is appended as client_reference_id so the webhook knows who paid.
 		'stripe_link'       => '',
+		/*
+		 * The landing page's "what could a mix look like" example: a guide
+		 * to relative cost, never a rate card. These are the values the
+		 * page has always published; each studio sets its own per session.
+		 * Emptying the list removes the example rather than inventing one.
+		 */
+		'sample_costs'      => array(
+			'yoga'    => 8,
+			'pilates' => 10,
+			'sauna'   => 12,
+			'float'   => 20,
+		),
 	);
+}
+
+/**
+ * The example credit costs, labelled, at most four, never more than a
+ * month's credits each. Empty when there is nothing honest to show.
+ *
+ * @return array<string, array{label: string, cost: int}>
+ */
+function sample_costs(): array {
+	$labels = array(
+		'yoga'    => __( 'Yoga', 'oria' ),
+		'pilates' => __( 'Pilates', 'oria' ),
+		'sauna'   => __( 'Sauna', 'oria' ),
+		'float'   => __( 'Float', 'oria' ),
+	);
+	$budget = (int) get( 'credits_per_cycle' );
+	$out    = array();
+
+	foreach ( (array) get( 'sample_costs' ) as $slug => $cost ) {
+		$cost = (int) $cost;
+		if ( isset( $labels[ $slug ] ) && $cost > 0 && $cost <= $budget ) {
+			$out[ (string) $slug ] = array( 'label' => $labels[ $slug ], 'cost' => $cost );
+		}
+	}
+
+	return array_slice( $out, 0, 4, true );
 }
 
 function bootstrap(): void {
