@@ -7,7 +7,7 @@
  *   1. the place: text on ivory, its own photograph beside it (only a
  *      photograph of this place -- no stand-in scenery)
  *   2. in-page links and one short paragraph about the place
- *   3. the places: the Local Finder, the filters, the listings, the map
+ *   3. the places: the filters, the listings, the map
  *   4. make a day of it -- reviewed outing records only, every stop checked
  *   5. leave room for a little exploring -- a handful of real places
  *   6. what's on -- the page's one events block, venues in this area
@@ -21,10 +21,10 @@
  *
  * Same engine as before: #dirResults keeps app.js's directory mode with the
  * area locked (data-region / data-suburb / data-city), so counts, chips,
- * load more and the map are app.js's; the dock's inputs are its own
- * [data-filter] inputs. v4-category.js runs the dock and ribbon (the hero
- * says so with data-xc-root); v4-area.css / v4-area.js add this page's own
- * sections. Indexing is unchanged: Oria\Core\AreaDepth still noindexes a
+ * load more and the map are app.js's. There is no Local Finder dock here
+ * (removed 2026-09-26): the toolbar is the one filter row. v4-category.js
+ * still runs the map switch (the hero says so with data-xc-root);
+ * v4-area.css / v4-area.js add this page's own sections. Indexing is unchanged: Oria\Core\AreaDepth still noindexes a
  * thin area and keeps it out of the sitemap.
  */
 
@@ -82,41 +82,6 @@ foreach ( $oria_pcounts as $oria_ps => $oria_pn ) {
 	if ( $oria_pt instanceof WP_Term && 0 === (int) $oria_pt->parent ) {
 		$oria_top[ (string) $oria_ps ] = array( 'term' => $oria_pt, 'count' => (int) $oria_pn );
 	}
-}
-
-// Moods: the hub's, cut to the categories found here.
-$oria_cfg      = array();
-$oria_cfg_file = get_stylesheet_directory() . '/assets/data/category-horizon.json';
-if ( is_readable( $oria_cfg_file ) ) {
-	$oria_cfg = json_decode( (string) file_get_contents( $oria_cfg_file ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local theme file
-	$oria_cfg = is_array( $oria_cfg ) ? $oria_cfg : array();
-}
-$oria_moods = array();
-foreach ( (array) ( $oria_cfg['hub']['moods'] ?? array() ) as $oria_m ) {
-	$oria_items = array_values( array_filter( array_map( 'strval', (array) ( $oria_m['cats'] ?? array() ) ), static fn( string $s ): bool => isset( $oria_top[ $s ] ) ) );
-	if ( ! $oria_items || empty( $oria_m['slug'] ) ) {
-		continue;
-	}
-	$oria_mn = count(
-		array_filter(
-			$oria_rows,
-			static function ( array $r ) use ( $oria_items ): bool {
-				foreach ( $oria_items as $s ) {
-					if ( Area\in_practice( $r, $s ) ) {
-						return true;
-					}
-				}
-				return false;
-			}
-		)
-	);
-	$oria_moods[] = array(
-		'slug'  => sanitize_title( (string) $oria_m['slug'] ),
-		'name'  => (string) $oria_m['name'],
-		'line'  => (string) ( $oria_m['line'] ?? '' ),
-		'items' => $oria_items,
-		'n'     => $oria_mn,
-	);
 }
 
 $oria_strong  = Area\strongest( $oria_rows, $oria_cslug );
@@ -243,7 +208,6 @@ foreach ( $oria_ids as $oria_mid ) {
 }
 
 $oria_unmapped = $oria_map ? $oria_n - count( $oria_map ) : 0;
-$oria_has_dock = $oria_n >= 4;
 
 // The in-page links: only to sections this area actually has.
 $oria_navs = array( 'places' => __( 'Places', 'oria' ) );
@@ -254,31 +218,6 @@ $oria_navs['whats-on']        = __( "What's on", 'oria' );
 $oria_navs['plan-your-visit'] = __( 'Plan your visit', 'oria' );
 $oria_region_name = ( $oria_region && $oria_term && $oria_region->term_id !== $oria_term->term_id ) ? \Oria\Theme\tname( $oria_region ) : '';
 
-// A dock control, as on the category pages.
-$oria_dock_ctl = static function ( string $panel, string $key, string $key_phone, string $val_key, string $val ): void {
-	?>
-	<button type="button" class="xc-dock__ctl xc-js" data-xc-open="<?php echo esc_attr( $panel ); ?>" aria-controls="<?php echo esc_attr( $panel ); ?>" aria-expanded="false" aria-haspopup="dialog">
-		<span class="xc-dock__k"><span class="xc-wide"><?php echo esc_html( $key ); ?></span><span class="xc-narrow"><?php echo esc_html( $key_phone ); ?></span></span>
-		<span class="xc-dock__v" data-xc-val="<?php echo esc_attr( $val_key ); ?>"><?php echo esc_html( $val ); ?></span>
-	</button>
-	<?php
-};
-$oria_cat_box = static function ( string $slug, array $c ): void {
-	?>
-	<label class="xc-check">
-		<input type="checkbox" data-filter="cat" value="<?php echo esc_attr( $slug ); ?>">
-		<span class="xc-check__label"><?php echo esc_html( \Oria\Theme\tname( $c['term'] ) ); ?></span>
-		<span class="xc-check__n"><?php echo esc_html( number_format_i18n( $c['count'] ) ); ?></span>
-	</label>
-	<?php
-};
-$oria_show = static function ( string $label ) use ( $oria_n ): void {
-	?>
-	<a class="btn xc-btn-primary" href="#results" data-xc-show><?php printf( esc_html( $label ), '<b data-xc-count>' . esc_html( number_format_i18n( $oria_n ) ) . '</b>' ); ?></a>
-	<?php
-};
-/* translators: %s: area */
-$oria_all_label = sprintf( __( 'All of %s', 'oria' ), $oria_place );
 ?>
 <noscript><style>.xc-js{display:none!important}</style></noscript>
 
@@ -365,163 +304,6 @@ $oria_all_label = sprintf( __( 'All of %s', 'oria' ), $oria_place );
 		</div>
 	<?php endif; ?>
 </div>
-
-<?php if ( $oria_has_dock ) : ?>
-<!-- 2. The Local Finder -->
-<div class="xc-dockwrap" id="xcDockWrap">
-	<div class="wrap xc-dockwrap__inner">
-		<div class="xc-dock" id="xcDock" role="search" aria-label="<?php printf( esc_attr__( 'Find a place in %s', 'oria' ), esc_attr( $oria_place ) ); ?>">
-			<div class="xc-dock__controls">
-				<?php
-				if ( $oria_moods ) {
-					$oria_dock_ctl( 'xcWays', __( 'What do you need?', 'oria' ), __( 'What do you need?', 'oria' ), 'mood', __( 'Anything', 'oria' ) );
-				}
-				if ( count( $oria_top ) > 1 ) {
-					$oria_dock_ctl( 'xcExp', __( 'Practice', 'oria' ), __( 'Practice', 'oria' ), 'exp', __( 'All practices', 'oria' ) );
-				}
-				$oria_dock_ctl( 'xcLoc', __( 'Where?', 'oria' ), __( 'Where?', 'oria' ), 'loc', $oria_all_label );
-				?>
-				<a class="btn xc-dock__go" href="#results" data-xc-show>
-					<?php
-					/* translators: %s: number of places (updated live) */
-					printf( esc_html__( 'Show %s places', 'oria' ), '<b data-xc-count>' . esc_html( number_format_i18n( $oria_n ) ) . '</b>' );
-					?>
-				</a>
-			</div>
-		</div>
-
-		<?php if ( $oria_moods ) : ?>
-			<div class="xc-pop xc-pop--wide" id="xcWays" role="dialog" aria-labelledby="xcWaysTitle" hidden>
-				<div class="xc-pop__head">
-					<h2 class="xc-pop__title" id="xcWaysTitle">
-						<?php
-						/* translators: %s: area */
-						printf( esc_html__( 'What would help, here in %s?', 'oria' ), esc_html( $oria_place ) );
-						?>
-					</h2>
-					<button type="button" class="xc-pop__x" data-xc-close aria-label="<?php esc_attr_e( 'Close', 'oria' ); ?>">&times;</button>
-				</div>
-				<div class="xc-pop__body">
-					<div class="xc-moods" role="group" aria-label="<?php esc_attr_e( 'What you need', 'oria' ); ?>">
-						<?php foreach ( $oria_moods as $oria_m ) : ?>
-							<button type="button" class="xc-mood" aria-pressed="false" data-xc-mood="<?php echo esc_attr( $oria_m['slug'] ); ?>" data-xc-mood-name="<?php echo esc_attr( $oria_m['name'] ); ?>" data-kind="cat" data-items="<?php echo esc_attr( implode( ',', $oria_m['items'] ) ); ?>">
-								<span class="xc-mood__name"><?php echo esc_html( $oria_m['name'] ); ?></span>
-								<?php if ( '' !== $oria_m['line'] ) : ?>
-									<span class="xc-mood__line"><?php echo esc_html( $oria_m['line'] ); ?></span>
-								<?php endif; ?>
-								<span class="xc-mood__n">
-									<?php
-									/* translators: %s: number of places */
-									printf( esc_html( _n( '%s place', '%s places', $oria_m['n'], 'oria' ) ), esc_html( number_format_i18n( $oria_m['n'] ) ) );
-									?>
-								</span>
-							</button>
-						<?php endforeach; ?>
-					</div>
-					<?php foreach ( $oria_moods as $oria_m ) : ?>
-						<div class="xc-mood__detail" data-xc-mood-detail="<?php echo esc_attr( $oria_m['slug'] ); ?>" hidden>
-							<p class="xc-mood__hint">
-								<?php
-								/* translators: %s: mood name */
-								printf( esc_html__( 'In “%s” — untick anything you would rather skip:', 'oria' ), esc_html( $oria_m['name'] ) );
-								?>
-							</p>
-							<div class="xc-checks">
-								<?php foreach ( $oria_m['items'] as $oria_it ) { $oria_cat_box( $oria_it, $oria_top[ $oria_it ] ); } ?>
-							</div>
-						</div>
-					<?php endforeach; ?>
-				</div>
-				<div class="xc-pop__foot">
-					<button type="button" class="xc-pop__clear" data-xc-clear><?php esc_html_e( 'Clear', 'oria' ); ?></button>
-					<?php /* translators: %s: number of places (updated live) */ $oria_show( __( 'Show %s matching places', 'oria' ) ); ?>
-				</div>
-			</div>
-		<?php endif; ?>
-
-		<?php if ( count( $oria_top ) > 1 ) : ?>
-			<div class="xc-pop" id="xcExp" role="dialog" aria-labelledby="xcExpTitle" hidden>
-				<div class="xc-pop__head">
-					<h2 class="xc-pop__title" id="xcExpTitle"><?php esc_html_e( 'Choose a practice', 'oria' ); ?></h2>
-					<button type="button" class="xc-pop__x" data-xc-close aria-label="<?php esc_attr_e( 'Close', 'oria' ); ?>">&times;</button>
-				</div>
-				<div class="xc-pop__body">
-					<p class="xc-mood__hint">
-						<?php
-						/* translators: %s: area */
-						printf( esc_html__( 'Pick one or several — each number is how many places in %s offer it.', 'oria' ), esc_html( $oria_place ) );
-						?>
-					</p>
-					<div class="xc-checks" data-xc-exp-list>
-						<?php foreach ( $oria_top as $oria_cs => $oria_cc ) { $oria_cat_box( (string) $oria_cs, $oria_cc ); } ?>
-					</div>
-				</div>
-				<div class="xc-pop__foot">
-					<button type="button" class="xc-pop__clear" data-xc-clear><?php esc_html_e( 'Clear', 'oria' ); ?></button>
-					<?php /* translators: %s: number of places (updated live) */ $oria_show( __( 'Show %s places', 'oria' ) ); ?>
-				</div>
-			</div>
-		<?php endif; ?>
-
-		<div class="xc-pop" id="xcLoc" role="dialog" aria-labelledby="xcLocTitle" hidden>
-			<div class="xc-pop__head">
-				<h2 class="xc-pop__title" id="xcLocTitle"><?php esc_html_e( 'Where?', 'oria' ); ?></h2>
-				<button type="button" class="xc-pop__x" data-xc-close aria-label="<?php esc_attr_e( 'Close', 'oria' ); ?>">&times;</button>
-			</div>
-			<div class="xc-pop__body">
-				<p class="xc-pop__sub">
-					<?php
-					/* translators: %s: area */
-					printf( esc_html__( 'In %s', 'oria' ), esc_html( $oria_place ) );
-					?>
-				</p>
-				<div class="xc-checks">
-					<label class="xc-check">
-						<input type="checkbox" data-filter="format" value="in-person">
-						<span class="xc-check__label"><?php esc_html_e( 'In person', 'oria' ); ?></span>
-					</label>
-					<?php if ( $oria_online ) : ?>
-						<label class="xc-check">
-							<input type="checkbox" data-filter="format" value="online">
-							<span class="xc-check__label"><?php esc_html_e( 'Online sessions', 'oria' ); ?></span>
-							<span class="xc-check__n"><?php echo esc_html( number_format_i18n( $oria_online ) ); ?></span>
-						</label>
-					<?php endif; ?>
-				</div>
-				<?php if ( $oria_map ) : ?>
-					<p class="xc-area__popmap"><button type="button" class="xc-pchip" data-xc-map data-xa-map><?php esc_html_e( 'Show them on the map', 'oria' ); ?></button></p>
-				<?php endif; ?>
-				<?php if ( $oria_nearby ) : ?>
-					<p class="xc-pop__sub"><?php esc_html_e( 'Or somewhere nearby', 'oria' ); ?></p>
-					<ul class="xc-ways xc-ways--cities">
-						<?php foreach ( $oria_nearby as $oria_nb ) : ?>
-							<li><a href="<?php echo esc_url( (string) get_term_link( $oria_nb['term'] ) ); ?>"><span><?php echo esc_html( \Oria\Theme\tname( $oria_nb['term'] ) ); ?></span><span class="xc-check__n"><?php echo esc_html( number_format_i18n( $oria_nb['n'] ) ); ?></span></a></li>
-						<?php endforeach; ?>
-					</ul>
-				<?php endif; ?>
-			</div>
-			<div class="xc-pop__foot">
-				<button type="button" class="xc-pop__clear" data-xc-clear><?php esc_html_e( 'Clear', 'oria' ); ?></button>
-				<?php /* translators: %s: number of places (updated live) */ $oria_show( __( 'Show %s places', 'oria' ) ); ?>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="xc-ribbon xc-js" id="xcRibbon" role="region" aria-label="<?php esc_attr_e( 'Refine these places', 'oria' ); ?>">
-	<div class="wrap xc-ribbon__row">
-		<span class="xc-ribbon__cat"><?php echo esc_html( $oria_place ); ?></span>
-		<button type="button" class="xc-ribbon__btn" data-xc-open="<?php echo $oria_moods ? 'xcWays' : 'xcExp'; ?>" aria-controls="<?php echo $oria_moods ? 'xcWays' : 'xcExp'; ?>" aria-expanded="false" aria-haspopup="dialog">
-			<span data-xc-val="ribbon"><?php esc_html_e( 'All practices', 'oria' ); ?></span> <span aria-hidden="true">&#9662;</span>
-		</button>
-		<button type="button" class="xc-ribbon__btn" data-xc-filters aria-controls="xcFilterPanel"><?php esc_html_e( 'Filters', 'oria' ); ?><span data-xc-fcount></span></button>
-		<span class="xc-ribbon__count" aria-hidden="true"><b data-xc-count><?php echo esc_html( number_format_i18n( $oria_n ) ); ?></b> <?php esc_html_e( 'places', 'oria' ); ?></span>
-		<?php if ( $oria_map ) : ?>
-			<button type="button" class="xc-ribbon__btn xc-ribbon__btn--map" data-xc-map><?php esc_html_e( 'Map', 'oria' ); ?></button>
-		<?php endif; ?>
-	</div>
-</div>
-<?php endif; ?>
 
 <!-- 3. The places -->
 <section class="wrap section section--top-flush floor xc-browse oag-places" id="browse">
