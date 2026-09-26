@@ -786,6 +786,9 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
   color: #47614E;
 }
 .oh-experience .ov-icon svg { width: 24px; height: 24px; }
+/* The illustrated icons carry their own sage ground and margin: they fill the tile. */
+.oh-experience .ov-icon--art { overflow: hidden; }
+.oh-experience .ov-icon--art img { display: block; width: 48px; height: 48px; }
 .oh-experience .ov-description { max-width: 52ch; margin: 0; font-size: 15px; line-height: 1.6; color: var(--ov-soft); }
 .oh-experience .ov-traits { max-width: 60ch; margin: 6px 0 0; font-size: 13px; line-height: 1.55; color: var(--ov-soft); }
 

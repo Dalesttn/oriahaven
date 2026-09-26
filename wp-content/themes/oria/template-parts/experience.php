@@ -132,9 +132,35 @@ $ex_one   = 1 === count( $ex_acts );
 $ex_title = $ex_one
 	? (string) $ex_acts[0]['label']
 	: ( $ex_acts ? ( ! empty( $args['is_classes'] ) ? __( 'Classes you’ll find here', 'oria' ) : __( 'What you can do here', 'oria' ) ) : __( 'Before your first visit', 'oria' ) );
-// The outline glyph, not the filled artwork icon() prefers: this tile wants a
-// 24px line icon in the text colour, and glyph() covers sub-categories too.
-$ex_icon  = function_exists( '\Oria\Core\Categories\glyph' ) && '' !== (string) ( $args['icon'] ?? '' ) ? \Oria\Core\Categories\glyph( (string) $args['icon'] ) : '';
+/*
+ * The category illustration drawn for this tile (assets/img/cat-icons/,
+ * Recraft vector icons in the site palette: deep green line, sage accent,
+ * the tile's own #EAF0E5 ground). A sub-category without one borrows its
+ * parent's; with neither, the outline glyph the plugin already carries.
+ */
+$ex_icon     = '';
+$ex_icon_url = '';
+$ex_slug     = sanitize_key( (string) ( $args['icon'] ?? '' ) );
+if ( '' !== $ex_slug ) {
+	$ex_try = array( $ex_slug );
+	$ex_t   = get_term_by( 'slug', $ex_slug, 'practice' );
+	if ( $ex_t instanceof \WP_Term && $ex_t->parent ) {
+		$ex_p = get_term( (int) $ex_t->parent, 'practice' );
+		if ( $ex_p instanceof \WP_Term ) {
+			$ex_try[] = $ex_p->slug;
+		}
+	}
+	foreach ( $ex_try as $ex_s ) {
+		$ex_rel = 'assets/img/cat-icons/' . $ex_s . '.svg';
+		if ( is_readable( get_template_directory() . '/' . $ex_rel ) ) {
+			$ex_icon_url = get_template_directory_uri() . '/' . $ex_rel;
+			break;
+		}
+	}
+	if ( '' === $ex_icon_url && function_exists( '\Oria\Core\Categories\glyph' ) ) {
+		$ex_icon = \Oria\Core\Categories\glyph( $ex_slug );
+	}
+}
 
 $ex_ico = static function ( string $name ): string {
 	$p = array(
@@ -162,7 +188,9 @@ $ex_more = static fn( string $label ): string => sprintf( __( 'Explore more %1$s
 			<p class="ov-eyebrow"><?php esc_html_e( 'The experience', 'oria' ); ?></p>
 			<div class="ov-title">
 				<h2 class="ov-h" id="xp-s<?php echo (int) $ex_sec; ?>"><?php echo esc_html( $ex_title ); ?></h2>
-				<?php if ( '' !== $ex_icon ) : ?>
+				<?php if ( '' !== $ex_icon_url ) : ?>
+					<span class="ov-icon ov-icon--art" aria-hidden="true"><img src="<?php echo esc_url( $ex_icon_url ); ?>" alt="" width="48" height="48" decoding="async"></span>
+				<?php elseif ( '' !== $ex_icon ) : ?>
 					<span class="ov-icon" aria-hidden="true"><?php echo $ex_icon; // phpcs:ignore WordPress.Security.EscapeOutput -- plugin-bundled SVG ?></span>
 				<?php endif; ?>
 			</div>
