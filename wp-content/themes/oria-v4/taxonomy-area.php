@@ -637,62 +637,92 @@ $oria_region_name = ( $oria_region && $oria_term && $oria_region->term_id !== $o
 	</div>
 </section>
 
+<?php
+// A small line icon for each visit row; decoration only.
+$oria_vico = static function ( string $name ): string {
+	$p = array(
+		'train'    => '<rect x="6" y="3.5" width="12" height="13" rx="3"/><path d="M6 11h12M9 20l-1.5 1.5M15 20l1.5 1.5M8.5 16.5 7 20M15.5 16.5 17 20"/><circle cx="9.5" cy="13.8" r=".6"/><circle cx="14.5" cy="13.8" r=".6"/>',
+		'calendar' => '<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/><path d="m9.5 14.8 1.8 1.7 3.3-3.4"/>',
+		'weather'  => '<path d="M8 17.5h8.5a3.5 3.5 0 1 0-.9-6.9A5 5 0 0 0 6 12.4 2.6 2.6 0 0 0 8 17.5Z"/><path d="M15 3.5v1.6M19.6 5.4l-1.1 1.1M21.5 10h-1.6"/>',
+		'access'   => '<circle cx="13" cy="4.5" r="1.6"/><path d="M11.5 8.5 11 13h5l2 5.5"/><path d="M11 10.5H8M9.6 13.6a4.3 4.3 0 1 0 5.6 4.8"/>',
+	);
+	return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . ( $p[ $name ] ?? '' ) . '</svg>';
+};
+?>
+<div class="oag-dark">
+
 <!-- 7. Plan your visit -->
 <section class="oag-section" id="plan-your-visit" aria-labelledby="oagVisitTitle">
 	<div class="oag-wrap">
 		<h2 class="oag-h2" id="oagVisitTitle"><?php esc_html_e( 'Plan your visit', 'oria' ); ?></h2>
-		<div class="oag-visit">
+		<p class="oag-dark__lede"><?php esc_html_e( 'A few details to check before you head out.', 'oria' ); ?></p>
+		<ul class="oag-checks">
 			<?php if ( $oria_around ) : ?>
-				<div class="oag-visit__col">
-					<h3 class="oag-visit__h"><?php esc_html_e( 'Getting here', 'oria' ); ?></h3>
-					<ul class="oag-visit__list">
+				<li class="oag-check">
+					<span class="oag-check__icon"><?php echo $oria_vico( 'train' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?></span>
+					<div class="oag-check__body">
+						<h3 class="oag-check__title"><?php esc_html_e( 'Getting here', 'oria' ); ?></h3>
 						<?php foreach ( $oria_around as $oria_line ) : ?>
-							<li><?php echo esc_html( $oria_line ); ?></li>
+							<p class="oag-check__text"><?php echo esc_html( $oria_line ); ?></p>
 						<?php endforeach; ?>
-					</ul>
-					<?php if ( $oria_links ) : ?>
-						<p class="oag-visit__links">
-							<?php foreach ( $oria_links as $oria_lk ) : ?>
-								<a class="oag-textlink" href="<?php echo esc_url( (string) $oria_lk['url'] ); ?>" rel="noopener" target="_blank"><?php echo esc_html( (string) $oria_lk['label'] ); ?> <span aria-hidden="true">&nearr;</span><span class="sr-only"><?php esc_html_e( '(opens in a new tab)', 'oria' ); ?></span></a>
-							<?php endforeach; ?>
-						</p>
-					<?php endif; ?>
-				</div>
+						<?php if ( $oria_links ) : ?>
+							<p class="oag-check__links">
+								<?php foreach ( $oria_links as $oria_lk ) : ?>
+									<a href="<?php echo esc_url( (string) $oria_lk['url'] ); ?>" rel="noopener" target="_blank"><?php echo esc_html( (string) $oria_lk['label'] ); ?> <span aria-hidden="true">&nearr;</span><span class="sr-only"><?php esc_html_e( '(opens in a new tab)', 'oria' ); ?></span></a>
+								<?php endforeach; ?>
+							</p>
+						<?php endif; ?>
+					</div>
+				</li>
 			<?php endif; ?>
-			<div class="oag-visit__col">
-				<h3 class="oag-visit__h"><?php esc_html_e( 'Before you go', 'oria' ); ?></h3>
-				<ul class="oag-visit__list">
-					<li><?php esc_html_e( 'Check session times, prices and booking on each listing, and with the place itself. Details change.', 'oria' ); ?></li>
-					<li><?php esc_html_e( 'Outdoor sessions can change with the weather. Check with the organiser on the day.', 'oria' ); ?></li>
-					<li><?php esc_html_e( 'Oria Haven does not yet hold checked access information for these places. Ask each one directly about step-free access.', 'oria' ); ?></li>
-				</ul>
-			</div>
-		</div>
+			<li class="oag-check">
+				<span class="oag-check__icon"><?php echo $oria_vico( 'calendar' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?></span>
+				<div class="oag-check__body">
+					<h3 class="oag-check__title"><?php esc_html_e( 'Check your session', 'oria' ); ?></h3>
+					<p class="oag-check__text"><?php esc_html_e( 'Confirm times, prices and booking requirements with the provider.', 'oria' ); ?></p>
+				</div>
+			</li>
+			<li class="oag-check">
+				<span class="oag-check__icon"><?php echo $oria_vico( 'weather' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?></span>
+				<div class="oag-check__body">
+					<h3 class="oag-check__title"><?php esc_html_e( 'Heading outdoors?', 'oria' ); ?></h3>
+					<p class="oag-check__text"><?php esc_html_e( "Check the organiser's updates on the day. Outdoor sessions can change with the weather.", 'oria' ); ?></p>
+				</div>
+			</li>
+			<li class="oag-check">
+				<span class="oag-check__icon"><?php echo $oria_vico( 'access' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?></span>
+				<div class="oag-check__body">
+					<h3 class="oag-check__title"><?php esc_html_e( 'Check access before you go', 'oria' ); ?></h3>
+					<p class="oag-check__text"><?php esc_html_e( 'Access details are not yet verified here. Ask the venue about step-free entry and any facilities you need.', 'oria' ); ?></p>
+				</div>
+			</li>
+		</ul>
 	</div>
 </section>
 
 <?php if ( $oria_nearby ) : ?>
-<!-- 8. Explore nearby -->
+<!-- 8. Explore a little further -->
 <section class="oag-section" id="nearby" aria-labelledby="oagNearTitle">
 	<div class="oag-wrap">
-		<h2 class="oag-h2" id="oagNearTitle"><?php esc_html_e( 'Explore nearby', 'oria' ); ?></h2>
+		<h2 class="oag-h2" id="oagNearTitle"><?php esc_html_e( 'Explore a little further', 'oria' ); ?></h2>
+		<p class="oag-dark__lede"><?php esc_html_e( 'Find more wellness experiences in nearby areas.', 'oria' ); ?></p>
 		<ul class="oag-near">
 			<?php foreach ( $oria_nearby as $oria_nb ) : ?>
 				<li>
 					<a class="oag-near__card" href="<?php echo esc_url( (string) get_term_link( $oria_nb['term'] ) ); ?>" data-oria-event="area_nearby_click">
-						<strong class="oag-near__name"><?php echo esc_html( \Oria\Theme\tname( $oria_nb['term'] ) ); ?></strong>
-						<span class="oag-near__meta">
-							<?php
-							$oria_nm = array(
+						<span class="oag-near__top">
+							<svg class="oag-near__pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-6.1-6.5-11A6.5 6.5 0 0 1 18.5 10c0 4.9-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+							<span class="oag-near__count">
+								<?php
 								/* translators: %s: number of places */
-								sprintf( _n( '%s place', '%s places', $oria_nb['n'], 'oria' ), number_format_i18n( $oria_nb['n'] ) ),
-							);
-							if ( '' !== $oria_nb['dir'] ) {
-								/* translators: %s: compass direction, e.g. north-east */
-								array_unshift( $oria_nm, sprintf( __( 'To the %s', 'oria' ), $oria_nb['dir'] ) );
-							}
-							echo esc_html( implode( ' · ', $oria_nm ) );
-							?>
+								printf( esc_html( _n( '%s place', '%s places', $oria_nb['n'], 'oria' ) ), esc_html( number_format_i18n( $oria_nb['n'] ) ) );
+								?>
+							</span>
+						</span>
+						<strong class="oag-near__name"><?php echo esc_html( \Oria\Theme\tname( $oria_nb['term'] ) ); ?></strong>
+						<span class="oag-near__go">
+							<?php esc_html_e( 'Explore the area', 'oria' ); ?>
+							<span class="oag-near__arrow" aria-hidden="true">&nearr;</span>
 						</span>
 					</a>
 				</li>
@@ -701,6 +731,8 @@ $oria_region_name = ( $oria_region && $oria_term && $oria_region->term_id !== $o
 	</div>
 </section>
 <?php endif; ?>
+
+</div>
 
 <!-- 9. For local businesses -->
 <section class="oag-section oag-section--tight" aria-labelledby="oagBizTitle">

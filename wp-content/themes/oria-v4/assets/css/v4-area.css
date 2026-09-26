@@ -553,19 +553,49 @@ a.xa-stop__name:hover { text-decoration-color: currentColor; }
 .oag-ev__go { margin-top: auto; padding-top: 4px; font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .oag-empty { margin: 0; padding: 16px 18px; border: 1px dashed var(--oag-line); border-radius: 14px; color: var(--oag-muted); }
 
-/* 7. Plan your visit. */
-.oag-visit { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 40px; margin-top: 8px; }
-.oag-visit__col { min-width: 0; padding-top: 16px; border-top: 1px solid var(--oag-line); }
-.oag-visit__h { margin: 0 0 8px; font-size: 1.0625rem; font-weight: 700; }
-.oag-visit__list { margin: 0; padding-left: 1.1em; line-height: 1.6; color: var(--oag-muted); }
-.oag-visit__list li + li { margin-top: 6px; }
-.oag-visit__links { display: flex; flex-wrap: wrap; gap: 0 20px; margin: 8px 0 0; }
+/* 7 + 8. Plan your visit and Explore a little further: one dark band. */
+.oag-dark {
+  --oag-dk: #242C28;
+  --oag-dk-panel: #2D3631;
+  --oag-dk-line: rgba(252, 251, 247, .14);
+  --oag-dk-ink: #F4F2EA;
+  --oag-dk-muted: #C4CEC6;
+  background: var(--oag-dk);
+  color: var(--oag-dk-ink);
+  padding-block: clamp(16px, 3vw, 32px);
+}
+.oag-dark .oag-h2 { margin-bottom: 10px; color: var(--oag-dk-ink); font-size: clamp(1.875rem, 3.8vw, 2.875rem); }
+.oag-dark__lede { margin: 0 0 clamp(24px, 3vw, 36px); font-size: 1.125rem; line-height: 1.55; color: var(--oag-dk-muted); }
+.oag-dark a:focus-visible { outline: 3px solid #E9C788; outline-offset: 3px; }
 
-/* 8. Explore nearby. */
-.oag-near { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 12px; margin: 16px 0 0; padding: 0; list-style: none; }
-.oag-near__card { display: grid; gap: 4px; padding: 16px 18px; border: 1px solid var(--oag-line); border-radius: 16px; background: #FFFFFF; color: var(--oag-ink); text-decoration: none; }
-.oag-near__card:hover { border-color: var(--oag-ink); }
-.oag-near__meta { font-size: 14px; color: var(--oag-muted); }
+.oag-checks { margin: 0; padding: clamp(8px, 2vw, 16px) clamp(20px, 3vw, 44px); list-style: none; border: 1px solid var(--oag-dk-line); border-radius: 22px; background: var(--oag-dk-panel); }
+.oag-check { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 18px 24px; align-items: start; padding-block: clamp(20px, 2.4vw, 28px); }
+.oag-check + .oag-check { border-top: 1px solid var(--oag-dk-line); }
+.oag-check__icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 12px; background: rgba(252, 251, 247, .08); color: var(--oag-dk-ink); }
+.oag-check__icon svg { width: 22px; height: 22px; }
+.oag-check__body { min-width: 0; }
+.oag-check__title { margin: 0 0 6px; font-family: var(--font-sans); font-size: 1.125rem; font-weight: 700; line-height: 1.35; color: var(--oag-dk-ink); }
+.oag-check__text { margin: 0; max-width: 72ch; font-size: 1rem; line-height: 1.65; color: var(--oag-dk-muted); }
+.oag-check__text + .oag-check__text { margin-top: 6px; }
+.oag-check__links { display: flex; flex-wrap: wrap; gap: 0 22px; margin: 6px 0 0; }
+.oag-check__links a { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; font-weight: 600; color: var(--oag-dk-ink); text-decoration: underline; text-underline-offset: 4px; }
+
+.oag-near { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); margin: 0; padding: 0; list-style: none; }
+.oag-near__card {
+  display: flex; flex-direction: column; gap: 14px; height: 100%;
+  padding: clamp(20px, 2.4vw, 28px);
+  border: 1px solid var(--oag-dk-line); border-radius: 20px;
+  background: var(--oag-dk-panel); color: var(--oag-dk-ink); text-decoration: none;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.oag-near__card:hover { border-color: rgba(252, 251, 247, .38); background: #333D37; color: var(--oag-dk-ink); }
+.oag-near__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.oag-near__pin { width: 24px; height: 24px; color: var(--oag-dk-muted); }
+.oag-near__count { padding: 6px 12px; border-radius: 10px; background: rgba(252, 251, 247, .09); font-size: 14.5px; color: var(--oag-dk-muted); font-variant-numeric: tabular-nums; }
+.oag-near__name { font-size: 1.375rem; font-weight: 700; line-height: 1.25; }
+.oag-near__go { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; font-size: 1rem; color: var(--oag-dk-muted); }
+.oag-near__arrow { font-size: 1.125rem; color: var(--oag-dk-ink); transition: transform .15s ease; }
+.oag-near__card:hover .oag-near__arrow { transform: translate(2px, -2px); }
 
 /* 9. For local businesses: modest, dark. */
 .oag-biz { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 32px; padding: clamp(22px, 3vw, 32px); border-radius: 20px; background: var(--oag-ink); color: var(--oag-paper); }
@@ -575,11 +605,12 @@ a.xa-stop__name:hover { text-decoration-color: currentColor; }
 .oag-biz a:focus-visible { outline-color: #E9C788; }
 
 @media (prefers-reduced-motion: reduce) {
-  .oag-btn { transition: none; }
+  .oag-btn, .oag-near__card, .oag-near__arrow { transition: none; }
 }
 @media (max-width: 56rem) {
   .oag-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .oag-tiles, .oag-visit, .oag-local { grid-template-columns: 1fr; }
+  .oag-tiles, .oag-local { grid-template-columns: 1fr; }
+  .oag-near { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 50rem) {
   /* Phones: the shade comes up from the bottom, where the words sit. */
@@ -590,7 +621,9 @@ a.xa-stop__name:hover { text-decoration-color: currentColor; }
   .oag-hero__credit { right: auto; left: var(--gutter); top: 10px; bottom: auto; }
 }
 @media (max-width: 30rem) {
-  .oag-groups { grid-template-columns: 1fr; }
+  .oag-groups, .oag-near { grid-template-columns: 1fr; }
+  .oag-check { grid-template-columns: 40px minmax(0, 1fr); gap: 14px; }
+  .oag-check__icon { width: 40px; height: 40px; }
   .oag-hero__acts .oag-btn, .oag-biz__acts .oag-btn { width: 100%; }
 }
 
