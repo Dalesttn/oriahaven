@@ -1908,6 +1908,22 @@ if ( $oria_first ) {
 	get_template_part( 'template-parts/first-visit', null, array( 'guide' => $oria_first, 'id' => 'first-visit' ) );
 }
 
+/*
+ * Retreats only: one compact line to the retreat escapes hub, once it has
+ * something in it. The local list above, and each practice's own contact
+ * details, stay exactly as they are; the hub's offers never join them.
+ */
+if ( $oria_term && in_array( $oria_term->slug, array( 'retreats', 'day-retreats' ), true )
+	&& function_exists( '\Oria\Core\Retreats\published' ) && \Oria\Core\Retreats\published() ) {
+	?>
+	<p class="wrap ro-onward">
+		<?php esc_html_e( 'Looking further afield?', 'oria' ); ?>
+		<a href="<?php echo esc_url( \Oria\Core\Retreats\hub_url() ); ?>" data-oria-event="retreat_hub_click" data-oria-placement="retreat_archive"><?php esc_html_e( 'Compare retreat escapes in WA and beyond', 'oria' ); ?></a>
+		<span class="ro-onward__note"><?php esc_html_e( '(includes affiliate links)', 'oria' ); ?></span>
+	</p>
+	<?php
+}
+
 // 7. FAQs: the frame's on a facet page (none if it has no frame), the
 // category's otherwise.
 if ( $oria_facet ) {

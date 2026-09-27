@@ -4032,6 +4032,26 @@
       } catch (err) { /* counting must never break a tap */ }
     });
 
+    /* Retreat affiliate links. The link itself is an ordinary anchor that
+       works with or without this. What is reported is the offer id and
+       where the card was -- never the tracking URL, never anything about
+       the person -- and it is a click, not a booking. */
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a[data-oria-aff]");
+      if (!a) return;
+      var id = parseInt(a.getAttribute("data-oria-aff"), 10) || 0;
+      var place = a.getAttribute("data-oria-aff-place") || "";
+      if (!id) return;
+      pushEvent("retreat_affiliate_click", { offer_id: id, cta_placement: place });
+      if (!window.ORIA_TRACK || !navigator.sendBeacon) return;
+      try {
+        navigator.sendBeacon(
+          String(ORIA_TRACK.url).replace(/track\/?$/, "retreat-click"),
+          new Blob([JSON.stringify({ id: id, placement: place })], { type: "application/json" })
+        );
+      } catch (err) { /* counting must never break a tap */ }
+    });
+
     /* Profile views: one event per page, carrying the category, suburb
        and plan so GA4 can answer "which categories convert?"
 

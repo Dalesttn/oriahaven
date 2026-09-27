@@ -1013,3 +1013,8 @@ html.xc-locked { overflow: hidden; }
   .xc-mood:hover { transform: none; }
   .xc-mood[aria-pressed="true"] .xc-mood__arch { transform: none; }
 }
+
+/* Retreat escapes: the one-line pointer on the retreats category (only once offers are live). */
+.ro-onward { margin: 1.5rem auto 0; font-size: .95rem; color: var(--text-soft); }
+.ro-onward a { font-weight: 600; color: var(--ink); text-underline-offset: 3px; }
+.ro-onward__note { font-size: .85rem; }

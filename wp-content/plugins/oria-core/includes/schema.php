@@ -248,7 +248,7 @@ function listing_faq( int $id ): array {
 		}
 		$out[] = array(
 			'q' => sprintf( __( 'How do I book with %s?', 'oria' ), $name ),
-			'a' => sprintf( __( 'Directly with the practice, %s. Oria Haven takes no bookings and no commission.', 'oria' ), implode( __( ' or ', 'oria' ), $bits ) ),
+			'a' => sprintf( __( 'Directly with the practice, %s. Oria Haven takes no bookings for it and no commission on them.', 'oria' ), implode( __( ' or ', 'oria' ), $bits ) ),
 		);
 	}
 

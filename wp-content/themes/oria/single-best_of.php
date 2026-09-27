@@ -316,6 +316,25 @@ if ( function_exists( '\Oria\Core\AreaContext\dominant' ) ) {
 <?php endif; ?>
 
 <?php
+/*
+ * The retreats guide only: up to three disclosed retreat escapes from
+ * near Perth and WA -- related choices, never mixed into the picks above,
+ * and never a Bali package in a Perth guide.
+ */
+if ( 'wellness-retreats-perth' === get_post_field( 'post_name', $oria_id ) && function_exists( '\Oria\Core\Retreats\module' ) ) {
+	$oria_ro = array_slice(
+		array_merge(
+			\Oria\Core\Retreats\active_offers( array( 'destination' => 'near-perth' ) ),
+			\Oria\Core\Retreats\active_offers( array( 'destination' => 'wa' ) )
+		),
+		0,
+		3
+	);
+	if ( $oria_ro ) {
+		echo '<div class="wrap">' . \Oria\Core\Retreats\module( $oria_ro, 'best_of', __( 'Further afield: retreat escapes in WA', 'oria' ) ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- module escapes.
+	}
+}
+
 // Trend to Try, when one is tied to this guide or its category.
 $oria_tr = function_exists( '\Oria\Core\Trends\for_guide' ) ? \Oria\Core\Trends\for_guide( $oria_id ) : array();
 ?>

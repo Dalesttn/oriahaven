@@ -360,7 +360,7 @@ function site_faq(): array {
 
 	$faqs[] = array(
 		'q' => 'Do you charge a booking fee?',
-		'a' => 'No. Enquiries go straight to the practice and they reply to you directly. We never take a commission on a booking, and we never charge you for an introduction.',
+		'a' => 'No. Enquiries go straight to the practice and they reply to you directly. Ordinary directory enquiries and direct links to practices remain commission-free, and we never charge you for an introduction. Some separately labelled retreat recommendations use affiliate links, which may earn Oria Haven a commission from the booking provider.',
 	);
 
 	return $faqs;

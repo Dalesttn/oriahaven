@@ -118,6 +118,10 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/ask/' ) ), esc_html__( 'Ask Oria', 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/wellness-map/' ) ), esc_html__( 'Wellness map', 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );
+					// Only once there is something to compare: an empty commercial page never reaches the menu.
+					if ( function_exists( '\Oria\Core\Retreats\published' ) && \Oria\Core\Retreats\published() ) {
+						printf( '<li><a href="%s">%s</a></li>', esc_url( \Oria\Core\Retreats\hub_url() ), esc_html__( 'Retreat escapes', 'oria' ) );
+					}
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
 					echo '</ul></li>';
@@ -223,6 +227,9 @@ if ( ! $oria_has_hero ) {
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/ask/' ) ), esc_html__( 'Ask Oria', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/wellness-map/' ) ), esc_html__( 'Wellness map', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );
+				if ( function_exists( '\Oria\Core\Retreats\published' ) && \Oria\Core\Retreats\published() ) {
+					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( \Oria\Core\Retreats\hub_url() ), esc_html__( 'Retreat escapes', 'oria' ) );
+				}
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'wellness_app' ) ?: home_url( '/apps/' ) ), esc_html__( 'Discover', 'oria' ) );
