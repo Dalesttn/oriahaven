@@ -9,8 +9,9 @@
 	--wo-bg: #FAF8F3;
 	--wo-surface: #FFFDF9;
 	--wo-sage: #EDF0E7;
-	--wo-olive: #42513B;
-	--wo-olive-dk: #34402F;
+	/* The site's own deep green -- the footer's -- so the page matches it. */
+	--wo-olive: var(--deep, #0E3B38);
+	--wo-olive-dk: var(--ink, #082220);
 	--wo-forest: #203D34;
 	--wo-text: #263129;
 	--wo-muted: #5B6357;
@@ -57,7 +58,7 @@
 /* 1. Hero: copy on ivory, the photograph fading in from the right. */
 .wo-hero { position: relative; overflow: hidden; background: var(--wo-bg); }
 .wo-hero__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; min-height: clamp(340px, 30vw, 400px); }
-.wo-hero__copy { position: relative; z-index: 1; align-self: center; padding-block: clamp(24px, 3vw, 40px); }
+.wo-hero__copy { position: relative; z-index: 2; align-self: center; padding-block: clamp(24px, 3vw, 40px); }
 .wo-crumbs { margin: 0 0 16px; font-size: 13px; color: var(--wo-muted); }
 .wo-crumbs a { color: var(--wo-muted); }
 .wo-hero__title { margin: 0; font-family: var(--font-edit); font-size: clamp(2.125rem, 4.4vw, 3.5rem); font-weight: 400; line-height: 1.05; letter-spacing: -.02em; color: var(--wo-text); text-wrap: balance; }
@@ -149,7 +150,7 @@
 	border: 1px solid var(--wo-olive); border-radius: 999px; background: var(--wo-sage);
 	color: var(--wo-text); font: inherit; font-size: 14px; cursor: pointer;
 }
-.wo-chip__x { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(66, 81, 59, .12); font-size: 15px; line-height: 1; }
+.wo-chip__x { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(14, 59, 56, .12); font-size: 15px; line-height: 1; }
 .wo-chip--clear { border-color: transparent; background: transparent; padding: 0 10px; text-decoration: underline; text-underline-offset: 3px; }
 
 /* 4. Results. */
@@ -242,6 +243,12 @@
 
 @media (prefers-reduced-motion: reduce) {
 	.wo-btn, .wotile__img, .wocard__arrow, .oria-whats-on .wocard { transition: none; }
+}
+
+/* Medium desktops: less overlap, so the words never run under the photo. */
+@media (max-width: 64rem) {
+	.wo-hero__grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); }
+	.wo-hero__media { margin-left: 0; }
 }
 
 /* Medium: three tiles a row, two card columns. */
