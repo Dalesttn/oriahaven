@@ -1,0 +1,294 @@
+/*
+ * /whats-on-perth/ (archive-event.php) -- warm, editorial and quick to use.
+ * Loaded on that page only; every rule is scoped under .oria-whats-on, so
+ * /this-weekend/ and the other .wkrow users keep their own look.
+ * Typefaces are the site's own (tokens.css): the editorial serif for the
+ * hero, headings and card titles; the sans for controls and details.
+ */
+.oria-whats-on {
+	--wo-bg: #FAF8F3;
+	--wo-surface: #FFFDF9;
+	--wo-sage: #EDF0E7;
+	--wo-olive: #42513B;
+	--wo-olive-dk: #34402F;
+	--wo-forest: #203D34;
+	--wo-text: #263129;
+	--wo-muted: #5B6357;
+	--wo-border: #DEDFD5;
+	--wo-gold: #AC8B4C;
+	--wo-radius: 14px;
+	--wo-container: 1240px;
+	background: var(--wo-bg);
+	color: var(--wo-text);
+}
+.oria-whats-on *,
+.oria-whats-on *::before,
+.oria-whats-on *::after { box-sizing: border-box; }
+
+.wo-wrap { width: 100%; max-width: calc(var(--wo-container) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
+.wo-section { padding-block: clamp(28px, 4vw, 48px); }
+.wo-section--tight { padding-block: clamp(12px, 2vw, 24px); }
+#wo-results { scroll-margin-top: 90px; }
+
+.wo-eyebrow { margin: 0 0 12px; font-size: 12.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--wo-muted); }
+.wo-h2 { margin: 0; font-family: var(--font-edit); font-size: clamp(1.625rem, 3vw, 2.125rem); font-weight: 400; line-height: 1.15; letter-spacing: -.01em; color: var(--wo-text); text-wrap: balance; }
+.wo-h3 { margin: 0 0 12px; font-family: var(--font-edit); font-size: clamp(1.25rem, 2.2vw, 1.5rem); font-weight: 400; line-height: 1.2; color: var(--wo-text); }
+.wo-ico { width: 18px; height: 18px; flex: none; }
+
+/* Buttons and links. */
+.wo-btn {
+	display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+	min-height: 48px; padding: 0 22px;
+	border: 1.5px solid var(--wo-olive); border-radius: 8px;
+	font-family: var(--font-sans); font-size: 15px; font-weight: 700; line-height: 1.2;
+	text-decoration: none; cursor: pointer;
+	transition: background-color .15s ease, color .15s ease;
+}
+.wo-btn--primary { background: var(--wo-olive); color: #FFFDF9; }
+.wo-btn--primary:hover { background: var(--wo-olive-dk); color: #FFFDF9; }
+.wo-btn--secondary { background: transparent; color: var(--wo-olive); }
+.wo-btn--secondary:hover { background: var(--wo-sage); color: var(--wo-olive); }
+.wo-textlink { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; color: var(--wo-text); text-decoration: underline; text-underline-offset: 4px; }
+.oria-whats-on a:focus-visible,
+.oria-whats-on button:focus-visible,
+.oria-whats-on summary:focus-visible,
+.oria-whats-on select:focus-visible { outline: 3px solid var(--wo-gold); outline-offset: 3px; }
+
+/* 1. Hero: copy on ivory, the photograph fading in from the right. */
+.wo-hero { position: relative; overflow: hidden; background: var(--wo-bg); }
+.wo-hero__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; min-height: clamp(340px, 30vw, 400px); }
+.wo-hero__copy { position: relative; z-index: 1; align-self: center; padding-block: clamp(24px, 3vw, 40px); }
+.wo-crumbs { margin: 0 0 16px; font-size: 13px; color: var(--wo-muted); }
+.wo-crumbs a { color: var(--wo-muted); }
+.wo-hero__title { margin: 0; font-family: var(--font-edit); font-size: clamp(2.125rem, 4.4vw, 3.5rem); font-weight: 400; line-height: 1.05; letter-spacing: -.02em; color: var(--wo-text); text-wrap: balance; }
+.wo-hero__tag { margin: 12px 0 0; font-family: var(--font-edit); font-style: italic; font-size: clamp(1.25rem, 2.2vw, 1.625rem); line-height: 1.25; color: var(--wo-olive); }
+.wo-hero__lede { max-width: 46ch; margin: 12px 0 0; font-size: 1.0625rem; line-height: 1.6; color: var(--wo-muted); }
+.wo-hero__acts { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 24px; }
+.wo-hero__meta { margin: 14px 0 0; font-size: 14px; color: var(--wo-muted); }
+.wo-hero__media { position: relative; min-height: 320px; margin: 0 calc(-1 * var(--gutter)) 0 -12%; }
+/* The copy sets the hero's height; the photograph fills whatever that is. */
+.wo-hero__media img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 55% 50%; }
+.wo-hero__media::before {
+	content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+	background: linear-gradient(90deg, var(--wo-bg) 0%, rgba(250, 248, 243, .85) 14%, rgba(250, 248, 243, 0) 42%);
+}
+
+/* 2. Activity tiles: labels beneath the pictures, never over them. */
+.wo-tiles { border: 0; }
+.wo-tiles > summary { display: none; }
+.wo-tiles .wo-h2 { margin-bottom: 18px; }
+.wo-tiles__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.wotile { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--wo-text); text-decoration: none; text-align: center; }
+.wotile__img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 10px; margin-bottom: 8px; transition: transform .2s ease; }
+.wotile:hover .wotile__img { transform: translateY(-2px); }
+.wotile__name { font-family: var(--font-edit); font-size: 1.125rem; line-height: 1.25; }
+.wotile__n { font-size: 13px; color: var(--wo-muted); }
+.wotile.is-on .wotile__img { outline: 3px solid var(--wo-olive); outline-offset: 3px; }
+.wotile.is-on .wotile__name { font-weight: 600; }
+
+/* 3. One filter surface. */
+.wo-filters { padding: clamp(16px, 2vw, 22px); border: 1px solid var(--wo-border); border-radius: var(--wo-radius); background: var(--wo-surface); box-shadow: 0 1px 2px rgba(38, 49, 41, .04); }
+.wo-filters__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: end; }
+.wo-filters__rest { display: contents; }
+.wo-filters__toggle { display: none; }
+.wo-field { display: grid; gap: 6px; min-width: 0; }
+.wo-field__label { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--wo-muted); }
+.wo-select { position: relative; display: flex; align-items: center; }
+.wo-select .wo-ico { position: absolute; left: 14px; color: var(--wo-muted); pointer-events: none; }
+.wo-select select {
+	width: 100%; min-height: 48px; padding: 0 40px 0 42px;
+	border: 1px solid var(--wo-border); border-radius: 8px;
+	background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235B6357' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E") no-repeat right 12px center / 18px;
+	color: var(--wo-text); font: inherit; font-size: 15px;
+	appearance: none; -webkit-appearance: none; cursor: pointer;
+}
+.wo-select--plain select { padding-left: 14px; }
+
+@media (min-width: 50.01rem) {
+	.wo-filters__row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.wo-more { position: relative; }
+.wo-more__summary {
+	display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px;
+	border: 1px solid var(--wo-border); border-radius: 8px; background: #FFFFFF;
+	font-size: 15px; cursor: pointer; list-style: none;
+}
+.wo-more__summary::-webkit-details-marker { display: none; }
+.wo-more__summary::after { content: ""; margin-left: auto; width: 8px; height: 8px; border-right: 1.8px solid var(--wo-muted); border-bottom: 1.8px solid var(--wo-muted); transform: rotate(45deg) translate(-2px, -2px); }
+.wo-more[open] .wo-more__summary::after { transform: rotate(-135deg) translate(-2px, -2px); }
+.wo-more__n:not(:empty) { padding: 1px 8px; border-radius: 999px; background: var(--wo-olive); color: #FFFDF9; font-size: 12px; font-weight: 700; }
+.wo-more__panel { display: grid; gap: 16px; margin-top: 12px; padding: 16px; border: 1px solid var(--wo-border); border-radius: 10px; background: var(--wo-surface); }
+@media (min-width: 50.01rem) {
+	.wo-more__panel { position: absolute; z-index: 20; right: 0; top: 100%; width: min(560px, 90vw); box-shadow: 0 12px 30px rgba(38, 49, 41, .12); }
+}
+.wo-feels { margin: 0; padding: 0; border: 0; min-width: 0; }
+.wo-feels .wo-field__label { display: block; margin-bottom: 8px; padding: 0; }
+.wo-feels__row { display: flex; flex-wrap: wrap; gap: 8px; }
+.oria-whats-on .wofeel {
+	display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px;
+	border: 1px solid var(--wo-border); border-radius: 999px; background: #FFFFFF;
+	color: var(--wo-text); cursor: pointer;
+}
+.oria-whats-on .wofeel.is-on { border-color: var(--wo-olive); background: var(--wo-olive); color: #FFFDF9; }
+.oria-whats-on .wofeel.is-on .wofeel__n { color: rgba(255, 253, 249, .8); }
+.oria-whats-on .wofeels__now { margin: 8px 0 0; font-size: 14px; color: var(--wo-muted); }
+
+.wo-shortcuts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.oria-whats-on .fchip {
+	min-height: 40px; padding: 0 16px;
+	border: 1px solid var(--wo-border); border-radius: 999px; background: #FFFFFF;
+	color: var(--wo-text); font-size: 14px; font-weight: 600;
+}
+.oria-whats-on .fchip:hover { border-color: var(--wo-olive); }
+.oria-whats-on .fchip.is-on { border-color: var(--wo-olive); background: var(--wo-olive); color: #FFFDF9; }
+.wo-active { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; padding: 12px 0 0; list-style: none; border-top: 1px solid var(--wo-border); }
+.wo-active[hidden] { display: none; }
+.wo-chip {
+	display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 8px 0 14px;
+	border: 1px solid var(--wo-olive); border-radius: 999px; background: var(--wo-sage);
+	color: var(--wo-text); font: inherit; font-size: 14px; cursor: pointer;
+}
+.wo-chip__x { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(66, 81, 59, .12); font-size: 15px; line-height: 1; }
+.wo-chip--clear { border-color: transparent; background: transparent; padding: 0 10px; text-decoration: underline; text-underline-offset: 3px; }
+
+/* 4. Results. */
+.wo-results-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 24px; margin: clamp(24px, 3vw, 36px) 0 4px; }
+.wo-results-head__sub { margin: 4px 0 0; font-family: var(--font-edit); font-size: 1.1875rem; color: var(--wo-muted); }
+.oria-whats-on .wotoolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 0; padding: 0; border: 0; }
+.oria-whats-on .wotoolbar__count { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--wo-muted); }
+.oria-whats-on .woview { display: inline-flex; border: 1px solid var(--wo-border); border-radius: 8px; overflow: hidden; background: #FFFFFF; }
+.oria-whats-on .woview[hidden] { display: none; }
+.oria-whats-on .woview__btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; background: transparent; color: var(--wo-text); font-size: 14.5px; font-weight: 600; cursor: pointer; }
+.oria-whats-on .woview__btn.is-on { background: var(--wo-olive); color: #FFFDF9; }
+
+.wo-group { margin-top: 20px; }
+.wo-group[hidden] { display: none; }
+.oria-whats-on .wo-group__label { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin: 0 0 14px; font-family: var(--font-edit); font-size: 1.375rem; font-weight: 400; color: var(--wo-text); }
+.oria-whats-on .wo-group__note { font-family: var(--font-sans); font-size: 13px; font-weight: 600; letter-spacing: .02em; color: var(--wo-muted); text-transform: none; }
+.wo-group--featured .wo-group__name::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--wo-gold); vertical-align: 3px; }
+
+.oria-whats-on .wo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 1.8vw, 22px); }
+
+/* The card. */
+.oria-whats-on .wocard {
+	display: flex; flex-direction: column; min-width: 0;
+	border: 1px solid var(--wo-border); border-radius: var(--wo-radius);
+	background: var(--wo-surface); box-shadow: 0 1px 2px rgba(38, 49, 41, .04);
+}
+.oria-whats-on .wocard:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(38, 49, 41, .10); }
+.oria-whats-on .wocard[hidden] { display: none; }
+.oria-whats-on .wkrow--member { border-color: #D8CBAE; box-shadow: 0 1px 2px rgba(38, 49, 41, .04); }
+.wocard__media { position: relative; aspect-ratio: 3 / 2; overflow: hidden; background: var(--wo-sage); }
+.wocard__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.wocard--poster .wocard__media { background: #EFEDE6; }
+.wocard--poster .wocard__media img { object-fit: contain; padding: 8px; }
+.wocard__date {
+	position: absolute; left: 12px; top: 12px;
+	display: grid; justify-items: center; min-width: 52px; padding: 6px 8px;
+	border-radius: 8px; background: rgba(255, 253, 249, .96); color: var(--wo-text);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .12); line-height: 1.15; text-transform: uppercase;
+}
+.wocard__dow { font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--wo-muted); }
+.wocard__dm { font-size: 13.5px; font-weight: 700; }
+.wocard__sponsor {
+	position: absolute; left: 12px; bottom: 12px;
+	padding: 4px 10px; border-radius: 6px; background: #F1E7CF; color: #4A3A17;
+	font-size: 11.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+}
+.oria-whats-on .wocard__save { top: 12px; right: 12px; width: 40px; height: 40px; background: rgba(255, 253, 249, .96); color: var(--wo-text); }
+.oria-whats-on .wocard__save[aria-pressed="true"] { background: var(--wo-olive); color: #FFFDF9; }
+.oria-whats-on .wocard__save svg { width: 17px; height: 17px; }
+.wocard__body { display: flex; flex-direction: column; flex: 1; gap: 8px; padding: 16px 18px 18px; }
+.wocard__kicker { display: flex; flex-wrap: wrap; gap: 6px 10px; margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--wo-muted); }
+.wocard__new { color: var(--wo-olive); }
+.wocard__status { padding: 0 6px; border-radius: 4px; background: #F6E3DF; color: #8A2F1E; }
+.wocard__title { margin: 0; font-family: var(--font-edit); font-size: clamp(1.25rem, 1.8vw, 1.4375rem); font-weight: 400; line-height: 1.25; color: var(--wo-text); overflow-wrap: anywhere; }
+.oria-whats-on .wocard__title a { color: inherit; text-decoration: none; }
+.oria-whats-on .wocard:hover .wocard__title a { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.wocard__facts { display: grid; gap: 6px; margin: 2px 0 0; padding: 0; list-style: none; font-size: 14.5px; line-height: 1.45; color: var(--wo-muted); }
+.wocard__facts li { display: flex; align-items: flex-start; gap: 8px; min-width: 0; }
+.wocard__facts .wo-ico { width: 16px; height: 16px; margin-top: 2px; }
+.wocard__facts span { min-width: 0; overflow-wrap: anywhere; }
+.wocard__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; margin: auto 0 0; padding-top: 8px; }
+.wocard__price { font-size: 1.125rem; font-weight: 700; color: var(--wo-text); }
+.wocard__go { display: inline-flex; align-items: center; gap: 6px; font-size: 14.5px; font-weight: 600; color: var(--wo-text); }
+.wocard__arrow { transition: transform .15s ease; }
+.oria-whats-on .wocard:hover .wocard__arrow { transform: translateX(3px); }
+.wocard__src { margin: 0; font-size: 12.5px; color: var(--wo-muted); }
+
+.wo-empty { margin-top: 28px; padding: clamp(20px, 3vw, 32px); border: 1px dashed var(--wo-border); border-radius: var(--wo-radius); background: var(--wo-surface); }
+.wo-empty[hidden] { display: none; }
+.wo-empty p { margin: 8px 0 0; color: var(--wo-muted); }
+.wo-empty__acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px !important; }
+.wo-empty .wo-btn[hidden] { display: none; }
+.oria-whats-on .areastrip { margin-top: 20px; }
+
+/* 5. Quiet ways onward. */
+.wo-section--onward { border-top: 1px solid var(--wo-border); }
+.wo-onward { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 28px 48px; }
+.wo-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; margin: 0; padding: 0; list-style: none; }
+.wo-links a { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--wo-border); color: var(--wo-text); text-decoration: none; }
+.wo-links a:hover .wo-links__name { text-decoration: underline; text-underline-offset: 3px; }
+.wo-links__name { font-weight: 700; }
+.wo-links__meta { font-size: 13.5px; color: var(--wo-muted); }
+
+/* 6. The host invitation, on sage. */
+.wo-host { background: var(--wo-sage); }
+.wo-host__in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 40px; padding-block: clamp(32px, 4vw, 52px); }
+.wo-host .wo-h2 { font-size: clamp(1.75rem, 3.2vw, 2.375rem); }
+.wo-host__text { max-width: 52ch; margin: 8px 0 0; font-family: var(--font-edit); font-size: 1.1875rem; line-height: 1.45; color: var(--wo-muted); }
+.wo-host__acts { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+
+@media (prefers-reduced-motion: reduce) {
+	.wo-btn, .wotile__img, .wocard__arrow, .oria-whats-on .wocard { transition: none; }
+}
+
+/* Medium: three tiles a row, two card columns. */
+@media (max-width: 75rem) {
+	.wo-tiles__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 64rem) {
+	.oria-whats-on .wo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Phones and small tablets. */
+@media (max-width: 50rem) {
+	.wo-hero__grid { grid-template-columns: 1fr; min-height: 0; }
+	.wo-hero__media { order: 2; min-height: 0; margin: 0 calc(-1 * var(--gutter)); aspect-ratio: 16 / 9; max-height: 260px; }
+	.wo-hero__media::before { background: linear-gradient(180deg, var(--wo-bg) 0%, rgba(250, 248, 243, 0) 30%); }
+	.wo-hero__copy { padding-bottom: 20px; }
+
+	.wo-tiles > summary {
+		display: flex; align-items: center; justify-content: space-between; min-height: 48px; padding: 0 16px;
+		border: 1px solid var(--wo-border); border-radius: 10px; background: var(--wo-surface);
+		font-weight: 700; cursor: pointer; list-style: none;
+	}
+	.wo-tiles > summary::-webkit-details-marker { display: none; }
+	.wo-tiles > summary::after { content: "+"; font-size: 22px; font-weight: 400; color: var(--wo-muted); }
+	.wo-tiles[open] > summary::after { content: "\2212"; }
+	.wo-tiles[open] > summary { margin-bottom: 16px; }
+	.wo-tiles .wo-h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+	.wo-tiles__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+
+	.wo-filters__row { grid-template-columns: minmax(0, 1fr) auto; }
+	.wo-filters__toggle {
+		display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 16px;
+		border: 1px solid var(--wo-border); border-radius: 8px; background: #FFFFFF;
+		color: var(--wo-text); font: inherit; font-weight: 700; cursor: pointer;
+	}
+	.wo-filters__toggle[aria-expanded="true"] { border-color: var(--wo-olive); background: var(--wo-sage); }
+	.wo-filters__rest { display: none; grid-column: 1 / -1; gap: 12px; }
+	.wo-filters.is-open .wo-filters__rest { display: grid; }
+	.wo-results-head { align-items: flex-start; }
+}
+@media (max-width: 26rem) {
+	/* The narrowest phones: When gets the full width, Filters sits below it. */
+	.wo-filters__row { grid-template-columns: 1fr; }
+	.wo-filters__toggle { justify-content: center; }
+}
+@media (max-width: 40rem) {
+	.oria-whats-on .wo-grid { grid-template-columns: 1fr; }
+	.wo-links { grid-template-columns: 1fr; }
+	.wo-hero__acts .wo-btn { flex: 1 1 auto; }
+}

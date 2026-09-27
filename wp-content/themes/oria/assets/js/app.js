@@ -5098,8 +5098,79 @@
         b.setAttribute("aria-pressed", on ? "true" : "false");
       });
       $$("select[data-f]", root).forEach(function (sel) {
+        if (sel.dataset.f === "whenday") {
+          /* One control for "a period" and "a particular day": a day, when
+             one is chosen, otherwise the period. */
+          var v = state.day ? "day:" + state.day : "when:" + state.when;
+          if (sel.querySelector('option[value="' + v + '"]')) sel.value = v;
+          return;
+        }
         if (sel.value !== state[sel.dataset.f]) sel.value = state[sel.dataset.f];
       });
+      $$("[data-wo-tile]").forEach(function (t) {
+        var on = state.type === t.dataset.woTile;
+        t.classList.toggle("is-on", on);
+        if (on) t.setAttribute("aria-current", "true"); else t.removeAttribute("aria-current");
+      });
+      paintActive();
+    }
+
+    /* The filters in force, each with its own remove. Labels come from the
+       controls themselves, so a chip always says what the control says. */
+    var activeBox = root.querySelector("[data-wo-active]");
+    var moreN = root.querySelector("[data-wo-more-n]");
+    function optionText(f, v) {
+      var sel = root.querySelector('select[data-f="' + f + '"]');
+      var opt = sel && sel.querySelector('option[value="' + v + '"]');
+      return opt ? opt.textContent.replace(/\s*\(.*\)\s*$/, "").trim() : v;
+    }
+    function paintActive() {
+      if (moreN) {
+        var n = (state.type ? 1 : 0) + (state.feel ? 1 : 0);
+        moreN.textContent = n ? String(n) : "";
+      }
+      if (!activeBox) return;
+      var chips = [];
+      if (state.day) chips.push(["day", optionText("whenday", "day:" + state.day)]);
+      else if (state.when !== "all") chips.push(["when", optionText("whenday", "when:" + state.when)]);
+      if (state.suburb) chips.push(["suburb", optionText("suburb", state.suburb)]);
+      if (state.band) chips.push(["band", optionText("band", state.band)]);
+      if (state.type) chips.push(["type", optionText("type", state.type)]);
+      if (state.feel) {
+        var fb = root.querySelector('.wofeel[data-v="' + state.feel + '"] .wofeel__name');
+        chips.push(["feel", fb ? fb.textContent.trim() : state.feel]);
+      }
+      activeBox.innerHTML = "";
+      activeBox.hidden = !chips.length;
+      chips.forEach(function (c) {
+        var li = document.createElement("li");
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "wo-chip";
+        b.setAttribute("aria-label", "Remove filter: " + c[1]);
+        b.innerHTML = '<span></span><span class="wo-chip__x" aria-hidden="true">\u00d7</span>';
+        b.firstChild.textContent = c[1];
+        b.addEventListener("click", function () {
+          // Removing one filter leaves every other one as it was.
+          if (c[0] === "day") state.day = "";
+          set(c[0] === "day" ? "when" : c[0], DEFAULTS[c[0] === "day" ? "when" : c[0]]);
+        });
+        li.appendChild(b);
+        activeBox.appendChild(li);
+      });
+      if (chips.length > 1) {
+        var li2 = document.createElement("li");
+        var all = document.createElement("button");
+        all.type = "button";
+        all.className = "wo-chip wo-chip--clear";
+        all.textContent = "Clear filters";
+        all.addEventListener("click", function () {
+          Object.keys(DEFAULTS).forEach(function (k) { state[k] = DEFAULTS[k]; });
+          syncControls(); apply(); writeUrl(true);
+        });
+        li2.appendChild(all);
+        activeBox.appendChild(li2);
+      }
     }
 
     /* "Because you saved X". Built here in the browser from this
@@ -5151,7 +5222,7 @@
       recsRow.innerHTML = "";
       picks.forEach(function (row) {
         var link = row.querySelector(".wkrow__link");
-        var meta = (row.querySelector(".wkrow__body em") || {}).textContent || "";
+        var meta = (row.querySelector("[data-wo-meta], .wkrow__body em") || {}).textContent || "";
         var a = document.createElement("a");
         a.className = "worec";
         a.href = link ? link.getAttribute("href") : "#";
@@ -5221,7 +5292,7 @@
           rough: row.dataset.precision !== "address",
           title: link ? link.textContent.trim() : "",
           url: link ? link.getAttribute("href") : "#",
-          when: (row.querySelector(".wkrow__body em") || {}).textContent || ""
+          when: (row.querySelector("[data-wo-meta], .wkrow__body em") || {}).textContent || ""
         });
       });
 
@@ -5475,10 +5546,16 @@
 
     $$(".fchip", root).forEach(function (chip) {
       chip.addEventListener("click", function () {
-        // Picking a period is a different question from picking a day.
-        // Leaving both on produces an empty page and a puzzled visitor.
-        state.day = "";
-        set(chip.dataset.f, chip.dataset.v);
+        if (chip.dataset.f === "when") {
+          // Picking a period is a different question from picking a day.
+          // Leaving both on produces an empty page and a puzzled visitor.
+          state.day = "";
+          set("when", chip.dataset.v);
+          return;
+        }
+        // Any other shortcut (Free events) changes only its own filter, and
+        // a second press takes it off again.
+        set(chip.dataset.f, state[chip.dataset.f] === chip.dataset.v ? DEFAULTS[chip.dataset.f] : chip.dataset.v);
       });
     });
 
@@ -5496,8 +5573,63 @@
       });
     });
     $$("select[data-f]", root).forEach(function (sel) {
-      sel.addEventListener("change", function () { set(sel.dataset.f, sel.value); });
+      sel.addEventListener("change", function () {
+        if (sel.dataset.f === "whenday") {
+          var parts = sel.value.split(":");
+          if (parts[0] === "day") { state.when = "all"; set("day", parts[1]); }
+          else { state.day = ""; set("when", parts[1] || "all"); }
+          return;
+        }
+        set(sel.dataset.f, sel.value);
+      });
     });
+
+    function toResults() {
+      var r = document.getElementById("wo-results");
+      if (r) r.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    }
+
+    /* Activity tiles set the same Activity filter as the dropdown, then take
+       you to the results. The href is the plain ?type= URL for no-script. */
+    $$("[data-wo-tile]").forEach(function (t) {
+      t.addEventListener("click", function (e) {
+        e.preventDefault();
+        set("type", state.type === t.dataset.woTile ? "" : t.dataset.woTile);
+        toResults();
+      });
+    });
+
+    /* Hero actions: Browse keeps the filters as they are; This weekend
+       selects the weekend. Both land on the results. */
+    $$("[data-wo-go]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var go = a.getAttribute("data-wo-go");
+        if (go) {
+          var kv = go.split(":");
+          if (kv[0] === "when") state.day = "";
+          set(kv[0], kv[1]);
+        }
+        toResults();
+      });
+    });
+
+    /* Phones: When stays in view, everything else behind one Filters
+       button that opens in place. */
+    var fBox = root.querySelector("[data-wo-filters]");
+    var fToggle = root.querySelector("[data-wo-filters-toggle]");
+    if (fBox && fToggle) {
+      fToggle.addEventListener("click", function () {
+        var open = !fBox.classList.contains("is-open");
+        fBox.classList.toggle("is-open", open);
+        fToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+    }
+
+    /* The activity tiles start folded on phones, open elsewhere. Open in
+       the markup, so no-script users always see them. */
+    var tilesBox = document.querySelector("[data-wo-tiles]");
+    if (tilesBox && window.matchMedia("(max-width: 50rem)").matches) tilesBox.open = false;
     clears.forEach(function (btn) {
       btn.addEventListener("click", function () {
         Object.keys(DEFAULTS).forEach(function (k) { state[k] = DEFAULTS[k]; });

@@ -10,11 +10,17 @@
  *
  * Filtering is client-side: the server stamps each row with precomputed
  * tokens (when/suburb/type/price band) and the JS just shows/hides.
+ *
+ * Layout (2026-09 "serenity" redesign, scoped under .oria-whats-on in
+ * assets/css/whats-on.css): a split hero, six activity tiles, one filter
+ * surface (When / Where / Price / More filters, with shortcuts and
+ * removable chips), then image-top cards in period groups. Cancelled
+ * events are left out, as everywhere else the site offers events.
  */
 
 declare(strict_types=1);
 
-use function Oria\Theme\arrow;
+wp_enqueue_style( 'oria-whats-on', get_template_directory_uri() . '/assets/css/whats-on.css', array(), (string) filemtime( get_template_directory() . '/assets/css/whats-on.css' ) );
 
 get_header();
 
@@ -93,6 +99,12 @@ foreach ( $oria_events as $oria_ev ) {
 	if ( ! $oria_ts ) {
 		continue;
 	}
+	// A cancelled event keeps its own page for anyone who booked, but it is
+	// not something to offer. Postponed and sold out stay, labelled.
+	$oria_status = function_exists( '\Oria\Core\Events\status' ) ? \Oria\Core\Events\status( (int) $oria_ev->ID ) : '';
+	if ( 'cancelled' === $oria_status ) {
+		continue;
+	}
 	$oria_is_member = '' === (string) get_post_meta( $oria_ev->ID, '_oria_src', true );
 
 	$oria_suburb = '';
@@ -165,6 +177,7 @@ foreach ( $oria_events as $oria_ev ) {
 		'band'   => $oria_price_band( $oria_price ),
 		'when'   => $oria_when_tokens( $oria_ts ),
 		'src'    => $oria_src,
+		'status' => $oria_status,
 	);
 }
 
@@ -231,16 +244,6 @@ foreach ( $oria_days as $oria_key => $oria_list ) {
 asort( $oria_suburbs );
 asort( $oria_types );
 
-/*
- * "Last checked" has to be true or it is worse than saying nothing. It is
- * the most recent verification stamp the ingest and import paths write,
- * never today's date for its own sake.
- */
-$oria_checked = 0;
-foreach ( $oria_rows as $oria_r ) {
-	$oria_stamp   = (string) get_post_meta( $oria_r['post']->ID, '_oria_verified', true );
-	$oria_checked = max( $oria_checked, $oria_stamp ? (int) strtotime( $oria_stamp ) : 0 );
-}
 $oria_total = count( $oria_rows );
 
 /*
@@ -266,12 +269,61 @@ if ( $oria_total > 0 && $oria_fresh_n / $oria_total > 0.4 ) {
 	}
 }
 
-/** One row. */
-$oria_row = static function ( array $r ): void {
-	$oria_ev  = $r['post'];
-	$oria_t   = '00:00' === gmdate( 'H:i', $r['ts'] ) ? __( 'TBC', 'oria' ) : gmdate( 'g.ia', $r['ts'] );
+/*
+ * Small line icons for the cards and filters; decoration only.
+ */
+$oria_ico = static function ( string $name ): string {
+	$p = array(
+		'cal'    => '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+		'pin'    => '<path d="M12 21s-6.5-6.1-6.5-11A6.5 6.5 0 0 1 18.5 10c0 4.9-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>',
+		'tag'    => '<path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1.4 1.4 0 0 1 0 2l-6.7 6.7a1.4 1.4 0 0 1-2 0z"/><circle cx="8" cy="8" r="1.5"/>',
+		'sliders'=> '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
+		'grid'   => '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+		'map'    => '<path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6z"/><path d="M9 4v14M15 6v14"/>',
+	);
+	return '<svg class="wo-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . ( $p[ $name ] ?? '' ) . '</svg>';
+};
+
+/** One event card. The card is a <div>; its link covers it via ::after, so
+ * the save button can be a real button beside it rather than inside it. */
+$oria_row = static function ( array $r ) use ( $oria_ico ): void {
+	$oria_ev    = $r['post'];
+	$oria_title = \Oria\Theme\ptitle( $oria_ev );
+	$oria_tbc   = '00:00' === gmdate( 'H:i', $r['ts'] );
+	$oria_t     = $oria_tbc ? '' : gmdate( 'g.ia', $r['ts'] );
+
+	// Where: the venue's own name, then the suburb it is in. A suburb on its
+	// own is never dressed up as the address.
+	$oria_venue = trim( (string) get_field( 'venue', $oria_ev->ID ) );
+	$oria_place = '' !== $oria_venue ? trim( explode( ',', $oria_venue )[0] ) : '';
+	$oria_where = implode( ', ', array_unique( array_filter( array( $oria_place, (string) $r['suburb'] ) ) ) );
+
+	// Price as the organiser gave it. Missing is not free.
+	$oria_price = trim( (string) $r['price'] );
+	if ( '' === $oria_price ) {
+		$oria_price_label = __( 'Check price', 'oria' );
+	} elseif ( 'free' === $r['band'] && preg_match( '/^\$?0(\.00)?$/', $oria_price ) ) {
+		$oria_price_label = __( 'Free', 'oria' );
+	} else {
+		$oria_price_label = $oria_price;
+	}
+
+	// A poster (portrait or square artwork) is shown whole, not cropped.
+	$oria_poster = false;
+	$oria_thumb  = (int) get_post_thumbnail_id( $oria_ev );
+	if ( $oria_thumb ) {
+		$oria_meta = wp_get_attachment_metadata( $oria_thumb );
+		if ( ! empty( $oria_meta['width'] ) && ! empty( $oria_meta['height'] ) ) {
+			$oria_poster = ( (int) $oria_meta['height'] / (int) $oria_meta['width'] ) >= 0.9;
+		}
+	}
+	$oria_status = (string) ( $r['status'] ?? '' );
+	$oria_status_labels = array(
+		'postponed' => __( 'Postponed', 'oria' ),
+		'sold-out'  => __( 'Sold out', 'oria' ),
+	);
 	?>
-	<div class="wkrow<?php echo $r['member'] ? ' wkrow--member' : ''; ?><?php echo $r['fresh'] ? ' wkrow--fresh' : ''; ?>"
+	<div class="wkrow wocard<?php echo $r['member'] ? ' wkrow--member' : ''; ?><?php echo $r['fresh'] ? ' wkrow--fresh' : ''; ?><?php echo $oria_poster ? ' wocard--poster' : ''; ?>"
 		data-when="<?php echo esc_attr( $r['when'] ); ?>"
 		data-day="<?php echo esc_attr( gmdate( 'Y-m-d', $r['ts'] ) ); ?>"
 		data-suburb="<?php echo esc_attr( sanitize_title( $r['suburb'] ) ); ?>"
@@ -283,120 +335,60 @@ $oria_row = static function ( array $r ): void {
 			data-lng="<?php echo esc_attr( (string) $r['pos']['lng'] ); ?>"
 			data-precision="<?php echo esc_attr( (string) $r['pos']['precision'] ); ?>"
 		<?php endif; ?>>
-		<span class="wkrow__thumb" aria-hidden="true">
-			<?php if ( has_post_thumbnail( $oria_ev ) ) : ?>
-				<?php
-				/*
-				 * medium_large, not thumbnail. The card is up to ~26rem wide
-				 * and 150px stretched into it is the reason these pictures
-				 * looked like placeholders.
-				 */
-				echo get_the_post_thumbnail( $oria_ev, 'medium_large', array( 'loading' => 'lazy', 'alt' => '' ) );
-				?>
+		<div class="wocard__media">
+			<?php if ( $oria_thumb ) : ?>
+				<?php echo get_the_post_thumbnail( $oria_ev, 'medium_large', array( 'loading' => 'lazy', 'decoding' => 'async', 'alt' => '', 'sizes' => '(max-width: 40rem) 100vw, (max-width: 64rem) 50vw, 400px' ) ); ?>
 			<?php else : ?>
 				<img class="wkrow__scene" src="<?php echo esc_url( \Oria\Theme\event_scene( $oria_ev->ID ) ); ?>" alt="" loading="lazy" decoding="async">
 			<?php endif; ?>
-			<time class="wkrow__time"><?php echo esc_html( $oria_t ); ?></time>
-		</span>
-		<span class="wkrow__body">
-			<b>
-				<a class="wkrow__link" href="<?php echo esc_url( get_permalink( $oria_ev ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( $oria_ev ) ); ?></a>
-				<?php if ( $r['fresh'] ) : ?><i class="wkrow__new"><?php esc_html_e( 'New this week', 'oria' ); ?></i><?php endif; ?>
-				<?php if ( $r['member'] ) : ?><i class="wkrow__flag"><?php esc_html_e( 'Featured practice', 'oria' ); ?></i><?php endif; ?>
-			</b>
-			<em>
-				<?php
-				// The day, then where and what. The group heading gives the
-				// rough when; this gives the exact one.
-				echo esc_html( implode( ' · ', array_filter( array(
-					gmdate( 'D j M', $r['ts'] ),
-					$r['suburb'],
-					$r['type'] ? \Oria\Theme\tname( $r['type'] ) : '',
-				) ) ) );
-				?>
-				<?php if ( ! $r['member'] && $r['src'] ) : ?><span class="wkrow__src"><?php echo esc_html( sprintf( __( 'via %s', 'oria' ), $r['src'] ) ); ?></span><?php endif; ?>
-			</em>
-		</span>
-		<?php if ( $r['price'] ) : ?><span class="wkrow__price"><?php echo esc_html( $r['price'] ); ?></span><?php endif; ?>
-		<?php
-		/*
-		 * Saving sits above the card's own link rather than inside it --
-		 * a button in an anchor is invalid, and a tap on it would follow
-		 * the link before it saved anything. Its accessible name carries
-		 * the event's title so a screen reader hears which of twenty-two
-		 * Save buttons this is.
-		 */
-		?>
-		<button class="wksave" type="button" aria-pressed="false"
+			<span class="wocard__date" aria-hidden="true">
+				<span class="wocard__dow"><?php echo esc_html( gmdate( 'D', $r['ts'] ) ); ?></span>
+				<span class="wocard__dm"><?php echo esc_html( gmdate( 'j M', $r['ts'] ) ); ?></span>
+			</span>
+			<?php if ( $r['member'] ) : ?>
+				<span class="wocard__sponsor"><?php esc_html_e( 'Featured practice', 'oria' ); ?></span>
+			<?php endif; ?>
+		</div>
+		<button class="wksave wocard__save" type="button" aria-pressed="false"
 			data-save-event="<?php echo (int) $oria_ev->ID; ?>"
-			data-title="<?php echo esc_attr( \Oria\Theme\ptitle( $oria_ev ) ); ?>"
+			data-title="<?php echo esc_attr( $oria_title ); ?>"
 			data-url="<?php echo esc_url( get_permalink( $oria_ev ) ); ?>"
-			data-when="<?php echo esc_attr( gmdate( 'D j M', $r['ts'] ) . ( '00:00' === gmdate( 'H:i', $r['ts'] ) ? '' : ', ' . $oria_t ) ); ?>"
+			data-when="<?php echo esc_attr( gmdate( 'D j M', $r['ts'] ) . ( $oria_tbc ? '' : ', ' . $oria_t ) ); ?>"
 			data-where="<?php echo esc_attr( (string) $r['suburb'] ); ?>"
-			aria-label="<?php echo esc_attr( sprintf( /* translators: %s: event title */ __( 'Save %s', 'oria' ), \Oria\Theme\ptitle( $oria_ev ) ) ); ?>">
+			aria-label="<?php echo esc_attr( sprintf( /* translators: %s: event title */ __( 'Save %s', 'oria' ), $oria_title ) ); ?>">
 			<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 2.75h10a1 1 0 0 1 1 1v13.6a.4.4 0 0 1-.62.33L10 14.3l-5.38 3.38a.4.4 0 0 1-.62-.33V3.75a1 1 0 0 1 1-1Z"/></svg>
 			<span class="sr-only savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
 		</button>
-		<span class="wkrow__go" aria-hidden="true"><?php echo arrow(); // phpcs:ignore ?></span>
+		<div class="wocard__body">
+			<p class="wocard__kicker">
+				<?php if ( $r['type'] ) : ?><span><?php echo esc_html( \Oria\Theme\tname( $r['type'] ) ); ?></span><?php endif; ?>
+				<?php if ( $r['fresh'] ) : ?><span class="wocard__new"><?php esc_html_e( 'New this week', 'oria' ); ?></span><?php endif; ?>
+				<?php if ( isset( $oria_status_labels[ $oria_status ] ) ) : ?><span class="wocard__status"><?php echo esc_html( $oria_status_labels[ $oria_status ] ); ?></span><?php endif; ?>
+			</p>
+			<h3 class="wocard__title"><a class="wkrow__link" href="<?php echo esc_url( get_permalink( $oria_ev ) ); ?>"><?php echo esc_html( $oria_title ); ?></a></h3>
+			<ul class="wocard__facts" data-wo-meta>
+				<li><?php echo $oria_ico( 'cal' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?><span><?php echo esc_html( gmdate( 'D j M', $r['ts'] ) ); ?> · <?php echo esc_html( $oria_tbc ? __( 'Time to be confirmed', 'oria' ) : $oria_t ); ?></span></li>
+				<?php if ( '' !== $oria_where ) : ?>
+					<li><?php echo $oria_ico( 'pin' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?><span><?php echo esc_html( $oria_where ); ?></span></li>
+				<?php endif; ?>
+			</ul>
+			<p class="wocard__foot">
+				<span class="wocard__price"><?php echo esc_html( $oria_price_label ); ?></span>
+				<span class="wocard__go" aria-hidden="true"><?php esc_html_e( 'View event', 'oria' ); ?> <span class="wocard__arrow">&rarr;</span></span>
+			</p>
+			<?php if ( ! $r['member'] && $r['src'] ) : ?>
+				<p class="wocard__src"><?php echo esc_html( sprintf( /* translators: %s: source website */ __( 'Listed via %s', 'oria' ), $r['src'] ) ); ?></p>
+			<?php endif; ?>
+		</div>
 	</div>
 	<?php
 };
-?>
 
-<?php
-// The count and the freshness line, built before the header so the band can
-// carry them as its eyebrow.
-ob_start();
-?>
-			<span class="micro">
-				<?php
-				// Count and freshness, both measured rather than asserted.
-				echo esc_html( sprintf( _n( '%d upcoming event', '%d upcoming events', $oria_total, 'oria' ), $oria_total ) );
-				if ( $oria_checked ) {
-					$oria_today = (int) strtotime( 'today', $oria_now );
-					echo ' · ' . esc_html(
-						$oria_checked >= $oria_today
-							? __( 'checked today', 'oria' )
-							: sprintf( /* translators: %s: date */ __( 'last checked %s', 'oria' ), gmdate( 'j F', $oria_checked ) )
-					);
-				}
-				?>
-			</span>
-<?php
-$oria_eyebrow = trim( wp_strip_all_tags( (string) ob_get_clean() ) );
-
-ob_start();
-?>
-	<a class="btn btn--sm btn--dark" href="<?php echo esc_url( home_url( '/this-weekend/' ) ); ?>"><?php esc_html_e( 'Just this weekend', 'oria' ); ?></a>
-	<?php /* Organisers need this at the top, not buried at the foot of the page. */ ?>
-	<a class="btn btn--sm" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a>
-<?php
-$oria_actions = (string) ob_get_clean();
-
-get_template_part(
-	'template-parts/event-hero',
-	null,
-	array(
-		'img'     => 'hero',
-		'crumbs'  => array( __( 'Home', 'oria' ) => home_url( '/' ), __( "What's On", 'oria' ) => '' ),
-		'eyebrow' => $oria_eyebrow,
-		'title'   => __( 'Wellness events and workshops in Perth', 'oria' ),
-		'lede'    => __( 'Sound baths, yoga workshops, breathwork, day retreats and free community sessions — hand-checked, from our member practices and from around Perth.', 'oria' ),
-		'actions' => $oria_actions,
-	)
-);
-?>
-
-
-<?php
 /*
- * Browse by type. Built from the types that actually have something on,
- * biggest first, capped at six: a row of eight tiles where three lead to
- * one event each is a worse page than a row of four that all deliver.
- *
- * A tile only appears when it has both events and a picture. The pictures
- * live in the theme (assets/img/event/), like the category heroes, so they
- * exist on production the moment the code lands.
+ * Activity tiles: the event types that actually have something on, biggest
+ * first, six at most, each with its own picture. Selecting one applies the
+ * same Activity filter as the dropdown; the href is the plain ?type= URL,
+ * so it works with no script at all.
  */
 $oria_tile_counts = array();
 foreach ( $oria_rows as $oria_r ) {
@@ -405,7 +397,6 @@ foreach ( $oria_rows as $oria_r ) {
 	}
 }
 arsort( $oria_tile_counts );
-
 $oria_tile_dir = get_stylesheet_directory() . '/assets/img/event/';
 $oria_tile_uri = get_stylesheet_directory_uri() . '/assets/img/event/';
 $oria_tiles    = array();
@@ -414,41 +405,12 @@ foreach ( $oria_tile_counts as $oria_slug => $oria_n ) {
 		continue;
 	}
 	$oria_term_obj = get_term_by( 'slug', $oria_slug, 'event_type' );
-	if ( ! $oria_term_obj instanceof WP_Term ) {
-		continue;
+	if ( $oria_term_obj instanceof WP_Term ) {
+		$oria_tiles[] = array( 'slug' => $oria_slug, 'name' => \Oria\Theme\tname( $oria_term_obj ), 'count' => $oria_n );
 	}
-	$oria_tiles[] = array(
-		'slug'  => $oria_slug,
-		'name'  => \Oria\Theme\tname( $oria_term_obj ),
-		'count' => $oria_n,
-	);
 }
-?>
-<?php if ( count( $oria_tiles ) >= 3 ) : ?>
-	<section class="wrap section section--top-flush">
-		<h2 class="h3" style="margin-bottom:var(--s-4)"><?php esc_html_e( 'What kind of thing are you after?', 'oria' ); ?></h2>
-		<div class="evtypes">
-			<?php foreach ( $oria_tiles as $oria_t ) : ?>
-				<a class="evtype" href="<?php echo esc_url( add_query_arg( 'type', $oria_t['slug'], get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' ) ) ); ?>">
-					<img class="evtype__img" src="<?php echo esc_url( $oria_tile_uri . $oria_t['slug'] . '-600.webp' ); ?>"
-						srcset="<?php echo esc_url( $oria_tile_uri . $oria_t['slug'] . '-600.webp' ); ?> 600w, <?php echo esc_url( $oria_tile_uri . $oria_t['slug'] . '-900.webp' ); ?> 900w"
-						sizes="(max-width: 700px) 45vw, 22vw" alt="" loading="lazy" decoding="async" width="600" height="450">
-					<span class="evtype__body">
-						<b><?php echo esc_html( $oria_t['name'] ); ?></b>
-						<span class="evtype__n"><?php echo esc_html( sprintf( _n( '%d event', '%d events', $oria_t['count'], 'oria' ), $oria_t['count'] ) ); ?></span>
-					</span>
-				</a>
-			<?php endforeach; ?>
-		</div>
-	</section>
-<?php endif; ?>
 
-<?php
-/*
- * "How do you want to feel?" -- the Finder's question, asked of this
- * week's events. Only feelings something on this page actually answers:
- * a tile reading "0 experiences" is an empty shelf with a label on it.
- */
+/* "How do you want to feel?": only feelings something upcoming answers. */
 $oria_feels = array();
 if ( function_exists( '\Oria\Core\Finder\needs' ) && function_exists( '\Oria\Core\Finder\questions' ) ) {
 	$oria_fq = \Oria\Core\Finder\questions();
@@ -459,270 +421,288 @@ if ( function_exists( '\Oria\Core\Finder\needs' ) && function_exists( '\Oria\Cor
 				++$oria_fc;
 			}
 		}
-		if ( $oria_fc < 1 ) {
-			continue;
+		if ( $oria_fc > 0 ) {
+			$oria_feels[] = array( 'key' => $oria_fk, 'label' => (string) ( $oria_fq['for']['options'][ $oria_fk ] ?? $oria_fk ), 'count' => $oria_fc );
 		}
-		$oria_feels[] = array(
-			'key'   => $oria_fk,
-			'label' => (string) ( $oria_fq['for']['options'][ $oria_fk ] ?? $oria_fk ),
-			'count' => $oria_fc,
-		);
 	}
 	usort( $oria_feels, static fn( array $a, array $b ): int => $b['count'] <=> $a['count'] );
 }
+
+/* Particular days with something on, for the When control. */
+$oria_day_opts = array();
+for ( $oria_d = 0; $oria_d < 14; $oria_d++ ) {
+	$oria_dts   = strtotime( 'today +' . $oria_d . ' days', $oria_now );
+	$oria_key   = gmdate( 'Y-m-d', $oria_dts );
+	$oria_count = count( array_filter( $oria_rows, static fn( array $r ): bool => gmdate( 'Y-m-d', $r['ts'] ) === $oria_key ) );
+	if ( $oria_count > 0 ) {
+		$oria_day_opts[ $oria_key ] = sprintf( '%s (%d)', gmdate( 'D j M', $oria_dts ), $oria_count );
+	}
+}
+
+$oria_archive = get_post_type_archive_link( 'event' ) ?: home_url( '/whats-on-perth/' );
+$oria_wk_label = gmdate( 'D j', strtotime( $oria_wk_a ) ) . '–' . gmdate( 'D j M', strtotime( $oria_wk_b ) );
+
 ?>
 
-<section class="wrap section section--top-flush" data-whatson>
-	<?php if ( count( $oria_feels ) >= 3 ) : ?>
-		<div class="wofeels">
-			<h2 class="h3 wofeels__title"><?php esc_html_e( 'How do you want to feel?', 'oria' ); ?></h2>
-			<div class="wofeels__row" role="group" aria-label="<?php esc_attr_e( 'Filter by how you want to feel', 'oria' ); ?>">
-				<?php foreach ( $oria_feels as $oria_f ) : ?>
-					<button class="wofeel wofeel--<?php echo esc_attr( $oria_f['key'] ); ?>" type="button"
-						aria-pressed="false" data-f="feel" data-v="<?php echo esc_attr( $oria_f['key'] ); ?>">
-						<span class="wofeel__name"><?php echo esc_html( $oria_f['label'] ); ?></span>
-						<span class="wofeel__n">
-							<?php
-							printf(
-								/* translators: %d: number of events */
-								esc_html( _n( '%d experience', '%d experiences', $oria_f['count'], 'oria' ) ),
-								(int) $oria_f['count']
-							);
-							?>
+<div class="oria-whats-on">
+
+<!-- 1. Hero: copy on ivory, a warm photograph beside it -->
+<section class="wo-hero" aria-labelledby="woTitle">
+	<div class="wo-wrap wo-hero__grid">
+		<div class="wo-hero__copy">
+			<nav class="crumbs wo-crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
+				<span aria-hidden="true">/</span><span><?php esc_html_e( "What's On", 'oria' ); ?></span>
+			</nav>
+			<p class="wo-eyebrow"><?php esc_html_e( "What's on in Perth", 'oria' ); ?></p>
+			<h1 class="wo-hero__title" id="woTitle"><?php esc_html_e( 'Wellness events and workshops in Perth', 'oria' ); ?></h1>
+			<p class="wo-hero__tag"><?php esc_html_e( 'Make time for something good.', 'oria' ); ?></p>
+			<p class="wo-hero__lede"><?php esc_html_e( 'Discover sound baths, yoga workshops, breathwork, retreats and community moments around Perth.', 'oria' ); ?></p>
+			<div class="wo-hero__acts">
+				<a class="wo-btn wo-btn--primary" href="#wo-results" data-wo-go=""><?php echo $oria_ico( 'cal' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?><?php esc_html_e( 'Browse events', 'oria' ); ?></a>
+				<a class="wo-btn wo-btn--secondary" href="<?php echo esc_url( add_query_arg( 'date', 'weekend', $oria_archive ) ); ?>#wo-results" data-wo-go="when:weekend"><?php esc_html_e( 'This weekend', 'oria' ); ?></a>
+				<a class="wo-textlink" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a>
+			</div>
+			<?php if ( $oria_total ) : ?>
+				<p class="wo-hero__meta"><?php echo esc_html( sprintf( _n( '%d upcoming event', '%d upcoming events', $oria_total, 'oria' ), $oria_total ) ); ?></p>
+			<?php endif; ?>
+		</div>
+		<figure class="wo-hero__media">
+			<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/event/wo-hero-1400.webp' ); ?>"
+				srcset="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/event/wo-hero-800.webp' ); ?> 800w, <?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/event/wo-hero-1400.webp' ); ?> 1400w"
+				sizes="(max-width: 50rem) 100vw, 50vw" width="1400" height="875" alt="" fetchpriority="high" decoding="async">
+		</figure>
+	</div>
+</section>
+
+<?php if ( count( $oria_tiles ) >= 3 ) : ?>
+<!-- 2. Activity tiles -->
+<section class="wo-section wo-section--tight" aria-labelledby="woTilesTitle">
+	<div class="wo-wrap">
+		<details class="wo-tiles" data-wo-tiles open>
+			<summary class="wo-tiles__toggle"><?php esc_html_e( 'Browse by activity', 'oria' ); ?></summary>
+			<h2 class="wo-h2" id="woTilesTitle"><?php esc_html_e( 'Find your kind of feel-good', 'oria' ); ?></h2>
+			<ul class="wo-tiles__grid">
+				<?php foreach ( $oria_tiles as $oria_t ) : ?>
+					<li>
+						<a class="wotile" href="<?php echo esc_url( add_query_arg( 'type', $oria_t['slug'], $oria_archive ) ); ?>#wo-results" data-wo-tile="<?php echo esc_attr( $oria_t['slug'] ); ?>">
+							<img class="wotile__img" src="<?php echo esc_url( $oria_tile_uri . $oria_t['slug'] . '-600.webp' ); ?>"
+								srcset="<?php echo esc_url( $oria_tile_uri . $oria_t['slug'] . '-600.webp' ); ?> 600w, <?php echo esc_url( $oria_tile_uri . $oria_t['slug'] . '-900.webp' ); ?> 900w"
+								sizes="(max-width: 40rem) 45vw, (max-width: 75rem) 30vw, 200px" alt="" loading="lazy" decoding="async" width="600" height="400">
+							<span class="wotile__name"><?php echo esc_html( $oria_t['name'] ); ?></span>
+							<span class="wotile__n"><?php echo esc_html( sprintf( _n( '%d event', '%d events', $oria_t['count'], 'oria' ), $oria_t['count'] ) ); ?></span>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</details>
+	</div>
+</section>
+<?php endif; ?>
+
+<!-- 3 + 4. One filter surface, then the results -->
+<section class="wo-section wo-section--results" data-whatson id="wo-results" aria-labelledby="woResultsTitle">
+	<div class="wo-wrap">
+
+		<div class="wo-filters" data-wo-filters>
+			<div class="wo-filters__row">
+				<label class="wo-field wo-field--when">
+					<span class="wo-field__label"><?php esc_html_e( 'When', 'oria' ); ?></span>
+					<span class="wo-select"><?php echo $oria_ico( 'cal' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?>
+						<select data-f="whenday">
+							<option value="when:all"><?php esc_html_e( 'All dates', 'oria' ); ?></option>
+							<option value="when:today"><?php esc_html_e( 'Today', 'oria' ); ?></option>
+							<option value="when:tomorrow"><?php esc_html_e( 'Tomorrow', 'oria' ); ?></option>
+							<option value="when:weekend"><?php echo esc_html( sprintf( /* translators: %s: dates */ __( 'This weekend (%s)', 'oria' ), $oria_wk_label ) ); ?></option>
+							<option value="when:nextweekend"><?php esc_html_e( 'Next weekend', 'oria' ); ?></option>
+							<option value="when:month"><?php esc_html_e( 'This month', 'oria' ); ?></option>
+							<?php if ( $oria_day_opts ) : ?>
+								<optgroup label="<?php esc_attr_e( 'A particular day', 'oria' ); ?>">
+									<?php foreach ( $oria_day_opts as $oria_dk => $oria_dl ) : ?>
+										<option value="day:<?php echo esc_attr( $oria_dk ); ?>"><?php echo esc_html( $oria_dl ); ?></option>
+									<?php endforeach; ?>
+								</optgroup>
+							<?php endif; ?>
+						</select>
+					</span>
+				</label>
+				<button class="wo-filters__toggle" type="button" data-wo-filters-toggle aria-expanded="false" aria-controls="woMoreFilters">
+					<?php echo $oria_ico( 'sliders' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?><?php esc_html_e( 'Filters', 'oria' ); ?>
+				</button>
+				<div class="wo-filters__rest" id="woMoreFilters" data-wo-filters-panel>
+					<label class="wo-field">
+						<span class="wo-field__label"><?php esc_html_e( 'Where', 'oria' ); ?></span>
+						<span class="wo-select"><?php echo $oria_ico( 'pin' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?>
+							<select data-f="suburb">
+								<option value=""><?php esc_html_e( 'All areas', 'oria' ); ?></option>
+								<?php foreach ( $oria_suburbs as $oria_slug => $oria_name ) : ?>
+									<option value="<?php echo esc_attr( $oria_slug ); ?>"><?php echo esc_html( $oria_name ); ?></option>
+								<?php endforeach; ?>
+							</select>
 						</span>
-					</button>
-				<?php endforeach; ?>
+					</label>
+					<label class="wo-field">
+						<span class="wo-field__label"><?php esc_html_e( 'Price', 'oria' ); ?></span>
+						<span class="wo-select"><?php echo $oria_ico( 'tag' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?>
+							<select data-f="band">
+								<option value=""><?php esc_html_e( 'Any price', 'oria' ); ?></option>
+								<option value="free"><?php esc_html_e( 'Free or by donation', 'oria' ); ?></option>
+								<option value="under30"><?php esc_html_e( 'Under $30', 'oria' ); ?></option>
+								<option value="30to50"><?php esc_html_e( '$30–$50', 'oria' ); ?></option>
+								<option value="50plus"><?php esc_html_e( '$50 and over', 'oria' ); ?></option>
+							</select>
+						</span>
+					</label>
+					<details class="wo-more" data-wo-more>
+						<summary class="wo-more__summary"><?php echo $oria_ico( 'sliders' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?><?php esc_html_e( 'More filters', 'oria' ); ?><span class="wo-more__n" data-wo-more-n></span></summary>
+						<div class="wo-more__panel">
+							<label class="wo-field">
+								<span class="wo-field__label"><?php esc_html_e( 'Activity', 'oria' ); ?></span>
+								<span class="wo-select wo-select--plain">
+									<select data-f="type">
+										<option value=""><?php esc_html_e( 'All activities', 'oria' ); ?></option>
+										<?php foreach ( $oria_types as $oria_slug => $oria_name ) : ?>
+											<option value="<?php echo esc_attr( $oria_slug ); ?>"><?php echo esc_html( $oria_name ); ?></option>
+										<?php endforeach; ?>
+									</select>
+								</span>
+							</label>
+							<?php if ( count( $oria_feels ) >= 2 ) : ?>
+								<fieldset class="wo-feels">
+									<legend class="wo-field__label"><?php esc_html_e( 'How do you want to feel?', 'oria' ); ?></legend>
+									<div class="wo-feels__row">
+										<?php foreach ( $oria_feels as $oria_f ) : ?>
+											<button class="wofeel" type="button" aria-pressed="false" data-f="feel" data-v="<?php echo esc_attr( $oria_f['key'] ); ?>">
+												<span class="wofeel__name"><?php echo esc_html( $oria_f['label'] ); ?></span>
+												<span class="wofeel__n"><?php echo esc_html( (string) $oria_f['count'] ); ?></span>
+											</button>
+										<?php endforeach; ?>
+									</div>
+									<p class="wofeels__now" data-wo-feelnote hidden></p>
+								</fieldset>
+							<?php endif; ?>
+						</div>
+					</details>
+				</div>
 			</div>
-			<p class="wofeels__now" data-wo-feelnote hidden></p>
+			<div class="wo-shortcuts" role="group" aria-label="<?php esc_attr_e( 'Shortcuts', 'oria' ); ?>">
+				<button class="fchip" type="button" aria-pressed="true" data-f="when" data-v="all"><?php esc_html_e( 'All upcoming', 'oria' ); ?></button>
+				<button class="fchip" type="button" aria-pressed="false" data-f="when" data-v="weekend"><?php esc_html_e( 'This weekend', 'oria' ); ?></button>
+				<button class="fchip" type="button" aria-pressed="false" data-f="band" data-v="free"><?php esc_html_e( 'Free events', 'oria' ); ?></button>
+			</div>
+			<ul class="wo-active" data-wo-active hidden aria-label="<?php esc_attr_e( 'Active filters', 'oria' ); ?>"></ul>
 		</div>
-	<?php endif; ?>
 
-	<?php
-	/*
-	 * The next ten days as real dates, each with what is actually on it.
-	 * A day with nothing is shown greyed rather than hidden: the gap is
-	 * information, and hiding it makes the strip jump around as events
-	 * come and go.
-	 */
-	$oria_strip = array();
-	for ( $oria_d = 0; $oria_d < 10; $oria_d++ ) {
-		$oria_dts   = strtotime( 'today +' . $oria_d . ' days', $oria_now );
-		$oria_key   = gmdate( 'Y-m-d', $oria_dts );
-		$oria_count = 0;
-		foreach ( $oria_rows as $oria_r ) {
-			if ( gmdate( 'Y-m-d', $oria_r['ts'] ) === $oria_key ) {
-				++$oria_count;
+		<?php
+		/* The suburbs on this page that have a guide worth visiting. */
+		$oria_area_map = array();
+		if ( function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
+			foreach ( $oria_rows as $oria_r ) {
+				$oria_key = sanitize_title( (string) $oria_r['suburb'] );
+				if ( '' === $oria_key || isset( $oria_area_map[ $oria_key ] ) ) {
+					continue;
+				}
+				$oria_ctx = \Oria\Core\AreaContext\for_post( (int) $oria_r['post']->ID );
+				if ( $oria_ctx ) {
+					$oria_area_map[ $oria_key ] = array(
+						'name'   => (string) $oria_ctx['name'],
+						'url'    => (string) $oria_ctx['url'],
+						'places' => (int) $oria_ctx['places'],
+						'slug'   => (string) $oria_ctx['slug'],
+					);
+				}
 			}
 		}
-		$oria_strip[] = array(
-			'key'   => $oria_key,
-			'top'   => 0 === $oria_d ? __( 'Today', 'oria' ) : ( 1 === $oria_d ? __( 'Tmrw', 'oria' ) : gmdate( 'D', $oria_dts ) ),
-			'day'   => gmdate( 'j', $oria_dts ),
-			'count' => $oria_count,
-		);
-	}
-	?>
-	<div class="wodates" role="group" aria-label="<?php esc_attr_e( 'Jump to a date', 'oria' ); ?>">
-		<button class="wodate is-on" type="button" aria-pressed="true" data-f="day" data-v="">
-			<span class="wodate__top"><?php esc_html_e( 'All', 'oria' ); ?></span>
-			<span class="wodate__day"><?php echo esc_html( (string) count( $oria_rows ) ); ?></span>
-		</button>
-		<?php foreach ( $oria_strip as $oria_s ) : ?>
-			<button class="wodate<?php echo 0 === $oria_s['count'] ? ' is-empty' : ''; ?>" type="button" aria-pressed="false"
-				data-f="day" data-v="<?php echo esc_attr( $oria_s['key'] ); ?>"
-				<?php echo 0 === $oria_s['count'] ? 'disabled aria-disabled="true"' : ''; ?>>
-				<span class="wodate__top"><?php echo esc_html( $oria_s['top'] ); ?></span>
-				<span class="wodate__day"><?php echo esc_html( $oria_s['day'] ); ?></span>
-				<span class="wodate__n"><?php echo esc_html( $oria_s['count'] ? (string) $oria_s['count'] : '·' ); ?></span>
-			</button>
-		<?php endforeach; ?>
-	</div>
-
-	<div class="wofilters">
-		<div class="wofilters__row" role="group" aria-label="<?php esc_attr_e( 'Filter by date', 'oria' ); ?>">
-			<?php
-			foreach ( array(
-				'all'         => __( 'All dates', 'oria' ),
-				'today'       => __( 'Today', 'oria' ),
-				'tomorrow'    => __( 'Tomorrow', 'oria' ),
-				'weekend'     => __( 'This weekend', 'oria' ),
-				'nextweekend' => __( 'Next weekend', 'oria' ),
-				'month'       => __( 'This month', 'oria' ),
-			) as $oria_val => $oria_label ) :
-				?>
-				<button class="fchip<?php echo 'all' === $oria_val ? ' is-on' : ''; ?>" type="button" aria-pressed="<?php echo 'all' === $oria_val ? 'true' : 'false'; ?>" data-f="when" data-v="<?php echo esc_attr( $oria_val ); ?>"><?php echo esc_html( $oria_label ); ?></button>
-			<?php endforeach; ?>
-		</div>
-		<div class="wofilters__row">
-			<select class="select select--sm" data-f="suburb" aria-label="<?php esc_attr_e( 'Suburb', 'oria' ); ?>">
-				<option value=""><?php esc_html_e( 'All suburbs', 'oria' ); ?></option>
-				<?php foreach ( $oria_suburbs as $oria_slug => $oria_name ) : ?>
-					<option value="<?php echo esc_attr( $oria_slug ); ?>"><?php echo esc_html( $oria_name ); ?></option>
-				<?php endforeach; ?>
-			</select>
-			<select class="select select--sm" data-f="type" aria-label="<?php esc_attr_e( 'Type', 'oria' ); ?>">
-				<option value=""><?php esc_html_e( 'All types', 'oria' ); ?></option>
-				<?php foreach ( $oria_types as $oria_slug => $oria_name ) : ?>
-					<option value="<?php echo esc_attr( $oria_slug ); ?>"><?php echo esc_html( $oria_name ); ?></option>
-				<?php endforeach; ?>
-			</select>
-			<?php
-			foreach ( array(
-				''        => __( 'Any price', 'oria' ),
-				'free'    => __( 'Free', 'oria' ),
-				'under30' => __( 'Under $30', 'oria' ),
-				'30to50'  => __( '$30–$50', 'oria' ),
-				'50plus'  => __( '$50+', 'oria' ),
-			) as $oria_val => $oria_label ) :
-				?>
-				<button class="fchip<?php echo '' === $oria_val ? ' is-on' : ''; ?>" type="button" aria-pressed="<?php echo '' === $oria_val ? 'true' : 'false'; ?>" data-f="band" data-v="<?php echo esc_attr( $oria_val ); ?>"><?php echo esc_html( $oria_label ); ?></button>
-			<?php endforeach; ?>
-		</div>
-	</div>
-
-	<?php
-	/*
-	 * The suburbs on this page that have a guide worth visiting. Built from
-	 * the events actually listed, so the strip can never offer a
-	 * neighbourhood with nothing in it -- AreaContext returns null for a
-	 * suburb too thin to have a page.
-	 */
-	$oria_area_map = array();
-	if ( function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
-		foreach ( $oria_rows as $oria_r ) {
-			$oria_key = sanitize_title( (string) $oria_r['suburb'] );
-			if ( '' === $oria_key || isset( $oria_area_map[ $oria_key ] ) ) {
-				continue;
-			}
-			$oria_ctx = \Oria\Core\AreaContext\for_post( (int) $oria_r['post']->ID );
-			if ( ! $oria_ctx ) {
-				continue;
-			}
-			$oria_area_map[ $oria_key ] = array(
-				'name'   => (string) $oria_ctx['name'],
-				'url'    => (string) $oria_ctx['url'],
-				'places' => (int) $oria_ctx['places'],
-				'slug'   => (string) $oria_ctx['slug'],
-			);
-		}
-	}
-	if ( $oria_area_map ) :
-		?>
-		<script type="application/json" data-wo-areas><?php echo wp_json_encode( $oria_area_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data block. ?></script>
-	<?php endif; ?>
-	<div class="areastrip" data-wo-areastrip hidden>
-		<p class="areastrip__text">
-			<span class="areastrip__eyebrow" data-wo-area-title></span>
-			<span data-wo-area-line></span>
-		</p>
-		<a class="areastrip__cta btn btn--sm" href="#" data-wo-area-cta data-area-promo="whats-on-filter"></a>
-	</div>
-
-	<div class="wotoolbar" data-wo-toolbar>
-		<p class="wotoolbar__count" data-wo-count role="status" aria-live="polite"
-			data-one="<?php esc_attr_e( '%d event', 'oria' ); ?>"
-			data-many="<?php esc_attr_e( '%d events', 'oria' ); ?>"
-			data-none="<?php esc_attr_e( 'No events match', 'oria' ); ?>">
-			<?php echo esc_html( sprintf( _n( '%d event', '%d events', $oria_total, 'oria' ), $oria_total ) ); ?>
-		</p>
-		<button class="wotoolbar__clear" type="button" data-wo-clear hidden><?php esc_html_e( 'Clear filters', 'oria' ); ?></button>
-		<?php
-		/*
-		 * List or map. The list is the page and stays the page: the map is
-		 * a second way to look at the same filtered rows, it reads their
-		 * coordinates straight off them, and Leaflet is not fetched until
-		 * somebody presses Map. Hidden until the script runs, because
-		 * without it there is nothing behind the button.
-		 */
-		?>
-		<div class="woview" data-wo-view role="group" aria-label="<?php esc_attr_e( 'How to show these events', 'oria' ); ?>" hidden>
-			<button class="woview__btn is-on" type="button" aria-pressed="true" data-wo-mode="list"><?php esc_html_e( 'List', 'oria' ); ?></button>
-			<button class="woview__btn" type="button" aria-pressed="false" data-wo-mode="map"><?php esc_html_e( 'Map', 'oria' ); ?></button>
-		</div>
-	</div>
-
-	<?php
-	/*
-	 * Built in the browser from what this device has saved, because that
-	 * is where the saves live -- nothing about a visitor's interests is
-	 * sent anywhere, and the section simply does not appear for somebody
-	 * who has saved nothing.
-	 */
-	?>
-	<section class="worecs" data-wo-recs hidden aria-labelledby="woRecsTitle">
-		<h2 class="h3 worecs__title" id="woRecsTitle"></h2>
-		<div class="worecs__row" data-wo-recs-row></div>
-	</section>
-
-	<div class="womap" data-wo-map hidden>
-		<div class="womap__canvas" data-wo-map-canvas></div>
-		<p class="womap__note">
-			<?php esc_html_e( 'Pins are the venue where we could place it, and a suburb centre otherwise. A few events have no location we could confirm and are in the list only.', 'oria' ); ?>
-		</p>
-	</div>
-
-	<?php if ( $oria_member_rows ) : ?>
-		<?php
-		/*
-		 * One, two or three: the band lays itself out to the number it has
-		 * rather than leaving a third of a panel empty. A single featured
-		 * event becomes a wide editorial card instead of a lonely tile.
-		 */
-		?>
-		<div class="featband featband--<?php echo count( $oria_member_rows ); ?> wogroup" data-wo-feat>
-			<p class="featband__label">
-				<span class="badge-dot" aria-hidden="true"></span>
-				<span class="micro"><?php esc_html_e( 'Featured practices', 'oria' ); ?></span>
-				<span class="featband__note"><?php esc_html_e( 'Paid placement by practices listed with us', 'oria' ); ?></span>
+		if ( $oria_area_map ) :
+			?>
+			<script type="application/json" data-wo-areas><?php echo wp_json_encode( $oria_area_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data block. ?></script>
+		<?php endif; ?>
+		<div class="areastrip" data-wo-areastrip hidden>
+			<p class="areastrip__text">
+				<span class="areastrip__eyebrow" data-wo-area-title></span>
+				<span data-wo-area-line></span>
 			</p>
-			<div class="wkrows">
-				<?php foreach ( $oria_member_rows as $oria_r ) { $oria_row( $oria_r ); } ?>
+			<a class="areastrip__cta btn btn--sm" href="#" data-wo-area-cta data-area-promo="whats-on-filter"></a>
+		</div>
+
+		<div class="wo-results-head">
+			<div>
+				<h2 class="wo-h2" id="woResultsTitle"><?php esc_html_e( 'Coming up in Perth', 'oria' ); ?></h2>
+				<p class="wo-results-head__sub"><?php esc_html_e( 'Find your next experience.', 'oria' ); ?></p>
+			</div>
+			<div class="wotoolbar" data-wo-toolbar>
+				<p class="wotoolbar__count" data-wo-count role="status" aria-live="polite"
+					data-one="<?php esc_attr_e( '%d event', 'oria' ); ?>"
+					data-many="<?php esc_attr_e( '%d events', 'oria' ); ?>"
+					data-none="<?php esc_attr_e( 'No events match', 'oria' ); ?>">
+					<?php echo esc_html( sprintf( _n( '%d event', '%d events', $oria_total, 'oria' ), $oria_total ) ); ?>
+				</p>
+				<button class="wotoolbar__clear" type="button" data-wo-clear hidden><?php esc_html_e( 'Clear filters', 'oria' ); ?></button>
+				<div class="woview" data-wo-view role="group" aria-label="<?php esc_attr_e( 'How to show these events', 'oria' ); ?>" hidden>
+					<button class="woview__btn is-on" type="button" aria-pressed="true" data-wo-mode="list"><?php echo $oria_ico( 'grid' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?><?php esc_html_e( 'Cards', 'oria' ); ?></button>
+					<button class="woview__btn" type="button" aria-pressed="false" data-wo-mode="map"><?php echo $oria_ico( 'map' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?><?php esc_html_e( 'Map', 'oria' ); ?></button>
+				</div>
 			</div>
 		</div>
-	<?php endif; ?>
 
-	<?php if ( $oria_days ) : ?>
-		<div class="stack-lg" style="margin-top:2rem">
+		<section class="worecs" data-wo-recs hidden aria-labelledby="woRecsTitle">
+			<h2 class="h3 worecs__title" id="woRecsTitle"></h2>
+			<div class="worecs__row" data-wo-recs-row></div>
+		</section>
+
+		<div class="womap" data-wo-map hidden>
+			<div class="womap__canvas" data-wo-map-canvas></div>
+			<p class="womap__note">
+				<?php esc_html_e( 'Pins are the venue where we could place it, and a suburb centre otherwise. A few events have no location we could confirm and are in the list only.', 'oria' ); ?>
+			</p>
+		</div>
+
+		<?php if ( $oria_member_rows ) : ?>
+			<div class="wogroup wo-group wo-group--featured" data-wo-feat>
+				<p class="wo-group__label">
+					<span class="wo-group__name"><?php esc_html_e( 'Featured practices', 'oria' ); ?></span>
+					<span class="wo-group__note"><?php esc_html_e( 'Paid placement by practices listed with us', 'oria' ); ?></span>
+				</p>
+				<div class="wkrows wo-grid">
+					<?php foreach ( $oria_member_rows as $oria_r ) { $oria_row( $oria_r ); } ?>
+				</div>
+			</div>
+		<?php endif; ?>
+
+		<?php if ( $oria_days ) : ?>
 			<?php foreach ( $oria_days as $oria_day => $oria_list ) : ?>
-				<div class="wogroup">
-					<h2 class="h3 wkday">
-						<?php echo esc_html( $oria_labels[ $oria_day ] ?? '' ); ?>
-						<span class="wkday__date" data-wo-group-count
-								data-one="<?php esc_attr_e( '%d event', 'oria' ); ?>"
-								data-many="<?php esc_attr_e( '%d events', 'oria' ); ?>"><?php echo esc_html( sprintf( _n( '%d event', '%d events', count( $oria_list ), 'oria' ), count( $oria_list ) ) ); ?></span>
-					</h2>
-					<div class="wkrows">
+				<div class="wogroup wo-group">
+					<h3 class="wo-group__label wkday">
+						<span class="wo-group__name"><?php echo esc_html( $oria_labels[ $oria_day ] ?? '' ); ?></span>
+						<span class="wkday__date wo-group__note" data-wo-group-count
+							data-one="<?php esc_attr_e( '%d event', 'oria' ); ?>"
+							data-many="<?php esc_attr_e( '%d events', 'oria' ); ?>"><?php echo esc_html( sprintf( _n( '%d event', '%d events', count( $oria_list ), 'oria' ), count( $oria_list ) ) ); ?></span>
+					</h3>
+					<div class="wkrows wo-grid">
 						<?php foreach ( $oria_list as $oria_r ) { $oria_row( $oria_r ); } ?>
 					</div>
 				</div>
 			<?php endforeach; ?>
-		</div>
-		<div class="dir__empty" data-wo-empty hidden style="margin-top:2rem">
-			<h2 class="h3"><?php esc_html_e( 'Nothing matches those filters yet', 'oria' ); ?></h2>
-			<p class="muted" style="margin-top:.5rem"><?php esc_html_e( 'Try widening the dates or the area — or start again and browse everything coming up.', 'oria' ); ?></p>
-			<p class="wo-empty-area" data-wo-empty-area hidden></p>
-			<p style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
-				<button class="btn btn--sm btn--dark" type="button" data-wo-clear><?php esc_html_e( 'Clear filters', 'oria' ); ?></button>
-				<a class="btn btn--sm" href="#" data-wo-empty-cta data-area-promo="whats-on-empty" hidden></a>
-				<a class="btn btn--sm" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a>
-			</p>
-		</div>
-	<?php else : ?>
-		<div class="dir__empty" style="margin-top:2rem">
-			<h2 class="h3"><?php esc_html_e( 'Nothing listed yet', 'oria' ); ?></h2>
-			<p class="muted" style="margin-top:.5rem"><?php esc_html_e( 'New events go up as we find them and as organisers send them in.', 'oria' ); ?></p>
-			<p style="margin-top:1rem"><a class="btn btn--sm btn--dark" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a></p>
-		</div>
-	<?php endif; ?>
+			<div class="dir__empty wo-empty" data-wo-empty hidden>
+				<h2 class="wo-h2"><?php esc_html_e( 'Nothing matches those filters yet', 'oria' ); ?></h2>
+				<p><?php esc_html_e( 'Try widening the dates or the area, or start again and browse everything coming up.', 'oria' ); ?></p>
+				<p class="wo-empty-area" data-wo-empty-area hidden></p>
+				<p class="wo-empty__acts">
+					<button class="wo-btn wo-btn--primary" type="button" data-wo-clear><?php esc_html_e( 'Clear filters', 'oria' ); ?></button>
+					<a class="wo-btn wo-btn--secondary" href="#" data-wo-empty-cta data-area-promo="whats-on-empty" hidden></a>
+				</p>
+			</div>
+		<?php elseif ( ! $oria_member_rows ) : ?>
+			<div class="dir__empty wo-empty">
+				<h2 class="wo-h2"><?php esc_html_e( 'Nothing listed yet', 'oria' ); ?></h2>
+				<p><?php esc_html_e( 'New events go up as we find them and as organisers send them in.', 'oria' ); ?></p>
+			</div>
+		<?php endif; ?>
+	</div>
 </section>
 
 <?php
-/*
- * Where this week's events actually are. Counted off the page's own rows
- * rather than queried again, so the numbers here and the numbers in the
- * list can never disagree -- and only suburbs whose guide is worth
- * opening, which is AreaContext's decision, not this template's.
- */
+/* Where the events are, counted off the page's own rows. */
 $oria_near = array();
 if ( function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
 	foreach ( $oria_rows as $oria_r ) {
@@ -732,12 +712,7 @@ if ( function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
 		}
 		$oria_k = (string) $oria_ctx['slug'];
 		if ( ! isset( $oria_near[ $oria_k ] ) ) {
-			$oria_near[ $oria_k ] = array(
-				'name'  => (string) $oria_ctx['name'],
-				'url'   => (string) $oria_ctx['url'],
-				'n'     => 0,
-				'next'  => $oria_r['ts'],
-			);
+			$oria_near[ $oria_k ] = array( 'name' => (string) $oria_ctx['name'], 'url' => (string) $oria_ctx['url'], 'n' => 0, 'next' => $oria_r['ts'] );
 		}
 		++$oria_near[ $oria_k ]['n'];
 		$oria_near[ $oria_k ]['next'] = min( $oria_near[ $oria_k ]['next'], $oria_r['ts'] );
@@ -745,46 +720,8 @@ if ( function_exists( '\Oria\Core\AreaContext\for_post' ) ) {
 	uasort( $oria_near, static fn( array $a, array $b ): int => $b['n'] <=> $a['n'] ?: $a['next'] <=> $b['next'] );
 	$oria_near = array_slice( $oria_near, 0, 6, true );
 }
-?>
-<?php if ( count( $oria_near ) >= 3 ) : ?>
-	<section class="wrap section section--top-flush" aria-labelledby="woNearTitle">
-		<h2 class="h3" id="woNearTitle" style="margin-bottom:var(--s-4)"><?php esc_html_e( 'What’s happening near you?', 'oria' ); ?></h2>
-		<div class="wonear">
-			<?php foreach ( $oria_near as $oria_slug => $oria_a ) : ?>
-				<a class="wonear__card" href="<?php echo esc_url( $oria_a['url'] ); ?>"
-					data-area-promo="whats-on-near" data-area-slug="<?php echo esc_attr( (string) $oria_slug ); ?>">
-					<b class="wonear__name"><?php echo esc_html( $oria_a['name'] ); ?></b>
-					<span class="wonear__n">
-						<?php
-						printf(
-							/* translators: %d: number of events */
-							esc_html( _n( '%d event coming up', '%d events coming up', (int) $oria_a['n'], 'oria' ) ),
-							(int) $oria_a['n']
-						);
-						?>
-					</span>
-					<span class="wonear__next">
-						<?php
-						printf(
-							/* translators: %s: date of the next event */
-							esc_html__( 'Next on %s', 'oria' ),
-							esc_html( gmdate( 'D j M', (int) $oria_a['next'] ) )
-						);
-						?>
-						<span class="wonear__arrow" aria-hidden="true">&rarr;</span>
-					</span>
-				</a>
-			<?php endforeach; ?>
-		</div>
-	</section>
-<?php endif; ?>
 
-<?php
-/*
- * The collections that are live today. EventCollections keeps its own
- * floor -- a collection with too little in it has no page -- so this
- * shows whatever survived that and nothing else.
- */
+/* The event collections that are live today. */
 $oria_colls = array();
 if ( function_exists( '\Oria\Core\EventCollections\all' ) ) {
 	foreach ( \Oria\Core\EventCollections\all() as $oria_cslug => $oria_crow ) {
@@ -799,46 +736,73 @@ if ( function_exists( '\Oria\Core\EventCollections\all' ) ) {
 	}
 }
 ?>
-<?php if ( count( $oria_colls ) >= 2 ) : ?>
-	<section class="wrap section section--top-flush" aria-labelledby="woCollTitle">
-		<h2 class="h3" id="woCollTitle" style="margin-bottom:var(--s-4)"><?php esc_html_e( 'Ways in', 'oria' ); ?></h2>
-		<div class="wocolls">
-			<?php foreach ( $oria_colls as $oria_c ) : ?>
-				<a class="wocoll" href="<?php echo esc_url( (string) $oria_c['url'] ); ?>">
-					<b class="wocoll__name"><?php echo esc_html( (string) $oria_c['title'] ); ?></b>
-					<?php if ( ! empty( $oria_c['count'] ) ) : ?>
-						<span class="wocoll__n">
-							<?php
-							printf(
-								/* translators: %d: number of events */
-								esc_html( _n( '%d event', '%d events', (int) $oria_c['count'], 'oria' ) ),
-								(int) $oria_c['count']
-							);
-							?>
-						</span>
-					<?php endif; ?>
-					<span class="wocoll__arrow" aria-hidden="true">&rarr;</span>
-				</a>
-			<?php endforeach; ?>
-		</div>
-	</section>
-<?php endif; ?>
 
-<section class="evband">
-	<div class="evband__inner">
-		<b style="display:block;margin-bottom:.4rem"><?php esc_html_e( 'Run wellness events in Perth?', 'oria' ); ?></b>
-		<p style="font-size:.875rem;color:var(--text-soft)">
-			<?php esc_html_e( 'Tell us about it and we will put it on this page. It is free, there is no account to make, and a person reads every submission.', 'oria' ); ?>
-		</p>
-		<p style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem">
-			<a class="btn btn--dark btn--sm" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?></a>
-			<a class="btn btn--sm" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your listing', 'oria' ); ?></a>
-		</p>
-		<p class="evband__note">
-			<?php esc_html_e( 'Claimed practices also get their events at the top of this page, with a photo and a linked profile.', 'oria' ); ?>
-		</p>
+<?php if ( count( $oria_near ) >= 3 || count( $oria_colls ) >= 2 ) : ?>
+<!-- 5. Quiet ways onward -->
+<section class="wo-section wo-section--onward">
+	<div class="wo-wrap wo-onward">
+		<?php if ( count( $oria_near ) >= 3 ) : ?>
+			<div aria-labelledby="woNearTitle">
+				<h2 class="wo-h3" id="woNearTitle"><?php esc_html_e( 'What’s happening near you', 'oria' ); ?></h2>
+				<ul class="wo-links">
+					<?php foreach ( $oria_near as $oria_slug => $oria_a ) : ?>
+						<li>
+							<a href="<?php echo esc_url( $oria_a['url'] ); ?>" data-area-promo="whats-on-near" data-area-slug="<?php echo esc_attr( (string) $oria_slug ); ?>">
+								<span class="wo-links__name"><?php echo esc_html( $oria_a['name'] ); ?></span>
+								<span class="wo-links__meta">
+									<?php
+									echo esc_html(
+										sprintf(
+											/* translators: 1: number of events, 2: date */
+											_n( '%1$d event · next %2$s', '%1$d events · next %2$s', (int) $oria_a['n'], 'oria' ),
+											(int) $oria_a['n'],
+											gmdate( 'D j M', (int) $oria_a['next'] )
+										)
+									);
+									?>
+								</span>
+							</a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+		<?php endif; ?>
+		<?php if ( count( $oria_colls ) >= 2 ) : ?>
+			<div aria-labelledby="woCollTitle">
+				<h2 class="wo-h3" id="woCollTitle"><?php esc_html_e( 'Explore more wellness events', 'oria' ); ?></h2>
+				<ul class="wo-links">
+					<?php foreach ( $oria_colls as $oria_c ) : ?>
+						<li>
+							<a href="<?php echo esc_url( (string) $oria_c['url'] ); ?>">
+								<span class="wo-links__name"><?php echo esc_html( (string) $oria_c['title'] ); ?></span>
+								<?php if ( ! empty( $oria_c['count'] ) ) : ?>
+									<span class="wo-links__meta"><?php echo esc_html( sprintf( _n( '%d event', '%d events', (int) $oria_c['count'], 'oria' ), (int) $oria_c['count'] ) ); ?></span>
+								<?php endif; ?>
+							</a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+		<?php endif; ?>
 	</div>
 </section>
+<?php endif; ?>
+
+<!-- 6. The host invitation -->
+<section class="wo-host" aria-labelledby="woHostTitle">
+	<div class="wo-wrap wo-host__in">
+		<div>
+			<h2 class="wo-h2" id="woHostTitle"><?php esc_html_e( 'Hosting something good?', 'oria' ); ?></h2>
+			<p class="wo-host__text"><?php esc_html_e( 'Share your workshop, class or retreat with people looking for wellness experiences around Perth.', 'oria' ); ?></p>
+		</div>
+		<div class="wo-host__acts">
+			<a class="wo-btn wo-btn--primary" href="<?php echo esc_url( home_url( '/submit-an-event/' ) ); ?>"><?php esc_html_e( 'Submit an event', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
+			<a class="wo-textlink" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your listing', 'oria' ); ?></a>
+		</div>
+	</div>
+</section>
+
+</div>
 
 <?php
 get_footer();
