@@ -1064,3 +1064,14 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: 0; text-transform: none;
 }
+
+/* Website help: one quiet, optional card at the foot of the owner dashboard. */
+.mylhelp {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px;
+  margin-top: 1.25rem; padding: 1.1rem 1.25rem;
+  border: 1px solid var(--app-line, #DFE5DC); border-radius: 14px; background: var(--app-soft, #F6F7F2);
+}
+.mylhelp__h { margin: 0 0 4px; font-size: 1.0625rem; font-weight: 700; }
+.mylhelp__p { margin: 0; max-width: 56ch; line-height: 1.55; }
+.mylhelp__note { margin: 6px 0 0; font-size: var(--fs-xs); color: var(--app-faint); }
+.mylhelp__go { min-height: 44px; }

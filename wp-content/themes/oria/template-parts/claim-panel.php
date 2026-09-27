@@ -122,6 +122,12 @@ if ( 'link' === $oria_cl_mode ) {
 					<?php esc_html_e( 'Suggest an edit', 'oria' ); ?>
 				</button>
 			</p>
+			<?php // Optional, and after the claim's own next step -- never part of claiming. ?>
+			<p class="oclaim__alt oclaim__alt--web">
+				<?php esc_html_e( 'Want help with your own website too?', 'oria' ); ?>
+				<a class="oclaim__altlink" href="<?php echo esc_url( add_query_arg( 'src', 'claim', home_url( '/websites/' ) ) ); ?>" data-oria-event="website_help_cta_click" data-oria-placement="claim_success"><?php esc_html_e( 'See website help', 'oria' ); ?></a>
+				<?php esc_html_e( '(optional, by Oria Digital)', 'oria' ); ?>
+			</p>
 		</div>
 
 	<?php else : ?>

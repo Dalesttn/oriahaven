@@ -345,4 +345,22 @@ $oria_thumb = $oria_logo && wp_attachment_is_image( $oria_logo )
 		<p class="mylplan__keep"><?php esc_html_e( 'Anything you have already saved stays saved. A plan decides how much of it your profile shows, never what you are allowed to write down.', 'oria' ); ?></p>
 	</section>
 
+	<?php
+	/*
+	 * An optional service, said once and quietly. Only the owner sees this
+	 * page (listing_for() above), nothing about their listing travels in the
+	 * link, and asking has no bearing on the directory.
+	 */
+	?>
+	<aside class="mylhelp" aria-labelledby="mylhelp-h">
+		<div>
+			<h2 class="mylhelp__h" id="mylhelp-h"><?php esc_html_e( 'Need help with your website?', 'oria' ); ?></h2>
+			<p class="mylhelp__p"><?php esc_html_e( 'Get practical help with mobile layouts, booking links or a page for your next workshop.', 'oria' ); ?></p>
+			<p class="mylhelp__note"><?php esc_html_e( 'Optional service by Oria Digital.', 'oria' ); ?></p>
+		</div>
+		<a class="btn btn--ghost mylhelp__go" href="<?php echo esc_url( add_query_arg( 'src', 'dashboard', home_url( '/websites/' ) ) ); ?>" data-oria-event="website_help_cta_click" data-oria-placement="dashboard">
+			<?php esc_html_e( 'Explore website help', 'oria' ); ?>
+		</a>
+	</aside>
+
 </section>

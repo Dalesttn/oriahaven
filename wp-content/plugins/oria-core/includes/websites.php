@@ -115,10 +115,13 @@ function bootstrap(): void {
 	add_action( 'admin_post_oria_web_check', __NAMESPACE__ . '\handle_check' );
 	add_action( 'admin_notices', __NAMESPACE__ . '\notice' );
 
-	// The public request form — the only route by which a health check
-	// ever reaches a practice, and it starts with them asking.
-	add_action( 'admin_post_nopriv_oria_web_request', __NAMESPACE__ . '\handle_request' );
-	add_action( 'admin_post_oria_web_request', __NAMESPACE__ . '\handle_request' );
+	/*
+	 * The public request is handled by WebHelp (includes/web-help.php) since
+	 * 2026-09-27: stored before it is emailed, routed to a configured
+	 * address, and never fetched by this server. The old handle_request()
+	 * below ran check() on whatever URL a stranger typed in; it is no longer
+	 * wired to anything.
+	 */
 }
 
 /* --------------------------------------------------------------- settings */
@@ -206,19 +209,19 @@ function template( string $template ): string {
 }
 
 function title( $t ) {
-	return is_page() ? sprintf( '%s — websites for wellness practices in Perth', service_name() ) : $t;
+	return is_page() ? __( 'Website help for wellness businesses | Oria Haven', 'oria' ) : $t;
 }
 
 function core_title( array $parts ): array {
 	if ( is_page() ) {
-		$parts['title'] = sprintf( '%s — websites for wellness practices', service_name() );
+		$parts['title'] = __( 'Website help for wellness businesses', 'oria' );
 	}
 	return $parts;
 }
 
 function description( $d ) {
 	return is_page()
-		? __( 'Websites built for Perth wellness practices — faster, easier to book from, and easier to find. Ask for a free website review.', 'oria' )
+		? __( 'Practical website help for wellness businesses: clearer service pages, mobile booking buttons and a focused page for your next workshop. By Oria Digital.', 'oria' )
 		: $d;
 }
 

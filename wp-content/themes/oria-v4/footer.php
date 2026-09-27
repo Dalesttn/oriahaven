@@ -136,6 +136,7 @@ $oria_suburbs   = function_exists( '\Oria\Core\AreaDepth\popular' )
 					<li><a href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>"><?php esc_html_e( 'List your practice', 'oria' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your listing', 'oria' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/claim/#pricing' ) ); ?>"><?php esc_html_e( 'Featured listings', 'oria' ); ?></a></li>
+					<li><a href="<?php echo esc_url( add_query_arg( 'src', 'footer', home_url( '/websites/' ) ) ); ?>" data-oria-event="website_help_cta_click" data-oria-placement="footer"><?php esc_html_e( 'Website help', 'oria' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/about/#contact' ) ); ?>"><?php esc_html_e( 'Remove a listing', 'oria' ); ?></a></li>
 				</ul>
 			</details>
