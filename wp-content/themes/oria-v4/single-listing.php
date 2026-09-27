@@ -445,8 +445,15 @@ while ( have_posts() ) :
 			// .gallery[data-lightbox] is the hook app.js's lightbox looks for.
 			$oria_panel_cl .= ' gallery';
 		}
-		// Places photo URIs are short-lived; one that expires simply drops out.
-		$oria_fb = "this.closest('.xp-hero__shot').hidden=true";
+		/*
+		 * Places photo URIs are short-lived. oria-core's image fallback
+		 * (Places\image_fallback, in <head>) decides what a dead one becomes:
+		 * the main photo turns into this listing's placeholder scene (data-fb),
+		 * an extra one drops out and the grid re-counts. Hiding the main shot
+		 * here used to leave the hero an empty frame.
+		 */
+		$oria_fb    = 'window.oriaImgFail&&oriaImgFail(this)';
+		$oria_scene = \Oria\Theme\listing_scene( $oria_qid );
 		?>
 		<div class="<?php echo esc_attr( $oria_panel_cl ); ?>"<?php echo $oria_lightbox ? ' data-lightbox' : ''; ?>>
 			<?php if ( $oria_photos ) : ?>
@@ -464,13 +471,14 @@ while ( have_posts() ) :
 						 * browser the ratio; the grid cell sets the real size.
 						 */
 						$oria_img = sprintf(
-							'<img src="%1$s" srcset="%2$s" sizes="%3$s" alt="%4$s" width="1200" height="800"%5$s onerror="%6$s">',
+							'<img src="%1$s" srcset="%2$s" sizes="%3$s" alt="%4$s" width="1200" height="800"%5$s data-fb="%7$s" onerror="%6$s">',
 							esc_url( $oria_gsz( $oria_pu, 0 === $oria_pi ? 1200 : 800 ) ),
 							esc_attr( $oria_srcset( $oria_pu ) ),
 							esc_attr( 0 === $oria_pi ? $oria_hero_sizes : '(max-width: 40rem) 1px, 33vw' ),
 							esc_attr( $oria_palt ),
 							0 === $oria_pi ? ' fetchpriority="high" decoding="async"' : ' loading="lazy" decoding="async"',
-							esc_attr( $oria_fb )
+							esc_attr( $oria_fb ),
+							esc_url( $oria_scene )
 						);
 						?>
 						<?php if ( $oria_lightbox ) : ?>

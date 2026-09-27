@@ -32,6 +32,13 @@ const META_CACHE   = '_oria_places_v5';
    exactly as it does to the rest of the record. */
 const META_REVIEWS = '_oria_places_reviews_v1';
 const CACHE_DAYS   = 29;
+/*
+ * The photo URIs Google hands back are short-lived: they started returning
+ * 403 somewhere between two and four weeks old (found 2026-09-27 on Sound
+ * Healing Perth, whose hero went blank at 26 days). The record keeps its
+ * 29 days; the URIs are re-resolved from the stored photo names after 7.
+ */
+const URI_DAYS     = 7;
 const MAX_PHOTOS   = 3;
 const SEARCH_URL   = 'https://places.googleapis.com/v1/places:searchText';
 const DETAILS_URL  = 'https://places.googleapis.com/v1/places/%s';
@@ -110,6 +117,10 @@ function data_for( int $post_id, bool $may_fetch = true ): ?array {
 			return null;
 		}
 
+		if ( $may_fetch && uris_stale( $cache ) ) {
+			$cache = refresh_uris( $post_id, $cache, $place_id );
+		}
+
 		return $cache;
 	}
 
@@ -128,8 +139,54 @@ function data_for( int $post_id, bool $may_fetch = true ): ?array {
 		return null;
 	}
 
+	$fresh['uris_ts'] = time();
 	update_post_meta( $post_id, META_CACHE, $fresh );
 	return $fresh;
+}
+
+/** Whether a record's photo URIs are older than Google keeps them working. */
+function uris_stale( array $cache ): bool {
+	if ( empty( $cache['names'] ) ) {
+		return false; // no photos to refresh
+	}
+	$ts = (int) ( $cache['uris_ts'] ?? $cache['ts'] ?? 0 );
+	return ( time() - $ts ) >= URI_DAYS * DAY_IN_SECONDS;
+}
+
+/**
+ * New URIs for the photos a record already names -- one media call per
+ * photo, no Place Details call. If Google no longer recognises the names,
+ * the whole record is fetched again. A failure backs off for a day, and the
+ * old record is returned either way: the page's image fallback covers a URI
+ * that has died, which is better than no record at all.
+ */
+function refresh_uris( int $post_id, array $cache, string $place_id ): array {
+	if ( get_transient( 'oria_places_uri_backoff_' . $post_id ) ) {
+		return $cache;
+	}
+	$key = server_key();
+	if ( '' === $key ) {
+		return $cache;
+	}
+
+	$next = with_uris( $cache, $key );
+	if ( ! empty( $next['uris'] ) ) {
+		$next['uris_ts'] = time();
+		update_post_meta( $post_id, META_CACHE, $next );
+		return $next;
+	}
+
+	if ( '' !== $place_id ) {
+		$fresh = fetch( $post_id, $place_id );
+		if ( null !== $fresh && ! empty( $fresh['uris'] ) ) {
+			$fresh['uris_ts'] = time();
+			update_post_meta( $post_id, META_CACHE, $fresh );
+			return $fresh;
+		}
+	}
+
+	set_transient( 'oria_places_uri_backoff_' . $post_id, 1, DAY_IN_SECONDS );
+	return $cache;
 }
 
 /**
@@ -142,9 +199,9 @@ function card_photo( int $post_id ): string {
 	static $fetch_budget = 2;
 
 	$cache = data_for( $post_id, false );
-	if ( null === $cache && $fetch_budget > 0 ) {
+	if ( ( null === $cache || uris_stale( $cache ) ) && $fetch_budget > 0 ) {
 		--$fetch_budget;
-		$cache = data_for( $post_id, true );
+		$cache = data_for( $post_id, true ) ?? $cache;
 	}
 
 	return $cache ? (string) ( $cache['uris'][0] ?? '' ) : '';
@@ -618,6 +675,7 @@ function pack( array $place ): array {
  * always did.
  */
 function bootstrap(): void {
+	add_action( 'wp_head', __NAMESPACE__ . '\image_fallback', 1 );
 	add_action( 'oria_places_warm', __NAMESPACE__ . '\\warm' );
 	add_filter( 'post_row_actions', __NAMESPACE__ . '\row_actions', 10, 2 );
 	add_action( 'admin_post_oria_places_toggle', __NAMESPACE__ . '\toggle' );
@@ -629,7 +687,12 @@ function bootstrap(): void {
 	} );
 }
 
-function warm( int $budget = 40 ): array {
+/*
+ * 80 a day: photo URIs now need refreshing weekly, so the daily warm has to
+ * reach roughly a seventh of the warm-worthy listings every night for
+ * visitors not to pay for the refresh themselves.
+ */
+function warm( int $budget = 80 ): array {
 	$fresh = 0;
 	$had   = 0;
 	if ( ! enabled() ) {
@@ -656,9 +719,10 @@ function warm( int $budget = 40 ): array {
 		}
 		$cache = get_post_meta( (int) $id, META_CACHE, true );
 		if ( is_array( $cache ) && isset( $cache['ts'] )
-			&& ( time() - (int) $cache['ts'] ) < ( CACHE_DAYS - 2 ) * DAY_IN_SECONDS ) {
+			&& ( time() - (int) $cache['ts'] ) < ( CACHE_DAYS - 2 ) * DAY_IN_SECONDS
+			&& ! uris_stale( $cache ) ) {
 			++$had;
-			continue; // still comfortably fresh
+			continue; // record and photo URIs both comfortably fresh
 		}
 		if ( $budget <= 0 ) {
 			break;
@@ -810,4 +874,25 @@ function toggle_notice(): void {
 				: __( 'Google reviews and photos switched back on for that listing.', 'oria' )
 		)
 	);
+}
+
+/* ------------------------------------------------------- broken photos */
+
+/**
+ * Whatever still slips through -- a URI that dies before its refresh, a
+ * cached page, a quota day -- never shows as a broken image. One capture
+ * listener, printed first in <head> so it is listening before any <img>
+ * loads, catches an error on a Google photo anywhere on the site:
+ *
+ *  - an extra photo in a listing's hero drops out and the grid re-counts;
+ *  - anything else swaps to its data-fb picture (the listing's own
+ *    placeholder scene where the template knows it), else a neutral scene.
+ *
+ * Only googleusercontent images are touched; everything else is left alone.
+ */
+function image_fallback(): void {
+	$fb = function_exists( 'get_template_directory_uri' ) ? get_template_directory_uri() . '/assets/img/scene-hall.webp' : '';
+	?>
+<script>(function(){var FB=<?php echo wp_json_encode( esc_url_raw( $fb ) ); ?>;function fail(i){if(i.getAttribute("data-oria-failed"))return;i.setAttribute("data-oria-failed","1");var s=i.closest&&i.closest(".xp-hero__shot");if(s&&!s.classList.contains("xp-hero__shot--0")){s.hidden=true;var p=s.closest(".xp-hero__panel");if(p){var n=p.querySelectorAll(".xp-hero__shot:not([hidden])").length;p.className=p.className.replace(/xp-hero__panel--n\d/,"xp-hero__panel--n"+Math.max(1,n));}return;}i.removeAttribute("srcset");i.src=i.getAttribute("data-fb")||FB;}document.addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG"&&/googleusercontent\.com/.test(t.currentSrc||t.src||""))fail(t);},true);window.oriaImgFail=fail;})();</script>
+	<?php
 }
