@@ -3,7 +3,8 @@
  * One retreat offer card. Everything essential is text, not artwork.
  *
  * The call to action is an ordinary anchor to the exact stored affiliate
- * link, rel="sponsored", same tab: it works with scripts off, and the
+ * link, rel="sponsored noopener", in a new tab so Oria stays open behind
+ * the booking site. It works with scripts off, and the
  * click counter (data-oria-aff, app.js) only ever sends the offer id and
  * the placement, never the link.
  *
@@ -63,7 +64,7 @@ $oria_book  = R\get( $oria_id, 'booking' ) ?: 'BookRetreats';
 		<?php endif; ?>
 		<div class="ro-card__foot">
 			<p class="ro-card__price"><?php echo esc_html( R\price_label( $oria_id ) ); ?></p>
-			<a class="ro-card__cta" href="<?php echo esc_url( R\get( $oria_id, 'aff_url' ) ); ?>" rel="sponsored"
+			<a class="ro-card__cta" href="<?php echo esc_url( R\get( $oria_id, 'aff_url' ) ); ?>" target="_blank" rel="sponsored noopener"
 				data-oria-aff="<?php echo (int) $oria_id; ?>" data-oria-aff-place="<?php echo esc_attr( $oria_place ); ?>">
 				<?php
 				printf(
@@ -72,7 +73,7 @@ $oria_book  = R\get( $oria_id, 'booking' ) ?: 'BookRetreats';
 					esc_html( $oria_book )
 				);
 				?>
-				<span class="sr-only"><?php echo esc_html( sprintf( /* translators: %s: retreat */ __( 'for %s', 'oria' ), $oria_title ) ); ?></span>
+				<span class="sr-only"><?php echo esc_html( sprintf( /* translators: %s: retreat */ __( 'for %s (opens in a new tab)', 'oria' ), $oria_title ) ); ?></span>
 			</a>
 			<p class="ro-card__aff"><?php esc_html_e( 'Affiliate link', 'oria' ); ?></p>
 		</div>
