@@ -700,6 +700,7 @@ html.xc-locked { overflow: hidden; }
    belong together, spaced as though they do. */
 #browse .xc-about { margin-top: var(--s-6); max-width: 62ch; }
 #browse .trendnudge { margin-top: var(--s-6); }
+#browse .trendnudge + .trendnudge { margin-top: var(--s-4); }
 
 /* --- 4. Best Of shelf ------------------------------------------------------- */
 .xc-bo { margin-block: var(--s-7) 0; }

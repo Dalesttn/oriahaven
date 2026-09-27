@@ -809,7 +809,35 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 	 *
 	 * The picture is the newest trend's own, or nothing -- never a stock
 	 * photograph standing in for an article we have not written.
+	 *
+	 * Retreat escapes sits first, in the same dress, and only once a real
+	 * offer is live (the hub 404s otherwise). Its picture is the first live
+	 * offer's own photo; it goes to the hub, never to an affiliate link.
 	 */
+	if ( function_exists( '\Oria\Core\Retreats\published' ) && \Oria\Core\Retreats\published() ) {
+		$oria_ro_first = \Oria\Core\Retreats\active_offers( array( 'limit' => 1 ) );
+		$oria_ro_shot  = $oria_ro_first ? get_the_post_thumbnail_url( $oria_ro_first[0], 'medium_large' ) : '';
+		?>
+		<aside class="trendnudge trendnudge--retreat<?php echo $oria_ro_shot ? '' : ' trendnudge--bare'; ?>" aria-labelledby="xcRetreatTitle">
+			<div class="trendnudge__body">
+				<p class="trendnudge__eyebrow">
+					<span class="trendnudge__spark" aria-hidden="true">&#10022;</span>
+					<?php esc_html_e( 'Retreat escapes', 'oria' ); ?>
+				</p>
+				<h2 class="h3 trendnudge__title" id="xcRetreatTitle"><?php esc_html_e( 'Need more than a day?', 'oria' ); ?></h2>
+				<p class="trendnudge__line"><?php esc_html_e( 'Hand-picked retreats in WA and beyond, with what’s included and what isn’t set out before you book.', 'oria' ); ?></p>
+				<a class="btn btn--dark btn--sm trendnudge__cta" href="<?php echo esc_url( \Oria\Core\Retreats\hub_url() ); ?>" data-oria-event="retreat_hub_click" data-oria-placement="directory">
+					<?php esc_html_e( 'Explore retreat escapes', 'oria' ); ?> <span aria-hidden="true">&rarr;</span>
+				</a>
+			</div>
+			<?php if ( $oria_ro_shot ) : ?>
+				<div class="trendnudge__art" aria-hidden="true">
+					<img src="<?php echo esc_url( $oria_ro_shot ); ?>" alt="" width="640" height="480" loading="lazy" decoding="async">
+				</div>
+			<?php endif; ?>
+		</aside>
+		<?php
+	}
 	if ( function_exists( '\Oria\Core\Trends\published' ) ) {
 		$oria_trends = \Oria\Core\Trends\published();
 		if ( $oria_trends ) {
