@@ -287,6 +287,11 @@ while ( have_posts() ) :
 	<section class="wrap section section--top-flush"><?php get_template_part( 'template-parts/trend-context', null, array( 'trends' => $oria_tr, 'location' => 'guide' ) ); ?></section>
 	<?php endif; ?>
 
+	<?php $oria_ro_rel = 'journey' === get_post_type() && function_exists( '\Oria\Core\Retreats\related' ) ? \Oria\Core\Retreats\related( (int) get_the_ID() ) : ''; ?>
+	<?php if ( $oria_ro_rel ) : ?>
+	<section class="wrap section section--top-flush"><?php echo $oria_ro_rel; // phpcs:ignore WordPress.Security.EscapeOutput -- built from escaped parts ?></section>
+	<?php endif; ?>
+
 	<?php $oria_shop = function_exists( '\Oria\Shop\Render\auto_band' ) ? \Oria\Shop\Render\auto_band( __( 'Products you might find helpful', 'oria' ) ) : ''; ?>
 	<?php if ( $oria_shop ) : ?>
 	<section class="wrap section section--top-flush"><?php echo $oria_shop; // phpcs:ignore WordPress.Security.EscapeOutput ?></section>

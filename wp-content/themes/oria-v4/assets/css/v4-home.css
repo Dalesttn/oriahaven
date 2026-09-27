@@ -415,3 +415,35 @@
 .xh-rot.is-live .xh-rot__stage { display: grid; }
 .xh-rot.is-live .xh-rot__stage > .xh-cards { grid-area: 1 / 1; align-self: start; }
 .xh-rot.is-live .xh-rot__stage > .xh-cards[hidden] { display: grid !important; visibility: hidden; pointer-events: none; }
+
+/* Retreat escapes: a small editorial panel, shown only once offers are live. */
+.xh-ro {
+  display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: var(--s-6) clamp(2rem, 5vw, 4.5rem);
+  align-items: center; padding: clamp(1.5rem, 4vw, 2.75rem); border: 1px solid var(--line); border-radius: var(--radius-lg, 18px);
+  background: var(--surface);
+}
+.xh-ro__text .micro { margin: 0 0 var(--s-3); }
+.xh-ro__text .h2 { margin: 0 0 var(--s-3); max-width: 16ch; }
+.xh-ro__lede { margin: 0 0 var(--s-4); max-width: 34rem; color: var(--text-soft); line-height: 1.6; }
+.xh-ro__note { margin: var(--s-4) 0 0; font-size: .85rem; line-height: 1.5; color: var(--text-faint); }
+.xh-ro__list { display: grid; gap: var(--s-3); margin: 0; padding: 0; list-style: none; }
+.xh-ro__item {
+  display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: var(--s-4); align-items: center;
+  padding: .6rem; border: 1px solid var(--line); border-radius: 12px; color: inherit; text-decoration: none;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.xh-ro__item:hover { border-color: var(--line-strong); background: var(--bg, transparent); }
+.xh-ro__thumb { display: block; aspect-ratio: 4 / 3; border-radius: 8px; overflow: hidden; background: var(--line); }
+.xh-ro__thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.xh-ro__body { display: grid; gap: .2rem; min-width: 0; }
+.xh-ro__meta { font-size: .8rem; font-weight: 600; letter-spacing: .02em; color: var(--text-soft); }
+.xh-ro__name { font-weight: 700; line-height: 1.3; color: var(--deep); }
+.xh-ro__item:hover .xh-ro__name { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 52rem) {
+  .xh-ro { grid-template-columns: 1fr; }
+}
+@media (max-width: 30rem) {
+  .xh-ro { padding: 1.25rem 1rem; }
+  .xh-ro__item { grid-template-columns: 4rem minmax(0, 1fr); gap: .75rem; padding: .5rem; }
+  .xh-ro__name { font-size: .95rem; }
+}

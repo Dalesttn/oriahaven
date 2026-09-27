@@ -106,6 +106,7 @@
 .rcare__list { margin: 0; padding-left: 1.15rem; display: grid; gap: .55rem; max-width: 64ch; color: var(--text-soft); line-height: 1.6; }
 
 /* --- keep exploring ------------------------------------------------------- */
+.rretreats { padding-block: clamp(2rem, 5vw, 3rem) 0; }
 .rnext { padding-block: clamp(2rem, 5vw, 3rem); }
 .rnext__h { margin: 0 0 var(--s-2); font-size: var(--fs-h3); font-weight: 600; }
 .rnext__why { margin: 0 0 var(--s-4); max-width: 60ch; color: var(--text-soft); }

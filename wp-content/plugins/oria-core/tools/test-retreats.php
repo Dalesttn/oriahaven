@@ -108,6 +108,18 @@ $l = wp_insert_post( array( 'post_type' => R\CPT, 'post_status' => 'draft', 'pos
 $ok( 'incomplete draft can still be saved', $l > 0 && 'draft' === get_post_status( $l ) );
 unset( $_POST['oria_ro_nonce'], $_POST['ro'], $_POST['_thumbnail_id'] );
 
+// 7. A journey shows only offers an editor chose, and only live ones.
+$jr = wp_insert_post( array( 'post_type' => 'journey', 'post_status' => 'draft', 'post_title' => 'TEST journey' ) );
+$ok( 'journey with nothing chosen shows nothing', '' === R\related( $jr ) );
+update_post_meta( $jr, R\RELATED, $b . ',' . $d );
+$ok( 'journey with only non-live offers shows nothing', '' === R\related( $jr ) );
+update_post_meta( $jr, R\RELATED, $j . ',' . $b . ',' . $a );
+$rel = R\related( $jr );
+$ok( 'journey shows the chosen live offers, disclosed', 2 === substr_count( $rel, 'class="ro-card"' ) && false !== strpos( $rel, 'ro-disclosure' ) );
+$ok( 'journey keeps the editor order', strpos( $rel, 'ro-offer-' . $j ) < strpos( $rel, 'ro-offer-' . $a ) );
+$ok( 'journey clicks are placed as journey', false !== strpos( $rel, 'data-oria-aff-place="journey"' ) );
+wp_delete_post( $jr, true );
+
 // Clean up.
 foreach ( get_posts( array( 'post_type' => R\CPT, 'post_status' => 'any', 'posts_per_page' => -1, 'fields' => 'ids', 's' => 'TEST' ) ) as $x ) {
 	wp_delete_post( (int) $x, true );

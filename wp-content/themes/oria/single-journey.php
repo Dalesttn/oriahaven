@@ -285,6 +285,11 @@ get_header();
 		</ul>
 	</section>
 
+	<?php $oria_ro_rel = function_exists( '\Oria\Core\Retreats\related' ) ? \Oria\Core\Retreats\related( $oria_id ) : ''; ?>
+	<?php if ( $oria_ro_rel ) : ?>
+		<section class="wrap rretreats"><?php echo $oria_ro_rel; // phpcs:ignore WordPress.Security.EscapeOutput -- built from escaped parts ?></section>
+	<?php endif; ?>
+
 	<?php if ( $oria_r['related'] ) : ?>
 		<section class="wrap rnext" aria-labelledby="rnext-h">
 			<h2 class="rnext__h" id="rnext-h"><?php esc_html_e( 'Keep exploring, gently', 'oria' ); ?></h2>

@@ -24,7 +24,8 @@
 .ro-section--sage { background: var(--ro-sage); }
 .ro-section--rule .ro-wrap { border-top: 1px solid var(--ro-line); padding-top: clamp(32px, 4vw, 48px); }
 .ro-section--rule { padding-top: 0; }
-#offers { scroll-margin-top: 90px; }
+#offers, .ro-card { scroll-margin-top: 90px; }
+.ro-card:target { border-color: var(--ro-green); box-shadow: 0 0 0 3px var(--brand-gold, #C9A24B); }
 
 .ro-preview { margin: 0; padding: 12px var(--gutter); background: #FFF4D6; color: #5A4310; font-weight: 600; text-align: center; }
 .ro-eyebrow { margin: 0 0 12px; font-size: 12.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ro-muted); }

@@ -721,6 +721,43 @@ $oria_short = static function ( string $name ): string {
 </section>
 <?php endif; ?>
 
+<?php
+// Retreat escapes: one small editorial panel, only once real offers are live.
+// Rows go to the hub (where each offer is disclosed in full), never straight
+// to an affiliate link from here.
+$oria_ro = function_exists( '\Oria\Core\Retreats\published' ) && \Oria\Core\Retreats\published()
+	? \Oria\Core\Retreats\active_offers( array( 'limit' => 3 ) )
+	: array();
+if ( $oria_ro ) :
+	$oria_ro_hub = \Oria\Core\Retreats\hub_url();
+	?>
+<!-- 6b. Retreat escapes -->
+<section class="wrap xh-sec" aria-labelledby="xh-ro-title">
+	<div class="xh-ro">
+		<div class="xh-ro__text">
+			<p class="micro"><?php esc_html_e( 'Retreat escapes', 'oria' ); ?></p>
+			<h2 class="h2" id="xh-ro-title"><?php esc_html_e( 'When a day isn’t enough', 'oria' ); ?></h2>
+			<p class="xh-ro__lede"><?php esc_html_e( 'A few hand-picked retreats in WA and beyond, with what’s included and what isn’t set out before you click through.', 'oria' ); ?></p>
+			<a class="xh-link" href="<?php echo esc_url( $oria_ro_hub ); ?>" data-oria-event="retreat_hub_click" data-oria-placement="home"><?php esc_html_e( 'See all retreat escapes', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
+			<p class="xh-ro__note"><?php esc_html_e( 'Booked through a named retreat provider. Oria Haven may earn a commission on some bookings.', 'oria' ); ?></p>
+		</div>
+		<ul class="xh-ro__list">
+			<?php foreach ( $oria_ro as $oria_ro_id ) : ?>
+				<li>
+					<a class="xh-ro__item" href="<?php echo esc_url( $oria_ro_hub . '#ro-offer-' . $oria_ro_id ); ?>" data-oria-event="retreat_hub_click" data-oria-placement="home_offer">
+						<span class="xh-ro__thumb"><?php echo get_the_post_thumbnail( $oria_ro_id, 'medium', array( 'loading' => 'lazy', 'decoding' => 'async', 'alt' => '' ) ); ?></span>
+						<span class="xh-ro__body">
+							<span class="xh-ro__meta"><?php echo esc_html( \Oria\Core\Retreats\place_label( $oria_ro_id ) . ' · ' . \Oria\Core\Retreats\duration_label( $oria_ro_id ) ); ?></span>
+							<span class="xh-ro__name"><?php echo esc_html( get_the_title( $oria_ro_id ) ); ?></span>
+						</span>
+					</a>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
+</section>
+<?php endif; ?>
+
 <!-- 7. The map -->
 <section class="wrap xh-sec" aria-labelledby="xh-map-title">
 	<div class="xh-map on-deep">

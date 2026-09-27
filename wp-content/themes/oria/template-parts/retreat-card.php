@@ -25,7 +25,7 @@ $oria_inc   = array_slice( R\lines( $oria_id, 'inclusions' ), 0, 3 );
 $oria_exc   = R\lines( $oria_id, 'exclusions' );
 $oria_book  = R\get( $oria_id, 'booking' ) ?: 'BookRetreats';
 ?>
-<article class="ro-card" data-ro-dest="<?php echo esc_attr( R\get( $oria_id, 'destination' ) ); ?>" data-ro-len="<?php echo esc_attr( R\get( $oria_id, 'length' ) ); ?>">
+<article class="ro-card" id="ro-offer-<?php echo (int) $oria_id; ?>" data-ro-dest="<?php echo esc_attr( R\get( $oria_id, 'destination' ) ); ?>" data-ro-len="<?php echo esc_attr( R\get( $oria_id, 'length' ) ); ?>">
 	<div class="ro-card__media">
 		<?php
 		echo get_the_post_thumbnail(

@@ -39,6 +39,9 @@ const OPTION = 'oria_retreats';
 const PATH   = 'retreat-escapes';
 const QV     = 'oria_retreats_hub';
 
+/** Post meta on a journey: comma-separated offer ids an editor chose. */
+const RELATED = '_oria_retreat_ids';
+
 const DESTINATIONS = array(
 	'near-perth' => 'Near Perth',
 	'wa'         => 'Western Australia',
@@ -118,6 +121,8 @@ function bootstrap(): void {
 	add_action( 'manage_' . CPT . '_posts_custom_column', __NAMESPACE__ . '\column_content', 10, 2 );
 
 	add_shortcode( 'retreat_offers', __NAMESPACE__ . '\shortcode' );
+	add_action( 'add_meta_boxes_journey', __NAMESPACE__ . '\journey_metabox' );
+	add_action( 'save_post_journey', __NAMESPACE__ . '\save_journey', 10, 2 );
 	add_action( 'rest_api_init', __NAMESPACE__ . '\rest' );
 }
 
@@ -496,6 +501,82 @@ function module( array $ids, string $placement, string $heading = '' ): string {
 	}
 	$out .= '</div></section>';
 	return $out;
+}
+
+/**
+ * Offers an editor has tied to one journey (post meta RELATED), in the
+ * editor's order. Chosen by hand, never matched automatically: a journey
+ * with nothing chosen shows nothing.
+ *
+ * @return int[]
+ */
+function related_ids( int $post_id ): array {
+	$raw = (string) get_post_meta( $post_id, RELATED, true );
+	return array_values( array_unique( array_filter( array_map( 'intval', explode( ',', $raw ) ) ) ) );
+}
+
+/** The disclosed module for a journey, or '' when nothing chosen is live. */
+function related( int $post_id ): string {
+	$ids = related_ids( $post_id );
+	if ( ! $ids ) {
+		return '';
+	}
+	$live = active_offers( array( 'ids' => $ids, 'limit' => 3 ) );
+	return module( $live, 'journey', __( 'If you want longer than a day', 'oria' ) );
+}
+
+function journey_metabox(): void {
+	add_meta_box( 'oria-ro-related', __( 'Related retreat escapes', 'oria' ), __NAMESPACE__ . '\render_journey_metabox', 'journey', 'side', 'low' );
+}
+
+function render_journey_metabox( \WP_Post $post ): void {
+	$chosen = related_ids( $post->ID );
+	$all    = get_posts(
+		array(
+			'post_type'      => CPT,
+			'post_status'    => array( 'publish', 'draft', 'pending', 'private' ),
+			'posts_per_page' => 100,
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		)
+	);
+	wp_nonce_field( 'oria_ro_related', 'oria_ro_related_nonce' );
+	echo '<p class="description">' . esc_html__( 'Optional. Tick up to three offers that genuinely suit this journey. Only live offers are shown, under a commission disclosure; leave all unticked for none.', 'oria' ) . '</p>';
+	if ( ! $all ) {
+		echo '<p>' . esc_html__( 'No retreat offers yet.', 'oria' ) . '</p>';
+		return;
+	}
+	echo '<ul style="margin:0">';
+	foreach ( $all as $o ) {
+		$live = eligible( $o->ID );
+		printf(
+			'<li><label><input type="checkbox" name="oria_ro_related[]" value="%1$d"%2$s> %3$s <em>(%4$s)</em></label></li>',
+			(int) $o->ID,
+			checked( in_array( (int) $o->ID, $chosen, true ), true, false ),
+			esc_html( get_the_title( $o ) ),
+			esc_html( $live ? __( 'live', 'oria' ) : __( 'not live', 'oria' ) )
+		);
+	}
+	echo '</ul>';
+}
+
+function save_journey( int $id, \WP_Post $post ): void {
+	if ( wp_is_post_revision( $id ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ) {
+		return;
+	}
+	if ( ! isset( $_POST['oria_ro_related_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['oria_ro_related_nonce'] ) ), 'oria_ro_related' ) ) {
+		return;
+	}
+	if ( ! current_user_can( 'edit_post', $id ) ) {
+		return;
+	}
+	$ids = array_map( 'intval', (array) wp_unslash( $_POST['oria_ro_related'] ?? array() ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$ids = array_slice( array_values( array_filter( $ids, static fn( int $x ): bool => $x > 0 && CPT === get_post_type( $x ) ) ), 0, 3 );
+	if ( $ids ) {
+		update_post_meta( $id, RELATED, implode( ',', $ids ) );
+	} else {
+		delete_post_meta( $id, RELATED );
+	}
 }
 
 /* ------------------------------------------------------------------ route */
