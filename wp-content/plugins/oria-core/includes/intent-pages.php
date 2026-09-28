@@ -148,11 +148,11 @@ function registry(): array {
 	return $reg;
 }
 
-/** One page definition, or null. */
+/** One page definition, or null. Its frame speaks for the current city. */
 function page( string $practice, string $intent ): ?array {
 	foreach ( registry()['pages'] as $p ) {
 		if ( $p['practice'] === $practice && $p['intent'] === $intent ) {
-			return $p;
+			return localized( $p );
 		}
 	}
 	return null;
@@ -160,7 +160,42 @@ function page( string $practice, string $intent ): ?array {
 
 /** @return list<array> pages defined for a practice, live or not */
 function pages_for( string $practice ): array {
-	return array_values( array_filter( registry()['pages'], static fn( array $p ): bool => $p['practice'] === $practice ) );
+	return array_map(
+		__NAMESPACE__ . '\localized',
+		array_values( array_filter( registry()['pages'], static fn( array $p ): bool => $p['practice'] === $practice ) )
+	);
+}
+
+/**
+ * The frame for the city being viewed.
+ *
+ * Every frame was written for Perth. On another city's page (the
+ * /explore/margaret-river/spa/saunas/ view of this same page) the
+ * headings, title, description and questions name that city, and any
+ * paragraph or answer that describes Perth is left out rather than
+ * relabelled -- see Cities\relabel(). The Perth output is unchanged.
+ */
+function localized( array $page, ?array $city = null ): array {
+	if ( ! function_exists( '\Oria\Core\Cities\is_default' ) || \Oria\Core\Cities\is_default( $city ) ) {
+		return $page;
+	}
+	$f = (array) ( $page['frame'] ?? array() );
+	foreach ( array( 'h1', 'title', 'description' ) as $k ) {
+		if ( isset( $f[ $k ] ) ) {
+			$f[ $k ] = \Oria\Core\Cities\relabel( (string) $f[ $k ], $city );
+		}
+	}
+	if ( isset( $f['opener'] ) && ! \Oria\Core\Cities\keeps( (string) $f['opener'], $city ) ) {
+		$f['opener'] = '';
+	}
+	if ( isset( $f['worth_knowing'] ) ) {
+		$f['worth_knowing'] = array_values( array_filter( array_map( 'strval', (array) $f['worth_knowing'] ), static fn( string $p ): bool => \Oria\Core\Cities\keeps( $p, $city ) ) );
+	}
+	if ( isset( $f['faq'] ) ) {
+		$f['faq'] = \Oria\Core\Cities\localize_faqs( (array) $f['faq'], $city );
+	}
+	$page['frame'] = $f;
+	return $page;
 }
 
 /**
@@ -438,7 +473,7 @@ function visible_for( string $practice ): array {
 /* ------------------------------------------------------------------ seo */
 
 function title( $title ) {
-	$p = current();
+	$p = is_404() ? null : current();
 	if ( null === $p ) {
 		return $title;
 	}
@@ -447,7 +482,7 @@ function title( $title ) {
 }
 
 function description( $desc ) {
-	$p = current();
+	$p = is_404() ? null : current();
 	if ( null === $p ) {
 		return $desc;
 	}

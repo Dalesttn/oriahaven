@@ -59,9 +59,22 @@ function for_term( \WP_Term $term, ?array $only_ids = null ): array {
 		// should not be padded with filler.
 		return array();
 	}
-	return Taxonomies\AREA === $term->taxonomy
-		? area_faqs( $term, $rows )
-		: practice_faqs( $term, $rows );
+	if ( Taxonomies\AREA === $term->taxonomy ) {
+		return area_faqs( $term, $rows );
+	}
+	/*
+	 * Generated from the rows, which are already this city's: on a
+	 * Margaret River page "13 practices across 6 suburbs" is Margaret
+	 * River's count, so only the word "Perth" in the template is wrong.
+	 */
+	$faqs = practice_faqs( $term, $rows );
+	if ( function_exists( '\Oria\Core\Cities\relabel' ) ) {
+		foreach ( $faqs as $i => $qa ) {
+			$faqs[ $i ]['q'] = \Oria\Core\Cities\relabel( (string) $qa['q'] );
+			$faqs[ $i ]['a'] = \Oria\Core\Cities\relabel( (string) $qa['a'] );
+		}
+	}
+	return $faqs;
 }
 
 /**
@@ -306,18 +319,41 @@ function area_faqs( \WP_Term $term, array $rows ): array {
  * @return list<array{q: string, a: string}>
  */
 function site_faq(): array {
-	$listings = (int) ( wp_count_posts( 'listing' )->publish ?? 0 );
+	/*
+	 * One city's page (/explore/perth/, /explore/margaret-river/) or the
+	 * whole directory (/explore/). The area tree gained a city level, so
+	 * the root terms are cities now: reading them as "regions" had the
+	 * Perth page saying Perth was "grouped into 2 regions: Margaret River
+	 * and Perth", and counting Margaret River's listings as Perth's.
+	 */
+	$cities = function_exists( '\Oria\Core\Cities\current' );
+	$scoped = $cities && '' !== (string) get_query_var( \Oria\Core\Cities\QUERY_VAR );
+	$city   = $scoped ? \Oria\Core\Cities\current() : null;
+
+	$ids = get_posts( array( 'post_type' => 'listing', 'post_status' => 'publish', 'posts_per_page' => -1, 'fields' => 'ids', 'no_found_rows' => true ) );
+	if ( $city ) {
+		$ids = \Oria\Core\Cities\filter_ids( $ids, $city );
+	}
+	$listings = count( $ids );
 	if ( $listings < MIN_SAMPLE ) {
 		return array();
 	}
 
-	$categories = (int) wp_count_terms( array( 'taxonomy' => Taxonomies\PRACTICE, 'hide_empty' => true ) );
+	$cats       = wp_get_object_terms( $ids, Taxonomies\PRACTICE, array( 'fields' => 'ids' ) );
+	$categories = is_wp_error( $cats ) ? 0 : count( array_unique( array_map( 'intval', $cats ) ) );
 
-	$regions = get_terms(
+	// A city's regions are the children of its own area term; the whole
+	// directory's "parts" are the cities that hold something.
+	$parent = 0;
+	if ( $city ) {
+		$root   = get_term_by( 'slug', \Oria\Core\Cities\path( $city ), Taxonomies\AREA );
+		$parent = $root instanceof \WP_Term ? (int) $root->term_id : -1;
+	}
+	$regions = $parent < 0 ? array() : get_terms(
 		array(
 			'taxonomy'   => Taxonomies\AREA,
-			'parent'     => 0,
-			'hide_empty' => false,
+			'parent'     => $parent,
+			'hide_empty' => ! $city,
 			'orderby'    => 'name',
 		)
 	);
@@ -326,25 +362,28 @@ function site_faq(): array {
 		$names[] = decoded( $region->name );
 	}
 
+	$where   = $city ? \Oria\Core\Cities\name( $city ) : '';
+	$default = $city && \Oria\Core\Cities\is_default( $city );
+
 	$faqs = array(
 		array(
-			'q' => 'How many wellness practices are listed in Perth?',
+			'q' => $city ? sprintf( 'How many wellness practices are listed in %s?', $where ) : 'How many wellness practices does Oria Haven list?',
 			'a' => sprintf(
-				'Oria Haven lists %d practices across %d categories, from meditation and yoga to remedial massage, breathwork, sound and float, allied health and outdoor wellness. Every one is checked by hand before it goes up, and the number keeps moving as we work through the city.',
+				'Oria Haven lists %d practices%s across %d categories, from meditation and yoga to remedial massage, breathwork, sound and float, allied health and outdoor wellness. Every one is checked by hand before it goes up, and the number keeps moving as we work through %s.',
 				$listings,
-				$categories
+				$city ? ' in ' . \Oria\Core\Cities\metro( $city ) : '',
+				$categories,
+				$city ? ( $default ? 'the city' : 'the region' ) : 'each area'
 			),
 		),
 	);
 
-	if ( $names ) {
+	if ( count( $names ) > 1 ) {
 		$faqs[] = array(
-			'q' => 'Which parts of Perth does Oria Haven cover?',
-			'a' => sprintf(
-				'The whole metropolitan area, grouped into %d regions: %s. Each has its own page, and so does every suburb we list a practice in.',
-				count( $names ),
-				oxford( $names )
-			),
+			'q' => $city ? sprintf( 'Which parts of %s does Oria Haven cover?', $where ) : 'Which areas does Oria Haven cover?',
+			'a' => $default
+				? sprintf( 'The whole metropolitan area, grouped into %d regions: %s. Each has its own page, and so does every suburb we list a practice in.', count( $names ), oxford( $names ) )
+				: sprintf( 'Listings are grouped into %d %s: %s. Each has its own page, and so does every suburb we list a practice in.', count( $names ), $city ? 'areas' : 'places', oxford( $names ) ),
 		);
 	}
 

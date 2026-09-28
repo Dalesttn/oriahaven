@@ -574,6 +574,75 @@ function path( ?array $city = null ): string {
 	return (string) ( $city['slug'] ?? 'perth' );
 }
 
+/*
+ * Copy written for the default city, on another city's page.
+ *
+ * The hand-written frames and guides were researched in Perth and say so:
+ * "Saunas in Perth" is a label, but "It ranges widely in Perth -- some
+ * studios cap at six" is an observation. On /explore/margaret-river/ the
+ * first should name Margaret River and the second must not appear at all:
+ * swapping the word would state a local fact nobody checked there. So a
+ * label is relabelled and prose that names the default city is dropped.
+ * Text that names no city is general and stays as it is.
+ */
+
+/** Is this the default city (whose copy is the original)? */
+function is_default( ?array $city = null ): bool {
+	$city = $city ?? current();
+	return (string) ( $city['slug'] ?? '' ) === (string) ( default_city()['slug'] ?? '' );
+}
+
+/** Does this text name the default city (as its name or its metro)? */
+function names_default( string $text ): bool {
+	$name = name( default_city() );
+	return '' !== $name && (bool) preg_match( '/\b' . preg_quote( $name, '/' ) . '\b/u', $text );
+}
+
+/**
+ * A heading, title or question with the default city swapped for this one:
+ * "Saunas in Perth" becomes "Saunas in Margaret River". Unchanged on the
+ * default city.
+ */
+function relabel( string $text, ?array $city = null ): string {
+	$city = $city ?? current();
+	if ( '' === $text || is_default( $city ) ) {
+		return $text;
+	}
+	$def = default_city();
+	// The longer phrase first, so "the Perth metro" does not become
+	// "the Margaret River metro" when the city has its own word for it.
+	$text = str_replace( metro( $def ), metro( $city ), $text );
+	return (string) preg_replace( '/\b' . preg_quote( name( $def ), '/' ) . '\b/u', name( $city ), $text );
+}
+
+/**
+ * Whether a paragraph may be shown here: always on the default city,
+ * elsewhere only if it names no city (a claim about Perth is not a claim
+ * about anywhere else).
+ */
+function keeps( string $text, ?array $city = null ): bool {
+	return is_default( $city ) || ! names_default( $text );
+}
+
+/**
+ * A list of question-and-answer pairs made safe for this city: the
+ * question relabelled, the pair dropped when its answer is about the
+ * default city.
+ *
+ * @param list<array{q: string, a: string}> $faqs
+ * @return list<array{q: string, a: string}>
+ */
+function localize_faqs( array $faqs, ?array $city = null ): array {
+	$out = array();
+	foreach ( $faqs as $qa ) {
+		$a = (string) ( $qa['a'] ?? '' );
+		if ( keeps( $a, $city ) ) {
+			$out[] = array( 'q' => relabel( (string) ( $qa['q'] ?? '' ), $city ) ) + array( 'a' => $a ) + $qa;
+		}
+	}
+	return $out;
+}
+
 /** A regex alternation of every city slug, for rewrite rules. */
 function slug_pattern(): string {
 	$slugs = array_map( 'preg_quote', slugs() );

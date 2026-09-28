@@ -168,7 +168,7 @@ function subject_sentences( \WP_Term $term, ?\WP_Term $area, array $rows ): arra
 
 	$where = $area instanceof \WP_Term
 		? Faq\decoded( $area->name )
-		: 'Perth';
+		: ( function_exists( '\Oria\Core\Cities\name' ) ? \Oria\Core\Cities\name() : 'Perth' );
 
 	$suburbs = Faq\tally( $rows, 'suburb' );
 

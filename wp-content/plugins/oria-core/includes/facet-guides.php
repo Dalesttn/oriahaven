@@ -79,18 +79,19 @@ function intro( ?array $facet ): array {
 		return array();
 	}
 	$paras = array_values( array_filter( array_map( 'strval', (array) ( entry( $facet )['intro'] ?? array() ) ), 'strlen' ) );
-	if ( $paras ) {
-		return $paras;
-	}
-	if ( function_exists( '\Oria\Core\Seo\specialty_intros' ) ) {
+	if ( ! $paras && function_exists( '\Oria\Core\Seo\specialty_intros' ) ) {
 		$si = \Oria\Core\Seo\specialty_intros();
 		foreach ( array( (string) ( $facet['value'] ?? '' ), (string) ( $facet['slug'] ?? '' ) ) as $k ) {
 			if ( '' !== $k && ! empty( $si[ $k ] ) ) {
-				return array_values( array_map( 'strval', (array) $si[ $k ] ) );
+				$paras = array_values( array_map( 'strval', (array) $si[ $k ] ) );
+				break;
 			}
 		}
 	}
-	return array();
+	// Written in and about Perth: on another city, only what names no city.
+	return function_exists( '\Oria\Core\Cities\keeps' )
+		? array_values( array_filter( $paras, static fn( string $p ): bool => \Oria\Core\Cities\keeps( $p ) ) )
+		: $paras;
 }
 
 /**
@@ -108,7 +109,7 @@ function faqs( ?array $facet ): array {
 			$out[] = array( 'q' => (string) $qa['q'], 'a' => (string) $qa['a'] );
 		}
 	}
-	return $out;
+	return function_exists( '\Oria\Core\Cities\localize_faqs' ) ? \Oria\Core\Cities\localize_faqs( $out ) : $out;
 }
 
 /** What the title leads with ("Ice Baths & Cold Plunges"), or ''. */
@@ -130,6 +131,9 @@ function description( ?array $facet, int $count = 0 ): string {
 	}
 
 	$desc = trim( (string) ( entry( $facet )['description'] ?? '' ) );
+	if ( '' !== $desc && function_exists( '\Oria\Core\Cities\keeps' ) && ! \Oria\Core\Cities\keeps( $desc ) ) {
+		$desc = ''; // It describes Perth; the generated line names the right place.
+	}
 
 	return '' === $desc ? '' : strtr( $desc, array( '{count}' => number_format_i18n( $count ) ) );
 }

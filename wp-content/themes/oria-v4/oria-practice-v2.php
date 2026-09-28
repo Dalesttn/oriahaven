@@ -1797,11 +1797,20 @@ $oria_fg_name  = $oria_fg_on
 		$oria_intro_shown = ( $oria_area && function_exists( '\Oria\Core\LocalFacts\first_para' ) )
 			? \Oria\Core\LocalFacts\first_para( $oria_intro_html )
 			: $oria_intro_html;
+		/*
+		 * The guide was researched in Perth. On another city's page it is
+		 * still worth reading, but it is labelled as the Perth guide it is
+		 * rather than headed "in Margaret River" above Perth prices.
+		 */
+		$oria_guide_place = $oria_cname;
+		if ( function_exists( '\Oria\Core\Cities\keeps' ) && ! \Oria\Core\Cities\keeps( wp_strip_all_tags( $oria_intro_html ), $oria_city ) ) {
+			$oria_guide_place = \Oria\Core\Cities\name( \Oria\Core\Cities\default_city() );
+		}
 		?>
 		<h2 class="h3" style="margin-bottom:1rem">
 			<?php
 			/* translators: 1: category, lower case, 2: city */
-			printf( esc_html__( 'Before you go: %1$s in %2$s', 'oria' ), esc_html( strtolower( $oria_pname ) ), esc_html( $oria_cname ) );
+			printf( esc_html__( 'Before you go: %1$s in %2$s', 'oria' ), esc_html( strtolower( $oria_pname ) ), esc_html( $oria_guide_place ) );
 			?>
 		</h2>
 		<div class="prose prose--intro"><?php echo wp_kses_post( $oria_intro_shown ); ?></div>
@@ -1810,7 +1819,7 @@ $oria_fg_name  = $oria_fg_on
 				<a href="<?php echo esc_url( (string) get_term_link( $oria_term ) ); ?>">
 					<?php
 					/* translators: 1: category, lower case, 2: city */
-					printf( esc_html__( 'The full guide to %1$s in %2$s', 'oria' ), esc_html( strtolower( $oria_pname ) ), esc_html( $oria_cname ) );
+					printf( esc_html__( 'The full guide to %1$s in %2$s', 'oria' ), esc_html( strtolower( $oria_pname ) ), esc_html( $oria_guide_place ) );
 					?>
 					&rarr;
 				</a>
@@ -1971,6 +1980,13 @@ if ( $oria_facet ) {
 	$oria_sub_links = array();
 	foreach ( $oria_counts['suburbs'] as $oria_sname => $oria_rn ) {
 		$oria_s = get_term_by( 'slug', sanitize_title( $oria_sname ), 'area' );
+		// combo_counts() spans every city, like regions() above: keep this page's.
+		if ( $oria_s instanceof WP_Term && $oria_city && function_exists( '\Oria\Core\Cities\for_area' ) ) {
+			$oria_sc = \Oria\Core\Cities\for_area( $oria_s );
+			if ( is_array( $oria_sc ) && ( $oria_sc['slug'] ?? '' ) !== ( $oria_city['slug'] ?? '' ) ) {
+				continue;
+			}
+		}
 		if ( $oria_s instanceof WP_Term && 0 !== $oria_s->parent ) {
 			$oria_sub_links[] = array( \Oria\Core\PracticesIndex\area_url( $oria_term, $oria_s ), \Oria\Theme\tname( $oria_s ), (int) $oria_rn );
 		}

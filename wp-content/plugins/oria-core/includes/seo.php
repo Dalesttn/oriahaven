@@ -104,6 +104,19 @@ function bootstrap(): void {
 	 * and was never that page. Same question, same answer.
 	 */
 	add_filter( 'wpseo_opengraph_url', __NAMESPACE__ . '\seo_canonical' );
+	/*
+	 * og:title and og:description, the same gap as og:url above.
+	 *
+	 * Sixteen modules override wpseo_title / wpseo_metadesc for their own
+	 * routes; none touched Open Graph, so a share of
+	 * /explore/margaret-river/spa/saunas/ read "Spa & Recovery in Perth" --
+	 * the category's Yoast default -- under a page titled for Margaret
+	 * River. These run last and follow whatever those filters decided, but
+	 * only where one of them changed something: a page nobody overrides
+	 * keeps Yoast's own (and any hand-typed social) text.
+	 */
+	add_filter( 'wpseo_opengraph_title', __NAMESPACE__ . '\og_title', 99, 2 );
+	add_filter( 'wpseo_opengraph_desc', __NAMESPACE__ . '\og_description', 99, 2 );
 	add_filter( 'wpseo_robots', __NAMESPACE__ . '\seo_robots' );
 	/*
 	 * Decode HTML entities out of the schema graph, last.
@@ -119,6 +132,8 @@ function bootstrap(): void {
 	 * that writes a string, which is the mistake that produced this class of
 	 * bug in the first place.
 	 */
+	// The page node's name follows the title our filters chose, as og:title does.
+	add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\schema_page_name', 45, 2 );
 	add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\schema_decode_entities', 50 );
 	// After the decoder, so this has the last word on every @id.
 	add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\schema_own_ids', 60 );
@@ -857,7 +872,7 @@ function seo_description( $desc ) {
 		}
 		// Under 80 characters is a stub, over 160 is page copy. Either way
 		// the generated line is the better meta description.
-		return sprintf( 'Find %s across the Perth metro — timetables, prices and verified contact details.', strtolower( decoded( $term ) ) );
+		return sprintf( 'Find %s across %s — timetables, prices and verified contact details.', strtolower( decoded( $term ) ), city_metro() );
 	}
 	// Category and area archives, same gap as the title above.
 	$term = plain_term();
@@ -871,8 +886,9 @@ function seo_description( $desc ) {
 				decoded( $term )
 			)
 			: sprintf(
-				'Compare %s across the Perth metro — verified practices with real prices, timetables and contact details. No booking fees.',
-				strtolower( decoded( $term ) )
+				'Compare %s across %s — verified practices with real prices, timetables and contact details. No booking fees.',
+				strtolower( decoded( $term ) ),
+				city_metro()
 			);
 	}
 
@@ -1045,6 +1061,70 @@ function city_name(): string {
 	return function_exists( '\Oria\Core\Cities\name' )
 		? \Oria\Core\Cities\name()
 		: 'Perth';
+}
+
+/** "the Perth metro" / "the Margaret River region", for the same reason. */
+function city_metro(): string {
+	return function_exists( '\Oria\Core\Cities\metro' )
+		? \Oria\Core\Cities\metro()
+		: 'the Perth metro';
+}
+
+/**
+ * What a Yoast field says once our own filters have had their turn, or
+ * null when none of them changed it (so the social tag is left alone).
+ *
+ * @param string $field  'title' or 'meta_description' on the presentation.
+ * @param string $filter The matching Yoast filter.
+ */
+function overridden( string $field, string $filter, $presentation ): ?string {
+	static $busy = false;
+	if ( $busy || ! is_object( $presentation ) || ! function_exists( 'wpseo_replace_vars' ) ) {
+		return null;
+	}
+	// A social title or description typed by hand in Yoast is the editor's
+	// word and wins.
+	$own = 'title' === $field ? 'open_graph_title' : 'open_graph_description';
+	if ( isset( $presentation->model->{$own} ) && '' !== trim( (string) $presentation->model->{$own} ) ) {
+		return null;
+	}
+	$busy  = true;
+	$base  = trim( (string) wpseo_replace_vars( (string) $presentation->{$field}, $presentation->source ) );
+	$final = trim( (string) apply_filters( $filter, $base, $presentation ) );
+	$busy  = false;
+	return ( '' !== $final && $final !== $base ) ? $final : null;
+}
+
+/**
+ * The WebPage/CollectionPage node's name, where Yoast wrote its own
+ * (unfiltered) title and one of our filters has since replaced it.
+ */
+function schema_page_name( $graph, $context = null ) {
+	if ( ! is_array( $graph ) || ! is_object( $context ) || empty( $context->presentation ) ) {
+		return $graph;
+	}
+	$final = overridden( 'title', 'wpseo_title', $context->presentation );
+	if ( null === $final ) {
+		return $graph;
+	}
+	$yoast = trim( (string) wpseo_replace_vars( (string) $context->presentation->title, $context->presentation->source ) );
+	foreach ( $graph as $i => $node ) {
+		$types = (array) ( $node['@type'] ?? array() );
+		if ( array_intersect( $types, array( 'WebPage', 'CollectionPage', 'SearchResultsPage' ) ) && $yoast === trim( (string) ( $node['name'] ?? '' ) ) ) {
+			$graph[ $i ]['name'] = $final;
+		}
+	}
+	return $graph;
+}
+
+function og_title( $title, $presentation = null ) {
+	$final = overridden( 'title', 'wpseo_title', $presentation );
+	return null === $final ? $title : $final;
+}
+
+function og_description( $desc, $presentation = null ) {
+	$final = overridden( 'meta_description', 'wpseo_metadesc', $presentation );
+	return null === $final ? $desc : $final;
 }
 
 function seo_canonical( $canonical ) {

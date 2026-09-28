@@ -180,7 +180,11 @@ function resolve_facet( \WP_Term $practice, string $slug ): ?array {
 	// Same question, same answer, many times per request: facet_404(),
 	// the canonical, the switcher and every link that asks all land here.
 	static $memo = array();
-	$key = $practice->term_id . '|' . $slug;
+	// The city is part of the answer: a facet's label and frame speak for
+	// the city being viewed, so an early default-city answer must not be
+	// reused once the route's city is known.
+	$city = function_exists( '\Oria\Core\Cities\path' ) ? \Oria\Core\Cities\path() : '';
+	$key  = $city . '|' . $practice->term_id . '|' . $slug;
 	if ( array_key_exists( $key, $memo ) ) {
 		return $memo[ $key ];
 	}
@@ -1529,6 +1533,9 @@ function style_links( \WP_Term $practice, int $min = FACET_MIN ): array {
 /* ------------------------------------------------------------------ seo */
 
 function title( $title ) {
+	if ( is_404() ) {
+		return $title; // never a facet's words on a not-found page
+	}
 	if ( is_index() ) {
 		return sprintf( 'Wellness practices in Perth: every category we list | %s', get_bloginfo( 'name' ) );
 	}
@@ -1631,6 +1638,9 @@ function facet_count( \WP_Term $term, array $facet ): int {
 }
 
 function description( $desc ) {
+	if ( is_404() ) {
+		return $desc; // never a facet's words on a not-found page
+	}
 	if ( is_index() ) {
 		return 'Every wellness practice category Oria Haven lists in Perth — massage, yoga and Pilates, breathwork, meditation, recovery, naturopathy and more — with the pages inside each.';
 	}
