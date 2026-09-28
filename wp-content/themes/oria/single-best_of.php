@@ -248,7 +248,7 @@ if ( function_exists( '\Oria\Core\AreaContext\dominant' ) ) {
 							<td><?php echo esc_html( BestOf\suburb( $oria_e['listing'] ) ?: '—' ); ?></td>
 							<td><?php echo esc_html( $oria_e['best_for'] ?: $oria_e['label'] ); ?></td>
 							<td><?php echo esc_html( '' !== $oria_e['price_note'] ? $oria_e['price_note'] : ( BestOf\price_from( $oria_e['listing'] ) ?: '—' ) ); ?></td>
-							<td><?php echo esc_html( '' !== $oria_e['sessions'] ? $oria_e['sessions'] : ( BestOf\duration( $oria_e['listing'] ) ?: '—' ) ); ?></td>
+							<td><?php echo esc_html( BestOf\time_label( $oria_e ) ?: '—' ); ?></td>
 							<?php if ( BestOf\any_rebate( $oria_entries ) ) : ?>
 								<td><?php echo esc_html( BestOf\rebate_label( $oria_e ) ?: '—' ); ?></td>
 							<?php endif; ?>

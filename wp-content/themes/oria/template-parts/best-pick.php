@@ -103,8 +103,9 @@ $oria_rate = \Oria\Theme\effective_rating( $oria_id );
 		<div class="bopick__foot">
 			<span class="bopick__price">
 				<?php echo esc_html( BestOf\price_line( $oria_e ) ); ?>
-				<?php if ( BestOf\duration( $oria_id ) ) : ?>
-					<span class="bopick__time">&middot; <?php echo esc_html( BestOf\duration( $oria_id ) ); ?></span>
+				<?php $oria_time = BestOf\card_time( $oria_e ); ?>
+				<?php if ( '' !== $oria_time ) : ?>
+					<span class="bopick__time">&middot; <?php echo esc_html( $oria_time ); ?></span>
 				<?php endif; ?>
 			</span>
 			<span class="bopick__acts">

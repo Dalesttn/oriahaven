@@ -306,6 +306,51 @@ function duration( int $listing ): string {
 }
 
 /**
+ * The minutes an editor's price note states: "Infrared sauna 45 min $50"
+ * gives [45]. The note is written for this guide's service, so its time
+ * is the time of the thing being priced.
+ *
+ * @return list<int>
+ */
+function noted_minutes( array $entry ): array {
+	preg_match_all( '/\b(\d{2,3})\s*-?\s*(?:min|mins|minute|minutes)\b/i', (string) ( $entry['price_note'] ?? '' ), $m );
+	$mins = array_values( array_unique( array_filter( array_map( 'intval', $m[1] ) ) ) );
+	sort( $mins );
+	return $mins;
+}
+
+/**
+ * How long one of this pick's sessions is, for the guide's own service.
+ *
+ * The listing's duration_min is one number for the whole venue. At a spa
+ * that runs 60-minute massages and 45-minute infrared sessions, it showed
+ * "60 min" in the Best Saunas table beside "Infrared sauna 45 min $50" --
+ * the venue's figure standing in for a service it does not describe. In
+ * order: the editor's sessions line, the minutes in the editor's price
+ * note, and only then the venue's typical session.
+ */
+function time_label( array $entry ): string {
+	$sessions = trim( (string) ( $entry['sessions'] ?? '' ) );
+	if ( '' !== $sessions ) {
+		return $sessions;
+	}
+	$noted = noted_minutes( $entry );
+	if ( $noted ) {
+		/* translators: %s: minutes, e.g. "45" or "30 / 45" */
+		return sprintf( __( '%s min', 'oria' ), implode( ' / ', $noted ) );
+	}
+	return duration( (int) ( $entry['listing'] ?? 0 ) );
+}
+
+/**
+ * The time to print after the price line on a pick card, or '' when the
+ * price line already says it (no "45 min $50 · 45 min").
+ */
+function card_time( array $entry ): string {
+	return noted_minutes( $entry ) ? '' : time_label( $entry );
+}
+
+/**
  * The picks, in the editor's order, with anything unpublished dropped.
  *
  * @return list<array{listing:int, award:string, label:string, best_for:string, reason:string, highlights:list<string>, lead:bool}>
