@@ -867,7 +867,7 @@ function seo_description( $desc ) {
 		 * to the generated line rather than shipping a truncated paragraph.
 		 */
 		$len = mb_strlen( $own );
-		if ( $len >= 80 && $len <= 160 ) {
+		if ( $len >= 80 && $len <= 160 && city_keeps( $own ) ) {
 			return $own;
 		}
 		// Under 80 characters is a stub, over 160 is page copy. Either way
@@ -876,8 +876,11 @@ function seo_description( $desc ) {
 	}
 	// Category and area archives, same gap as the title above.
 	$term = plain_term();
-	if ( $term && '' === term_override( $term, 'wpseo_desc' ) ) {
-		if ( '' !== trim( (string) $term->description ) ) {
+	// A description typed in Yoast wins -- on its own city. Written about
+	// Perth, it is not Margaret River's meta: that falls to the line below.
+	$typed = $term ? term_override( $term, 'wpseo_desc' ) : '';
+	if ( $term && ( '' === $typed || ! city_keeps( $typed ) ) ) {
+		if ( '' !== trim( (string) $term->description ) && city_keeps( (string) $term->description ) ) {
 			return wp_specialchars_decode( $term->description, ENT_QUOTES );
 		}
 		return Taxonomies\AREA === $term->taxonomy
@@ -1058,9 +1061,15 @@ function unfiltered_url(): string {
  * stops claiming to be somewhere it is not.
  */
 function city_name(): string {
-	return function_exists( '\Oria\Core\Cities\name' )
-		? \Oria\Core\Cities\name()
+	// Every caller writes "... in %s", so this is the "in" phrase.
+	return function_exists( '\Oria\Core\Cities\place' )
+		? \Oria\Core\Cities\place()
 		: 'Perth';
+}
+
+/** May text written for Perth stand on this city's page? (Cities\keeps) */
+function city_keeps( string $text ): bool {
+	return ! function_exists( '\Oria\Core\Cities\keeps' ) || \Oria\Core\Cities\keeps( $text );
 }
 
 /** "the Perth metro" / "the Margaret River region", for the same reason. */

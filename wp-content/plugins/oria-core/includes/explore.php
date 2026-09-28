@@ -185,7 +185,7 @@ function title( $title ) {
 	return sprintf(
 		/* translators: 1: city name, 2: site name. */
 		__( 'Wellness in %1$s — every practice, checked by hand | %2$s', 'oria' ),
-		Cities\name( $city ),
+		Cities\place( $city ),
 		get_bloginfo( 'name' )
 	);
 }
@@ -195,7 +195,7 @@ function core_title( array $parts ): array {
 	$city = current_city_archive();
 	if ( $city ) {
 		/* translators: %s: city name. */
-		$parts['title'] = sprintf( __( 'Wellness in %s — every practice, checked by hand', 'oria' ), Cities\name( $city ) );
+		$parts['title'] = sprintf( __( 'Wellness in %s — every practice, checked by hand', 'oria' ), Cities\place( $city ) );
 	}
 
 	return $parts;

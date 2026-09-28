@@ -551,6 +551,25 @@ function name( ?array $city = null ): string {
 	return (string) ( $city['name'] ?? 'Perth' );
 }
 
+/**
+ * The place as it follows "in", "across" or "around": "Perth", "the
+ * Margaret River region". A city whose pages cover more than its town says
+ * so here (cities.json "in"), so a heading never implies every result is
+ * in the town itself. Navigation keeps the short name().
+ */
+function place( ?array $city = null ): string {
+	$city = $city ?? current();
+	$in   = trim( (string) ( $city['in'] ?? '' ) );
+	return '' !== $in ? $in : name( $city );
+}
+
+/** "Perth" as a modifier ("Perth studios"); falls back to the name. */
+function adjective( ?array $city = null ): string {
+	$city = $city ?? current();
+	$adj  = trim( (string) ( $city['adjective'] ?? '' ) );
+	return '' !== $adj ? $adj : name( $city );
+}
+
 /** "the Perth metro", for sentences that need the wider area. */
 function metro( ?array $city = null ): string {
 	$city = $city ?? current();
@@ -612,7 +631,16 @@ function relabel( string $text, ?array $city = null ): string {
 	// The longer phrase first, so "the Perth metro" does not become
 	// "the Margaret River metro" when the city has its own word for it.
 	$text = str_replace( metro( $def ), metro( $city ), $text );
-	return (string) preg_replace( '/\b' . preg_quote( name( $def ), '/' ) . '\b/u', name( $city ), $text );
+	$word = preg_quote( name( $def ), '/' );
+	// After a preposition and not followed by a noun it modifies, it is the
+	// place: "Saunas in Perth" -> "Saunas in the Margaret River region".
+	$text = (string) preg_replace_callback(
+		'/\b(in|across|around|throughout|of|near)\s+' . $word . '\b(?!\s+(?!(?:does|do|did|is|are|was|were|has|have|had|and|or|but|that|which|where|when|for|with|to|at|on|from|run|runs|offer|offers|can|will)\b)[a-z])/u',
+		static fn( array $m ): string => $m[1] . ' ' . place( $city ),
+		$text
+	);
+	// Anywhere else it modifies a noun: "Perth studios" -> "Margaret River studios".
+	return (string) preg_replace( '/\b' . $word . '\b/u', adjective( $city ), $text );
 }
 
 /**

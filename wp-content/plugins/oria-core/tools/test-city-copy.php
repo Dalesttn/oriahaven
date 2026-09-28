@@ -20,7 +20,10 @@ $ok( 'both cities exist', is_array( $perth ) && is_array( $mr ) );
 $ok( 'Perth is the default', Cities\is_default( $perth ) && ! Cities\is_default( $mr ) );
 
 // Labels.
-$ok( 'label relabelled', 'Saunas in Margaret River' === Cities\relabel( 'Saunas in Perth', $mr ) );
+$ok( 'place after "in" is the region', 'Saunas in the Margaret River region' === Cities\relabel( 'Saunas in Perth', $mr ) );
+$ok( 'modifier uses the short name', 'Margaret River yoga studios' === Cities\relabel( 'Perth yoga studios', $mr ) );
+$ok( 'from + modifier stays a modifier', 'Online yoga from Margaret River studios' === Cities\relabel( 'Online yoga from Perth studios', $mr ) );
+$ok( 'parts of the region', 'Which parts of the Margaret River region does it cover?' === Cities\relabel( 'Which parts of Perth does it cover?', $mr ) );
 $ok( 'label untouched on Perth', 'Saunas in Perth' === Cities\relabel( 'Saunas in Perth', $perth ) );
 $ok( 'metro phrase uses the city\'s own word', 'across the Margaret River region' === Cities\relabel( 'across the Perth metro', $mr ) );
 $ok( 'suburb names containing the word are whole-word only', 'Perthshire' === Cities\relabel( 'Perthshire', $mr ) );
@@ -44,7 +47,7 @@ $page = IntentPages\page( 'spa', 'saunas' );
 $ok( 'sauna frame exists', is_array( $page ) );
 if ( is_array( $page ) ) {
 	$loc = IntentPages\localized( $page, $mr );
-	$ok( 'frame h1 names Margaret River', 'Saunas in Margaret River' === $loc['frame']['h1'] );
+	$ok( 'frame h1 names the region', 'Saunas in the Margaret River region' === $loc['frame']['h1'] );
 	$ok( 'frame title names Margaret River', false !== strpos( $loc['frame']['title'], 'Margaret River' ) && false === strpos( $loc['frame']['title'], 'Perth' ) );
 	$ok( 'Perth opener withheld', '' === $loc['frame']['opener'] );
 	$ok( 'city-free paragraphs kept', count( $loc['frame']['worth_knowing'] ) === count( $page['frame']['worth_knowing'] ) );

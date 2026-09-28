@@ -46,6 +46,8 @@ if ( function_exists( '\Oria\Core\Cities\current' ) ) {
 	}
 }
 $oria_place = '' !== $oria_cname ? $oria_cname : __( 'Perth', 'oria' );
+// After "in"/"across"/"around": "the Margaret River region" (Cities\place).
+$oria_place_in = ( $oria_dircity && function_exists( '\Oria\Core\Cities\place' ) ) ? \Oria\Core\Cities\place( $oria_dircity ) : $oria_place;
 
 /*
  * The hero photograph: each city's own, chosen by the owner, with where to
@@ -400,7 +402,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 					esc_html( number_format_i18n( $oria_n ) ),
 					esc_html( number_format_i18n( count( $oria_cats ) ) ),
 					esc_html( number_format_i18n( count( $oria_sub_n ) ) ),
-					esc_html( $oria_place )
+					esc_html( $oria_place_in )
 				);
 				?>
 			</p>
@@ -410,7 +412,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 					/* translators: 1: number of places, 2: city, 3: day and month */
 					esc_html( _n( '%1$s hand-checked place across %2$s · Updated %3$s', '%1$s hand-checked places across %2$s · Updated %3$s', $oria_n, 'oria' ) ),
 					esc_html( number_format_i18n( $oria_n ) ),
-					esc_html( $oria_place ),
+					esc_html( $oria_place_in ),
 					esc_html( $oria_updated )
 				);
 				?>
@@ -643,7 +645,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 		<h2 class="h3 results__head" id="results">
 			<?php
 			/* translators: %s: city */
-			printf( esc_html__( 'Every place in %s', 'oria' ), esc_html( $oria_place ) );
+			printf( esc_html__( 'Every place in %s', 'oria' ), esc_html( $oria_place_in ) );
 			?>
 		</h2>
 		<p class="dir__count" id="dirCount" role="status" aria-live="polite"></p>
@@ -701,7 +703,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 			<button type="button" class="mapfab" data-view="map" aria-pressed="false"><?php esc_html_e( 'Map', 'oria' ); ?></button>
 			<div class="dirmap" id="catMapView" hidden>
 				<button type="button" class="dirmap__close" data-view="list" aria-pressed="false"><?php esc_html_e( 'Back to list', 'oria' ); ?></button>
-				<div class="catmap catmap--view" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of every listed practice across %s', 'oria' ), esc_attr( $oria_place ) ); ?>">
+				<div class="catmap catmap--view" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of every listed practice across %s', 'oria' ), esc_attr( $oria_place_in ) ); ?>">
 					<div class="catmap__tip" hidden></div>
 				</div>
 				<script type="application/json" data-catmap-data><?php echo wp_json_encode( $oria_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data script tag ?></script>
@@ -746,7 +748,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 			<h3 class="xc-local__title" id="xcLocalTitle">
 				<?php
 				/* translators: %s: city name */
-				printf( esc_html__( 'Around %s', 'oria' ), esc_html( $oria_place ) );
+				printf( esc_html__( 'Around %s', 'oria' ), esc_html( $oria_place_in ) );
 				?>
 			</h3>
 			<p class="xc-local__copy">
@@ -789,7 +791,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 					esc_html( number_format_i18n( $oria_n ) ),
 					esc_html( number_format_i18n( count( $oria_cats ) ) ),
 					esc_html( number_format_i18n( count( $oria_sub_n ) ) ),
-					esc_html( $oria_place )
+					esc_html( $oria_place_in )
 				);
 				?>
 			</p>
@@ -872,7 +874,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place );
 	<p class="micro floor__label"><?php esc_html_e( 'Read up', 'oria' ); ?></p>
 	<?php // Only where the page is a city: /explore/ is every city at once. ?>
 	<?php if ( $oria_dircity && $oria_readup ) : ?>
-		<h2 class="h3" style="margin-bottom:1rem"><?php printf( esc_html__( 'What is listed in %s', 'oria' ), esc_html( $oria_place ) ); ?></h2>
+		<h2 class="h3" style="margin-bottom:1rem"><?php printf( esc_html__( 'What is listed in %s', 'oria' ), esc_html( $oria_place_in ) ); ?></h2>
 		<div class="prose prose--intro" style="margin-bottom:2rem">
 			<?php foreach ( $oria_readup as $oria_para ) : ?>
 				<p><?php echo esc_html( $oria_para ); ?></p>

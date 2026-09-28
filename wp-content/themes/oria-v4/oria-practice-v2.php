@@ -177,6 +177,9 @@ if ( function_exists( '\Oria\Core\Cities\filter_ids' ) ) {
 	}
 	$oria_cname = \Oria\Core\Cities\name( $oria_city );
 }
+// After "in"/"across"/"around": "the Margaret River region". $oria_cname
+// stays the short name for navigation (breadcrumb, "Explore ...", chips).
+$oria_cin = function_exists( '\Oria\Core\Cities\place' ) ? \Oria\Core\Cities\place( $oria_city ) : $oria_cname;
 
 /*
  * The Best Of guides behind this page and their picks that are on it:
@@ -283,7 +286,7 @@ if ( $oria_facet ) {
 	$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_term );
 }
 
-$oria_h1 = $oria_facet ? (string) $oria_facet['label'] : sprintf( __( '%1$s in %2$s', 'oria' ), $oria_pname, $oria_cname );
+$oria_h1 = $oria_facet ? (string) $oria_facet['label'] : sprintf( __( '%1$s in %2$s', 'oria' ), $oria_pname, $oria_cin );
 if ( $oria_area ) {
 	// "Sleep & Recovery in Currambine" — the suburb is the whole point of
 	// the page, so it replaces Perth rather than sitting beside it.
@@ -608,13 +611,14 @@ if ( '' !== $oria_tag ) {
 	$oria_line = (string) $oria_term->description;
 } else {
 	/* translators: %s: place name (a city or a suburb) */
-	$oria_line = sprintf( __( 'Hand-checked places in %s, with prices and reviews where they are published.', 'oria' ), $oria_area ? \Oria\Theme\tname( $oria_area ) : $oria_cname );
+	$oria_line = sprintf( __( 'Hand-checked places in %s, with prices and reviews where they are published.', 'oria' ), $oria_area ? \Oria\Theme\tname( $oria_area ) : $oria_cin );
 }
 
 $oria_updated    = '' !== (string) ( $oria_answer['updated'] ?? '' ) ? (string) $oria_answer['updated'] : date_i18n( 'j F Y' );
 $oria_updated_ts = strtotime( $oria_updated );
 $oria_updated_dm = $oria_updated_ts ? date_i18n( 'j F', $oria_updated_ts ) : $oria_updated;
 $oria_place_name = $oria_area ? \Oria\Theme\tname( $oria_area ) : $oria_cname;
+$oria_place_in   = $oria_area ? \Oria\Theme\tname( $oria_area ) : $oria_cin;
 
 // Compare prompts: the Oria Note's actions, and the guide's opening.
 $oria_cmp  = function_exists( '\Oria\Core\Compare\prompt_for_term' ) && $oria_term ? \Oria\Core\Compare\prompt_for_term( $oria_term ) : null;
@@ -747,7 +751,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 					/* translators: 1: number of places, 2: city or suburb, 3: day and month */
 					esc_html( _n( '%1$s hand-checked place across %2$s · Updated %3$s', '%1$s hand-checked places across %2$s · Updated %3$s', $oria_n, 'oria' ) ),
 					esc_html( number_format_i18n( $oria_n ) ),
-					esc_html( $oria_place_name ),
+					esc_html( $oria_place_in ),
 					esc_html( $oria_updated_dm )
 				);
 				?>
@@ -1281,7 +1285,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 			<button type="button" class="mapfab" data-view="map" aria-pressed="false"><?php esc_html_e( 'Map', 'oria' ); ?></button>
 			<div class="dirmap" id="catMapView" hidden>
 				<button type="button" class="dirmap__close" data-view="list" aria-pressed="false"><?php esc_html_e( 'Back to list', 'oria' ); ?></button>
-				<div class="catmap catmap--view" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of %1$s places across %2$s', 'oria' ), esc_attr( $oria_pname ), esc_attr( $oria_cname ) ); ?>">
+				<div class="catmap catmap--view" data-catmap role="img" aria-label="<?php printf( esc_attr__( 'Map of %1$s places across %2$s', 'oria' ), esc_attr( $oria_pname ), esc_attr( $oria_cin ) ); ?>">
 					<div class="catmap__tip" hidden></div>
 				</div>
 				<script type="application/json" data-catmap-data><?php echo wp_json_encode( $oria_map ); // phpcs:ignore WordPress.Security.EscapeOutput -- JSON in a data script tag ?></script>
@@ -1407,7 +1411,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 			<h3 class="xc-local__title" id="xcLocalTitle">
 				<?php
 				/* translators: %s: city name */
-				printf( esc_html__( 'Around %s', 'oria' ), esc_html( $oria_cname ) );
+				printf( esc_html__( 'Around %s', 'oria' ), esc_html( $oria_cin ) );
 				?>
 			</h3>
 			<p class="xc-local__copy">
@@ -1568,7 +1572,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 				printf(
 					/* translators: %s: city name */
 					esc_html__( 'Say it in your own words — where, when, what to spend, how it should feel — and we’ll look through every listing in %s.', 'oria' ),
-					esc_html( $oria_cname )
+					esc_html( $oria_cin )
 				);
 				?>
 			</p>
@@ -1711,7 +1715,7 @@ $oria_fg_on    = $oria_facet && ! $oria_area && function_exists( '\Oria\Core\Fac
 $oria_fg_intro = $oria_fg_on ? \Oria\Core\FacetGuides\intro( $oria_facet ) : array();
 $oria_fg_also  = $oria_fg_on ? \Oria\Core\FacetGuides\see_also( $oria_facet, is_array( $oria_city ) ? $oria_city : null ) : array();
 $oria_fg_name  = $oria_fg_on
-	? ( '' !== \Oria\Core\FacetGuides\phrase( $oria_facet ) ? \Oria\Core\FacetGuides\phrase( $oria_facet ) . ' ' . sprintf( /* translators: %s: city */ __( 'in %s', 'oria' ), $oria_cname ) : (string) $oria_facet['label'] )
+	? ( '' !== \Oria\Core\FacetGuides\phrase( $oria_facet ) ? \Oria\Core\FacetGuides\phrase( $oria_facet ) . ' ' . sprintf( /* translators: %s: city */ __( 'in %s', 'oria' ), $oria_cin ) : (string) $oria_facet['label'] )
 	: '';
 ?>
 <!-- 6. Guide -->
@@ -1802,7 +1806,7 @@ $oria_fg_name  = $oria_fg_on
 		 * still worth reading, but it is labelled as the Perth guide it is
 		 * rather than headed "in Margaret River" above Perth prices.
 		 */
-		$oria_guide_place = $oria_cname;
+		$oria_guide_place = $oria_cin;
 		if ( function_exists( '\Oria\Core\Cities\keeps' ) && ! \Oria\Core\Cities\keeps( wp_strip_all_tags( $oria_intro_html ), $oria_city ) ) {
 			$oria_guide_place = \Oria\Core\Cities\name( \Oria\Core\Cities\default_city() );
 		}
@@ -1941,7 +1945,7 @@ if ( $oria_facet ) {
 		get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_filled, 'heading' => sprintf( __( '%s — common questions', 'oria' ), $oria_h1_shown ), 'id' => 'faq' ) );
 	}
 } elseif ( $oria_faqs ) {
-	get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_faqs, 'heading' => sprintf( __( 'Questions people ask about %1$s in %2$s', 'oria' ), strtolower( $oria_pname ), $oria_cname ), 'id' => 'faq' ) );
+	get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_faqs, 'heading' => sprintf( __( 'Questions people ask about %1$s in %2$s', 'oria' ), strtolower( $oria_pname ), $oria_cin ), 'id' => 'faq' ) );
 }
 ?>
 

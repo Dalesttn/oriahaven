@@ -362,7 +362,7 @@ function site_faq(): array {
 		$names[] = decoded( $region->name );
 	}
 
-	$where   = $city ? \Oria\Core\Cities\name( $city ) : '';
+	$where   = $city ? \Oria\Core\Cities\place( $city ) : '';
 	$default = $city && \Oria\Core\Cities\is_default( $city );
 
 	$faqs = array(
