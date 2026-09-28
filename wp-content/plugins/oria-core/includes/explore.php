@@ -368,6 +368,30 @@ function sitemap_entries(): array {
 		}
 	}
 
+	/*
+	 * Category pages in every city but the default. Perth's are in Yoast's
+	 * practice sitemap (the term link is the Perth page); Margaret River's
+	 * -- /explore/margaret-river/spa/ with thirteen listings -- were in no
+	 * sitemap at all. Only categories with something in that city (an empty
+	 * one is a 404) and not waiting for launch.
+	 */
+	if ( function_exists( '\Oria\Core\PracticesIndex\practices' ) && function_exists( '\Oria\Core\Intents\listings_in' ) ) {
+		foreach ( Cities\live() as $city ) {
+			if ( Cities\is_default( $city ) ) {
+				continue;
+			}
+			foreach ( \Oria\Core\PracticesIndex\practices() as $term ) {
+				if ( function_exists( '\Oria\Core\Sources\is_pending' ) && \Oria\Core\Sources\is_pending( $term ) ) {
+					continue;
+				}
+				$ids = Cities\filter_ids( \Oria\Core\Intents\listings_in( $term ), $city );
+				if ( $ids ) {
+					$out[] = array( 'loc' => \Oria\Core\PracticesIndex\category_url( $term, $city ), 'ids' => $ids );
+				}
+			}
+		}
+	}
+
 	return $out;
 }
 
@@ -400,8 +424,8 @@ function dated_entries(): array {
 	$all  = get_posts( array( 'post_type' => PostTypes\LISTING, 'post_status' => 'publish', 'numberposts' => -1, 'fields' => 'ids' ) );
 	$memo = array();
 	foreach ( sitemap_entries() as $e ) {
-		$ids = $all;
-		foreach ( Cities\all() as $city ) {
+		$ids = $e['ids'] ?? $all;
+		foreach ( isset( $e['ids'] ) ? array() : Cities\all() as $city ) {
 			if ( '' !== (string) ( $city['slug'] ?? '' ) && base_url( $city ) === $e['loc'] ) {
 				$ids = Cities\filter_ids( $all, $city );
 				break;

@@ -259,6 +259,15 @@ function facet_target( string $path ): string {
 	if ( count( $seg ) < 2 ) {
 		return '';
 	}
+	/*
+	 * This guesses for the OLD address shapes (/practices/..., /perth/...).
+	 * /explore/ is the current one: a 404 there is a genuinely unknown city,
+	 * category or facet, and guessing turned /explore/sydney/yoga/ into a
+	 * 301 to /explore/perth/yoga/yoga/ -- a silent fallback into Perth.
+	 */
+	if ( defined( '\Oria\Core\Explore\PATH' ) && \Oria\Core\Explore\PATH === $seg[0] ) {
+		return '';
+	}
 
 	$spec = specialty_for( (string) end( $seg ) );
 	if ( '' === $spec ) {

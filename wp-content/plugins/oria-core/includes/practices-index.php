@@ -328,6 +328,49 @@ function facet_ids( \WP_Term $practice, array $facet ): array {
 }
 
 /**
+ * How many listings a facet holds in one city -- the number its page shows,
+ * and so the number the FACET_MIN floor and the sitemap must use.
+ *
+ * facet_ids() is the whole corpus. Counting that let
+ * /explore/margaret-river/yoga/ashtanga/ (one listing) clear a floor of
+ * three on Perth's studios and ask to be indexed, while the sitemap --
+ * walking Perth only -- left it out: the page and the sitemap disagreed.
+ */
+function facet_n( \WP_Term $practice, array $facet, ?array $city ): int {
+	$ids = facet_ids( $practice, $facet );
+	if ( $city && function_exists( '\Oria\Core\Cities\filter_ids' ) ) {
+		$ids = \Oria\Core\Cities\filter_ids( $ids, $city );
+	}
+	return count( $ids );
+}
+
+/**
+ * A URL built for the city being viewed, moved to another city.
+ *
+ * A modality's home comes from get_term_link(), which answers for the
+ * current request's city. On a Margaret River page that is Margaret River,
+ * so the page is rightly self-canonical; in the sitemap walk it is always
+ * Perth, and /explore/margaret-river/spa/cold-plunge/ never matched itself
+ * and never got listed. Only a URL under the current city's base is moved.
+ */
+function in_city( string $url, ?array $city ): string {
+	if ( ! $city || ! function_exists( '\Oria\Core\Explore\base_url' ) ) {
+		return $url;
+	}
+	$here = \Oria\Core\Explore\base_url();
+	$there = \Oria\Core\Explore\base_url( $city );
+	return ( $here !== $there && str_starts_with( $url, $here ) ) ? $there . substr( $url, strlen( $here ) ) : $url;
+}
+
+/** The city an area facet names, when the area is a city itself; else null. */
+function is_city_facet( array $facet ): ?array {
+	if ( 'area' !== ( $facet['key'] ?? '' ) || ! function_exists( '\Oria\Core\Cities\get' ) ) {
+		return null;
+	}
+	return \Oria\Core\Cities\get( (string) ( $facet['value'] ?? '' ) );
+}
+
+/**
  * Keep the facet URL space tidy: an unresolvable slug is a 404, not a
  * silent fall-through to the category, and a resolvable-but-non-canonical
  * spelling (reformer-pilates for reformer, vinyasa-yoga for vinyasa) is a
@@ -339,6 +382,22 @@ function facet_404(): void {
 	}
 	$asked = sanitize_title( (string) get_query_var( FACET_VAR ) );
 	if ( '' === $asked ) {
+		/*
+		 * /explore/margaret-river/longevity/ answered 200 with "0 hand-checked
+		 * places" under a confident heading, and was indexed. A category is
+		 * a page in a city only if the city has something in it -- the same
+		 * zero rule facets already follow below.
+		 */
+		$term = get_queried_object();
+		if ( $term instanceof \WP_Term && function_exists( '\Oria\Core\Cities\filter_ids' )
+			&& '' !== (string) get_query_var( \Oria\Core\Cities\QUERY_VAR )
+			&& function_exists( '\Oria\Core\Intents\listings_in' )
+			&& ! \Oria\Core\Cities\filter_ids( \Oria\Core\Intents\listings_in( $term ), \Oria\Core\Cities\current() ) ) {
+			global $wp_query;
+			$wp_query->set_404();
+			status_header( 404 );
+			nocache_headers();
+		}
 		return;
 	}
 	$f = facet();
@@ -353,6 +412,22 @@ function facet_404(): void {
 		$term = get_queried_object();
 		if ( $term instanceof \WP_Term ) {
 			wp_safe_redirect( category_url( $term ) . $f['slug'] . '/', 301 );
+			exit;
+		}
+	}
+
+	/*
+	 * /explore/perth/yoga/perth/ is /explore/perth/yoga/: once the area tree
+	 * gained a city level, "perth" became an area term and so an area facet,
+	 * and sixteen of these were indexed and self-canonical beside the
+	 * category pages they duplicate. A city named as a facet goes to that
+	 * city's category page.
+	 */
+	$city_facet = is_city_facet( $f );
+	if ( null !== $city_facet ) {
+		$term = get_queried_object();
+		if ( $term instanceof \WP_Term ) {
+			wp_safe_redirect( category_url( $term, $city_facet ), 301 );
 			exit;
 		}
 	}
@@ -809,7 +884,8 @@ function robots( $robots ) {
 		 * canonical test below still applies). The facet sitemap reads the
 		 * same setting, so the two agree.
 		 */
-		$n        = count( facet_ids( $term, $f ) );
+		// The floor counts what this page shows: its own city's listings.
+		$n        = facet_n( $term, $f, facet_city( $f ) ?? ( function_exists( '\Oria\Core\Cities\current' ) ? \Oria\Core\Cities\current() : null ) );
 		$override = function_exists( '\Oria\Core\FacetIndex\state' ) ? \Oria\Core\FacetIndex\state( category_url( $term ) . $f['slug'] . '/' ) : '';
 		if ( 'noindex' === $override || $n < 1 || ( $n < FACET_MIN && 'index' !== $override ) ) {
 			return 'noindex, follow';
@@ -1228,7 +1304,13 @@ function sitemap_entries(): array {
 	$out       = array();
 	$inventory = array();
 
+	$cities = function_exists( '\Oria\Core\Cities\live' ) ? \Oria\Core\Cities\live() : array( null );
+
 	foreach ( practices() as $practice ) {
+		// A category waiting for launch is noindex; so is everything in it.
+		if ( function_exists( '\Oria\Core\Sources\is_pending' ) && \Oria\Core\Sources\is_pending( $practice ) ) {
+			continue;
+		}
 		$ids = function_exists( '\Oria\Core\Intents\listings_in' )
 			? \Oria\Core\Intents\listings_in( $practice )
 			: array();
@@ -1272,14 +1354,25 @@ function sitemap_entries(): array {
 			}
 			$seen[ $f['slug'] ] = true;
 
-			$n = count( facet_ids( $practice, $f ) );
+			if ( null !== is_city_facet( $f ) ) {
+				continue; // the category page itself; facet_404() 301s it there
+			}
+
+			/*
+			 * An area facet answers under its own city. Anything else can be a
+			 * page in every city -- /explore/margaret-river/spa/cold-plunge/
+			 * holds five listings of its own and had 280 impressions, yet the
+			 * walk only ever built Perth's -- so each city is tried, and each
+			 * is counted within itself.
+			 */
+			$fcity = facet_city( $f );
+			foreach ( $fcity ? array( $fcity ) : $cities as $city ) {
+			$n = facet_n( $practice, $f, $city );
 			if ( $n < 1 ) {
 				continue;
 			}
-			// An area facet answers under its own city, not the default one.
-			$fcity = facet_city( $f );
-			$loc   = facet_canonical_url( $practice, $f, $fcity );
-			if ( $loc !== category_url( $practice, $fcity ) . $f['slug'] . '/' ) {
+			$loc = in_city( facet_canonical_url( $practice, $f, $city ), $city );
+			if ( $loc !== category_url( $practice, $city ) . $f['slug'] . '/' ) {
 				continue; // a non-owner copy; the owner's entry covers it
 			}
 			// Every facet home, floor or not, for Listings > Facet pages.
@@ -1298,14 +1391,15 @@ function sitemap_entries(): array {
 			// removed, or the page's own words (facet-guides.json) -- never
 			// the moment the sitemap was built.
 			$shown = facet_ids( $practice, $f );
-			if ( function_exists( '\Oria\Core\Cities\filter_ids' ) && $fcity ) {
-				$shown = \Oria\Core\Cities\filter_ids( $shown, $fcity );
+			if ( function_exists( '\Oria\Core\Cities\filter_ids' ) && $city ) {
+				$shown = \Oria\Core\Cities\filter_ids( $shown, $city );
 			}
 			$words = ( function_exists( '\Oria\Core\FacetGuides\entry' ) && \Oria\Core\FacetGuides\entry( $f ) ) ? array( ORIA_CORE_DIR . 'data/facet-guides.json' ) : array();
 			$out[] = array(
 				'loc' => $loc,
 				'mod' => function_exists( '\Oria\Core\Lastmod\for_url' ) ? \Oria\Core\Lastmod\for_url( $loc, $shown, $words ) : gmdate( 'c' ),
 			);
+			}
 		}
 	}
 
