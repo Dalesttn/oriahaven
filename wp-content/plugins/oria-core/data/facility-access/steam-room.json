@@ -1,0 +1,1276 @@
+{
+  "facility": "steam-room",
+  "service_term": "steam-room",
+  "checked": "2026-09-28",
+  "batch": "2026-09-28-steam-rooms",
+  "venues": [
+    {
+      "slug": "crown-spa-perth",
+      "website": "https://www.crownhotels.com.au/perth/crown-spa",
+      "row": {
+        "status": "confirmed",
+        "setting": "gender_separated",
+        "casual": "no",
+        "condition": "With a spa treatment of 60 minutes or longer (not salon services)",
+        "booking": "recommended",
+        "includes": [
+          "Rain shower",
+          "Vitality pool"
+        ],
+        "min_age": 16,
+        "swimwear": "Swimwear (or provided robes/towels) to be worn when moving around the shared Aqua Retreat areas",
+        "towels": "Included",
+        "essentials": [
+          "Lockers: Lockers provided for valuables",
+          "Parking: Complimentary 4-hour valet parking with treatments of 1 hour or more (excludes in-house hotel guests)"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.crownhotels.com.au/perth/crown-spa",
+        "rules_url": "https://www.crownhotels.com.au/perth/crown-spa/spa-etiquette",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Aqua Retreat access",
+            "kind": "treatment_bundle",
+            "price": null,
+            "basis": "",
+            "people": 1,
+            "duration": null,
+            "conditions": "Treatment priced separately",
+            "main": true
+          }
+        ],
+        "sources": [
+          "https://www.crownhotels.com.au/perth/crown-spa/wellness-experiences/aqua-retreat",
+          "https://www.crownhotels.com.au/perth/crown-spa",
+          "https://www.crownhotels.com.au/perth/crown-spa/spa-etiquette"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Aqua Retreat has a steam room, rain shower and vitality pool and is complimentary for guests having treatments of an hour or longer. FAQ: Aqua Retreats have designated male and female areas shared with other guests; under-16s not permitted; not available to salon bookings; arrive 60 minutes early to use it before treatment; robes and slippers provided. Repeats male/female areas, 16+ rule, swimwear or provided robes/towels, lockers, advance booking recommended with 24-hour cancellation policy."
+      }
+    },
+    {
+      "slug": "ember-bath-house",
+      "website": "https://www.emberbathhouse.com",
+      "row": {
+        "status": "confirmed",
+        "setting": "shared",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Hot mineral bath",
+          "Ice bath",
+          "Sauna",
+          "Towel",
+          "Robe",
+          "Tea"
+        ],
+        "min_age": 18,
+        "swimwear": "Required",
+        "towels": "Included",
+        "essentials": [],
+        "quiet": "Bath House Silent Session ($89); times are in their booking system",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.fresha.com/book-now/ember-bathhouse-dwxbw7ni/services?lid=996221&pId=943892",
+        "rules_url": "https://www.emberbathhouse.com/bath-house",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Bath House Session",
+            "kind": "bathhouse_session",
+            "price": 89,
+            "basis": "per person",
+            "people": 1,
+            "duration": 90,
+            "conditions": "18+; swimwear required; all-gender",
+            "main": true
+          },
+          {
+            "product": "Bath House Silent Session",
+            "kind": "bathhouse_session",
+            "price": 89,
+            "basis": "per person",
+            "people": 1,
+            "duration": 90,
+            "conditions": "Silent session; 18+; swimwear required",
+            "main": false
+          },
+          {
+            "product": "Bath House for Two",
+            "kind": "couple_or_group",
+            "price": 178,
+            "basis": "per two people",
+            "people": 2,
+            "duration": 90,
+            "conditions": "18+; swimwear required",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.emberbathhouse.com/bath-house"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "90-minute access to hot mineral bath, ice bath, sauna and steam room with towel, robe and tea; all-gender, swimwear required, 18+; session $89, silent session $89, for two $178, groups of 6+ by contact."
+      }
+    },
+    {
+      "slug": "merse-wellness-osborne-park",
+      "website": "https://www.mersewellness.com.au/osborne-park/",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "recommended",
+        "includes": [
+          "Hot magnesium pool",
+          "Infrared sauna",
+          "Hot rock sauna",
+          "Ice bath and cold plunge",
+          "Ice fountain",
+          "Monsoon showers",
+          "Herbal tea",
+          "Infused cold towels"
+        ],
+        "min_age": 16,
+        "swimwear": "Swimwear recommended (chain-wide FAQ)",
+        "towels": "Bring your own, or hire ($4.95; chain-wide policy)",
+        "essentials": [
+          "16-17 year olds with an adult only",
+          "Parking: on site"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://mersewellnesswa.zenoti.com/webstoreNew/services/",
+        "rules_url": "https://www.mersewellness.com.au/osborne-park/",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Bathhouse Immerse Yourself | Single Session",
+            "kind": "bathhouse_session",
+            "price": 59.95,
+            "basis": "per person",
+            "people": 1,
+            "duration": 60,
+            "conditions": "Paid at check-in; 16-17 must be with an adult",
+            "main": true
+          }
+        ],
+        "sources": [
+          "https://www.mersewellness.com.au/osborne-park/",
+          "https://mersewellnesswa.zenoti.com/webstoreNew/services/",
+          "https://www.mersewellness.com.au/osborne-park-offers/",
+          "https://www.mersewellness.com.au/bathhouse/",
+          "https://www.mersewellness.com.au/osborne-park-memberships/"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Osborne Park bathhouse lists magnesium spas, cold plunge, hot rock and infrared saunas, steam room and monsoon showers; FAQ says booking recommended, 18+ for memberships, 16-17 casually with an adult, onsite parking. With Osborne Park selected, the Bathhouse 'Immerse Yourself' single session is 60 minutes at $59.95 and lists the steam room among inclusions; banner describes a 7 Day Bathhouse Pass priced the same as a single session. Osborne Park package deals: Detox Me $74.95, Rejuvenate Me $89.95, Restore Me $99.95, each including the Bathhouse plus other services. Chain-wide bathhouse FAQ: sessions typically 60-90 minutes; wear swimwear and bring a towel or hire one for $4.95. Revive Me and Restore Me memberships give unlimited bathhouse access including steam; prices not in page text."
+      }
+    },
+    {
+      "slug": "reclab-wembley",
+      "website": "https://www.reclab.com.au",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "required",
+        "includes": [
+          "5C cold plunge",
+          "10C cold plunge",
+          "38C hot magnesium plunge pool",
+          "Two traditional saunas (90C and 98C)"
+        ],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.reclab.com.au/memberships/",
+        "rules_url": "https://www.reclab.com.au/memberships/",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Casual Contrast Session",
+            "kind": "casual_visit",
+            "price": 39.5,
+            "basis": "per person",
+            "people": 1,
+            "duration": 60,
+            "conditions": "",
+            "main": true
+          },
+          {
+            "product": "Morning Contrast Session",
+            "kind": "casual_visit",
+            "price": 19.5,
+            "basis": "per person",
+            "people": 1,
+            "duration": 60,
+            "conditions": "7-9am Mon-Fri; description says $19, booking slots show A$19.50",
+            "main": false
+          },
+          {
+            "product": "5 Pack - Contrast Sessions",
+            "kind": "casual_visit",
+            "price": 179,
+            "basis": "5 sessions",
+            "people": 1,
+            "duration": 60,
+            "conditions": "12-month expiry; not pausable/transferable/refundable",
+            "main": false
+          },
+          {
+            "product": "10 Pack - Contrast Sessions",
+            "kind": "casual_visit",
+            "price": 349,
+            "basis": "10 sessions",
+            "people": 1,
+            "duration": 60,
+            "conditions": "12-month expiry; not pausable/transferable/refundable",
+            "main": false
+          },
+          {
+            "product": "Super Human Day Pass",
+            "kind": "treatment_bundle",
+            "price": 99,
+            "basis": "per person, valid one day",
+            "people": 1,
+            "duration": 60,
+            "conditions": "Includes 1 x 60-min contrast, 20-min red light, 30-min compression boots",
+            "main": false
+          },
+          {
+            "product": "The Enthusiast",
+            "kind": "membership",
+            "price": 49,
+            "basis": "per week",
+            "people": 1,
+            "duration": 60,
+            "conditions": "3 x 60-min sessions per week; 2-month minimum; membership waitlist",
+            "main": false
+          },
+          {
+            "product": "The True Believer",
+            "kind": "membership",
+            "price": 79,
+            "basis": "per week",
+            "people": 1,
+            "duration": 60,
+            "conditions": "Unlimited sessions + compression boots; 2-month minimum",
+            "main": false
+          },
+          {
+            "product": "7 Day Pass",
+            "kind": "intro_offer",
+            "price": 99,
+            "basis": "7 days unlimited",
+            "people": 1,
+            "duration": null,
+            "conditions": "New members only",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.reclab.com.au/memberships/",
+          "https://www.reclab.com.au"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Casual 60-min contrast $39.50, 5-pack $179, 10-pack $349, day pass $99, memberships $49 and $79 per week, 7-day new-member pass $99; all include hot/cold plunge, sauna and steam room; embedded booking calendar for Reclab Wembley shows timed 60-min slots. Reclab is in Wembley and its facility includes a steam room."
+      }
+    },
+    {
+      "slug": "recwell-wangara",
+      "website": "https://www.recwell.com.au",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "required",
+        "includes": [
+          "Hot pool",
+          "Cold pool",
+          "Campfire sauna"
+        ],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [
+          "Parking: On-site parking (membership page)"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://momence.com/u/recwell-KNxfqu",
+        "rules_url": "https://www.recwell.com.au/contrast-therapy-memberships",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Contrast Therapy",
+            "kind": "casual_visit",
+            "price": 39,
+            "basis": "per person",
+            "people": 1,
+            "duration": 60,
+            "conditions": "Under-14s not permitted in cold pool",
+            "main": true
+          },
+          {
+            "product": "Early Bird Contrast Therapy",
+            "kind": "casual_visit",
+            "price": 29,
+            "basis": "per person",
+            "people": 1,
+            "duration": 60,
+            "conditions": "First hour of the day; must finish by 7:00am",
+            "main": false
+          },
+          {
+            "product": "Essential",
+            "kind": "membership",
+            "price": 49,
+            "basis": "per week",
+            "people": 1,
+            "duration": null,
+            "conditions": "2 contrast sessions per week; no lock-in",
+            "main": false
+          },
+          {
+            "product": "Lifestyle",
+            "kind": "membership",
+            "price": 69,
+            "basis": "per week",
+            "people": 1,
+            "duration": null,
+            "conditions": "Unlimited contrast + compression boots; no lock-in",
+            "main": false
+          },
+          {
+            "product": "The Ultimate",
+            "kind": "membership",
+            "price": 79,
+            "basis": "per week",
+            "people": 1,
+            "duration": null,
+            "conditions": "Unlimited contrast, compression boots, Reformer Pilates and yoga",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.recwell.com.au",
+          "https://www.recwell.com.au/contrast-therapy-memberships",
+          "https://momence.com/u/recwell-KNxfqu"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Wangara venue with hot and cold pools, steam room and campfire sauna; advertises 2 weeks unlimited for $99 and memberships from $49 per week. Essential $49/wk (2 sessions), Lifestyle $69/wk, Ultimate $79/wk; each includes pools, steam room and sauna; booking via Momence; on-site parking. Venue's booking page lists 60-min Contrast Therapy at A$39 and Early Bird at A$29, both including the steam room; under-14s barred from cold pool."
+      }
+    },
+    {
+      "slug": "revive-skin-emporium-mount-hawthorn",
+      "website": "https://reviveskinemporium.com.au",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://reviveskinemporium.com.au/products/steam-room",
+        "rules_url": "https://reviveskinemporium.com.au/products/steam-room",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Steam Room for ONE",
+            "kind": "steam_session",
+            "price": 45,
+            "basis": "per person",
+            "people": 1,
+            "duration": 30,
+            "conditions": "",
+            "main": true
+          },
+          {
+            "product": "Steam Room for TWO",
+            "kind": "couple_or_group",
+            "price": 70,
+            "basis": "per two people",
+            "people": 2,
+            "duration": 30,
+            "conditions": "",
+            "main": false
+          },
+          {
+            "product": "Spa & Steam Combination",
+            "kind": "treatment_bundle",
+            "price": 105,
+            "basis": "per person",
+            "people": 1,
+            "duration": 60,
+            "conditions": "",
+            "main": false
+          },
+          {
+            "product": "Spa & Steam Combination (couple)",
+            "kind": "couple_or_group",
+            "price": 190,
+            "basis": "per couple",
+            "people": 2,
+            "duration": 60,
+            "conditions": "",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://reviveskinemporium.com.au/products/steam-room",
+          "https://reviveskinemporium.com.au/products/spa-steam-combination",
+          "https://reviveskinemporium.com.au",
+          "https://www.fresha.com/en-GB/a/revive-skin-emporium-mount-hawthorn-416-418-oxford-street-bivapdrb/all-offer"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Steam Room product: for ONE $45 or for TWO $70 (store variant data), allow 30 minutes; can be standalone or before other treatments; links to Fresha to book. Spa & Steam Combination: $105 for one, $190 for a couple, 1 hour. Facilities include private treatment rooms for singles and couples, a hydrotherapy spa and a steam room. Linked booking page's 'Steam & Spa' category showed only Hydrotherapy Spa ($65+) and Spa for two ($120); no steam-room service visible."
+      }
+    },
+    {
+      "slug": "beatty-park-aqua",
+      "website": "https://www.beattypark.com.au",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Spa",
+          "Sauna",
+          "Indoor and outdoor pools"
+        ],
+        "min_age": 16,
+        "swimwear": "",
+        "towels": "Bring your own (they suggest sitting on one)",
+        "essentials": [
+          "Showers: Shower before and after use required"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.beattypark.com.au/aquatics/sauna-steam-room.aspx",
+        "rules_url": "https://www.beattypark.com.au/aquatics/sauna-steam-room.aspx",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Spa, Sauna + Steamroom - Adult (16+)",
+            "kind": "casual_visit",
+            "price": 18.5,
+            "basis": "per adult, includes pool access",
+            "people": 1,
+            "duration": null,
+            "conditions": "16+",
+            "main": true
+          },
+          {
+            "product": "Spa, Sauna + Steamroom - Student (16+)",
+            "kind": "concession",
+            "price": 15,
+            "basis": "per student",
+            "people": 1,
+            "duration": null,
+            "conditions": "16+",
+            "main": false
+          },
+          {
+            "product": "Spa, Sauna + Steamroom - Pensioner/Senior/Concession",
+            "kind": "concession",
+            "price": 11,
+            "basis": "per person",
+            "people": 1,
+            "duration": null,
+            "conditions": "",
+            "main": false
+          },
+          {
+            "product": "Spa/Sauna/Steamroom 10 entries (adult)",
+            "kind": "casual_visit",
+            "price": 166.5,
+            "basis": "10 entries",
+            "people": 1,
+            "duration": null,
+            "conditions": "3-year expiry",
+            "main": false
+          },
+          {
+            "product": "Spa/Sauna/Steamroom 20 entries (adult)",
+            "kind": "casual_visit",
+            "price": 314.5,
+            "basis": "20 entries",
+            "people": 1,
+            "duration": null,
+            "conditions": "3-year expiry",
+            "main": false
+          },
+          {
+            "product": "Full and aquatic memberships",
+            "kind": "membership",
+            "price": null,
+            "basis": "not checked",
+            "people": 1,
+            "duration": null,
+            "conditions": "Spa/sauna/steam included; add-on available for Swim Only members",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.beattypark.com.au/aquatics/sauna-steam-room.aspx",
+          "https://www.beattypark.com.au/visit/entry-fees.aspx"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Spa, sauna and steam area is 16+ only; casual adult $18.50, student $15, concession $11; included in full and aquatic memberships; shower before and after; sit on a towel. 'Spa, Sauna + Steamroom (includes pool access)' adult 16+ $18.50, student $15, concession $11; 10-entry $166.50, 20-entry $314.50."
+      }
+    },
+    {
+      "slug": "aqualife-east-victoria-park",
+      "website": "https://www.victoriaparkleisure.wa.gov.au/aqualife",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Indoor and outdoor lap pools",
+          "Hydrotherapy pool",
+          "Spa"
+        ],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [
+          "Age restrictions apply to the steam room (age not published)"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.victoriaparkleisure.wa.gov.au/main/visit/fees.aspx",
+        "rules_url": "https://www.victoriaparkleisure.wa.gov.au/main/visit/fees.aspx",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Adult swim entry (Pools, steam room and spa)",
+            "kind": "casual_visit",
+            "price": 8.2,
+            "basis": "per adult",
+            "people": 1,
+            "duration": null,
+            "conditions": "Age restrictions apply to steam room and spa (not specified)",
+            "main": true
+          },
+          {
+            "product": "Concession swim entry",
+            "kind": "concession",
+            "price": 7,
+            "basis": "per person with approved card",
+            "people": 1,
+            "duration": null,
+            "conditions": "Age restrictions apply to steam room and spa",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.victoriaparkleisure.wa.gov.au/main/aquatics/pools-and-aquatic-facilities.aspx",
+          "https://www.victoriaparkleisure.wa.gov.au/main/visit/fees.aspx"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Aqualife has lap pools, hydrotherapy pool, leisure pool, steam room and spa; suggests a spa and steam room visit after a swim. Aqualife fee table titled 'Pools, steam room* and spa*': adult swim $8.20, concession $7; note that age restrictions apply."
+      }
+    },
+    {
+      "slug": "cockburn-arc",
+      "website": "https://www.cockburnarc.com.au",
+      "row": {
+        "status": "conflicting",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Pools",
+          "Spa (currently closed)",
+          "Sauna",
+          "Warm water wellness pool"
+        ],
+        "min_age": 16,
+        "swimwear": "Suitable clean swimwear",
+        "towels": "Bring your own",
+        "essentials": [
+          "Lockers: 3-hour locker rental $2.45",
+          "Showers: Shower before entering spa/sauna/steam"
+        ],
+        "quiet": "",
+        "accessibility": "Warm water pool has wheelchair access and a hoist (bring own sling) - https://www.cockburnarc.com.au/swim/pools-aquatics",
+        "accessibility_url": "",
+        "book_url": "https://www.cockburnarc.com.au/Visit/Entry-Fees",
+        "rules_url": "https://www.cockburnarc.com.au/visit/conditions-of-entry",
+        "notice": "Spa closed for maintenance until about January 2027; the notice does not say whether the steam room is open. Check before you go.",
+        "notice_until": "2027-01-31",
+        "offers": [
+          {
+            "product": "Wellness and programs - Adult",
+            "kind": "casual_visit",
+            "price": 15.9,
+            "basis": "per adult",
+            "people": 1,
+            "duration": null,
+            "conditions": "16+; includes swim entry and spa, sauna, steam and wellness pool",
+            "main": true
+          },
+          {
+            "product": "Wellness upgrade (already paid pool entry)",
+            "kind": "casual_visit",
+            "price": 7.65,
+            "basis": "per adult",
+            "people": 1,
+            "duration": null,
+            "conditions": "16+",
+            "main": false
+          },
+          {
+            "product": "Centre Day Pass",
+            "kind": "casual_visit",
+            "price": 24.5,
+            "basis": "per day",
+            "people": 1,
+            "duration": null,
+            "conditions": "16+; gym, stadium, group fitness, pools, spa, sauna, steam",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.cockburnarc.com.au/Visit/Entry-Fees",
+          "https://www.cockburnarc.com.au/news-and-events/news/spa-closure",
+          "https://www.cockburnarc.com.au/swim/pools-aquatics",
+          "https://www.cockburnarc.com.au/visit/conditions-of-entry"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Adult wellness entry (16+) $15.90 includes swim and spa, sauna, steam and wellness pool; upgrade $7.65; site alert says spa currently unavailable. Spa and spa showers closed for extended maintenance, expected back in January 2027; warm water pool and sauna stay open. Spa, sauna and steam facilities sit next to the warm water pool; steam room heated to 40 degrees. Under-16s not permitted in spa, sauna or steam room; shower first; no scented oils in sauna or steam room."
+      },
+      "create": {
+        "title": "Cockburn ARC",
+        "suburb": "Cockburn Central",
+        "region": "freo",
+        "suburb_term": "cockburn-central",
+        "practice": "fitness",
+        "kind": "place",
+        "excerpt": "A public leisure centre with pools and a steam room in its wellness area. Entry prices and rules are set by the centre; see the steam room details below.",
+        "join_url": "https://www.cockburnarc.com.au/Visit/Entry-Fees",
+        "evidence": [
+          {
+            "field": "steam_room",
+            "url": "https://www.cockburnarc.com.au/Visit/Entry-Fees",
+            "at": "2026-09-28",
+            "excerpt": "Adult wellness entry (16+) $15.90 includes swim and spa, sauna, steam and wellness pool; upgrade $7.65; site alert says spa currently unavailable."
+          },
+          {
+            "field": "steam_room",
+            "url": "https://www.cockburnarc.com.au/news-and-events/news/spa-closure",
+            "at": "2026-09-28",
+            "excerpt": "Spa and spa showers closed for extended maintenance, expected back in January 2027; warm water pool and sauna stay open."
+          },
+          {
+            "field": "steam_room",
+            "url": "https://www.cockburnarc.com.au/swim/pools-aquatics",
+            "at": "2026-09-28",
+            "excerpt": "Spa, sauna and steam facilities sit next to the warm water pool; steam room heated to 40 degrees."
+          },
+          {
+            "field": "steam_room",
+            "url": "https://www.cockburnarc.com.au/visit/conditions-of-entry",
+            "at": "2026-09-28",
+            "excerpt": "Under-16s not permitted in spa, sauna or steam room; shower first; no scented oils in sauna or steam room."
+          }
+        ]
+      }
+    },
+    {
+      "slug": "craigie-leisure-centre",
+      "website": "https://craigieleisurecentre.com.au",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Spa",
+          "Sauna"
+        ],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://craigieleisurecentre.com.au/visit/prices",
+        "rules_url": "https://craigieleisurecentre.com.au/conditions-of-entry",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Spa lounge single entry",
+            "kind": "casual_visit",
+            "price": 14.5,
+            "basis": "per adult",
+            "people": 1,
+            "duration": null,
+            "conditions": "Whether swim entry is included not stated",
+            "main": true
+          },
+          {
+            "product": "Adult spa (spa, sauna and steam room) 10-visit pass",
+            "kind": "casual_visit",
+            "price": 130.5,
+            "basis": "10 visits",
+            "people": 1,
+            "duration": null,
+            "conditions": "",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://craigieleisurecentre.com.au/swimming/swimming-pools",
+          "https://craigieleisurecentre.com.au/visit/prices"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Spa lounge has spa, sauna and steam room (45-50 degrees); extra-charge area paid at reception. Spa lounge single entry $14.50; adult spa/sauna/steam 10-visit pass $130.50."
+      },
+      "create": {
+        "title": "Craigie Leisure Centre",
+        "suburb": "Craigie",
+        "region": "north",
+        "suburb_term": "",
+        "practice": "fitness",
+        "kind": "place",
+        "excerpt": "A public leisure centre with pools and a steam room in its wellness area. Entry prices and rules are set by the centre; see the steam room details below.",
+        "join_url": "https://craigieleisurecentre.com.au/visit/prices",
+        "evidence": [
+          {
+            "field": "steam_room",
+            "url": "https://craigieleisurecentre.com.au/swimming/swimming-pools",
+            "at": "2026-09-28",
+            "excerpt": "Spa lounge has spa, sauna and steam room (45-50 degrees); extra-charge area paid at reception."
+          },
+          {
+            "field": "steam_room",
+            "url": "https://craigieleisurecentre.com.au/visit/prices",
+            "at": "2026-09-28",
+            "excerpt": "Spa lounge single entry $14.50; adult spa/sauna/steam 10-visit pass $130.50."
+          }
+        ]
+      }
+    },
+    {
+      "slug": "kwinana-recquatic",
+      "website": "https://recquatic.com.au",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Spa",
+          "Pools"
+        ],
+        "min_age": 16,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://recquatic.com.au/swim/our-pools",
+        "rules_url": "https://recquatic.com.au/swim/our-pools",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Spa, Steam Room and Swim",
+            "kind": "casual_visit",
+            "price": 13.4,
+            "basis": "per adult",
+            "people": 1,
+            "duration": null,
+            "conditions": "16+; rates effective 20 July 2026",
+            "main": true
+          },
+          {
+            "product": "Spa, Steam Room and Swim - concession",
+            "kind": "concession",
+            "price": 11.3,
+            "basis": "per person",
+            "people": 1,
+            "duration": null,
+            "conditions": "16+",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://recquatic.com.au/swim/our-pools"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Spa and steam room open to people 16 and over; Spa, Steam Room and Swim $13.40, concession $11.30."
+      },
+      "create": {
+        "title": "Kwinana Recquatic",
+        "suburb": "Kwinana",
+        "region": "peel",
+        "suburb_term": "",
+        "practice": "fitness",
+        "kind": "place",
+        "excerpt": "A public leisure centre with pools and a steam room in its wellness area. Entry prices and rules are set by the centre; see the steam room details below.",
+        "join_url": "https://recquatic.com.au/swim/our-pools",
+        "evidence": [
+          {
+            "field": "steam_room",
+            "url": "https://recquatic.com.au/swim/our-pools",
+            "at": "2026-09-28",
+            "excerpt": "Spa and steam room open to people 16 and over; Spa, Steam Room and Swim $13.40, concession $11.30."
+          }
+        ]
+      }
+    },
+    {
+      "slug": "aqua-jetty-warnbro",
+      "website": "https://rockingham.wa.gov.au/facilities-and-recreation/aqua-jetty",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Spa",
+          "Sauna"
+        ],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://rockingham.wa.gov.au/facilities-and-recreation/aqua-jetty/aquatics",
+        "rules_url": "https://rockingham.wa.gov.au/forms-and-publications/facilities-and-recreation/aqua-jetty/aqua-jetty-general-conditions-of-entry",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Spa, sauna and steam - full price",
+            "kind": "casual_visit",
+            "price": 11.8,
+            "basis": "per adult",
+            "people": 1,
+            "duration": null,
+            "conditions": "Whether swim is included not confirmed",
+            "main": true
+          }
+        ],
+        "sources": [
+          "https://rockingham.wa.gov.au/facilities-and-recreation/aqua-jetty/aquatics"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Spa, sauna and steam full price $11.80; centre closed Good Friday and Christmas Day."
+      },
+      "create": {
+        "title": "Aqua Jetty",
+        "suburb": "Warnbro",
+        "region": "peel",
+        "suburb_term": "",
+        "practice": "fitness",
+        "kind": "place",
+        "excerpt": "A public leisure centre with pools and a steam room in its wellness area. Entry prices and rules are set by the centre; see the steam room details below.",
+        "join_url": "https://rockingham.wa.gov.au/facilities-and-recreation/aqua-jetty/aquatics",
+        "evidence": [
+          {
+            "field": "steam_room",
+            "url": "https://rockingham.wa.gov.au/facilities-and-recreation/aqua-jetty/aquatics",
+            "at": "2026-09-28",
+            "excerpt": "Spa, sauna and steam full price $11.80; centre closed Good Friday and Christmas Day."
+          }
+        ]
+      }
+    },
+    {
+      "slug": "bayswater-waves",
+      "website": "https://bayswaterrec.wa.gov.au/bayswater-waves",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Sauna"
+        ],
+        "min_age": 16,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://bayswaterrec.wa.gov.au/bayswater-waves/the-pools/",
+        "rules_url": "https://bayswaterrec.wa.gov.au/bayswater-waves/the-pools/",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Spa, sauna and steam entry",
+            "kind": "casual_visit",
+            "price": null,
+            "basis": "",
+            "people": 1,
+            "duration": null,
+            "conditions": "Price list not readable online when checked",
+            "main": true
+          }
+        ],
+        "sources": [
+          "https://bayswaterrec.wa.gov.au/bayswater-waves/the-pools/"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Sauna and steam room require users to be over 16 and wear a spa band; steam room kept at 38 degrees; open pool hours."
+      },
+      "create": {
+        "title": "Bayswater Waves",
+        "suburb": "Embleton",
+        "region": "swan",
+        "suburb_term": "",
+        "practice": "fitness",
+        "kind": "place",
+        "excerpt": "A public leisure centre with pools and a steam room in its wellness area. Entry prices and rules are set by the centre; see the steam room details below.",
+        "join_url": "https://bayswaterrec.wa.gov.au/bayswater-waves/the-pools/",
+        "evidence": [
+          {
+            "field": "steam_room",
+            "url": "https://bayswaterrec.wa.gov.au/bayswater-waves/the-pools/",
+            "at": "2026-09-28",
+            "excerpt": "Sauna and steam room require users to be over 16 and wear a spa band; steam room kept at 38 degrees; open pool hours."
+          }
+        ]
+      }
+    },
+    {
+      "slug": "cannington-leisureplex",
+      "website": "https://www.canning.wa.gov.au",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Spa",
+          "Sauna"
+        ],
+        "min_age": 16,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.canning.wa.gov.au/sport-and-fitness/leisureplexes/prices-and-memberships/",
+        "rules_url": "https://www.canning.wa.gov.au/sport-and-fitness/leisureplexes/prices-and-memberships/",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Wellness Suite - Adult (16+)",
+            "kind": "casual_visit",
+            "price": 13,
+            "basis": "per adult",
+            "people": 1,
+            "duration": null,
+            "conditions": "Swim inclusion not stated",
+            "main": true
+          },
+          {
+            "product": "Wellness Suite - Concession",
+            "kind": "concession",
+            "price": 10.4,
+            "basis": "per person",
+            "people": 1,
+            "duration": null,
+            "conditions": "",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.canning.wa.gov.au/recreation-and-community/leisureplexes/swimming-and-aquatics/",
+          "https://www.canning.wa.gov.au/sport-and-fitness/leisureplexes/prices-and-memberships/"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Cannington has a 16+ Wellness Suite with spa, sauna and steam room. Wellness Suite casual entry adult $13, concession $10.40; 10-entry $130 / $104 (from 15 July 2026)."
+      }
+    },
+    {
+      "slug": "riverton-leisureplex",
+      "website": "https://www.canning.wa.gov.au",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Program pool",
+          "Spa",
+          "Sauna"
+        ],
+        "min_age": 16,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.canning.wa.gov.au/sport-and-fitness/leisureplexes/prices-and-memberships/",
+        "rules_url": "https://www.canning.wa.gov.au/sport-and-fitness/leisureplexes/prices-and-memberships/",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Wellness Suite - Adult (16+)",
+            "kind": "casual_visit",
+            "price": 13,
+            "basis": "per adult",
+            "people": 1,
+            "duration": null,
+            "conditions": "Price listed for both leisureplexes",
+            "main": true
+          },
+          {
+            "product": "Wellness Suite - Concession",
+            "kind": "concession",
+            "price": 10.4,
+            "basis": "per person",
+            "people": 1,
+            "duration": null,
+            "conditions": "",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.canning.wa.gov.au/recreation-and-community/leisureplexes/swimming-and-aquatics/",
+          "https://www.canning.wa.gov.au/sport-and-fitness/leisureplexes/prices-and-memberships/"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Riverton has a 16+ Wellness Suite with program pool, spa, sauna and steam room. Wellness Suite casual entry adult $13, concession $10.40."
+      },
+      "create": {
+        "title": "Riverton Leisureplex",
+        "suburb": "Riverton",
+        "region": "southeast",
+        "suburb_term": "",
+        "practice": "fitness",
+        "kind": "place",
+        "excerpt": "A public leisure centre with pools and a steam room in its wellness area. Entry prices and rules are set by the centre; see the steam room details below.",
+        "join_url": "https://www.canning.wa.gov.au/sport-and-fitness/leisureplexes/prices-and-memberships/",
+        "evidence": [
+          {
+            "field": "steam_room",
+            "url": "https://www.canning.wa.gov.au/recreation-and-community/leisureplexes/swimming-and-aquatics/",
+            "at": "2026-09-28",
+            "excerpt": "Riverton has a 16+ Wellness Suite with program pool, spa, sauna and steam room."
+          },
+          {
+            "field": "steam_room",
+            "url": "https://www.canning.wa.gov.au/sport-and-fitness/leisureplexes/prices-and-memberships/",
+            "at": "2026-09-28",
+            "excerpt": "Wellness Suite casual entry adult $13, concession $10.40."
+          }
+        ]
+      }
+    },
+    {
+      "slug": "armadale-fitness-aquatic-centre",
+      "website": "https://active.armadale.wa.gov.au",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Sauna",
+          "Spa"
+        ],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://active.armadale.wa.gov.au/fees-charges",
+        "rules_url": "https://active.armadale.wa.gov.au/fees-charges",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Wellness Suite entry",
+            "kind": "casual_visit",
+            "price": 12,
+            "basis": "per visit",
+            "people": 1,
+            "duration": null,
+            "conditions": "Adult/concession split and swim inclusion not stated",
+            "main": true
+          }
+        ],
+        "sources": [
+          "https://active.armadale.wa.gov.au/facility-features",
+          "https://active.armadale.wa.gov.au/fees-charges"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Wellness Suite includes a sauna, steam room and spa. Wellness Suite casual entry $12.00."
+      },
+      "create": {
+        "title": "Armadale Fitness and Aquatic Centre",
+        "suburb": "Seville Grove",
+        "region": "southeast",
+        "suburb_term": "",
+        "practice": "fitness",
+        "kind": "place",
+        "excerpt": "A public leisure centre with pools and a steam room in its wellness area. Entry prices and rules are set by the centre; see the steam room details below.",
+        "join_url": "https://active.armadale.wa.gov.au/fees-charges",
+        "evidence": [
+          {
+            "field": "steam_room",
+            "url": "https://active.armadale.wa.gov.au/facility-features",
+            "at": "2026-09-28",
+            "excerpt": "Wellness Suite includes a sauna, steam room and spa."
+          },
+          {
+            "field": "steam_room",
+            "url": "https://active.armadale.wa.gov.au/fees-charges",
+            "at": "2026-09-28",
+            "excerpt": "Wellness Suite casual entry $12.00."
+          }
+        ]
+      }
+    },
+    {
+      "slug": "leisurefit-booragoon",
+      "website": "https://www.melvillecity.com.au",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Spa",
+          "Sauna"
+        ],
+        "min_age": 16,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.melvillecity.com.au/things-to-do/leisurefit-recreation-centres/memberships-and-casual-prices/casual-pricing",
+        "rules_url": "https://www.melvillecity.com.au/things-to-do/leisurefit-recreation-centres/swimming/aquatics",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Recovery Hub - Adult Visit (16+)",
+            "kind": "casual_visit",
+            "price": 14,
+            "basis": "per adult",
+            "people": 1,
+            "duration": null,
+            "conditions": "16+; swim not included",
+            "main": true
+          },
+          {
+            "product": "Recovery Hub - Adult Visit Plus Swim",
+            "kind": "casual_visit",
+            "price": 18.3,
+            "basis": "per adult",
+            "people": 1,
+            "duration": null,
+            "conditions": "16+",
+            "main": false
+          },
+          {
+            "product": "Recovery Hub - Adult Visit Concession",
+            "kind": "concession",
+            "price": 12.6,
+            "basis": "per person",
+            "people": 1,
+            "duration": null,
+            "conditions": "16+; valid concession card",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.melvillecity.com.au/things-to-do/leisurefit-recreation-centres/swimming/aquatics",
+          "https://www.melvillecity.com.au/things-to-do/leisurefit-recreation-centres/memberships-and-casual-prices/casual-pricing"
+        ],
+        "checked": "2026-09-28",
+        "evidence": "Booragoon has steam rooms at 40 degrees for ages 16+; spa closure on 1 Oct with sauna/steam open; weekly Wednesday cleaning closure. Recovery Hub (spa, sauna, steam) adult $14, concession $12.60, adult plus swim $18.30."
+      },
+      "create": {
+        "title": "LeisureFit Booragoon",
+        "suburb": "Booragoon",
+        "region": "freo",
+        "suburb_term": "booragoon",
+        "practice": "fitness",
+        "kind": "place",
+        "excerpt": "A public leisure centre with pools and a steam room in its wellness area. Entry prices and rules are set by the centre; see the steam room details below.",
+        "join_url": "https://www.melvillecity.com.au/things-to-do/leisurefit-recreation-centres/memberships-and-casual-prices/casual-pricing",
+        "evidence": [
+          {
+            "field": "steam_room",
+            "url": "https://www.melvillecity.com.au/things-to-do/leisurefit-recreation-centres/swimming/aquatics",
+            "at": "2026-09-28",
+            "excerpt": "Booragoon has steam rooms at 40 degrees for ages 16+; spa closure on 1 Oct with sauna/steam open; weekly Wednesday cleaning closure."
+          },
+          {
+            "field": "steam_room",
+            "url": "https://www.melvillecity.com.au/things-to-do/leisurefit-recreation-centres/memberships-and-casual-prices/casual-pricing",
+            "at": "2026-09-28",
+            "excerpt": "Recovery Hub (spa, sauna, steam) adult $14, concession $12.60, adult plus swim $18.30."
+          }
+        ]
+      }
+    }
+  ]
+}

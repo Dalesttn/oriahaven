@@ -63,6 +63,24 @@ function entry( array $facet ): array {
 	return array();
 }
 
+/**
+ * The facility this facet page is about ("steam-room"), when its guide says
+ * the page compares facility access (FacilityAccess). '' otherwise.
+ */
+function facility( ?array $facet ): string {
+	return $facet ? trim( (string) ( entry( $facet )['facility'] ?? '' ) ) : '';
+}
+
+/**
+ * Whether the page takes every listing with this service or specialty,
+ * whatever its category. A steam room at a leisure centre is a steam room:
+ * Beatty Park's primary category is fitness, and the Spa & Recovery page
+ * could not show it. Opt-in per facet, so no other page's set moves.
+ */
+function all_categories( ?array $facet ): bool {
+	return $facet && ! empty( entry( $facet )['all_categories'] );
+}
+
 /** Only service and specialty facets have guides of their own. */
 function applies( ?array $facet ): bool {
 	return is_array( $facet ) && in_array( (string) ( $facet['key'] ?? '' ), array( 'svc', 'spec' ), true );

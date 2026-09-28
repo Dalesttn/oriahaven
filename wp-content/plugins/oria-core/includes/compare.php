@@ -1233,6 +1233,34 @@ function place_rows( array $posts ): array {
 		array( 'key' => 'confirmed', 'type' => 'confirm', 'label' => __( 'Business confirmation', 'oria' ), 'hint' => __( 'Whether the business has confirmed its own details', 'oria' ) ),
 	);
 
+	/*
+	 * Facility access (steam room...) when any compared place has it saved:
+	 * the same sourced facts as the steam-room page and the profiles, after
+	 * the venue-wide price row. Nothing is added for places without them.
+	 */
+	if ( function_exists( '\Oria\Core\FacilityAccess\summary' ) ) {
+		$fa_rows = array();
+		foreach ( array_keys( \Oria\Core\FacilityAccess\FACILITIES ) as $fac ) {
+			$has = false;
+			foreach ( $posts as $p ) {
+				$has = $has || null !== \Oria\Core\FacilityAccess\summary( (int) $p->ID, $fac );
+			}
+			if ( ! $has ) {
+				continue;
+			}
+			$name = \Oria\Core\FacilityAccess\FACILITIES[ $fac ];
+			/* translators: %s: facility, e.g. Steam room */
+			$fa_rows[] = array( 'key' => 'fa:' . $fac . ':price', 'type' => 'text', 'label' => sprintf( __( '%s: entry and price', 'oria' ), $name ), 'hint' => __( 'The standard adult visit that includes it, as published', 'oria' ) );
+			/* translators: %s: facility */
+			$fa_rows[] = array( 'key' => 'fa:' . $fac . ':access', 'type' => 'text', 'label' => sprintf( __( '%s: who can go', 'oria' ), $name ), 'hint' => '' );
+			/* translators: %s: facility */
+			$fa_rows[] = array( 'key' => 'fa:' . $fac . ':includes', 'type' => 'text', 'label' => sprintf( __( '%s: also included', 'oria' ), $name ), 'hint' => '' );
+		}
+		if ( $fa_rows ) {
+			array_splice( $rows, 2, 0, $fa_rows );
+		}
+	}
+
 	$out = array();
 	foreach ( $rows as $row ) {
 		$values = array();
@@ -1281,6 +1309,22 @@ function place_rows( array $posts ): array {
 					break;
 				case 'svc':
 					$values[] = $terms( $id, 'service' );
+					break;
+
+				default:
+					if ( 0 === strpos( $row['key'], 'fa:' ) ) {
+						list( , $fac, $part ) = explode( ':', $row['key'] );
+						$fs = \Oria\Core\FacilityAccess\summary( $id, $fac );
+						if ( ! $fs ) {
+							$values[] = unknown();
+						} elseif ( 'price' === $part ) {
+							$values[] = trim( $fs['price_text'] . ( '' !== $fs['duration'] ? ' · ' . $fs['duration'] : '' ) . ( '' !== $fs['product'] ? ' (' . $fs['product'] . ')' : '' ) );
+						} elseif ( 'access' === $part ) {
+							$values[] = '' !== $fs['access'] ? $fs['access'] : unknown();
+						} else {
+							$values[] = $fs['includes'] ? implode( ', ', (array) $fs['includes'] ) : unknown();
+						}
+					}
 					break;
 
 				case 'confirmed':

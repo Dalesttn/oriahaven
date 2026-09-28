@@ -176,6 +176,20 @@ function label_city(): string {
 		: 'Perth';
 }
 
+/**
+ * The name a facet's heading uses: its guide's "name" when it has one
+ * ("Steam rooms", plural, for a page listing several), else the term's.
+ */
+function guide_name( string $slug, string $value, string $fallback ): string {
+	if ( function_exists( '\Oria\Core\FacetGuides\entry' ) ) {
+		$n = trim( (string) ( \Oria\Core\FacetGuides\entry( array( 'slug' => $slug, 'value' => $value ) )['name'] ?? '' ) );
+		if ( '' !== $n ) {
+			return $n;
+		}
+	}
+	return $fallback;
+}
+
 function resolve_facet( \WP_Term $practice, string $slug ): ?array {
 	// Same question, same answer, many times per request: facet_404(),
 	// the canonical, the switcher and every link that asks all land here.
@@ -236,13 +250,13 @@ function resolve_facet_uncached( \WP_Term $practice, string $slug ): ?array {
 			}
 			$suffix    = '-' . $practice->slug;
 			$canonical = str_ends_with( $t->slug, $suffix ) && strlen( $t->slug ) > strlen( $suffix ) ? substr( $t->slug, 0, -strlen( $suffix ) ) : $t->slug;
-			return array( 'slug' => $canonical, 'key' => 'svc', 'value' => $t->slug, 'label' => sprintf( '%s in %s', wp_specialchars_decode( $t->name, ENT_QUOTES ), label_city() ), 'page' => null );
+			return array( 'slug' => $canonical, 'key' => 'svc', 'value' => $t->slug, 'label' => sprintf( '%s in %s', guide_name( $canonical, $t->slug, wp_specialchars_decode( $t->name, ENT_QUOTES ) ), label_city() ), 'page' => null );
 		}
 	}
 	// 3. A specialty term.
 	$t = get_term_by( 'slug', $slug, Taxonomies\SPECIALTY );
 	if ( $t instanceof \WP_Term ) {
-		return array( 'slug' => $slug, 'key' => 'spec', 'value' => $t->slug, 'label' => sprintf( '%s in %s', wp_specialchars_decode( $t->name, ENT_QUOTES ), label_city() ), 'page' => null );
+		return array( 'slug' => $slug, 'key' => 'spec', 'value' => $t->slug, 'label' => sprintf( '%s in %s', guide_name( $slug, $t->slug, wp_specialchars_decode( $t->name, ENT_QUOTES ) ), label_city() ), 'page' => null );
 	}
 	// 4. An audience term (only reachable when the intent rows offer it).
 	if ( taxonomy_exists( 'audience' ) ) {
@@ -320,6 +334,29 @@ function facet_ids( \WP_Term $practice, array $facet ): array {
 	$key = $practice->term_id . '|' . ( $facet['key'] ?? '' ) . '|' . ( $facet['value'] ?? '' );
 	if ( isset( $memo[ $key ] ) ) {
 		return $memo[ $key ];
+	}
+
+	/*
+	 * A facet whose guide opts in (facet-guides.json "all_categories") is
+	 * about a facility, not a category's slice of it: every published
+	 * listing carrying the service or specialty, in whichever category.
+	 * Page, robots and sitemap all count through here, so they agree.
+	 */
+	$tax = array( 'svc' => 'service', 'spec' => Taxonomies\SPECIALTY )[ $facet['key'] ?? '' ] ?? '';
+	if ( '' !== $tax && function_exists( '\Oria\Core\FacetGuides\all_categories' ) && \Oria\Core\FacetGuides\all_categories( $facet ) ) {
+		return $memo[ $key ] = array_map(
+			'intval',
+			get_posts(
+				array(
+					'post_type'      => PostTypes\LISTING,
+					'post_status'    => 'publish',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'no_found_rows'  => true,
+					'tax_query'      => array( array( 'taxonomy' => $tax, 'field' => 'slug', 'terms' => explode( ',', (string) $facet['value'] ) ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
+				)
+			)
+		);
 	}
 
 	return $memo[ $key ] = function_exists( '\Oria\Core\IntentPages\matching_ids' )

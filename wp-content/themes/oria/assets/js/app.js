@@ -2065,7 +2065,27 @@
     });
 
     var PER_PAGE = 10;
-    var state = { cats: [], regions: [], suburbs: [], spec: [], svc: [], aud: [], price: [], format: [], rating: 0, q: "", sort: "relevance", page: 1, picks: false };
+    var state = { cats: [], regions: [], suburbs: [], spec: [], svc: [], aud: [], price: [], format: [], rating: 0, q: "", sort: "relevance", page: 1, picks: false, fac: "" };
+
+    /* A facility page (the steam-room page) prints window.ORIA_FACILITY:
+       each venue's verified access to that facility (facility-shortcuts.php).
+       Its venues count here whatever their category -- a leisure centre's
+       steam room is still a steam room -- and "price" means that facility's
+       price, never another service's "from" figure. Unknown stays unknown:
+       no price and no band, so it cannot pass a budget filter. */
+    var FAC = window.ORIA_FACILITY || null;
+    var FACIN = {};
+    if (FAC) {
+      (FAC.ids || []).forEach(function (id) { FACIN[id] = 1; });
+      DATA.listings.forEach(function (l) {
+        if (!FACIN[l.id]) return;
+        var s = (FAC.sums || {})[l.id] || null;
+        var p = s && s.price > 0 ? s.price : 0;
+        l._fac = s;
+        l.priceFrom = p;
+        l.priceBand = p ? (p < 25 ? "$" : p <= 60 ? "$$" : p <= 200 ? "$$$" : "$$$$") : "";
+      });
+    }
 
     /* Category pages (oria-practice-v2.php, data-mode="category") switch on
        four things the other directory pages keep off:
@@ -2301,12 +2321,13 @@
       ["svc", "aud", "price", "format"].forEach(function (k) {
         n += extra(state[k], locked.intentKey === k ? locked.intentValues : []);
       });
-      return n + (state.rating ? 1 : 0) + (state.q ? 1 : 0) + (state.picks ? 1 : 0);
+      return n + (state.rating ? 1 : 0) + (state.q ? 1 : 0) + (state.picks ? 1 : 0) + (state.fac ? 1 : 0);
     }
 
     function matches(l) {
       if (state.picks && PICKS.indexOf(l.id) === -1) return false;
-      if (state.cats.length && state.cats.indexOf(l.cat) === -1 &&
+      if (state.fac && (!FAC || ((FAC.tests || {})[state.fac] || []).indexOf(l.id) === -1)) return false;
+      if (state.cats.length && !FACIN[l.id] && state.cats.indexOf(l.cat) === -1 &&
           !(l.also || []).some(function (a) { return state.cats.indexOf(a) > -1; })) return false;
       if (state.regions.length && state.regions.indexOf(l.region) === -1) return false;
       if (locked.city && l.city !== locked.city) return false;
@@ -2463,7 +2484,11 @@
         }
         case "rating": return b.rating - a.rating || b.reviews - a.reviews;
         case "reviews": return b.reviews - a.reviews;
-        case "price": return a.priceFrom - b.priceFrom;
+        case "price":
+          /* A price nobody published is not $0: it goes last. Free is $0. */
+          var pa = a.priceFrom > 0 ? a.priceFrom : (a.priceBand === "Free" ? 0 : Infinity);
+          var pb = b.priceFrom > 0 ? b.priceFrom : (b.priceBand === "Free" ? 0 : Infinity);
+          return pa === pb ? a.name.localeCompare(b.name) : (pa < pb ? -1 : 1);
         case "name": return a.name.localeCompare(b.name);
         case "featured": return (rank[a.status] - rank[b.status]) || (b.rating - a.rating);
         default:
@@ -2572,9 +2597,10 @@
           "</div>" +
           cardTags(l) +
           '<p class="listing__desc">' + esc(l.blurb) + "</p>" +
+          facBlock(l) +
           '<div class="listing__foot">' +
             '<span class="listing__price">' +
-              (l.priceFrom > 0
+              (FACIN[l.id] ? (l._fac ? "" : '<span class="listing__price--none">Check current price</span>') : l.priceFrom > 0
                 ? "$" + l.priceFrom + ' <span>/ session</span>'
                 : l.priceBand === "Free"
                   ? "Free"
@@ -2599,6 +2625,44 @@
           "</div>" +
         "</div>" +
       "</article>";
+    }
+
+    /* A venue's access to this page's facility, mirroring
+       template-parts/facility-block.php from the same saved summary. */
+    function facBlock(l) {
+      var s = l._fac;
+      if (!s) return "";
+      var what = [s.product, s.duration].filter(Boolean).join(" · ");
+      return '<div class="fac">' +
+        (s.notice ? '<p class="fac__notice" role="note">' + esc(s.notice) + "</p>" : "") +
+        '<p class="fac__price"><b>' + esc(s.price_text) + "</b>" + (what ? " <span>" + esc(what) + "</span>" : "") + "</p>" +
+        (s.conditions ? '<p class="fac__cond">' + esc(s.conditions) + "</p>" : "") +
+        (s.access ? '<p class="fac__access">' + esc(s.access) + "</p>" : "") +
+        (s.includes && s.includes.length ? '<p class="fac__incl"><span>Includes</span> ' + esc(s.includes.join(", ")) + "</p>" : "") +
+        (s.quiet ? '<p class="fac__quiet">' + esc(s.quiet) + "</p>" : "") +
+        (s.essentials && s.essentials.length ? '<p class="fac__ess">' + esc(s.essentials.slice(0, 3).join(" · ")) + "</p>" : "") +
+        '<p class="fac__meta">' +
+          (s.book_url ? '<a href="' + esc(s.book_url) + '" rel="nofollow noopener" target="_blank" data-oria-event="facility_check_sessions_click" data-oria-placement="facility_card">Check sessions and prices<span class="sr-only"> (opens the venue\'s site in a new tab)</span></a>' : "") +
+          (s.checked ? "<span>Checked " + esc(s.checked) + (s.source ? ' · <a href="' + esc(s.source) + '" rel="nofollow noopener" target="_blank">source</a>' : "") + "</span>" : "") +
+        "</p></div>";
+    }
+
+    /* The facility shortcuts (Under $25, Casual entry...): one at a time,
+       press again to clear. The server drew only those the data answers. */
+    if (FAC) {
+      var facBtns = $$("[data-fac-short]");
+      var paintFac = function () {
+        facBtns.forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.facShort === state.fac ? "true" : "false"); });
+      };
+      facBtns.forEach(function (b) {
+        b.addEventListener("click", function () {
+          state.fac = state.fac === b.dataset.facShort ? "" : b.dataset.facShort;
+          state.page = 1;
+          paintFac();
+          render();
+          pushEvent("facility_shortcut_click", { shortcut: state.fac || "clear" });
+        });
+      });
     }
 
     /* The "showing" marker on the intent rows. Server-rendered from the
@@ -2716,7 +2780,8 @@
       state.regions = locked.region ? [locked.region] : [];
       state.spec = locked.spec ? [locked.spec] : [];
       state.svc = []; state.aud = []; state.suburbs = [];
-      state.price = []; state.format = []; state.rating = 0; state.q = ""; state.picks = false;
+      state.price = []; state.format = []; state.rating = 0; state.q = ""; state.picks = false; state.fac = "";
+      $$("[data-fac-short]").forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
       // Clearing never unlocks the page's own facet.
       if (locked.intentKey && state[locked.intentKey] !== undefined) state[locked.intentKey] = locked.intentValues.slice();
       var qb = $("#dirQ");

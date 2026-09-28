@@ -1005,6 +1005,14 @@ while ( have_posts() ) :
 				$oria_sec++;
 				get_template_part( 'template-parts/joining', null, array( 'id' => (int) $oria_id, 'sec' => $oria_sec, 'slug' => $oria_slugname ) );
 			}
+
+			/* --- Facility access (steam room...) -------------------------------
+			 * The same saved, sourced facts the steam-room page shows, from the
+			 * listing's Facility access box. Nothing for a listing without one. */
+			if ( function_exists( '\Oria\Core\FacilityAccess\rows' ) && \Oria\Core\FacilityAccess\rows( (int) $oria_id ) ) {
+				$oria_sec++;
+				get_template_part( 'template-parts/facility-profile', null, array( 'id' => (int) $oria_id, 'sec' => $oria_sec ) );
+			}
 			?>
 
 			<?php /* --- The week, from the Classes repeater --------------------- */ ?>

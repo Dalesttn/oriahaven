@@ -175,9 +175,29 @@ $oria_badges = array(
 
 		<p class="listing__desc"><?php echo esc_html( get_the_excerpt() ); ?></p>
 
+		<?php
+		/*
+		 * On a facility page (the steam-room page) the card leads with that
+		 * facility's verified access, and the foot drops the venue-wide
+		 * "from" price, which is usually another service's.
+		 */
+		$oria_fac_s = null;
+		if ( ! empty( $GLOBALS['oria_facility_ctx'] ) && function_exists( '\Oria\Core\FacilityAccess\summary' ) ) {
+			$oria_fac_s = \Oria\Core\FacilityAccess\summary( (int) $oria_id, (string) $GLOBALS['oria_facility_ctx'] );
+		}
+		if ( $oria_fac_s ) {
+			get_template_part( 'template-parts/facility-block', null, array( 's' => $oria_fac_s ) );
+		}
+		?>
+
 		<div class="listing__foot">
 			<span class="listing__price">
-				<?php if ( (int) $oria_price_from > 0 ) : ?>
+				<?php if ( ! empty( $GLOBALS['oria_facility_ctx'] ) ) : ?>
+					<?php // The facility's own price is in the block above; nothing venue-wide here. ?>
+					<?php if ( ! $oria_fac_s ) : ?>
+						<span class="listing__price--none"><?php esc_html_e( 'Check current price', 'oria' ); ?></span>
+					<?php endif; ?>
+				<?php elseif ( (int) $oria_price_from > 0 ) : ?>
 					$<?php echo esc_html( (string) (int) $oria_price_from ); ?> <span>/ <?php esc_html_e( 'session', 'oria' ); ?></span>
 				<?php elseif ( 'Free' === (string) get_field( 'price_band', $oria_id ) ) : ?>
 					<?php // Free is a published price; "not published" beside a Free pill contradicted itself. ?>

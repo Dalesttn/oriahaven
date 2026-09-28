@@ -1732,3 +1732,34 @@ html.xp-sheet-open { overflow: hidden; }
 @media (max-width: 46rem) {
   .ocorr__row { grid-template-columns: 1fr; }
 }
+
+/* ------------------------------------------------------------------------
+   Facility access, shared with v4-category.css (keep the two in step): each card's verified access, the
+   side-by-side table and "before you go". template-parts/facility-*.php
+   and app.js facBlock(). Everything here is a saved, sourced fact.
+   ------------------------------------------------------------------------ */
+.fac { display: grid; gap: .3rem; margin: .6rem 0 .2rem; padding: .7rem .8rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface, #fff); font-size: .9rem; line-height: 1.45; }
+.fac p { margin: 0; }
+.fac__price b { font-size: 1.05rem; color: var(--deep); }
+.fac__price span { color: var(--text-soft); }
+.fac__cond, .fac__access { color: var(--ink, inherit); }
+.fac__incl span { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-soft); margin-right: .25rem; }
+.fac__quiet { color: var(--deep); font-weight: 600; }
+.fac__ess { color: var(--text-soft); }
+.fac__meta { display: flex; flex-wrap: wrap; gap: .25rem 1rem; font-size: .8rem; color: var(--text-faint, var(--text-soft)); }
+.fac__meta a { color: var(--deep); font-weight: 600; }
+.fac__notice { padding: .35rem .5rem; border-radius: 6px; background: #FFF4D6; color: #5A4310; font-weight: 600; }
+
+.fac-compare { margin: var(--s-7, 2.5rem) 0 0; }
+.fac-compare__lede { margin: .25rem 0 1rem; max-width: 62ch; color: var(--text-soft); }
+.fac-compare__scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+.fac-compare__scroll:focus-visible { outline: 2px solid var(--focus, var(--deep)); outline-offset: 2px; }
+.fac-compare__table { width: 100%; min-width: 46rem; border-collapse: collapse; font-size: .9rem; line-height: 1.45; }
+.fac-compare__table th, .fac-compare__table td { padding: .7rem .8rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.fac-compare__table thead th { font-size: .74rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-soft); background: var(--bg-soft, transparent); }
+.fac-compare__table tbody tr:last-child > * { border-bottom: 0; }
+.fac-compare__table tbody th a { color: var(--deep); font-weight: 700; }
+.fac-compare__table .muted { color: var(--text-soft); font-size: .84rem; }
+.fac-compare__table .fac__notice { display: inline-block; margin-top: .3rem; font-size: .8rem; }
+.fac-compare__h { margin-top: var(--s-6, 2rem); }
+.fac-compare__go { display: grid; gap: .5rem; max-width: 70ch; margin: .75rem 0 0; padding-left: 1.1rem; line-height: 1.55; }

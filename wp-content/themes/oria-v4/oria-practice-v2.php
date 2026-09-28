@@ -182,6 +182,26 @@ if ( function_exists( '\Oria\Core\Cities\filter_ids' ) ) {
 $oria_cin = function_exists( '\Oria\Core\Cities\place' ) ? \Oria\Core\Cities\place( $oria_city ) : $oria_cname;
 
 /*
+ * A facility page (facet-guides.json "facility": the steam-room page). Each
+ * venue's verified access to that facility -- price, what it includes, who
+ * can go -- read once from its saved Facility access row and used by the
+ * cards (server and app.js), the shortcuts, the comparison table, the price
+ * summary and the FAQ. A venue without a confirmed row still lists; it just
+ * says "Check current price" rather than borrowing another service's.
+ */
+$oria_fac      = ( $oria_facet && function_exists( '\Oria\Core\FacetGuides\facility' ) ) ? \Oria\Core\FacetGuides\facility( $oria_facet ) : '';
+$oria_fac_sums = array();
+if ( '' !== $oria_fac && function_exists( '\Oria\Core\FacilityAccess\summary' ) ) {
+	$GLOBALS['oria_facility_ctx'] = $oria_fac;
+	foreach ( $oria_ids as $oria_fid ) {
+		$oria_fs = \Oria\Core\FacilityAccess\summary( (int) $oria_fid, $oria_fac );
+		if ( $oria_fs ) {
+			$oria_fac_sums[ (int) $oria_fid ] = $oria_fs;
+		}
+	}
+}
+
+/*
  * The Best Of guides behind this page and their picks that are on it:
  * the "Oria's picks" chip, the shelf under the listings and the line in
  * the header all read this one answer (Theme\category_best_of).
@@ -213,6 +233,10 @@ foreach ( $oria_ids as $oria_id ) {
 arsort( $oria_bands );
 $oria_typical = $oria_bands ? (string) array_key_first( $oria_bands ) : '';
 
+if ( '' !== $oria_fac ) {
+	// Never another service's "from" price on a facility page.
+	$oria_prices = array_values( array_filter( array_map( static fn( array $s2 ) => $s2['price'], $oria_fac_sums ), static fn( $v ): bool => null !== $v && $v > 0 ) );
+}
 /*
  * The typical starting price for this set: the median of the listings'
  * "price from" figures, so one $600 retreat cannot drag it about. Three
@@ -250,7 +274,7 @@ $oria_latest = $oria_guides ? array() : get_posts( array( 'post_type' => 'post',
 // here, before the section menu is drawn, so the menu offers "What's on"
 // only when something is. The category view only -- on an area page the
 // same citywide list would read as though it were local.
-$oria_events = ( $oria_term && ! $oria_area && function_exists( '\Oria\Theme\category_events' ) )
+$oria_events = ( $oria_term && ! $oria_area && '' === $oria_fac && function_exists( '\Oria\Theme\category_events' ) )
 	? \Oria\Theme\category_events( $oria_term, $oria_city )
 	: array();
 
@@ -284,6 +308,9 @@ if ( $oria_facet ) {
 	}
 } elseif ( $oria_term && function_exists( '\Oria\Core\Faq\for_term' ) ) {
 	$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_term );
+}
+if ( $oria_fac_sums && function_exists( '\Oria\Core\FacilityAccess\faqs' ) ) {
+	$oria_faqs = array_merge( \Oria\Core\FacilityAccess\faqs( $oria_fac_sums, $oria_cin ), $oria_faqs );
 }
 
 $oria_h1 = $oria_facet ? (string) $oria_facet['label'] : sprintf( __( '%1$s in %2$s', 'oria' ), $oria_pname, $oria_cin );
@@ -1128,6 +1155,11 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 	</p>
 
 	<?php
+	// Always on a facility page: the payload also tells app.js which venues
+	// belong here, whatever their category.
+	if ( '' !== $oria_fac ) {
+		get_template_part( 'template-parts/facility-shortcuts', null, array( 'sums' => $oria_fac_sums, 'ids' => $oria_ids, 'facility' => $oria_fac ) );
+	}
 	get_template_part(
 		'template-parts/directory',
 		'toolbar',
@@ -1307,6 +1339,9 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 	</div>
 
 	<?php
+	if ( $oria_fac_sums ) {
+		get_template_part( 'template-parts/facility-compare', null, array( 'sums' => $oria_fac_sums, 'place' => $oria_cin, 'facility' => $oria_fac ) );
+	}
 	/*
 	 * The Oria Note (brief 9.1): decision help after the sixth listing.
 	 * Its copy comes from the configuration (spa has one); elsewhere the
@@ -1852,7 +1887,7 @@ $oria_fg_name  = $oria_fg_on
 
 	<?php
 	// Trend to Try: one published trend an editor tied to this category.
-	if ( ! $oria_area && $oria_term && function_exists( '\Oria\Core\Trends\for_practice' ) ) {
+	if ( ! $oria_area && '' === $oria_fac && $oria_term && function_exists( '\Oria\Core\Trends\for_practice' ) ) {
 		get_template_part( 'template-parts/trend-context', null, array( 'trends' => \Oria\Core\Trends\for_practice( $oria_term ), 'location' => 'category_page' ) );
 	}
 	?>
@@ -1889,16 +1924,32 @@ if ( empty( $oria_note_on ) ) {
 <?php
 // The guides for this practice, as image cards; the journal's latest where
 // none are tagged to it yet.
-get_template_part(
-	'template-parts/guides',
-	'floor',
-	array(
-		'guides'  => $oria_guides ?: $oria_latest,
-		'heading' => $oria_guides ? sprintf( __( 'Guides to %s worth reading first', 'oria' ), strtolower( $oria_pname ) ) : __( 'From the journal', 'oria' ),
-		'icon'    => ( $oria_term && function_exists( '\Oria\Core\Categories\icon' ) ) ? \Oria\Core\Categories\icon( $oria_term->slug ) : '',
-		'compact' => true,
-	)
-);
+if ( '' !== $oria_fac ) {
+	/*
+	 * A facility page keeps only guides about heat, bathing and recovery --
+	 * Spa & Recovery's own list includes singing bowls -- and none at all
+	 * rather than the journal's latest on unrelated things.
+	 */
+	$oria_guides = array_values(
+		array_filter(
+			(array) $oria_guides,
+			static fn( $g ): bool => (bool) preg_match( '/steam|sauna|bath|plunge|ice|float|recovery|spa\b/i', (string) get_the_title( $g ) )
+		)
+	);
+	$oria_latest = array();
+}
+if ( $oria_guides || $oria_latest ) {
+	get_template_part(
+		'template-parts/guides',
+		'floor',
+		array(
+			'guides'  => $oria_guides ?: $oria_latest,
+			'heading' => $oria_guides ? sprintf( __( 'Guides to %s worth reading first', 'oria' ), strtolower( $oria_pname ) ) : __( 'From the journal', 'oria' ),
+			'icon'    => ( $oria_term && function_exists( '\Oria\Core\Categories\icon' ) ) ? \Oria\Core\Categories\icon( $oria_term->slug ) : '',
+			'compact' => true,
+		)
+	);
+}
 ?>
 
 <?php
@@ -2049,7 +2100,7 @@ if ( $oria_facet ) {
  * 9. Products, then apps (template-parts/support-bands.php): each left out
  * when nothing genuinely fits the category. Skipped on a suburb page.
  */
-if ( ! $oria_area && $oria_term instanceof WP_Term ) {
+if ( ! $oria_area && '' === $oria_fac && $oria_term instanceof WP_Term ) {
 	get_template_part( 'template-parts/support', 'bands', array( 'term' => $oria_term ) );
 }
 ?>
