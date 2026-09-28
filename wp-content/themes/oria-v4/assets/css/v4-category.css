@@ -1038,15 +1038,63 @@ html.xc-locked { overflow: hidden; }
 .fac__notice { padding: .35rem .5rem; border-radius: 6px; background: #FFF4D6; color: #5A4310; font-weight: 600; }
 
 .fac-compare { margin: var(--s-7, 2.5rem) 0 0; }
-.fac-compare__lede { margin: .25rem 0 1rem; max-width: 62ch; color: var(--text-soft); }
-.fac-compare__scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
-.fac-compare__scroll:focus-visible { outline: 2px solid var(--focus, var(--deep)); outline-offset: 2px; }
-.fac-compare__table { width: 100%; min-width: 46rem; border-collapse: collapse; font-size: .9rem; line-height: 1.45; }
-.fac-compare__table th, .fac-compare__table td { padding: .7rem .8rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-.fac-compare__table thead th { font-size: .74rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-soft); background: var(--bg-soft, transparent); }
-.fac-compare__table tbody tr:last-child > * { border-bottom: 0; }
-.fac-compare__table tbody th a { color: var(--deep); font-weight: 700; }
-.fac-compare__table .muted { color: var(--text-soft); font-size: .84rem; }
-.fac-compare__table .fac__notice { display: inline-block; margin-top: .3rem; font-size: .8rem; }
+.fac-compare__head { display: grid; gap: .35rem; margin-bottom: 1.1rem; }
+.fac-compare__head .h3 { margin: 0; }
+.fac-compare__lede { margin: 0; max-width: 64ch; color: var(--text-soft); }
 .fac-compare__h { margin-top: var(--s-6, 2rem); }
 .fac-compare__go { display: grid; gap: .5rem; max-width: 70ch; margin: .75rem 0 0; padding-left: 1.1rem; line-height: 1.55; }
+
+/* The table: a rounded panel, deep header, sand zebra. */
+.fac-compare__scroll { border: 1px solid var(--line); border-radius: var(--radius-card, 22px); overflow: hidden; background: var(--surface, #fff); box-shadow: 0 1px 2px rgba(8, 34, 32, .04), 0 8px 24px -12px rgba(8, 34, 32, .12); }
+.fac-table { width: 100%; border-collapse: collapse; font-size: .92rem; line-height: 1.45; }
+.fac-table thead th { padding: .85rem 1rem; background: var(--deep, #0E3B38); color: #fff; font-size: .72rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; text-align: left; white-space: nowrap; }
+.fac-table thead th:first-child { box-shadow: inset 0 -3px 0 var(--brand-gold, #C9A24B); }
+.fac-table tbody th, .fac-table td { padding: 1rem; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+.fac-table tbody tr:nth-child(even) > * { background: var(--sand-2, #F0EBE0); }
+.fac-table tbody tr:hover > * { background: var(--gold-soft, #F2E4C6); }
+
+.fac-table__venue { min-width: 11rem; }
+.fac-table__venue a { color: var(--deep); font-weight: 700; text-decoration: none; }
+.fac-table__venue a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.fac-table__sub { display: block; margin-top: .15rem; font-size: .8rem; font-weight: 500; color: var(--text-soft); }
+
+.fac-table__price { min-width: 11rem; }
+.fac-table__price b { display: block; font-size: 1.12rem; line-height: 1.25; color: var(--deep); font-variant-numeric: tabular-nums; }
+.fac-table__price b.is-unknown { font-size: .95rem; font-weight: 600; color: var(--text-soft); }
+.fac-table__product, .fac-table__note { display: block; margin-top: .2rem; font-size: .8rem; color: var(--text-soft); }
+.fac-table__note { font-style: italic; }
+
+.fac-pill { display: inline-block; padding: .2rem .6rem; border-radius: var(--radius-pill, 999px); background: var(--deep); color: #fff; font-size: .8rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fac-table__none { font-size: .82rem; color: var(--text-faint, var(--text-soft)); white-space: nowrap; }
+
+.fac-chips { display: flex; flex-wrap: wrap; gap: .3rem; }
+.fac-chip { display: inline-block; padding: .18rem .55rem; border: 1px solid var(--line-strong, #C6C2B6); border-radius: 12px; background: var(--surface, #fff); font-size: .78rem; line-height: 1.35; color: var(--ink, inherit); }
+.fac-chip--lead { border-color: var(--deep); background: var(--deep); color: #fff; font-weight: 600; }
+.fac-chip--quiet { border-color: transparent; background: var(--sand-3, #E6DFD0); }
+.fac-table tbody tr:nth-child(even) .fac-chip--quiet { background: #fff; }
+.fac-table__notice { display: block; margin-top: .45rem; font-size: .78rem; }
+
+.fac-table__checked { white-space: nowrap; font-size: .8rem; color: var(--text-soft); }
+.fac-table__checked a { display: block; margin-top: .15rem; color: var(--deep); font-weight: 600; }
+.fac-table a:focus-visible { outline: 2px solid var(--brand-gold, #C9A24B); outline-offset: 2px; border-radius: 4px; }
+
+/* Phones and narrow tablets: every row becomes a labelled card. */
+@media (max-width: 52rem) {
+  .fac-compare__scroll { border: 0; border-radius: 0; overflow: visible; background: none; box-shadow: none; }
+  .fac-table, .fac-table tbody, .fac-table tr, .fac-table th, .fac-table td { display: block; width: 100%; }
+  .fac-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .fac-table tbody { display: grid; gap: .8rem; }
+  .fac-table tbody tr { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--surface, #fff); box-shadow: 0 6px 18px -12px rgba(8, 34, 32, .18); }
+  .fac-table tbody tr:nth-child(even) > *, .fac-table tbody tr:hover > * { background: transparent; }
+  .fac-table tbody th { padding: .85rem 1rem .75rem; border-top: 0; background: var(--deep) !important; box-shadow: inset 0 -3px 0 var(--brand-gold, #C9A24B); }
+  .fac-table tbody th a { color: #fff; font-size: 1.02rem; }
+  .fac-table__sub { color: rgba(255, 255, 255, .78); }
+  .fac-table td { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: .3rem .75rem; padding: .7rem 1rem; border-top: 1px solid var(--line); }
+  .fac-table td > * { grid-column: 2; }
+  .fac-table td::before { grid-row: 1; content: attr(data-label); font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-soft); padding-top: .2rem; }
+  .fac-table td:nth-of-type(1) { border-top: 0; }
+  .fac-table__price, .fac-table__venue { min-width: 0; }
+  .fac-table__checked a { margin: 0; }
+  .fac-table__checked { white-space: normal; }
+  .fac-table tbody tr:nth-child(even) .fac-chip--quiet { background: var(--sand-3, #E6DFD0); }
+}
