@@ -47,6 +47,7 @@ function bootstrap(): void {
 	add_filter( 'wpseo_title', __NAMESPACE__ . '\title' );
 	add_filter( 'wpseo_metadesc', __NAMESPACE__ . '\description' );
 	add_filter( 'wpseo_canonical', __NAMESPACE__ . '\canonical' );
+	add_filter( 'wpseo_robots', __NAMESPACE__ . '\robots' );
 	/*
 	 * og:url answers from the same source as the canonical.
 	 *
@@ -204,6 +205,20 @@ function bridge(): void {
 		$ids = implode( ',', array_filter( array_map( 'sanitize_title', array_slice( (array) wp_unslash( $_GET['pick'] ), 0, MAX_PICK ) ) ) );
 		wp_safe_redirect( home_url( '/' . PATH . '/' . ( '' !== $ids ? '?with=' . rawurlencode( $ids ) . '#result' : '' ) ) );
 		exit;
+	}
+
+	/*
+	 * ?with=pilates,yoga and ?with=yoga,pilates are /compare/yoga-vs-pilates/
+	 * -- the same two columns, under the page written for them. url_for()
+	 * already links there; this catches shared and old links, in either
+	 * order. A pair page itself, or any other set, is left alone.
+	 */
+	if ( ! current_pair() && ! is_build() && '' !== with_state() ) {
+		$slug = pair_for_ids( array_map( static fn( array $e ): string => (string) $e['id'], picked() ) );
+		if ( null !== $slug ) {
+			wp_safe_redirect( pair_url( $slug ), 301 );
+			exit;
+		}
 	}
 
 	// The same trick for the places picker, which posts slugs not ids.
@@ -2016,5 +2031,55 @@ function canonical( $url ) {
 		return home_url( '/' . PATH . '/build/' );
 	}
 	$pair = current_pair();
-	return $pair ? pair_url( (string) $pair['slug'] ) : home_url( '/' . PATH . '/' );
+	if ( $pair ) {
+		return pair_url( (string) $pair['slug'] );
+	}
+	/*
+	 * A picked set is a visitor's own view, not a page anybody searches
+	 * for: robots() keeps it out of the index. Its canonical is the same set
+	 * in a fixed order, so ?with=a,b and ?with=b,a name one address rather
+	 * than pointing a full comparison table at the empty picker. The page
+	 * itself still shows the columns in the order the link gave them.
+	 */
+	foreach ( array( 'with' => with_state(), PLACES_VAR => places_state() ) as $var => $set ) {
+		if ( '' !== $set ) {
+			return home_url( '/' . PATH . '/?' . $var . '=' . $set );
+		}
+	}
+	return home_url( '/' . PATH . '/' );
+}
+
+/** noindex, follow on a picked set; the hub, builder and pairs are untouched. */
+function robots( $robots ) {
+	if ( ! is_compare() || is_build() || current_pair() ) {
+		return $robots;
+	}
+	return ( '' !== with_state() || '' !== places_state() ) ? 'noindex, follow' : $robots;
+}
+
+/**
+ * The ?with= set that actually resolved, sorted, as "a,b" -- '' when none.
+ * Unknown or cross-group ids are dropped exactly as picked() drops them,
+ * so the canonical never names a column the page does not show.
+ */
+function with_state(): string {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
+	if ( ! isset( $_GET['with'] ) || current_pair() ) {
+		return '';
+	}
+	$ids = array_map( static fn( array $e ): string => (string) $e['id'], picked() );
+	sort( $ids );
+	return implode( ',', array_map( 'rawurlencode', $ids ) );
+}
+
+/** The same for ?places= (practice slugs), sorted, or ''. */
+function places_state(): string {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
+	$raw = isset( $_GET[ PLACES_VAR ] ) && is_string( $_GET[ PLACES_VAR ] ) ? sanitize_text_field( wp_unslash( $_GET[ PLACES_VAR ] ) ) : '';
+	if ( '' === $raw ) {
+		return '';
+	}
+	$slugs = array_values( array_unique( array_filter( array_map( 'sanitize_title', explode( ',', $raw ) ) ) ) );
+	sort( $slugs );
+	return implode( ',', array_map( 'rawurlencode', array_slice( $slugs, 0, MAX_PICK ) ) );
 }
