@@ -28,7 +28,7 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 <link rel="apple-touch-icon" href="<?php echo $oria_img; ?>/apple-touch-icon.png" sizes="180x180">
 <meta name="theme-color" content="#0E3B38">
 <?php wp_head(); ?>
-<meta name="commission-factory-verification" content="2abf235307bf48f5ad6c95bc4f3a71b9" />
+<meta name="commission-factory-verification" content="53094dbbe7cc4ae5848446e8580ef2fb" />
 </head>
 
 <body <?php body_class(); ?>>
