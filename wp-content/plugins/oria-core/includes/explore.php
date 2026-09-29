@@ -306,9 +306,10 @@ function city_options(): array {
 	$now = (string) ( Cities\current()['slug'] ?? '' );
 	$out = array();
 
+	// A draft city is offered nowhere; a launching one is reachable.
 	foreach ( Cities\all() as $city ) {
 		$slug = (string) ( $city['slug'] ?? '' );
-		if ( '' === $slug ) {
+		if ( '' === $slug || ! Cities\is_public( $city ) ) {
 			continue;
 		}
 
@@ -358,7 +359,8 @@ function is_explore(): bool {
 function sitemap_entries(): array {
 	$out = array( array( 'loc' => home_url( '/' . PATH . '/' ) ) );
 
-	foreach ( Cities\all() as $city ) {
+	// Only live cities: a draft 404s and a launching one is noindex.
+	foreach ( Cities\live() as $city ) {
 		if ( '' === (string) ( $city['slug'] ?? '' ) ) {
 			continue;
 		}

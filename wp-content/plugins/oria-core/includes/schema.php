@@ -548,7 +548,8 @@ function listing_schema( int $id ): ?array {
 				'@type'           => 'PostalAddress',
 				'streetAddress'   => $address,
 				'addressLocality' => $suburb,
-				'addressRegion'   => 'WA',
+				// The listing's own state: a Melbourne studio is not in WA.
+				'addressRegion'   => function_exists( '\Oria\Core\Cities\state_code' ) ? \Oria\Core\Cities\state_code( \Oria\Core\Cities\of_post( (int) $id ) ) : 'WA',
 				'addressCountry'  => 'AU',
 			)
 		);
@@ -787,7 +788,7 @@ function event_schema( int $id ): ?array {
 					array(
 						'@type'           => 'PostalAddress',
 						'addressLocality' => $suburb,
-						'addressRegion'   => 'WA',
+						'addressRegion'   => function_exists( '\Oria\Core\Cities\state_code' ) ? \Oria\Core\Cities\state_code( \Oria\Core\Cities\of_post( (int) $id ) ) : 'WA',
 						'addressCountry'  => 'AU',
 					)
 				),

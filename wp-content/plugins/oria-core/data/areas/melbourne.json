@@ -1,0 +1,189 @@
+{
+    "_about": "The Melbourne area tree: city > region > suburb. Applied by tools/area-tree-import.php (dry run by default). Hand-defined inner-Melbourne destinations, not every suburb (multi-city brief, Phase 12).",
+    "root": {
+        "slug": "melbourne",
+        "name": "Melbourne"
+    },
+    "regions": [
+        {
+            "slug": "bayside",
+            "name": "Bayside",
+            "suburbs": [
+                {
+                    "slug": "albert-park",
+                    "name": "Albert Park"
+                },
+                {
+                    "slug": "brighton",
+                    "name": "Brighton"
+                },
+                {
+                    "slug": "elwood",
+                    "name": "Elwood"
+                },
+                {
+                    "slug": "hampton",
+                    "name": "Hampton"
+                },
+                {
+                    "slug": "port-melbourne",
+                    "name": "Port Melbourne"
+                },
+                {
+                    "slug": "st-kilda",
+                    "name": "St Kilda"
+                }
+            ]
+        },
+        {
+            "slug": "inner-east",
+            "name": "Inner East",
+            "suburbs": [
+                {
+                    "slug": "abbotsford",
+                    "name": "Abbotsford"
+                },
+                {
+                    "slug": "camberwell",
+                    "name": "Camberwell"
+                },
+                {
+                    "slug": "hawthorn",
+                    "name": "Hawthorn"
+                },
+                {
+                    "slug": "kew",
+                    "name": "Kew"
+                },
+                {
+                    "slug": "richmond",
+                    "name": "Richmond"
+                }
+            ]
+        },
+        {
+            "slug": "inner-north",
+            "name": "Inner North",
+            "suburbs": [
+                {
+                    "slug": "brunswick",
+                    "name": "Brunswick"
+                },
+                {
+                    "slug": "brunswick-east",
+                    "name": "Brunswick East"
+                },
+                {
+                    "slug": "carlton",
+                    "name": "Carlton"
+                },
+                {
+                    "slug": "carlton-north",
+                    "name": "Carlton North"
+                },
+                {
+                    "slug": "collingwood",
+                    "name": "Collingwood"
+                },
+                {
+                    "slug": "fitzroy",
+                    "name": "Fitzroy"
+                },
+                {
+                    "slug": "fitzroy-north",
+                    "name": "Fitzroy North"
+                },
+                {
+                    "slug": "northcote",
+                    "name": "Northcote"
+                },
+                {
+                    "slug": "thornbury",
+                    "name": "Thornbury"
+                }
+            ]
+        },
+        {
+            "slug": "inner-south",
+            "name": "Inner South",
+            "suburbs": [
+                {
+                    "slug": "armadale-melbourne",
+                    "name": "Armadale"
+                },
+                {
+                    "slug": "prahran",
+                    "name": "Prahran"
+                },
+                {
+                    "slug": "south-melbourne",
+                    "name": "South Melbourne"
+                },
+                {
+                    "slug": "south-yarra",
+                    "name": "South Yarra"
+                },
+                {
+                    "slug": "toorak",
+                    "name": "Toorak"
+                },
+                {
+                    "slug": "windsor",
+                    "name": "Windsor"
+                }
+            ]
+        },
+        {
+            "slug": "inner-west",
+            "name": "Inner West",
+            "suburbs": [
+                {
+                    "slug": "footscray",
+                    "name": "Footscray"
+                },
+                {
+                    "slug": "kensington",
+                    "name": "Kensington"
+                },
+                {
+                    "slug": "seddon",
+                    "name": "Seddon"
+                },
+                {
+                    "slug": "williamstown",
+                    "name": "Williamstown"
+                },
+                {
+                    "slug": "yarraville",
+                    "name": "Yarraville"
+                }
+            ]
+        },
+        {
+            "slug": "cbd",
+            "name": "Melbourne CBD & Surrounds",
+            "suburbs": [
+                {
+                    "slug": "docklands",
+                    "name": "Docklands"
+                },
+                {
+                    "slug": "east-melbourne",
+                    "name": "East Melbourne"
+                },
+                {
+                    "slug": "melbourne-cbd",
+                    "name": "Melbourne CBD"
+                },
+                {
+                    "slug": "north-melbourne",
+                    "name": "North Melbourne"
+                },
+                {
+                    "slug": "southbank",
+                    "name": "Southbank"
+                }
+            ]
+        }
+    ]
+}

@@ -116,7 +116,8 @@ function centre_name( int $post_id ): string {
 		$terms = get_the_terms( $post_id, Taxonomies\AREA );
 		foreach ( is_array( $terms ) ? $terms : array() as $term ) {
 			$city = \Oria\Core\Cities\for_area( $term );
-			if ( is_array( $city ) && ! empty( $city['slug'] ) && 'perth' !== $city['slug'] ) {
+			// Any city but the default names itself; the default says "the CBD".
+			if ( is_array( $city ) && ! empty( $city['slug'] ) && ! \Oria\Core\Cities\is_default( $city ) ) {
 				return \Oria\Core\Cities\name( $city );
 			}
 		}

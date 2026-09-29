@@ -202,7 +202,26 @@ function regions( array $args = array() ): array {
 		return array();
 	}
 
-	return array_values( array_filter( $terms, __NAMESPACE__ . '\is_region' ) );
+	/*
+	 * A draft city's regions are not offered anywhere. Melbourne's tree can
+	 * exist while its city is still a draft, and without this its six
+	 * regions went into every page's region filter and into llms.txt.
+	 */
+	return array_values(
+		array_filter(
+			$terms,
+			static function ( \WP_Term $t ): bool {
+				if ( ! is_region( $t ) ) {
+					return false;
+				}
+				if ( ! function_exists( '\Oria\Core\Cities\for_area' ) ) {
+					return true;
+				}
+				$city = \Oria\Core\Cities\for_area( $t );
+				return null === $city || \Oria\Core\Cities\is_public( $city );
+			}
+		)
+	);
 }
 
 /**

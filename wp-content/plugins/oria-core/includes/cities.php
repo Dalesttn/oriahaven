@@ -493,8 +493,17 @@ function guard_draft(): void {
 		return;
 	}
 
-	$slug = (string) get_query_var( QUERY_VAR );
-	if ( '' === $slug || ! exists( $slug ) || is_public( get( $slug ) ) ) {
+	$slug  = (string) get_query_var( QUERY_VAR );
+	$draft = '' !== $slug && exists( $slug ) && ! is_public( get( $slug ) );
+
+	// /area/melbourne/..., the city's own area pages: the same rule. The
+	// area tree can be in place while the city is still a draft.
+	if ( ! $draft && is_tax( Taxonomies\AREA ) ) {
+		$obj  = get_queried_object();
+		$city = $obj instanceof \WP_Term ? for_area( $obj ) : null;
+		$draft = null !== $city && ! is_public( $city );
+	}
+	if ( ! $draft ) {
 		return;
 	}
 
@@ -580,6 +589,36 @@ function metro( ?array $city = null ): string {
 function region( ?array $city = null ): string {
 	$city = $city ?? current();
 	return (string) ( $city['region'] ?? name( $city ) );
+}
+
+/** "WA" / "VIC" -- the postal state, for addressRegion. */
+function state_code( ?array $city = null ): string {
+	$city = $city ?? current();
+	return (string) ( $city['state_code'] ?? default_city()['state_code'] ?? 'WA' );
+}
+
+/**
+ * The city a post (listing or event) belongs to, from its area terms; the
+ * default city when it has none. Unlike current(), this answers for any
+ * post, not just the one being viewed -- structured data for a list of
+ * listings needs each one's own state.
+ *
+ * @return array<string, mixed>
+ */
+function of_post( int $post_id ): array {
+	static $memo = array();
+	if ( ! isset( $memo[ $post_id ] ) ) {
+		$found = null;
+		$terms = get_the_terms( $post_id, Taxonomies\AREA );
+		foreach ( is_array( $terms ) ? $terms : array() as $term ) {
+			$found = for_area( $term );
+			if ( null !== $found ) {
+				break;
+			}
+		}
+		$memo[ $post_id ] = $found ?? default_city();
+	}
+	return $memo[ $post_id ];
 }
 
 /**
