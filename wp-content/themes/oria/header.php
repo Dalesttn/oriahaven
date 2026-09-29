@@ -29,6 +29,7 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 <meta name="theme-color" content="#0E3B38">
 <?php wp_head(); ?>
 </head>
+<meta name="commission-factory-verification" content="2abf235307bf48f5ad6c95bc4f3a71b9" />
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <a class="skip-link" href="#main"><?php esc_html_e( 'Skip to content', 'oria' ); ?></a>
