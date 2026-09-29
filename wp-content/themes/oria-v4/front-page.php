@@ -646,7 +646,10 @@ $oria_short = static function ( string $name ): string {
 		<?php
 		foreach ( $oria_events as $oria_i => $oria_ev ) :
 			$oria_lead  = 0 === $oria_i;
-			$oria_evimg = get_the_post_thumbnail_url( $oria_ev, $oria_lead ? 'large' : 'medium' );
+			// The event's own image, else the workshop placeholder -- never a blank block.
+			$oria_evimg = function_exists( '\Oria\Theme\event_image_or_placeholder' )
+				? \Oria\Theme\event_image_or_placeholder( $oria_ev->ID, $oria_lead ? 'large' : 'medium' )
+				: (string) get_the_post_thumbnail_url( $oria_ev, $oria_lead ? 'large' : 'medium' );
 			$oria_ef    = $oria_feel( $oria_ev );
 			$oria_ew    = $oria_ev_where( $oria_ev );
 			?>

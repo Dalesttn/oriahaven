@@ -134,3 +134,4 @@ real Perth event.
 | event/hero-1600/960.webp | https://www.pexels.com/photo/5325476/ | Miguel Delima |
 | event/wo-hero-1400/800.webp (What's On split hero, 16:10: a group doing yoga outdoors under palms, not a listed event) | https://www.pexels.com/photo/8172935/ | RDNE Stock project |
 | event/weekend-hero-1600/960.webp | https://www.pexels.com/photo/6339383/ | Pavel Danilyuk |
+| event/workshop-placeholder-1600/900.webp (fallback for events with no image: a group sitting in a circle in a studio; not a listed event) | https://www.pexels.com/photo/7596882/ | Pavel Danilyuk |

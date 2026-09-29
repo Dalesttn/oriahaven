@@ -2193,6 +2193,25 @@ function category_events( \WP_Term $term, ?array $city = null ): array {
 }
 
 /**
+ * An event's own image, else the workshop placeholder: a calm, generic
+ * photo of a group in a studio (Pexels, credited in oria-v4 CREDITS.md),
+ * never another event's banner. For the spots that showed an empty block
+ * when an event had no image: the front page's "Coming up", This weekend
+ * and the category event band. (What's On keeps its type-matched scenes.)
+ *
+ * @param string $size 'large' (1600px) or anything else (900px).
+ */
+function event_image_or_placeholder( int $event_id, string $size = 'medium_large' ): string {
+	$url = (string) get_the_post_thumbnail_url( $event_id, $size );
+	return '' !== $url ? $url : event_placeholder( 'large' === $size ? 1600 : 900 );
+}
+
+/** The workshop placeholder's URL at 1600 or 900 wide. */
+function event_placeholder( int $width = 900 ): string {
+	return get_stylesheet_directory_uri() . '/assets/img/event/workshop-placeholder-' . ( $width >= 1200 ? 1600 : 900 ) . '.webp';
+}
+
+/**
  * A photograph to stand in for an event that has none of its own.
  *
  * Aggregated finds and member events awaiting an upload used to show an emoji
