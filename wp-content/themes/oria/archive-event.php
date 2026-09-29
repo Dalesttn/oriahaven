@@ -339,7 +339,7 @@ $oria_row = static function ( array $r ) use ( $oria_ico ): void {
 			<?php if ( $oria_thumb ) : ?>
 				<?php echo get_the_post_thumbnail( $oria_ev, 'medium_large', array( 'loading' => 'lazy', 'decoding' => 'async', 'alt' => '', 'sizes' => '(max-width: 40rem) 100vw, (max-width: 64rem) 50vw, 400px' ) ); ?>
 			<?php else : ?>
-				<img class="wkrow__scene" src="<?php echo esc_url( \Oria\Theme\event_scene( $oria_ev->ID ) ); ?>" alt="" loading="lazy" decoding="async">
+				<img class="wocard__logo" src="<?php echo esc_url( \Oria\Theme\event_logo_placeholder( 600 ) ); ?>" srcset="<?php echo esc_url( \Oria\Theme\event_logo_placeholder( 600 ) ); ?> 600w, <?php echo esc_url( \Oria\Theme\event_logo_placeholder( 1200 ) ); ?> 1200w" sizes="(max-width: 40rem) 100vw, (max-width: 64rem) 50vw, 400px" width="600" height="400" alt="" loading="lazy" decoding="async">
 			<?php endif; ?>
 			<span class="wocard__date" aria-hidden="true">
 				<span class="wocard__dow"><?php echo esc_html( gmdate( 'D', $r['ts'] ) ); ?></span>

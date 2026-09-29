@@ -2212,6 +2212,14 @@ function event_placeholder( int $width = 900 ): string {
 }
 
 /**
+ * Oria Haven logo on deep green (3:2), for event cards with no image of
+ * their own. Built from the real mark and wordmark fonts.
+ */
+function event_logo_placeholder( int $width = 600 ): string {
+	return get_stylesheet_directory_uri() . '/assets/img/event/logo-placeholder-' . ( $width > 600 ? 1200 : 600 ) . '.webp';
+}
+
+/**
  * A photograph to stand in for an event that has none of its own.
  *
  * Aggregated finds and member events awaiting an upload used to show an emoji
