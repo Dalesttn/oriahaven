@@ -23,17 +23,20 @@
 
 use Oria\Core\FacilityAccess as FA;
 
-$facility = sanitize_key( (string) ( $args[0] ?? '' ) );
-$apply    = 'apply' === (string) ( $args[1] ?? '' );
-$file     = ORIA_CORE_DIR . 'data/facility-access/' . $facility . '.json';
-if ( '' === $facility || ! is_readable( $file ) ) {
-	WP_CLI::error( 'Usage: facility-access-import.php <facility> [apply]; no data file at ' . $file );
+// The argument names the data file; the file may name its facility (a
+// Melbourne pilot file is "melbourne-pilot-sauna" for facility "sauna").
+$name  = sanitize_key( (string) ( $args[0] ?? '' ) );
+$apply = 'apply' === (string) ( $args[1] ?? '' );
+$file  = ORIA_CORE_DIR . 'data/facility-access/' . $name . '.json';
+if ( '' === $name || ! is_readable( $file ) ) {
+	WP_CLI::error( 'Usage: facility-access-import.php <data file> [apply]; no data file at ' . $file );
 }
 $data = json_decode( (string) file_get_contents( $file ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 if ( ! is_array( $data ) || empty( $data['venues'] ) ) {
 	WP_CLI::error( 'Data file has no venues.' );
 }
-$service = (string) ( $data['service_term'] ?? $facility );
+$facility = sanitize_key( (string) ( $data['facility'] ?? $name ) );
+$service  = (string) ( $data['service_term'] ?? $facility );
 WP_CLI::log( ( $apply ? 'APPLY' : 'DRY RUN' ) . " -- {$facility}, " . count( $data['venues'] ) . ' venues, data checked ' . ( $data['checked'] ?? '?' ) );
 
 $host = static fn( string $u ): string => preg_replace( '/^www\./', '', strtolower( (string) wp_parse_url( $u, PHP_URL_HOST ) ) );
@@ -114,12 +117,28 @@ foreach ( $data['venues'] as $v ) {
 			continue;
 		}
 		update_field( 'field_oria_website', (string) ( $v['website'] ?? '' ), $id );
-		update_field( 'field_oria_address', (string) $c['suburb'] . ' WA', $id );
+		// The published street address when there is one; else "Suburb STATE".
+		update_field( 'field_oria_address', (string) ( $c['address'] ?? ( $c['suburb'] . ' ' . ( $c['state'] ?? 'WA' ) ) ), $id );
 		update_field( 'field_oria_kind', (string) ( $c['kind'] ?? 'place' ), $id );
 		update_field( 'field_oria_join_url', (string) ( $c['join_url'] ?? '' ), $id );
-		wp_set_object_terms( $id, array( (string) $c['practice'] ), 'practice' );
+		if ( ! empty( $c['phone'] ) ) {
+			update_field( 'field_oria_phone', (string) $c['phone'], $id );
+		}
+		if ( ! empty( $c['booking_url'] ) ) {
+			update_field( 'field_oria_booking_url', (string) $c['booking_url'], $id );
+		}
+		wp_set_object_terms( $id, array_map( 'strval', (array) $c['practice'] ), 'practice' );
+		foreach ( array( 'services' => 'service', 'specialties' => 'specialty' ) as $key => $tax ) {
+			if ( ! empty( $c[ $key ] ) ) {
+				wp_set_object_terms( $id, array_map( 'strval', (array) $c[ $key ] ), $tax );
+			}
+		}
 		$areas = array_values( array_filter( array( (string) $c['region'], (string) ( $c['suburb_term'] ?? '' ) ) ) );
 		wp_set_object_terms( $id, $areas, 'area' );
+		if ( ! empty( $c['flags'] ) ) {
+			// Shown in red in the "Public-source research" box: settle before publishing.
+			update_post_meta( $id, '_oria_src_flags', wp_slash( (string) $c['flags'] ) );
+		}
 		$batch = (string) ( $data['batch'] ?? gmdate( 'Y-m-d' ) . '-' . $facility );
 		update_post_meta( $id, '_oria_src_batch', $batch );
 		update_post_meta( $id, '_oria_src_key', $slug );

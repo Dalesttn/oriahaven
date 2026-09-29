@@ -76,6 +76,9 @@ const KINDS = array(
 	'intro_offer'       => 'Introductory offer',
 	'concession'        => 'Concession',
 	'couple_or_group'   => 'Couple or group',
+	'contrast_session'  => 'Contrast session',
+	'private_session'   => 'Private session',
+	'pack'              => 'Pack of visits',
 );
 
 function bootstrap(): void {

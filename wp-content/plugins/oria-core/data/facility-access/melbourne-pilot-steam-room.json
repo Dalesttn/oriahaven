@@ -1,0 +1,706 @@
+{
+  "facility": "steam-room",
+  "service_term": "steam-room",
+  "checked": "2026-09-29",
+  "batch": "2026-09-29-melbourne-sauna-pilot",
+  "venues": [
+    {
+      "slug": "soak-bathhouse-south-yarra",
+      "website": "https://soakbathhouse.com.au/locations/south-yarra",
+      "row": {
+        "status": "confirmed",
+        "setting": "shared",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Two mineral pools (34C and 38C)",
+          "Cold plunge and drench bucket (12.5C)",
+          "Dry cedar sauna",
+          "Steam room",
+          "Herbal tea and water",
+          "1 towel hire"
+        ],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "Included",
+        "essentials": [
+          "Showers: express changerooms with toiletries",
+          "Parking: No on-site parking; paid parking at Como Centre car park (650 Chapel St) and metered street parking",
+          "Hours: Opens from 6:30am daily (closing time not published)"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://booking.soakbathhouse.com.au",
+        "rules_url": "https://soakbathhouse.com.au/locations/south-yarra",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Soak Origin",
+            "kind": "bathhouse_session",
+            "price": 59.95,
+            "basis": "per person, off-peak Mon-Thu",
+            "people": 1,
+            "duration": 90,
+            "conditions": "Peak Fri-Sun $69.95. Includes mineral pools, cold plunge, cedar sauna, steam room, 1 towel hire. Price shown on brand-wide pricing page, not branch page.",
+            "main": true
+          },
+          {
+            "product": "Soak Origin (peak)",
+            "kind": "bathhouse_session",
+            "price": 69.95,
+            "basis": "per person, peak Fri-Sun",
+            "people": 1,
+            "duration": 90,
+            "conditions": "Brand-wide pricing page",
+            "main": false
+          },
+          {
+            "product": "Soak Reset",
+            "kind": "bathhouse_session",
+            "price": 39.95,
+            "basis": "per person, off-peak",
+            "people": 1,
+            "duration": 60,
+            "conditions": "6:30am-9:30am only; peak $49.95",
+            "main": false
+          },
+          {
+            "product": "Soak Alchemy",
+            "kind": "bathhouse_session",
+            "price": 89.95,
+            "basis": "per person, off-peak",
+            "people": 1,
+            "duration": 90,
+            "conditions": "Adds 2 drinks, snack, padlock hire; peak $99.95",
+            "main": false
+          },
+          {
+            "product": "Soak Sanctuary",
+            "kind": "treatment_bundle",
+            "price": 169.95,
+            "basis": "per person, off-peak",
+            "people": 1,
+            "duration": 140,
+            "conditions": "50-min massage + 90-min bathhouse; peak $198.95",
+            "main": false
+          },
+          {
+            "product": "Infrared Sauna",
+            "kind": "private_session",
+            "price": 49.95,
+            "basis": "per session, up to 2 people",
+            "people": 2,
+            "duration": 40,
+            "conditions": "",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://soakbathhouse.com.au/locations/south-yarra",
+          "https://soakbathhouse.com.au/pricing"
+        ],
+        "checked": "2026-09-29",
+        "evidence": "Branch page lists address, facilities, 6:30am opening, parking and from-prices. Pricing page gives session lengths, peak/off-peak prices and inclusions (not branch-specific)."
+      }
+    },
+    {
+      "slug": "sense-of-self-collingwood",
+      "website": "https://www.sos-senseofself.com/locations/collingwood/",
+      "row": {
+        "status": "confirmed",
+        "setting": "shared",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Mineral pool 38-40C",
+          "Finnish sauna",
+          "Cold plunge",
+          "Hammam (steam)",
+          "Free lockers",
+          "Toiletries and hair dryer"
+        ],
+        "min_age": 12,
+        "swimwear": "Required (bathers-on)",
+        "towels": "Bring or hire",
+        "essentials": [
+          "Lockers: free",
+          "Showers: yes (warm shower before pool; rain shower)",
+          "Parking: No designated parking; street and nearby paid car parks",
+          "Hours: Monday: 10:00am - 10:45pm; Tuesday - Sunday: 6:30am - 10:45pm"
+        ],
+        "quiet": "Quiet mornings - no talking 6:30am-12pm daily",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://bookings.sos-senseofself.com/webstoreNew/services/dbaa71f0-1ec0-4ef7-9b09-6ec06f82167b",
+        "rules_url": "https://www.sos-senseofself.com/locations/collingwood/",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Bathhouse session (off-peak)",
+            "kind": "bathhouse_session",
+            "price": 65,
+            "basis": "per person",
+            "people": 1,
+            "duration": 120,
+            "conditions": "2 hours including changing time; weekdays",
+            "main": true
+          },
+          {
+            "product": "Bathhouse session (peak)",
+            "kind": "bathhouse_session",
+            "price": 75,
+            "basis": "per person",
+            "people": 1,
+            "duration": 120,
+            "conditions": "Weekends and public holidays",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.sos-senseofself.com/locations/collingwood/"
+        ],
+        "checked": "2026-09-29",
+        "evidence": "Branch page gives address, hours, $65/$75 two-hour pricing, add-ons, quiet mornings, group cap, FAQ on age, lockers, parking, accessibility."
+      }
+    },
+    {
+      "slug": "eq-bathhouse",
+      "website": "https://eq-wellbeing.com/bathhouse",
+      "row": {
+        "status": "confirmed",
+        "setting": "shared",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "38C mineral spa",
+          "Aromatherapy steam room",
+          "Traditional Finnish sauna",
+          "Cold plunge (5-7C)",
+          "Cold pail showers",
+          "Personal locker",
+          "Shower products, hairdryers",
+          "Tea lounge and terrace"
+        ],
+        "min_age": 16,
+        "swimwear": "Required at all times",
+        "towels": "Bring (or $5)",
+        "essentials": [
+          "Lockers: included",
+          "Showers: shower products provided"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://eq-wellbeing.com/booking",
+        "rules_url": "https://eq-wellbeing.com/bathhouse",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "60-minute Bathhouse session",
+            "kind": "bathhouse_session",
+            "price": 59,
+            "basis": "'from', per person",
+            "people": 1,
+            "duration": 60,
+            "conditions": "Self-guided",
+            "main": true
+          },
+          {
+            "product": "90-minute Bathhouse session",
+            "kind": "bathhouse_session",
+            "price": 80,
+            "basis": "per person (live slots shown at $80)",
+            "people": 1,
+            "duration": 90,
+            "conditions": "Self-guided",
+            "main": false
+          },
+          {
+            "product": "Multi-visit packs",
+            "kind": "pack",
+            "price": null,
+            "basis": "3-20 visits",
+            "people": 1,
+            "duration": null,
+            "conditions": "Pack prices not read",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://eq-wellbeing.com/bathhouse"
+        ],
+        "checked": "2026-09-29",
+        "evidence": "Bathhouse page gives facilities, 60/90-min prices, what to bring, locker, phone-free rule, mixed-gender, age rule, address and phone."
+      }
+    },
+    {
+      "slug": "brunswick-baths",
+      "website": "https://active.merri-bek.vic.gov.au/brunswick-baths/",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Spa",
+          "Sauna",
+          "Steam room"
+        ],
+        "min_age": null,
+        "swimwear": "Appropriate swimwear required at all times",
+        "towels": "",
+        "essentials": [
+          "Hours: Monday to Friday 5:30am-10:00pm; Saturday & Sunday 7:00am-8:00pm"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://active.merri-bek.vic.gov.au/brunswick-baths/",
+        "rules_url": "https://active.merri-bek.vic.gov.au/brunswick-baths/",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Spa, sauna & steam room (adult 18+)",
+            "kind": "casual_visit",
+            "price": 16,
+            "basis": "per person, single visit",
+            "people": 1,
+            "duration": null,
+            "conditions": "Fees current as of 1 July 2026; concession $12; 10-visit $135.70. Whether pool entry is included is not stated.",
+            "main": true
+          }
+        ],
+        "sources": [
+          "https://active.merri-bek.vic.gov.au/venue/entry-fees/",
+          "https://active.merri-bek.vic.gov.au/brunswick-baths/",
+          "https://active.merri-bek.vic.gov.au/aquatic-facilities/"
+        ],
+        "checked": "2026-09-29",
+        "evidence": "Brunswick Baths fee table lists spa, sauna & steam room adult $16.00, concession $12.00. Centre page gives address, phone, hours and facility list incl. spa, sauna & steam room. Aquatic page states swimwear policy."
+      }
+    },
+    {
+      "slug": "melbourne-sports-and-aquatic-centre",
+      "website": "https://statesportcentres.com.au/venues/msac-aquatics/",
+      "row": {
+        "status": "confirmed",
+        "setting": "shared",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "25m lap pool",
+          "Spa",
+          "Steam room",
+          "Sauna"
+        ],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "Unknown (towels sold at retail)",
+        "essentials": [
+          "Lockers: $3-$4 for 3 hours",
+          "Parking: Multi-deck and Stadiums car parks (paid on exit)",
+          "Hours: Monday-Friday 5:30am-10pm; Saturday 5:30am-8pm; Sunday 7am-8pm; Public Holidays 7am-8pm"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://statesportcentres.com.au/aquatics/casual-aquatics/",
+        "rules_url": "https://statesportcentres.com.au/venues/msac-aquatics/",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Adult SSSS (Spa/Sauna/Steam & Swim)",
+            "kind": "casual_visit",
+            "price": 11.3,
+            "basis": "per person",
+            "people": 1,
+            "duration": null,
+            "conditions": "Child/concession $9.20; cashless",
+            "main": true
+          },
+          {
+            "product": "10 Visit SSSS",
+            "kind": "pack",
+            "price": 96.1,
+            "basis": "10 visits, adult",
+            "people": 1,
+            "duration": null,
+            "conditions": "",
+            "main": false
+          },
+          {
+            "product": "Hydrotherapy session (Recovery Zone)",
+            "kind": "casual_visit",
+            "price": 8.5,
+            "basis": "per person",
+            "people": 1,
+            "duration": null,
+            "conditions": "Hydrotherapy pool with a new cool plunge pool; separate from SSSS",
+            "main": false
+          },
+          {
+            "product": "Aquatics member",
+            "kind": "membership",
+            "price": 45.69,
+            "basis": "per fortnight",
+            "people": 1,
+            "duration": null,
+            "conditions": "Off-peak $31.98",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://statesportcentres.com.au/pricing/",
+          "https://statesportcentres.com.au/aquatics/casual-aquatics/",
+          "https://statesportcentres.com.au/venues/msac-aquatics/"
+        ],
+        "checked": "2026-09-29",
+        "evidence": "Pricing: Adult SSSS $11.30, concession $9.20, lockers, memberships. Casual sessions give shared access to spa, steam, sauna; recovery zone has new cool plunge; 2-person 15-min limit. Venue page: address, hours, parking, gender-neutral changeroom."
+      }
+    },
+    {
+      "slug": "comma-bath-house",
+      "website": "https://commaspaces.com/pages/melbourne-bath-house",
+      "row": {
+        "status": "confirmed",
+        "setting": "shared",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "Heated stone hammam (65C)",
+          "Traditional Finnish sauna (90C)",
+          "Cold plunge (8C)",
+          "Pail shower",
+          "Magnesium hot tub (40C)",
+          "Towel, robe, slides, locker, scrub, refreshments"
+        ],
+        "min_age": null,
+        "swimwear": "Required",
+        "towels": "Included",
+        "essentials": [
+          "Lockers: included",
+          "Showers: two in bath house, one in gender-neutral bathroom",
+          "Hours: Monday, Wednesday, Friday 9:45am-6:00pm; Tuesday, Thursday 9:45am-8:00pm; Saturday 8:45am-5:00pm; Sunday 9:45am-6:00pm"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.fresha.com/providers/comma-w1pgm7kf?pId=76201",
+        "rules_url": "https://commaspaces.com/pages/melbourne-bath-house",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Like the Finns Do",
+            "kind": "bathhouse_session",
+            "price": 65,
+            "basis": "'from', per person",
+            "people": 1,
+            "duration": 75,
+            "conditions": "Robe, towel, slides, locker, scrub, refreshments included",
+            "main": true
+          },
+          {
+            "product": "The Way of Light",
+            "kind": "bathhouse_session",
+            "price": 75,
+            "basis": "'from', per person",
+            "people": 1,
+            "duration": 75,
+            "conditions": "Adds exclusive use of the infrared sauna; Fresha shows 'from A$80'",
+            "main": false
+          },
+          {
+            "product": "Like the Finns Do + 60min massage",
+            "kind": "treatment_bundle",
+            "price": 235,
+            "basis": "'from', per person (Fresha)",
+            "people": 1,
+            "duration": 135,
+            "conditions": "",
+            "main": false
+          },
+          {
+            "product": "The Nordic Hour",
+            "kind": "bathhouse_session",
+            "price": 50,
+            "basis": "per person (Fresha)",
+            "people": 1,
+            "duration": 60,
+            "conditions": "Contents not described; FAQ says the 60-min bath house option excludes robe and slides",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://commaspaces.com/pages/melbourne-bath-house",
+          "https://commaspaces.com/pages/melbourne",
+          "https://www.fresha.com/a/comma-melbourne-melbourne-10-12-hill-street-dw5czwoe"
+        ],
+        "checked": "2026-09-29",
+        "evidence": "Bath house page: 75-min sessions from $65/$75, facilities and temperatures, communal unisex up to 5, inclusions, showers. Melbourne page: address, phone, opening hours, booking link, Instagram. Booking platform lists bath house and bundle prices incl. The Nordic Hour $50."
+      }
+    },
+    {
+      "slug": "the-commons-health-club-south-yarra",
+      "website": "https://www.thecommonshealthclub.com.au/club/south-yarra",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "unknown",
+        "condition": "members only (Fitness + Bathhouse membership, or Fitness members add-on $35/session subject to availability)",
+        "booking": "unknown",
+        "includes": [
+          "Hot magnesium baths (39C)",
+          "Cold plunge pools (5-8C)",
+          "Traditional sauna",
+          "Steam room",
+          "Heated stone benches"
+        ],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [
+          "Hours: Staffed hours: Monday-Thursday 5:30am-9:00pm; Friday 5:30am-8:00pm; Saturday 7:00am-6:00pm; Sunday 8:00am-5:00pm"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.thecommonshealthclub.com.au/location-pricing/south-yarra",
+        "rules_url": "https://www.thecommonshealthclub.com.au/club/south-yarra",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Fitness + Bathhouse (Annual)",
+            "kind": "membership",
+            "price": 129,
+            "basis": "per week",
+            "people": 1,
+            "duration": null,
+            "conditions": "$99 registration",
+            "main": false
+          },
+          {
+            "product": "Fitness + Bathhouse (Flexible)",
+            "kind": "membership",
+            "price": 139,
+            "basis": "per week",
+            "people": 1,
+            "duration": null,
+            "conditions": "No lock-in, 8-week notice, $99 registration",
+            "main": false
+          },
+          {
+            "product": "Bathhouse add-on for Fitness members",
+            "kind": "bathhouse_session",
+            "price": 35,
+            "basis": "per session",
+            "people": 1,
+            "duration": null,
+            "conditions": "Fitness members only, subject to availability",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.thecommonshealthclub.com.au/club/south-yarra",
+          "https://www.thecommonshealthclub.com.au/location-pricing/south-yarra",
+          "https://www.thecommonshealthclub.com.au/experiences/bathhouse"
+        ],
+        "checked": "2026-09-29",
+        "evidence": "Club page: address, staffed hours, membership types. South Yarra pricing: Fitness + Bathhouse $129/$139 pw, $35 bathhouse add-on, bathhouse inclusions. Bathhouse page: temperatures and facilities across Commons clubs."
+      }
+    },
+    {
+      "slug": "richmond-recreation-centre",
+      "website": "https://www.yarracity.vic.gov.au/yarra-leisure/locations/richmond-recreation-centre",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "50m heated indoor pool",
+          "Spa",
+          "Sauna",
+          "Steam room"
+        ],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [
+          "Lockers: $3.60 (free for members)",
+          "Parking: Disabled parking listed",
+          "Hours: Main pool Monday to Friday 6am-9pm, Saturday and Sunday 7am-7pm; spa Mon/Tue/Wed/Fri 6am-8.45pm, Thu 6am-7.30pm, Sat-Sun 7am-6.45pm"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.yarracity.vic.gov.au/yarra-leisure/locations/richmond-recreation-centre",
+        "rules_url": "https://www.yarracity.vic.gov.au/yarra-leisure/locations/richmond-recreation-centre",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Swim, spa and sauna (adult)",
+            "kind": "casual_visit",
+            "price": 16.05,
+            "basis": "per person",
+            "people": 1,
+            "duration": null,
+            "conditions": "Casual prices same across all Yarra Leisure centres; effective to 30 June 2027; concession $9.60",
+            "main": true
+          },
+          {
+            "product": "10 x swim, spa and sauna",
+            "kind": "pack",
+            "price": 144.45,
+            "basis": "10 visits, valid 12 months",
+            "people": 1,
+            "duration": null,
+            "conditions": "Concession $86.40",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://www.yarracity.vic.gov.au/yarra-leisure/locations/richmond-recreation-centre",
+          "https://www.yarracity.vic.gov.au/yarra-leisure/prices-and-membership/casual-prices"
+        ],
+        "checked": "2026-09-29",
+        "evidence": "Centre page lists spa, sauna, steam room, address and hours. Casual prices same across centres: swim, spa and sauna $16.05 adult."
+      }
+    },
+    {
+      "slug": "fitzroy-swimming-pool",
+      "website": "https://www.yarracity.vic.gov.au/yarra-leisure/locations/fitzroy-swimming-pool",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "50m heated outdoor pool",
+          "Spa",
+          "Sauna",
+          "Steam room"
+        ],
+        "min_age": null,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [
+          "Lockers: $3.60 (free for members)",
+          "Parking: Disabled parking listed",
+          "Hours: Main pool Monday to Friday 6am-9pm, Saturday and Sunday 7am-7pm; spa Mon/Tue/Thu/Fri 6am-8.45pm, Wed 6am-7.30pm, Sat-Sun 7am-6.45pm"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://www.yarracity.vic.gov.au/yarra-leisure/locations/fitzroy-swimming-pool",
+        "rules_url": "https://www.yarracity.vic.gov.au/yarra-leisure/locations/fitzroy-swimming-pool",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Swim, spa and sauna (adult)",
+            "kind": "casual_visit",
+            "price": 16.05,
+            "basis": "per person",
+            "people": 1,
+            "duration": null,
+            "conditions": "Casual prices same across all Yarra Leisure centres; effective to 30 June 2027; concession $9.60",
+            "main": true
+          }
+        ],
+        "sources": [
+          "https://www.yarracity.vic.gov.au/yarra-leisure/locations/fitzroy-swimming-pool",
+          "https://www.yarracity.vic.gov.au/yarra-leisure/prices-and-membership/casual-prices"
+        ],
+        "checked": "2026-09-29",
+        "evidence": "Centre page lists spa, sauna, steam room, address and hours. Casual prices same across centres: swim, spa and sauna $16.05 adult."
+      }
+    },
+    {
+      "slug": "northcote-aquatic-and-recreation-centre",
+      "website": "https://northcoteaquaticreccentre.com.au/",
+      "row": {
+        "status": "confirmed",
+        "setting": "unknown",
+        "casual": "yes",
+        "condition": "",
+        "booking": "unknown",
+        "includes": [
+          "25m indoor pool",
+          "50m outdoor pool",
+          "Warm water pool",
+          "Spa",
+          "Sauna",
+          "Steam room"
+        ],
+        "min_age": 18,
+        "swimwear": "",
+        "towels": "",
+        "essentials": [
+          "Hours: Mon-Fri: 25m & Hydropool 6:00am-9:45pm; Sat 6:00am-7:45pm; Sun/Public Holidays 8am-7:45pm (health club from 5:15am)"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://northcoteaquaticreccentre.com.au/",
+        "rules_url": "https://northcoteaquaticreccentre.com.au/",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Swim, Spa, Sauna & Steam",
+            "kind": "casual_visit",
+            "price": 14.9,
+            "basis": "per person, off-peak",
+            "people": 1,
+            "duration": null,
+            "conditions": "Peak 5-8pm Mon-Fri $17.90; concession $11.90 / $14.90 peak",
+            "main": true
+          },
+          {
+            "product": "Spa, Sauna & Steam upgrade after entry",
+            "kind": "casual_visit",
+            "price": 6.3,
+            "basis": "per person",
+            "people": 1,
+            "duration": null,
+            "conditions": "Concession $5.00",
+            "main": false
+          },
+          {
+            "product": "Swim, Spa, Sauna & Steam 20-visit pass",
+            "kind": "pack",
+            "price": 268.2,
+            "basis": "20 visits",
+            "people": 1,
+            "duration": null,
+            "conditions": "",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://northcoteaquaticreccentre.com.au/casual-pricing/",
+          "https://northcoteaquaticreccentre.com.au/centre-hours/"
+        ],
+        "checked": "2026-09-29",
+        "evidence": "Casual pricing: Swim, Spa, Sauna & Steam $14.90, peak $17.90, 18+ label. Centre hours per pool and footer address/phone."
+      }
+    }
+  ]
+}
