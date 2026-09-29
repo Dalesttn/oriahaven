@@ -1,0 +1,59 @@
+{
+  "_about": "One Pexels photo per listing (Pexels licence: free to use, no attribution required; credited anyway). Generic pickleball photos, not the venue. Applied by tools/listing-images.php; never replaces an existing image, and skips a listing with its own Google photos when only_if_no_google is true.",
+  "listings": [
+    {
+      "slug": "george-burnett-leisure-centre",
+      "pexels_id": 32975182,
+      "src": "https://images.pexels.com/photos/32975182/pexels-photo-32975182.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/woman-playing-pickleball-in-indoor-court-32975182/",
+      "photographer": "HONG SON",
+      "alt": "A player hitting a pickleball on an indoor court",
+      "only_if_no_google": true
+    },
+    {
+      "slug": "baldivis-indoor-sports-complex",
+      "pexels_id": 17299528,
+      "src": "https://images.pexels.com/photos/17299528/pexels-photo-17299528.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/paddle-and-ball-on-court-17299528/",
+      "photographer": "Mason Tuttle",
+      "alt": "A pickleball paddle and ball on a blue indoor court",
+      "only_if_no_google": true
+    },
+    {
+      "slug": "nollamara-tennis-club-pickleball",
+      "pexels_id": 37661179,
+      "src": "https://images.pexels.com/photos/37661179/pexels-photo-37661179.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/young-adults-enjoying-a-game-of-pickleball-outdoors-37661179/",
+      "photographer": "Keith Cassill",
+      "alt": "Social pickleball on outdoor hard courts",
+      "only_if_no_google": true
+    },
+    {
+      "slug": "playtennis-perth-mount-lawley",
+      "pexels_id": 35688558,
+      "src": "https://images.pexels.com/photos/35688558/pexels-photo-35688558.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/nighttime-pickleball-game-in-scottsdale-35688558/",
+      "photographer": "Jessie Kiermayr",
+      "alt": "An evening game of doubles pickleball",
+      "only_if_no_google": true
+    },
+    {
+      "slug": "perthect-pickleball-academy",
+      "pexels_id": 29439337,
+      "src": "https://images.pexels.com/photos/29439337/pexels-photo-29439337.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/young-man-playing-pickleball-indoors-in-hanoi-29439337/",
+      "photographer": "Anh Lee",
+      "alt": "A pickleball player playing a forehand",
+      "only_if_no_google": true
+    },
+    {
+      "slug": "pickleball-perth",
+      "pexels_id": 29820786,
+      "src": "https://images.pexels.com/photos/29820786/pexels-photo-29820786.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "page": "https://www.pexels.com/photo/empty-pickleball-court-with-net-in-summer-sun-29820786/",
+      "photographer": "Frank Schrader",
+      "alt": "Outdoor pickleball courts with a net",
+      "only_if_no_google": true
+    }
+  ]
+}

@@ -112,7 +112,15 @@ function data_for( int $post_id, bool $may_fetch = true ): ?array {
 		 * never populated would be the larger fault.
 		 */
 		$claimed = (string) ( $cache['place_name'] ?? '' );
-		if ( '' !== $claimed
+		/*
+		 * A place an editor pinned and confirmed (tools/places-pin.php, or the
+		 * "Places ok" box) is a human decision, not a guess: PlayTennis Perth
+		 * plays at "Mount Lawley Tennis Club", and the name check hid that
+		 * correct place's photos after the first view. The check still guards
+		 * every automatic match.
+		 */
+		$pinned = '' !== $place_id && '1' === (string) get_post_meta( $post_id, '_oria_places_ok', true );
+		if ( '' !== $claimed && ! $pinned
 			&& ! name_matches( (string) get_post_field( 'post_title', $post_id, 'raw' ), $claimed ) ) {
 			return null;
 		}
