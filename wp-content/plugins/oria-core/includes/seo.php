@@ -965,13 +965,17 @@ function retire_city_combo(): void {
  * looks again; it stays because removing it can silently unverify the
  * account months later.
  *
- * @return array<string, string> meta name => content
+ * A name may carry a list of contents: the site now has two Commission
+ * Factory codes (the original, and 2abf... added 29 Sep 2026), each printed
+ * as its own tag.
+ *
+ * @return array<string, string|list<string>> meta name => content(s)
  */
 function verification_tags(): array {
 	return (array) apply_filters(
 		'oria_verification_tags',
 		array(
-			'commission-factory-verification' => '463061dbe63d4140abaa230e927e24f8',
+			'commission-factory-verification' => array( '463061dbe63d4140abaa230e927e24f8', '2abf235307bf48f5ad6c95bc4f3a71b9' ),
 			// Bing Webmaster Tools. Worth having beyond Bing's own traffic:
 			// Microsoft Copilot cites out of the Bing index, and Bing is the
 			// one place a site this new can read its own backlink profile
@@ -982,18 +986,20 @@ function verification_tags(): array {
 }
 
 function verification(): void {
-	foreach ( verification_tags() as $name => $content ) {
-		$name    = trim( (string) $name );
-		$content = trim( (string) $content );
-		if ( '' === $name || '' === $content ) {
-			continue;
-		}
-		printf(
-			'<meta name="%s" content="%s" />' . "
+	foreach ( verification_tags() as $name => $contents ) {
+		$name = trim( (string) $name );
+		foreach ( (array) $contents as $content ) {
+			$content = trim( (string) $content );
+			if ( '' === $name || '' === $content ) {
+				continue;
+			}
+			printf(
+				'<meta name="%s" content="%s" />' . "
 ",
-			esc_attr( $name ),
-			esc_attr( $content )
-		);
+				esc_attr( $name ),
+				esc_attr( $content )
+			);
+		}
 	}
 }
 
