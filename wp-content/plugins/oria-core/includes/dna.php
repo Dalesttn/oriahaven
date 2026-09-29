@@ -64,6 +64,23 @@ const CLINICAL = array(
 /** The listing's own opt-out, set on its edit screen. */
 const HIDE_FIELD = 'hide_experience';
 
+/**
+ * An editor's one-notch correction to the Physical bar, -1, 0 or 1.
+ *
+ * The bar is the kind of session's number, and a kind is broad: one yoga
+ * studio teaches restorative only, another runs strong dynamic classes
+ * alongside. When a business tells us which, this moves their bar one
+ * notch. One notch, because it corrects the kind's number rather than
+ * replacing it, and editors only, because it is their record of what the
+ * business said -- owners cannot set it (ownership.php locks it).
+ */
+const PHYSICAL_ADJUST = 'physical_adjust';
+
+function physical_adjust( int $post_id ): int {
+	$v = function_exists( 'get_field' ) ? get_field( PHYSICAL_ADJUST, $post_id ) : get_post_meta( $post_id, PHYSICAL_ADJUST, true );
+	return max( -1, min( 1, (int) $v ) );
+}
+
 /** The registry dimensions a "feels like" distance is measured over. */
 const VECTOR = array( 'intensity', 'movement', 'quiet', 'guidance', 'social' );
 
@@ -363,7 +380,7 @@ function bars( int $post_id ): array {
 	$afford = afford_scale( '' !== $band ? $band : (string) ( $a['price'] ?? '' ) );
 
 	$rows = array(
-		array( 'physical', __( 'Physical', 'oria' ), (int) $a['intensity'] ),
+		array( 'physical', __( 'Physical', 'oria' ), (int) $a['intensity'] + physical_adjust( $post_id ) ),
 		array( 'quiet', __( 'Quiet', 'oria' ), (int) $a['quiet'] ),
 		array( 'social', __( 'Social', 'oria' ), $social ),
 		array( 'handson', __( 'Hands-on', 'oria' ), touch_scale( (string) ( $a['touch'] ?? '' ) ) ),

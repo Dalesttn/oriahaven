@@ -58,7 +58,7 @@ function bootstrap(): void {
  *   sub       for repeaters: the columns of one row
  *
  * Nothing administrative appears here at all. claim_status, admin_featured,
- * claimed_by, google_place_id, hide_experience and category_priority are
+ * claimed_by, google_place_id, hide_experience, physical_adjust and category_priority are
  * absent by design -- not hidden in the template, absent from the registry,
  * so no request can write one however it is crafted.
  *

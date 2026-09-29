@@ -8,8 +8,9 @@
  * request lives in a file under version control, with who asked and when,
  * and the script shows each field's value before and after.
  *
- * Supported per listing: excerpt (the description), ACF fields, the services
- * list, and taxonomy terms to add or remove. Listings are found by slug.
+ * Supported per listing: title (the business's own name), excerpt (the
+ * description), ACF fields, the services list, and taxonomy terms to add or
+ * remove. The slug never changes, so links keep working. Listings are found by slug.
  *
  * SAFETY
  *   Dry run is the default and writes nothing. --apply writes.
@@ -55,6 +56,17 @@ foreach ( $edits as $e ) {
 	printf( "%s  (%s)\n", $post->post_title, $slug );
 	if ( ! empty( $e['requested_by'] ) ) {
 		printf( "  requested by: %s\n", $e['requested_by'] );
+	}
+
+	// --- name -------------------------------------------------------------
+	if ( isset( $e['title'] ) && (string) $e['title'] !== $post->post_title ) {
+		printf( "  name
+    before: %s
+    after:  %s
+", $post->post_title, (string) $e['title'] );
+		if ( $apply ) {
+			wp_update_post( array( 'ID' => $post->ID, 'post_title' => (string) $e['title'] ) );
+		}
 	}
 
 	// --- description ------------------------------------------------------

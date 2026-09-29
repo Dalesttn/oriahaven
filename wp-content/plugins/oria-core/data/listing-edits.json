@@ -244,5 +244,13 @@
     ]
    }
   }
+ },
+ {
+  "slug": "yoga-lab",
+  "requested_by": "Shawn, YOGALAB, by email 29 Sep 2026 (name written as one word in caps; strong and dynamic classes alongside gentle restorative ones)",
+  "title": "YOGALAB",
+  "fields": {
+   "physical_adjust": 1
+  }
  }
 ]

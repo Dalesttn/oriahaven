@@ -165,6 +165,19 @@ function register_listing_fields(): void {
 					'instructions'  => 'Removes "The experience", "Feels like" and the Experience DNA bars from this listing, and keeps it out of the profile-based matching. Use it when a practice says the profile misdescribes them. Clinics are already excluded automatically.',
 				),
 				array(
+					'key'           => 'field_oria_physical_adjust',
+					'name'          => 'physical_adjust',
+					'label'         => 'Physical effort bar (admin)',
+					'type'          => 'button_group',
+					'choices'       => array(
+						'-1' => 'One notch gentler',
+						'0'  => 'As its kind of session',
+						'1'  => 'One notch more demanding',
+					),
+					'default_value' => '0',
+					'instructions'  => 'The effort bar starts from the profile of the whole kind of session (all yoga, all sauna). Move it one notch only when the business tells you what they teach sits above or below that, and record who asked in listing-edits.json.',
+				),
+				array(
 					'key'          => 'field_oria_verified_at',
 					'name'         => 'verified_at',
 					'label'        => 'Details last verified',

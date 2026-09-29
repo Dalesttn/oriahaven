@@ -847,6 +847,9 @@ while ( have_posts() ) :
 										<summary><?php esc_html_e( 'How these ratings work', 'oria' ); ?></summary>
 										<div class="xp-dna__howbody">
 											<p><?php echo esc_html( sprintf( /* translators: %s: the kind of session */ __( 'These bars are a guide, not a score of this business. Each starts from Oria Haven’s profile of %s as a kind of session, then is adjusted by facts stored on this listing: its price band, its group size and whether it welcomes beginners.', 'oria' ), (string) ( $oria_dnax['label'] ?? '' ) ) ); ?></p>
+											<?php if ( function_exists( '\Oria\Core\Dna\physical_adjust' ) && 0 !== \Oria\Core\Dna\physical_adjust( (int) $oria_id ) ) : ?>
+												<p><?php echo esc_html( 1 === \Oria\Core\Dna\physical_adjust( (int) $oria_id ) ? __( 'Physical effort sits one notch above the usual for this kind of session, because the business told us its timetable includes more demanding classes.', 'oria' ) : __( 'Physical effort sits one notch below the usual for this kind of session, because the business told us its timetable is gentler than most.', 'oria' ) ); ?></p>
+											<?php endif; ?>
 											<p><?php esc_html_e( 'Nobody has rated this particular venue in person, and reviews are not fed in. Where we have no fact about this listing behind a bar — for example how many people share the room — we leave that bar out rather than guess.', 'oria' ); ?></p>
 											<p><?php esc_html_e( 'They describe the room — how quiet, how physical, how many people — never what a session is supposed to do for you.', 'oria' ); ?></p>
 										</div>
