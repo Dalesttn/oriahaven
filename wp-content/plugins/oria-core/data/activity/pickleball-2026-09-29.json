@@ -1,0 +1,309 @@
+{
+  "batch": "2026-09-29-pickleball",
+  "checked": "2026-09-29",
+  "venues": [
+    {
+      "slug": "george-burnett-leisure-centre",
+      "fields": {
+        "join_method": "turn-up",
+        "join_url": "https://southperth.wa.gov.au/community/services/weekend-social-pickleball",
+        "cost_status": "paid",
+        "schedule_text": "Drop-in social pickleball on Sundays 12:30pm to 3pm (includes 5 minutes setup/pack down). Courts can also be booked online at other times.",
+        "meeting_point": "Sports hall; see reception on arrival for a wristband",
+        "beginner": "yes",
+        "phone": "9474 0855",
+        "website": "https://southperth.wa.gov.au/community/facilities/george-burnett-leisure-centre",
+        "address": "Corner Manning Rd and Elderfield Rd, Karawara WA 6152",
+        "price_note": "$7.50 per player per session"
+      },
+      "details": [
+        {
+          "label": "Courts",
+          "value": "Indoor sports hall; the council booking system lists an 'All 4 Pickleball Courts' option"
+        },
+        {
+          "label": "Equipment",
+          "value": "Limited paddles and balls available at social sessions; booking page lists pickleball nets and rackets"
+        },
+        {
+          "label": "Capacity",
+          "value": "Social sessions are first-come, capped at 24 attendees"
+        },
+        {
+          "label": "Coaching",
+          "value": "No coaching at the Sunday social session"
+        },
+        {
+          "label": "Age",
+          "value": "Social session described as suitable for all ages and skill levels"
+        },
+        {
+          "label": "Court booking",
+          "value": "Online via onlineservices.southperth.wa.gov.au"
+        },
+        {
+          "label": "Other group",
+          "value": "Pickleball WA lists West Coast Pickleball (Jim Guilfoile) running Tuesday morning and afternoon sessions here"
+        }
+      ],
+      "sources": [
+        "https://southperth.wa.gov.au/community/services/weekend-social-pickleball",
+        "https://southperth.wa.gov.au/community/facilities/george-burnett-leisure-centre",
+        "https://onlineservices.southperth.wa.gov.au/facilities/facility/george-burnett-leisure-centre/george-burnett-leisure-centre-pickleball-courts",
+        "https://www.pickleballwa.org.au/m/41352/p/1296741"
+      ],
+      "propose_details": [
+        {
+          "label": "Price note (to confirm)",
+          "value": "Social pickleball: $7.50 per player. Court hire (pickleball/badminton) off-peak $26-$30 per hour; casual unsupervised $9 per person per hour; equipment rental $8 per item per use (as summarised from the centre page; editor should confirm the fee table)."
+        }
+      ],
+      "place_id": "ChIJl_FrX5S8MioR5nL65cNvRmg"
+    },
+    {
+      "slug": "perthect-pickleball-academy",
+      "fields": {
+        "join_method": "message",
+        "join_url": "https://www.perthectpickleballacademy.com/Booking",
+        "cost_status": "paid",
+        "price_note": "$20 drop-in for all sessions, all equipment supplied; PPA Card $150 for 10 sessions.",
+        "schedule_text": "Tuesdays 6:45-8:45pm at Hartfield Recreation Centre (199 Hale Rd, Forrestfield); Wednesdays and Fridays 6:30-8:30pm at Belmont Oasis Leisure Centre (Progress Way, Belmont); Wednesdays and Fridays 6:30-8:30pm at Carine Senior High School (51 Everingham St, Carine); Saturdays 4-6pm at Gold Netball Centre (200 Selby St, Jolimont); Sundays 3-5pm at Craigie Leisure Centre (751 Whitfords Ave, Craigie).",
+        "beginner": "yes",
+        "phone": "0403149569 (listed as message only)",
+        "website": "https://www.perthectpickleballacademy.com/"
+      },
+      "details": [
+        {
+          "label": "Equipment",
+          "value": "All equipment supplied (per pricing page)"
+        },
+        {
+          "label": "Booking",
+          "value": "Booking page points to WhatsApp groups (evening/weekend and morning) and a Facebook group; no online booking system"
+        },
+        {
+          "label": "Other programmes",
+          "value": "Site also lists PB Boost and morning sessions; details not captured"
+        },
+        {
+          "label": "Facebook",
+          "value": "Facebook group https://www.facebook.com/groups/527098139421660/ is linked from the club's own site"
+        }
+      ],
+      "sources": [
+        "https://www.perthectpickleballacademy.com/",
+        "https://www.perthectpickleballacademy.com/Social-Sessions/social-sessions",
+        "https://www.perthectpickleballacademy.com/Price",
+        "https://www.perthectpickleballacademy.com/Booking",
+        "https://www.perthectpickleballacademy.com/Contact"
+      ]
+    },
+    {
+      "slug": "pickleball-perth",
+      "fields": {
+        "join_method": "turn-up",
+        "join_url": "https://www.pickleballperth.com.au/play.html",
+        "cost_status": "paid",
+        "price_note": "Social pickleball $10 per session (Sunday, Craigie Leisure Centre); $5 per session (Monday, Ocean Ridge Tennis Club). Private lessons: $40 for 30 minutes (1 player), $70 for 1 hour (1 player), $80 for 1 hour (3+ players).",
+        "schedule_text": "Sundays 3-5pm at Craigie Leisure Centre; Mondays 6:30-8pm at Ocean Ridge Tennis Club, Heathridge (possibly out of date; see conflicts).",
+        "beginner": "yes",
+        "website": "https://www.pickleballperth.com.au/",
+        "address": "Craigie Leisure Centre, 751 Whitfords Avenue, Craigie (home page); Ocean Ridge Tennis Club, 16-20 Sail Terrace, Heathridge WA 6027 (contact page)"
+      },
+      "details": [
+        {
+          "label": "Coaching",
+          "value": "Private lessons with certified coaches for beginners through to advanced"
+        },
+        {
+          "label": "Shop",
+          "value": "Sells paddles, balls, nets and accessories online"
+        },
+        {
+          "label": "Established",
+          "value": "2018"
+        },
+        {
+          "label": "Contact",
+          "value": "Contact page uses an enquiry form only; no phone or email published"
+        }
+      ],
+      "sources": [
+        "https://www.pickleballperth.com.au/",
+        "https://www.pickleballperth.com.au/play.html",
+        "https://www.pickleballperth.com.au/contact.html"
+      ],
+      "mode": "propose"
+    },
+    {
+      "slug": "playtennis-perth-mount-lawley",
+      "fields": {
+        "join_method": "booking",
+        "join_url": "https://allsquads.com.au/coaching/playtennis-perth",
+        "cost_status": "paid",
+        "schedule_text": "Monday 6-7:30pm drills and skills; Tuesday 9-10:30am ladies social; Tuesday 6-7:30pm social match play; Wednesday 6-7:30pm intermediate to advanced doubles; Thursday 6-7:30pm social match play; Friday 9-10:30am social match play; Friday 5:30-7pm social match play; Saturday 9-11am social match play. Players can join at any time during the term.",
+        "meeting_point": "Mt Lawley Tennis Club courts",
+        "beginner": "yes",
+        "phone": "0401 873 440 / 0415 100 044",
+        "website": "https://playtennisperth.com.au/pickleball",
+        "address": "Mt Lawley Tennis Club, 240 Central Ave, Inglewood WA 6052 (corner Hamer Parade & Central Ave)"
+      },
+      "details": [
+        {
+          "label": "Coaching",
+          "value": "An instructor runs each social session, organising the group and giving tips"
+        },
+        {
+          "label": "Equipment",
+          "value": "AllSquads listing for the Tuesday session says all equipment provided; the club's pro shop sells paddles"
+        },
+        {
+          "label": "Levels",
+          "value": "Wednesday night is for intermediate to advanced players; the Tuesday night session is for all levels"
+        },
+        {
+          "label": "Cancellation",
+          "value": "AllSquads: cancel up to 6 hours before for a full account credit"
+        },
+        {
+          "label": "Facilities",
+          "value": "Club bar open during sessions"
+        },
+        {
+          "label": "Pickleball WA",
+          "value": "Listed as a non-affiliated venue"
+        }
+      ],
+      "sources": [
+        "https://playtennisperth.com.au/pickleball",
+        "https://playtennisperth.com.au/contact",
+        "https://allsquads.com.au/classes/tuesday-all-comers-social-session-mu709byd"
+      ],
+      "propose_details": [
+        {
+          "label": "Price note (to confirm)",
+          "value": "$15.00 per session for the Tuesday night all-comers social session (same price for members), via AllSquads. Prices for other sessions were not checked."
+        }
+      ],
+      "place_id": "ChIJ7x9Svoy7MioRs6oOeHrtPwY"
+    },
+    {
+      "slug": "nollamara-tennis-club-pickleball",
+      "fields": {
+        "join_method": "register",
+        "join_url": "https://play.tennis.com.au/nollamaratennisclub/pickleball",
+        "cost_status": "paid",
+        "price_note": "$10 visitor fee per session (members free); equipment included.",
+        "schedule_text": "Tuesday nights 6:30-8:30pm; Thursday nights 6:30-8:30pm; Sunday afternoons 3-5pm (page says 'two sessions' on Sunday but lists only one time).",
+        "meeting_point": "Outdoor courts at the club",
+        "beginner": "yes",
+        "come_alone": "yes",
+        "website": "https://play.tennis.com.au/nollamaratennisclub/pickleball",
+        "address": "Kindra Way, Nollamara, Western Australia 6061"
+      },
+      "details": [
+        {
+          "label": "Booking",
+          "value": "All sessions booked in the TeamReach app, group code NTCTPB"
+        },
+        {
+          "label": "Equipment",
+          "value": "Club supplies paddles and gear; equipment included in the fee"
+        },
+        {
+          "label": "Age",
+          "value": "All ages and abilities welcome"
+        },
+        {
+          "label": "Format",
+          "value": "Social play with rotating partners; quick introduction for newcomers"
+        },
+        {
+          "label": "Courts",
+          "value": "Outdoor (per Pickleball WA); club has grass and hard courts; number of pickleball courts not published"
+        },
+        {
+          "label": "Facilities",
+          "value": "Clubrooms with bar; drinks after games"
+        },
+        {
+          "label": "Pickleball WA contacts",
+          "value": "Pickleball WA lists Aleisha Horridge 0434 600 089 and Kelvin Blundell 0432 145 739"
+        }
+      ],
+      "sources": [
+        "https://play.tennis.com.au/nollamaratennisclub/pickleball",
+        "https://play.tennis.com.au/nollamaratennisclub/contact",
+        "https://www.pickleballwa.org.au/m/41352/p/1296740"
+      ],
+      "place_id": "ChIJJ5Sudc2vMioRU19XABEoR5I",
+      "create": {
+        "title": "Nollamara Tennis Club Pickleball",
+        "kind": "group",
+        "practice": [
+          "pickleball"
+        ],
+        "areas": [
+          "north",
+          "nollamara"
+        ],
+        "excerpt": "Nollamara Tennis Club runs social pickleball three times a week on its outdoor courts. Visitors pay a $10 fee, paddles are supplied, and newcomers get a short introduction before playing with rotating partners.",
+        "flags": "SCHEDULE CONFLICT: Pickleball WA lists Monday 6:30-8:30pm, Thursday 4:30-6:30pm and 6:45-8:45pm, and Sunday 5-7pm; the club's own page (used here) lists Tuesday/Thursday 6:30-8:30pm and Sunday 3-5pm. The club's 'two sessions' on Sunday is unclear. No phone or email on the club site; the two phone numbers are only on Pickleball WA. Booking needs the TeamReach app (an account), which I did not create. come_alone=yes is based on 'rotate partners, meet new mates' and 'just show up'; the editor should confirm this reading."
+      }
+    },
+    {
+      "slug": "baldivis-indoor-sports-complex",
+      "fields": {
+        "join_method": "turn-up",
+        "join_url": "https://rockingham.wa.gov.au/facilities-and-recreation/facilities/baldivis-indoor-sports-complex",
+        "cost_status": "paid",
+        "price_note": "Pickleball games $12 per session, payable on arrival; casual pickleball $5.50 per session, payable on arrival.",
+        "schedule_text": "Pickleball games: Wednesdays 8:30-10:30am and Sundays 4:30-6:30pm. Casual pickleball: Tuesdays and Fridays 9:30-11:30am.",
+        "meeting_point": "Indoor courts",
+        "phone": "9591 0840",
+        "website": "https://rockingham.wa.gov.au/facilities-and-recreation/facilities/baldivis-indoor-sports-complex",
+        "address": "531 Eighty Road, Baldivis"
+      },
+      "details": [
+        {
+          "label": "Courts",
+          "value": "Four indoor multi-sport courts that can be used for pickleball"
+        },
+        {
+          "label": "Equipment",
+          "value": "Bring your own paddle if you have one; wear sports clothing"
+        },
+        {
+          "label": "Opening hours",
+          "value": "Monday-Friday 8:30am-6pm; Saturday-Sunday 8:30am-4:30pm (as published)"
+        },
+        {
+          "label": "Court hire",
+          "value": "Book court or room space by phone (9591 0840) or email"
+        },
+        {
+          "label": "Pickleball WA",
+          "value": "Listed as an affiliate venue"
+        }
+      ],
+      "sources": [
+        "https://rockingham.wa.gov.au/facilities-and-recreation/facilities/baldivis-indoor-sports-complex",
+        "https://www.pickleballwa.org.au/m/41352/p/1296741"
+      ],
+      "place_id": "ChIJLdVhfwCFMioRtLqjPjE_ayk",
+      "create": {
+        "title": "Baldivis Indoor Sports Complex",
+        "kind": "place",
+        "practice": [
+          "pickleball"
+        ],
+        "areas": [
+          "peel",
+          "baldivis"
+        ],
+        "excerpt": "The City of Rockingham runs pay-on-arrival pickleball sessions on the indoor courts at Baldivis Indoor Sports Complex. There are two kinds: pickleball games on Wednesday mornings and Sunday evenings, and cheaper casual sessions on Tuesday and Friday mornings.",
+        "flags": "Pickleball WA lists Wednesday mornings, Friday mornings and Sunday afternoons; the council page (used here) gives Wednesday and Sunday games plus Tuesday/Friday casual sessions. The published weekend hours (closing 4:30pm) conflict with the Sunday 4:30-6:30pm session; ask the centre. The page does not say whether paddles can be borrowed or whether sessions suit beginners. It is at the southern edge of the metro area (City of Rockingham). The council's lifestyle timetable publication returned no results. | Pinned Google place \"Baldivis Indoor Sports Complex\" has no photos; \"Baldivis Sports Complex\" (same address, 10 photos, id ChIJlVY9tJeIMioRMBSGpGNWQzg) may be the same facility -- check before switching."
+      }
+    }
+  ]
+}
