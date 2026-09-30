@@ -934,6 +934,11 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 /* The parent's team part opens its own .section: flatten it into the flow. */
 .xp-part:empty { display: none; }
 .xp-part .section { padding-block: 0; }
+/* Profiles run the full width of the column, one per row. */
+.xp-part .teamgrid { grid-template-columns: minmax(0, 1fr); }
+.xp-part .teamcard { gap: var(--s-5); padding: clamp(1.1rem, 2.4vw, 1.6rem); }
+.xp-part .teamcard__body { flex: 1; }
+.xp-part .teamcard__bio { max-width: 72ch; line-height: 1.6; }
 .xp-part .teamsec__title {
   margin: 0 0 var(--s-5);
   font-size: clamp(1.55rem, 2.3vw, 2rem);

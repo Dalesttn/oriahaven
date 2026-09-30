@@ -1285,6 +1285,12 @@ while ( have_posts() ) :
 			$oria_team = array_values( array_filter( (array) $oria_team, static function ( $oria_tr ) {
 				return is_array( $oria_tr ) && '' !== trim( (string) ( $oria_tr['name'] ?? '' ) );
 			} ) );
+			// The full profile card below says everything the chip row does and
+			// more, so when it has anybody to show the chips stay out -- otherwise
+			// the same person appeared twice, under two headings.
+			if ( function_exists( '\Oria\Core\Team\visible' ) && \Oria\Core\Team\visible( (int) $oria_id ) ) {
+				$oria_team = array();
+			}
 			?>
 			<?php if ( $oria_team ) : ?>
 				<?php $oria_sec++; ?>
