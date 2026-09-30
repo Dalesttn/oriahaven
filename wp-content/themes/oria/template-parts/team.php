@@ -109,6 +109,10 @@ if ( ! $oria_team ) {
 						</div>
 					<?php endif; ?>
 
+					<?php
+					// English goes without saying here; "Also speaks English" read as an error.
+					$oria_person['languages'] = array_values( array_filter( $oria_person['languages'], static fn( $l ) => 'english' !== strtolower( trim( (string) $l ) ) ) );
+					?>
 					<?php if ( $oria_person['languages'] ) : ?>
 						<p class="teamcard__langs">
 							<?php

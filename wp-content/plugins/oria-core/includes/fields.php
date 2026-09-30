@@ -968,8 +968,8 @@ function register_listing_fields(): void {
 							'name'         => 'bio',
 							'label'        => 'Short bio',
 							'type'         => 'textarea',
-							'rows'         => 3,
-							'maxlength'    => 300,
+							'rows'         => 5,
+							'maxlength'    => 600,
 							'instructions' => 'A couple of sentences about how they work. We cannot publish claims about treating conditions or health outcomes.',
 						),
 						array(

@@ -426,7 +426,7 @@ function sections(): array {
 						array( 'name' => 'reg_url', 'type' => 'url', 'label' => __( 'Link to the register', 'oria' ), 'placeholder' => 'https://', 'span' => 'third' ),
 						array( 'name' => 'specialties', 'type' => 'multi', 'label' => __( 'Specialises in', 'oria' ), 'choices' => 'specialties', 'span' => 'full',
 							'help' => __( 'Picked from what this listing already offers. Add a service first if something is missing.', 'oria' ) ),
-						array( 'name' => 'bio', 'type' => 'textarea', 'rows' => 3, 'max' => 300, 'label' => __( 'Short bio', 'oria' ), 'span' => 'full',
+						array( 'name' => 'bio', 'type' => 'textarea', 'rows' => 5, 'max' => 600, 'label' => __( 'Short bio', 'oria' ), 'span' => 'full',
 							'help' => __( 'A couple of sentences on how they work. We cannot publish claims about treating conditions.', 'oria' ) ),
 						array( 'name' => 'consent', 'type' => 'toggle', 'span' => 'full',
 							'label' => __( 'This person has agreed to appear on Oria Haven', 'oria' ),

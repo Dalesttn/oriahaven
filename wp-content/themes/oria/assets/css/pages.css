@@ -3784,7 +3784,7 @@ html.has-sheet { overflow: hidden; }
 .teamcard__role { margin: .15rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
 .teamcard__years { display: block; font-size: var(--fs-xs); color: var(--text-faint); }
 .teamcard__bio { margin: .5rem 0 0; font-size: var(--fs-sm); color: var(--text-soft); }
-.teamcard__quals { margin: .5rem 0 0; padding-left: 1.1rem; font-size: var(--fs-xs); color: var(--text-soft); }
+.teamcard__quals { margin: .5rem 0 0; padding-left: 0; list-style: none; font-size: var(--fs-xs); color: var(--text-soft); }
 .teamcard__quals li { margin-bottom: .15rem; }
 /* A registration somebody can check gets its own line and a mark, because
    it is a different kind of statement from a course somebody says they did. */
@@ -5140,10 +5140,13 @@ article.is-spotlit {
 
 /* Who you'll see. */
 .teamrow { display: flex; flex-wrap: wrap; gap: .7rem; }
-.teamcard { display: flex; align-items: center; gap: .65rem; padding: .55rem .9rem .55rem .6rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-pill); }
-.teamcard__photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-.teamcard__name { display: block; font-size: var(--fs-sm); line-height: 1.25; }
-.teamcard__role { display: block; font-size: var(--fs-xs); color: var(--text-faint); }
+/* Scoped to .teamrow: the full "Who you will see" card (template-parts/
+   team.php) shares these class names, and unscoped they turned it into a
+   giant pill with its photo floating mid-height. */
+.teamrow .teamcard { display: flex; align-items: center; gap: .65rem; padding: .55rem .9rem .55rem .6rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-pill); }
+.teamrow .teamcard__photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.teamrow .teamcard__name { display: block; font-size: var(--fs-sm); line-height: 1.25; }
+.teamrow .teamcard__role { display: block; font-size: var(--fs-xs); color: var(--text-faint); }
 
 /* The map facade: the live embed loads on request. */
 .mapfacade { display: flex; width: 100%; aspect-ratio: 16 / 7; align-items: center; justify-content: center; gap: .6rem; border: 0; cursor: pointer; font: inherit; font-weight: 600; color: var(--deep); background:
