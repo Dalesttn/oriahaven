@@ -328,6 +328,20 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
   font-size: var(--fs-xs);
   color: var(--text-soft);
 }
+.xp-decide__social {
+  display: inline-flex; flex-wrap: wrap; gap: .35rem 1rem;
+  margin-left: auto;
+}
+.xp-decide__soc {
+  display: inline-flex; align-items: center; gap: .4rem;
+  min-height: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+.xp-decide__soc svg { width: 17px; height: 17px; flex: none; }
+.xp-decide__soc:hover span:first-of-type { text-decoration: underline; text-underline-offset: 3px; }
+.xp-decide__soc:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
 .xp-decide__tag {
   padding: .2rem .6rem;
   border: 1px solid var(--line-strong);

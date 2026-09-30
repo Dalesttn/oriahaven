@@ -573,6 +573,19 @@ while ( have_posts() ) :
 		if ( 'online' === $oria_format || 'both' === $oria_format ) {
 			$oria_hfacts[] = array( 'format', esc_html( $oria_format_label ) );
 		}
+
+		// Social links: shown once the listing has an owner (any plan -- they
+		// are free in Tiers\FIELD_TIERS) and filled in. A free-plan owner's
+		// claim_status stays 'unclaimed', so ownership is claimed_by. Read as
+		// post meta: get_field() by name returns nothing off-admin. Used by the
+		// hero strip below and the "Follow along" box further down.
+		$oria_social = 'unclaimed' !== $oria_status || $oria_claimed_by;
+		$oria_ig     = $oria_social ? trim( (string) get_post_meta( $oria_id, 'instagram_url', true ) ) : '';
+		$oria_fbk    = $oria_social ? trim( (string) get_post_meta( $oria_id, 'facebook_url', true ) ) : '';
+		$oria_sico   = array(
+			'ig' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1" fill="currentColor" stroke="none"/></svg>',
+			'fb' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 8h2.5V5H15c-2 0-3.5 1.5-3.5 3.5V11H9v3h2.5v7h3v-7H17l.5-3h-3V8.7c0-.4.3-.7.5-.7Z"/></svg>',
+		);
 		?>
 		<div class="xp-decide" data-xp-decide>
 			<?php if ( $oria_hfacts ) : ?>
@@ -618,6 +631,16 @@ while ( have_posts() ) :
 					esc_html_e( 'Information independently sourced and hand-checked by Oria Haven.', 'oria' );
 				}
 				?>
+				<?php if ( $oria_ig || $oria_fbk ) : ?>
+					<span class="xp-decide__social">
+						<?php if ( $oria_ig ) : ?>
+							<a class="xp-decide__soc" href="<?php echo esc_url( $oria_ig ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="instagram" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo $oria_sico['ig']; // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?><span><?php esc_html_e( 'Instagram', 'oria' ); ?></span><span class="xp-vh"> <?php esc_html_e( '(opens in a new tab)', 'oria' ); ?></span></a>
+						<?php endif; ?>
+						<?php if ( $oria_fbk ) : ?>
+							<a class="xp-decide__soc" href="<?php echo esc_url( $oria_fbk ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="facebook" data-oria-id="<?php echo (int) $oria_id; ?>"><?php echo $oria_sico['fb']; // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?><span><?php esc_html_e( 'Facebook', 'oria' ); ?></span><span class="xp-vh"> <?php esc_html_e( '(opens in a new tab)', 'oria' ); ?></span></a>
+						<?php endif; ?>
+					</span>
+				<?php endif; ?>
 			</p>
 		</div>
 
@@ -1533,13 +1556,7 @@ while ( have_posts() ) :
 
 			<?php
 			/* --- Share and follow ------------------------------------------ */
-			// Social links: shown once the listing has an owner (any plan -- they
-			// are free in Tiers\FIELD_TIERS) and filled in. A free-plan owner's
-			// claim_status stays 'unclaimed', so ownership is claimed_by. Read as
-			// post meta: get_field() by name returns nothing off-admin.
-			$oria_social = 'unclaimed' !== $oria_status || $oria_claimed_by;
-			$oria_ig     = $oria_social ? trim( (string) get_post_meta( $oria_id, 'instagram_url', true ) ) : '';
-			$oria_fbk    = $oria_social ? trim( (string) get_post_meta( $oria_id, 'facebook_url', true ) ) : '';
+			// $oria_ig / $oria_fbk are worked out above the hero strip.
 			?>
 			<div class="xp-extras">
 				<?php if ( ! $oria_owns_this ) : ?>
