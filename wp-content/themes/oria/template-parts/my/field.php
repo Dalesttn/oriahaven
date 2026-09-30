@@ -29,6 +29,9 @@ if ( ! $f || ! $listing ) {
 
 $name  = (string) $f['name'];
 $type  = (string) $f['type'];
+// Named option lists ('practices', 'suburbs') are built at runtime; cast
+// raw, the category dropdown offered one option reading "practices".
+$f['choices'] = Ed\choices_for( $f );
 $val   = Ed\value( $listing, $name );
 $open  = Ed\editable( $listing, $name );
 $id    = 'f-' . $name;
