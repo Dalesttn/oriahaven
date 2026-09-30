@@ -1567,11 +1567,12 @@ while ( have_posts() ) :
 				<?php endif; ?>
 
 				<?php
-				// Social links are a paid feature: their own rail box, shown
-				// only while the listing is claimed AND at least one link is
-				// filled in — otherwise nothing renders at all.
-				$oria_ig  = 'unclaimed' !== $oria_status ? trim( (string) get_field( 'instagram_url', $oria_id ) ) : '';
-				$oria_fbk = 'unclaimed' !== $oria_status ? trim( (string) get_field( 'facebook_url', $oria_id ) ) : '';
+				// Social links: their own rail box, shown once the listing has
+				// an owner on any plan AND at least one link is filled in —
+				// otherwise nothing renders at all.
+				$oria_social = 'unclaimed' !== $oria_status || (int) get_post_meta( $oria_id, 'claimed_by', true );
+				$oria_ig     = $oria_social ? trim( (string) get_post_meta( $oria_id, 'instagram_url', true ) ) : '';
+				$oria_fbk    = $oria_social ? trim( (string) get_post_meta( $oria_id, 'facebook_url', true ) ) : '';
 				?>
 				<?php if ( $oria_ig || $oria_fbk ) : ?>
 				<div class="card">

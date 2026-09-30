@@ -1533,9 +1533,13 @@ while ( have_posts() ) :
 
 			<?php
 			/* --- Share and follow ------------------------------------------ */
-			// Social links are a paid feature: shown only while claimed AND filled in.
-			$oria_ig  = 'unclaimed' !== $oria_status ? trim( (string) get_field( 'instagram_url', $oria_id ) ) : '';
-			$oria_fbk = 'unclaimed' !== $oria_status ? trim( (string) get_field( 'facebook_url', $oria_id ) ) : '';
+			// Social links: shown once the listing has an owner (any plan -- they
+			// are free in Tiers\FIELD_TIERS) and filled in. A free-plan owner's
+			// claim_status stays 'unclaimed', so ownership is claimed_by. Read as
+			// post meta: get_field() by name returns nothing off-admin.
+			$oria_social = 'unclaimed' !== $oria_status || $oria_claimed_by;
+			$oria_ig     = $oria_social ? trim( (string) get_post_meta( $oria_id, 'instagram_url', true ) ) : '';
+			$oria_fbk    = $oria_social ? trim( (string) get_post_meta( $oria_id, 'facebook_url', true ) ) : '';
 			?>
 			<div class="xp-extras">
 				<?php if ( ! $oria_owns_this ) : ?>
