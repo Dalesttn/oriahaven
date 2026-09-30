@@ -119,6 +119,21 @@ add_action(
 		}
 
 		/*
+		 * Work in Wellness: its sheet and script on the work pages, the My
+		 * Oria work views, and listing pages (for "Work here") -- nowhere
+		 * else (brief section 93).
+		 */
+		$oria_work_views = array( 'work', 'work-edit', 'recruit', 'recruit-post', 'recruit-applicants' );
+		if ( ( function_exists( '\Oria\Core\Work\is_work_page' ) && \Oria\Core\Work\is_work_page() )
+			|| is_singular( 'listing' )
+			|| ( function_exists( '\Oria\Core\MyOria\is_page' ) && \Oria\Core\MyOria\is_page() && in_array( \Oria\Core\MyOria\view(), $oria_work_views, true ) ) ) {
+			wp_enqueue_style( 'oria-work', "{$uri}/assets/css/work.css", array( 'oria-pages' ), (string) filemtime( get_theme_file_path( 'assets/css/work.css' ) ) );
+			if ( ! is_singular( 'listing' ) ) {
+				wp_enqueue_script( 'oria-work', "{$uri}/assets/js/work.js", array(), (string) filemtime( get_theme_file_path( 'assets/js/work.js' ) ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
+			}
+		}
+
+		/*
 		 * My Oria: the app shell's stylesheet, on My Oria routes only. It
 		 * is namespaced under the body class, so nothing here can reach
 		 * the public site even if it were loaded there by mistake.

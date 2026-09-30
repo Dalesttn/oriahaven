@@ -150,6 +150,19 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					// there are enough guides for a second level to earn its place.
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Best Of', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( "What's On", 'oria' ) );
+					// Work in Wellness: jobs, shifts, practitioners, and the employer's way in.
+					if ( function_exists( '\Oria\Core\Work\list_url' ) ) {
+						echo '<li class="menu-item-has-children">';
+						printf( '<a class="nav__link" href="%s">%s</a>', esc_url( \Oria\Core\Work\list_url( 'jobs' ) ), esc_html__( 'Work', 'oria' ) );
+						echo '<ul class="sub-menu">';
+						printf( '<li><a href="%s">%s</a></li>', esc_url( \Oria\Core\Work\list_url( 'jobs' ) ), esc_html__( 'Find wellness jobs', 'oria' ) );
+						printf( '<li><a href="%s">%s</a></li>', esc_url( \Oria\Core\Work\list_url( 'shifts' ) ), esc_html__( 'Find casual shifts', 'oria' ) );
+						printf( '<li><a href="%s">%s</a></li>', esc_url( \Oria\Core\Work\list_url( 'pros' ) ), esc_html__( 'Browse practitioners', 'oria' ) );
+						printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/my-oria/work-edit/' ) ), esc_html__( 'Create practitioner profile', 'oria' ) );
+						printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/my-oria/recruit-post/?type=job' ) ), esc_html__( 'Post a job', 'oria' ) );
+						printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/my-oria/recruit-post/?type=shift' ) ), esc_html__( 'Post a shift', 'oria' ) );
+						echo '</ul></li>';
+					}
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
 					// My Oria: the account. A guest is sent to sign in; the page
@@ -242,6 +255,13 @@ if ( ! $oria_has_hero ) {
 				}
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Best Of', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( "What's On", 'oria' ) );
+				if ( function_exists( '\Oria\Core\Work\list_url' ) ) {
+					printf( '<a href="%s">%s</a>', esc_url( \Oria\Core\Work\list_url( 'jobs' ) ), esc_html__( 'Work in wellness', 'oria' ) );
+					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( \Oria\Core\Work\list_url( 'jobs' ) ), esc_html__( 'Find wellness jobs', 'oria' ) );
+					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( \Oria\Core\Work\list_url( 'shifts' ) ), esc_html__( 'Find casual shifts', 'oria' ) );
+					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( \Oria\Core\Work\list_url( 'pros' ) ), esc_html__( 'Browse practitioners', 'oria' ) );
+					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/my-oria/recruit-post/?type=job' ) ), esc_html__( 'Post a job or shift', 'oria' ) );
+				}
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( is_user_logged_in() ? home_url( '/my-oria/' ) : home_url( '/my-oria/login/' ) ), esc_html__( 'My Oria', 'oria' ) );

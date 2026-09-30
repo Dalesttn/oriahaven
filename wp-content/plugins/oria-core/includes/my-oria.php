@@ -54,6 +54,14 @@ const VIEWS = array(
 	// they have opened, a member sees their credits and bookings. Which one
 	// somebody gets is decided inside the view by what they actually are.
 	'pass'         => true,
+	// Work in Wellness. 'work' is the job-seeker side (profile, applications,
+	// alerts, saved), 'recruit*' the employer side. Anyone signed in may use
+	// either: a studio owner looks for cover, a teacher looks for classes.
+	'work'               => true,
+	'work-edit'          => true,
+	'recruit'            => true,
+	'recruit-post'       => true,
+	'recruit-applicants' => true,
 	'login'    => false,
 	'register' => false,
 	'reset'    => false,
@@ -627,6 +635,19 @@ function tabs(): array {
 			'label' => $oria_is_provider ? __( 'Pass places', 'oria' ) : __( 'Oria Pass', 'oria' ),
 			'url'   => url( 'pass' ),
 		);
+	}
+
+	/*
+	 * Work in Wellness. "Work" is everybody's (anyone may look for work);
+	 * "Recruitment" appears once the account is an employer -- it owns a
+	 * listing or has posted a job or shift -- so it never leads somewhere
+	 * empty. The first post is reached from the public "Post a job".
+	 */
+	if ( function_exists( '\Oria\Core\Work\is_employer' ) ) {
+		$tabs[] = array( 'slug' => 'work', 'label' => __( 'Work', 'oria' ), 'url' => url( 'work' ) );
+		if ( \Oria\Core\Work\is_employer( get_current_user_id() ) ) {
+			$tabs[] = array( 'slug' => 'recruit', 'label' => __( 'Recruitment', 'oria' ), 'url' => url( 'recruit' ) );
+		}
 	}
 
 	return $tabs;

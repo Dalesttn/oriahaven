@@ -24,13 +24,21 @@ $oria_icon = static function ( string $slug ): string {
 		'passport' => '<circle cx="10" cy="10" r="6.5"/><path d="M10 3.5v13M3.5 10h13"/>',
 		'pass'     => '<path d="M3.5 7.2A1.7 1.7 0 0 0 5.2 5.5h9.6a1.7 1.7 0 0 0 1.7 1.7v5.6a1.7 1.7 0 0 0-1.7 1.7H5.2a1.7 1.7 0 0 0-1.7-1.7Z"/><path d="M11.6 5.5v1.6M11.6 9.2v1.6M11.6 12.9v1.6"/>',
 		'profile'  => '<circle cx="10" cy="7" r="3.2"/><path d="M4 16.5c.8-3 3.1-4.5 6-4.5s5.2 1.5 6 4.5"/>',
+		'work'     => '<rect x="3" y="6.5" width="14" height="10" rx="1.5"/><path d="M7.5 6.5V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 12.5 5v1.5M3 11h14"/>',
+		'recruit'  => '<circle cx="8" cy="7" r="2.8"/><path d="M3 16.5c.6-2.7 2.5-4 5-4s4.4 1.3 5 4M14 8v5M11.5 10.5h5"/>',
 	);
 	return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . ( $paths[ $slug ] ?? $paths[''] ) . '</svg>';
 };
 ?>
 <nav class="mybottom" aria-label="<?php esc_attr_e( 'My Oria', 'oria' ); ?>">
 	<?php foreach ( MyOria\tabs() as $oria_tab ) : ?>
-		<?php $oria_on = $oria_tab['slug'] === $oria_now; ?>
+		<?php
+		// Recruitment lives on the rail and inside Work; the phone bar keeps to the everyday ones.
+		if ( 'recruit' === $oria_tab['slug'] ) {
+			continue;
+		}
+		$oria_on = $oria_tab['slug'] === $oria_now || ( 'work' === $oria_tab['slug'] && ( 0 === strpos( $oria_now, 'recruit' ) || 'work-edit' === $oria_now ) );
+		?>
 		<a class="mybottom__item<?php echo $oria_on ? ' is-on' : ''; ?>"
 			href="<?php echo esc_url( $oria_tab['url'] ); ?>"<?php echo $oria_on ? ' aria-current="page"' : ''; ?>>
 			<?php echo $oria_icon( (string) $oria_tab['slug'] ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup above. ?>

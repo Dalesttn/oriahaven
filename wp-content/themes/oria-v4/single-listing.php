@@ -1328,6 +1328,14 @@ while ( have_posts() ) :
 			<?php endif; ?>
 
 			<?php
+			/* --- Work here: this business's open jobs and shifts (renders nothing when there are none) --- */
+			if ( function_exists( '\Oria\Core\Work\for_listing' ) && \Oria\Core\Work\for_listing( (int) $oria_id ) ) {
+				$oria_sec++;
+				get_template_part( 'template-parts/work/work-here', null, array( 'listing_id' => (int) $oria_id, 'sec' => $oria_sec ) );
+			}
+			?>
+
+			<?php
 			/*
 			 * Upcoming events run by this listing.
 			 *

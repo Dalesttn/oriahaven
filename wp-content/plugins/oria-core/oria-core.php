@@ -138,6 +138,7 @@ require_once ORIA_CORE_DIR . 'includes/trends.php';
 require_once ORIA_CORE_DIR . 'includes/sources.php';
 require_once ORIA_CORE_DIR . 'includes/sources-cli.php';
 require_once ORIA_CORE_DIR . 'includes/glance.php';
+require_once ORIA_CORE_DIR . 'includes/work.php';
 
 /*
  * Taxonomies register before post types so the post types can attach to them
@@ -230,6 +231,7 @@ MyOria\bootstrap();
 PostUrls\bootstrap();
 Ask\bootstrap();
 Trends\bootstrap();
+Work\bootstrap();
 
 /**
  * Rewrite rules are only rebuilt on activation and deactivation. Flushing on
@@ -243,6 +245,8 @@ register_activation_hook(
 		Db\install();
 		Impact\install();
 		Members\ensure_role();
+		Work\register();
+		Work\Store\install();
 		flush_rewrite_rules();
 	}
 );
@@ -252,6 +256,7 @@ register_deactivation_hook(
 	static function (): void {
 		wp_clear_scheduled_hook( 'oria_purge_member_tokens' );
 		Impact\unschedule();
+		Work\Notify\unschedule();
 		flush_rewrite_rules();
 	}
 );
