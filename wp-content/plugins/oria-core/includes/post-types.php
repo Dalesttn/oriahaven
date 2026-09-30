@@ -59,10 +59,13 @@ function register_listing(): void {
 			'public'          => true,
 			'menu_position'   => 20,
 			'menu_icon'       => 'dashicons-location-alt',
-			// No 'editor'. The WYSIWYG was empty on every listing but three, and
-			// nothing asks a practitioner to write one: the blurb (excerpt) is
-			// what the cards, the meta description and the profile all read.
-			'supports'        => array( 'title', 'excerpt', 'thumbnail', 'revisions', 'custom-fields', 'author', 'comments' ),
+			// 'editor' is the "What it's like" section: the post body is that
+			// section's text (the owner dashboard edits it as listing_body).
+			// It was left out once, when almost no listing had a body, which
+			// left admins no way to write or correct it. Classic editor, per
+			// AdminUI\classic_for_directory_types(). The excerpt is still what
+			// cards and the meta description read.
+			'supports'        => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields', 'author', 'comments' ),
 			// Listings carry their own capability set, so the practitioner
 			// role can edit a listing without gaining any access to posts or
 			// pages. Ownership\grant_admin_caps() gives administrators the lot.
