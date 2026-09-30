@@ -13,7 +13,7 @@
  *                        today's hours, the four actions and a trust note.
  *   2. Story + rail   -- one DOM order that is also the phone order:
  *                        What it's like -> What you'll find here -> Before
- *                        your first visit -> Location and hours -> Why our
+ *                        your first visit -> Who you'll see -> Location and hours -> Why our
  *                        editors picked it -> Reviews. From 60rem a sticky
  *                        rail of practical facts and actions sits beside it;
  *                        below 60rem the rail is not shown (the hero and the
@@ -1103,6 +1103,57 @@ while ( have_posts() ) :
 			<?php endif; ?>
 
 			<?php
+			/* --- Who you'll see ------------------------------------------
+			 * Both of the parent's team renderers: the listing's own team
+			 * repeater, and template-parts/team (Team\visible), which opens
+			 * its own section. */
+			$oria_team = \Oria\Theme\rows( 'team', array(), $oria_id );
+			$oria_team = array_values( array_filter( (array) $oria_team, static function ( $oria_tr ) {
+				return is_array( $oria_tr ) && '' !== trim( (string) ( $oria_tr['name'] ?? '' ) );
+			} ) );
+			// The full profile card below says everything the chip row does and
+			// more, so when it has anybody to show the chips stay out -- otherwise
+			// the same person appeared twice, under two headings.
+			if ( function_exists( '\Oria\Core\Team\visible' ) && \Oria\Core\Team\visible( (int) $oria_id ) ) {
+				$oria_team = array();
+			}
+			?>
+			<?php if ( $oria_team ) : ?>
+				<?php $oria_sec++; ?>
+				<section class="xp-sec" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
+					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Who you\'ll see', 'oria' ); ?></h2>
+					<div class="teamrow">
+						<?php foreach ( array_slice( $oria_team, 0, 6 ) as $oria_tm ) : ?>
+							<?php
+							$oria_tphoto = $oria_tm['photo'] ?? null;
+							if ( is_array( $oria_tphoto ) ) {
+								$oria_tphoto = $oria_tphoto['sizes']['thumbnail'] ?? ( $oria_tphoto['url'] ?? '' );
+							} elseif ( is_numeric( $oria_tphoto ) ) {
+								$oria_tphoto = (string) wp_get_attachment_image_url( (int) $oria_tphoto, 'thumbnail' );
+							} else {
+								$oria_tphoto = '';
+							}
+							?>
+							<div class="teamcard">
+								<?php if ( $oria_tphoto ) : ?>
+									<img class="teamcard__photo" src="<?php echo esc_url( $oria_tphoto ); ?>" alt="" width="56" height="56" loading="lazy">
+								<?php endif; ?>
+								<div>
+									<b class="teamcard__name"><?php echo esc_html( (string) $oria_tm['name'] ); ?></b>
+									<?php if ( ! empty( $oria_tm['role'] ) ) : ?>
+										<span class="teamcard__role"><?php echo esc_html( (string) $oria_tm['role'] ); ?></span>
+									<?php endif; ?>
+								</div>
+							</div>
+						<?php endforeach; ?>
+					</div>
+					<p class="hint" style="margin-top:.6rem"><?php esc_html_e( 'Told to us by the practice.', 'oria' ); ?></p>
+				</section>
+			<?php endif; ?>
+
+			<div class="xp-part"><?php get_template_part( 'template-parts/team', null, array( 'listing_id' => $oria_id ) ); ?></div>
+
+			<?php
 			/* --- Location and hours ------------------------------------------
 			 * Address (or an honest "not provided"), directions, the map on
 			 * request only, then today's hours with the week in a disclosure. */
@@ -1275,57 +1326,6 @@ while ( have_posts() ) :
 					<p class="hint"><?php esc_html_e( 'Best Of guides are an editorial selection. A practice cannot pay to be in one.', 'oria' ); ?></p>
 				</section>
 			<?php endif; ?>
-
-			<?php
-			/* --- Who you'll see ------------------------------------------
-			 * Both of the parent's team renderers: the listing's own team
-			 * repeater, and template-parts/team (Team\visible), which opens
-			 * its own section. */
-			$oria_team = \Oria\Theme\rows( 'team', array(), $oria_id );
-			$oria_team = array_values( array_filter( (array) $oria_team, static function ( $oria_tr ) {
-				return is_array( $oria_tr ) && '' !== trim( (string) ( $oria_tr['name'] ?? '' ) );
-			} ) );
-			// The full profile card below says everything the chip row does and
-			// more, so when it has anybody to show the chips stay out -- otherwise
-			// the same person appeared twice, under two headings.
-			if ( function_exists( '\Oria\Core\Team\visible' ) && \Oria\Core\Team\visible( (int) $oria_id ) ) {
-				$oria_team = array();
-			}
-			?>
-			<?php if ( $oria_team ) : ?>
-				<?php $oria_sec++; ?>
-				<section class="xp-sec" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
-					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Who you\'ll see', 'oria' ); ?></h2>
-					<div class="teamrow">
-						<?php foreach ( array_slice( $oria_team, 0, 6 ) as $oria_tm ) : ?>
-							<?php
-							$oria_tphoto = $oria_tm['photo'] ?? null;
-							if ( is_array( $oria_tphoto ) ) {
-								$oria_tphoto = $oria_tphoto['sizes']['thumbnail'] ?? ( $oria_tphoto['url'] ?? '' );
-							} elseif ( is_numeric( $oria_tphoto ) ) {
-								$oria_tphoto = (string) wp_get_attachment_image_url( (int) $oria_tphoto, 'thumbnail' );
-							} else {
-								$oria_tphoto = '';
-							}
-							?>
-							<div class="teamcard">
-								<?php if ( $oria_tphoto ) : ?>
-									<img class="teamcard__photo" src="<?php echo esc_url( $oria_tphoto ); ?>" alt="" width="56" height="56" loading="lazy">
-								<?php endif; ?>
-								<div>
-									<b class="teamcard__name"><?php echo esc_html( (string) $oria_tm['name'] ); ?></b>
-									<?php if ( ! empty( $oria_tm['role'] ) ) : ?>
-										<span class="teamcard__role"><?php echo esc_html( (string) $oria_tm['role'] ); ?></span>
-									<?php endif; ?>
-								</div>
-							</div>
-						<?php endforeach; ?>
-					</div>
-					<p class="hint" style="margin-top:.6rem"><?php esc_html_e( 'Told to us by the practice.', 'oria' ); ?></p>
-				</section>
-			<?php endif; ?>
-
-			<div class="xp-part"><?php get_template_part( 'template-parts/team', null, array( 'listing_id' => $oria_id ) ); ?></div>
 
 			<?php
 			/*
