@@ -35,7 +35,7 @@ $oria_rate = (string) Work\meta( $oria_id, 'rate' );
 	</span>
 	<span class="wkpro__body">
 		<span class="wkcard__title"><?php echo esc_html( get_the_title( $oria_id ) ); ?></span>
-		<span class="wkcard__org"><?php echo esc_html( implode( ' · ', array_filter( array( (string) Work\meta( $oria_id, 'title' ) ?: Work\profession_name( $oria_id ), Work\place_label( $oria_id ), null !== $oria_km ? sprintf( __( '%s km away', 'oria' ), number_format_i18n( (float) $oria_km, $oria_km < 10 ? 1 : 0 ) ) : '' ) ) ) ); ?></span>
+		<span class="wkcard__org"><?php echo esc_html( implode( ' · ', array_filter( array( (string) Work\meta( $oria_id, 'title' ) ?: Work\profession_name( $oria_id ), Work\place_label( $oria_id ), null !== $oria_km ? ( $oria_km < 1 ? __( 'Same suburb', 'oria' ) : sprintf( __( '%s km away', 'oria' ), number_format_i18n( (float) $oria_km, $oria_km < 10 ? 1 : 0 ) ) ) : '' ) ) ) ); ?></span>
 		<?php if ( '' !== $oria_rate ) : ?><span class="wkpro__meta"><?php echo esc_html( $oria_rate ); ?></span><?php endif; ?>
 		<?php if ( $oria_years ) : ?>
 			<span class="wkpro__meta"><?php echo esc_html( sprintf( _n( '%d year experience', '%d years experience', $oria_years, 'oria' ), $oria_years ) ); ?></span>

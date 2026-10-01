@@ -86,6 +86,11 @@
 		li.textContent = s.getAttribute( 'data-step' ) || '';
 		bar.appendChild( li );
 	} );
+	// On a phone the step names don't fit: "Step 2 of 8 · Location" says it instead.
+	var count = document.createElement( 'p' );
+	count.className = 'wkwizard__count';
+	count.setAttribute( 'aria-live', 'polite' );
+	bar.parentNode.insertBefore( count, bar.nextSibling );
 
 	function valid( step ) {
 		var fields = step.querySelectorAll( 'input, select, textarea' );
@@ -144,8 +149,9 @@
 		box.appendChild( dlist );
 	}
 
-	function show( i ) {
+	function show( i, quiet ) {
 		now = Math.max( 0, Math.min( steps.length - 1, i ) );
+		count.textContent = 'Step ' + ( now + 1 ) + ' of ' + steps.length + ' · ' + ( steps[ now ].getAttribute( 'data-step' ) || '' );
 		steps.forEach( function ( s, k ) { s.classList.toggle( 'is-now', k === now ); } );
 		Array.prototype.forEach.call( bar.children, function ( li, k ) {
 			li.classList.toggle( 'is-done', k < now );
@@ -157,6 +163,9 @@
 		publish.hidden = ! last;
 		if ( last ) {
 			preview();
+		}
+		if ( quiet ) {
+			return; // First paint: leave focus and scroll where the visitor is.
 		}
 		var legend = steps[ now ].querySelector( 'legend' );
 		if ( legend ) {
@@ -179,6 +188,6 @@
 			next.click();
 		}
 	} );
-	show( 0 );
+	show( 0, true );
 	push( 'job_post_started' );
 } )();

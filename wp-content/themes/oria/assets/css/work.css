@@ -363,3 +363,75 @@
   .wkcourse__go { justify-items: start; text-align: left; }
 }
 .wklisting__main small { display: block; }
+
+/* --- Form layout pass (user-friendly forms) ------------------------------------------
+   Every field sits on its own line, sections read top to bottom, headings sit inside
+   their panel (not on its border), and forms keep a comfortable reading width. */
+.wkform fieldset.wkpanel,
+.wkpanel.wkform,
+.wkpanel > .wkform { display: grid; gap: .45rem; align-content: start; }
+.wkform .wkpanel > legend,
+.wkpanel > legend {
+  float: left; width: 100%;
+  margin: 0 0 var(--s-3); padding: 0;
+  font-size: var(--fs-h3); line-height: 1.25;
+}
+.wkform .wkpanel > legend + *,
+.wkpanel > legend + * { clear: both; }
+.wkform label:not(.wkcheck):not(.wkradio):not(.wktoggle) { display: block; margin-top: .6rem; }
+.wkform .hint { margin: .15rem 0 .2rem; }
+.wkform input[type="file"] {
+  display: block; width: 100%; max-width: 32rem;
+  padding: .7rem .8rem; border: 1px dashed var(--line-strong); border-radius: var(--r-md);
+  background: var(--surface); font-size: var(--fs-sm); color: var(--text-soft);
+}
+.wkform input[type="file"]::file-selector-button {
+  margin-right: .8rem; padding: .45rem .9rem; border: 0; border-radius: var(--r-pill);
+  background: var(--ink); color: var(--white); font: inherit; font-weight: 600; cursor: pointer;
+}
+.wkform .wkchecks { margin-top: .2rem; }
+.wkform .wkradio { margin-top: .25rem; }
+.wkform .wklabel { margin-top: var(--s-4); }
+.wkform__row > div > label:first-child { margin-top: .2rem; }
+.wkphoto { margin: .2rem 0 .4rem; }
+
+/* Reading width: long forms are easier to fill in at about 46rem, even on a wide screen. */
+.wkform--profile, .wkwizard, .wkenquire, .wkmy .wkform--inline, .wkapply .wkform { max-width: 46rem; }
+.wkform--profile .wkpanel, .wkwizard .wkpanel { padding: clamp(1.1rem, 3vw, 1.75rem); }
+.wkform__submit { display: flex; gap: .6rem; flex-wrap: wrap; }
+
+/* Buttons the wizard hides must stay hidden (.btn sets display, which beats [hidden]). */
+.wk [hidden], .wkmy [hidden], .wkform [hidden] { display: none !important; }
+
+/* A step heading is focused for screen readers when the step changes; it is not a control. */
+.wkstep > legend:focus { outline: none; }
+
+/* Save bar: a solid floating bar, clear of the phone's bottom menu. */
+.wkform__submit, .wkwizard__nav {
+  position: sticky; z-index: 5;
+  bottom: .75rem;
+  padding: .6rem .75rem; margin-top: var(--s-4);
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+}
+.wkwizard__nav { justify-content: flex-end; }
+@media (max-width: 60rem) {
+  /* My Oria's phone menu is fixed at the bottom (about 64px). */
+  .wkmy .wkform__submit, .wkmy .wkwizard__nav { bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Phone: the progress line becomes "Step 2 of 8 · Location" -- names that do not fit are not shown. */
+.wkwizard__count { display: none; margin: 0 0 var(--s-3); font-size: var(--fs-sm); font-weight: 700; color: var(--text-soft); }
+@media (max-width: 40rem) {
+  .wkwizard__progress li { min-width: 0; font-size: 0; padding-top: 0; }
+  .wkwizard__count { display: block; }
+  .wkwizard__nav { gap: .4rem; }
+  .wkwizard__nav .btn { flex: 1 1 auto; justify-content: center; }
+}
+
+/* Comfortable tap targets on phones. */
+@media (max-width: 40rem) {
+  .wk .btn--sm, .wkmy .btn--sm { min-height: 42px; padding-inline: 1rem; }
+  .wkmy .wklink, .wk .wklink { display: inline-flex; align-items: center; min-height: 40px; }
+  .wkfilters select, .wksort select, .wksort input[type="date"] { min-height: 44px; }
+}

@@ -150,6 +150,54 @@ $oria_offers = array_filter( $oria_apps, static fn( $a ) => 'offered' === $a['st
 
 	<?php if ( $oria_pro ) : ?>
 		<?php
+		$oria_ap    = Work\avail_post( $oria_pro );
+		$oria_stats = Work\pro_stats( $oria_pro, $oria_uid );
+		?>
+		<div class="wkmy__grid">
+			<section class="wkpanel" id="availability">
+				<h2 class="h3"><?php esc_html_e( 'Availability for cover', 'oria' ); ?></h2>
+				<?php if ( $oria_ap ) : ?>
+					<p class="wkavail wkavail--post"><span class="wkavail__dot" aria-hidden="true"></span><?php echo esc_html( sprintf( __( 'On the cover board: %s', 'oria' ), Work\avail_label( $oria_pro ) ) ); ?></p>
+				<?php else : ?>
+					<p class="hint"><?php esc_html_e( 'Free for some extra classes or sessions? Say when, and you go on the cover board for those dates — businesses looking for someone see you first.', 'oria' ); ?></p>
+				<?php endif; ?>
+				<form class="wkform" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<?php echo Work\form_fields( 'oria_work_avail' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+					<div class="wkform__row">
+						<div><label for="wa-from"><?php esc_html_e( 'From', 'oria' ); ?></label><input class="input" id="wa-from" type="date" name="from" min="<?php echo esc_attr( wp_date( 'Y-m-d' ) ); ?>" value="<?php echo esc_attr( $oria_ap['from'] ?? wp_date( 'Y-m-d' ) ); ?>"></div>
+						<div><label for="wa-to"><?php esc_html_e( 'Until', 'oria' ); ?></label><input class="input" id="wa-to" type="date" name="to" required min="<?php echo esc_attr( wp_date( 'Y-m-d' ) ); ?>" max="<?php echo esc_attr( wp_date( 'Y-m-d', strtotime( '+90 days' ) ) ); ?>" value="<?php echo esc_attr( $oria_ap['to'] ?? '' ); ?>"></div>
+					</div>
+					<p class="wklabel"><?php esc_html_e( 'Which days (leave blank for any)', 'oria' ); ?></p>
+					<div class="wkchecks">
+						<?php foreach ( Work\WEEKDAYS as $oria_d => $oria_l ) : ?>
+							<label class="wkcheck"><input type="checkbox" name="days[]" value="<?php echo (int) $oria_d; ?>" <?php checked( in_array( $oria_d, $oria_ap['days'] ?? array(), true ) ); ?>> <?php echo esc_html( $oria_l ); ?></label>
+						<?php endforeach; ?>
+					</div>
+					<label for="wa-note"><?php esc_html_e( 'A short line (optional)', 'oria' ); ?></label>
+					<input class="input" id="wa-note" name="note" maxlength="140" value="<?php echo esc_attr( $oria_ap['note'] ?? '' ); ?>">
+					<p class="hint"><?php esc_html_e( 'For example "Mornings only, happy to travel to the northern suburbs".', 'oria' ); ?></p>
+					<p class="wkmy__acts">
+						<button class="btn btn--dark btn--sm" type="submit"><?php echo esc_html( $oria_ap ? __( 'Update availability', 'oria' ) : __( 'Go on the cover board', 'oria' ) ); ?></button>
+						<?php if ( $oria_ap ) : ?><button class="btn btn--ghost btn--sm" type="submit" name="do" value="clear" formnovalidate><?php esc_html_e( 'Clear', 'oria' ); ?></button><?php endif; ?>
+					</p>
+				</form>
+			</section>
+
+			<section class="wkpanel">
+				<h2 class="h3"><?php esc_html_e( 'Your numbers', 'oria' ); ?></h2>
+				<dl class="wkstats">
+					<div><dt><?php esc_html_e( 'Profile views', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_stats['views'] ) ); ?></dd><small><?php esc_html_e( 'last 30 days', 'oria' ); ?></small></div>
+					<div><dt><?php esc_html_e( 'Views by employers', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_stats['employers'] ) ); ?></dd><small><?php esc_html_e( 'last 30 days', 'oria' ); ?></small></div>
+					<div><dt><?php esc_html_e( 'Invitations', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_stats['invites'] ) ); ?></dd></div>
+					<div><dt><?php esc_html_e( 'Applications', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_stats['apps'] ) ); ?></dd></div>
+					<div><dt><?php esc_html_e( 'Shifts confirmed', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_stats['shifts'] ) ); ?></dd></div>
+				</dl>
+			</section>
+		</div>
+	<?php endif; ?>
+
+	<?php if ( $oria_pro ) : ?>
+		<?php
 		$oria_vreq = array();
 		foreach ( Work\Store\verify_for( $oria_pro ) as $oria_v ) {
 			$oria_vreq[ $oria_v['type'] ] = $oria_vreq[ $oria_v['type'] ] ?? $oria_v; // newest first
@@ -195,54 +243,6 @@ $oria_offers = array_filter( $oria_apps, static fn( $a ) => 'offered' === $a['st
 				<button class="btn btn--dark btn--sm" type="submit"><?php esc_html_e( 'Send for checking', 'oria' ); ?></button>
 			</form>
 		</section>
-	<?php endif; ?>
-
-	<?php if ( $oria_pro ) : ?>
-		<?php
-		$oria_ap    = Work\avail_post( $oria_pro );
-		$oria_stats = Work\pro_stats( $oria_pro, $oria_uid );
-		?>
-		<div class="wkmy__grid">
-			<section class="wkpanel" id="availability">
-				<h2 class="h3"><?php esc_html_e( 'Availability for cover', 'oria' ); ?></h2>
-				<?php if ( $oria_ap ) : ?>
-					<p class="wkavail wkavail--post"><span class="wkavail__dot" aria-hidden="true"></span><?php echo esc_html( sprintf( __( 'On the cover board: %s', 'oria' ), Work\avail_label( $oria_pro ) ) ); ?></p>
-				<?php else : ?>
-					<p class="hint"><?php esc_html_e( 'Free for some extra classes or sessions? Say when, and you go on the cover board for those dates — businesses looking for someone see you first.', 'oria' ); ?></p>
-				<?php endif; ?>
-				<form class="wkform" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-					<?php echo Work\form_fields( 'oria_work_avail' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
-					<div class="wkform__row">
-						<div><label for="wa-from"><?php esc_html_e( 'From', 'oria' ); ?></label><input class="input" id="wa-from" type="date" name="from" min="<?php echo esc_attr( wp_date( 'Y-m-d' ) ); ?>" value="<?php echo esc_attr( $oria_ap['from'] ?? wp_date( 'Y-m-d' ) ); ?>"></div>
-						<div><label for="wa-to"><?php esc_html_e( 'Until', 'oria' ); ?></label><input class="input" id="wa-to" type="date" name="to" required min="<?php echo esc_attr( wp_date( 'Y-m-d' ) ); ?>" max="<?php echo esc_attr( wp_date( 'Y-m-d', strtotime( '+90 days' ) ) ); ?>" value="<?php echo esc_attr( $oria_ap['to'] ?? '' ); ?>"></div>
-					</div>
-					<p class="wklabel"><?php esc_html_e( 'Which days (leave blank for any)', 'oria' ); ?></p>
-					<div class="wkchecks">
-						<?php foreach ( Work\WEEKDAYS as $oria_d => $oria_l ) : ?>
-							<label class="wkcheck"><input type="checkbox" name="days[]" value="<?php echo (int) $oria_d; ?>" <?php checked( in_array( $oria_d, $oria_ap['days'] ?? array(), true ) ); ?>> <?php echo esc_html( $oria_l ); ?></label>
-						<?php endforeach; ?>
-					</div>
-					<label for="wa-note"><?php esc_html_e( 'A short line (optional)', 'oria' ); ?></label>
-					<input class="input" id="wa-note" name="note" maxlength="140" value="<?php echo esc_attr( $oria_ap['note'] ?? '' ); ?>">
-					<p class="hint"><?php esc_html_e( 'For example "Mornings only, happy to travel to the northern suburbs".', 'oria' ); ?></p>
-					<p class="wkmy__acts">
-						<button class="btn btn--dark btn--sm" type="submit"><?php echo esc_html( $oria_ap ? __( 'Update availability', 'oria' ) : __( 'Go on the cover board', 'oria' ) ); ?></button>
-						<?php if ( $oria_ap ) : ?><button class="btn btn--ghost btn--sm" type="submit" name="do" value="clear" formnovalidate><?php esc_html_e( 'Clear', 'oria' ); ?></button><?php endif; ?>
-					</p>
-				</form>
-			</section>
-
-			<section class="wkpanel">
-				<h2 class="h3"><?php esc_html_e( 'Your numbers', 'oria' ); ?></h2>
-				<dl class="wkstats">
-					<div><dt><?php esc_html_e( 'Profile views', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_stats['views'] ) ); ?></dd><small><?php esc_html_e( 'last 30 days', 'oria' ); ?></small></div>
-					<div><dt><?php esc_html_e( 'Views by employers', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_stats['employers'] ) ); ?></dd><small><?php esc_html_e( 'last 30 days', 'oria' ); ?></small></div>
-					<div><dt><?php esc_html_e( 'Invitations', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_stats['invites'] ) ); ?></dd></div>
-					<div><dt><?php esc_html_e( 'Applications', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_stats['apps'] ) ); ?></dd></div>
-					<div><dt><?php esc_html_e( 'Shifts confirmed', 'oria' ); ?></dt><dd><?php echo esc_html( number_format_i18n( $oria_stats['shifts'] ) ); ?></dd></div>
-				</dl>
-			</section>
-		</div>
 	<?php endif; ?>
 
 	<?php if ( $oria_match ) : ?>

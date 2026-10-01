@@ -112,7 +112,8 @@ function pay_label( int $id ): string {
 	if ( ! $min && ! $max ) {
 		return '';
 	}
-	$fmt  = static fn( float $n ): string => '$' . ( $n >= 1000 ? number_format( $n ) : rtrim( rtrim( number_format( $n, 2 ), '0' ), '.' ) );
+	// Dollars as people write them: $65, $37.50 (never $37.5), $85,000.
+	$fmt  = static fn( float $n ): string => '$' . ( $n >= 1000 || floor( $n ) === $n ? number_format( $n ) : number_format( $n, 2 ) );
 	$amt  = ( $max > $min ) ? $fmt( $min ) . '–' . $fmt( $max ) : $fmt( max( $min, $max ) );
 	$tail = PAY_UNITS[ $unit ] ?? '';
 	return trim( $amt . ' ' . ( in_array( $unit, array( 'negotiable', 'commission' ), true ) ? '+ ' . $tail : $tail ) );

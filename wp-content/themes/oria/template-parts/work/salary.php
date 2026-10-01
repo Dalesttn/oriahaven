@@ -13,7 +13,7 @@ use Oria\Core\Work;
 use Oria\Core\Work\Market;
 
 $oria_rows = Market\salary_rows();
-$oria_fmt  = static fn( float $n ): string => '$' . ( $n >= 1000 ? number_format( $n ) : rtrim( rtrim( number_format( $n, 2 ), '0' ), '.' ) );
+$oria_fmt  = static fn( float $n ): string => '$' . ( $n >= 1000 || floor( $n ) === $n ? number_format( $n ) : number_format( $n, 2 ) );
 ?>
 <header class="wkhero">
 	<div class="wrap">
