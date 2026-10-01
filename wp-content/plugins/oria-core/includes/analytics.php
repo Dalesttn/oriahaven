@@ -137,12 +137,18 @@ function total( int $post_id, string $type, int $days ): int {
  *
  * The count now arrives by the same beacon the contact clicks use. A REST
  * request is never cached, so it is counted every time — and the guards
- * that lived in the old hook move here, where they still work: the beacon
- * carries the visitor's cookies, so an owner reading their own listing is
- * still recognised and still not counted.
+ * that lived in the old hook move here.
+ *
+ * WHO IS ASKING. The beacon carries the visitor's cookies but no REST nonce
+ * (sendBeacon cannot set headers), and without a nonce WordPress runs a REST
+ * request as user 0 — so current_user_can() was always false, and owners
+ * reading their own listing were counted as strangers. The account is read
+ * from the logged-in cookie directly instead. That is safe here because it
+ * is only ever used to NOT count; it grants nothing.
  */
 function countable_view( int $post_id ): bool {
-	if ( current_user_can( 'edit_post', $post_id ) ) {
+	$uid = get_current_user_id() ?: (int) wp_validate_auth_cookie( '', 'logged_in' );
+	if ( $uid && user_can( $uid, 'edit_post', $post_id ) ) {
 		return false;
 	}
 	$agent = (string) ( $_SERVER['HTTP_USER_AGENT'] ?? '' );
