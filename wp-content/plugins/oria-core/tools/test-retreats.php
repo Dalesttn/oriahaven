@@ -78,7 +78,14 @@ $ok( 'thin summary excluded', ! R\eligible( $g ) );
 
 // 3. Prices.
 $h = $make( array( 'price_mode' => 'from', 'price_amount' => '1450', 'price_currency' => 'USD', 'price_basis' => 'per person, twin share', 'price_checked' => wp_date( 'Y-m-d', time() - 5 * DAY_IN_SECONDS ) ) );
-$ok( 'fresh price keeps its currency and basis', 'From US$1,450 per person, twin share' === R\price_label( $h ) );
+// A fixed rate, so the test does not depend on today's market or the network.
+set_transient( 'oria_fx_USD', 1.5, HOUR_IN_SECONDS );
+$ok( 'fresh USD price shows about A$ (rounded to $10) with its basis', 'From about A$2,180 per person, twin share' === R\price_label( $h ) );
+$ok( 'source note keeps the provider\'s own figure', 0 === strpos( R\source_note( $h, 'BookRetreats' ), 'Listed as US$1,450 on BookRetreats' ) );
+set_transient( 'oria_fx_USD', 0, HOUR_IN_SECONDS );
+delete_option( 'oria_fx_last' );
+$ok( 'no trustworthy rate keeps the source currency', 'From US$1,450 per person, twin share' === R\price_label( $h ) && '' === R\source_note( $h, 'BookRetreats' ) );
+delete_transient( 'oria_fx_USD' );
 $i = $make( array( 'price_mode' => 'from', 'price_amount' => '900', 'price_currency' => 'AUD', 'price_checked' => wp_date( 'Y-m-d', time() - 45 * DAY_IN_SECONDS ) ) );
 $ok( 'stale price shows Check current price', 'Check current price' === R\price_label( $i ) );
 $ok( 'no price shows Check current price', 'Check current price' === R\price_label( $a ) );

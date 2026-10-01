@@ -63,7 +63,12 @@ $oria_book  = R\get( $oria_id, 'booking' ) ?: 'BookRetreats';
 			<p class="ro-card__exc"><?php echo esc_html( sprintf( /* translators: %s: list */ __( 'Not included: %s', 'oria' ), implode( ', ', $oria_exc ) ) ); ?></p>
 		<?php endif; ?>
 		<div class="ro-card__foot">
-			<p class="ro-card__price"><?php echo esc_html( R\price_label( $oria_id ) ); ?></p>
+			<p class="ro-card__price"><?php echo esc_html( R\price_label( $oria_id ) ); ?>
+				<?php $oria_src = R\source_note( $oria_id, (string) $oria_book ); ?>
+				<?php if ( '' !== $oria_src ) : ?>
+					<span class="ro-card__src"><?php echo esc_html( $oria_src ); ?></span>
+				<?php endif; ?>
+			</p>
 			<a class="ro-card__cta" href="<?php echo esc_url( R\get( $oria_id, 'aff_url' ) ); ?>" target="_blank" rel="sponsored noopener"
 				data-oria-aff="<?php echo (int) $oria_id; ?>" data-oria-aff-place="<?php echo esc_attr( $oria_place ); ?>">
 				<?php

@@ -423,17 +423,90 @@ function price_fresh( int $id ): bool {
 	return $age <= settings()['review_days'];
 }
 
-/** "From A$1,450 per person, twin share", or "Check current price". */
-function price_label( int $id ): string {
+/** The price exactly as the booking provider lists it: "US$2,099". '' when there is no shown price. */
+function source_price( int $id ): string {
 	$amount = get( $id, 'price_amount' );
 	if ( 'from' !== get( $id, 'price_mode' ) || '' === $amount || ! price_fresh( $id ) ) {
-		return __( 'Check current price', 'oria' );
+		return '';
 	}
 	$cur    = get( $id, 'price_currency' ) ?: 'AUD';
 	$symbol = array( 'AUD' => 'A$', 'USD' => 'US$', 'NZD' => 'NZ$', 'EUR' => '€', 'GBP' => '£' )[ $cur ] ?? $cur . ' ';
-	$label  = sprintf( /* translators: %s: price */ __( 'From %s', 'oria' ), $symbol . number_format_i18n( (float) $amount, fmod( (float) $amount, 1.0 ) ? 2 : 0 ) );
-	$basis  = get( $id, 'price_basis' );
+	return $symbol . number_format_i18n( (float) $amount, fmod( (float) $amount, 1.0 ) ? 2 : 0 );
+}
+
+/**
+ * How many Australian dollars one unit of $cur buys, or null when no rate
+ * can be trusted.
+ *
+ * European Central Bank reference rates via frankfurter.dev (free, no key,
+ * published once a working day). Cached 12 hours; the last good rate is
+ * kept for 14 days so a provider outage degrades to a recent figure, then
+ * to showing the source currency -- never to a guessed rate.
+ */
+function aud_rate( string $cur ): ?float {
+	$cur = strtoupper( $cur );
+	if ( 'AUD' === $cur ) {
+		return 1.0;
+	}
+	if ( ! preg_match( '/^[A-Z]{3}$/', $cur ) ) {
+		return null;
+	}
+	$hit = get_transient( 'oria_fx_' . $cur );
+	if ( false !== $hit && is_numeric( $hit ) ) {
+		return (float) $hit > 0 ? (float) $hit : null;
+	}
+	$last = (array) get_option( 'oria_fx_last', array() );
+	$res  = wp_remote_get( 'https://api.frankfurter.dev/v1/latest?base=' . $cur . '&symbols=AUD', array( 'timeout' => 4 ) );
+	$body = is_wp_error( $res ) ? null : json_decode( (string) wp_remote_retrieve_body( $res ), true );
+	$rate = isset( $body['rates']['AUD'] ) ? (float) $body['rates']['AUD'] : 0.0;
+	if ( $rate > 0.01 && $rate < 100000 ) {
+		set_transient( 'oria_fx_' . $cur, $rate, 12 * HOUR_IN_SECONDS );
+		$last[ $cur ] = array( 'rate' => $rate, 'at' => time() );
+		update_option( 'oria_fx_last', $last, false );
+		return $rate;
+	}
+	// The service failed: don't ask again for an hour, and fall back to a recent good rate.
+	$keep = isset( $last[ $cur ]['at'] ) && $last[ $cur ]['at'] > time() - 14 * DAY_IN_SECONDS ? (float) $last[ $cur ]['rate'] : 0.0;
+	set_transient( 'oria_fx_' . $cur, $keep, HOUR_IN_SECONDS );
+	return $keep > 0 ? $keep : null;
+}
+
+/**
+ * "From about A$3,010 per person, junior suite", or "Check current price".
+ *
+ * Australian dollars, because the reader is in Australia. A price listed in
+ * another currency is converted at today's reference rate, rounded to the
+ * nearest $10, and says "about" -- the provider charges in its own
+ * currency, so the exact figure is theirs (source_note() prints it). With no
+ * trustworthy rate, the source currency is shown unchanged.
+ */
+function price_label( int $id ): string {
+	$shown = source_price( $id );
+	if ( '' === $shown ) {
+		return __( 'Check current price', 'oria' );
+	}
+	$cur  = get( $id, 'price_currency' ) ?: 'AUD';
+	$rate = aud_rate( $cur );
+	if ( 'AUD' !== $cur && $rate ) {
+		$aud = (int) ( round( (float) get( $id, 'price_amount' ) * $rate / 10 ) * 10 );
+		/* translators: %s: price in Australian dollars */
+		$label = sprintf( __( 'From about %s', 'oria' ), 'A$' . number_format_i18n( $aud ) );
+	} else {
+		/* translators: %s: price */
+		$label = sprintf( __( 'From %s', 'oria' ), $shown );
+	}
+	$basis = get( $id, 'price_basis' );
 	return '' !== $basis ? $label . ' ' . $basis : $label;
+}
+
+/** "Listed as US$2,099 on BookRetreats; ..." under a converted price; '' when nothing was converted. */
+function source_note( int $id, string $provider ): string {
+	$cur = get( $id, 'price_currency' ) ?: 'AUD';
+	if ( 'AUD' === $cur || '' === source_price( $id ) || ! aud_rate( $cur ) ) {
+		return '';
+	}
+	/* translators: 1: price in the provider's currency, 2: booking provider */
+	return sprintf( __( 'Listed as %1$s on %2$s; the A$ figure is an estimate at today\'s exchange rate.', 'oria' ), source_price( $id ), $provider );
 }
 
 /** "3 days, 2 nights" / "Day retreat". */

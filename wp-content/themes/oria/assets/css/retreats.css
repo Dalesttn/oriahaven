@@ -83,6 +83,7 @@
 .ro-card__exc { margin: 0; font-size: 13.5px; color: var(--ro-muted); }
 .ro-card__foot { display: grid; gap: 8px; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--ro-line); }
 .ro-card__price { margin: 0; font-weight: 700; }
+.ro-card__src { display: block; margin-top: 3px; font-size: 12.5px; font-weight: 400; color: var(--ro-muted); }
 .ro-card__cta { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 18px; border-radius: 8px; background: var(--ro-green); color: #FFFDF9; font-weight: 700; text-decoration: none; }
 .ro-card__cta:hover { background: var(--ro-green-dk); color: #FFFDF9; }
 .ro-card__aff { margin: 0; font-size: 12.5px; color: var(--ro-muted); }
