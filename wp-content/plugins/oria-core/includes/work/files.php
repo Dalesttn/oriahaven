@@ -34,9 +34,17 @@ const IMG_MIMES  = array(
 );
 const PRIVATE_FLAG = '_oria_private_file';
 
-function private_dir(): string {
+/** Evidence for verification: a scan or photo of a certificate, or a PDF. */
+const EVIDENCE_MIMES = array(
+	'pdf'      => 'application/pdf',
+	'jpg|jpeg' => 'image/jpeg',
+	'png'      => 'image/png',
+	'webp'     => 'image/webp',
+);
+
+function private_dir( string $sub = 'cv' ): string {
 	$up  = wp_upload_dir();
-	$dir = trailingslashit( $up['basedir'] ) . 'oria-private/cv';
+	$dir = trailingslashit( $up['basedir'] ) . 'oria-private/' . sanitize_key( $sub );
 	if ( ! is_dir( $dir ) ) {
 		wp_mkdir_p( $dir );
 	}
@@ -91,6 +99,43 @@ function store_cv( string $field, int $user_id ) {
 		),
 		$dest
 	);
+	if ( ! $id || is_wp_error( $id ) ) {
+		wp_delete_file( $dest );
+		return new \WP_Error( 'save', __( 'The file could not be saved. Please try again.', 'oria' ) );
+	}
+	update_post_meta( (int) $id, PRIVATE_FLAG, 1 );
+	return (int) $id;
+}
+
+/**
+ * Store verification evidence from $_FILES[$field] in the private folder.
+ * Same walls as a CV; deleted again once an admin has decided.
+ *
+ * @return int|\WP_Error
+ */
+function store_evidence( string $field, int $user_id ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- the caller verified the form.
+	$f = $_FILES[ $field ] ?? null;
+	if ( ! is_array( $f ) || UPLOAD_ERR_NO_FILE === (int) ( $f['error'] ?? UPLOAD_ERR_NO_FILE ) ) {
+		return 0;
+	}
+	if ( UPLOAD_ERR_OK !== (int) $f['error'] || ! is_uploaded_file( (string) $f['tmp_name'] ) || (int) $f['size'] > MAX_BYTES ) {
+		return new \WP_Error( 'size', __( 'The file needs to be a PDF or photo under 5 MB.', 'oria' ) );
+	}
+	$check = wp_check_filetype_and_ext( (string) $f['tmp_name'], (string) $f['name'], EVIDENCE_MIMES );
+	if ( empty( $check['ext'] ) || ! in_array( $check['type'], EVIDENCE_MIMES, true ) ) {
+		return new \WP_Error( 'type', __( 'The file needs to be a PDF or photo under 5 MB.', 'oria' ) );
+	}
+	if ( 0 === strpos( (string) $check['type'], 'image/' ) && ! @getimagesize( (string) $f['tmp_name'] ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors
+		return new \WP_Error( 'type', __( 'The file needs to be a PDF or photo under 5 MB.', 'oria' ) );
+	}
+	$dir  = private_dir( 'verify' );
+	$dest = $dir . '/' . wp_unique_filename( $dir, 'ev-' . $user_id . '-' . wp_generate_password( 12, false, false ) . '.' . $check['ext'] );
+	if ( ! move_uploaded_file( (string) $f['tmp_name'], $dest ) ) { // phpcs:ignore Generic.PHP.ForbiddenFunctions
+		return new \WP_Error( 'move', __( 'The file could not be saved. Please try again.', 'oria' ) );
+	}
+	@chmod( $dest, 0640 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors, WordPress.WP.AlternativeFunctions
+	$id = wp_insert_attachment( array( 'post_title' => 'verification evidence', 'post_mime_type' => $check['type'], 'post_status' => 'private', 'post_author' => $user_id, 'guid' => '' ), $dest );
 	if ( ! $id || is_wp_error( $id ) ) {
 		wp_delete_file( $dest );
 		return new \WP_Error( 'save', __( 'The file could not be saved. Please try again.', 'oria' ) );

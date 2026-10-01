@@ -93,7 +93,7 @@ $oria_offers = array_filter( $oria_apps, static fn( $a ) => 'offered' === $a['st
 								<small><?php echo esc_html( implode( ' · ', array_filter( array( Work\employer_name( $oria_p ), mysql2date( 'j M', (string) $oria_a['created_at'] ) ) ) ) ); ?></small>
 							</span>
 							<span class="wkstatus wkstatus--<?php echo esc_attr( $oria_a['status'] ); ?>"><?php echo esc_html( Work\STATUSES[ $oria_a['status'] ] ?? $oria_a['status'] ); ?></span>
-							<?php if ( ! in_array( $oria_a['status'], array( 'hired', 'confirmed', 'withdrawn', 'rejected' ), true ) ) : ?>
+							<?php if ( ! in_array( $oria_a['status'], array( 'hired', 'confirmed', 'withdrawn', 'rejected', 'cancelled' ), true ) ) : ?>
 								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 									<?php echo Work\form_fields( 'oria_work_withdraw' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 									<input type="hidden" name="app" value="<?php echo (int) $oria_a['id']; ?>">
@@ -106,6 +106,96 @@ $oria_offers = array_filter( $oria_apps, static fn( $a ) => 'offered' === $a['st
 			<?php endif; ?>
 		</section>
 	</div>
+
+	<?php
+	// Upcoming confirmed shifts: the one place a practitioner can cancel (brief section 73).
+	$oria_upcoming = array_filter( $oria_apps, static fn( $a ) => 'shift' === $a['kind'] && 'confirmed' === $a['status'] && Work\shift_start_ts( (int) $a['post_id'] ) > time() );
+	$oria_fb_due   = Work\Trust\feedback_due( $oria_uid, 'pro' );
+	?>
+	<?php if ( $oria_upcoming ) : ?>
+		<section class="wkpanel wksec" id="upcoming">
+			<h2 class="h3"><?php esc_html_e( 'Your upcoming shifts', 'oria' ); ?></h2>
+			<ul class="wklist">
+				<?php foreach ( $oria_upcoming as $oria_a ) : ?>
+					<?php $oria_s = (int) $oria_a['post_id']; ?>
+					<li>
+						<span><a href="<?php echo esc_url( get_permalink( $oria_s ) ); ?>"><?php echo esc_html( get_the_title( $oria_s ) ); ?></a>
+							<small><?php echo esc_html( implode( ' · ', array_filter( array( Work\shift_when( $oria_s ), Work\employer_name( $oria_s ), (string) Work\meta( $oria_s, 'address' ) ?: Work\place_label( $oria_s ) ) ) ) ); ?></small></span>
+						<details class="wkcancel">
+							<summary><?php esc_html_e( 'Can no longer make it?', 'oria' ); ?></summary>
+							<form class="wkform" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+								<?php echo Work\form_fields( 'oria_work_cancel' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+								<input type="hidden" name="app" value="<?php echo (int) $oria_a['id']; ?>">
+								<label for="wc-<?php echo (int) $oria_a['id']; ?>"><?php esc_html_e( 'A line for the business (optional)', 'oria' ); ?></label>
+								<input class="input" id="wc-<?php echo (int) $oria_a['id']; ?>" name="reason" maxlength="300">
+								<p class="hint"><?php esc_html_e( 'The business is told straight away and the shift reopens. If it is soon, we alert other practitioners nearby so they are not left short.', 'oria' ); ?></p>
+								<button class="btn btn--ghost btn--sm" type="submit"><?php esc_html_e( 'Cancel this shift', 'oria' ); ?></button>
+							</form>
+						</details>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</section>
+	<?php endif; ?>
+
+	<?php if ( $oria_fb_due ) : ?>
+		<section class="wkpanel wksec" id="feedback">
+			<h2 class="h3"><?php esc_html_e( 'How did it go?', 'oria' ); ?></h2>
+			<p class="hint"><?php esc_html_e( 'Private to Oria Haven — never shown on anyone\'s page. It helps us keep good businesses at the top.', 'oria' ); ?></p>
+			<?php foreach ( $oria_fb_due as $oria_a ) : ?>
+				<?php get_template_part( 'template-parts/work/feedback-form', null, array( 'app' => $oria_a, 'about' => 'employer' ) ); ?>
+			<?php endforeach; ?>
+		</section>
+	<?php endif; ?>
+
+	<?php if ( $oria_pro ) : ?>
+		<?php
+		$oria_vreq = array();
+		foreach ( Work\Store\verify_for( $oria_pro ) as $oria_v ) {
+			$oria_vreq[ $oria_v['type'] ] = $oria_vreq[ $oria_v['type'] ] ?? $oria_v; // newest first
+		}
+		$oria_have = (array) Work\meta( $oria_pro, 'verified', array() );
+		?>
+		<section class="wkpanel wksec" id="verify">
+			<h2 class="h3"><?php esc_html_e( 'Get verified', 'oria' ); ?></h2>
+			<p class="hint"><?php esc_html_e( 'Send a photo or PDF of a current certificate. A person checks it, the badge goes on your profile, and we delete the file once we have decided. Only the badge is ever shown — never a number or document.', 'oria' ); ?></p>
+			<ul class="wkverifylist">
+				<?php foreach ( Work\VERIFICATIONS as $oria_k => $oria_label ) : ?>
+					<?php $oria_r = $oria_vreq[ $oria_k ] ?? null; ?>
+					<li>
+						<span><?php echo esc_html( $oria_label ); ?></span>
+						<?php if ( in_array( $oria_k, $oria_have, true ) ) : ?>
+							<span class="wkstatus wkstatus--confirmed"><?php esc_html_e( 'Verified', 'oria' ); ?></span>
+						<?php elseif ( $oria_r && 'pending' === $oria_r['status'] ) : ?>
+							<span class="wkstatus wkstatus--pending"><?php esc_html_e( 'Being checked', 'oria' ); ?></span>
+						<?php elseif ( $oria_r && 'rejected' === $oria_r['status'] ) : ?>
+							<span class="wkstatus wkstatus--rejected" title="<?php echo esc_attr( (string) $oria_r['reason'] ); ?>"><?php esc_html_e( 'Not verified — send again', 'oria' ); ?></span>
+						<?php endif; ?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<form class="wkform wkform--inline" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
+				<?php echo Work\form_fields( 'oria_work_verify_request' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+				<div>
+					<label for="wv-type"><?php esc_html_e( 'Badge', 'oria' ); ?></label>
+					<select class="input" id="wv-type" name="type" required>
+						<?php foreach ( Work\VERIFICATIONS as $oria_k => $oria_label ) : ?>
+							<?php if ( ! in_array( $oria_k, $oria_have, true ) ) : ?><option value="<?php echo esc_attr( $oria_k ); ?>"><?php echo esc_html( $oria_label ); ?></option><?php endif; ?>
+						<?php endforeach; ?>
+					</select>
+				</div>
+				<div>
+					<label for="wv-file"><?php esc_html_e( 'Evidence (PDF or photo, under 5 MB)', 'oria' ); ?></label>
+					<input id="wv-file" type="file" name="evidence" required accept=".pdf,image/jpeg,image/png,image/webp">
+				</div>
+				<div>
+					<label for="wv-note"><?php esc_html_e( 'Anything we should know? (optional)', 'oria' ); ?></label>
+					<input class="input" id="wv-note" name="note" maxlength="300">
+				</div>
+				<button class="btn btn--dark btn--sm" type="submit"><?php esc_html_e( 'Send for checking', 'oria' ); ?></button>
+			</form>
+		</section>
+	<?php endif; ?>
 
 	<?php if ( $oria_pro ) : ?>
 		<?php

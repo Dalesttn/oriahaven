@@ -38,6 +38,8 @@ require_once __DIR__ . '/work/schema.php';
 require_once __DIR__ . '/work/admin.php';
 require_once __DIR__ . '/work/plans.php';
 require_once __DIR__ . '/work/talent.php';
+require_once __DIR__ . '/work/trust.php';
+require_once __DIR__ . '/work/market.php';
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\register', 7 );
@@ -73,6 +75,8 @@ function bootstrap(): void {
 	Schema\bootstrap();
 	Admin\bootstrap();
 	Plans\bootstrap();
+	Trust\bootstrap();
+	Market\bootstrap();
 }
 
 /**

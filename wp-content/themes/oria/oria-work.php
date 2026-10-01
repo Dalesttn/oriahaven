@@ -34,6 +34,9 @@ if ( Work\Plans\paywall_on() && ! Work\Plans\allows( get_current_user_id(), 'sea
 }
 $oria_people = in_array( $oria_view, array( 'pros', 'available' ), true );
 $oria_found  = $oria_people ? Work\search_pros( $oria_f, 24 ) : null;
+if ( ! in_array( $oria_view, array( 'jobs', 'shifts', 'pros', 'available' ), true ) ) {
+	$oria_type = '';
+}
 $oria_q      = $oria_type && ! $oria_people ? Work\query( $oria_type, $oria_f, 'jobs' === $oria_view ? 20 : 24 ) : null;
 $oria_notice = Work\notice();
 $oria_post   = add_query_arg( 'type', 'job', \Oria\Core\MyOria\url( 'recruit-post' ) );
@@ -51,6 +54,10 @@ get_header();
 
 	<?php if ( 'recruitment' === $oria_view ) : ?>
 		<?php get_template_part( 'template-parts/work/recruitment' ); ?>
+	<?php elseif ( in_array( $oria_view, array( 'corporate', 'retreat' ), true ) ) : ?>
+		<?php get_template_part( 'template-parts/work/market', null, array( 'market' => $oria_view ) ); ?>
+	<?php elseif ( in_array( $oria_view, array( 'training', 'salary' ), true ) ) : ?>
+		<?php get_template_part( 'template-parts/work/' . $oria_view ); ?>
 	<?php else : ?>
 
 	<header class="wkhero<?php echo $oria_land ? ' wkhero--land' : ''; ?>">
@@ -222,6 +229,16 @@ get_header();
 				</ul>
 			</section>
 		<?php endif; ?>
+
+		<section class="wrap wksec">
+			<nav class="wksubnav" aria-label="<?php esc_attr_e( 'More in Work in Wellness', 'oria' ); ?>">
+				<a href="<?php echo esc_url( Work\list_url( 'corporate' ) ); ?>"><?php esc_html_e( 'Corporate wellness', 'oria' ); ?></a>
+				<a href="<?php echo esc_url( Work\list_url( 'retreat' ) ); ?>"><?php esc_html_e( 'Retreat staff', 'oria' ); ?></a>
+				<a href="<?php echo esc_url( Work\list_url( 'training' ) ); ?>"><?php esc_html_e( 'Training & certification', 'oria' ); ?></a>
+				<a href="<?php echo esc_url( Work\list_url( 'salary' ) ); ?>"><?php esc_html_e( 'Salary guide', 'oria' ); ?></a>
+				<a href="<?php echo esc_url( Work\list_url( 'available' ) ); ?>"><?php esc_html_e( 'Cover board', 'oria' ); ?></a>
+			</nav>
+		</section>
 
 		<section class="wrap wksec">
 			<div class="wkduo">

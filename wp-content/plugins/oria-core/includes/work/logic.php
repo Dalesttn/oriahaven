@@ -382,12 +382,13 @@ function pros_for_shift( int $shift, int $limit = 200 ): array {
 	foreach ( $ids as $id ) {
 		if ( pro_suits_shift( (int) $id, $shift ) ) {
 			$out[] = (int) $id;
-			if ( count( $out ) >= $limit ) {
-				break;
-			}
 		}
 	}
-	return $out;
+	// Most reliable first (an internal figure, never shown), so urgent alerts reach them first.
+	if ( function_exists( __NAMESPACE__ . '\Trust\reliability' ) ) {
+		usort( $out, static fn( $a, $b ) => Trust\reliability( $b ) <=> Trust\reliability( $a ) );
+	}
+	return array_slice( $out, 0, $limit );
 }
 
 /**
@@ -652,6 +653,10 @@ function notice(): ?array {
 		'talent_removed' => __( 'Removed from your list.', 'oria' ),
 		'invite_sent'    => __( 'Invitation sent. They will hear from us by email, and can apply or say they are available.', 'oria' ),
 		'feature_sent'   => __( 'Thanks — featuring is free during launch, and we will switch it on shortly.', 'oria' ),
+		'verify_sent'    => __( 'Sent. A person at Oria Haven will check it, usually within two business days. The file is deleted once we decide.', 'oria' ),
+		'feedback_saved' => __( 'Thank you — that stays private and helps us match better.', 'oria' ),
+		'cancelled'      => __( 'Cancelled. The business has been told, and the shift is open again.', 'oria' ),
+		'request_sent'   => __( 'Thanks — we will be in touch within one business day with practitioners who suit.', 'oria' ),
 	);
 	$bad = array(
 		'expired'       => __( 'That form had expired. Please try again.', 'oria' ),
@@ -671,6 +676,10 @@ function notice(): ?array {
 		'no_contact'    => __( 'This practitioner has asked not to be contacted directly. They can still apply to your listings.', 'oria' ),
 		'invite_limit'  => __( 'You have sent 20 invitations today — the limit keeps inboxes friendly. Try again tomorrow.', 'oria' ),
 		'invite_dupe'   => __( 'You have already invited them to that one.', 'oria' ),
+		'verify_pending' => __( 'We are already checking that one — you will hear from us soon.', 'oria' ),
+		'evidence'      => __( 'Please attach a PDF or photo under 5 MB.', 'oria' ),
+		'too_late'      => __( 'That shift has already started. Please contact the business directly.', 'oria' ),
+		'request_more'  => __( 'Please add your organisation, name, a valid email and a sentence or two about what you need.', 'oria' ),
 	);
 	if ( isset( $ok[ $code ] ) ) {
 		return array( 'text' => $ok[ $code ], 'type' => 'ok' );

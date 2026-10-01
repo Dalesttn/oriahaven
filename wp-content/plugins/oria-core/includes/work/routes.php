@@ -33,10 +33,10 @@ const QV        = 'oria_work';
 const QV_CITY   = 'oria_work_city';
 const QV_PROF   = 'oria_work_prof';
 const QV_ARG    = 'oria_work_arg';
-const REWRITE_V = '1';
+const REWRITE_V = '2';
 
 /** Every list view, for the template and the robots rules. */
-const VIEWS = array( 'jobs', 'shifts', 'pros', 'available', 'recruitment' );
+const VIEWS = array( 'jobs', 'shifts', 'pros', 'available', 'recruitment', 'corporate', 'retreat', 'training', 'salary' );
 
 function route(): void {
 	$city = function_exists( '\Oria\Core\Cities\slug_pattern' ) ? \Oria\Core\Cities\slug_pattern() : 'perth';
@@ -134,6 +134,9 @@ function list_url( string $view, string $city = '', string $prof = '' ): string 
 	}
 	if ( 'recruitment' === $view ) {
 		return home_url( '/for-business/recruitment/' );
+	}
+	if ( in_array( $view, array( 'corporate', 'retreat', 'training', 'salary' ), true ) ) {
+		return Market\url( $view );
 	}
 	if ( '' !== $city && '' !== $prof ) {
 		return home_url( "/$base/$city/$prof/" );
@@ -264,6 +267,13 @@ function noindex(): bool {
 		if ( is_filtered() || 'available' === $v ) {
 			return true;
 		}
+		// Index the guide and the courses only once they have something real on them.
+		if ( 'salary' === $v ) {
+			return ! Market\salary_rows();
+		}
+		if ( 'training' === $v ) {
+			return ! Market\courses();
+		}
 		$city = (string) get_query_var( QV_CITY );
 		$prof = (string) get_query_var( QV_PROF );
 		if ( '' !== $city || '' !== $prof ) {
@@ -343,6 +353,15 @@ function heading(): string {
 			return __( 'Practitioners available for cover', 'oria' );
 		case 'recruitment':
 			return __( 'Find wellness staff and cover', 'oria' );
+		case 'corporate':
+			return __( 'Corporate wellness practitioners', 'oria' );
+		case 'retreat':
+			return __( 'Retreat staff and facilitators', 'oria' );
+		case 'training':
+			return __( 'Wellness training and certification', 'oria' );
+		case 'salary':
+			/* translators: %s: city */
+			return __( 'Wellness salary guide', 'oria' );
 	}
 	return '';
 }
@@ -373,6 +392,14 @@ function description( $desc ) {
 			return __( 'Wellness practitioners open to work, with their skills, availability and verified credentials.', 'oria' );
 		case 'recruitment':
 			return __( 'Post wellness jobs and casual shifts, find cover when an instructor calls in sick, and reach practitioners who are ready to work.', 'oria' );
+		case 'corporate':
+			return __( 'Yoga, meditation, massage and breathwork practitioners for workplace wellness days, conferences and staff programs.', 'oria' );
+		case 'retreat':
+			return __( 'Yoga teachers, facilitators, massage therapists, cooks and photographers available for wellness retreats.', 'oria' );
+		case 'training':
+			return __( 'Yoga teacher training, Pilates certification, massage courses and more — checked by Oria Haven, with the provider\'s own prices.', 'oria' );
+		case 'salary':
+			return __( 'What wellness jobs advertise: median and range of advertised pay from real Oria Haven job listings.', 'oria' );
 	}
 	return $desc;
 }
@@ -408,6 +435,14 @@ function build_sitemap(): void {
 		$urls[] = array( 'loc' => list_url( $v ), 'mod' => $now );
 	}
 	$urls[] = array( 'loc' => list_url( 'recruitment' ), 'mod' => $now );
+	$urls[] = array( 'loc' => list_url( 'corporate' ), 'mod' => $now );
+	$urls[] = array( 'loc' => list_url( 'retreat' ), 'mod' => $now );
+	if ( Market\courses() ) {
+		$urls[] = array( 'loc' => list_url( 'training' ), 'mod' => $now );
+	}
+	if ( Market\salary_rows() ) {
+		$urls[] = array( 'loc' => list_url( 'salary' ), 'mod' => $now );
+	}
 
 	$cities = function_exists( '\Oria\Core\Cities\live' ) ? \Oria\Core\Cities\live() : array();
 	foreach ( $cities as $c ) {

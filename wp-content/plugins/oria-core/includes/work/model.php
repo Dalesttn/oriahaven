@@ -41,7 +41,11 @@ const EMPLOYMENT = 'work_employment';
 const SKILL      = 'work_skill';
 
 /** Seed version: bump when the vocabularies below change. */
-const SEED_V = '1';
+const SEED_V = '2';
+
+/** Phase 3 private types: a curated course, and a business's talent enquiry. */
+const COURSE  = 'oria_course';
+const REQUEST = 'oria_talent_req';
 
 /** Public URL bases. Kept here so routes, rewrites and links agree. */
 const BASE_JOBS   = 'jobs';
@@ -52,7 +56,7 @@ const BASE_PROS   = 'practitioners';
  * Slugs a job, shift or profile may never take, because a route owns them.
  * City slugs are added at runtime.
  */
-const RESERVED = array( 'category', 'go', 'post', 'careers', 'salary-guide', 'employers', 'alerts', 'available-practitioners', 'feed', 'page' );
+const RESERVED = array( 'category', 'go', 'post', 'careers', 'salary-guide', 'training', 'employers', 'alerts', 'available-practitioners', 'feed', 'page' );
 
 /* ------------------------------------------------------------ vocabularies */
 
@@ -65,7 +69,7 @@ function professions(): array {
 		'Natural & Holistic Wellness'   => array( 'Naturopath', 'Nutritionist', 'Dietitian', 'Acupuncturist', 'Chinese Medicine Practitioner', 'Reiki Practitioner', 'Sound Healing Practitioner', 'Holistic Therapist' ),
 		'Spa & Beauty Wellness'         => array( 'Spa Therapist', 'Beauty Therapist', 'Skin Therapist', 'Facial Therapist', 'Wellness Therapist' ),
 		'Operations & Management'       => array( 'Studio Manager', 'Practice Manager', 'Receptionist', 'Customer Service', 'Administration', 'Membership Consultant', 'Sales', 'Marketing', 'Social Media', 'Operations', 'Bookkeeper' ),
-		'Retreat & Events'              => array( 'Retreat Facilitator', 'Retreat Host', 'Event Coordinator', 'Workshop Facilitator', 'Casual Retreat Staff' ),
+		'Retreat & Events'              => array( 'Retreat Facilitator', 'Retreat Host', 'Event Coordinator', 'Workshop Facilitator', 'Casual Retreat Staff', 'Retreat Cook', 'Retreat Manager', 'Photographer', 'Wellness Speaker', 'Corporate Wellness Facilitator' ),
 	);
 }
 
@@ -197,6 +201,7 @@ const STATUSES = array(
 	'confirmed'   => 'Confirmed',
 	'rejected'    => 'Not progressing',
 	'withdrawn'   => 'Withdrawn',
+	'cancelled'   => 'Cancelled',
 );
 
 /** Days a job stays open unless the employer says otherwise (brief section 58). */
@@ -325,6 +330,41 @@ function register(): void {
 			),
 			'supports' => array( 'title', 'editor', 'excerpt', 'author', 'thumbnail' ),
 			'rewrite'  => array( 'slug' => BASE_PROS, 'with_front' => false ),
+		)
+	);
+
+	/*
+	 * Phase 3. A course is curated by Oria staff (no public submission, so
+	 * nothing listed is invented or unchecked); a talent request is a
+	 * business's enquiry for corporate/retreat/event staff -- private, no URL.
+	 */
+	register_post_type(
+		COURSE,
+		array(
+			'labels'          => array( 'name' => __( 'Courses', 'oria' ), 'singular_name' => __( 'Course', 'oria' ), 'add_new_item' => __( 'Add course', 'oria' ), 'all_items' => __( 'Training & courses', 'oria' ) ),
+			'public'          => false,
+			'show_ui'         => true,
+			'show_in_menu'    => 'oria-work',
+			'supports'        => array( 'title', 'editor', 'thumbnail' ),
+			'taxonomies'      => array( PROFESSION ),
+			'capability_type' => 'post',
+			'map_meta_cap'    => true,
+			'rewrite'         => false,
+		)
+	);
+	register_taxonomy_for_object_type( PROFESSION, COURSE );
+	register_post_type(
+		REQUEST,
+		array(
+			'labels'          => array( 'name' => __( 'Talent requests', 'oria' ), 'singular_name' => __( 'Talent request', 'oria' ), 'all_items' => __( 'Talent requests', 'oria' ) ),
+			'public'          => false,
+			'show_ui'         => true,
+			'show_in_menu'    => 'oria-work',
+			'supports'        => array( 'title', 'editor' ),
+			'capability_type' => 'post',
+			'capabilities'    => array( 'create_posts' => 'do_not_allow' ),
+			'map_meta_cap'    => true,
+			'rewrite'         => false,
 		)
 	);
 

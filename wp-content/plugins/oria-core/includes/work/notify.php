@@ -403,8 +403,11 @@ function urgent_alerts( int $shift ): void {
 	}
 	Work\set( $shift, 'urgent_sent', time() );
 	$sent = 0;
+	// Nobody who already answered (or just cancelled) is asked again.
+	$skip = array_map( 'intval', array_column( Store\apps_for_post( $shift ), 'profile_id' ) );
+	$skip = (array) apply_filters( 'oria_work_skip_pros', $skip, $shift );
 	foreach ( Work\pros_for_shift( $shift ) as $pro ) {
-		if ( ! Work\meta( $pro, 'urgent_alerts' ) || 'allow' !== (string) Work\meta( $pro, 'contact_pref', 'allow' ) ) {
+		if ( in_array( $pro, $skip, true ) || ! Work\meta( $pro, 'urgent_alerts' ) || 'allow' !== (string) Work\meta( $pro, 'contact_pref', 'allow' ) ) {
 			continue;
 		}
 		$uid = (int) get_post_field( 'post_author', $pro );
@@ -423,6 +426,40 @@ function urgent_alerts( int $shift ): void {
 	Work\set( $shift, 'urgent_count', $sent );
 }
 
+/**
+ * A shift has ended: ask both sides, once, for the private three-question
+ * feedback (brief section 71). Only for confirmed placements.
+ */
+function feedback_prompts( int $shift ): void {
+	if ( Work\meta( $shift, 'feedback_asked' ) ) {
+		return;
+	}
+	Work\set( $shift, 'feedback_asked', time() );
+	$confirmed = array_filter( Store\apps_for_post( $shift ), static fn( $a ) => 'confirmed' === $a['status'] );
+	if ( ! $confirmed ) {
+		return;
+	}
+	$title = get_the_title( $shift );
+	mail(
+		user_email( (int) get_post_field( 'post_author', $shift ) ),
+		/* translators: %s: shift */
+		sprintf( __( 'How did "%s" go?', 'oria' ), $title ),
+		__( 'Three quick questions', 'oria' ),
+		array( __( 'Reliable? On time? Would you hire them again? Your answers are private — they are never shown on anyone\'s profile — and they help us match you better.', 'oria' ) ),
+		array( dash( 'recruit' ) . '#feedback', __( 'Answer in 20 seconds', 'oria' ) )
+	);
+	foreach ( $confirmed as $a ) {
+		mail(
+			user_email( (int) $a['user_id'] ),
+			/* translators: %s: shift */
+			sprintf( __( 'How was "%s"?', 'oria' ), $title ),
+			__( 'Three quick questions', 'oria' ),
+			array( __( 'Paid as agreed? Clear brief? Would you work there again? Private to Oria — it helps us keep the good businesses at the top.', 'oria' ) ),
+			array( dash( 'work' ) . '#feedback', __( 'Answer in 20 seconds', 'oria' ) )
+		);
+	}
+}
+
 /* ------------------------------------------------------------------ clock */
 
 function tick(): void {
@@ -433,6 +470,9 @@ function tick(): void {
 		if ( '' !== $why ) {
 			Work\set( $id, 'closed', $why );
 			Work\set( $id, 'closed_at', time() );
+			if ( 'ended' === $why ) {
+				feedback_prompts( $id );
+			}
 			continue;
 		}
 		// Three days' warning before a job expires, once.

@@ -24,7 +24,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const VERSION = '2';
+const VERSION = '3';
+
+/** Private two-way feedback after a shift (brief section 71). Never public. */
+function feedback(): string {
+	global $wpdb;
+	return $wpdb->prefix . 'oria_work_feedback';
+}
+
+/** Verification evidence awaiting a person (brief section 13). */
+function verify(): string {
+	global $wpdb;
+	return $wpdb->prefix . 'oria_work_verify';
+}
 const OPTION  = 'oria_work_db_v';
 
 /** Saved practitioners (brief sections 67-68): an employer's private lists, notes and status. */
@@ -164,7 +176,108 @@ function install(): void {
 ) $c;"
 	);
 
+	dbDelta(
+		'CREATE TABLE ' . feedback() . " (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  app_id bigint(20) unsigned NOT NULL,
+  author bigint(20) unsigned NOT NULL,
+  about varchar(10) NOT NULL DEFAULT 'pro',
+  q1 tinyint(1) NOT NULL DEFAULT 0,
+  q2 tinyint(1) NOT NULL DEFAULT 0,
+  q3 tinyint(1) NOT NULL DEFAULT 0,
+  no_show tinyint(1) NOT NULL DEFAULT 0,
+  note varchar(500) NOT NULL DEFAULT '',
+  created_at datetime NOT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY one_each (app_id,about),
+  KEY by_app (app_id)
+) $c;"
+	);
+
+	dbDelta(
+		'CREATE TABLE ' . verify() . " (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  profile_id bigint(20) unsigned NOT NULL,
+  type varchar(20) NOT NULL DEFAULT '',
+  file_id bigint(20) unsigned NOT NULL DEFAULT 0,
+  note varchar(300) NOT NULL DEFAULT '',
+  status varchar(12) NOT NULL DEFAULT 'pending',
+  reason varchar(300) NOT NULL DEFAULT '',
+  created_at datetime NOT NULL,
+  decided_at datetime NULL,
+  PRIMARY KEY  (id),
+  KEY by_status (status),
+  KEY by_profile (profile_id)
+) $c;"
+	);
+
 	update_option( OPTION, VERSION, false );
+}
+
+/* ---------------------------------------------------------------- feedback */
+
+/** $about: 'pro' (the employer rates the practitioner) or 'employer' (the other way). */
+function add_feedback( int $app_id, int $author, string $about, array $q, bool $no_show, string $note ): bool {
+	global $wpdb;
+	if ( feedback_for( $app_id, $about ) ) {
+		return false;
+	}
+	return (bool) $wpdb->insert(
+		feedback(),
+		array(
+			'app_id'     => $app_id,
+			'author'     => $author,
+			'about'      => 'employer' === $about ? 'employer' : 'pro',
+			'q1'         => ! empty( $q[0] ) ? 1 : 0,
+			'q2'         => ! empty( $q[1] ) ? 1 : 0,
+			'q3'         => ! empty( $q[2] ) ? 1 : 0,
+			'no_show'    => $no_show ? 1 : 0,
+			'note'       => mb_substr( $note, 0, 500 ),
+			'created_at' => current_time( 'mysql' ),
+		)
+	);
+}
+
+function feedback_for( int $app_id, string $about ): ?array {
+	global $wpdb;
+	$r = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . feedback() . ' WHERE app_id = %d AND about = %s', $app_id, $about ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL
+	return $r ?: null;
+}
+
+/** Every employer-about-practitioner row for one practitioner account. */
+function feedback_about_pro( int $user_id ): array {
+	global $wpdb;
+	return (array) $wpdb->get_results( $wpdb->prepare( 'SELECT f.* FROM ' . feedback() . ' f JOIN ' . apps() . " a ON a.id = f.app_id WHERE f.about = 'pro' AND a.user_id = %d", $user_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL
+}
+
+/* ------------------------------------------------------------ verification */
+
+function add_verify( int $profile, string $type, int $file, string $note ): int {
+	global $wpdb;
+	$ok = $wpdb->insert( verify(), array( 'profile_id' => $profile, 'type' => $type, 'file_id' => $file, 'note' => mb_substr( $note, 0, 300 ), 'status' => 'pending', 'created_at' => current_time( 'mysql' ) ) );
+	return $ok ? (int) $wpdb->insert_id : 0;
+}
+
+function verify_row( int $id ): ?array {
+	global $wpdb;
+	$r = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . verify() . ' WHERE id = %d', $id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL
+	return $r ?: null;
+}
+
+function verify_pending(): array {
+	global $wpdb;
+	return (array) $wpdb->get_results( 'SELECT * FROM ' . verify() . " WHERE status = 'pending' ORDER BY created_at ASC LIMIT 200", ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL
+}
+
+/** A profile's requests, newest first (for the practitioner's own view). */
+function verify_for( int $profile ): array {
+	global $wpdb;
+	return (array) $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . verify() . ' WHERE profile_id = %d ORDER BY created_at DESC', $profile ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL
+}
+
+function verify_decide( int $id, string $status, string $reason ): void {
+	global $wpdb;
+	$wpdb->update( verify(), array( 'status' => $status, 'reason' => mb_substr( $reason, 0, 300 ), 'file_id' => 0, 'decided_at' => current_time( 'mysql' ) ), array( 'id' => $id ) );
 }
 
 /* ------------------------------------------------------------ saved talent */

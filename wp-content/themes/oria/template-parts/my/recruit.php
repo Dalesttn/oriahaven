@@ -28,13 +28,13 @@ $oria_row    = static function ( WP_Post $p ) use ( $oria_counts ): void {
 	$stateK = 'publish' !== $p->post_status ? $p->post_status : ( '' === $why ? 'live' : 'closed' );
 	$is_job = Work\JOB === $p->post_type;
 	?>
-	<li class="wkrow">
-		<div class="wkrow__main">
-			<a class="wkrow__title" href="<?php echo esc_url( 'publish' === $p->post_status ? (string) get_permalink( $id ) : add_query_arg( array( 'type' => $is_job ? 'job' : 'shift', 'id' => $id ), \Oria\Core\MyOria\url( 'recruit-post' ) ) ); ?>"><?php echo esc_html( get_the_title( $id ) ); ?></a>
+	<li class="wklisting">
+		<div class="wklisting__main">
+			<a class="wklisting__title" href="<?php echo esc_url( 'publish' === $p->post_status ? (string) get_permalink( $id ) : add_query_arg( array( 'type' => $is_job ? 'job' : 'shift', 'id' => $id ), \Oria\Core\MyOria\url( 'recruit-post' ) ) ); ?>"><?php echo esc_html( get_the_title( $id ) ); ?></a>
 			<small><?php echo esc_html( implode( ' · ', array_filter( array( Work\place_label( $id ), $is_job ? ( ( $e = (int) Work\meta( $id, 'expires', 0 ) ) && '' === $why ? sprintf( __( 'closes %s', 'oria' ), wp_date( 'j M', $e ) ) : '' ) : Work\shift_when( $id ), Work\is_featured( $id ) ? '★ ' . __( 'featured', 'oria' ) : '' ) ) ) ); ?></small>
 			<?php if ( 'publish' === $p->post_status ) : ?>
 				<?php $st = Work\post_stats( $id ); ?>
-				<small class="wkrow__stats">
+				<small class="wklisting__stats">
 					<?php
 					echo esc_html(
 						implode(
@@ -49,6 +49,17 @@ $oria_row    = static function ( WP_Post $p ) use ( $oria_counts ): void {
 									$st['clicks'] ? sprintf( _n( '%d click to apply', '%d clicks to apply', $st['clicks'], 'oria' ), $st['clicks'] ) : '',
 									/* translators: %d: saves */
 									$st['saves'] ? sprintf( _n( '%d save', '%d saves', $st['saves'], 'oria' ), $st['saves'] ) : '',
+									// Benchmark (brief section 65): only with 3+ comparable jobs, and only on plans with analytics.
+									$is_job && Work\Plans\allows( get_current_user_id(), 'analytics' ) && ( $bm = Work\Market\benchmark( $id ) )
+										? ( abs( $bm['pct'] ) < 10
+											/* translators: %s: profession */
+											? sprintf( __( 'about as many views as similar %s roles', 'oria' ), $bm['profession'] )
+											: ( $bm['pct'] > 0
+											/* translators: 1: percent, 2: profession */
+											? sprintf( __( '%1$d%% more views than similar %2$s roles', 'oria' ), $bm['pct'], $bm['profession'] )
+											/* translators: 1: percent, 2: profession */
+											: sprintf( __( '%1$d%% fewer views than similar %2$s roles', 'oria' ), abs( $bm['pct'] ), $bm['profession'] ) ) )
+										: '',
 								)
 							)
 						)
@@ -58,11 +69,11 @@ $oria_row    = static function ( WP_Post $p ) use ( $oria_counts ): void {
 			<?php endif; ?>
 		</div>
 		<span class="wkstatus wkstatus--<?php echo esc_attr( $stateK ); ?>"><?php echo esc_html( $state ); ?></span>
-		<a class="wkrow__n" href="<?php echo esc_url( add_query_arg( 'id', $id, \Oria\Core\MyOria\url( 'recruit-applicants' ) ) ); ?>">
+		<a class="wklisting__n" href="<?php echo esc_url( add_query_arg( 'id', $id, \Oria\Core\MyOria\url( 'recruit-applicants' ) ) ); ?>">
 			<?php echo esc_html( sprintf( $is_job ? _n( '%d applicant', '%d applicants', $c['n'], 'oria' ) : _n( '%d available', '%d available', $c['n'], 'oria' ), $c['n'] ) ); ?>
 			<?php if ( $c['fresh'] ) : ?><b class="wknew"><?php echo esc_html( sprintf( __( '%d new', 'oria' ), $c['fresh'] ) ); ?></b><?php endif; ?>
 		</a>
-		<span class="wkrow__acts">
+		<span class="wklisting__acts">
 			<a class="wklink" href="<?php echo esc_url( add_query_arg( array( 'type' => $is_job ? 'job' : 'shift', 'id' => $id ), \Oria\Core\MyOria\url( 'recruit-post' ) ) ); ?>"><?php esc_html_e( 'Edit', 'oria' ); ?></a>
 			<?php if ( 'publish' === $p->post_status ) : ?>
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -112,10 +123,21 @@ $oria_row    = static function ( WP_Post $p ) use ( $oria_counts ): void {
 		<p class="hint"><?php echo esc_html( sprintf( __( 'Your plan: %s', 'oria' ), Work\Plans\summary( $oria_uid ) ) ); ?></p>
 	</div>
 
+	<?php $oria_fb_due = Work\Trust\feedback_due( $oria_uid, 'employer' ); ?>
+	<?php if ( $oria_fb_due ) : ?>
+		<section class="wkpanel" id="feedback">
+			<h2 class="h3"><?php esc_html_e( 'How did your shifts go?', 'oria' ); ?></h2>
+			<p class="hint"><?php esc_html_e( 'Three yes/no questions. Private to Oria Haven — never shown on anyone\'s profile — and they help us send you the right people next time.', 'oria' ); ?></p>
+			<?php foreach ( $oria_fb_due as $oria_a ) : ?>
+				<?php get_template_part( 'template-parts/work/feedback-form', null, array( 'app' => $oria_a, 'about' => 'pro' ) ); ?>
+			<?php endforeach; ?>
+		</section>
+	<?php endif; ?>
+
 	<section class="wkpanel">
 		<h2 class="h3"><?php esc_html_e( 'Jobs', 'oria' ); ?></h2>
 		<?php if ( $oria_jobs ) : ?>
-			<ul class="wkrows"><?php foreach ( $oria_jobs as $oria_p ) { $oria_row( $oria_p ); } ?></ul>
+			<ul class="wklistings"><?php foreach ( $oria_jobs as $oria_p ) { $oria_row( $oria_p ); } ?></ul>
 		<?php else : ?>
 			<p class="hint"><?php esc_html_e( 'No jobs yet. Permanent, part-time and casual roles stay open for 30 days and are free during launch.', 'oria' ); ?></p>
 		<?php endif; ?>
@@ -124,7 +146,7 @@ $oria_row    = static function ( WP_Post $p ) use ( $oria_counts ): void {
 	<section class="wkpanel">
 		<h2 class="h3"><?php esc_html_e( 'Shifts', 'oria' ); ?></h2>
 		<?php if ( $oria_shifts ) : ?>
-			<ul class="wkrows"><?php foreach ( $oria_shifts as $oria_p ) { $oria_row( $oria_p ); } ?></ul>
+			<ul class="wklistings"><?php foreach ( $oria_shifts as $oria_p ) { $oria_row( $oria_p ); } ?></ul>
 		<?php else : ?>
 			<p class="hint"><?php esc_html_e( 'No shifts yet. A shift closes itself once it is filled or has passed.', 'oria' ); ?></p>
 		<?php endif; ?>

@@ -134,7 +134,9 @@ function search_pros( array $f, int $per = 24 ): array {
 		$score = completeness( $id )['score'] / 10
 			+ 3 * count( badges( $id ) )
 			+ ( avail_post( $id ) ? 6 : 0 )
-			+ ( null !== $km ? max( 0, 10 - $km / 2 ) : 0 );
+			+ ( null !== $km ? max( 0, 10 - $km / 2 ) : 0 )
+			// Internal reliability nudges the order; it never hides anyone.
+			+ ( function_exists( __NAMESPACE__ . '\Trust\reliability' ) ? Trust\reliability( $id ) / 10 : 0 );
 		$rows[ $id ] = array( 'score' => $score, 'km' => $km, 'years' => (int) meta( $id, 'years', 0 ) );
 	}
 
