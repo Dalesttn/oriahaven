@@ -169,7 +169,10 @@ function gate(): void {
 	$v       = view();
 	$private = VIEWS[ $v ];
 	if ( $private && ! is_user_logged_in() ) {
-		wp_safe_redirect( add_query_arg( 'redirect_to', rawurlencode( url( $v ) ), url( 'login' ) ), 302 );
+		// Keep the query string through sign-in (e.g. a pre-filled job alert, or ?type=shift on Post a job).
+		$query = (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_QUERY ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		$back  = '' !== $query ? url( $v ) . '?' . $query : url( $v );
+		wp_safe_redirect( add_query_arg( 'redirect_to', rawurlencode( $back ), url( 'login' ) ), 302 );
 		exit;
 	}
 	/*

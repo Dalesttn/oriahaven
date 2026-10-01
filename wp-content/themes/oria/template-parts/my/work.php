@@ -295,8 +295,31 @@ $oria_offers = array_filter( $oria_apps, static fn( $a ) => 'offered' === $a['st
 				<?php endforeach; ?>
 			</ul>
 		<?php endif; ?>
+		<?php
+		// Pre-filled from the jobs page ("Create a job alert" carries the current search).
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$oria_pre_p = get_term_by( 'slug', sanitize_title( wp_unslash( (string) ( $_GET['ap'] ?? '' ) ) ), Work\PROFESSION );
+		$oria_pre_p = $oria_pre_p ? (int) $oria_pre_p->term_id : 0;
+		$oria_pre_a = sanitize_title( wp_unslash( (string) ( $_GET['aa'] ?? '' ) ) );
+		$oria_pre_t = sanitize_title( wp_unslash( (string) ( $_GET['at'] ?? '' ) ) );
+		$oria_pre_t = isset( Work\employment_types()[ $oria_pre_t ] ) ? $oria_pre_t : '';
+		$oria_pre_k = mb_substr( sanitize_text_field( wp_unslash( (string) ( $_GET['ak'] ?? '' ) ) ), 0, 60 );
+		// phpcs:enable
+		?>
+		<?php if ( $oria_pre_p || $oria_pre_a || $oria_pre_t || '' !== $oria_pre_k ) : ?>
+			<p class="hint"><?php esc_html_e( 'We have filled this in from your search. Check it, then create the alert.', 'oria' ); ?></p>
+		<?php endif; ?>
 		<form class="wkform wkform--inline" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<?php echo Work\form_fields( 'oria_work_alert' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+			<?php if ( $oria_pre_t ) : ?>
+				<input type="hidden" name="employment" value="<?php echo esc_attr( $oria_pre_t ); ?>">
+			<?php endif; ?>
+			<?php if ( '' !== $oria_pre_k ) : ?>
+				<div>
+					<label for="wkal-key"><?php esc_html_e( 'Keyword', 'oria' ); ?></label>
+					<input class="input" id="wkal-key" name="keyword" maxlength="60" value="<?php echo esc_attr( $oria_pre_k ); ?>">
+				</div>
+			<?php endif; ?>
 			<div>
 				<label for="wkal-kind"><?php esc_html_e( 'Alert me about', 'oria' ); ?></label>
 				<select class="input" id="wkal-kind" name="kind"><option value="job"><?php esc_html_e( 'Jobs', 'oria' ); ?></option><option value="shift"><?php esc_html_e( 'Casual shifts', 'oria' ); ?></option></select>
@@ -308,7 +331,7 @@ $oria_offers = array_filter( $oria_apps, static fn( $a ) => 'offered' === $a['st
 					<?php foreach ( get_terms( array( 'taxonomy' => Work\PROFESSION, 'parent' => 0, 'hide_empty' => false ) ) as $oria_g ) : ?>
 						<option value="<?php echo (int) $oria_g->term_id; ?>"><?php echo esc_html( sprintf( __( 'All %s', 'oria' ), $oria_g->name ) ); ?></option>
 						<?php foreach ( get_terms( array( 'taxonomy' => Work\PROFESSION, 'parent' => $oria_g->term_id, 'hide_empty' => false ) ) as $oria_t ) : ?>
-							<option value="<?php echo (int) $oria_t->term_id; ?>">&nbsp;&nbsp;<?php echo esc_html( $oria_t->name ); ?></option>
+							<option value="<?php echo (int) $oria_t->term_id; ?>" <?php selected( $oria_pre_p, (int) $oria_t->term_id ); ?>>&nbsp;&nbsp;<?php echo esc_html( $oria_t->name ); ?></option>
 						<?php endforeach; ?>
 					<?php endforeach; ?>
 				</select>
@@ -319,7 +342,7 @@ $oria_offers = array_filter( $oria_apps, static fn( $a ) => 'offered' === $a['st
 					<option value=""><?php esc_html_e( 'Anywhere', 'oria' ); ?></option>
 					<?php foreach ( Work\suburb_choices() as $oria_city => $oria_subs ) : ?>
 						<optgroup label="<?php echo esc_attr( $oria_city ); ?>">
-							<?php foreach ( $oria_subs as $oria_slug => $oria_name ) : ?><option value="<?php echo esc_attr( $oria_slug ); ?>"><?php echo esc_html( $oria_name ); ?></option><?php endforeach; ?>
+							<?php foreach ( $oria_subs as $oria_slug => $oria_name ) : ?><option value="<?php echo esc_attr( $oria_slug ); ?>" <?php selected( $oria_pre_a, $oria_slug ); ?>><?php echo esc_html( $oria_name ); ?></option><?php endforeach; ?>
 						</optgroup>
 					<?php endforeach; ?>
 				</select>

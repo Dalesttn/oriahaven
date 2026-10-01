@@ -40,6 +40,7 @@ require_once __DIR__ . '/work/plans.php';
 require_once __DIR__ . '/work/talent.php';
 require_once __DIR__ . '/work/trust.php';
 require_once __DIR__ . '/work/market.php';
+require_once __DIR__ . '/work/jobsui.php';
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\register', 7 );

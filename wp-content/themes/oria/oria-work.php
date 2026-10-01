@@ -2,14 +2,15 @@
 /**
  * Work in Wellness -- every list page.
  *
- *   jobs         /jobs/ (the landing when nothing is narrowed), /jobs/{city}/, /jobs/category/{p}/, ...
+ *   jobs         /jobs/, /jobs/{city}/, /jobs/category/{p}/, ...  -> template-parts/work/jobs-page.php
  *   shifts       /shifts/...
  *   pros         /practitioners/...
  *   available    /shifts/available-practitioners/  (practitioners open to cover)
- *   recruitment  /for-business/recruitment/        (the employer pitch and prices)
+ *   recruitment, corporate, retreat, training, salary  -> their own parts
  *
- * One template so the four lists share a search form, a card grid and a
- * pager, and differ only in what they list.
+ * Jobs have their own page (the 2026-10 redesign: sage hero, one column of
+ * job rows, a sidebar for employers and alerts). Shifts and practitioners
+ * share the list below: search form, card grid, pager.
  */
 
 declare(strict_types=1);
@@ -21,38 +22,33 @@ $oria_f     = Work\filters();
 $oria_city  = (string) get_query_var( Work\QV_CITY );
 $oria_profq = (string) get_query_var( Work\QV_PROF );
 $oria_base  = Work\list_url( $oria_view, $oria_city, $oria_profq );
-$oria_land  = 'jobs' === $oria_view && '' === $oria_city && '' === $oria_profq && ! Work\is_filtered();
-$oria_type  = array( 'jobs' => Work\JOB, 'shifts' => Work\SHIFT, 'pros' => Work\PRO, 'available' => Work\PRO )[ $oria_view ] ?? '';
+$oria_type  = array( 'shifts' => Work\SHIFT, 'pros' => Work\PRO, 'available' => Work\PRO )[ $oria_view ] ?? '';
 if ( 'available' === $oria_view ) {
 	$oria_f['cover'] = true;
 }
 // Once the paywall is on, the precise filters are Oria Recruit's; until then everyone has them.
 if ( Work\Plans\paywall_on() && ! Work\Plans\allows( get_current_user_id(), 'search' ) ) {
-	$oria_f['radius'] = 0;
-	$oria_f['years']  = 0;
+	$oria_f['radius']   = 0;
+	$oria_f['years']    = 0;
 	$oria_f['verified'] = false;
 }
 $oria_people = in_array( $oria_view, array( 'pros', 'available' ), true );
 $oria_found  = $oria_people ? Work\search_pros( $oria_f, 24 ) : null;
-if ( ! in_array( $oria_view, array( 'jobs', 'shifts', 'pros', 'available' ), true ) ) {
-	$oria_type = '';
-}
-$oria_q      = $oria_type && ! $oria_people ? Work\query( $oria_type, $oria_f, 'jobs' === $oria_view ? 20 : 24 ) : null;
+$oria_q      = 'shifts' === $oria_view ? Work\query( Work\SHIFT, $oria_f, 24 ) : null;
 $oria_notice = Work\notice();
-$oria_post   = add_query_arg( 'type', 'job', \Oria\Core\MyOria\url( 'recruit-post' ) );
-$oria_shiftp = add_query_arg( 'type', 'shift', \Oria\Core\MyOria\url( 'recruit-post' ) );
 $oria_join   = \Oria\Core\MyOria\url( 'work-edit' );
-$oria_city_n = function_exists( '\Oria\Core\Cities\default_city' ) ? (string) ( \Oria\Core\Cities\default_city()['name'] ?? 'Perth' ) : 'Perth';
 
 get_header();
 ?>
 <main id="main" class="wk wk--<?php echo esc_attr( $oria_view ); ?>">
 
-	<?php if ( $oria_notice ) : ?>
+	<?php if ( $oria_notice && 'jobs' !== $oria_view ) : ?>
 		<div class="wrap"><div class="notice notice--<?php echo 'ok' === $oria_notice['type'] ? 'success' : 'error'; ?> wknotice" role="status"><?php echo esc_html( $oria_notice['text'] ); ?></div></div>
 	<?php endif; ?>
 
-	<?php if ( 'recruitment' === $oria_view ) : ?>
+	<?php if ( 'jobs' === $oria_view ) : ?>
+		<?php get_template_part( 'template-parts/work/jobs-page', null, array( 'f' => $oria_f ) ); ?>
+	<?php elseif ( 'recruitment' === $oria_view ) : ?>
 		<?php get_template_part( 'template-parts/work/recruitment' ); ?>
 	<?php elseif ( in_array( $oria_view, array( 'corporate', 'retreat' ), true ) ) : ?>
 		<?php get_template_part( 'template-parts/work/market', null, array( 'market' => $oria_view ) ); ?>
@@ -60,21 +56,14 @@ get_header();
 		<?php get_template_part( 'template-parts/work/' . $oria_view ); ?>
 	<?php else : ?>
 
-	<header class="wkhero<?php echo $oria_land ? ' wkhero--land' : ''; ?>">
+	<header class="wkhero">
 		<div class="wrap">
-			<nav class="wktabs" aria-label="<?php esc_attr_e( 'Work in wellness', 'oria' ); ?>">
-				<a href="<?php echo esc_url( Work\list_url( 'jobs' ) ); ?>"<?php echo 'jobs' === $oria_view ? ' aria-current="page"' : ''; ?>><?php esc_html_e( 'Jobs', 'oria' ); ?></a>
-				<a href="<?php echo esc_url( Work\list_url( 'shifts' ) ); ?>"<?php echo 'shifts' === $oria_view ? ' aria-current="page"' : ''; ?>><?php esc_html_e( 'Shifts & cover', 'oria' ); ?></a>
-				<a href="<?php echo esc_url( Work\list_url( 'pros' ) ); ?>"<?php echo in_array( $oria_view, array( 'pros', 'available' ), true ) ? ' aria-current="page"' : ''; ?>><?php esc_html_e( 'Practitioners', 'oria' ); ?></a>
-			</nav>
+			<?php get_template_part( 'template-parts/work/worknav', null, array( 'view' => $oria_view, 'dark' => true ) ); ?>
 			<p class="micro wkhero__kicker"><?php esc_html_e( 'Work in Wellness', 'oria' ); ?></p>
 			<h1 class="wkhero__title"><?php echo esc_html( Work\heading() ); ?></h1>
 			<p class="lede wkhero__lede">
 				<?php
-				if ( 'jobs' === $oria_view ) {
-					/* translators: %s: city */
-					echo esc_html( sprintf( __( 'Discover jobs, casual shifts and practitioner opportunities across %s\'s wellness industry.', 'oria' ), $oria_city_n ) );
-				} elseif ( 'shifts' === $oria_view ) {
+				if ( 'shifts' === $oria_view ) {
 					esc_html_e( 'Last-minute classes, weekend cover and short-term gaps at wellness businesses. Tap "I\'m available" and the studio hears from you straight away.', 'oria' );
 				} elseif ( 'available' === $oria_view ) {
 					esc_html_e( 'Need an instructor tomorrow? These practitioners have said they are open to casual cover.', 'oria' );
@@ -84,109 +73,42 @@ get_header();
 				?>
 			</p>
 			<?php get_template_part( 'template-parts/work/filters', null, array( 'view' => $oria_view, 'f' => $oria_f, 'action' => $oria_base ) ); ?>
-			<?php if ( $oria_land ) : ?>
-				<p class="wkhero__alt">
-					<a class="btn btn--light btn--sm" href="<?php echo esc_url( Work\list_url( 'shifts' ) ); ?>"><?php esc_html_e( 'Find shifts', 'oria' ); ?></a>
-					<a class="btn btn--ghost-on-deep btn--sm" href="<?php echo esc_url( $oria_join ); ?>" data-wk-event="profile_start"><?php esc_html_e( 'Create practitioner profile', 'oria' ); ?></a>
-					<span class="wkhero__biz"><?php esc_html_e( 'Looking for someone?', 'oria' ); ?> <a href="<?php echo esc_url( $oria_post ); ?>" data-wk-event="job_post_started"><?php esc_html_e( 'Post a job', 'oria' ); ?></a></span>
-				</p>
-			<?php endif; ?>
 		</div>
 	</header>
 
-	<?php if ( $oria_land ) : ?>
-		<?php
-		// Featured jobs (brief section 40): only ones an admin has featured and that are open.
-		$oria_feat = array_values(
-			array_filter(
-				get_posts( array( 'post_type' => Work\JOB, 'post_status' => 'publish', 'numberposts' => 12, 'fields' => 'ids', 'meta_query' => array( array( 'key' => Work\key( 'featured_until' ), 'value' => time(), 'compare' => '>', 'type' => 'NUMERIC' ) ) ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
-				static fn( $id ) => Work\is_open( (int) $id )
-			)
-		);
-		?>
-		<?php if ( $oria_feat ) : ?>
-			<section class="wrap wksec">
-				<h2 class="h3"><?php esc_html_e( 'Featured jobs', 'oria' ); ?></h2>
-				<div class="wkjobs">
-					<?php foreach ( array_slice( $oria_feat, 0, 3 ) as $oria_fid ) : ?>
-						<?php get_template_part( 'template-parts/work/card-job', null, array( 'id' => (int) $oria_fid ) ); ?>
-					<?php endforeach; ?>
-				</div>
-			</section>
-		<?php endif; ?>
-		<?php
-		// Browse by profession (brief section 4): the brief's eighteen, each with its live count.
-		$oria_browse = array( 'yoga-teacher', 'pilates-instructor', 'massage-therapist', 'personal-trainer', 'physiotherapist', 'counsellor', 'psychologist', 'naturopath', 'nutritionist', 'meditation-teacher', 'breathwork-facilitator', 'sauna-recovery-attendant', 'spa-therapist', 'receptionist', 'studio-manager', 'sales', 'marketing', 'retreat-host' );
-		?>
-		<section class="wrap wksec">
-			<h2 class="h2 wksec__title"><?php esc_html_e( 'Browse by profession', 'oria' ); ?></h2>
-			<ul class="wkprofs">
-				<?php foreach ( $oria_browse as $oria_slug ) : ?>
-					<?php
-					$oria_t = get_term_by( 'slug', $oria_slug, Work\PROFESSION );
-					if ( ! $oria_t ) {
-						continue;
-					}
-					$oria_n = Work\open_count( Work\JOB, array( 'profession' => $oria_slug ) );
-					?>
-					<li><a class="wkprof" href="<?php echo esc_url( Work\list_url( 'jobs', '', $oria_slug ) ); ?>">
-						<span class="wkprof__name"><?php echo esc_html( $oria_t->name ); ?></span>
-						<span class="wkprof__n"><?php echo esc_html( $oria_n ? sprintf( _n( '%d open role', '%d open roles', $oria_n, 'oria' ), $oria_n ) : __( 'No open roles yet', 'oria' ) ); ?></span>
-					</a></li>
-				<?php endforeach; ?>
-			</ul>
-		</section>
-	<?php endif; ?>
-
 	<section class="wrap wksec" aria-labelledby="wk-results">
+		<?php
+		// One shape for both sources: the shift query and practitioner search.
+		$oria_ids   = $oria_found ? $oria_found['ids'] : ( $oria_q ? array_map( 'intval', wp_list_pluck( $oria_q->posts, 'ID' ) ) : array() );
+		$oria_n     = $oria_found ? (int) $oria_found['total'] : ( $oria_q ? (int) $oria_q->found_posts : 0 );
+		$oria_pages = $oria_found ? (int) ceil( $oria_n / 24 ) : ( $oria_q ? (int) $oria_q->max_num_pages : 0 );
+		$oria_kms   = $oria_found ? $oria_found['km'] : array();
+		?>
 		<div class="wksec__head">
 			<h2 class="h3" id="wk-results">
 				<?php
-				// One shape for both sources: the post query (jobs, shifts) and practitioner search.
-				$oria_ids   = $oria_found ? $oria_found['ids'] : ( $oria_q ? array_map( 'intval', wp_list_pluck( $oria_q->posts, 'ID' ) ) : array() );
-				$oria_n     = $oria_found ? (int) $oria_found['total'] : ( $oria_q ? (int) $oria_q->found_posts : 0 );
-				$oria_pages = $oria_found ? (int) ceil( $oria_n / 24 ) : ( $oria_q ? (int) $oria_q->max_num_pages : 0 );
-				$oria_kms   = $oria_found ? $oria_found['km'] : array();
-				if ( 'jobs' === $oria_view ) {
-					echo esc_html( $oria_land ? __( 'Latest wellness jobs', 'oria' ) : sprintf( _n( '%d job', '%d jobs', $oria_n, 'oria' ), $oria_n ) );
-				} elseif ( 'shifts' === $oria_view ) {
-					echo esc_html( sprintf( _n( '%d open shift', '%d open shifts', $oria_n, 'oria' ), $oria_n ) );
-				} else {
-					echo esc_html( sprintf( _n( '%d practitioner', '%d practitioners', $oria_n, 'oria' ), $oria_n ) );
-				}
+				echo esc_html(
+					'shifts' === $oria_view
+						? sprintf( _n( '%d open shift', '%d open shifts', $oria_n, 'oria' ), $oria_n )
+						: sprintf( _n( '%d practitioner', '%d practitioners', $oria_n, 'oria' ), $oria_n )
+				);
 				?>
 			</h2>
-			<?php if ( in_array( $oria_view, array( 'jobs', 'shifts' ), true ) ) : ?>
+			<?php if ( 'shifts' === $oria_view ) : ?>
 				<a class="wksec__side" href="<?php echo esc_url( \Oria\Core\MyOria\url( 'work' ) . '#alerts' ); ?>"><?php esc_html_e( 'Get alerts for new ones', 'oria' ); ?></a>
 			<?php endif; ?>
 		</div>
 
 		<?php if ( $oria_ids ) : ?>
-			<div class="<?php echo 'shifts' === $oria_view ? 'wkshifts' : ( 'jobs' === $oria_view ? 'wkjobs' : 'wkpros' ); ?>">
+			<div class="<?php echo 'shifts' === $oria_view ? 'wkshifts' : 'wkpros'; ?>">
 				<?php foreach ( $oria_ids as $oria_pid ) : ?>
-					<?php get_template_part( 'template-parts/work/card-' . ( 'jobs' === $oria_view ? 'job' : ( 'shifts' === $oria_view ? 'shift' : 'pro' ) ), null, array( 'id' => (int) $oria_pid, 'km' => $oria_kms[ $oria_pid ] ?? null ) ); ?>
+					<?php get_template_part( 'template-parts/work/card-' . ( 'shifts' === $oria_view ? 'shift' : 'pro' ), null, array( 'id' => (int) $oria_pid, 'km' => $oria_kms[ $oria_pid ] ?? null ) ); ?>
 				<?php endforeach; ?>
 			</div>
-			<?php
-			if ( $oria_pages > 1 ) :
-				$oria_cur = max( 1, (int) ( $oria_f['page'] ?? 1 ) );
-				?>
-				<nav class="wkpager" aria-label="<?php esc_attr_e( 'More results', 'oria' ); ?>">
-					<?php if ( $oria_cur > 1 ) : ?>
-						<a class="btn btn--ghost btn--sm" href="<?php echo esc_url( add_query_arg( 'pg', $oria_cur - 1 ) ); ?>" rel="prev"><?php esc_html_e( 'Previous', 'oria' ); ?></a>
-					<?php endif; ?>
-					<span><?php echo esc_html( sprintf( __( 'Page %1$d of %2$d', 'oria' ), $oria_cur, $oria_pages ) ); ?></span>
-					<?php if ( $oria_cur < $oria_pages ) : ?>
-						<a class="btn btn--ghost btn--sm" href="<?php echo esc_url( add_query_arg( 'pg', $oria_cur + 1 ) ); ?>" rel="next"><?php esc_html_e( 'Next', 'oria' ); ?></a>
-					<?php endif; ?>
-				</nav>
-			<?php endif; ?>
+			<?php get_template_part( 'template-parts/work/pager', null, array( 'pages' => $oria_pages, 'current' => max( 1, (int) ( $oria_f['page'] ?? 1 ) ) ) ); ?>
 		<?php else : ?>
 			<div class="wkempty">
-				<?php if ( 'jobs' === $oria_view ) : ?>
-					<p><strong><?php esc_html_e( 'No open roles match yet.', 'oria' ); ?></strong> <?php esc_html_e( 'New roles are added every week. Set an alert and we will email you the moment one is posted.', 'oria' ); ?></p>
-					<a class="btn btn--dark btn--sm" href="<?php echo esc_url( \Oria\Core\MyOria\url( 'work' ) . '#alerts' ); ?>"><?php esc_html_e( 'Set a job alert', 'oria' ); ?></a>
-				<?php elseif ( 'shifts' === $oria_view ) : ?>
+				<?php if ( 'shifts' === $oria_view ) : ?>
 					<p><strong><?php esc_html_e( 'No open shifts right now.', 'oria' ); ?></strong> <?php esc_html_e( 'Turn on urgent shift alerts in your work profile and we will tell you when a studio needs cover near you.', 'oria' ); ?></p>
 					<a class="btn btn--dark btn--sm" href="<?php echo esc_url( $oria_join ); ?>"><?php esc_html_e( 'Join the cover network', 'oria' ); ?></a>
 				<?php else : ?>
@@ -196,70 +118,6 @@ get_header();
 			</div>
 		<?php endif; ?>
 	</section>
-
-	<?php if ( $oria_land ) : ?>
-		<?php
-		$oria_urgent = Work\query( Work\SHIFT, array( 'when' => 'week' ), 4 );
-		if ( $oria_urgent->have_posts() ) :
-			?>
-			<section class="wrap wksec">
-				<div class="wksec__head">
-					<h2 class="h3"><?php esc_html_e( 'Cover needed this week', 'oria' ); ?></h2>
-					<a class="wksec__side" href="<?php echo esc_url( Work\list_url( 'shifts' ) ); ?>"><?php esc_html_e( 'All shifts', 'oria' ); ?> &rarr;</a>
-				</div>
-				<div class="wkshifts">
-					<?php foreach ( $oria_urgent->posts as $oria_p ) : ?>
-						<?php get_template_part( 'template-parts/work/card-shift', null, array( 'id' => (int) $oria_p->ID ) ); ?>
-					<?php endforeach; ?>
-				</div>
-			</section>
-		<?php endif; ?>
-
-		<?php $oria_hiring = Work\hiring_now( 8 ); ?>
-		<?php if ( $oria_hiring ) : ?>
-			<section class="wrap wksec">
-				<h2 class="h3"><?php esc_html_e( 'Wellness businesses hiring now', 'oria' ); ?></h2>
-				<ul class="wkhiring">
-					<?php foreach ( $oria_hiring as $oria_l => $oria_c ) : ?>
-						<li><a href="<?php echo esc_url( (string) get_permalink( $oria_l ) . '#work-here' ); ?>">
-							<span class="wkhiring__name"><?php echo esc_html( html_entity_decode( get_the_title( $oria_l ), ENT_QUOTES, 'UTF-8' ) ); ?></span>
-							<span class="wkhiring__n"><?php echo esc_html( sprintf( _n( '%d opening', '%d openings', $oria_c, 'oria' ), $oria_c ) ); ?></span>
-						</a></li>
-					<?php endforeach; ?>
-				</ul>
-			</section>
-		<?php endif; ?>
-
-		<section class="wrap wksec">
-			<nav class="wksubnav" aria-label="<?php esc_attr_e( 'More in Work in Wellness', 'oria' ); ?>">
-				<a href="<?php echo esc_url( Work\list_url( 'corporate' ) ); ?>"><?php esc_html_e( 'Corporate wellness', 'oria' ); ?></a>
-				<a href="<?php echo esc_url( Work\list_url( 'retreat' ) ); ?>"><?php esc_html_e( 'Retreat staff', 'oria' ); ?></a>
-				<a href="<?php echo esc_url( Work\list_url( 'training' ) ); ?>"><?php esc_html_e( 'Training & certification', 'oria' ); ?></a>
-				<a href="<?php echo esc_url( Work\list_url( 'salary' ) ); ?>"><?php esc_html_e( 'Salary guide', 'oria' ); ?></a>
-				<a href="<?php echo esc_url( Work\list_url( 'available' ) ); ?>"><?php esc_html_e( 'Cover board', 'oria' ); ?></a>
-			</nav>
-		</section>
-
-		<section class="wrap wksec">
-			<div class="wkduo">
-				<div class="wkduo__card wkduo__card--deep">
-					<p class="micro"><?php esc_html_e( 'For practitioners', 'oria' ); ?></p>
-					<h2 class="h3"><?php esc_html_e( 'Be first when a studio needs cover', 'oria' ); ?></h2>
-					<p><?php esc_html_e( 'Create a free profile, say when you are free, and switch on urgent shift alerts. When a studio near you needs someone tonight, you hear about it first.', 'oria' ); ?></p>
-					<a class="btn btn--light" href="<?php echo esc_url( $oria_join ); ?>" data-wk-event="profile_start"><?php esc_html_e( 'Create practitioner profile', 'oria' ); ?></a>
-				</div>
-				<div class="wkduo__card">
-					<p class="micro"><?php esc_html_e( 'For businesses', 'oria' ); ?></p>
-					<h2 class="h3"><?php esc_html_e( 'Looking for someone?', 'oria' ); ?></h2>
-					<p><?php esc_html_e( 'Post a job or a casual shift free during launch. Instructor called in sick? Post the shift and we alert the practitioners nearby who suit it.', 'oria' ); ?></p>
-					<p class="wkduo__acts">
-						<a class="btn btn--dark" href="<?php echo esc_url( $oria_post ); ?>" data-wk-event="job_post_started"><?php esc_html_e( 'Post a job', 'oria' ); ?></a>
-						<a class="btn btn--ghost" href="<?php echo esc_url( $oria_shiftp ); ?>" data-wk-event="shift_post_started"><?php esc_html_e( 'Post a shift', 'oria' ); ?></a>
-					</p>
-				</div>
-			</div>
-		</section>
-	<?php endif; ?>
 
 	<?php endif; ?>
 </main>

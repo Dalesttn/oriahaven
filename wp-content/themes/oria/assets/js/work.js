@@ -65,6 +65,45 @@
 		}
 	} );
 
+	/* ------------------------------------------------------ jobs page */
+	// Sort applies on change (the form still has a submit button without JS).
+	document.querySelectorAll( '[data-ohw-autosubmit]' ).forEach( function ( sel ) {
+		sel.addEventListener( 'change', function () { sel.form.submit(); } );
+	} );
+	// "All professions" opens the filter panel it points at.
+	if ( location.hash === '#ohw-filters' ) {
+		var fd = document.getElementById( 'ohw-filters' );
+		if ( fd ) { fd.open = true; }
+	}
+	// Save without leaving the page or losing the search. The form posts to the
+	// same handler as without JS; we only stop the navigation and update the button.
+	var live = document.querySelector( '[data-ohw-live]' );
+	document.querySelectorAll( 'form[data-ohw-save]' ).forEach( function ( form ) {
+		form.addEventListener( 'submit', function ( ev ) {
+			if ( ! window.fetch || ! window.FormData ) { return; }
+			ev.preventDefault();
+			var btn = form.querySelector( 'button' );
+			var was = btn.getAttribute( 'aria-pressed' ) === 'true';
+			btn.disabled = true;
+			// getAttribute, not form.action: these forms carry a hidden input NAMED "action"
+			// (WordPress admin-post), which shadows the form's action property.
+			fetch( form.getAttribute( 'action' ), { method: 'POST', body: new FormData( form ), credentials: 'same-origin', redirect: 'manual' } )
+				.then( function ( res ) {
+					// admin-post answers a save with a redirect (opaqueredirect here); anything
+					// else means it did not go through, so the button must not claim it did.
+					if ( res.type !== 'opaqueredirect' && ! res.ok ) { throw new Error( 'save failed' ); }
+					btn.setAttribute( 'aria-pressed', was ? 'false' : 'true' );
+					var t = btn.querySelector( '.ohw-save__text' );
+					if ( t ) { t.textContent = was ? 'Save' : 'Saved'; }
+					if ( live ) { live.textContent = ( was ? 'Removed from your saved jobs: ' : 'Saved: ' ) + ( btn.getAttribute( 'aria-label' ) || '' ).replace( /^Save /, '' ); }
+				} )
+				.catch( function () {
+					if ( live ) { live.textContent = 'That did not save. Please try again.'; }
+				} )
+				.finally( function () { btn.disabled = false; btn.focus(); } );
+		} );
+	} );
+
 	/* ------------------------------------------------------------- wizard */
 	var form = document.querySelector( '[data-wk-wizard]' );
 	if ( ! form ) {

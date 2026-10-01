@@ -48,7 +48,15 @@ $oria_pattern = array_filter( array( Work\meta( $oria_id, 'weekend' ) ? __( 'Wee
 ?>
 <main id="main" class="wk wk--single" data-wk-view="job_view" data-wk-id="<?php echo (int) $oria_id; ?>">
 	<div class="wrap">
+		<?php
+		// Came from a jobs search? Offer the way back to exactly that search (filters and page kept).
+		$oria_from = (string) wp_get_referer();
+		$oria_back = ( '' !== $oria_from && 0 === strpos( $oria_from, Work\list_url( 'jobs' ) ) && ! preg_match( '#/jobs/[^/?]+/?$#', (string) wp_parse_url( $oria_from, PHP_URL_PATH ) ) ) || ( '' !== $oria_from && untrailingslashit( strtok( $oria_from, '?' ) ) === untrailingslashit( Work\list_url( 'jobs' ) ) ) ? $oria_from : '';
+		?>
 		<nav class="wkcrumb" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
+			<?php if ( '' !== $oria_back ) : ?>
+				<a href="<?php echo esc_url( $oria_back ); ?>">&larr; <?php esc_html_e( 'Back to results', 'oria' ); ?></a> <span aria-hidden="true">·</span>
+			<?php endif; ?>
 			<a href="<?php echo esc_url( Work\list_url( 'jobs' ) ); ?>"><?php esc_html_e( 'Jobs', 'oria' ); ?></a>
 			<?php if ( $oria_p = Work\term( $oria_id, Work\PROFESSION ) ) : ?>
 				<span aria-hidden="true">/</span> <a href="<?php echo esc_url( Work\list_url( 'jobs', '', $oria_p->slug ) ); ?>"><?php echo esc_html( $oria_p->name ); ?></a>

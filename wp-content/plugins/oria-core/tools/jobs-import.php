@@ -70,7 +70,18 @@ foreach ( $data['jobs'] as $j ) {
 	// Already here?
 	$dupe = get_posts( array( 'post_type' => Work\JOB, 'post_status' => 'any', 'numberposts' => 1, 'fields' => 'ids', 'meta_key' => Work\key( 'source_url' ), 'meta_value' => $url ) ); // phpcs:ignore WordPress.DB.SlowDBQuery
 	if ( $dupe ) {
-		WP_CLI::log( "  = {$title} @ {$emp}: already on Oria (#{$dupe[0]})" );
+		// Already here. One thing is still corrected: the posting date must be the ad's,
+		// never the day it was imported (jobs redesign brief, section 7).
+		$want = ! empty( $j['posted'] ) && strtotime( (string) $j['posted'] ) ? wp_date( 'Y-m-d 09:00:00', strtotime( (string) $j['posted'] . ' 12:00' ) ) : '';
+		$have = (string) get_post_field( 'post_date', (int) $dupe[0] );
+		if ( '' !== $want && substr( $have, 0, 10 ) !== substr( $want, 0, 10 ) ) {
+			WP_CLI::log( "  ~ {$title} @ {$emp}: posting date {$have} -> {$want}" );
+			if ( $apply ) {
+				wp_update_post( array( 'ID' => (int) $dupe[0], 'post_date' => $want, 'post_date_gmt' => get_gmt_from_date( $want ), 'edit_date' => true ) );
+			}
+		} else {
+			WP_CLI::log( "  = {$title} @ {$emp}: already on Oria (#{$dupe[0]})" );
+		}
 		++$n['skip'];
 		continue;
 	}
@@ -118,7 +129,12 @@ foreach ( $data['jobs'] as $j ) {
 			'post_content' => wp_kses_post( wpautop( $body ) ),
 			'post_status'  => $publish ? 'publish' : 'draft',
 			'post_author'  => $admin,
-		)
+		) + ( $posted ? array(
+			// The ad's own posting date, not today's (so "Posted 9 days ago" is true).
+			'post_date'     => wp_date( 'Y-m-d 09:00:00', $posted ),
+			'post_date_gmt' => get_gmt_from_date( wp_date( 'Y-m-d 09:00:00', $posted ) ),
+			'edit_date'     => true,
+		) : array() )
 	);
 	if ( ! $id ) {
 		WP_CLI::warning( "could not create {$title}" );

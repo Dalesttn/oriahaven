@@ -558,21 +558,36 @@ function query( string $post_type, array $f, int $per = 20 ): \WP_Query {
 		'no_found_rows'  => false,
 	);
 
+	// "Saved jobs": only the signed-in visitor's own saved list.
+	if ( ! empty( $f['saved'] ) ) {
+		$saved              = is_user_logged_in() ? Forms\saved_ids( get_current_user_id() ) : array();
+		$args['post__in']   = $saved ? $saved : array( 0 );
+	}
+	if ( 'ids' === ( $f['fields'] ?? '' ) ) {
+		$args['fields']        = 'ids';
+		$args['no_found_rows'] = true;
+	}
+
 	$sort = (string) ( $f['sort'] ?? '' );
 	if ( SHIFT === $post_type ) {
 		$args['meta_key'] = key( 'date' ); // phpcs:ignore WordPress.DB.SlowDBQuery
 		$args['orderby']  = array( 'meta_value' => 'ASC', 'date' => 'DESC' );
+	} elseif ( 'closing' === $sort && JOB === $post_type ) {
+		// Closing soon: a real date, so no conversion or guess is involved.
+		$args['meta_key'] = key( 'expires' ); // phpcs:ignore WordPress.DB.SlowDBQuery
+		$args['orderby']  = array( 'meta_value_num' => 'ASC', 'date' => 'DESC' );
 	} elseif ( 'pay' === $sort && JOB === $post_type ) {
 		$args['meta_key'] = key( 'pay_rank' ); // phpcs:ignore WordPress.DB.SlowDBQuery
 		$args['orderby']  = array( 'meta_value_num' => 'DESC', 'date' => 'DESC' );
-	} elseif ( '' === $args['s'] || 'new' === $sort ) {
+	} else {
+		// Newest. There is no defined relevance ranking, so nothing is labelled "most relevant".
 		$args['orderby'] = array( 'date' => 'DESC' );
 	}
 
 	$q = new \WP_Query( $args );
 
 	// Featured first on page one of an unsorted list (brief section 40).
-	if ( JOB === $post_type && '' === $sort && 1 === (int) $args['paged'] && $q->posts ) {
+	if ( JOB === $post_type && '' === $sort && 1 === (int) $args['paged'] && $q->posts && 'ids' !== ( $args['fields'] ?? '' ) ) {
 		usort( $q->posts, static fn( $a, $b ) => (int) is_featured( $b->ID ) <=> (int) is_featured( $a->ID ) );
 	}
 	return $q;
