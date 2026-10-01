@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const META_STATS = '_oria_stats';
 const KEEP_DAYS  = 90;
-const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'reel', 'next', 'cal', 'save' );
+const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'reel', 'next', 'cal', 'save', 'apply', 'empview' );
 
 /**
  * Which counters each kind of page may carry. Trends to Try reuse the same
@@ -34,6 +34,13 @@ const TYPES_FOR = array(
 	// An event answers a different question: did anyone look, did they go
 	// on to the organiser, and did they intend to turn up (calendar, save).
 	'event'           => array( 'view', 'book', 'cal', 'save' ),
+	// Work in Wellness (brief sections 65-66). 'save' on a job is recorded
+	// server-side by the save form; 'empview' is never sent by a browser --
+	// Work\guard_singles() records it server-side when a signed-in employer
+	// opens a profile (the beacon is anonymous: it carries no REST nonce).
+	'oria_job'          => array( 'view', 'apply', 'save' ),
+	'oria_shift'        => array( 'view', 'apply' ),
+	'oria_practitioner' => array( 'view' ),
 );
 
 function bootstrap(): void {

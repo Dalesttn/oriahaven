@@ -24,8 +24,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const VERSION = '1';
+const VERSION = '2';
 const OPTION  = 'oria_work_db_v';
+
+/** Saved practitioners (brief sections 67-68): an employer's private lists, notes and status. */
+function talent(): string {
+	global $wpdb;
+	return $wpdb->prefix . 'oria_work_talent';
+}
+
+/** An employer inviting a practitioner to one job or shift; one row each, ever. */
+function invites(): string {
+	global $wpdb;
+	return $wpdb->prefix . 'oria_work_invites';
+}
+
+/** Statuses an employer can give a saved practitioner. */
+const TALENT_STATUS = array(
+	'saved'     => 'Saved',
+	'contacted' => 'Contacted',
+	'shortlist' => 'Shortlisted',
+	'hired'     => 'Hired',
+	'not_now'   => 'Not now',
+);
 
 function apps(): string {
 	global $wpdb;
@@ -113,7 +134,108 @@ function install(): void {
 ) $c;"
 	);
 
+	dbDelta(
+		'CREATE TABLE ' . talent() . " (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  employer bigint(20) unsigned NOT NULL,
+  profile_id bigint(20) unsigned NOT NULL,
+  list_name varchar(60) NOT NULL DEFAULT 'Saved',
+  note varchar(1000) NOT NULL DEFAULT '',
+  status varchar(12) NOT NULL DEFAULT 'saved',
+  created_at datetime NOT NULL,
+  updated_at datetime NOT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY one_each (employer,profile_id,list_name),
+  KEY by_employer (employer)
+) $c;"
+	);
+
+	dbDelta(
+		'CREATE TABLE ' . invites() . " (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  employer bigint(20) unsigned NOT NULL,
+  profile_id bigint(20) unsigned NOT NULL,
+  post_id bigint(20) unsigned NOT NULL,
+  created_at datetime NOT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY one_each (profile_id,post_id),
+  KEY by_employer (employer,created_at),
+  KEY by_profile (profile_id)
+) $c;"
+	);
+
 	update_option( OPTION, VERSION, false );
+}
+
+/* ------------------------------------------------------------ saved talent */
+
+/** Save (or move/update) a practitioner on one of an employer's lists. */
+function save_talent( int $employer, int $profile, string $list, string $note = '', string $status = 'saved' ): bool {
+	global $wpdb;
+	$list   = mb_substr( trim( $list ) ?: 'Saved', 0, 60 );
+	$status = isset( TALENT_STATUS[ $status ] ) ? $status : 'saved';
+	$now    = current_time( 'mysql' );
+	$id     = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT id FROM ' . talent() . ' WHERE employer = %d AND profile_id = %d AND list_name = %s', $employer, $profile, $list ) ); // phpcs:ignore WordPress.DB.PreparedSQL
+	if ( $id ) {
+		return false !== $wpdb->update( talent(), array( 'note' => mb_substr( $note, 0, 1000 ), 'status' => $status, 'updated_at' => $now ), array( 'id' => $id ) );
+	}
+	return (bool) $wpdb->insert( talent(), array( 'employer' => $employer, 'profile_id' => $profile, 'list_name' => $list, 'note' => mb_substr( $note, 0, 1000 ), 'status' => $status, 'created_at' => $now, 'updated_at' => $now ) );
+}
+
+function remove_talent( int $id, int $employer ): void {
+	global $wpdb;
+	$wpdb->delete( talent(), array( 'id' => $id, 'employer' => $employer ) );
+}
+
+/** An employer's saved practitioners, grouped: list name => rows. */
+function talent_lists( int $employer ): array {
+	global $wpdb;
+	$rows = (array) $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . talent() . ' WHERE employer = %d ORDER BY list_name, updated_at DESC', $employer ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL
+	$out  = array();
+	foreach ( $rows as $r ) {
+		$out[ $r['list_name'] ][] = $r;
+	}
+	return $out;
+}
+
+/** The list names an employer has used, for the "save to" picker. */
+function list_names( int $employer ): array {
+	global $wpdb;
+	return array_map( 'strval', (array) $wpdb->get_col( $wpdb->prepare( 'SELECT DISTINCT list_name FROM ' . talent() . ' WHERE employer = %d ORDER BY list_name', $employer ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL
+}
+
+/** Lists this practitioner is on for this employer. */
+function lists_with( int $employer, int $profile ): array {
+	global $wpdb;
+	return array_map( 'strval', (array) $wpdb->get_col( $wpdb->prepare( 'SELECT list_name FROM ' . talent() . ' WHERE employer = %d AND profile_id = %d', $employer, $profile ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL
+}
+
+/* ----------------------------------------------------------------- invites */
+
+/** Record an invite. False if this practitioner was already invited to this post. */
+function add_invite( int $employer, int $profile, int $post ): bool {
+	global $wpdb;
+	if ( $wpdb->get_var( $wpdb->prepare( 'SELECT 1 FROM ' . invites() . ' WHERE profile_id = %d AND post_id = %d', $profile, $post ) ) ) { // phpcs:ignore WordPress.DB.PreparedSQL
+		return false;
+	}
+	return (bool) $wpdb->insert( invites(), array( 'employer' => $employer, 'profile_id' => $profile, 'post_id' => $post, 'created_at' => current_time( 'mysql' ) ) );
+}
+
+/** Invites an employer has sent in the last 24 hours (the spam limit reads this). */
+function invites_today( int $employer ): int {
+	global $wpdb;
+	return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . invites() . ' WHERE employer = %d AND created_at > %s', $employer, wp_date( 'Y-m-d H:i:s', time() - DAY_IN_SECONDS ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL
+}
+
+function invites_for_profile( int $profile ): int {
+	global $wpdb;
+	return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . invites() . ' WHERE profile_id = %d', $profile ) ); // phpcs:ignore WordPress.DB.PreparedSQL
+}
+
+/** Post ids this practitioner has already been invited to by this employer. */
+function invited_to( int $employer, int $profile ): array {
+	global $wpdb;
+	return array_map( 'intval', (array) $wpdb->get_col( $wpdb->prepare( 'SELECT post_id FROM ' . invites() . ' WHERE employer = %d AND profile_id = %d', $employer, $profile ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL
 }
 
 /* ------------------------------------------------------------ applications */

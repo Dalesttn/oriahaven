@@ -36,6 +36,8 @@ require_once __DIR__ . '/work/forms.php';
 require_once __DIR__ . '/work/notify.php';
 require_once __DIR__ . '/work/schema.php';
 require_once __DIR__ . '/work/admin.php';
+require_once __DIR__ . '/work/plans.php';
+require_once __DIR__ . '/work/talent.php';
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\register', 7 );
@@ -70,6 +72,7 @@ function bootstrap(): void {
 	Notify\bootstrap();
 	Schema\bootstrap();
 	Admin\bootstrap();
+	Plans\bootstrap();
 }
 
 /**
@@ -87,5 +90,11 @@ function guard_singles(): void {
 	// Signed-in views of work pages carry apply/available state: never cache them for someone else.
 	if ( is_user_logged_in() && is_work_page() ) {
 		do_action( 'litespeed_control_set_nocache', 'Work pages show per-person application state' );
+		// "Employer views" (brief section 66): counted here, where the account is known.
+		$id  = (int) get_queried_object_id();
+		$uid = get_current_user_id();
+		if ( is_singular( PRO ) && ! is_404() && (int) get_post_field( 'post_author', $id ) !== $uid && is_employer( $uid ) ) {
+			count_event( $id, 'empview' );
+		}
 	}
 }

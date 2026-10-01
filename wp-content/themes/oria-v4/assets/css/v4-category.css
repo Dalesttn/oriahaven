@@ -1098,3 +1098,8 @@ html.xc-locked { overflow: hidden; }
   .fac-table__checked { white-space: normal; }
   .fac-table tbody tr:nth-child(even) .fac-chip--quiet { background: var(--sand-3, #E6DFD0); }
 }
+
+/* Work in Wellness: the one-line jobs link on a category page. */
+.xc-jobs { margin-top: var(--s-5); font-size: var(--fs-sm); color: var(--text-soft); }
+.xc-jobs span { color: var(--gold); }
+.xc-jobs a { font-weight: 700; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }

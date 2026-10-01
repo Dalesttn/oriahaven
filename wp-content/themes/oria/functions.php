@@ -123,12 +123,12 @@ add_action(
 		 * Oria work views, and listing pages (for "Work here") -- nowhere
 		 * else (brief section 93).
 		 */
-		$oria_work_views = array( 'work', 'work-edit', 'recruit', 'recruit-post', 'recruit-applicants' );
+		$oria_work_views = array( 'work', 'work-edit', 'recruit', 'recruit-post', 'recruit-applicants', 'recruit-talent' );
 		if ( ( function_exists( '\Oria\Core\Work\is_work_page' ) && \Oria\Core\Work\is_work_page() )
-			|| is_singular( 'listing' )
+			|| is_singular( 'listing' ) || is_tax( 'area' )
 			|| ( function_exists( '\Oria\Core\MyOria\is_page' ) && \Oria\Core\MyOria\is_page() && in_array( \Oria\Core\MyOria\view(), $oria_work_views, true ) ) ) {
 			wp_enqueue_style( 'oria-work', "{$uri}/assets/css/work.css", array( 'oria-pages' ), (string) filemtime( get_theme_file_path( 'assets/css/work.css' ) ) );
-			if ( ! is_singular( 'listing' ) ) {
+			if ( ! is_singular( 'listing' ) && ! is_tax( 'area' ) ) {
 				wp_enqueue_script( 'oria-work', "{$uri}/assets/js/work.js", array(), (string) filemtime( get_theme_file_path( 'assets/js/work.js' ) ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
 			}
 		}

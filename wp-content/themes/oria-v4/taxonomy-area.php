@@ -734,6 +734,27 @@ $oria_vico = static function ( string $name ): string {
 
 </div>
 
+<?php
+/*
+ * 8b. Wellness jobs in this area (brief sections 62, 101): open jobs and
+ * shifts filed here or below, only when there are any.
+ */
+$oria_wk_here = ( $oria_term && function_exists( '\Oria\Core\Work\in_area' ) ) ? \Oria\Core\Work\in_area( $oria_term, 4 ) : array();
+if ( $oria_wk_here ) :
+	?>
+	<section class="oag-section" id="work" aria-labelledby="oagWorkTitle">
+		<div class="oag-wrap">
+			<h2 class="oag-h2" id="oagWorkTitle"><?php echo esc_html( sprintf( /* translators: %s: area */ __( 'Wellness jobs in %s', 'oria' ), $oria_place ) ); ?></h2>
+			<div class="wkjobs wkjobs--tight">
+				<?php foreach ( $oria_wk_here as $oria_wk_id ) : ?>
+					<?php get_template_part( 'template-parts/work/card-' . ( \Oria\Core\Work\SHIFT === get_post_type( $oria_wk_id ) ? 'shift' : 'job' ), null, array( 'id' => (int) $oria_wk_id ) ); ?>
+				<?php endforeach; ?>
+			</div>
+			<p><a href="<?php echo esc_url( add_query_arg( 'area', $oria_term->slug, \Oria\Core\Work\list_url( 'jobs' ) ) ); ?>" data-oria-event="area_jobs_click"><?php esc_html_e( 'All wellness jobs here', 'oria' ); ?> &rarr;</a></p>
+		</div>
+	</section>
+<?php endif; ?>
+
 <!-- 9. For local businesses -->
 <section class="oag-section oag-section--tight" aria-labelledby="oagBizTitle">
 	<div class="oag-wrap">

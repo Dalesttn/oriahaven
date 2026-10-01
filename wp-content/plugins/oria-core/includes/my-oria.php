@@ -62,6 +62,7 @@ const VIEWS = array(
 	'recruit'            => true,
 	'recruit-post'       => true,
 	'recruit-applicants' => true,
+	'recruit-talent'     => true,
 	'login'    => false,
 	'register' => false,
 	'reset'    => false,

@@ -134,6 +134,49 @@ function to_admin_report( int $id, string $reason ): void {
 	);
 }
 
+function to_admin_feature( int $id, int $days ): void {
+	mail(
+		(string) get_option( 'admin_email' ),
+		/* translators: %s: job title */
+		sprintf( __( 'Feature request: %s', 'oria' ), get_the_title( $id ) ),
+		__( 'An employer wants to feature a job', 'oria' ),
+		array(
+			/* translators: 1: employer, 2: days */
+			sprintf( __( '%1$s asked to feature this job for %2$d days.', 'oria' ), Work\employer_name( $id ) ?: __( 'An employer', 'oria' ), $days ),
+			__( 'There is no checkout yet. Set "Featured" in the job\'s Oria controls to switch it on.', 'oria' ),
+		),
+		array( admin_url( 'post.php?post=' . $id . '&action=edit' ), __( 'Open the job', 'oria' ) )
+	);
+}
+
+/**
+ * An employer invited a practitioner to a job or shift. The practitioner
+ * allowed employer contact (checked by the form); the employer never sees
+ * their email -- they answer by applying or saying they are available.
+ */
+function invited( int $pro, int $post, string $message ): void {
+	$uid   = (int) get_post_field( 'post_author', $pro );
+	$shift = SHIFT === get_post_type( $post );
+	$biz   = Work\employer_name( $post ) ?: __( 'A wellness business', 'oria' );
+	mail(
+		user_email( $uid ),
+		$shift
+			/* translators: 1: business, 2: shift */
+			? sprintf( __( '%1$s would like you for a shift: %2$s', 'oria' ), $biz, get_the_title( $post ) )
+			/* translators: 1: business, 2: job */
+			: sprintf( __( '%1$s invited you to apply: %2$s', 'oria' ), $biz, get_the_title( $post ) ),
+		__( 'You have been invited', 'oria' ),
+		array_filter(
+			array(
+				line( $post ),
+				'' !== trim( $message ) ? sprintf( '“%s”', $message ) : '',
+				__( 'They found you through your Oria work profile. You are getting this because your profile allows businesses to invite you; change that in My Oria → Work.', 'oria' ),
+			)
+		),
+		array( get_permalink( $post ) . ( $shift ? '#respond' : '#apply' ), $shift ? __( "I'm available", 'oria' ) : __( 'View and apply', 'oria' ) )
+	);
+}
+
 /* ------------------------------------------------------------- lifecycle */
 
 /**

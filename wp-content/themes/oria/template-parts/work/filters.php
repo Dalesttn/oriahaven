@@ -15,8 +15,11 @@ $oria_view = (string) ( $args['view'] ?? 'jobs' );
 $oria_f    = (array) ( $args['f'] ?? array() );
 $oria_act  = (string) ( $args['action'] ?? '' );
 $oria_prof = (string) ( $oria_f['profession'] ?? '' );
-$oria_area = (string) ( $oria_f['area'] ?? '' );
-$oria_uid  = 'wkf-' . $oria_view;
+$oria_people = in_array( $oria_view, array( 'pros', 'available' ), true );
+// For people the place is a point to measure from ("near Subiaco, within 10 km"), not a filing.
+$oria_loc_name = $oria_people ? 'near' : 'area';
+$oria_area     = (string) ( $oria_f[ $oria_loc_name ] ?? '' );
+$oria_uid      = 'wkf-' . $oria_view;
 ?>
 <form class="wkfilters" method="get" action="<?php echo esc_url( $oria_act ); ?>" role="search" data-wk-search="<?php echo esc_attr( $oria_view ); ?>">
 	<div class="wkfilters__main">
@@ -38,8 +41,8 @@ $oria_uid  = 'wkf-' . $oria_view;
 			</select>
 		</div>
 		<div class="wkfield">
-			<label for="<?php echo esc_attr( $oria_uid ); ?>-a"><?php esc_html_e( 'Location', 'oria' ); ?></label>
-			<select class="input" id="<?php echo esc_attr( $oria_uid ); ?>-a" name="area">
+			<label for="<?php echo esc_attr( $oria_uid ); ?>-a"><?php echo esc_html( $oria_people ? __( 'Near', 'oria' ) : __( 'Location', 'oria' ) ); ?></label>
+			<select class="input" id="<?php echo esc_attr( $oria_uid ); ?>-a" name="<?php echo esc_attr( $oria_loc_name ); ?>">
 				<option value=""><?php esc_html_e( 'Anywhere', 'oria' ); ?></option>
 				<?php foreach ( Work\suburb_choices() as $oria_city => $oria_subs ) : ?>
 					<optgroup label="<?php echo esc_attr( $oria_city ); ?>">
@@ -89,10 +92,58 @@ $oria_uid  = 'wkf-' . $oria_view;
 				</select>
 			</label>
 		</fieldset>
-	<?php elseif ( 'pros' === $oria_view ) : ?>
+	<?php elseif ( $oria_people ) : ?>
+		<?php
+		$oria_skill_on = (array) ( $oria_f['skills'] ?? array() );
+		$oria_times_on = (array) ( $oria_f['times'] ?? array() );
+		?>
 		<fieldset class="wkfilters__more">
 			<legend class="wk-vh"><?php esc_html_e( 'More filters', 'oria' ); ?></legend>
-			<label class="wktoggle"><input type="checkbox" name="cover" value="1" <?php checked( ! empty( $oria_f['cover'] ) ); ?>> <?php esc_html_e( 'Available for casual cover', 'oria' ); ?></label>
+			<label class="wksort"><span><?php esc_html_e( 'Within', 'oria' ); ?></span>
+				<select name="radius">
+					<option value=""><?php esc_html_e( 'Any distance', 'oria' ); ?></option>
+					<?php foreach ( array( 5, 10, 20, 50 ) as $oria_km ) : ?>
+						<option value="<?php echo (int) $oria_km; ?>" <?php selected( (int) ( $oria_f['radius'] ?? 0 ), $oria_km ); ?>><?php echo esc_html( sprintf( __( '%d km', 'oria' ), $oria_km ) ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</label>
+			<label class="wksort"><span><?php esc_html_e( 'Experience', 'oria' ); ?></span>
+				<select name="years">
+					<option value=""><?php esc_html_e( 'Any', 'oria' ); ?></option>
+					<?php foreach ( array( 1, 3, 5, 10 ) as $oria_y ) : ?>
+						<option value="<?php echo (int) $oria_y; ?>" <?php selected( (int) ( $oria_f['years'] ?? 0 ), $oria_y ); ?>><?php echo esc_html( sprintf( __( '%d+ years', 'oria' ), $oria_y ) ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</label>
+			<?php if ( 'available' === $oria_view ) : ?>
+				<label class="wksort"><span><?php esc_html_e( 'Free on', 'oria' ); ?></span>
+					<input type="date" name="date" min="<?php echo esc_attr( wp_date( 'Y-m-d' ) ); ?>" value="<?php echo esc_attr( (string) ( $oria_f['date'] ?? '' ) ); ?>">
+				</label>
+			<?php else : ?>
+				<label class="wktoggle"><input type="checkbox" name="cover" value="1" <?php checked( ! empty( $oria_f['cover'] ) ); ?>> <?php esc_html_e( 'Open to casual cover', 'oria' ); ?></label>
+			<?php endif; ?>
+			<?php foreach ( array( 'mornings' => __( 'Mornings', 'oria' ), 'evenings' => __( 'Evenings', 'oria' ), 'weekends' => __( 'Weekends', 'oria' ) ) as $oria_k => $oria_v ) : ?>
+				<label class="wktoggle"><input type="checkbox" name="times[]" value="<?php echo esc_attr( $oria_k ); ?>" <?php checked( in_array( $oria_k, $oria_times_on, true ) ); ?>> <?php echo esc_html( $oria_v ); ?></label>
+			<?php endforeach; ?>
+			<label class="wktoggle"><input type="checkbox" name="verified" value="1" <?php checked( ! empty( $oria_f['verified'] ) ); ?>> <?php esc_html_e( 'Verified only', 'oria' ); ?></label>
+			<label class="wksort"><span><?php esc_html_e( 'Sort', 'oria' ); ?></span>
+				<select name="sort">
+					<option value=""><?php esc_html_e( 'Best match', 'oria' ); ?></option>
+					<option value="near" <?php selected( (string) ( $oria_f['sort'] ?? '' ), 'near' ); ?>><?php esc_html_e( 'Nearest', 'oria' ); ?></option>
+					<option value="years" <?php selected( (string) ( $oria_f['sort'] ?? '' ), 'years' ); ?>><?php esc_html_e( 'Most experienced', 'oria' ); ?></option>
+				</select>
+			</label>
+			<details class="wkfilters__skills"<?php echo $oria_skill_on ? ' open' : ''; ?>>
+				<summary><?php echo esc_html( $oria_skill_on ? sprintf( _n( 'Skills (%d)', 'Skills (%d)', count( $oria_skill_on ), 'oria' ), count( $oria_skill_on ) ) : __( 'Skills', 'oria' ) ); ?></summary>
+				<?php foreach ( Work\skill_tree() as $oria_g => $oria_ts ) : ?>
+					<p class="wkgroup"><?php echo esc_html( $oria_g ); ?></p>
+					<div class="wkchecks">
+						<?php foreach ( $oria_ts as $oria_t ) : ?>
+							<label class="wkcheck"><input type="checkbox" name="skills[]" value="<?php echo esc_attr( $oria_t->slug ); ?>" <?php checked( in_array( $oria_t->slug, $oria_skill_on, true ) ); ?>> <?php echo esc_html( $oria_t->name ); ?></label>
+						<?php endforeach; ?>
+					</div>
+				<?php endforeach; ?>
+			</details>
 		</fieldset>
 	<?php endif; ?>
 </form>

@@ -26,7 +26,15 @@ $oria_type  = array( 'jobs' => Work\JOB, 'shifts' => Work\SHIFT, 'pros' => Work\
 if ( 'available' === $oria_view ) {
 	$oria_f['cover'] = true;
 }
-$oria_q      = $oria_type ? Work\query( $oria_type, $oria_f, 'jobs' === $oria_view ? 20 : 24 ) : null;
+// Once the paywall is on, the precise filters are Oria Recruit's; until then everyone has them.
+if ( Work\Plans\paywall_on() && ! Work\Plans\allows( get_current_user_id(), 'search' ) ) {
+	$oria_f['radius'] = 0;
+	$oria_f['years']  = 0;
+	$oria_f['verified'] = false;
+}
+$oria_people = in_array( $oria_view, array( 'pros', 'available' ), true );
+$oria_found  = $oria_people ? Work\search_pros( $oria_f, 24 ) : null;
+$oria_q      = $oria_type && ! $oria_people ? Work\query( $oria_type, $oria_f, 'jobs' === $oria_view ? 20 : 24 ) : null;
 $oria_notice = Work\notice();
 $oria_post   = add_query_arg( 'type', 'job', \Oria\Core\MyOria\url( 'recruit-post' ) );
 $oria_shiftp = add_query_arg( 'type', 'shift', \Oria\Core\MyOria\url( 'recruit-post' ) );
@@ -81,6 +89,25 @@ get_header();
 
 	<?php if ( $oria_land ) : ?>
 		<?php
+		// Featured jobs (brief section 40): only ones an admin has featured and that are open.
+		$oria_feat = array_values(
+			array_filter(
+				get_posts( array( 'post_type' => Work\JOB, 'post_status' => 'publish', 'numberposts' => 12, 'fields' => 'ids', 'meta_query' => array( array( 'key' => Work\key( 'featured_until' ), 'value' => time(), 'compare' => '>', 'type' => 'NUMERIC' ) ) ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
+				static fn( $id ) => Work\is_open( (int) $id )
+			)
+		);
+		?>
+		<?php if ( $oria_feat ) : ?>
+			<section class="wrap wksec">
+				<h2 class="h3"><?php esc_html_e( 'Featured jobs', 'oria' ); ?></h2>
+				<div class="wkjobs">
+					<?php foreach ( array_slice( $oria_feat, 0, 3 ) as $oria_fid ) : ?>
+						<?php get_template_part( 'template-parts/work/card-job', null, array( 'id' => (int) $oria_fid ) ); ?>
+					<?php endforeach; ?>
+				</div>
+			</section>
+		<?php endif; ?>
+		<?php
 		// Browse by profession (brief section 4): the brief's eighteen, each with its live count.
 		$oria_browse = array( 'yoga-teacher', 'pilates-instructor', 'massage-therapist', 'personal-trainer', 'physiotherapist', 'counsellor', 'psychologist', 'naturopath', 'nutritionist', 'meditation-teacher', 'breathwork-facilitator', 'sauna-recovery-attendant', 'spa-therapist', 'receptionist', 'studio-manager', 'sales', 'marketing', 'retreat-host' );
 		?>
@@ -108,7 +135,11 @@ get_header();
 		<div class="wksec__head">
 			<h2 class="h3" id="wk-results">
 				<?php
-				$oria_n = $oria_q ? (int) $oria_q->found_posts : 0;
+				// One shape for both sources: the post query (jobs, shifts) and practitioner search.
+				$oria_ids   = $oria_found ? $oria_found['ids'] : ( $oria_q ? array_map( 'intval', wp_list_pluck( $oria_q->posts, 'ID' ) ) : array() );
+				$oria_n     = $oria_found ? (int) $oria_found['total'] : ( $oria_q ? (int) $oria_q->found_posts : 0 );
+				$oria_pages = $oria_found ? (int) ceil( $oria_n / 24 ) : ( $oria_q ? (int) $oria_q->max_num_pages : 0 );
+				$oria_kms   = $oria_found ? $oria_found['km'] : array();
 				if ( 'jobs' === $oria_view ) {
 					echo esc_html( $oria_land ? __( 'Latest wellness jobs', 'oria' ) : sprintf( _n( '%d job', '%d jobs', $oria_n, 'oria' ), $oria_n ) );
 				} elseif ( 'shifts' === $oria_view ) {
@@ -123,14 +154,13 @@ get_header();
 			<?php endif; ?>
 		</div>
 
-		<?php if ( $oria_q && $oria_q->have_posts() ) : ?>
+		<?php if ( $oria_ids ) : ?>
 			<div class="<?php echo 'shifts' === $oria_view ? 'wkshifts' : ( 'jobs' === $oria_view ? 'wkjobs' : 'wkpros' ); ?>">
-				<?php foreach ( $oria_q->posts as $oria_p ) : ?>
-					<?php get_template_part( 'template-parts/work/card-' . ( 'jobs' === $oria_view ? 'job' : ( 'shifts' === $oria_view ? 'shift' : 'pro' ) ), null, array( 'id' => (int) $oria_p->ID ) ); ?>
+				<?php foreach ( $oria_ids as $oria_pid ) : ?>
+					<?php get_template_part( 'template-parts/work/card-' . ( 'jobs' === $oria_view ? 'job' : ( 'shifts' === $oria_view ? 'shift' : 'pro' ) ), null, array( 'id' => (int) $oria_pid, 'km' => $oria_kms[ $oria_pid ] ?? null ) ); ?>
 				<?php endforeach; ?>
 			</div>
 			<?php
-			$oria_pages = (int) $oria_q->max_num_pages;
 			if ( $oria_pages > 1 ) :
 				$oria_cur = max( 1, (int) ( $oria_f['page'] ?? 1 ) );
 				?>

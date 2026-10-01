@@ -39,7 +39,7 @@ const TRUSTED = '_oria_work_trusted';
 const SAVED   = '_oria_work_saved';
 
 function bootstrap(): void {
-	foreach ( array( 'profile', 'post', 'apply', 'available', 'status', 'accept', 'withdraw', 'alert', 'save', 'close', 'claim' ) as $a ) {
+	foreach ( array( 'profile', 'post', 'apply', 'available', 'status', 'accept', 'withdraw', 'alert', 'save', 'close', 'claim', 'avail', 'talent', 'invite', 'feature' ) as $a ) {
 		add_action( 'admin_post_oria_work_' . $a, __NAMESPACE__ . '\handle_' . $a );
 		add_action( 'admin_post_nopriv_oria_work_' . $a, __NAMESPACE__ . '\must_sign_in' );
 	}
@@ -531,8 +531,12 @@ function handle_save(): void {
 	$id    = (int) ( $_POST['id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 	$saved = array_map( 'intval', (array) get_user_meta( $uid, SAVED, true ) );
 	if ( in_array( get_post_type( $id ), array( JOB, SHIFT ), true ) ) {
-		$saved = in_array( $id, $saved, true ) ? array_values( array_diff( $saved, array( $id ) ) ) : array_slice( array_merge( array( $id ), $saved ), 0, 100 );
+		$was   = in_array( $id, $saved, true );
+		$saved = $was ? array_values( array_diff( $saved, array( $id ) ) ) : array_slice( array_merge( array( $id ), $saved ), 0, 100 );
 		update_user_meta( $uid, SAVED, $saved );
+		if ( ! $was && JOB === get_post_type( $id ) ) {
+			Work\count_event( $id, 'save' );
+		}
 	}
 	back( referer(), in_array( $id, $saved, true ) ? 'saved' : 'unsaved' );
 }
@@ -564,6 +568,120 @@ function handle_claim(): void {
 		array( admin_url( 'post.php?post=' . $id . '&action=edit' ), __( 'Open the job', 'oria' ) )
 	);
 	back( $back, 'claim_sent' );
+}
+
+/* ------------------------------------------------------------ phase 2 */
+
+/**
+ * A practitioner's availability post (brief section 46): dates, days and a
+ * line. "Clear" removes it. Needs a work profile -- the post IS the profile
+ * shown on the cover board.
+ */
+function handle_avail(): void {
+	check( 'oria_work_avail' );
+	$uid  = get_current_user_id();
+	$pro  = Work\profile_of( $uid );
+	$back = \Oria\Core\MyOria\url( 'work' ) . '#availability';
+	if ( ! $pro ) {
+		back( \Oria\Core\MyOria\url( 'work-edit' ), 'profile_first' );
+	}
+	if ( 'clear' === ( $_POST['do'] ?? '' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		foreach ( array( 'avail_from', 'avail_to', 'avail_days', 'avail_note' ) as $k ) {
+			Work\set( $pro, $k, '' );
+		}
+		back( $back, 'avail_cleared' );
+	}
+	$from  = valid_date( txt( 'from', 10 ) ) ?: wp_date( 'Y-m-d' );
+	$to    = valid_date( txt( 'to', 10 ) );
+	$today = wp_date( 'Y-m-d' );
+	$far   = wp_date( 'Y-m-d', strtotime( '+90 days' ) );
+	if ( '' === $to || $to < $from || $to < $today ) {
+		back( $back, 'avail_dates' );
+	}
+	$days = array_values( array_intersect( array_map( 'intval', (array) ( $_POST['days'] ?? array() ) ), array_keys( Work\WEEKDAYS ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	sort( $days );
+	Work\set( $pro, 'avail_from', max( $from, $today ) );
+	Work\set( $pro, 'avail_to', min( $to, $far ) );
+	Work\set( $pro, 'avail_days', $days );
+	Work\set( $pro, 'avail_note', txt( 'note', 140 ) );
+	// Posting availability is saying "I'll take cover" -- make the profile say so too.
+	$for = (array) Work\meta( $pro, 'available_for', array() );
+	if ( ! in_array( 'cover', $for, true ) ) {
+		$for[] = 'cover';
+		Work\set( $pro, 'available_for', $for );
+	}
+	back( $back, 'avail_saved' );
+}
+
+/** Save a practitioner to a list, update the note/status, or remove (brief sections 67-68). */
+function handle_talent(): void {
+	check( 'oria_work_talent' );
+	$uid  = get_current_user_id();
+	$back = referer();
+	if ( ! \Oria\Core\Work\Plans\allows( $uid, 'talent' ) ) {
+		back( $back, 'plan' );
+	}
+	if ( 'remove' === ( $_POST['do'] ?? '' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		Store\remove_talent( (int) ( $_POST['row'] ?? 0 ), $uid ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		back( $back, 'talent_removed' );
+	}
+	$pro = (int) ( $_POST['profile'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	if ( PRO !== get_post_type( $pro ) || ! Work\profile_visible_to( $pro, $uid ) ) {
+		back( $back, 'error' );
+	}
+	$list = txt( 'new_list', 60 ) ?: txt( 'list', 60 ) ?: 'Saved';
+	Store\save_talent( $uid, $pro, $list, area( 'note', 1000 ), pick( 'status', Store\TALENT_STATUS, 'saved' ) );
+	back( $back, 'talent_saved' );
+}
+
+/**
+ * Invite a practitioner to one of your open jobs or shifts. Only when they
+ * allow employer contact; never twice for the same post; 20 a day at most.
+ * The practitioner gets an email -- the employer never sees their address.
+ */
+function handle_invite(): void {
+	check( 'oria_work_invite' );
+	$uid  = get_current_user_id();
+	$back = referer();
+	$pro  = (int) ( $_POST['profile'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$post = (int) ( $_POST['post'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	if ( ! \Oria\Core\Work\Plans\allows( $uid, 'invite' ) ) {
+		back( $back, 'plan' );
+	}
+	if ( PRO !== get_post_type( $pro ) || ! Work\profile_visible_to( $pro, $uid ) || ! Work\owns( $post, $uid ) || ! Work\is_open( $post ) ) {
+		back( $back, 'error' );
+	}
+	if ( 'allow' !== (string) Work\meta( $pro, 'contact_pref', 'allow' ) ) {
+		back( $back, 'no_contact' );
+	}
+	if ( Store\invites_today( $uid ) >= 20 ) {
+		back( $back, 'invite_limit' );
+	}
+	if ( ! Store\add_invite( $uid, $pro, $post ) ) {
+		back( $back, 'invite_dupe' );
+	}
+	Notify\invited( $pro, $post, area( 'message', 500 ) );
+	back( $back, 'invite_sent' );
+}
+
+/**
+ * "Feature this job" (brief section 40). No checkout yet: the request
+ * reaches the admin, who features it from the job's Oria controls.
+ */
+function handle_feature(): void {
+	check( 'oria_work_feature' );
+	$id   = (int) ( $_POST['id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$back = \Oria\Core\MyOria\url( 'recruit' );
+	if ( JOB !== get_post_type( $id ) || ! Work\owns( $id, get_current_user_id() ) || ! Work\is_open( $id ) ) {
+		back( $back, 'error' );
+	}
+	if ( Work\meta( $id, 'feature_requested' ) ) {
+		back( $back, 'feature_sent' );
+	}
+	Work\set( $id, 'feature_requested', time() );
+	$days = pick( 'days', array( '7' => 1, '14' => 1, '30' => 1 ), '7' );
+	Notify\to_admin_feature( $id, (int) $days );
+	back( $back, 'feature_sent' );
 }
 
 function saved_ids( int $uid ): array {

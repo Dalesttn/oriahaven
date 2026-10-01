@@ -646,6 +646,12 @@ function notice(): ?array {
 		'unsaved'        => __( 'Removed from your saved list.', 'oria' ),
 		'reported'       => __( 'Thank you. A person at Oria Haven will look at this.', 'oria' ),
 		'claim_sent'     => __( 'Thanks — we will check and hand the job over to your account, usually within a business day.', 'oria' ),
+		'avail_saved'    => __( 'You are on the cover board for those dates.', 'oria' ),
+		'avail_cleared'  => __( 'Availability cleared.', 'oria' ),
+		'talent_saved'   => __( 'Saved to your list.', 'oria' ),
+		'talent_removed' => __( 'Removed from your list.', 'oria' ),
+		'invite_sent'    => __( 'Invitation sent. They will hear from us by email, and can apply or say they are available.', 'oria' ),
+		'feature_sent'   => __( 'Thanks — featuring is free during launch, and we will switch it on shortly.', 'oria' ),
 	);
 	$bad = array(
 		'expired'       => __( 'That form had expired. Please try again.', 'oria' ),
@@ -660,6 +666,11 @@ function notice(): ?array {
 		'already'       => __( 'You have already responded to this one. Follow it in My Oria → Work.', 'oria' ),
 		'profile_first' => __( 'Businesses decide on your work profile, so set one up first — it takes a couple of minutes, and you will come straight back.', 'oria' ),
 		'alert_limit'   => __( 'You can have up to 10 alerts. Switch one off to add another.', 'oria' ),
+		'avail_dates'   => __( 'Please give an end date that is today or later.', 'oria' ),
+		'plan'          => __( 'That is part of Oria Recruit. See Recruitment for your plan.', 'oria' ),
+		'no_contact'    => __( 'This practitioner has asked not to be contacted directly. They can still apply to your listings.', 'oria' ),
+		'invite_limit'  => __( 'You have sent 20 invitations today — the limit keeps inboxes friendly. Try again tomorrow.', 'oria' ),
+		'invite_dupe'   => __( 'You have already invited them to that one.', 'oria' ),
 	);
 	if ( isset( $ok[ $code ] ) ) {
 		return array( 'text' => $ok[ $code ], 'type' => 'ok' );

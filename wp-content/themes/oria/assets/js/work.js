@@ -19,14 +19,35 @@
 	}
 
 	/* ---------------------------------------------------------- analytics */
+	/**
+	 * The employer/practitioner dashboards read the same per-post daily
+	 * counters as listing analytics (POST /wp-json/oria/v1/track). Pages are
+	 * cached, so the view is counted by this beacon, not by PHP.
+	 */
 	var page = document.querySelector( '[data-wk-view]' );
+	var pageId = page ? parseInt( page.getAttribute( 'data-wk-id' ), 10 ) : 0;
+	function beacon( type ) {
+		if ( ! pageId || ! window.ORIA_TRACK || ! navigator.sendBeacon ) { return; }
+		try {
+			navigator.sendBeacon( window.ORIA_TRACK.url, new Blob( [ JSON.stringify( { id: pageId, type: type } ) ], { type: 'application/json' } ) );
+		} catch ( e ) {}
+	}
 	if ( page ) {
-		push( page.getAttribute( 'data-wk-view' ), { wk_id: page.getAttribute( 'data-wk-id' ) } );
+		push( page.getAttribute( 'data-wk-view' ), { wk_id: pageId } );
+		beacon( 'view' );
+	}
+	var applied = false;
+	function applyCount( name ) {
+		if ( ! applied && ( name === 'job_apply_click' || name === 'shift_available_click' ) ) {
+			applied = true;
+			beacon( 'apply' );
+		}
 	}
 	document.addEventListener( 'click', function ( ev ) {
 		var el = ev.target.closest && ev.target.closest( '[data-wk-event]' );
 		if ( el && el.tagName !== 'BUTTON' ) {
 			push( el.getAttribute( 'data-wk-event' ), { wk_href: el.getAttribute( 'href' ) || '' } );
+			applyCount( el.getAttribute( 'data-wk-event' ) );
 		}
 	} );
 	document.addEventListener( 'submit', function ( ev ) {
@@ -37,6 +58,7 @@
 		var btn = ev.submitter;
 		if ( btn && btn.hasAttribute( 'data-wk-event' ) ) {
 			push( btn.getAttribute( 'data-wk-event' ) );
+			applyCount( btn.getAttribute( 'data-wk-event' ) );
 		}
 		if ( f.hasAttribute( 'data-wk-submit' ) && ( ! btn || btn.value !== 'draft' ) ) {
 			push( f.getAttribute( 'data-wk-submit' ) );

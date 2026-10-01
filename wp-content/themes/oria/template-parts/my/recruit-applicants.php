@@ -58,6 +58,24 @@ $oria_note = Work\notice();
 		<?php endif; ?>
 	</div>
 
+	<?php
+	// Recommended practitioners (brief sections 22-23): suitable people who have not responded yet.
+	$oria_seen = array_map( 'intval', array_column( $oria_apps, 'profile_id' ) );
+	$oria_rec  = array_values( array_diff( $oria_shift ? Work\pros_for_shift( $oria_id, 30 ) : Work\pros_for_job( $oria_id, 12 ), $oria_seen ) );
+	$oria_rec  = array_slice( array_filter( $oria_rec, static fn( $p ) => Work\profile_visible_to( (int) $p, $oria_uid ) ), 0, 6 );
+	?>
+	<?php if ( $oria_rec && Work\is_open( $oria_id ) ) : ?>
+		<section class="wksec">
+			<h2 class="h3"><?php esc_html_e( 'Recommended practitioners', 'oria' ); ?></h2>
+			<p class="hint"><?php echo esc_html( $oria_shift ? __( 'They suit this shift — profession, place, time — and have not answered yet. Open a profile to invite them.', 'oria' ) : __( 'Matched on profession, skills, place and the kind of work they want. Open a profile to invite them to apply.', 'oria' ) ); ?></p>
+			<div class="wkpros">
+				<?php foreach ( $oria_rec as $oria_p ) : ?>
+					<?php get_template_part( 'template-parts/work/card-pro', null, array( 'id' => (int) $oria_p, 'km' => Work\km_between( (int) $oria_p, $oria_id ) ) ); ?>
+				<?php endforeach; ?>
+			</div>
+		</section>
+	<?php endif; ?>
+
 	<?php if ( ! $oria_apps ) : ?>
 		<div class="wkpanel"><p><?php echo esc_html( $oria_shift ? __( 'Nobody has said they are available yet. You will get an email the moment someone does.', 'oria' ) : __( 'No applicants yet. You will get an email the moment someone applies.', 'oria' ) ); ?></p></div>
 	<?php else : ?>

@@ -31,7 +31,31 @@ $oria_row    = static function ( WP_Post $p ) use ( $oria_counts ): void {
 	<li class="wkrow">
 		<div class="wkrow__main">
 			<a class="wkrow__title" href="<?php echo esc_url( 'publish' === $p->post_status ? (string) get_permalink( $id ) : add_query_arg( array( 'type' => $is_job ? 'job' : 'shift', 'id' => $id ), \Oria\Core\MyOria\url( 'recruit-post' ) ) ); ?>"><?php echo esc_html( get_the_title( $id ) ); ?></a>
-			<small><?php echo esc_html( implode( ' · ', array_filter( array( Work\place_label( $id ), $is_job ? ( ( $e = (int) Work\meta( $id, 'expires', 0 ) ) && '' === $why ? sprintf( __( 'closes %s', 'oria' ), wp_date( 'j M', $e ) ) : '' ) : Work\shift_when( $id ), $is_job && ( $clk = (int) Work\meta( $id, 'apply_clicks', 0 ) ) ? sprintf( _n( '%d click to apply', '%d clicks to apply', $clk, 'oria' ), $clk ) : '' ) ) ) ); ?></small>
+			<small><?php echo esc_html( implode( ' · ', array_filter( array( Work\place_label( $id ), $is_job ? ( ( $e = (int) Work\meta( $id, 'expires', 0 ) ) && '' === $why ? sprintf( __( 'closes %s', 'oria' ), wp_date( 'j M', $e ) ) : '' ) : Work\shift_when( $id ), Work\is_featured( $id ) ? '★ ' . __( 'featured', 'oria' ) : '' ) ) ) ); ?></small>
+			<?php if ( 'publish' === $p->post_status ) : ?>
+				<?php $st = Work\post_stats( $id ); ?>
+				<small class="wkrow__stats">
+					<?php
+					echo esc_html(
+						implode(
+							' · ',
+							array_filter(
+								array(
+									/* translators: %d: views */
+									sprintf( _n( '%d view', '%d views', $st['views'], 'oria' ), $st['views'] ) . ' ' . __( '(30 days)', 'oria' ),
+									/* translators: %s: percentage */
+									$st['views'] ? sprintf( __( '%s apply', 'oria' ), $st['rate'] ) : '',
+									/* translators: %d: clicks */
+									$st['clicks'] ? sprintf( _n( '%d click to apply', '%d clicks to apply', $st['clicks'], 'oria' ), $st['clicks'] ) : '',
+									/* translators: %d: saves */
+									$st['saves'] ? sprintf( _n( '%d save', '%d saves', $st['saves'], 'oria' ), $st['saves'] ) : '',
+								)
+							)
+						)
+					);
+					?>
+				</small>
+			<?php endif; ?>
 		</div>
 		<span class="wkstatus wkstatus--<?php echo esc_attr( $stateK ); ?>"><?php echo esc_html( $state ); ?></span>
 		<a class="wkrow__n" href="<?php echo esc_url( add_query_arg( 'id', $id, \Oria\Core\MyOria\url( 'recruit-applicants' ) ) ); ?>">
@@ -52,6 +76,14 @@ $oria_row    = static function ( WP_Post $p ) use ( $oria_counts ): void {
 						<button class="wklink" type="submit"><?php esc_html_e( 'Reopen 30 days', 'oria' ); ?></button>
 					<?php endif; ?>
 				</form>
+				<?php if ( $is_job && '' === $why && ! Work\is_featured( $id ) ) : ?>
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+						<?php echo Work\form_fields( 'oria_work_feature' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+						<input type="hidden" name="id" value="<?php echo (int) $id; ?>">
+						<input type="hidden" name="days" value="7">
+						<button class="wklink" type="submit" data-wk-event="job_upgrade" <?php disabled( (bool) Work\meta( $id, 'feature_requested' ) ); ?>><?php echo esc_html( Work\meta( $id, 'feature_requested' ) ? __( 'Feature requested', 'oria' ) : __( 'Feature it', 'oria' ) ); ?></button>
+					</form>
+				<?php endif; ?>
 			<?php endif; ?>
 		</span>
 	</li>
@@ -71,6 +103,13 @@ $oria_row    = static function ( WP_Post $p ) use ( $oria_counts ): void {
 			<a class="btn btn--ghost btn--sm" href="<?php echo esc_url( add_query_arg( 'type', 'shift', \Oria\Core\MyOria\url( 'recruit-post' ) ) ); ?>" data-wk-event="shift_post_started"><?php esc_html_e( 'Post a shift', 'oria' ); ?></a>
 			<a class="btn btn--ghost btn--sm wkcoverbtn" href="<?php echo esc_url( add_query_arg( array( 'type' => 'shift', 'cover' => 1 ), \Oria\Core\MyOria\url( 'recruit-post' ) ) ); ?>" data-wk-event="emergency_cover_started"><?php esc_html_e( 'Find emergency cover', 'oria' ); ?></a>
 		</p>
+		<nav class="wksubnav" aria-label="<?php esc_attr_e( 'Recruitment', 'oria' ); ?>">
+			<a href="<?php echo esc_url( \Oria\Core\MyOria\url( 'recruit' ) ); ?>" aria-current="page"><?php esc_html_e( 'Your listings', 'oria' ); ?></a>
+			<a href="<?php echo esc_url( \Oria\Core\MyOria\url( 'recruit-talent' ) ); ?>"><?php esc_html_e( 'Saved practitioners', 'oria' ); ?></a>
+			<a href="<?php echo esc_url( Work\list_url( 'pros' ) ); ?>"><?php esc_html_e( 'Find practitioners', 'oria' ); ?></a>
+			<a href="<?php echo esc_url( Work\list_url( 'available' ) ); ?>"><?php esc_html_e( 'Cover board', 'oria' ); ?></a>
+		</nav>
+		<p class="hint"><?php echo esc_html( sprintf( __( 'Your plan: %s', 'oria' ), Work\Plans\summary( $oria_uid ) ) ); ?></p>
 	</div>
 
 	<section class="wkpanel">

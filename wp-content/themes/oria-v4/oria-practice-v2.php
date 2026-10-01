@@ -1752,7 +1752,25 @@ $oria_fg_also  = $oria_fg_on ? \Oria\Core\FacetGuides\see_also( $oria_facet, is_
 $oria_fg_name  = $oria_fg_on
 	? ( '' !== \Oria\Core\FacetGuides\phrase( $oria_facet ) ? \Oria\Core\FacetGuides\phrase( $oria_facet ) . ' ' . sprintf( /* translators: %s: city */ __( 'in %s', 'oria' ), $oria_cin ) : (string) $oria_facet['label'] )
 	: '';
+
+/*
+ * "Yoga teaching jobs" (brief sections 62, 101): one quiet line, only when
+ * the matching profession actually has something open.
+ */
+$oria_jobs_link = null;
+if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
+	// A facet page (/fitness/pilates/) is about the facet, so that is asked first.
+	$oria_jobs_link = $oria_facet ? \Oria\Core\Work\category_jobs_link( (string) $oria_facet['slug'] ) : null;
+	$oria_jobs_link = $oria_jobs_link ?: \Oria\Core\Work\category_jobs_link( $oria_term->slug );
+	if ( ! $oria_jobs_link && $oria_term->parent && ( $oria_jp = get_term( (int) $oria_term->parent ) ) instanceof WP_Term ) {
+		$oria_jobs_link = \Oria\Core\Work\category_jobs_link( $oria_jp->slug );
+	}
+}
 ?>
+<?php if ( $oria_jobs_link ) : ?>
+	<p class="wrap xc-jobs"><span aria-hidden="true">&#10022;</span> <?php esc_html_e( 'Work in this field?', 'oria' ); ?>
+		<a href="<?php echo esc_url( $oria_jobs_link[1] ); ?>" data-oria-event="category_jobs_click"><?php echo esc_html( $oria_jobs_link[0] ); ?> (<?php echo (int) $oria_jobs_link[2]; ?>) &rarr;</a></p>
+<?php endif; ?>
 <!-- 6. Guide -->
 <section class="wrap section floor xc-guide" id="read">
 	<p class="micro floor__label"><?php esc_html_e( 'Guide', 'oria' ); ?></p>

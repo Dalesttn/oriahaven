@@ -93,6 +93,8 @@ function column( string $col, int $id ): void {
 				$bits[] = '' === $why ? 'open' : 'closed (' . $why . ')';
 				if ( Work\is_featured( $id ) ) {
 					$bits[] = '★ featured';
+				} elseif ( Work\meta( $id, 'feature_requested' ) ) {
+					$bits[] = '<b style="color:#996800">★ feature requested</b>';
 				}
 				if ( SHIFT === $type ) {
 					$bits[] = Work\URGENCY[ Work\urgency( $id ) ] ?? '';
@@ -223,6 +225,7 @@ function save( int $id, \WP_Post $post ): void {
 		Work\set( $id, 'featured_until', '' );
 	} elseif ( in_array( $f, array( '7', '14', '30' ), true ) ) {
 		Work\set( $id, 'featured_until', time() + (int) $f * DAY_IN_SECONDS );
+		Work\set( $id, 'feature_requested', '' );
 	}
 	if ( JOB === $post->post_type ) {
 		Work\set( $id, 'external', empty( $_POST['wk_external'] ) ? '' : '1' );

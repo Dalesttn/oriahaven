@@ -102,6 +102,14 @@ function filters(): array {
 		'evening'    => ! empty( $_GET['evening'] ),
 		'cover'      => ! empty( $_GET['cover'] ),
 		'page'       => max( 1, (int) get_query_var( 'paged' ), (int) ( $_GET['pg'] ?? 1 ) ),
+		// Practitioner search (phase 2).
+		'near'       => $g( 'near' ),
+		'radius'     => in_array( (int) ( $_GET['radius'] ?? 0 ), array( 5, 10, 20, 50 ), true ) ? (int) $_GET['radius'] : 0,
+		'years'      => in_array( (int) ( $_GET['years'] ?? 0 ), array( 1, 3, 5, 10 ), true ) ? (int) $_GET['years'] : 0,
+		'skills'     => array_slice( array_filter( array_map( 'sanitize_title', array_map( 'wp_unslash', (array) ( $_GET['skills'] ?? array() ) ) ) ), 0, 10 ),
+		'times'      => array_values( array_intersect( array_map( 'sanitize_key', (array) ( $_GET['times'] ?? array() ) ), array( 'weekends', 'evenings', 'mornings' ) ) ),
+		'verified'   => ! empty( $_GET['verified'] ),
+		'date'       => preg_match( '/^\d{4}-\d{2}-\d{2}$/', (string) ( $_GET['date'] ?? '' ) ) ? (string) $_GET['date'] : '',
 	);
 	// phpcs:enable
 	return $f;
@@ -110,8 +118,8 @@ function filters(): array {
 /** Whether the visitor narrowed the list with the query string (those URLs are never indexed). */
 function is_filtered(): bool {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	foreach ( array( 'q', 'profession', 'area', 'type', 'skill', 'when', 'sort', 'paid', 'remote', 'weekend', 'evening', 'cover', 'pg' ) as $k ) {
-		if ( isset( $_GET[ $k ] ) && '' !== (string) $_GET[ $k ] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	foreach ( array( 'q', 'profession', 'area', 'type', 'skill', 'when', 'sort', 'paid', 'remote', 'weekend', 'evening', 'cover', 'pg', 'near', 'radius', 'years', 'skills', 'times', 'verified', 'date' ) as $k ) {
+		if ( isset( $_GET[ $k ] ) && array() !== $_GET[ $k ] && '' !== $_GET[ $k ] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return true;
 		}
 	}
