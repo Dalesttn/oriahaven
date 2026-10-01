@@ -95,6 +95,19 @@ function is_featured( int $id ): bool {
 
 /** "$55–$70 per class", "$85,000–$95,000 per year", "Negotiable", or ''. Never invents a figure. */
 function pay_label( int $id ): string {
+	$p = pay_parts( $id );
+	return trim( $p['amount'] . ' ' . $p['unit'] );
+}
+
+/**
+ * Pay split for display: the figure and what it is per, so the job page can
+ * set "$85,000–$120,000" large and "per year" small. Both '' when no pay is
+ * stated. 'range' says whether the figure is a range ("Salary range").
+ *
+ * @return array{amount:string, unit:string, range:bool, per:string}
+ */
+function pay_parts( int $id ): array {
+	$none = array( 'amount' => '', 'unit' => '', 'range' => false, 'per' => '' );
 	$unit = (string) meta( $id, 'pay_unit' );
 	if ( SHIFT === get_post_type( $id ) ) {
 		$min = (float) meta( $id, 'pay_amount', 0 );
@@ -104,19 +117,29 @@ function pay_label( int $id ): string {
 		$max = (float) meta( $id, 'pay_max', 0 );
 	}
 	if ( 'negotiable' === $unit && ! $min ) {
-		return __( 'Negotiable', 'oria' );
+		return array( 'amount' => __( 'Negotiable', 'oria' ) ) + $none;
 	}
 	if ( 'commission' === $unit && ! $min ) {
-		return __( 'Commission', 'oria' );
+		return array( 'amount' => __( 'Commission', 'oria' ) ) + $none;
 	}
 	if ( ! $min && ! $max ) {
-		return '';
+		return $none;
 	}
 	// Dollars as people write them: $65, $37.50 (never $37.5), $85,000.
 	$fmt  = static fn( float $n ): string => '$' . ( $n >= 1000 || floor( $n ) === $n ? number_format( $n ) : number_format( $n, 2 ) );
-	$amt  = ( $max > $min ) ? $fmt( $min ) . '–' . $fmt( $max ) : $fmt( max( $min, $max ) );
+	if ( ! $min ) {
+		/* translators: %s: top of the pay range ("$70") -- only a maximum was given, never shown as "$0–$70" */
+		$amt = sprintf( __( 'Up to %s', 'oria' ), $fmt( $max ) );
+	} else {
+		$amt = ( $max > $min ) ? $fmt( $min ) . '–' . $fmt( $max ) : $fmt( $min );
+	}
 	$tail = PAY_UNITS[ $unit ] ?? '';
-	return trim( $amt . ' ' . ( in_array( $unit, array( 'negotiable', 'commission' ), true ) ? '+ ' . $tail : $tail ) );
+	return array(
+		'amount' => $amt,
+		'unit'   => in_array( $unit, array( 'negotiable', 'commission' ), true ) ? '+ ' . $tail : $tail,
+		'range'  => $max > $min && $min > 0,
+		'per'    => $unit,
+	);
 }
 
 /** "Saturday 8:00–10:00am" style label for a shift. */

@@ -24,8 +24,7 @@ $oria_emp     = Work\employer_name( $oria_id );
 $oria_type    = Work\term( $oria_id, Work\EMPLOYMENT );
 $oria_pay     = Work\pay_label( $oria_id );
 $oria_arr     = (string) Work\meta( $oria_id, 'arrangement' );
-$oria_ext     = (bool) Work\meta( $oria_id, 'external' );
-$oria_src     = array( 'seek' => 'SEEK', 'indeed' => 'Indeed', 'jora' => 'Jora', 'ethicaljobs' => 'Ethical Jobs', 'linkedin' => 'LinkedIn', 'facebook' => 'Facebook' )[ (string) Work\meta( $oria_id, 'source' ) ] ?? '';
+$oria_src     = Work\source_name( $oria_id );
 $oria_uid     = get_current_user_id();
 /* translators: 1: job, 2: employer */
 $oria_save_label = $oria_emp ? sprintf( __( 'Save %1$s at %2$s', 'oria' ), $oria_title, $oria_emp ) : sprintf( __( 'Save %s', 'oria' ), $oria_title );
@@ -56,7 +55,7 @@ $oria_save_label = $oria_emp ? sprintf( __( 'Save %1$s at %2$s', 'oria' ), $oria
 		</p>
 		<p class="ohw-job__meta">
 			<span><?php echo esc_html( Work\posted_label( $oria_id ) ); ?></span>
-			<?php if ( $oria_ext && '' !== $oria_src ) : ?>
+			<?php if ( '' !== $oria_src ) : ?>
 				<span><?php echo esc_html( sprintf( __( 'Advertised on %s', 'oria' ), $oria_src ) ); ?></span>
 			<?php endif; ?>
 		</p>

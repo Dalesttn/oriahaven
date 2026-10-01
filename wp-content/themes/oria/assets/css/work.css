@@ -616,3 +616,127 @@
 @media (prefers-reduced-motion: reduce) {
   .oh-work * { transition: none !important; animation: none !important; }
 }
+
+/* =====================================================================================
+   One job (2026-10 detail-page redesign). Scoped to .oh-job-detail; reuses the jobs
+   page tokens, buttons and save control so a job reads the same in both places.
+   ===================================================================================== */
+.oh-job-detail { --oh-work-muted: #61716b; padding-bottom: 0; }
+
+.ohj-hero { background: var(--oh-work-sage); padding: clamp(1.25rem, 3vw, 2rem) 0 clamp(1.75rem, 4vw, 2.5rem); }
+.ohj-crumb { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .5rem; margin-bottom: clamp(1.25rem, 3vw, 2rem); font-size: 14px; color: var(--oh-work-muted); }
+.ohj-crumb a { display: inline-flex; align-items: center; min-height: 32px; gap: .3rem; font-weight: 600; color: var(--oh-work-ink); text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 3px; }
+.ohj-crumb a:hover { text-decoration-color: currentColor; }
+
+.ohj-notice { margin: 0 0 1.25rem; padding: .85rem 1.1rem; border-radius: 10px; font-size: 15px; line-height: 1.5; background: var(--oh-work-surface); border: 1px solid var(--oh-work-line); }
+.ohj-notice--ok { border-color: #b9d2bd; }
+.ohj-notice--error { border-color: #e3b7a8; background: #fbf1ed; }
+.ohj-notice--closed { border-color: #e3dccb; background: var(--oh-work-sand); }
+.ohj-notice a { font-weight: 700; color: var(--oh-work-forest); }
+
+.ohj-emp { display: flex; align-items: center; gap: 14px; }
+.ohj-emp__logo { flex: none; display: grid; place-items: center; width: 52px; height: 52px; overflow: hidden; border-radius: 12px; background: var(--oh-work-surface); border: 1px solid var(--oh-work-line); font-size: 22px; font-weight: 700; color: var(--oh-work-forest); }
+.ohj-emp__logo img { width: 100%; height: 100%; object-fit: cover; }
+.ohj-emp__text { min-width: 0; }
+.ohj-emp__name { margin: 0; font-size: 17px; font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
+.ohj-emp__name a { color: var(--oh-work-forest); text-underline-offset: 3px; }
+.ohj-emp__meta { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .75rem; margin: .2rem 0 0; font-size: 14px; color: var(--oh-work-muted); }
+.ohj-badge { display: inline-flex; align-items: center; padding: .15rem .6rem; border-radius: 999px; background: var(--oh-work-surface); border: 1px solid var(--oh-work-line); font-size: 13px; font-weight: 600; color: var(--oh-work-ink); }
+.ohj-badge--gold { background: #f6ecd2; border-color: #e6d4a3; }
+
+.ohj-title { margin: 1.1rem 0 0; max-width: 30ch; font-size: clamp(30px, 4.2vw, 46px); line-height: 1.1; letter-spacing: -0.02em; font-weight: 700; color: var(--oh-work-forest); text-wrap: balance; overflow-wrap: anywhere; }
+.ohj-intro { margin: .8rem 0 0; max-width: 60ch; font-size: 18px; line-height: 1.55; color: var(--oh-work-ink); }
+
+.ohj-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr)); gap: 12px; margin: clamp(1.25rem, 3vw, 1.75rem) 0 0; padding: 0; }
+.ohj-fact { margin: 0; padding: 14px 16px; background: var(--oh-work-surface); border: 1px solid var(--oh-work-line); border-radius: 12px; min-width: 0; }
+.ohj-fact dt { margin: 0 0 .25rem; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--oh-work-muted); }
+.ohj-fact dd { margin: 0; font-size: 16.5px; font-weight: 600; line-height: 1.35; color: var(--oh-work-ink); overflow-wrap: anywhere; }
+.ohj-fact__sub { display: block; margin-top: .15rem; font-size: 14px; font-weight: 400; color: var(--oh-work-muted); }
+.ohj-posted { margin: .9rem 0 0; font-size: 14px; color: var(--oh-work-muted); }
+
+/* Description left, application panel right. The panel is first in the markup (phones see it after the facts). */
+.ohj-body { display: grid; grid-template-columns: minmax(0, 1fr) 300px; grid-template-areas: "main side"; gap: 32px; align-items: start; padding-top: clamp(1.75rem, 4vw, 2.5rem); padding-bottom: clamp(1.5rem, 4vw, 2.5rem); }
+.ohj-side { grid-area: side; min-width: 0; }
+.ohj-main { grid-area: main; min-width: 0; display: grid; gap: 32px; }
+
+.ohj-apply { padding: 26px 24px; border-radius: 14px; background: var(--oh-work-forest); color: #f3efe4; }
+.ohj-apply p { margin: 0 0 .9rem; font-size: 15px; line-height: 1.55; }
+.ohj-apply a:not(.ohw-btn):not(.ohw-save__btn) { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.ohj-apply .ohj-apply__label { margin: 0 0 .2rem; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #b9d2bd; }
+.ohj-apply .ohj-apply__pay { margin: 0; font-size: clamp(25px, 2.4vw, 29px); font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; color: #fff; overflow-wrap: anywhere; }
+.ohj-apply .ohj-apply__unit { margin: .15rem 0 0; font-size: 15px; color: #d9e4d6; }
+.ohj-apply__title { margin: 1.4rem 0 .5rem; padding-top: 1.25rem; border-top: 1px solid rgba(243, 239, 228, .2); font-size: 22px; line-height: 1.25; letter-spacing: -0.01em; color: #fff; }
+.ohj-apply .ohw-btn { width: 100%; text-align: center; }
+.ohj-apply .ohj-apply__note { margin: .6rem 0 0; font-size: 14px; color: #d9e4d6; }
+.ohj-apply__link { display: inline-flex; align-items: center; min-height: 44px; margin-top: .4rem; font-size: 15px; font-weight: 600; }
+.ohj-apply__save { margin-top: 1rem; }
+.ohj-apply__save .ohw-save__btn { width: 100%; justify-content: center; min-height: 44px; background: transparent; border-color: rgba(243, 239, 228, .4); color: #f3efe4; }
+.ohj-apply__save .ohw-save__btn[aria-pressed="true"] { background: rgba(243, 239, 228, .14); border-color: #f3efe4; }
+.ohj-apply__save .ohw-save__btn[aria-pressed="true"] svg { fill: #f3efe4; stroke: #f3efe4; }
+.ohj-apply .ohj-apply__closes { margin: 1rem 0 0; padding-top: .9rem; border-top: 1px solid rgba(243, 239, 228, .2); font-size: 14px; font-weight: 600; color: #f3efe4; }
+.ohj-apply .ohw-btn:focus-visible, .ohj-apply a:focus-visible, .ohj-apply button:focus-visible, .ohj-apply input:focus-visible, .ohj-apply textarea:focus-visible { outline: 3px solid #f3efe4; outline-offset: 2px; }
+
+/* The native application form inside the forest panel. */
+.ohj-form label { display: block; margin: .9rem 0 .3rem; font-size: 14px; font-weight: 600; color: #f3efe4; }
+.ohj-form .input, .ohj-form textarea { width: 100%; min-height: 44px; font-size: 16px; background: #fff; color: var(--oh-work-ink); border: 1px solid transparent; border-radius: 8px; }
+.ohj-form input[type="file"] { width: 100%; min-height: 44px; font-size: 14px; color: #f3efe4; }
+.ohj-form .ohj-check { display: flex; gap: .5rem; align-items: center; font-weight: 400; }
+.ohj-form button { margin-top: 1rem; }
+
+/* Description. */
+.ohj-sec { min-width: 0; }
+.ohj-h2 { margin: 0 0 .8rem; font-size: clamp(22px, 2.2vw, 26px); line-height: 1.25; letter-spacing: -0.01em; color: var(--oh-work-forest); }
+.ohj-prose { max-width: 68ch; font-size: 16.5px; line-height: 1.75; color: var(--oh-work-ink); }
+.ohj-prose p { margin: 0 0 1rem; }
+.ohj-prose > :last-child { margin-bottom: 0; }
+.ohj-needs { padding: 24px 26px; background: var(--oh-work-surface); border: 1px solid var(--oh-work-line); border-radius: 14px; }
+.ohj-needs p { margin: 0; font-size: 16.5px; line-height: 1.7; }
+.ohj-ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: .7rem; font-size: 16.5px; line-height: 1.55; }
+.ohj-ticks li { position: relative; padding-left: 1.9rem; }
+.ohj-ticks li::before { content: ""; position: absolute; left: 0; top: .2em; width: 1.15rem; height: 1.15rem; border-radius: 50%; background: var(--oh-work-sage) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.3l2.6 2.5L12 5.4' fill='none' stroke='%23103e35' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat; }
+.ohj-ticks--cols { grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+
+.ohj-source { padding: 16px 20px; border-left: 3px solid var(--oh-work-accent); background: rgba(234, 240, 229, .55); border-radius: 0 10px 10px 0; }
+.ohj-source p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--oh-work-ink); }
+.ohj-source .ohj-source__title { margin-bottom: .25rem; font-weight: 700; color: var(--oh-work-forest); }
+.ohj-source a { font-weight: 600; color: var(--oh-work-forest); text-underline-offset: 3px; }
+
+.ohj-admin { padding: 14px 18px; border: 1px dashed #c9cfc6; border-radius: 10px; font-size: 14px; line-height: 1.55; color: var(--oh-work-muted); }
+.ohj-admin p { margin: 0 0 .35rem; }
+.ohj-admin p:last-child { margin-bottom: 0; }
+.ohj-admin .ohj-admin__title { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.ohj-admin__links { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; }
+.ohj-admin__links a { display: inline-flex; align-items: center; min-height: 32px; font-weight: 700; color: var(--oh-work-forest); }
+
+.ohj-claim { padding: 20px 22px; background: var(--oh-work-sand); border: 1px solid #e3dccb; border-radius: 12px; }
+.ohj-claim__title { margin: 0; font-size: 18px; line-height: 1.3; color: var(--oh-work-forest); }
+.ohj-claim p { margin: .3rem 0 .9rem; font-size: 15px; line-height: 1.55; }
+.ohj-claim form { margin: 0; }
+.ohj-claim .ohw-btn { min-height: 44px; background: var(--oh-work-surface); }
+
+.ohj-report .wkreport { margin: 0; }
+.ohj-report .wkreport summary { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--oh-work-muted); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Related roles, or the alert callout when none are open. */
+.ohj-related { padding-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+.ohj-related .ohw-jobs { margin-top: 0; }
+.ohj-alertbox { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2.5rem; align-items: center; padding: clamp(24px, 4vw, 40px); background: var(--oh-work-sage); border-radius: 16px; }
+.ohj-alertbox p { margin: 0 0 1rem; font-size: 17px; line-height: 1.55; }
+
+@media (max-width: 60rem) {
+  .ohj-body { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "main"; gap: 28px; }
+  .ohj-apply { padding: 22px 20px; }
+  .ohj-alertbox { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 40rem) {
+  .ohj-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .ohj-fact { padding: 12px 14px; }
+  .ohj-fact dd { font-size: 15.5px; }
+  .ohj-needs { padding: 20px; }
+  .ohj-prose, .ohj-ticks, .ohj-needs p { font-size: 16px; }
+}
+@media (max-width: 22rem) {
+  .ohj-facts { grid-template-columns: minmax(0, 1fr); }
+}
+.ohj-related .ohw-link, .ohj-notice a { display: inline-flex; align-items: center; min-height: 44px; }
+.ohj-report .wkreport button, .ohj-report .wkreport .ohw-btn { min-height: 44px; }

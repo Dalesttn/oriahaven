@@ -57,6 +57,26 @@ $suburb_for = static function ( string $suburb ): string {
 	return $t instanceof WP_Term ? $t->slug : '';
 };
 
+/**
+ * What the source ad itself says, and nothing more (job listing redesign, section 11.4).
+ * Working arrangement and experience are written only when the data file states
+ * them -- the importer used to stamp every job "On-site" and "No experience
+ * needed", which contradicted ads that said hybrid or asked for experienced
+ * instructors. "locations" keeps the named work sites ("Jolimont & Kinross")
+ * apart from the region a job is filed under. "closes_stated" marks a closing
+ * date taken from the ad, as opposed to the 30-day run Oria assumes.
+ *
+ * @return array<string, string> meta key => value ('' clears it)
+ */
+$source_facts = static function ( array $j ): array {
+	return array(
+		'arrangement'   => isset( Work\ARRANGEMENTS[ (string) ( $j['arrangement'] ?? '' ) ] ) ? (string) $j['arrangement'] : '',
+		'experience'    => isset( Work\EXPERIENCE[ (string) ( $j['experience'] ?? '' ) ] ) ? (string) $j['experience'] : '',
+		'locations'     => sanitize_text_field( (string) ( $j['locations'] ?? '' ) ),
+		'closes_stated' => ! empty( $j['closes'] ) && strtotime( (string) $j['closes'] ) ? '1' : '',
+	);
+};
+
 $n = array( 'new' => 0, 'skip' => 0, 'problem' => 0 );
 foreach ( $data['jobs'] as $j ) {
 	$title = trim( (string) ( $j['title'] ?? '' ) );
@@ -81,6 +101,25 @@ foreach ( $data['jobs'] as $j ) {
 			}
 		} else {
 			WP_CLI::log( "  = {$title} @ {$emp}: already on Oria (#{$dupe[0]})" );
+		}
+		// And the source facts: drop the old stamped defaults, keep only what the ad says.
+		$did = (int) $dupe[0];
+		foreach ( $source_facts( $j ) as $k => $v ) {
+			if ( (string) Work\meta( $did, $k ) !== $v ) {
+				WP_CLI::log( sprintf( '    %s: "%s" -> "%s"', $k, (string) Work\meta( $did, $k ), $v ) );
+				if ( $apply ) {
+					Work\set( $did, $k, $v );
+				}
+			}
+		}
+		// The page now names the source once, in its own notice: remove the sentence baked into the body.
+		$body = (string) get_post_field( 'post_content', $did );
+		$bare = (string) preg_replace( '#\s*<p>Originally advertised on [^<]*</p>\s*$#', '', $body );
+		if ( $bare !== $body ) {
+			WP_CLI::log( '    body: removed the "Originally advertised on" line' );
+			if ( $apply ) {
+				wp_update_post( array( 'ID' => $did, 'post_content' => $bare ) );
+			}
 		}
 		++$n['skip'];
 		continue;
@@ -118,9 +157,8 @@ foreach ( $data['jobs'] as $j ) {
 	}
 
 	$source = (string) ( $j['source'] ?? '' );
-	$brands = array( 'seek' => 'SEEK', 'indeed' => 'Indeed', 'jora' => 'Jora', 'ethicaljobs' => 'Ethical Jobs', 'linkedin' => 'LinkedIn', 'facebook' => 'Facebook' );
-	$where  = 'employer site' === $source ? $emp . '\'s website' : ( $brands[ $source ] ?? ucfirst( $source ) );
-	$body   = trim( (string) ( $j['summary'] ?? '' ) ) . "\n\n" . sprintf( 'Originally advertised on %s. The full description and application are there.', $where );
+	// Just the summary: the job page names the source once, in its "About this listing" notice.
+	$body   = trim( (string) ( $j['summary'] ?? '' ) );
 	$id     = wp_insert_post(
 		array(
 			'post_type'    => Work\JOB,
@@ -155,8 +193,9 @@ foreach ( $data['jobs'] as $j ) {
 	Work\set( $id, 'listing', $lst );
 	Work\set( $id, 'apply_method', 'url' );
 	Work\set( $id, 'apply_url', $url );
-	Work\set( $id, 'arrangement', 'onsite' );
-	Work\set( $id, 'experience', 'any' );
+	foreach ( $source_facts( $j ) as $k => $v ) {
+		Work\set( $id, $k, $v );
+	}
 	Work\set( $id, 'quals', (string) ( $j['qualifications'] ?? '' ) );
 	Work\set( $id, 'weekend', ! empty( $j['weekend'] ) ? '1' : '' );
 	Work\set( $id, 'evening', ! empty( $j['evening'] ) ? '1' : '' );

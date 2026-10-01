@@ -94,7 +94,11 @@
 					if ( res.type !== 'opaqueredirect' && ! res.ok ) { throw new Error( 'save failed' ); }
 					btn.setAttribute( 'aria-pressed', was ? 'false' : 'true' );
 					var t = btn.querySelector( '.ohw-save__text' );
-					if ( t ) { t.textContent = was ? 'Save' : 'Saved'; }
+					if ( t ) {
+						// Back to the button's own unsaved wording: "Save" in a row, "Save this job" on a job page.
+						if ( ! was && ! t.hasAttribute( 'data-unsaved' ) ) { t.setAttribute( 'data-unsaved', t.textContent ); }
+						t.textContent = was ? ( t.getAttribute( 'data-unsaved' ) || ( btn.closest( '.ohj-apply' ) ? 'Save this job' : 'Save' ) ) : 'Saved';
+					}
 					if ( live ) { live.textContent = ( was ? 'Removed from your saved jobs: ' : 'Saved: ' ) + ( btn.getAttribute( 'aria-label' ) || '' ).replace( /^Save /, '' ); }
 				} )
 				.catch( function () {

@@ -168,3 +168,97 @@ function posted_label( int $id ): string {
 	/* translators: %s: date */
 	return sprintf( __( 'Posted %s', 'oria' ), wp_date( 'j M', $t ) );
 }
+
+/* ------------------------------------------------- one job (detail page) */
+
+/** Job boards an external job can come from, as their own names. */
+const SOURCES = array( 'seek' => 'SEEK', 'indeed' => 'Indeed', 'jora' => 'Jora', 'ethicaljobs' => 'Ethical Jobs', 'linkedin' => 'LinkedIn', 'facebook' => 'Facebook' );
+
+/** "SEEK" for a job imported from SEEK; '' for anything else (native, or a source we don't name). */
+function source_name( int $id ): string {
+	return meta( $id, 'external' ) ? ( SOURCES[ (string) meta( $id, 'source' ) ] ?? '' ) : '';
+}
+
+/** The host an external application link goes to ("seek.com.au"), or ''. */
+function apply_host( int $id ): string {
+	if ( 'url' !== (string) meta( $id, 'apply_method', 'oria' ) ) {
+		return '';
+	}
+	return (string) preg_replace( '/^www\./', '', (string) wp_parse_url( (string) meta( $id, 'apply_url' ), PHP_URL_HOST ) );
+}
+
+/**
+ * The closing date people can rely on, or 0. A native job closes on Oria at
+ * its expiry -- the employer chose that run. An imported job's expiry is
+ * Oria's own 30-day assumption unless the ad stated a date, so it is not
+ * shown as "Applications close".
+ */
+function closes_at( int $id ): int {
+	$exp = (int) meta( $id, 'expires', 0 );
+	if ( ! $exp ) {
+		return 0;
+	}
+	return ( ! meta( $id, 'external' ) || meta( $id, 'closes_stated' ) ) ? $exp : 0;
+}
+
+/** Where the work is: the named sites when the ad gave them ("Jolimont & Kinross"), else the suburb. */
+function work_places( int $id ): string {
+	$named = trim( (string) meta( $id, 'locations' ) );
+	return '' !== $named ? $named : place_label( $id );
+}
+
+/**
+ * Requirements as list items, when the text is a list: one per line, or
+ * semicolon-separated on a single line (how imported ads store them).
+ * Anything else stays one paragraph -- returned as a single item.
+ *
+ * @return list<string>
+ */
+function quals_items( string $text ): array {
+	$text  = trim( $text );
+	$lines = preg_split( '/\R+/', $text ) ?: array();
+	if ( count( $lines ) < 2 && substr_count( $text, ';' ) >= 1 ) {
+		$lines = explode( ';', $text );
+	}
+	$items = array();
+	foreach ( $lines as $l ) {
+		$l = trim( (string) preg_replace( '/^[\s\-\*•·]+/u', '', $l ) );
+		if ( '' !== $l ) {
+			$items[] = mb_strtoupper( mb_substr( $l, 0, 1 ) ) . mb_substr( $l, 1 );
+		}
+	}
+	return $items;
+}
+
+/**
+ * Up to $n genuinely related open jobs: same profession, the same region
+ * first. Never pads with other professions or closed roles.
+ *
+ * @return list<int>
+ */
+function related_jobs( int $id, int $n = 3 ): array {
+	$prof = term( $id, PROFESSION );
+	if ( ! $prof ) {
+		return array();
+	}
+	$ids  = array_values( array_diff( array_map( 'intval', query( JOB, array( 'profession' => $prof->slug, 'fields' => 'ids' ), 30 )->posts ), array( $id ) ) );
+	$mine = city_of( $id );
+	// The region a job sits in: a suburb's parent (city > region > suburb), or the region itself.
+	$reg = static function ( int $p ): int {
+		$s = suburb( $p );
+		if ( ! $s ) {
+			return 0;
+		}
+		$up = get_ancestors( $s->term_id, 'area', 'taxonomy' );
+		return count( $up ) >= 2 ? (int) $up[0] : (int) $s->term_id;
+	};
+	$here = $reg( $id );
+	usort(
+		$ids,
+		static function ( int $a, int $b ) use ( $reg, $here, $mine ): int {
+			$score = static fn( int $p ): int => ( $here && $reg( $p ) === $here ? 2 : 0 ) + ( $mine && ( city_of( $p )['slug'] ?? '' ) === ( $mine['slug'] ?? '' ) ? 1 : 0 );
+			return $score( $b ) <=> $score( $a );
+		}
+	);
+	return array_slice( $ids, 0, $n );
+}
