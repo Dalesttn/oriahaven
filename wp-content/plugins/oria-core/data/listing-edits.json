@@ -252,5 +252,100 @@
   "fields": {
    "physical_adjust": 1
   }
+ },
+ {
+  "slug": "floating-sauna-pemberton",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "Two wood-fired saunas built from Finnish cedar, floating on Pemberton Pool in the karri forest, each with a floor-to-ceiling window over the water — and the cold plunge is the pool itself. Shared one-hour sessions take up to six people, private hire is available, and sessions run 7am to 9pm daily. The site is off-grid with no toilets, so bring towels, water and a change of clothes."
+ },
+ {
+  "slug": "veska-home-of-banya",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "A Belarusian banya on Browns Road, Pemberton, run the traditional way: steam, veniki — bundles of leafy branches worked over the skin — a cold plunge and Ivan tea. Social sessions run on set dates, at sunset or paired with lunch or dinner from the Belarusian kitchen on site, from $70 an adult. Private banya runs any day by appointment. Booking is essential, and deposits are not refunded."
+ },
+ {
+  "slug": "secrets-to-serenity-spa",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "The spa at Serenity House on Dean Street, Pemberton, offering massage, botanical facials, hand and foot rituals and reiki in 60 and 90-minute sessions from $130. Longer spa rituals run two to three hours, there is a three-hour couples retreat at $525, and the forest day retreats are priced per person for groups of three to six — $325 to $395 each."
+ },
+ {
+  "slug": "mudstone-spa-retreat",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "Adults-only accommodation in forest about ten minutes from Pemberton, built around private spa time rather than treatments: four units, each with its own jacuzzi or outdoor spa bath, and three with a sauna. The Spa Cottage is a converted vintage rail carriage, and two of the suites look across to Warren National Park. Rates start from $330. Phone reception is limited and some units have no wifi."
+ },
+ {
+  "slug": "pemberton-pool",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "A swimming hole on Lefroy Brook in Pemberton Forest Park, built in the late 1920s for timber workers' families and free to use, with public toilets and barbecues alongside and the mountain bike park next door. The floating saunas sit on the same water. The pool was closed for a time in March 2026 after trees were felled into it, so check access with the Pemberton Visitor Centre before a special trip."
+ },
+ {
+  "slug": "big-brook-dam",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "A dam in the karri of Big Brook State Forest with a sandy beach for swimming, a sealed four-kilometre walk around the water that suits strollers and wheelchairs, and toilets, a shelter and picnic tables. Entry is free and the dam is stocked with trout. Dogs are allowed on a lead but not on the beach, and there is no camping at the dam itself — the Big Brook Arboretum campground is nearby."
+ },
+ {
+  "slug": "beedelup-falls",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "A waterfall on Beedelup Brook in Greater Beedelup National Park, reached by a 300-metre walk from the car park that crosses a suspension bridge, with an accessible lookout. The 4.5-kilometre loop through karri forest to Karri Valley Resort and the Walk-Through Tree is rated moderately hard. The falls run best in winter and early spring. Park entry is $17 a car, and dogs are not allowed.",
+  "fields": {
+   "price_band": "$"
+  },
+  "note": "Greater Beedelup National Park charges entry ($17 per standard vehicle, exploreparks.dbca.wa.gov.au) - it was listed as Free."
+ },
+ {
+  "slug": "the-live-lightly-centre",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "A naturopathy practice on Ellen Stirling Parade run by Tracey Walker, a naturopath with a Bachelor of Health Science, with consultations in person or by phone. She works with herbal tinctures and eating plans — including a gluten- and dairy-free food plan of her own — and dispenses practitioner-only supplements where needed. Fees aren't published online, so ask when you book."
+ },
+ {
+  "slug": "ardor-organics",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "A low-tox hair salon on Main Street run by Gemma, who has 23 years in the trade, with organic colour, curly cutting and a head spa menu. Scalp treatments begin with a camera scalp analysis and run 70 to 120 minutes, from $189.99 to $399 for a head spa with an organic facial. New clients book a $34.99 consultation first, which includes a patch test. Open Tuesday to Saturday, late on Thursdays."
+ },
+ {
+  "slug": "eden-massage-waxing-beauty",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "A massage and waxing studio on Main Street, Ellenbrook, offering remedial massage, cupping, reflexology and body and facial waxing, with rooms for couples. Remedial massage can be claimed on the spot through HICAPS if your extras cover includes it. Walk-ins are taken but booking is recommended, and it opens seven days, until 5.30pm on Sundays. Prices aren't published online."
+ },
+ {
+  "slug": "ellenbrook-chiropractic-wellness-centre",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "A chiropractic clinic on Main Street, founded at Woodlake in 2001 and in Ellenbrook since 2006, now owned by Dr Cadmiel Terebent and staffed by six chiropractors. Alongside chiropractic care it offers remedial massage, cold laser therapy, custom foot orthotics and exercise programs. It opens six days, with a midday break on most weekdays and Saturdays until noon. Fees aren't published online."
+ },
+ {
+  "slug": "bare-skin-and-beauty-ellenbrook",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "A skin clinic on Main Street run by dermal therapist Jessica Rooney, opened in 2020 and the first of two — the second is in Hillarys. The menu leans on skin work: hydrodermabrasion facials from $129, skin needling from $199, chemical peels, LED and IPL, with brows, lashes and waxing alongside. It is an accredited Dermaviduals clinic."
+ },
+ {
+  "slug": "ellenbrook-pilates",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "The reformer Pilates studio of Ellenbrook Physiotherapy, trading as Sana, with small-group reformer and mat classes alongside yoga, barre and strength circuits, and programs written by physiotherapists. New clients start with a free orientation reformer class. There is a gym and a wholefoods café on site, and members get discounted physio and massage. Prices aren't published online.",
+  "fields": {
+   "field_oria_primary_practice": "fitness"
+  },
+  "terms": {
+   "practice": {
+    "add": [
+     "fitness"
+    ]
+   }
+  },
+  "note": "Pilates is its lead offer (Dale, 26 Aug 2026: Pilates belongs to Fitness & Movement). Yoga kept as a secondary category since it runs yoga classes."
+ },
+ {
+  "slug": "empower-pilates-studio-ellenbrook",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "One of two Empower studios — the other is in Bellevue — founded in 2020 by exercise physiologist Ciara Parry. Reformer, mat and barre classes run seven days, including stretch-led Restore, high-intensity Sweat and a 55-plus Silver Swans timetable. New clients start with an intro package, such as $59 for two weeks unlimited, and a casual class is $38. A weekday-morning crèche costs $6 a child."
+ },
+ {
+  "slug": "the-pilates-loft",
+  "requested_by": "Oria Haven, 2 Oct 2026 - listing had no description; written from the business's own site (and DBCA/Shire sources for the nature sites)",
+  "excerpt": "A small Pilates studio that has left its Locke Lane premises and is running casual matwork classes at The Raw Space in Henley Brook while it looks for a new home — bring your own mat. There are no memberships for now: classes are booked one at a time through the Momence app, and contact is by email.",
+  "services": [
+   "Matwork Pilates classes",
+   "Casual classes, no membership"
+  ],
+  "note": "Studio has left Locke Lane; mat-only classes at The Raw Space, Henley Brook. Private sessions and intro classes no longer offered on its site."
  }
 ]
