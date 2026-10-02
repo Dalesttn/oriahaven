@@ -805,9 +805,56 @@ function entity_description( int $id ): string {
 	}
 	$text = trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( $text ) ) ?? '' );
 	if ( '' === $text ) {
-		return '';
+		return 'listing' === get_post_type( $id ) ? listing_fallback_description( $id ) : '';
 	}
-	return mb_strlen( $text ) > 158 ? mb_substr( $text, 0, 157 ) . '…' : $text;
+	return snippet( wp_specialchars_decode( $text, ENT_QUOTES ) );
+}
+
+/**
+ * Text cut to a search snippet (≤158 characters) the way a person would cut
+ * it. A flat cut at 157 left 424 of 474 listing descriptions ending mid-word
+ * ("…with dietary …", "an…"). So: end on a full sentence when one finishes
+ * past 90 characters -- no ellipsis needed -- else on the last whole word.
+ */
+function snippet( string $text, int $max = 158 ): string {
+	if ( mb_strlen( $text ) <= $max ) {
+		return $text;
+	}
+	$cut = mb_substr( $text, 0, $max );
+	if ( preg_match_all( '/[.?!](?=\s)/u', $cut . ' ', $m, PREG_OFFSET_CAPTURE ) ) {
+		$end = end( $m[0] )[1]; // Byte offset of the last sentence end inside the cut.
+		if ( mb_strlen( substr( $cut, 0, $end ) ) >= 90 ) {
+			return substr( $cut, 0, $end + 1 );
+		}
+	}
+	$cut   = mb_substr( $text, 0, $max - 1 );
+	$space = mb_strrpos( $cut, ' ' );
+	if ( false !== $space && $space > 100 ) {
+		$cut = mb_substr( $cut, 0, $space );
+	}
+	// Never trail off on a joining word ("…for singles and…").
+	$cut = (string) preg_replace( '/(?:[\s,;:—–(-]+(?:and|or|with|for|the|a|an|of|to|in|on|at|by|from|plus|its|their|&))+[\s,;:—–(-]*$/iu', '', rtrim( $cut, " ,;:—–-(" ) );
+	return rtrim( $cut, " ,;:—–-(" ) . '…';
+}
+
+/**
+ * For a listing with no blurb at all: what it is and where, from its own
+ * category and suburb, and nothing we have not checked. Better than no
+ * description (Google then quotes whatever page text it likes), but the
+ * real fix is a blurb on the listing.
+ */
+function listing_fallback_description( int $id ): string {
+	$name     = decoded_title( $id );
+	$category = category_name( $id );
+	$suburb   = listing_suburb( $id );
+	$what     = '' !== $category ? mb_strtolower( $category ) : __( 'wellness', 'oria' );
+	return snippet(
+		'' !== $suburb
+			/* translators: 1: listing name, 2: category, lower case, 3: suburb */
+			? sprintf( __( '%1$s — %2$s in %3$s. Address, contact details and what is on offer, in an independent wellness directory with no booking fees.', 'oria' ), $name, $what, $suburb )
+			/* translators: 1: listing name, 2: category, lower case */
+			: sprintf( __( '%1$s — %2$s. Address, contact details and what is on offer, in an independent wellness directory with no booking fees.', 'oria' ), $name, $what )
+	);
 }
 
 /**
