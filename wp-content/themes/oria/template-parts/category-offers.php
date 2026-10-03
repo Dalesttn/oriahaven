@@ -54,6 +54,20 @@ $oria_tile = in_array( $oria_n, array( 1, 2, 5 ), true );
 		<p class="oh-category-offers__count"><?php echo esc_html( sprintf( /* translators: 1: count, 2: category */ _n( '%1$s %2$s offer', '%1$s %2$s offers', $oria_n, 'oria' ), number_format_i18n( $oria_n ), $oria_cl ) ); ?></p>
 	</div>
 
+	<?php
+	/*
+	 * The collection is collapsed behind "Show me the offers": a native
+	 * <details>, so it opens without JavaScript, is keyboard-operable and
+	 * the cards stay in the page for crawlers. #offers in the URL opens it.
+	 */
+	?>
+	<details class="oh-category-offers__fold" id="offers-fold">
+		<summary class="oh-category-offers__toggle">
+			<span class="oh-category-offers__plus" aria-hidden="true"><span></span><span></span></span>
+			<span class="oh-category-offers__show"><?php echo esc_html( sprintf( /* translators: %d: count */ _n( 'Show me the offer', 'Show me the %d offers', $oria_n, 'oria' ), $oria_n ) ); ?></span>
+			<span class="oh-category-offers__hide"><?php esc_html_e( 'Hide the offers', 'oria' ); ?></span>
+		</summary>
+
 	<ul class="oh-category-offers__grid oh-category-offers__grid--<?php echo (int) $oria_n; ?>">
 		<?php foreach ( $oria_rows as $oria_i => $oria_r ) : ?>
 			<?php
@@ -141,4 +155,6 @@ $oria_tile = in_array( $oria_n, array( 1, 2, 5 ), true );
 			<?php get_template_part( 'template-parts/offers-signup', null, array( 'source' => 'category', 'interest' => $oria_int ) ); ?>
 		</div>
 	<?php endif; ?>
+	</details>
+	<script>(function(d){function o(){if(location.hash==='#offers'){d.open=true;}}o();addEventListener('hashchange',o);})(document.getElementById('offers-fold'));</script>
 </section>
