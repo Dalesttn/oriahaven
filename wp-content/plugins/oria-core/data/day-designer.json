@@ -4,43 +4,92 @@
   "spa": {
    "heading": "Plan a little spa escape",
    "intro": "Choose your budget and time. We'll put together an outing around a real spa experience nearby, priced for your party.",
-   "tags": ["day-spa", "couples", "sauna", "head-spa", "float"],
-   "presets": { "quiet": "A quiet reset", "two": "Time for two", "affordable": "Keep it affordable" },
+   "tags": [
+    "day-spa",
+    "couples",
+    "sauna",
+    "head-spa",
+    "float"
+   ],
+   "presets": {
+    "quiet": "A quiet reset",
+    "two": "Time for two",
+    "affordable": "Keep it affordable"
+   },
    "budget": 200,
-   "minutes": 120
+   "minutes": 120,
+   "title": "Make time for the spa",
+   "blurb": "Find an outing that fits your budget and the time you have."
   },
   "couples": {
    "heading": "Plan a spa outing for two",
    "intro": "Published packages and sessions priced for two people, near where you'll be starting.",
-   "tags": ["couples", "day-spa", "sauna", "float"],
-   "presets": { "two": "Time for two", "quiet": "A longer escape", "affordable": "Keep it affordable" },
+   "tags": [
+    "couples",
+    "day-spa",
+    "sauna",
+    "float"
+   ],
+   "presets": {
+    "two": "Time for two",
+    "quiet": "A longer escape",
+    "affordable": "Keep it affordable"
+   },
    "budget": 450,
    "minutes": 240,
-   "people": 2
+   "people": 2,
+   "title": "Plan a spa outing for two",
+   "blurb": "Find a package for two that fits your budget and the time you have."
   },
   "head-spa": {
    "heading": "Plan your head-spa outing",
    "intro": "Pick a budget and the time you have. We'll find a head spa ritual that fits, and tell you whether your hair is dried or styled.",
-   "tags": ["head-spa"],
-   "presets": { "quiet": "A quiet treat", "nearby": "Keep it nearby", "affordable": "Keep it affordable" },
+   "tags": [
+    "head-spa"
+   ],
+   "presets": {
+    "quiet": "A quiet treat",
+    "nearby": "Keep it nearby",
+    "affordable": "Keep it affordable"
+   },
    "budget": 250,
-   "minutes": 120
+   "minutes": 120,
+   "title": "Make time for a head spa",
+   "blurb": "Find an outing that fits your budget and the time you have.",
+   "note": "Hair drying and styling details shown where available."
   },
   "float": {
    "heading": "Build a day around a float",
    "intro": "Water floats only, priced as a single casual session for your party — never an intro pack dressed up as a visit.",
-   "tags": ["float"],
-   "presets": { "first": "My first float", "quiet": "Quiet time", "nearby": "Keep it nearby" },
+   "tags": [
+    "float"
+   ],
+   "presets": {
+    "first": "My first float",
+    "quiet": "Quiet time",
+    "nearby": "Keep it nearby"
+   },
    "budget": 120,
-   "minutes": 120
+   "minutes": 120,
+   "title": "Make time for a float",
+   "blurb": "Find a float that fits your budget and the time you have.",
+   "note": "Water floats only, priced as a single session."
   },
   "sauna": {
    "heading": "Plan a sauna session",
    "intro": "Sauna, steam and bathhouse sessions priced for your party, near where you'll be starting.",
-   "tags": ["sauna"],
-   "presets": { "quiet": "A quiet reset", "nearby": "Keep it nearby", "affordable": "Keep it affordable" },
+   "tags": [
+    "sauna"
+   ],
+   "presets": {
+    "quiet": "A quiet reset",
+    "nearby": "Keep it nearby",
+    "affordable": "Keep it affordable"
+   },
    "budget": 100,
-   "minutes": 120
+   "minutes": 120,
+   "title": "Make time for a sauna",
+   "blurb": "Find a session that fits your budget and the time you have."
   }
  },
  "facets": {
@@ -62,48 +111,758 @@
   "places-to-relax-perth": "spa"
  },
  "experiences": [
-  { "id": "crown-relaxation-60", "listing": "crown-spa-perth", "service": "Relaxation massage", "tags": ["day-spa"], "prices": { "1": 25000, "2": 50000 }, "basis": "$250 a person, weekdays", "minutes": 60, "indoor": "yes", "note": "Includes the Aqua Retreat (vitality pool, sauna, steam) — arrive an hour early. Surcharge Friday to Sunday.", "checked": "2026-10-03", "source": "https://www.crownperth.com.au/getmedia/62781927-a06e-4868-b36e-b9eb97bfd7e9/crown-spa-perth-treatment-menu.pdf" },
-  { "id": "annasha-swedish-60", "listing": "annasha-day-spa", "service": "Swedish relaxation massage", "tags": ["day-spa"], "prices": { "1": 19500, "2": 39000 }, "basis": "$195 a person", "minutes": 60, "indoor": "yes", "note": "Garden setting in Gooseberry Hill; no pool or sauna. Tuesday to Saturday.", "checked": "2026-10-03", "source": "https://annashadayspa.com.au/massage-treatments/" },
-  { "id": "annasha-vitality-120", "listing": "annasha-day-spa", "service": "Vitality day spa package", "tags": ["day-spa"], "prices": { "1": 39000, "2": 78000 }, "basis": "$390 a person", "minutes": 120, "indoor": "yes", "note": "Packages include a sound treatment and tea.", "checked": "2026-10-03", "source": "https://annashadayspa.com.au/day-spa-packages/" },
-  { "id": "ganesha-balinese-60", "listing": "ganesha-wellness-spa", "service": "Balinese massage", "tags": ["day-spa"], "prices": { "1": 12900, "2": 25800 }, "basis": "$129 a person", "minutes": 60, "indoor": "yes", "note": "The 40-jet jacuzzi is an add-on, $99 for half an hour for two.", "checked": "2026-10-03", "source": "https://ganeshawellnessspa.com.au/speciality-massages" },
-  { "id": "ganesha-romance-120", "listing": "ganesha-wellness-spa", "service": "Revive the Romance (couples package)", "tags": ["couples"], "prices": { "2": 36900 }, "basis": "$369 for two", "minutes": 120, "indoor": "yes", "note": "Massage together in the couples room, infrared pod and massage chair. Saturdays $25 a person extra; Sundays by request.", "checked": "2026-10-03", "source": "https://ganeshawellnessspa.com.au/packages-1" },
-  { "id": "soothe-massage-60", "listing": "soothe-massage-dayspa-nedlands", "service": "Customised massage", "tags": ["day-spa"], "prices": { "1": 12000, "2": 24000 }, "basis": "$120 a person", "minutes": 60, "indoor": "yes", "note": "Open seven days, 9am to 6pm, free parking out the front.", "checked": "2026-10-03", "source": "https://www.soothespaperth.com/massage-nedlands" },
-  { "id": "soothe-stress-release-150", "listing": "soothe-massage-dayspa-nedlands", "service": "Stress Release package", "tags": ["day-spa", "sauna"], "prices": { "1": 30000, "2": 60000 }, "basis": "$300 a person", "minutes": 150, "indoor": "yes", "note": "30 minutes infrared sauna, a 75-minute massage and 45 minutes of reflexology.", "checked": "2026-10-03", "source": "https://www.soothespaperth.com/spa-packages-nedlands" },
-  { "id": "soothe-sauna-30", "listing": "soothe-massage-dayspa-nedlands", "service": "Infrared sauna", "tags": ["sauna"], "prices": { "1": 7000, "2": 7000 }, "basis": "$70 for the session, up to two people", "minutes": 30, "indoor": "yes", "note": "One session takes up to two guests.", "checked": "2026-10-03", "source": "https://www.soothespaperth.com/infrared-sauna-nedlands" },
-  { "id": "soothe-headspa-75", "listing": "soothe-massage-dayspa-nedlands", "service": "Ultimate Head Spa Ritual", "tags": ["head-spa"], "prices": { "1": 19500 }, "basis": "$195", "minutes": 75, "indoor": "yes", "note": "The spa does not say whether hair is dried or styled afterwards — ask when you book.", "checked": "2026-10-03", "source": "https://www.fresha.com/a/soothe-massage-day-spa-nedlands-163-stirling-highway-lby8guen" },
-  { "id": "solace-bathhouse-60", "listing": "solace-day-spa-scarborough", "service": "Bathhouse session", "tags": ["sauna"], "prices": { "1": 6900, "2": 13800 }, "basis": "$69 a person", "minutes": 60, "indoor": "yes", "note": "Magnesium tub, ice bath, sauna and monsoon shower.", "checked": "2026-10-03", "source": "https://solacedayspa.com.au/solace-bathhouse/" },
-  { "id": "solace-immersion-120", "listing": "solace-day-spa-scarborough", "service": "Signature Immersion (bathhouse + massage)", "tags": ["day-spa", "sauna"], "prices": { "1": 22400, "2": 44800 }, "basis": "$224 a person", "minutes": 120, "indoor": "yes", "note": "An hour in the bathhouse and an hour's massage.", "checked": "2026-10-03", "source": "https://solacedayspa.com.au/solace-bathhouse/" },
-  { "id": "solace-slice-120", "listing": "solace-day-spa-scarborough", "service": "A Slice of Solace (couples)", "tags": ["couples"], "prices": { "2": 71200 }, "basis": "$356 a person, published per person", "minutes": 120, "indoor": "yes", "note": "Side-by-side massage, couples steam room, sparkling and chocolates.", "checked": "2026-10-03", "source": "https://solacedayspa.com.au/treatments-for-two/" },
-  { "id": "swan-massage-60", "listing": "swan-valley-retreat", "service": "Signature relaxation massage", "tags": ["day-spa"], "prices": { "1": 17500 }, "basis": "$175", "minutes": 60, "indoor": "yes", "note": "Treatments Monday to Saturday.", "checked": "2026-10-03", "source": "https://swanvalleyretreat.com.au/day-spa/massage/" },
-  { "id": "swan-couples-massage-60", "listing": "swan-valley-retreat", "service": "Couples relaxation massage", "tags": ["couples"], "prices": { "2": 34000 }, "basis": "$340 for two", "minutes": 60, "indoor": "yes", "note": "Also offered to two friends. 10% surcharge on Sundays.", "checked": "2026-10-03", "source": "https://swanvalleyretreat.com.au/day-spa/massage/" },
-  { "id": "swan-couples-escape-120", "listing": "swan-valley-retreat", "service": "Couples Escape", "tags": ["couples"], "prices": { "2": 44000 }, "basis": "$440 for two", "minutes": 120, "indoor": "unknown", "note": "Couples massage, antipasto platter, sparkling and a private outdoor area.", "checked": "2026-10-03", "source": "https://swanvalleyretreat.com.au/spa-packages/" },
-  { "id": "swan-oasis-60", "listing": "swan-valley-retreat", "service": "Oasis: sauna, ice bath and hot tub", "tags": ["sauna", "couples"], "prices": { "2": 16500 }, "basis": "$165 for two", "minutes": 60, "indoor": "unknown", "note": "Booked for two to four people; bring bathers.", "checked": "2026-10-03", "source": "https://swanvalleyretreat.com.au/day-spa/oasis/" },
-  { "id": "swan-float-60", "listing": "swan-valley-retreat", "service": "Float (60 min)", "tags": ["float"], "prices": { "1": 8500 }, "basis": "$85", "minutes": 60, "indoor": "yes", "note": "One float pod, so floats run one after another.", "checked": "2026-10-03", "source": "https://swanvalleyretreat.com.au/day-spa/floatation-therapy/" },
-  { "id": "swan-float-90", "listing": "swan-valley-retreat", "service": "Float (90 min)", "tags": ["float"], "prices": { "1": 9900 }, "basis": "$99", "minutes": 90, "indoor": "yes", "note": "One float pod, so floats run one after another.", "checked": "2026-10-03", "source": "https://swanvalleyretreat.com.au/day-spa/floatation-therapy/" },
-  { "id": "urban-relaxation-60", "listing": "urban-retreat-day-spa-rockingham", "service": "Relaxation body massage", "tags": ["day-spa"], "prices": { "1": 16900, "2": 33800 }, "basis": "$169 a person", "minutes": 60, "indoor": "yes", "note": "Includes a back exfoliation. No deep tissue or remedial massage. Closed Sundays and Mondays.", "checked": "2026-10-03", "source": "https://www.urbandayspa.com.au/_files/ugd/f9f96d_58aa722632304288a062d1a4af78d289.pdf" },
-  { "id": "urban-serenity-two-80", "listing": "urban-retreat-day-spa-rockingham", "service": "Spa Serenity for Two", "tags": ["couples"], "prices": { "2": 35900 }, "basis": "$359 for two", "minutes": 80, "indoor": "yes", "note": "Massage, back exfoliation and a private bath for two; couples bookings by phone.", "checked": "2026-10-03", "source": "https://www.urbandayspa.com.au/_files/ugd/f9f96d_58aa722632304288a062d1a4af78d289.pdf" },
-  { "id": "urban-sanctuary-two-140", "listing": "urban-retreat-day-spa-rockingham", "service": "Retreat Sanctuary for Two", "tags": ["couples", "sauna"], "prices": { "2": 67900 }, "basis": "$679 for two", "minutes": 140, "indoor": "yes", "note": "Infrared sauna for two, massage, facial and private bath; couples bookings by phone.", "checked": "2026-10-03", "source": "https://www.urbandayspa.com.au/_files/ugd/f9f96d_58aa722632304288a062d1a4af78d289.pdf" },
-  { "id": "urban-sauna-30", "listing": "urban-retreat-day-spa-rockingham", "service": "Infrared sauna session", "tags": ["sauna"], "prices": { "1": 3500, "2": 5500 }, "basis": "$35, plus $20 to bring a friend", "minutes": 30, "indoor": "yes", "note": "Book ahead and bring a towel.", "checked": "2026-10-03", "source": "https://www.urbandayspa.com.au/_files/ugd/f9f96d_58aa722632304288a062d1a4af78d289.pdf" },
-  { "id": "lebeau-swedish-50", "listing": "le-beau-clinic-spa-kardinya", "service": "Swedish massage", "tags": ["day-spa"], "prices": { "1": 16900, "2": 33800 }, "basis": "$169 a person", "minutes": 50, "indoor": "yes", "note": "Secure car park with disabled bays; Thursdays to 9pm.", "checked": "2026-10-03", "source": "https://www.day-spa-perth.com.au/massage-body-services/" },
-  { "id": "lebeau-aboutme-110", "listing": "le-beau-clinic-spa-kardinya", "service": "About Me spa package", "tags": ["day-spa"], "prices": { "1": 35000 }, "basis": "$350", "minutes": 110, "indoor": "yes", "note": "One of several packages on a fully published price list.", "checked": "2026-10-03", "source": "https://www.day-spa-perth.com.au/spa-packages/" },
-  { "id": "keturah-couples-sauna-90", "listing": "keturah-life-day-spa", "service": "Couple's Far Infrared Sauna & Full Body Massage", "tags": ["couples", "sauna"], "prices": { "2": 46000 }, "basis": "$460 for two", "minutes": 90, "indoor": "yes", "note": "Bought as a voucher, usable at Nedlands or Carine Glades; book by phone.", "checked": "2026-10-03", "source": "https://www.keturah.com.au/product/couples-far-infrared-sauna-full-body-massage-1h30m/" },
-  { "id": "revive-palmsprings-120", "listing": "revive-skin-emporium-mount-hawthorn", "service": "Palm Springs Day Spa Journey for Two", "tags": ["couples"], "prices": { "2": 62500 }, "basis": "$625 for two", "minutes": 120, "indoor": "yes", "note": "Aromatic steam room, back massage, an hour's facial, champagne and chocolates.", "checked": "2026-10-03", "source": "https://reviveskinemporium.com.au/products/palm-springs-day-spa-journey-for-two" },
-  { "id": "revive-dayout-180", "listing": "revive-skin-emporium-mount-hawthorn", "service": "Couples Day Out", "tags": ["couples"], "prices": { "2": 78500 }, "basis": "$785 for two", "minutes": 180, "indoor": "yes", "note": "Steam, private spa access for two, facial, massage and refreshments.", "checked": "2026-10-03", "source": "https://reviveskinemporium.com.au/products/couples-day-out" },
-  { "id": "lush-massage-two-60", "listing": "lush-skin-and-body", "service": "Signature Massage for Two", "tags": ["couples"], "prices": { "2": 29000 }, "basis": "$290 for two", "minutes": 60, "indoor": "yes", "note": "Couples bookings by phone or email rather than online.", "checked": "2026-10-03", "source": "https://www.lushskinbody.com.au/perth/couples-treatments-perth" },
-  { "id": "lush-headspa-70", "listing": "lush-skin-and-body", "service": "Ultimate Head Spa Ritual", "tags": ["head-spa"], "prices": { "1": 24500 }, "basis": "$245", "minutes": 70, "indoor": "yes", "note": "Finishes with a towel-dry and leave-in treatment, not a blow-dry.", "checked": "2026-10-03", "source": "https://www.lushskinbody.com.au/perth/head-spa-perth" },
-  { "id": "headspaperth-signature-120", "listing": "the-head-spa-perth-south-perth", "service": "Signature Head Spa", "tags": ["head-spa"], "prices": { "1": 29900 }, "basis": "$299", "minutes": 120, "indoor": "yes", "note": "Blow-dry included. 50% deposit within 48 hours; books out three to four weeks ahead.", "checked": "2026-10-03", "source": "https://www.headspaperth.com.au/treatments" },
-  { "id": "headspaperth-dry-45", "listing": "the-head-spa-perth-south-perth", "service": "Dry Head Spa", "tags": ["head-spa"], "prices": { "1": 19900 }, "basis": "$199", "minutes": 45, "indoor": "yes", "note": "No washing; a scalp and head massage without water.", "checked": "2026-10-03", "source": "https://www.fresha.com/a/the-head-spa-perth-south-perth-29-charles-street-dfj1gbx5" },
-  { "id": "skinwellness-signature-90", "listing": "skin-wellness-clinic-northbridge", "service": "Signature Head Spa", "tags": ["head-spa"], "prices": { "1": 20000 }, "basis": "$200", "minutes": 90, "indoor": "yes", "note": "Complimentary blow-dry and straightening. One person at a time.", "checked": "2026-10-03", "source": "https://skinwellnessclinic.com.au/head-and-scalp-spa" },
-  { "id": "oshani-experience-90", "listing": "oshani-head-spa-north-perth", "service": "Scalp & Head Spa Experience", "tags": ["head-spa"], "prices": { "1": 23000 }, "basis": "$230", "minutes": 90, "indoor": "yes", "note": "Korean-inspired ritual; hair is dried off rather than styled.", "checked": "2026-10-03", "source": "https://oshaniheadspa.com.au/" },
-  { "id": "amore-revive-45", "listing": "japanese-head-spa-by-amore-landsdale", "service": "Scalp Revive", "tags": ["head-spa"], "prices": { "1": 13000 }, "basis": "$130", "minutes": 75, "indoor": "yes", "note": "45 minutes plus 30 minutes to dry off; a professional blow-dry costs extra.", "checked": "2026-10-03", "source": "https://www.japaneseheadspabyamore.com.au/head-spa" },
-  { "id": "amore-glow-75", "listing": "japanese-head-spa-by-amore-landsdale", "service": "Glow & Revive (with facial)", "tags": ["head-spa"], "prices": { "1": 18000 }, "basis": "$180", "minutes": 105, "indoor": "yes", "note": "75 minutes plus 30 minutes to dry off.", "checked": "2026-10-03", "source": "https://www.japaneseheadspabyamore.com.au/head-spa" },
-  { "id": "ardor-sanctuary-90", "listing": "ardor-organics", "service": "Divine Scalp Sanctuary", "tags": ["head-spa"], "prices": { "1": 29900 }, "basis": "$299", "minutes": 90, "indoor": "yes", "note": "Hair is left semi-dry; a blow-dry is extra.", "checked": "2026-10-03", "source": "https://www.ardororganics.com.au/pages/hair-spa-1" },
-  { "id": "beyondrest-float-60", "listing": "beyond-rest-east-perth", "service": "Float (60 min, casual)", "tags": ["float"], "prices": { "1": 8900, "2": 17800 }, "basis": "$89 a person", "minutes": 60, "indoor": "yes", "note": "Two people float in separate pods at the same time. Allow about 90 minutes in all.", "checked": "2026-10-03", "source": "https://beyondrest.com.au/prices-and-memberships" },
-  { "id": "clearmind-float-60", "listing": "clear-mind-studio-fremantle", "service": "Single float (60 min)", "tags": ["float"], "prices": { "1": 8900 }, "basis": "$89", "minutes": 60, "indoor": "yes", "note": "Pod with a lid you can leave open; about 90 minutes in the room.", "checked": "2026-10-03", "source": "https://www.clearmindstudio.com/floatation-therapy" },
-  { "id": "lifespring-float-60", "listing": "life-spring-float-centre", "service": "Float cabin (60 min)", "tags": ["float"], "prices": { "1": 8600, "2": 12900 }, "basis": "$86 single, $129 for two sharing a cabin", "minutes": 60, "indoor": "yes", "note": "Larger cabins with a door you can leave open.", "checked": "2026-10-03", "source": "https://www.thelifespring.com.au/rockingham-float-tank-cabin-studio" },
-  { "id": "rhema-float-60", "listing": "rhema-wellness-studio", "service": "Float (60 min)", "tags": ["float"], "prices": { "1": 7000 }, "basis": "$70", "minutes": 60, "indoor": "yes", "note": "Shower time before and after is included.", "checked": "2026-10-03", "source": "https://www.rhemawellness.com.au/float-therapy/" },
-  { "id": "salt-float-60", "listing": "salt-float-studio-south-perth", "service": "Float (60 min)", "tags": ["float"], "prices": { "1": 8500, "2": 13000 }, "basis": "$85 single; $65 each floating with a friend", "minutes": 60, "indoor": "yes", "note": "You control the lights and music. Closed Tuesdays and Wednesdays.", "checked": "2026-10-03", "source": "https://saltfloatstudio.com.au/" },
-  { "id": "floatlab-float-60", "listing": "float-lab-wembley", "service": "Float (60 min)", "tags": ["float"], "prices": { "1": 8900, "2": 16000 }, "basis": "$89 single; $160 for two floating at the same time", "minutes": 60, "indoor": "yes", "note": "Open 9am to 9pm, seven days.", "checked": "2026-10-03", "source": "https://floatlab.floathelm.com/store" },
-  { "id": "melt-sauna-60", "listing": "melt-sauna-cold-plunge-subiaco", "service": "Sauna and cold plunge (60 min)", "tags": ["sauna"], "prices": { "1": 3500, "2": 7000 }, "basis": "$35 a person", "minutes": 60, "indoor": "yes", "note": "Availability is capped so the room stays quiet. Drinks afterwards are complimentary.", "checked": "2026-09-13", "source": "Owner correction by email, 13 Sep 2026 (data/listing-edits.json)" }
+  {
+   "id": "crown-relaxation-60",
+   "listing": "crown-spa-perth",
+   "service": "Relaxation massage",
+   "tags": [
+    "day-spa"
+   ],
+   "prices": {
+    "1": 25000,
+    "2": 50000
+   },
+   "basis": "$250 a person, weekdays",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Includes the Aqua Retreat (vitality pool, sauna, steam) — arrive an hour early. Surcharge Friday to Sunday.",
+   "checked": "2026-10-03",
+   "source": "https://www.crownperth.com.au/getmedia/62781927-a06e-4868-b36e-b9eb97bfd7e9/crown-spa-perth-treatment-menu.pdf"
+  },
+  {
+   "id": "annasha-swedish-60",
+   "listing": "annasha-day-spa",
+   "service": "Swedish relaxation massage",
+   "tags": [
+    "day-spa"
+   ],
+   "prices": {
+    "1": 19500,
+    "2": 39000
+   },
+   "basis": "$195 a person",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Garden setting in Gooseberry Hill; no pool or sauna. Tuesday to Saturday.",
+   "checked": "2026-10-03",
+   "source": "https://annashadayspa.com.au/massage-treatments/"
+  },
+  {
+   "id": "annasha-vitality-120",
+   "listing": "annasha-day-spa",
+   "service": "Vitality day spa package",
+   "tags": [
+    "day-spa"
+   ],
+   "prices": {
+    "1": 39000,
+    "2": 78000
+   },
+   "basis": "$390 a person",
+   "minutes": 120,
+   "indoor": "yes",
+   "note": "Packages include a sound treatment and tea.",
+   "checked": "2026-10-03",
+   "source": "https://annashadayspa.com.au/day-spa-packages/"
+  },
+  {
+   "id": "ganesha-balinese-60",
+   "listing": "ganesha-wellness-spa",
+   "service": "Balinese massage",
+   "tags": [
+    "day-spa"
+   ],
+   "prices": {
+    "1": 12900,
+    "2": 25800
+   },
+   "basis": "$129 a person",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "The 40-jet jacuzzi is an add-on, $99 for half an hour for two.",
+   "checked": "2026-10-03",
+   "source": "https://ganeshawellnessspa.com.au/speciality-massages"
+  },
+  {
+   "id": "ganesha-romance-120",
+   "listing": "ganesha-wellness-spa",
+   "service": "Revive the Romance (couples package)",
+   "tags": [
+    "couples"
+   ],
+   "prices": {
+    "2": 36900
+   },
+   "basis": "$369 for two",
+   "minutes": 120,
+   "indoor": "yes",
+   "note": "Massage together in the couples room, infrared pod and massage chair. Saturdays $25 a person extra; Sundays by request.",
+   "checked": "2026-10-03",
+   "source": "https://ganeshawellnessspa.com.au/packages-1"
+  },
+  {
+   "id": "soothe-massage-60",
+   "listing": "soothe-massage-dayspa-nedlands",
+   "service": "Customised massage",
+   "tags": [
+    "day-spa"
+   ],
+   "prices": {
+    "1": 12000,
+    "2": 24000
+   },
+   "basis": "$120 a person",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Open seven days, 9am to 6pm, free parking out the front.",
+   "checked": "2026-10-03",
+   "source": "https://www.soothespaperth.com/massage-nedlands"
+  },
+  {
+   "id": "soothe-stress-release-150",
+   "listing": "soothe-massage-dayspa-nedlands",
+   "service": "Stress Release package",
+   "tags": [
+    "day-spa",
+    "sauna"
+   ],
+   "prices": {
+    "1": 30000,
+    "2": 60000
+   },
+   "basis": "$300 a person",
+   "minutes": 150,
+   "indoor": "yes",
+   "note": "30 minutes infrared sauna, a 75-minute massage and 45 minutes of reflexology.",
+   "checked": "2026-10-03",
+   "source": "https://www.soothespaperth.com/spa-packages-nedlands"
+  },
+  {
+   "id": "soothe-sauna-30",
+   "listing": "soothe-massage-dayspa-nedlands",
+   "service": "Infrared sauna",
+   "tags": [
+    "sauna"
+   ],
+   "prices": {
+    "1": 7000,
+    "2": 7000
+   },
+   "basis": "$70 for the session, up to two people",
+   "minutes": 30,
+   "indoor": "yes",
+   "note": "One session takes up to two guests.",
+   "checked": "2026-10-03",
+   "source": "https://www.soothespaperth.com/infrared-sauna-nedlands"
+  },
+  {
+   "id": "soothe-headspa-75",
+   "listing": "soothe-massage-dayspa-nedlands",
+   "service": "Ultimate Head Spa Ritual",
+   "tags": [
+    "head-spa"
+   ],
+   "prices": {
+    "1": 19500
+   },
+   "basis": "$195",
+   "minutes": 75,
+   "indoor": "yes",
+   "note": "The spa does not say whether hair is dried or styled afterwards — ask when you book.",
+   "checked": "2026-10-03",
+   "source": "https://www.fresha.com/a/soothe-massage-day-spa-nedlands-163-stirling-highway-lby8guen"
+  },
+  {
+   "id": "solace-bathhouse-60",
+   "listing": "solace-day-spa-scarborough",
+   "service": "Bathhouse session",
+   "tags": [
+    "sauna"
+   ],
+   "prices": {
+    "1": 6900,
+    "2": 13800
+   },
+   "basis": "$69 a person",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Magnesium tub, ice bath, sauna and monsoon shower.",
+   "checked": "2026-10-03",
+   "source": "https://solacedayspa.com.au/solace-bathhouse/"
+  },
+  {
+   "id": "solace-immersion-120",
+   "listing": "solace-day-spa-scarborough",
+   "service": "Signature Immersion (bathhouse + massage)",
+   "tags": [
+    "day-spa",
+    "sauna"
+   ],
+   "prices": {
+    "1": 22400,
+    "2": 44800
+   },
+   "basis": "$224 a person",
+   "minutes": 120,
+   "indoor": "yes",
+   "note": "An hour in the bathhouse and an hour's massage.",
+   "checked": "2026-10-03",
+   "source": "https://solacedayspa.com.au/solace-bathhouse/"
+  },
+  {
+   "id": "solace-slice-120",
+   "listing": "solace-day-spa-scarborough",
+   "service": "A Slice of Solace (couples)",
+   "tags": [
+    "couples"
+   ],
+   "prices": {
+    "2": 71200
+   },
+   "basis": "$356 a person, published per person",
+   "minutes": 120,
+   "indoor": "yes",
+   "note": "Side-by-side massage, couples steam room, sparkling and chocolates.",
+   "checked": "2026-10-03",
+   "source": "https://solacedayspa.com.au/treatments-for-two/"
+  },
+  {
+   "id": "swan-massage-60",
+   "listing": "swan-valley-retreat",
+   "service": "Signature relaxation massage",
+   "tags": [
+    "day-spa"
+   ],
+   "prices": {
+    "1": 17500
+   },
+   "basis": "$175",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Treatments Monday to Saturday.",
+   "checked": "2026-10-03",
+   "source": "https://swanvalleyretreat.com.au/day-spa/massage/"
+  },
+  {
+   "id": "swan-couples-massage-60",
+   "listing": "swan-valley-retreat",
+   "service": "Couples relaxation massage",
+   "tags": [
+    "couples"
+   ],
+   "prices": {
+    "2": 34000
+   },
+   "basis": "$340 for two",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Also offered to two friends. 10% surcharge on Sundays.",
+   "checked": "2026-10-03",
+   "source": "https://swanvalleyretreat.com.au/day-spa/massage/"
+  },
+  {
+   "id": "swan-couples-escape-120",
+   "listing": "swan-valley-retreat",
+   "service": "Couples Escape",
+   "tags": [
+    "couples"
+   ],
+   "prices": {
+    "2": 44000
+   },
+   "basis": "$440 for two",
+   "minutes": 120,
+   "indoor": "unknown",
+   "note": "Couples massage, antipasto platter, sparkling and a private outdoor area.",
+   "checked": "2026-10-03",
+   "source": "https://swanvalleyretreat.com.au/spa-packages/"
+  },
+  {
+   "id": "swan-oasis-60",
+   "listing": "swan-valley-retreat",
+   "service": "Oasis: sauna, ice bath and hot tub",
+   "tags": [
+    "sauna",
+    "couples"
+   ],
+   "prices": {
+    "2": 16500
+   },
+   "basis": "$165 for two",
+   "minutes": 60,
+   "indoor": "unknown",
+   "note": "Booked for two to four people; bring bathers.",
+   "checked": "2026-10-03",
+   "source": "https://swanvalleyretreat.com.au/day-spa/oasis/"
+  },
+  {
+   "id": "swan-float-60",
+   "listing": "swan-valley-retreat",
+   "service": "Float (60 min)",
+   "tags": [
+    "float"
+   ],
+   "prices": {
+    "1": 8500
+   },
+   "basis": "$85",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "One float pod, so floats run one after another.",
+   "checked": "2026-10-03",
+   "source": "https://swanvalleyretreat.com.au/day-spa/floatation-therapy/"
+  },
+  {
+   "id": "swan-float-90",
+   "listing": "swan-valley-retreat",
+   "service": "Float (90 min)",
+   "tags": [
+    "float"
+   ],
+   "prices": {
+    "1": 9900
+   },
+   "basis": "$99",
+   "minutes": 90,
+   "indoor": "yes",
+   "note": "One float pod, so floats run one after another.",
+   "checked": "2026-10-03",
+   "source": "https://swanvalleyretreat.com.au/day-spa/floatation-therapy/"
+  },
+  {
+   "id": "urban-relaxation-60",
+   "listing": "urban-retreat-day-spa-rockingham",
+   "service": "Relaxation body massage",
+   "tags": [
+    "day-spa"
+   ],
+   "prices": {
+    "1": 16900,
+    "2": 33800
+   },
+   "basis": "$169 a person",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Includes a back exfoliation. No deep tissue or remedial massage. Closed Sundays and Mondays.",
+   "checked": "2026-10-03",
+   "source": "https://www.urbandayspa.com.au/_files/ugd/f9f96d_58aa722632304288a062d1a4af78d289.pdf"
+  },
+  {
+   "id": "urban-serenity-two-80",
+   "listing": "urban-retreat-day-spa-rockingham",
+   "service": "Spa Serenity for Two",
+   "tags": [
+    "couples"
+   ],
+   "prices": {
+    "2": 35900
+   },
+   "basis": "$359 for two",
+   "minutes": 80,
+   "indoor": "yes",
+   "note": "Massage, back exfoliation and a private bath for two; couples bookings by phone.",
+   "checked": "2026-10-03",
+   "source": "https://www.urbandayspa.com.au/_files/ugd/f9f96d_58aa722632304288a062d1a4af78d289.pdf"
+  },
+  {
+   "id": "urban-sanctuary-two-140",
+   "listing": "urban-retreat-day-spa-rockingham",
+   "service": "Retreat Sanctuary for Two",
+   "tags": [
+    "couples",
+    "sauna"
+   ],
+   "prices": {
+    "2": 67900
+   },
+   "basis": "$679 for two",
+   "minutes": 140,
+   "indoor": "yes",
+   "note": "Infrared sauna for two, massage, facial and private bath; couples bookings by phone.",
+   "checked": "2026-10-03",
+   "source": "https://www.urbandayspa.com.au/_files/ugd/f9f96d_58aa722632304288a062d1a4af78d289.pdf"
+  },
+  {
+   "id": "urban-sauna-30",
+   "listing": "urban-retreat-day-spa-rockingham",
+   "service": "Infrared sauna session",
+   "tags": [
+    "sauna"
+   ],
+   "prices": {
+    "1": 3500,
+    "2": 5500
+   },
+   "basis": "$35, plus $20 to bring a friend",
+   "minutes": 30,
+   "indoor": "yes",
+   "note": "Book ahead and bring a towel.",
+   "checked": "2026-10-03",
+   "source": "https://www.urbandayspa.com.au/_files/ugd/f9f96d_58aa722632304288a062d1a4af78d289.pdf"
+  },
+  {
+   "id": "lebeau-swedish-50",
+   "listing": "le-beau-clinic-spa-kardinya",
+   "service": "Swedish massage",
+   "tags": [
+    "day-spa"
+   ],
+   "prices": {
+    "1": 16900,
+    "2": 33800
+   },
+   "basis": "$169 a person",
+   "minutes": 50,
+   "indoor": "yes",
+   "note": "Secure car park with disabled bays; Thursdays to 9pm.",
+   "checked": "2026-10-03",
+   "source": "https://www.day-spa-perth.com.au/massage-body-services/"
+  },
+  {
+   "id": "lebeau-aboutme-110",
+   "listing": "le-beau-clinic-spa-kardinya",
+   "service": "About Me spa package",
+   "tags": [
+    "day-spa"
+   ],
+   "prices": {
+    "1": 35000
+   },
+   "basis": "$350",
+   "minutes": 110,
+   "indoor": "yes",
+   "note": "One of several packages on a fully published price list.",
+   "checked": "2026-10-03",
+   "source": "https://www.day-spa-perth.com.au/spa-packages/"
+  },
+  {
+   "id": "keturah-couples-sauna-90",
+   "listing": "keturah-life-day-spa",
+   "service": "Couple's Far Infrared Sauna & Full Body Massage",
+   "tags": [
+    "couples",
+    "sauna"
+   ],
+   "prices": {
+    "2": 46000
+   },
+   "basis": "$460 for two",
+   "minutes": 90,
+   "indoor": "yes",
+   "note": "Bought as a voucher, usable at Nedlands or Carine Glades; book by phone.",
+   "checked": "2026-10-03",
+   "source": "https://www.keturah.com.au/product/couples-far-infrared-sauna-full-body-massage-1h30m/"
+  },
+  {
+   "id": "revive-palmsprings-120",
+   "listing": "revive-skin-emporium-mount-hawthorn",
+   "service": "Palm Springs Day Spa Journey for Two",
+   "tags": [
+    "couples"
+   ],
+   "prices": {
+    "2": 62500
+   },
+   "basis": "$625 for two",
+   "minutes": 120,
+   "indoor": "yes",
+   "note": "Aromatic steam room, back massage, an hour's facial, champagne and chocolates.",
+   "checked": "2026-10-03",
+   "source": "https://reviveskinemporium.com.au/products/palm-springs-day-spa-journey-for-two"
+  },
+  {
+   "id": "revive-dayout-180",
+   "listing": "revive-skin-emporium-mount-hawthorn",
+   "service": "Couples Day Out",
+   "tags": [
+    "couples"
+   ],
+   "prices": {
+    "2": 78500
+   },
+   "basis": "$785 for two",
+   "minutes": 180,
+   "indoor": "yes",
+   "note": "Steam, private spa access for two, facial, massage and refreshments.",
+   "checked": "2026-10-03",
+   "source": "https://reviveskinemporium.com.au/products/couples-day-out"
+  },
+  {
+   "id": "lush-massage-two-60",
+   "listing": "lush-skin-and-body",
+   "service": "Signature Massage for Two",
+   "tags": [
+    "couples"
+   ],
+   "prices": {
+    "2": 29000
+   },
+   "basis": "$290 for two",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Couples bookings by phone or email rather than online.",
+   "checked": "2026-10-03",
+   "source": "https://www.lushskinbody.com.au/perth/couples-treatments-perth"
+  },
+  {
+   "id": "lush-headspa-70",
+   "listing": "lush-skin-and-body",
+   "service": "Ultimate Head Spa Ritual",
+   "tags": [
+    "head-spa"
+   ],
+   "prices": {
+    "1": 24500
+   },
+   "basis": "$245",
+   "minutes": 70,
+   "indoor": "yes",
+   "note": "Finishes with a towel-dry and leave-in treatment, not a blow-dry.",
+   "checked": "2026-10-03",
+   "source": "https://www.lushskinbody.com.au/perth/head-spa-perth"
+  },
+  {
+   "id": "headspaperth-signature-120",
+   "listing": "the-head-spa-perth-south-perth",
+   "service": "Signature Head Spa",
+   "tags": [
+    "head-spa"
+   ],
+   "prices": {
+    "1": 29900
+   },
+   "basis": "$299",
+   "minutes": 120,
+   "indoor": "yes",
+   "note": "Blow-dry included. 50% deposit within 48 hours; books out three to four weeks ahead.",
+   "checked": "2026-10-03",
+   "source": "https://www.headspaperth.com.au/treatments"
+  },
+  {
+   "id": "headspaperth-dry-45",
+   "listing": "the-head-spa-perth-south-perth",
+   "service": "Dry Head Spa",
+   "tags": [
+    "head-spa"
+   ],
+   "prices": {
+    "1": 19900
+   },
+   "basis": "$199",
+   "minutes": 45,
+   "indoor": "yes",
+   "note": "No washing; a scalp and head massage without water.",
+   "checked": "2026-10-03",
+   "source": "https://www.fresha.com/a/the-head-spa-perth-south-perth-29-charles-street-dfj1gbx5"
+  },
+  {
+   "id": "skinwellness-signature-90",
+   "listing": "skin-wellness-clinic-northbridge",
+   "service": "Signature Head Spa",
+   "tags": [
+    "head-spa"
+   ],
+   "prices": {
+    "1": 20000
+   },
+   "basis": "$200",
+   "minutes": 90,
+   "indoor": "yes",
+   "note": "Complimentary blow-dry and straightening. One person at a time.",
+   "checked": "2026-10-03",
+   "source": "https://skinwellnessclinic.com.au/head-and-scalp-spa"
+  },
+  {
+   "id": "oshani-experience-90",
+   "listing": "oshani-head-spa-north-perth",
+   "service": "Scalp & Head Spa Experience",
+   "tags": [
+    "head-spa"
+   ],
+   "prices": {
+    "1": 23000
+   },
+   "basis": "$230",
+   "minutes": 90,
+   "indoor": "yes",
+   "note": "Korean-inspired ritual; hair is dried off rather than styled.",
+   "checked": "2026-10-03",
+   "source": "https://oshaniheadspa.com.au/"
+  },
+  {
+   "id": "amore-revive-45",
+   "listing": "japanese-head-spa-by-amore-landsdale",
+   "service": "Scalp Revive",
+   "tags": [
+    "head-spa"
+   ],
+   "prices": {
+    "1": 13000
+   },
+   "basis": "$130",
+   "minutes": 75,
+   "indoor": "yes",
+   "note": "45 minutes plus 30 minutes to dry off; a professional blow-dry costs extra.",
+   "checked": "2026-10-03",
+   "source": "https://www.japaneseheadspabyamore.com.au/head-spa"
+  },
+  {
+   "id": "amore-glow-75",
+   "listing": "japanese-head-spa-by-amore-landsdale",
+   "service": "Glow & Revive (with facial)",
+   "tags": [
+    "head-spa"
+   ],
+   "prices": {
+    "1": 18000
+   },
+   "basis": "$180",
+   "minutes": 105,
+   "indoor": "yes",
+   "note": "75 minutes plus 30 minutes to dry off.",
+   "checked": "2026-10-03",
+   "source": "https://www.japaneseheadspabyamore.com.au/head-spa"
+  },
+  {
+   "id": "ardor-sanctuary-90",
+   "listing": "ardor-organics",
+   "service": "Divine Scalp Sanctuary",
+   "tags": [
+    "head-spa"
+   ],
+   "prices": {
+    "1": 29900
+   },
+   "basis": "$299",
+   "minutes": 90,
+   "indoor": "yes",
+   "note": "Hair is left semi-dry; a blow-dry is extra.",
+   "checked": "2026-10-03",
+   "source": "https://www.ardororganics.com.au/pages/hair-spa-1"
+  },
+  {
+   "id": "beyondrest-float-60",
+   "listing": "beyond-rest-east-perth",
+   "service": "Float (60 min, casual)",
+   "tags": [
+    "float"
+   ],
+   "prices": {
+    "1": 8900,
+    "2": 17800
+   },
+   "basis": "$89 a person",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Two people float in separate pods at the same time. Allow about 90 minutes in all.",
+   "checked": "2026-10-03",
+   "source": "https://beyondrest.com.au/prices-and-memberships"
+  },
+  {
+   "id": "clearmind-float-60",
+   "listing": "clear-mind-studio-fremantle",
+   "service": "Single float (60 min)",
+   "tags": [
+    "float"
+   ],
+   "prices": {
+    "1": 8900
+   },
+   "basis": "$89",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Pod with a lid you can leave open; about 90 minutes in the room.",
+   "checked": "2026-10-03",
+   "source": "https://www.clearmindstudio.com/floatation-therapy"
+  },
+  {
+   "id": "lifespring-float-60",
+   "listing": "life-spring-float-centre",
+   "service": "Float cabin (60 min)",
+   "tags": [
+    "float"
+   ],
+   "prices": {
+    "1": 8600,
+    "2": 12900
+   },
+   "basis": "$86 single, $129 for two sharing a cabin",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Larger cabins with a door you can leave open.",
+   "checked": "2026-10-03",
+   "source": "https://www.thelifespring.com.au/rockingham-float-tank-cabin-studio"
+  },
+  {
+   "id": "rhema-float-60",
+   "listing": "rhema-wellness-studio",
+   "service": "Float (60 min)",
+   "tags": [
+    "float"
+   ],
+   "prices": {
+    "1": 7000
+   },
+   "basis": "$70",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Shower time before and after is included.",
+   "checked": "2026-10-03",
+   "source": "https://www.rhemawellness.com.au/float-therapy/"
+  },
+  {
+   "id": "salt-float-60",
+   "listing": "salt-float-studio-south-perth",
+   "service": "Float (60 min)",
+   "tags": [
+    "float"
+   ],
+   "prices": {
+    "1": 8500,
+    "2": 13000
+   },
+   "basis": "$85 single; $65 each floating with a friend",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "You control the lights and music. Closed Tuesdays and Wednesdays.",
+   "checked": "2026-10-03",
+   "source": "https://saltfloatstudio.com.au/"
+  },
+  {
+   "id": "floatlab-float-60",
+   "listing": "float-lab-wembley",
+   "service": "Float (60 min)",
+   "tags": [
+    "float"
+   ],
+   "prices": {
+    "1": 8900,
+    "2": 16000
+   },
+   "basis": "$89 single; $160 for two floating at the same time",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Open 9am to 9pm, seven days.",
+   "checked": "2026-10-03",
+   "source": "https://floatlab.floathelm.com/store"
+  },
+  {
+   "id": "melt-sauna-60",
+   "listing": "melt-sauna-cold-plunge-subiaco",
+   "service": "Sauna and cold plunge (60 min)",
+   "tags": [
+    "sauna"
+   ],
+   "prices": {
+    "1": 3500,
+    "2": 7000
+   },
+   "basis": "$35 a person",
+   "minutes": 60,
+   "indoor": "yes",
+   "note": "Availability is capped so the room stays quiet. Drinks afterwards are complimentary.",
+   "checked": "2026-09-13",
+   "source": "Owner correction by email, 13 Sep 2026 (data/listing-edits.json)"
+  }
  ]
 }

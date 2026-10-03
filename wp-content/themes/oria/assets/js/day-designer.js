@@ -48,8 +48,11 @@
 		var range = root.querySelector( '[data-dd-range]' );
 		var budget = root.querySelector( '[data-dd-budget]' );
 		var people = root.querySelector( '[data-dd-people]' );
-		var preset = ( root.querySelector( '[data-dd-preset][aria-pressed="true"]' ) || {} ).getAttribute ?
-			root.querySelector( '[data-dd-preset][aria-pressed="true"]' ).getAttribute( 'data-dd-preset' ) : '';
+		var go = root.querySelector( '[data-dd-go]' );
+		var goLabel = root.querySelector( '[data-dd-golabel]' );
+		var goText = goLabel ? goLabel.textContent : '';
+		var moreLabel = root.querySelector( '[data-dd-morelabel]' );
+		var moreText = moreLabel ? moreLabel.textContent : '';
 		var seq = 0;
 		var ctrl = null;
 		var state = null; // { data, index, cafe, prefs }
@@ -70,20 +73,56 @@
 			if ( ! isNaN( v ) ) { range.value = Math.min( v, parseInt( range.max, 10 ) ); }
 		} );
 
-		root.querySelectorAll( '[data-dd-preset]' ).forEach( function ( b ) {
-			b.addEventListener( 'click', function () {
-				root.querySelectorAll( '[data-dd-preset]' ).forEach( function ( o ) { o.setAttribute( 'aria-pressed', o === b ? 'true' : 'false' ); } );
-				preset = b.getAttribute( 'data-dd-preset' );
-				if ( 'two' === preset ) { people.value = '2'; }
-				if ( state ) { run(); }
+		// "Time for two" means two people; the radio group itself is the preset.
+		root.querySelectorAll( '[data-dd-preset]' ).forEach( function ( r ) {
+			r.addEventListener( 'change', function () {
+				if ( r.checked && 'two' === r.value ) { people.value = '2'; }
 			} );
 		} );
+
+		// "More preferences · 2 selected": counts only real changes from the defaults.
+		function moreCount() {
+			if ( ! moreLabel ) { return; }
+			var n = 0;
+			if ( '0' !== String( form.querySelector( '[name="km"]' ).value ) ) { n++; }
+			if ( form.querySelector( '[name="indoor"]' ).checked ) { n++; }
+			if ( form.querySelector( '[name="cafe"]' ).checked ) { n++; }
+			moreLabel.textContent = n ? moreText + ' · ' + n + ' selected' : moreText;
+		}
+		form.addEventListener( 'change', moreCount );
+
+		/* Category pages: sit inside the listing grid after its first full row, and go
+		   back there after every re-render (app.js rewrites the grid on each filter
+		   change). The same node moves, so what the visitor typed is kept. */
+		var slot = root.parentElement && root.parentElement.matches( '[data-dd-slot]' ) ? root.parentElement : null;
+		var grid = 'category' === root.getAttribute( 'data-dd-variant' ) ? document.getElementById( 'dirResults' ) : null;
+		var mo = null;
+		function place() {
+			if ( ! slot || ! grid ) { return; }
+			var cols = getComputedStyle( grid ).gridTemplateColumns.split( ' ' ).filter( Boolean ).length || 1;
+			var cards = Array.prototype.filter.call( grid.children, function ( el ) { return el !== slot && el.matches( '.listing, article' ); } );
+			var after = cards.length >= cols ? cards[ cols - 1 ] : cards[ cards.length - 1 ];
+			if ( mo ) { mo.disconnect(); }
+			if ( after ) {
+				if ( after.nextElementSibling !== slot ) { after.insertAdjacentElement( 'afterend', slot ); }
+			} else if ( slot.parentElement !== grid ) {
+				grid.appendChild( slot );
+			}
+			if ( mo ) { mo.observe( grid, { childList: true } ); }
+		}
+		if ( slot && grid ) {
+			mo = new MutationObserver( function () { place(); } );
+			place();
+			mo.observe( grid, { childList: true } );
+			var rt = null;
+			window.addEventListener( 'resize', function () { clearTimeout( rt ); rt = setTimeout( place, 200 ); } );
+		}
 
 		function prefs() {
 			var fd = new FormData( form );
 			return {
 				ctx: ctx,
-				preset: preset,
+				preset: fd.get( 'preset' ) || '',
 				budget: parseInt( fd.get( 'budget' ), 10 ) || 0,
 				people: parseInt( fd.get( 'people' ), 10 ) || 1,
 				near: fd.get( 'near' ) || '',
@@ -103,8 +142,8 @@
 			form.querySelector( '[name="indoor"]' ).checked = !! p.indoor;
 			form.querySelector( '[name="cafe"]' ).checked = !! p.cafe;
 			form.querySelector( '[name="cafe_each"]' ).value = p.cafe_each;
-			root.querySelectorAll( '[data-dd-preset]' ).forEach( function ( o ) { o.setAttribute( 'aria-pressed', o.getAttribute( 'data-dd-preset' ) === p.preset ? 'true' : 'false' ); } );
-			preset = p.preset;
+			root.querySelectorAll( '[data-dd-preset]' ).forEach( function ( o ) { o.checked = o.value === p.preset; } );
+			moreCount();
 		}
 
 		function run( after ) {
@@ -114,6 +153,8 @@
 			ctrl = window.AbortController ? new AbortController() : null;
 			out.hidden = false;
 			out.setAttribute( 'aria-busy', 'true' );
+			go.disabled = true;
+			if ( goLabel ) { goLabel.textContent = 'Designing…'; }
 			var qs = Object.keys( p ).map( function ( k ) { return encodeURIComponent( k ) + '=' + encodeURIComponent( p[ k ] ); } ).join( '&' );
 			fetch( endpoint + ( endpoint.indexOf( '?' ) < 0 ? '?' : '&' ) + qs, { credentials: 'omit', signal: ctrl ? ctrl.signal : undefined } )
 				.then( function ( r ) { return r.ok ? r.json() : Promise.reject( r.status ); } )
@@ -128,7 +169,13 @@
 					if ( mine !== seq || ( err && 'AbortError' === err.name ) ) { return; }
 					out.innerHTML = '<p class="dd__empty">' + esc( 429 === err ? 'Too many plans in a short time. Try again in a few minutes.' : 'The planner could not be reached just now. Every venue is listed below.' ) + '</p>';
 				} )
-				.finally( function () { if ( mine === seq ) { out.removeAttribute( 'aria-busy' ); } } );
+				.finally( function () {
+					if ( mine === seq ) {
+						out.removeAttribute( 'aria-busy' );
+						go.disabled = false;
+						if ( goLabel ) { goLabel.textContent = goText; }
+					}
+				} );
 		}
 
 		function draw() {
@@ -149,7 +196,7 @@
 			var html = '';
 			html += '<div class="dd__summary"><p class="dd__sumline"><strong>' + esc( who ) + '</strong> · ' + stops + ( 1 === stops ? ' stop' : ' stops' ) + ' · about ' + esc( dur( mins ) ) + ' plus travel</p>';
 			html += '<p class="dd__total"><span>' + esc( label ) + '</span> <strong>' + esc( total ) + '</strong>' + ( remaining > 0 ? ' <em>' + esc( money( remaining ) ) + ' left of ' + esc( d.budget ) + '</em>' : '' ) + '</p>';
-			html += '<p class="dd__hint">' + ( d.from ? 'Starting near ' + esc( d.from ) + '. ' : '' ) + 'Travel time is not calculated; distances are straight-line. Prices as published, not a booking.</p></div>';
+			html += '<p class="dd__help">' + ( d.from ? 'Starting near ' + esc( d.from ) + '. ' : '' ) + 'Travel time is not calculated; distances are straight-line. Prices as published, not a booking.</p></div>';
 			html += '<ol class="dd__stops">';
 			html += '<li class="dd__stop dd__stop--main"><span class="dd__num" aria-hidden="true">1</span><div class="dd__stopbody">';
 			if ( pl.listing.image ) { html += '<img class="dd__img" src="' + esc( pl.listing.image ) + '" alt="" loading="lazy" width="96" height="96">'; }
@@ -174,9 +221,9 @@
 				html += '<p class="dd__links"><button type="button" class="dd__link" data-dd-act="nocafe">Remove this stop</button></p></div></div></li>';
 			}
 			html += '</ol>';
-			if ( pl.cafe_note && state.cafe ) { html += '<p class="dd__hint">' + esc( pl.cafe_note ) + '</p>'; }
+			if ( pl.cafe_note && state.cafe ) { html += '<p class="dd__help">' + esc( pl.cafe_note ) + '</p>'; }
 			html += '<div class="dd__actions">';
-			html += d.plans.length > 1 ? '<button type="button" class="btn btn--ghost btn--sm" data-dd-act="swap">Swap experience <span class="dd__count">(' + ( state.index + 1 ) + ' of ' + d.plans.length + ')</span></button>' : '<span class="dd__hint">No other option meets these choices.</span>';
+			html += d.plans.length > 1 ? '<button type="button" class="btn btn--ghost btn--sm" data-dd-act="swap">Swap experience <span class="dd__count">(' + ( state.index + 1 ) + ' of ' + d.plans.length + ')</span></button>' : '<span class="dd__help">No other option meets these choices.</span>';
 			html += ' <button type="button" class="btn btn--ghost btn--sm" data-dd-act="save">Save on this device</button>';
 			html += ' <button type="button" class="dd__link" data-dd-act="collapse" aria-expanded="true" aria-controls="' + esc( out.id ) + '">Collapse plan</button>';
 			html += '</div>';
@@ -236,7 +283,7 @@
 			if ( ! mine.length ) { savedBox.hidden = true; return; }
 			savedBox.hidden = false;
 			savedBox.innerHTML = '<p class="micro">Saved on this device</p><ul>' + mine.map( function ( s, i ) {
-				return '<li><button type="button" class="dd__link" data-dd-open="' + i + '">' + esc( s.title ) + '</button> <span class="dd__hint">' + esc( s.total ) + ' when saved</span></li>';
+				return '<li><button type="button" class="dd__link" data-dd-open="' + i + '">' + esc( s.title ) + '</button> <span class="dd__help">' + esc( s.total ) + ' when saved</span></li>';
 			} ).join( '' ) + '</ul>';
 		}
 		savedBox.addEventListener( 'click', function ( ev ) {
