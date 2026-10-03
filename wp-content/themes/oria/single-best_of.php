@@ -264,6 +264,13 @@ if ( function_exists( '\Oria\Core\AreaContext\dominant' ) ) {
 	</section>
 <?php endif; ?>
 
+<?php
+// "Plan a day around this": the Day Designer, under the comparison, on the spa guides it has prices for.
+if ( function_exists( '\Oria\Core\DayDesigner\render' ) ) {
+	\Oria\Core\DayDesigner\render( array( 'variant' => 'guide' ) );
+}
+?>
+
 <?php if ( $oria_choose ) : ?>
 	<section class="wrap bosection">
 		<div class="bochoose reveal">

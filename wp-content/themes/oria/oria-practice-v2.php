@@ -602,6 +602,19 @@ $oria_hero_img = ( $oria_term && function_exists( '\Oria\Theme\category_hero_url
 </section>
 </div>
 
+<?php
+/*
+ * The Day Designer: after the answer and facts, before the listings. It is
+ * an optional planning layer, never a gate -- the directory follows it
+ * unchanged. Renders only where Core\DayDesigner has a context with real
+ * prices (Spa & Recovery and its float, head spa and sauna pages, first
+ * page of results), and only once.
+ */
+if ( function_exists( '\Oria\Core\DayDesigner\render' ) ) {
+	\Oria\Core\DayDesigner\render( array( 'variant' => 'category' ) );
+}
+?>
+
 <!-- Floor 2 — Listings -->
 <section class="wrap section section--top-flush floor" id="browse">
 	<?php

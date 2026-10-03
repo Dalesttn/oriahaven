@@ -798,6 +798,18 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 	</div>
 </section>
 
+<?php
+/*
+ * 1b. The Day Designer, compact, between the hero and the Discovery Dock:
+ * seen before the long choose-an-experience panel, never in front of the
+ * places themselves. Only where Core\DayDesigner has priced data for the
+ * page (Spa & Recovery and its float, head spa and sauna pages), page one.
+ */
+if ( function_exists( '\Oria\Core\DayDesigner\render' ) ) {
+	\Oria\Core\DayDesigner\render( array( 'variant' => 'category' ) );
+}
+?>
+
 <!-- 2. Discovery Dock: feeling, experience, location, then the places -->
 <div class="xc-dockwrap" id="xcDockWrap">
 	<div class="wrap xc-dockwrap__inner">

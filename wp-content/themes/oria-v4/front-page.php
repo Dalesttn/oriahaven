@@ -627,6 +627,27 @@ $oria_short = static function ( string $name ): string {
 </section>
 <?php endif; ?>
 
+<?php
+/*
+ * 4b. The Day Designer teaser: one line into the planner on the spa page.
+ * Shown only while the planner is switched on with its spa context, so it
+ * never points at a page that has no planner.
+ */
+$oria_dd_ok  = function_exists( '\Oria\Core\DayDesigner\config' ) && \Oria\Core\DayDesigner\config()['teaser'] && \Oria\Core\DayDesigner\context( 'spa' );
+$oria_dd_spa = $oria_dd_ok ? get_term_by( 'slug', 'spa', 'practice' ) : false;
+?>
+<?php if ( $oria_dd_spa instanceof WP_Term && function_exists( '\Oria\Core\PracticesIndex\category_url' ) ) : ?>
+<section class="wrap xh-sec" aria-labelledby="xh-dd-title">
+	<div class="dd-teaser">
+		<div>
+			<h2 class="dd-teaser__title" id="xh-dd-title"><?php esc_html_e( 'Plan a little spa escape', 'oria' ); ?></h2>
+			<p><?php esc_html_e( 'Set a budget and the time you have, and we will put together a real, priced spa outing near you — a massage, a float, a head spa or a sauna.', 'oria' ); ?></p>
+		</div>
+		<a class="btn btn--dark" href="<?php echo esc_url( \Oria\Core\PracticesIndex\category_url( $oria_dd_spa ) . '#day-designer' ); ?>" data-oria-event="day_designer_teaser_click"><?php esc_html_e( 'Design my outing', 'oria' ); ?></a>
+	</div>
+</section>
+<?php endif; ?>
+
 <?php if ( $oria_events ) : ?>
 <!-- 5. Coming up -->
 <section class="wrap xh-sec" aria-labelledby="xh-week-title">

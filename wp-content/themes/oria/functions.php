@@ -134,6 +134,19 @@ add_action(
 		}
 
 		/*
+		 * Day Designer: only where the planner renders (spa category pages and
+		 * the spa Best Of guides), plus the stylesheet for the homepage teaser.
+		 */
+		$oria_dd = function_exists( '\Oria\Core\DayDesigner\active' ) && \Oria\Core\DayDesigner\active();
+		$oria_dd_teaser = is_front_page() && function_exists( '\Oria\Core\DayDesigner\config' ) && \Oria\Core\DayDesigner\config()['enabled'] && \Oria\Core\DayDesigner\config()['teaser'];
+		if ( $oria_dd || $oria_dd_teaser ) {
+			wp_enqueue_style( 'oria-day-designer', "{$uri}/assets/css/day-designer.css", array( 'oria-pages' ), (string) filemtime( get_theme_file_path( 'assets/css/day-designer.css' ) ) );
+		}
+		if ( $oria_dd ) {
+			wp_enqueue_script( 'oria-day-designer', "{$uri}/assets/js/day-designer.js", array(), (string) filemtime( get_theme_file_path( 'assets/js/day-designer.js' ) ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
+		}
+
+		/*
 		 * My Oria: the app shell's stylesheet, on My Oria routes only. It
 		 * is namespaced under the body class, so nothing here can reach
 		 * the public site even if it were loaded there by mistake.
