@@ -8468,3 +8468,23 @@ article.is-spotlit {
 .xp-rail__offerlist a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .xp-rail__offerlist span { color: #7A5A12; }
 .xp-rail__more { display: inline-flex; align-items: center; gap: .3rem; margin-top: var(--s-3); font-size: var(--fs-xs); font-weight: 700; color: var(--deep); text-decoration: none; }
+
+/* Offers signup: one field beside an offer, and the collapsed after-click prompt. */
+.osub { margin-top: var(--s-4); }
+.xc-offers .osub { padding: var(--s-4) var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface, #fff); }
+.osub--after { margin-top: var(--s-3); padding: var(--s-3) var(--s-4); border-top: 1px dashed #e6d4a3; }
+.osub[hidden] { display: none; }
+.osub__form { display: grid; gap: var(--s-2); }
+.osub__label { font-weight: 700; color: var(--ink); }
+.osub__row { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.osub__input { flex: 1 1 14rem; min-height: 44px; padding: 0 .9rem; border: 1px solid var(--line-strong); border-radius: var(--r-pill); font: inherit; font-size: 1rem; background: #fff; }
+.osub__input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.osub__btn { flex: 0 0 auto; min-height: 44px; }
+.osub__consent { margin: 0; font-size: var(--fs-xs); color: var(--text-faint); }
+.osub__err { margin: 0; font-size: var(--fs-sm); color: #9b2c2c; }
+.osub__done { margin: 0; font-size: var(--fs-sm); color: var(--ink); }
+.osub__hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .osub--after.is-shown { animation: osub-in .25s ease-out; }
+  @keyframes osub-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+}

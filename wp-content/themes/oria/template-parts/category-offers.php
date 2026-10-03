@@ -61,4 +61,5 @@ if ( ! $oria_rows ) {
 			</li>
 		<?php endforeach; ?>
 	</ul>
+	<?php get_template_part( 'template-parts/offers-signup', null, array( 'source' => 'category', 'interest' => (string) ( $args['interest'] ?? '' ) ) ); ?>
 </section>

@@ -659,6 +659,10 @@ while ( have_posts() ) :
 									<a href="<?php echo esc_url( \Oria\Theme\outbound( $oria_offer['source'], 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer_source" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'See the offer', 'oria' ); ?><span class="xp-vh"> <?php esc_html_e( '(opens their site)', 'oria' ); ?></span><?php echo arrow(); // phpcs:ignore ?></a>
 								<?php endif; ?>
 							</p>
+							<?php
+							// Collapsed until they click through to the offer -- the moment they want the next one.
+							get_template_part( 'template-parts/offers-signup', null, array( 'source' => 'offer_click', 'listing' => $oria_id, 'hidden' => true ) );
+							?>
 						</div>
 					<?php endif; ?>
 					<?php if ( $oria_more_offers ) : ?>
@@ -675,6 +679,7 @@ while ( have_posts() ) :
 							<a class="xp-rail__more" href="<?php echo esc_url( (string) get_term_link( $oria_oc ) . '#offers' ); ?>"><?php esc_html_e( 'All offers in this category', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
 						</div>
 					<?php endif; ?>
+					<?php get_template_part( 'template-parts/offers-signup', null, array( 'source' => 'listing', 'listing' => $oria_id ) ); ?>
 				</div>
 			<?php endif; ?>
 

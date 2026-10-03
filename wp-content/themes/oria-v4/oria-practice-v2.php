@@ -1042,7 +1042,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
  * the ribbon and the list. Only live offers (Theme\active_offer), five at
  * most; the strip is absent when there are none.
  */
-get_template_part( 'template-parts/category-offers', null, array( 'ids' => $oria_ids, 'label' => $oria_facet ? $oria_h1_shown : $oria_pname ) );
+get_template_part( 'template-parts/category-offers', null, array( 'ids' => $oria_ids, 'label' => $oria_facet ? $oria_h1_shown : $oria_pname, 'interest' => $oria_term ? $oria_term->slug : '' ) );
 ?>
 
 <div class="xc-ribbon xc-js" id="xcRibbon" role="region" aria-label="<?php esc_attr_e( 'Refine these places', 'oria' ); ?>">

@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const VERSION = 3;
+const VERSION = 4;
 const OPTION  = 'oria_db_version';
 
 function bootstrap(): void {
@@ -64,6 +64,12 @@ function review_log(): string {
 function user_activity(): string {
 	global $wpdb;
 	return $wpdb->prefix . 'oria_user_activity';
+}
+
+/** People who asked for the offers email. See Subscribers. */
+function subscribers(): string {
+	global $wpdb;
+	return $wpdb->prefix . 'oria_subscribers';
 }
 
 /* --------------------------------------------------------------- install */
@@ -129,6 +135,7 @@ function keyed_tables(): array {
 		member_tokens() => 'token_id',
 		review_log()    => 'log_id',
 		user_activity() => 'id',
+		subscribers()   => 'id',
 	);
 }
 
@@ -155,6 +162,7 @@ function install(): void {
 	$tokens  = member_tokens();
 	$log     = review_log();
 	$activity = user_activity();
+	$subs     = subscribers();
 
 	/*
 	 * dbDelta is fussy in ways that are not obvious: two spaces after
@@ -240,6 +248,37 @@ function install(): void {
 		KEY user_id (user_id),
 		KEY object_id (object_id),
 		KEY activity_type (activity_type)
+	) {$charset};";
+
+	/*
+	 * One row per email address. `interests` is a JSON list of practice
+	 * category slugs, grown on each signup rather than replaced, so a person
+	 * who asked for spa offers and later yoga offers is on both. The token
+	 * is the unsubscribe link; the Klaviyo columns record the push, and a
+	 * row with no synced_at and a last_error is what the retry cron picks
+	 * up. No IP address is stored, by rule.
+	 */
+	$sql[] = "CREATE TABLE {$subs} (
+		id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+		email varchar(190) NOT NULL,
+		status varchar(16) NOT NULL DEFAULT 'subscribed',
+		interests longtext NULL DEFAULT NULL,
+		suburb varchar(64) NULL DEFAULT NULL,
+		source varchar(32) NOT NULL DEFAULT '',
+		listing_id bigint(20) unsigned NOT NULL DEFAULT 0,
+		consent_text text NULL DEFAULT NULL,
+		token varchar(64) NOT NULL,
+		klaviyo_synced_at datetime NULL DEFAULT NULL,
+		klaviyo_attempts tinyint(3) unsigned NOT NULL DEFAULT 0,
+		last_error varchar(255) NULL DEFAULT NULL,
+		created_at datetime NOT NULL,
+		updated_at datetime NULL DEFAULT NULL,
+		unsubscribed_at datetime NULL DEFAULT NULL,
+		PRIMARY KEY  (id),
+		UNIQUE KEY email (email),
+		UNIQUE KEY token (token),
+		KEY status (status),
+		KEY created_at (created_at)
 	) {$charset};";
 
 	foreach ( $sql as $statement ) {
