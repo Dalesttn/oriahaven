@@ -1382,6 +1382,12 @@ function handle_save(): void {
 
 	$state = $held ? 'review' : ( $written ? 'ok' : 'none' );
 
+	// The public page is cached; an owner who saves and then looks at their
+	// listing should see the change, not the copy from before they started.
+	if ( $written ) {
+		do_action( 'litespeed_purge_post', $listing );
+	}
+
 	// "Save and continue" lands on the next section rather than back on
 	// the one just finished, which is the whole point of pressing it.
 	$next = isset( $_POST['next'] ) ? sanitize_key( (string) wp_unslash( $_POST['next'] ) ) : '';
