@@ -118,7 +118,7 @@ $oria_tile = in_array( $oria_n, array( 1, 2, 5 ), true );
 				</div>
 				<div class="oh-offer-card__foot">
 					<?php if ( $oria_adv ) : ?>
-						<a class="oh-offer-card__go" href="<?php echo esc_url( \Oria\Theme\outbound( $oria_o['source'], 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer_source" data-oria-id="<?php echo (int) $oria_lid; ?>"><?php esc_html_e( 'View offer', 'oria' ); ?><span class="sr-only"> <?php esc_html_e( '(opens their site in a new tab)', 'oria' ); ?></span><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
+						<a class="oh-offer-card__go" href="<?php echo esc_url( \Oria\Theme\outbound( $oria_o['source'], 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer" data-oria-place="category" data-oria-id="<?php echo (int) $oria_lid; ?>"><?php esc_html_e( 'View offer', 'oria' ); ?><span class="sr-only"> <?php esc_html_e( '(opens their site in a new tab)', 'oria' ); ?></span><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
 					<?php else : ?>
 						<a class="oh-offer-card__go" href="<?php echo esc_url( (string) get_permalink( $oria_lid ) ); ?>"><?php esc_html_e( 'View practice', 'oria' ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
 					<?php endif; ?>

@@ -155,7 +155,7 @@ $oria_bar_price = (string) ( $oria_bar_x['price'] ?? '' );
 					<p class="oh-offer__basis"><?php esc_html_e( 'See offer details', 'oria' ); ?></p>
 				<?php endif; ?>
 				<?php if ( ! empty( $oria_offer['advertised'] ) ) : ?>
-					<a class="oh-offer__go" href="<?php echo esc_url( \Oria\Theme\outbound( $oria_offer['source'], 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer_source" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'View offer', 'oria' ); ?><span class="sr-only"> <?php esc_html_e( '(opens their site in a new tab)', 'oria' ); ?></span><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
+					<a class="oh-offer__go" href="<?php echo esc_url( \Oria\Theme\outbound( $oria_offer['source'], 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer" data-oria-place="listing_main" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'View offer', 'oria' ); ?><span class="sr-only"> <?php esc_html_e( '(opens their site in a new tab)', 'oria' ); ?></span><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
 				<?php endif; ?>
 			</div>
 		</article>
@@ -196,7 +196,7 @@ $oria_bar_price = (string) ( $oria_bar_x['price'] ?? '' );
 						<?php endif; ?>
 						<p class="oh-offer__text"><?php echo esc_html( '' !== $oria_mp ? $oria_mo['title'] : wp_trim_words( (string) $oria_mo['text'], 18, '…' ) ); ?></p>
 						<?php if ( ! empty( $oria_mo['advertised'] ) ) : ?>
-							<a class="oh-offer__go oh-offer__go--quiet" href="<?php echo esc_url( \Oria\Theme\outbound( $oria_mo['source'], 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer_source" data-oria-id="<?php echo (int) $oria_mid; ?>"><?php esc_html_e( 'Explore offer', 'oria' ); ?><span class="sr-only"> <?php esc_html_e( '(opens their site in a new tab)', 'oria' ); ?></span><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
+							<a class="oh-offer__go oh-offer__go--quiet" href="<?php echo esc_url( \Oria\Theme\outbound( $oria_mo['source'], 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer" data-oria-place="listing_related" data-oria-id="<?php echo (int) $oria_mid; ?>"><?php esc_html_e( 'Explore offer', 'oria' ); ?><span class="sr-only"> <?php esc_html_e( '(opens their site in a new tab)', 'oria' ); ?></span><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
 						<?php else : ?>
 							<a class="oh-offer__go oh-offer__go--quiet" href="<?php echo esc_url( (string) get_permalink( $oria_mid ) ); ?>"><?php esc_html_e( 'View practice', 'oria' ); ?><?php echo \Oria\Theme\arrow(); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
 						<?php endif; ?>

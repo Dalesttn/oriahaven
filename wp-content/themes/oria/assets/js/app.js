@@ -3691,7 +3691,8 @@
     web: "outbound_website",
     book: "booking_click",
     dir: "directions_click",
-    enq: "enquiry_started"
+    enq: "enquiry_started",
+    offer: "offer_click"
   };
 
   /* The query the page was opened with. Several things rewrite the address
@@ -4086,7 +4087,11 @@
       var type = el.getAttribute("data-oria-track");
       if (!id || !type) return;
 
-      pushEvent(LEAD_EVENTS[type] || type);
+      /* An offer click says where the offer was: the listing's own card,
+         a related card on a listing, or the category collection. */
+      var params = {};
+      if (type === "offer") params.offer_placement = el.getAttribute("data-oria-place") || "";
+      pushEvent(LEAD_EVENTS[type] || type, params);
 
       if (!window.ORIA_TRACK || !navigator.sendBeacon) return;
       try {

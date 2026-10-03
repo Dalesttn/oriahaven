@@ -70,7 +70,7 @@
   /* After a click through to an offer, the moment of most interest: reveal
      the collapsed prompt beside that offer (or the first one on the page). */
   document.addEventListener("click", function (e) {
-    var a = e.target.closest && e.target.closest('[data-oria-track="offer_source"]');
+    var a = e.target.closest && e.target.closest('[data-oria-track="offer"]');
     if (!a || done) return;
     var scope = a.closest(".oh-offer-card, .oh-offers, .xp-decide__offers") || document;
     var box = scope.querySelector(".osub--after") || document.querySelector(".osub--after");

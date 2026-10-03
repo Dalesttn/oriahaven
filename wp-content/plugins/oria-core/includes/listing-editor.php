@@ -1489,6 +1489,7 @@ function stats( int $listing, int $days = 30 ): array {
 		'book' => __( 'Booking clicks', 'oria' ),
 		'enq'  => __( 'Enquiries', 'oria' ),
 		'dir'  => __( 'Directions', 'oria' ),
+		'offer' => __( 'Offer clicks', 'oria' ),
 	);
 	$out = array();
 	foreach ( $map as $key => $label ) {

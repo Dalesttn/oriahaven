@@ -41,6 +41,7 @@ function labels(): array {
 		'book' => __( 'Booking', 'oria' ),
 		'dir'  => __( 'Directions', 'oria' ),
 		'enq'  => __( 'Enquiries', 'oria' ),
+		'offer' => __( 'Offer', 'oria' ),
 	);
 }
 

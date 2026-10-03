@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const META_STATS = '_oria_stats';
 const KEEP_DAYS  = 90;
-const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'reel', 'next', 'cal', 'save', 'apply', 'empview' );
+const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'offer', 'reel', 'next', 'cal', 'save', 'apply', 'empview' );
 
 /**
  * Which counters each kind of page may carry. Trends to Try reuse the same
@@ -261,6 +261,7 @@ function render_metabox( \WP_Post $post ): void {
 		'book' => __( 'Booking clicks', 'oria' ),
 		'enq'  => __( 'Enquiries received', 'oria' ),
 		'dir'  => __( 'Directions', 'oria' ),
+		'offer' => __( 'Offer clicks', 'oria' ),
 	);
 	echo '<div class="oria-perf__grid">';
 	foreach ( $cells as $type => $label ) {
