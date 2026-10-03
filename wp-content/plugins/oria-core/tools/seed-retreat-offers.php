@@ -22,6 +22,26 @@ require_once ABSPATH . 'wp-admin/includes/media.php';
 require_once ABSPATH . 'wp-admin/includes/file.php';
 require_once ABSPATH . 'wp-admin/includes/image.php';
 
+/**
+ * The featured image: the copy bundled in data/retreat-images/ (named by the
+ * source page's slug) first, because BookRetreats' image host refuses
+ * requests from hosting-provider addresses; the remote URL only as a
+ * fallback. Returns the attachment id or a WP_Error.
+ */
+function oria_retreat_image( int $post_id, array $o ) {
+	$slug    = basename( rtrim( (string) $o['source_url'], '/' ) );
+	$bundled = ORIA_CORE_DIR . 'data/retreat-images/' . $slug . '.jpg';
+	if ( is_readable( $bundled ) ) {
+		$tmp = wp_tempnam( $slug . '.jpg' );
+		copy( $bundled, $tmp );
+		$att = media_handle_sideload( array( 'name' => $slug . '.jpg', 'tmp_name' => $tmp ), $post_id, $o['title'] );
+		if ( ! is_wp_error( $att ) ) {
+			return (int) $att;
+		}
+	}
+	return empty( $o['image'] ) ? new WP_Error( 'no_image', 'no bundled or remote image' ) : media_sideload_image( $o['image'], $post_id, $o['title'], 'id' );
+}
+
 $checked = '2026-09-27';
 $offers  = array(
 	array(
@@ -432,8 +452,8 @@ foreach ( $offers as $i => $o ) {
 		}
 		echo 'exists: ', $o['title'], $added ? " (filled {$added} new field" . ( 1 === $added ? '' : 's' ) . ')' : '', "\n";
 		// A photo that failed to download first time round (host timeout, blocked fetch) is tried again.
-		if ( ! has_post_thumbnail( (int) $existing[0] ) && ! empty( $o['image'] ) ) {
-			$att = media_sideload_image( $o['image'], (int) $existing[0], $o['title'], 'id' );
+		if ( ! has_post_thumbnail( (int) $existing[0] ) ) {
+			$att = oria_retreat_image( (int) $existing[0], $o );
 			if ( is_wp_error( $att ) ) {
 				echo '   image still failed: ', $att->get_error_message(), "\n   download it from ", $o['source_url'], " and set it as the Featured image by hand.\n";
 			} else {
@@ -457,7 +477,7 @@ foreach ( $offers as $i => $o ) {
 	foreach ( $meta as $k => $v ) {
 		update_post_meta( $id, '_ro_' . $k, wp_slash( (string) $v ) );
 	}
-	$att = media_sideload_image( $o['image'], $id, $o['title'], 'id' );
+	$att = oria_retreat_image( (int) $id, $o );
 	if ( is_wp_error( $att ) ) {
 		echo 'image failed for ', $o['title'], ': ', $att->get_error_message(), "\n";
 	} else {
