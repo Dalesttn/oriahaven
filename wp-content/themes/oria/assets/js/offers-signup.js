@@ -72,7 +72,7 @@
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest('[data-oria-track="offer_source"]');
     if (!a || done) return;
-    var scope = a.closest(".xc-offer, .xp-decide__offers, .xc-offers") || document;
+    var scope = a.closest(".oh-offer-card, .oh-offers, .xp-decide__offers") || document;
     var box = scope.querySelector(".osub--after") || document.querySelector(".osub--after");
     if (!box || !box.hidden) return;
     box.hidden = false;
