@@ -1,0 +1,40 @@
+{
+  "_comment": [
+    "New Movement Perth, Osborne Park -- added 3 Oct 2026 at Dale's request.",
+    "Everything below was read on the business's own site the same day",
+    "(home, membership and contact pages). Prices are as listed there;",
+    "contract terms and joining fees are not stated on the site, so none",
+    "are given here. The sauna and ice bath are described plainly; no",
+    "health claims are repeated."
+  ],
+  "city": "perth",
+  "listings": [
+    {
+      "slug": "new-movement-perth",
+      "name": "New Movement Perth",
+      "cat": "fitness",
+      "also": ["yoga", "spa"],
+      "suburb": "osborne-park",
+      "region": "north",
+      "address": "6/7 Hector Street West, Osborne Park WA 6017",
+      "phone": "0428 959 461",
+      "email": "newmovement@newmovementperth.com.au",
+      "web": "https://newmovementperth.com.au/",
+      "priceBand": "$$",
+      "excerpt": "A 24-hour gym in Osborne Park that runs two class rooms under one roof: the Fitness Jungle, with strength and conditioning and HIIT, and a Movement Studio for Pilates and yoga, between them more than eighty classes a week. The floor has free weights, six lifting platforms and cardio kit, and there is a Movement Spa with infrared saunas and an ice bath, plus a crèche on weekday and Saturday mornings. Newcomers can start with a 7-day gym trial for $29, a 10-day class trial for $79 or a 10-day full-access trial for $109; class memberships start at $39.95 a week paid annually upfront. Staffed Monday to Thursday 7am to 8pm, Friday to 7pm and weekend mornings, with member access around the clock.",
+      "services": [
+        "24/7 gym access",
+        "Strength and conditioning classes",
+        "HIIT classes",
+        "Pilates",
+        "Yoga",
+        "Yin and sound bath meditation",
+        "Beach Pilates",
+        "Infrared sauna and ice bath (Movement Spa)",
+        "Crèche"
+      ],
+      "format": "in-person",
+      "status": "unclaimed"
+    }
+  ]
+}
