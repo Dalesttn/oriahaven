@@ -2,8 +2,11 @@
 /**
  * One Best Of guide.
  *
- * Head, the picks, how they were chosen, a side-by-side table once there are
- * enough to compare, questions, where to go next. Every guide-specific word
+ * In reading order: the head with a byline; the quick answer and the
+ * spotlights; a facts strip with links into the page; the side-by-side
+ * table (the thing a reader cannot get from any one listing, so it comes
+ * before the long list); the picks; how they were chosen; the planner;
+ * which to choose; questions; where to go next. Every guide-specific word
  * comes from the post and its fields; this file knows nothing about yoga.
  */
 
@@ -64,6 +67,21 @@ $oria_related = BestOf\related( $oria_id, 3 );
 $oria_qa      = BestOf\quick_answer( $oria_id );
 $oria_spots   = BestOf\spotlights( $oria_entries );
 $oria_choose  = BestOf\choose( $oria_id );
+$oria_facts   = BestOf\facts( $oria_id );
+$oria_by      = BestOf\byline( $oria_id );
+$oria_table   = $oria_n >= 3;
+$oria_planner = function_exists( '\Oria\Core\DayDesigner\active' ) && \Oria\Core\DayDesigner\active();
+
+// The in-page links, in page order. Only sections that exist.
+$oria_jump = array_filter(
+	array(
+		$oria_table ? array( '#compare', __( 'Compare', 'oria' ) ) : null,
+		$oria_n ? array( '#picks', __( 'The picks', 'oria' ) ) : null,
+		'' !== $oria_method ? array( '#how', __( 'How we chose', 'oria' ) ) : null,
+		$oria_planner ? array( '#day-designer', __( 'Plan a day', 'oria' ) ) : null,
+		$oria_faq ? array( '#faq', __( 'Questions', 'oria' ) ) : null,
+	)
+);
 ?>
 
 <article>
@@ -74,10 +92,6 @@ $oria_choose  = BestOf\choose( $oria_id );
  * decoration, the headline already says what the page is, and a
  * background is neither announced to a screen reader nor downloaded
  * where it is never shown.
- *
- * No featured image, no custom property, no picture and no reserved
- * height -- the header falls back to exactly what it was, which is what
- * every one of these looked like until the pictures were made.
  */
 $oria_hero = get_post_thumbnail_id( $oria_id ) ? (string) wp_get_attachment_image_url( get_post_thumbnail_id( $oria_id ), 'oria-wide' ) : '';
 ?>
@@ -96,17 +110,16 @@ $oria_hero = get_post_thumbnail_id( $oria_id ) ? (string) wp_get_attachment_imag
 		<?php if ( BestOf\intro( $oria_id ) ) : ?>
 			<p class="bohero__lede"><?php echo esc_html( BestOf\intro( $oria_id ) ); ?></p>
 		<?php endif; ?>
-		<p class="bohero__meta">
-			<?php
-			$oria_bits = array();
-			if ( $oria_n ) {
-				/* translators: %s: number of picks */
-				$oria_bits[] = sprintf( _n( '%s pick', '%s picks', $oria_n, 'oria' ), number_format_i18n( $oria_n ) );
-			}
-			$oria_bits[] = BestOf\updated( $oria_id );
-			$oria_bits[] = __( 'Editorial selection', 'oria' );
-			echo esc_html( implode( ' · ', $oria_bits ) );
-			?>
+		<p class="bohero__meta bobyline">
+			<span><?php esc_html_e( 'By the Oria Haven editors', 'oria' ); ?></span>
+			<span aria-hidden="true">·</span>
+			<span><?php echo esc_html( sprintf( $oria_by['reviewed'] ? /* translators: %s: date */ __( 'Prices checked %s', 'oria' ) : __( 'Updated %s', 'oria' ), $oria_by['checked'] ) ); ?></span>
+			<?php if ( $oria_by['reviewed'] ) : ?>
+				<span aria-hidden="true">·</span>
+				<span><?php echo esc_html( sprintf( /* translators: %s: month and year */ __( 'Next check due %s', 'oria' ), $oria_by['next'] ) ); ?></span>
+			<?php endif; ?>
+			<span aria-hidden="true">·</span>
+			<span><?php esc_html_e( 'Editorial, never paid', 'oria' ); ?></span>
 		</p>
 	</div>
 </section>
@@ -141,12 +154,40 @@ $oria_hero = get_post_thumbnail_id( $oria_id ) ? (string) wp_get_attachment_imag
 	</section>
 <?php endif; ?>
 
+<?php if ( $oria_facts || count( $oria_jump ) > 1 ) : ?>
+	<?php
+	/*
+	 * What the guide covers, in numbers the picks themselves supply, and
+	 * the way to each part of the page -- so the table and the questions
+	 * are a tap away rather than ten screens down.
+	 */
+	?>
+	<section class="wrap bosection bosection--flush">
+		<div class="bofacts reveal">
+			<?php if ( $oria_facts ) : ?>
+				<dl class="bofacts__list">
+					<?php foreach ( $oria_facts as $oria_f ) : ?>
+						<div class="bofacts__item"><dt><?php echo esc_html( $oria_f['label'] ); ?></dt><dd><?php echo esc_html( $oria_f['value'] ); ?></dd></div>
+					<?php endforeach; ?>
+				</dl>
+			<?php endif; ?>
+			<?php if ( count( $oria_jump ) > 1 ) : ?>
+				<nav class="bojump" aria-label="<?php esc_attr_e( 'On this page', 'oria' ); ?>">
+					<span class="bojump__label"><?php esc_html_e( 'On this page', 'oria' ); ?></span>
+					<?php foreach ( $oria_jump as $oria_j ) : ?>
+						<a href="<?php echo esc_attr( $oria_j[0] ); ?>"><?php echo esc_html( $oria_j[1] ); ?></a>
+					<?php endforeach; ?>
+				</nav>
+			<?php endif; ?>
+		</div>
+	</section>
+<?php endif; ?>
+
 <?php
 /*
  * Where the picks actually cluster, when they do. Most of these guides
  * are deliberately spread across the city and this says nothing at all
- * on them -- which is the point. A callout about a neighbourhood that
- * holds two of eight places would be a claim the data does not make.
+ * on them -- which is the point.
  */
 if ( function_exists( '\Oria\Core\AreaContext\dominant' ) ) {
 	$oria_bo_area = \Oria\Core\AreaContext\dominant(
@@ -176,50 +217,9 @@ if ( function_exists( '\Oria\Core\AreaContext\dominant' ) ) {
 	}
 }
 ?>
-<section class="wrap bosection" id="picks">
-	<div class="bopicks-head reveal">
-		<div class="sec-head__text">
-			<span class="micro"><?php esc_html_e( 'Our picks', 'oria' ); ?></span>
-			<?php if ( $oria_n ) : ?>
-				<h2 class="h2"><?php echo esc_html( sprintf( /* translators: %s: number of picks */ _n( '%s place worth a first visit', '%s places worth a first visit', $oria_n, 'oria' ), number_format_i18n( $oria_n ) ) ); ?></h2>
-			<?php endif; ?>
-		</div>
-		<?php if ( $oria_note ) : ?>
-			<aside class="boednote">
-				<span class="micro"><?php esc_html_e( "Editor's note", 'oria' ); ?></span>
-				<?php echo esc_html( $oria_note ); ?>
-			</aside>
-		<?php endif; ?>
-	</div>
 
-	<?php if ( $oria_entries ) : ?>
-		<ol class="bopicks">
-			<?php foreach ( $oria_entries as $oria_i => $oria_e ) : ?>
-				<?php get_template_part( 'template-parts/best-pick', null, array( 'entry' => $oria_e, 'rank' => $oria_i + 1 ) ); ?>
-			<?php endforeach; ?>
-		</ol>
-	<?php else : ?>
-		<p class="muted"><?php esc_html_e( 'The picks for this guide are being finalised.', 'oria' ); ?></p>
-	<?php endif; ?>
-</section>
-
-<?php if ( $oria_method ) : ?>
-	<section class="wrap bosection">
-		<div class="bohow reveal">
-			<div>
-				<span class="micro"><?php esc_html_e( 'How we chose', 'oria' ); ?></span>
-				<h2 class="h3"><?php esc_html_e( 'What we considered', 'oria' ); ?></h2>
-			</div>
-			<div class="bohow__text">
-				<p><?php echo wp_kses( nl2br( esc_html( $oria_method ) ), array( 'br' => array() ) ); ?></p>
-				<p class="bohow__fine"><?php esc_html_e( 'Best Of guides are editorial. No practice paid to appear here; paid placements on Oria Haven are always labelled Featured.', 'oria' ); ?></p>
-			</div>
-		</div>
-	</section>
-<?php endif; ?>
-
-<?php if ( $oria_n >= 3 ) : ?>
-	<section class="wrap bosection">
+<?php if ( $oria_table ) : ?>
+	<section class="wrap bosection" id="compare">
 		<div class="sec-head reveal">
 			<div class="sec-head__text">
 				<span class="micro"><?php esc_html_e( 'Side by side', 'oria' ); ?></span>
@@ -242,30 +242,76 @@ if ( function_exists( '\Oria\Core\AreaContext\dominant' ) ) {
 					</tr>
 				</thead>
 				<tbody>
-					<?php foreach ( $oria_entries as $oria_e ) : ?>
+					<?php foreach ( $oria_entries as $oria_i => $oria_e ) : ?>
+						<?php // data-label: on a phone the table becomes a stack of cards and each cell names its column. ?>
 						<tr>
-							<td><a href="<?php echo esc_url( (string) get_permalink( $oria_e['listing'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_e['listing'] ) ) ); ?></a></td>
-							<td><?php echo esc_html( BestOf\suburb( $oria_e['listing'] ) ?: '—' ); ?></td>
-							<td><?php echo esc_html( $oria_e['best_for'] ?: $oria_e['label'] ); ?></td>
-							<td><?php echo esc_html( '' !== $oria_e['price_note'] ? $oria_e['price_note'] : ( BestOf\price_from( $oria_e['listing'] ) ?: '—' ) ); ?></td>
-							<td><?php echo esc_html( BestOf\time_label( $oria_e ) ?: '—' ); ?></td>
+							<td data-label="<?php esc_attr_e( 'Practice', 'oria' ); ?>"><a href="#pick-<?php echo (int) ( $oria_i + 1 ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_e['listing'] ) ) ); ?></a></td>
+							<td data-label="<?php esc_attr_e( 'Suburb', 'oria' ); ?>"><?php echo esc_html( BestOf\suburb( $oria_e['listing'] ) ?: '—' ); ?></td>
+							<td data-label="<?php esc_attr_e( 'Best for', 'oria' ); ?>"><?php echo esc_html( $oria_e['best_for'] ?: $oria_e['label'] ); ?></td>
+							<td data-label="<?php esc_attr_e( 'From', 'oria' ); ?>"><?php echo esc_html( BestOf\table_price( $oria_e ) ?: '—' ); ?></td>
+							<td data-label="<?php esc_attr_e( 'Time', 'oria' ); ?>"><?php echo esc_html( BestOf\time_label( $oria_e ) ?: '—' ); ?></td>
 							<?php if ( BestOf\any_rebate( $oria_entries ) ) : ?>
-								<td><?php echo esc_html( BestOf\rebate_label( $oria_e ) ?: '—' ); ?></td>
+								<td data-label="<?php esc_attr_e( 'Private health', 'oria' ); ?>"><?php echo esc_html( BestOf\rebate_label( $oria_e ) ?: '—' ); ?></td>
 							<?php endif; ?>
-							<td><?php echo esc_html( $oria_e['highlights'] ? implode( ' · ', $oria_e['highlights'] ) : '—' ); ?></td>
+							<td class="botable__hl" data-label="<?php esc_attr_e( 'Highlights', 'oria' ); ?>"><?php echo esc_html( $oria_e['highlights'] ? implode( ' · ', $oria_e['highlights'] ) : '—' ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
 			</table>
 		</div>
-		<?php if ( BestOf\any_rebate( $oria_entries ) ) : ?>
-			<p class="botable__note"><?php esc_html_e( '* Private-health rebates depend on the provider, the practitioner and your extras policy. "Available" means the practice says so on its own site; confirm eligibility with the clinic and your insurer before booking.', 'oria' ); ?></p>
+		<p class="botable__note">
+			<?php if ( BestOf\any_rebate( $oria_entries ) ) : ?>
+				<?php esc_html_e( '* Private-health rebates depend on the provider, the practitioner and your extras policy. "Available" means the practice says so on its own site; confirm eligibility with the clinic and your insurer before booking.', 'oria' ); ?>
+			<?php endif; ?>
+			<?php esc_html_e( 'A name in the table jumps to that pick below.', 'oria' ); ?>
+		</p>
+	</section>
+<?php endif; ?>
+
+<section class="wrap bosection" id="picks">
+	<div class="bopicks-head reveal">
+		<div class="sec-head__text">
+			<span class="micro"><?php esc_html_e( 'Our picks', 'oria' ); ?></span>
+			<?php if ( $oria_n ) : ?>
+				<h2 class="h2"><?php echo esc_html( sprintf( /* translators: %s: number of picks */ _n( '%s place worth a first visit', '%s places worth a first visit', $oria_n, 'oria' ), number_format_i18n( $oria_n ) ) ); ?></h2>
+			<?php endif; ?>
+		</div>
+		<?php if ( $oria_note ) : ?>
+			<aside class="boednote">
+				<span class="micro"><?php esc_html_e( "Editor's note", 'oria' ); ?></span>
+				<?php echo esc_html( $oria_note ); ?>
+			</aside>
 		<?php endif; ?>
+	</div>
+
+	<?php if ( $oria_entries ) : ?>
+		<ol class="bopicks">
+			<?php foreach ( $oria_entries as $oria_i => $oria_e ) : ?>
+				<?php get_template_part( 'template-parts/best-pick', null, array( 'entry' => $oria_e, 'rank' => $oria_i + 1, 'eager' => 0 === $oria_i ) ); ?>
+			<?php endforeach; ?>
+		</ol>
+	<?php else : ?>
+		<p class="muted"><?php esc_html_e( 'The picks for this guide are being finalised.', 'oria' ); ?></p>
+	<?php endif; ?>
+</section>
+
+<?php if ( $oria_method ) : ?>
+	<section class="wrap bosection" id="how">
+		<div class="bohow reveal">
+			<div>
+				<span class="micro"><?php esc_html_e( 'How we chose', 'oria' ); ?></span>
+				<h2 class="h3"><?php esc_html_e( 'What we considered', 'oria' ); ?></h2>
+			</div>
+			<div class="bohow__text">
+				<p><?php echo wp_kses( nl2br( esc_html( $oria_method ) ), array( 'br' => array() ) ); ?></p>
+				<p class="bohow__fine"><?php esc_html_e( 'Best Of guides are editorial. No practice paid to appear here; paid placements on Oria Haven are always labelled Featured.', 'oria' ); ?></p>
+			</div>
+		</div>
 	</section>
 <?php endif; ?>
 
 <?php
-// "Plan a day around this": the Day Designer, under the comparison, on the spa guides it has prices for.
+// "Plan a day around this": the Day Designer, on the spa guides it has prices for.
 if ( function_exists( '\Oria\Core\DayDesigner\render' ) ) {
 	\Oria\Core\DayDesigner\render( array( 'variant' => 'guide' ) );
 }
@@ -290,7 +336,7 @@ if ( function_exists( '\Oria\Core\DayDesigner\render' ) ) {
 <?php endif; ?>
 
 <?php if ( $oria_faq ) : ?>
-	<section class="wrap bosection">
+	<section class="wrap bosection" id="faq">
 		<div class="reveal" style="max-width:56rem">
 			<span class="micro"><?php esc_html_e( 'Common questions', 'oria' ); ?></span>
 			<h2 class="h2" style="margin-block:.75rem 2rem"><?php esc_html_e( 'Before you go', 'oria' ); ?></h2>

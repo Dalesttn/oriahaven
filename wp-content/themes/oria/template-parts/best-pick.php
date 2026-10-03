@@ -1,13 +1,14 @@
 <?php
 /**
- * One recommended practice on a Best Of guide.
+ * One recommended practice on a Best Of guide: a compact row.
  *
- * Bigger than a directory card because it has more to say: the badge names
- * the award, the reason says why, the highlights say what a first visit
- * gets. Name, suburb, photo and price are read from the listing at render,
- * so a guide cannot quietly go stale.
+ * Photo on the left, everything that decides a booking on the right -- the
+ * award, the name and suburb, the editor's reason, the highlights, the
+ * price line and the two actions. Name, suburb, photo and price are read
+ * from the listing at render, so a guide cannot quietly go stale.
  *
- * $args: entry (from BestOf\entries()), rank (int, 1-based)
+ * $args: entry (from BestOf\entries()), rank (int, 1-based),
+ *        eager (bool: the first pick's photo loads at once, not lazily)
  */
 
 declare(strict_types=1);
@@ -18,26 +19,31 @@ $oria_e = isset( $args['entry'] ) && is_array( $args['entry'] ) ? $args['entry']
 if ( ! $oria_e || empty( $oria_e['listing'] ) ) {
 	return;
 }
-$oria_id   = (int) $oria_e['listing'];
-$oria_rank = (int) ( $args['rank'] ?? 0 );
-$oria_url  = (string) get_permalink( $oria_id );
-$oria_web  = (string) get_field( 'website', $oria_id );
-$oria_book = (string) get_field( 'booking_url', $oria_id );
-$oria_out  = $oria_book ?: $oria_web;
-$oria_cats = function_exists( '\Oria\Core\Categories\top_for' ) ? \Oria\Core\Categories\top_for( $oria_id ) : array();
-$oria_cat  = $oria_cats ? \Oria\Theme\tname( $oria_cats[0]['term'] ) : '';
-$oria_sub  = BestOf\suburb( $oria_id );
-$oria_from = BestOf\price_from( $oria_id );
-$oria_rate = \Oria\Theme\effective_rating( $oria_id );
+$oria_id    = (int) $oria_e['listing'];
+$oria_rank  = (int) ( $args['rank'] ?? 0 );
+$oria_eager = ! empty( $args['eager'] );
+$oria_url   = (string) get_permalink( $oria_id );
+$oria_web   = (string) get_field( 'website', $oria_id );
+$oria_book  = (string) get_field( 'booking_url', $oria_id );
+$oria_out   = $oria_book ?: $oria_web;
+$oria_cats  = function_exists( '\Oria\Core\Categories\top_for' ) ? \Oria\Core\Categories\top_for( $oria_id ) : array();
+$oria_cat   = $oria_cats ? \Oria\Theme\tname( $oria_cats[0]['term'] ) : '';
+$oria_sub   = BestOf\suburb( $oria_id );
+$oria_rate  = \Oria\Theme\effective_rating( $oria_id );
+$oria_name  = \Oria\Theme\ptitle( get_post( $oria_id ) );
 ?>
 <li class="bopick reveal" id="pick-<?php echo esc_attr( (string) $oria_rank ); ?>">
 	<div class="bopick__media">
 		<a href="<?php echo esc_url( $oria_url ); ?>" tabindex="-1" aria-hidden="true">
-			<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_id, 'oria-card' ) ); ?>" alt="" loading="lazy"
+			<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_id, 'oria-card' ) ); ?>" alt="" width="400" height="400"
+				<?php echo $oria_eager ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'; ?> decoding="async"
 				onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_id ) ); ?>'">
 		</a>
+		<?php if ( $oria_rank ) : ?>
+			<span class="bopick__rank" aria-hidden="true"><?php echo esc_html( str_pad( (string) $oria_rank, 2, '0', STR_PAD_LEFT ) ); ?></span>
+		<?php endif; ?>
 		<div class="listing__quick">
-			<button class="qact" type="button" data-card-save="<?php echo esc_attr( (string) get_post_field( 'post_name', $oria_id ) ); ?>" aria-pressed="false" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: practice name */ __( 'Save %s', 'oria' ), \Oria\Theme\ptitle( get_post( $oria_id ) ) ) ); ?>" title="<?php esc_attr_e( 'Save', 'oria' ); ?>">
+			<button class="qact" type="button" data-card-save="<?php echo esc_attr( (string) get_post_field( 'post_name', $oria_id ) ); ?>" aria-pressed="false" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: practice name */ __( 'Save %s', 'oria' ), $oria_name ) ); ?>" title="<?php esc_attr_e( 'Save', 'oria' ); ?>">
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 8.6a4.9 4.9 0 0 0-8.8-3A4.9 4.9 0 0 0 3.2 8.6c0 4.9 8.8 10.2 8.8 10.2s8.8-5.3 8.8-10.2Z"/></svg>
 			</button>
 		</div>
@@ -48,16 +54,13 @@ $oria_rate = \Oria\Theme\effective_rating( $oria_id );
 			<img class="bopick__seal" src="<?php echo esc_url( $oria_seal ); ?>" alt="" width="320" height="320" loading="lazy">
 		<?php endif; ?>
 		<div class="bopick__top">
-			<?php if ( $oria_rank ) : ?>
-				<span class="bopick__rank" aria-hidden="true"><?php echo esc_html( str_pad( (string) $oria_rank, 2, '0', STR_PAD_LEFT ) ); ?></span>
-			<?php endif; ?>
 			<?php echo BestOf\badge_html( $oria_e['label'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 			<?php if ( '' !== $oria_e['fact'] ) : ?>
 				<?php // A fact, not an award: a grey pill, never the badge shape. ?>
 				<span class="pill bopick__fact"><?php echo esc_html( $oria_e['fact'] ); ?></span>
 			<?php endif; ?>
 		</div>
-		<h3 class="bopick__name"><a href="<?php echo esc_url( $oria_url ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_id ) ) ); ?></a></h3>
+		<h3 class="bopick__name"><a href="<?php echo esc_url( $oria_url ); ?>"><?php echo esc_html( $oria_name ); ?></a></h3>
 		<p class="bopick__where">
 			<?php
 			/*

@@ -6978,32 +6978,40 @@ article.is-spotlit {
 .boednote .micro { display: block; margin-bottom: var(--s-2); }
 
 .bopicks { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); }
+.bopicks { gap: var(--s-5); }
+/* A compact row: the photo a square on the left, the decision on the right.
+   The guide's job is comparison, and eight tall cards made that a scroll;
+   this keeps every word and halves the height. */
 .bopick {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  gap: clamp(1.25rem, 3vw, 2.5rem);
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: clamp(1rem, 2.5vw, 1.75rem);
   align-items: start;
-  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  padding-top: var(--s-5);
   border-top: 1px solid var(--line);
 }
 .bopick:first-child { border-top: 0; padding-top: 0; }
 .bopick__media {
-  display: block; border-radius: var(--r-lg); overflow: hidden;
-  background: var(--sand-2); aspect-ratio: 4 / 3;
+  display: block; border-radius: var(--r-md); overflow: hidden;
+  background: var(--sand-2); aspect-ratio: 1 / 1;
 }
 .bopick__media img {
   width: 100%; height: 100%; object-fit: cover; display: block;
   transition: transform var(--t-slow) var(--ease-out);
 }
 .bopick__top { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); min-width: 0; }
+/* The rank sits on the photo now, so the body's first line is the award. */
 .bopick__rank {
-  font-family: var(--font-edit); font-size: 1.5rem; font-weight: 500;
-  line-height: 1; color: var(--text-faint); font-variant-numeric: tabular-nums;
+  position: absolute; left: var(--s-3); top: var(--s-3); z-index: 1;
+  display: grid; place-items: center; min-width: 2.1rem; height: 2.1rem; padding: 0 .4rem;
+  border-radius: var(--r-pill); background: rgba(8, 34, 32, .78); color: var(--white);
+  font-family: var(--font-edit); font-size: 1rem; font-weight: 500; line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 .bopick__name {
-  font-size: clamp(1.4rem, 2.2vw, 1.85rem); font-weight: 600;
-  line-height: 1.15; letter-spacing: -0.022em;
-  margin-top: var(--s-3); text-wrap: balance;
+  font-size: clamp(1.2rem, 1.8vw, 1.45rem); font-weight: 600;
+  line-height: 1.2; letter-spacing: -0.018em;
+  margin-top: var(--s-2); text-wrap: balance;
 }
 .bopick__name a { color: var(--ink); text-decoration: none; }
 .bopick__name a:hover { text-decoration: underline; text-underline-offset: 4px; }
@@ -7014,18 +7022,18 @@ article.is-spotlit {
 .bopick__why {
   /* Same voice as a listing card's description: the site's sans, not the
      serif -- a reason is information, not a pull quote. */
-  margin-top: var(--s-4);
-  font-size: var(--fs-body); line-height: var(--lh-body);
-  color: var(--text-soft); max-width: 58ch;
+  margin-top: var(--s-3);
+  font-size: var(--fs-sm); line-height: 1.6;
+  color: var(--text-soft); max-width: 72ch;
 }
-.bopick__facts { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.bopick__facts { list-style: none; margin: var(--s-3) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .bopick__facts li {
   font-size: var(--fs-xs); font-weight: 600; color: var(--deep);
   background: var(--sand-2); border-radius: var(--r-pill); padding: .32rem .7rem;
 }
 .bopick__foot {
   display: flex; justify-content: space-between; align-items: center;
-  gap: var(--s-4); flex-wrap: wrap; margin-top: var(--s-5);
+  gap: var(--s-3) var(--s-4); flex-wrap: wrap; margin-top: var(--s-4);
 }
 .bopick__price { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
 .bopick__acts { display: flex; gap: var(--s-2); flex-wrap: wrap; }
@@ -7112,8 +7120,9 @@ article.is-spotlit {
 @media (max-width: 760px) {
   .bocard--feature { grid-template-columns: 1fr; }
   .bocard--feature .bocard__body { padding-top: var(--s-4); }
-  .bopick { grid-template-columns: 1fr; gap: var(--s-4); }
-  .bopick__media { aspect-ratio: 3 / 2; }
+  .bopick { grid-template-columns: 1fr; gap: var(--s-3); }
+  .bopick__media { aspect-ratio: 16 / 9; max-height: 200px; }
+  .bopick__media img { height: 100%; }
   .bohow, .bonote__list { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
@@ -7127,7 +7136,7 @@ article.is-spotlit {
 .bopick__body { position: relative; }
 .bopick__seal {
   position: absolute; top: 0; right: 0;
-  width: clamp(64px, 8vw, 88px); height: auto;
+  width: clamp(56px, 6vw, 72px); height: auto;
 }
 .bopick__top, .bopick__name { padding-right: clamp(72px, 9vw, 100px); }
 /* Flex, not a two-column grid.
@@ -8388,3 +8397,51 @@ article.is-spotlit {
   border-radius: 50%; background: var(--moss, #4E7F70);
 }
 .lfacts__note { margin: var(--s-4) 0 0; max-width: 62ch; font-size: var(--fs-xs); color: var(--text-faint); line-height: 1.5; }
+
+/* --- Best Of: byline, facts strip, in-page links ------------------------ */
+.bobyline { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.bofacts {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--s-4) var(--s-5); padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface);
+}
+.bofacts__list { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-6); margin: 0; }
+.bofacts__item { display: grid; gap: 2px; min-width: 0; }
+.bofacts__item dt { font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--moss); }
+.bofacts__item dd { margin: 0; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.bojump { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+.bojump__label { font-size: var(--fs-xs); color: var(--text-faint); margin-right: var(--s-1); }
+.bojump a {
+  display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--s-3);
+  border-radius: var(--r-pill); border: 1px solid var(--line); background: var(--sand-2);
+  font-size: var(--fs-xs); font-weight: 600; color: var(--deep); text-decoration: none;
+}
+.bojump a:hover { border-color: var(--moss); }
+.botable td:first-child a { color: var(--ink); font-weight: 600; text-decoration: none; }
+.botable td:first-child a:hover { text-decoration: underline; text-underline-offset: 3px; }
+#compare, #picks, #how, #faq { scroll-margin-top: calc(var(--head-h, 6.5rem) + 1rem); }
+@media (max-width: 600px) {
+  .bofacts { padding: var(--s-4); }
+  .bofacts__list { gap: var(--s-3) var(--s-5); }
+}
+
+/* Phones: the comparison table as a stack of cards, one per pick. Each cell
+   names its column; highlights are left out because the pick below carries
+   the same chips. No sideways scroll, nothing cut. */
+@media (max-width: 760px) {
+  .botable-wrap { overflow: visible; }
+  .botable { min-width: 0; display: block; }
+  .botable thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .botable tbody, .botable tr, .botable td { display: block; }
+  .botable tr { padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+  .botable tr + tr { margin-top: var(--s-3); }
+  .botable td { padding: 0; border: 0; }
+  .botable td:first-child a { font-size: 1.05rem; }
+  /* Suburb, best for and time run on one quiet line; the price gets its own labelled line. */
+  .botable td[data-label="Suburb"], .botable td[data-label="Best for"], .botable td[data-label="Time"] { display: inline; font-size: var(--fs-sm); color: var(--text-soft); }
+  .botable td[data-label="Best for"]::before, .botable td[data-label="Time"]::before { content: " · "; }
+  .botable td[data-label="From"], .botable td[data-label="Private health"] { margin-top: var(--s-2); }
+  .botable td[data-label="From"]::before, .botable td[data-label="Private health"]::before { content: attr(data-label); display: block; font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro); text-transform: uppercase; color: var(--moss); margin-bottom: 2px; }
+  .botable td[data-label="From"] { display: inline; font-weight: 600; color: var(--ink); }
+  .botable td.botable__hl { display: none; }
+}

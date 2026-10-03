@@ -58,7 +58,12 @@ foreach ( $argv as $a ) {
 	if ( str_starts_with( $a, '--refresh-links=' ) ) {
 		$relink = array_filter( array_map( 'trim', explode( ',', substr( $a, 16 ) ) ) );
 	}
+	// --refresh-seo=all | slug[,slug]: write only the search title. Copy, links and picks are untouched.
+	if ( str_starts_with( $a, '--refresh-seo=' ) ) {
+		$reseo = array_filter( array_map( 'trim', explode( ',', substr( $a, 14 ) ) ) );
+	}
 }
+$reseo = $reseo ?? array();
 // A guide's own search title, where the H1 alone is not what people search for.
 $seo_title = static function ( int $post_id, array $g ): void {
 	if ( ! empty( $g['seo_title'] ) ) {
@@ -72,6 +77,7 @@ $link_rows = static fn( array $g ): array => (array) ( $g['links'] ?? array() );
 $guides = array(
 	array(
 		'slug'     => 'yoga-for-beginners-perth',
+		'seo_title' => 'Best Beginner Yoga Classes in Perth 2026: Courses & Intro Passes',
 		'title'    => 'Best yoga for beginners in Perth',
 		'excerpt'  => 'Welcoming Perth studios with beginner classes, patient teachers and an easy first booking.',
 		'intro'    => "Starting yoga can feel intimidating when you don't know which class to choose or what to expect. These Perth studios were shortlisted for beginner-specific classes, supportive teaching and a clear, easy way to get started.",
@@ -93,6 +99,7 @@ $guides = array(
 	),
 	array(
 		'slug'     => 'saunas-perth',
+		'seo_title' => 'Best Saunas in Perth 2026: Prices, Infrared vs Traditional',
 		'title'    => 'Best saunas in Perth',
 		'excerpt'  => 'Standout sauna and recovery rooms across Perth, from infrared studios to traditional saunas with an ice bath alongside.',
 		'intro'    => "Looking for a sauna in Perth? These are the standout sauna and recovery rooms across the city, from infrared studios to traditional saunas and contrast-therapy venues, with what each one offers and what a session costs.",
@@ -114,6 +121,7 @@ $guides = array(
 	),
 	array(
 		'slug'     => 'pilates-for-beginners-perth',
+		'seo_title' => 'Best Beginner Pilates in Perth 2026: Intro Classes Compared',
 		'title'    => 'Best Pilates for beginners in Perth',
 		'excerpt'  => 'Perth studios with beginner Pilates classes, reformer inductions and instructors who explain the basics.',
 		'intro'    => "New to Pilates? These Perth studios offer a friendly way to start, with beginner classes, reformer inductions and small groups for people still learning the basics, so you don't need to know the terminology before you walk in.",
@@ -136,6 +144,7 @@ $guides = array(
 	/* ---- the second five --------------------------------------------- */
 	array(
 		'slug'         => 'sound-baths-perth',
+		'seo_title'    => 'Best Sound Baths in Perth 2026: Sessions & Prices Compared',
 		'title'        => 'Best sound baths in Perth',
 		'excerpt'      => 'Standout sound healing sessions across Perth, from beginner-friendly weekly sound journeys to small rooms and sound folded into yoga nidra.',
 		'intro'        => "Looking for a sound bath in Perth? These are the standout sound healing sessions across the city: weekly sound journeys that welcome first-timers, small-room sessions capped at a handful of people, and classes that fold live crystal bowls into yoga nidra, so you can slow down and switch off for an hour.",
@@ -164,6 +173,7 @@ $guides = array(
 	),
 	array(
 		'slug'         => 'wellness-under-50-perth',
+		'seo_title'    => 'Perth Wellness Under $50: Saunas, Yoga & Meditation Compared',
 		'title'        => 'Best wellness experiences under $50 in Perth',
 		'excerpt'      => 'Good wellness experiences around Perth you can have for $50 or less — meditation, sauna, a sound class, a swim — with the price and the month we checked it.',
 		'intro'        => "Good wellness experiences around Perth that can be enjoyed for less than $50. Not the cheapest businesses — the real thing at a price you can try without thinking twice: a free meditation class, a sauna on the beach, thirty minutes of sauna and cold plunge, a sound class, two weeks of unlimited yoga. Every price comes from the practice's own list, with the month we checked it.",
@@ -191,6 +201,7 @@ $guides = array(
 	),
 	array(
 		'slug'         => 'breathwork-perth',
+		'seo_title'    => 'Best Breathwork Classes in Perth 2026: Groups, Prices & Styles',
 		'title'        => 'Best breathwork classes in Perth',
 		'excerpt'      => 'Guided breathwork sessions across Perth, from small groups of six and monthly two-hour sessions to private one-to-one work and online options.',
 		'intro'        => "Curious about breathwork? These Perth sessions offer guided ways to explore breathing practices in supportive group or one-to-one settings, with options for complete beginners as well as people who already have experience: monthly groups with mats and blankets provided, rooms capped at six, longer private sessions, and classes you can join online.",
@@ -219,6 +230,7 @@ $guides = array(
 	),
 	array(
 		'slug'         => 'places-to-relax-perth',
+		'seo_title'    => 'Best Places to Relax in Perth 2026: Floats, Spas & Quiet Rooms',
 		'title'        => 'Best places to relax in Perth',
 		'excerpt'      => 'For when you know you want to switch off but not what to book: floats, bathhouses, silent days in the bush, candlelit yin and free meditation, by how much time you have.',
 		'intro'        => "You don't know which wellness practice you want. You just want to relax. This guide is built for that: places across Perth where the whole visit is about slowing down, sorted by how much time you have, who you're with and what you want to spend — an hour in a float tank, a Sunday in a Swan Valley bathhouse, a silent day in the hills, or a free evening meditation.",
@@ -248,6 +260,7 @@ $guides = array(
 	),
 	array(
 		'slug'         => 'ice-baths-perth',
+		'seo_title'    => 'Best Ice Baths & Cold Plunges in Perth 2026: Prices Compared',
 		'title'        => 'Best ice baths & cold plunges in Perth',
 		'excerpt'      => 'Where to try an ice bath or cold plunge in Perth: dedicated recovery centres, bathhouse circuits, private sauna-and-plunge rooms and the cheapest way in.',
 		'intro'        => "Looking for an ice bath in Perth? These are the recovery rooms, bathhouses and studios where a cold plunge is a bookable session rather than an afterthought — most with a sauna alongside for hot-and-cold — with what each offers, whether the room is private or shared, and what a session costs.",
@@ -277,6 +290,7 @@ $guides = array(
 	),
 	array(
 		'slug'         => 'remedial-massage-perth',
+		'seo_title'    => 'Best Remedial Massage in Perth 2026: Clinics, Prices & Rebates',
 		'title'        => 'Best remedial massage in Perth',
 		'excerpt'      => 'Compare remedial massage clinics across Perth by suburb, session length, price, evening and weekend hours, and what each says about private-health claiming.',
 		'intro'        => "Looking for remedial massage in Perth? This guide compares standout remedial massage clinics and practitioners across the city on the things that decide a booking: where they are, which session lengths they run, what they charge, whether they open evenings or Saturdays, and what they themselves say about private-health claiming. Whether you want a clinic near work, a sports-focused session, a longer ninety minutes or somewhere closer to home, the differences are laid out so you can choose.",
@@ -318,6 +332,7 @@ $guides = array(
 	/* ---- the brief's next five ---------------------------------------- */
 	array(
 		'slug'         => 'massage-perth',
+		'seo_title'    => 'Best Massage in Perth 2026: Where to Book, by What You Need',
 		'title'        => 'Best massage in Perth',
 		'excerpt'      => 'Where to book a massage in Perth, by what you actually want from it — an hour off, a shoulder that has stopped working, a pregnancy, a couples afternoon.',
 		'intro'        => "Perth has hundreds of massage rooms and almost all of them will list the same six styles, which is no help at all when you are choosing. So this guide is arranged by what you are after rather than by modality: somewhere to switch off for an hour, somewhere that will assess a shoulder before touching it, somewhere set up for two people, somewhere used to working with a pregnancy. Each pick says what it is genuinely good at and what it costs where the practice publishes a price.",
@@ -348,6 +363,7 @@ $guides = array(
 	),
 	array(
 		'slug'         => 'day-spas-perth',
+		'seo_title'    => 'Best Day Spas in Perth 2026: Prices, Couples Rooms & Facilities',
 		'title'        => 'Best day spas in Perth',
 		'excerpt'      => 'Eight Perth day spas compared on what is on site and what it costs — an hour of massage runs $120 to $250 — plus couples rooms, saunas and bathhouses.',
 		'intro'        => "A day spa is bought for an occasion more often than for a treatment, so the thing that matters is rarely the menu — it is whether there is a couples room, whether you can sit in a sauna afterwards, how long you get to stay, how far you have to drive, and what the afternoon will actually cost. These are the Perth spas worth it, from a hotel spa with a pool circuit to a hills garden, a beachside bathhouse and an East Perth spa with a jacuzzi cabin. Every price here was checked on the spa's own site in October 2026.",
@@ -464,6 +480,7 @@ $guides = array(
 	),
 	array(
 		'slug'         => 'reformer-pilates-perth',
+		'seo_title'    => 'Best Reformer Pilates in Perth 2026: Casual Prices & Intro Offers',
 		'title'        => 'Best reformer Pilates in Perth',
 		'excerpt'      => 'Perth reformer studios compared on the things that decide it: what a casual class costs, what the intro offer is, how many reformers are in the room.',
 		'intro'        => "Reformer studios look much the same from the outside, so the comparison that matters is a short one: what a casual class costs, what you can try the studio for first, how many people are in the room, and whether the timetable has classes at the hour you would actually go. This guide puts the Perth studios that publish those numbers side by side. If you have never used a reformer at all, our beginner Pilates guide is the better place to start.",
@@ -490,6 +507,7 @@ $guides = array(
 	),
 	array(
 		'slug'         => 'wellness-retreats-perth',
+		'seo_title'    => 'Best Wellness Retreats Near Perth 2026: Day & Weekend Retreats',
 		'title'        => 'Best wellness retreats near Perth',
 		'excerpt'      => 'Retreats within reach of Perth, from a one-day silent sitting in Fremantle to a hills property you book for the weekend — by how long you can actually go for.',
 		'intro'        => "Most people looking for a retreat are really deciding how long they can be away: an afternoon, a Saturday, a long weekend. So this guide is arranged by length rather than by philosophy. It covers day retreats you can drive to and be home from, hills properties for a weekend, and residential silent retreats in the South West — with what each one includes and where it actually is.",
@@ -516,6 +534,7 @@ $guides = array(
 	),
 	array(
 		'slug'         => 'acupuncture-perth',
+		'seo_title'    => 'Best Acupuncture in Perth 2026: Registered Clinics Compared',
 		'title'        => 'Best acupuncture in Perth',
 		'excerpt'      => 'Perth acupuncture clinics compared on registration, experience, languages, hours and rebates — the things you can actually check before booking.',
 		'intro'        => "Acupuncture is a regulated profession in Australia, so the first thing worth knowing is that every practitioner should be registered with AHPRA, and you can look any of them up yourself in about a minute. Beyond that, the useful comparisons are practical ones: how long the practitioner has been in clinic, what else they offer alongside the needles, whether the clinic opens in the evening or on a Saturday, and whether rebates come off at the counter. This guide compares on those, and on nothing else.",
@@ -544,6 +563,7 @@ $guides = array(
 	/* ---- life stage ---------------------------------------------------- */
 	array(
 		'slug'         => 'pregnancy-new-parent-perth',
+		'seo_title'    => 'Best Pregnancy & New-Parent Wellness in Perth 2026',
 		'title'        => 'Best pregnancy and new-parent wellness in Perth',
 		'excerpt'      => 'Doulas, private midwives, lactation consultants, pregnancy yoga and pelvic floor physiotherapy across Perth, arranged by where you are in the journey.',
 		'intro'        => "Pregnancy is the one stretch of life where people most want somebody who does this specifically, and it is the hardest thing to search for: a general massage clinic and a birth doula both come back under the same words. These are Perth practices whose work is built around trying to conceive, being pregnant, giving birth and the weeks after it. They are grouped by where you are rather than by what they are called, because that is the order people need them in.",
@@ -633,8 +653,20 @@ foreach ( $guides as $g ) {
 	echo "{$g['title']}\n  /best/{$g['slug']}/\n";
 
 	$existing = get_page_by_path( $g['slug'], OBJECT, 'best_of' );
-	if ( ( $refresh || $relink || $only ) && ! in_array( $g['slug'], array_merge( $refresh, $relink, $only ), true ) ) {
+	$seo_all = in_array( 'all', $reseo, true );
+	if ( ( $refresh || $relink || $only || $reseo ) && ! $seo_all && ! in_array( $g['slug'], array_merge( $refresh, $relink, $only, $reseo ), true ) ) {
 		echo "  (not named, skipped)\n\n";
+		continue;
+	}
+	if ( $existing instanceof WP_Post && ( $seo_all || in_array( $g['slug'], $reseo, true ) ) && ! in_array( $g['slug'], $refresh, true ) ) {
+		$have = (string) get_post_meta( $existing->ID, '_yoast_wpseo_title', true );
+		$want = (string) ( $g['seo_title'] ?? '' );
+		printf( "  SEO TITLE post %d\n    now:  %s\n    file: %s\n", $existing->ID, '' !== $have ? $have : '(default)', '' !== $want ? $want : '(none in file)' );
+		if ( $apply && '' !== $want && $want !== $have ) {
+			$seo_title( $existing->ID, $g );
+			echo "    written\n";
+		}
+		echo "\n";
 		continue;
 	}
 	if ( $existing instanceof WP_Post && in_array( $g['slug'], $relink, true ) && ! in_array( $g['slug'], $refresh, true ) ) {

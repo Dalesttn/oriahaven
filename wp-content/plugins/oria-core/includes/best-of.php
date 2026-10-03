@@ -232,6 +232,69 @@ function updated( int $guide ): string {
 	return sprintf( $reviewed ? __( 'Reviewed %s', 'oria' ) : __( 'Updated %s', 'oria' ), reviewed_month( $guide ) );
 }
 
+/** When the editor last reviewed the guide, else when it was last saved. */
+function reviewed_ts( int $guide ): int {
+	$raw = trim( (string) get_field( 'editorially_reviewed_date', $guide ) );
+	$ts  = '' !== $raw ? strtotime( $raw ) : false;
+	return $ts ? (int) $ts : (int) get_post_modified_time( 'U', true, $guide );
+}
+
+/**
+ * The byline's two dates: when prices were checked and when the next check
+ * is due (a quarter on -- the review cadence the price guides already keep).
+ *
+ * @return array{checked:string, next:string, reviewed:bool}
+ */
+function byline( int $guide ): array {
+	$ts = reviewed_ts( $guide );
+	return array(
+		'checked'  => wp_date( 'j F Y', $ts ),
+		'next'     => wp_date( 'F Y', (int) strtotime( '+3 months', $ts ) ),
+		'reviewed' => '' !== trim( (string) get_field( 'editorially_reviewed_date', $guide ) ),
+	);
+}
+
+/**
+ * The facts strip under the quick answer: what the guide covers, in
+ * numbers that come from the picks themselves. The price range reads the
+ * first dollar figure in each editor's price note -- the headline price of
+ * the session that note describes -- and says nothing when fewer than two
+ * picks carry one.
+ *
+ * @return list<array{label:string, value:string}>
+ */
+function facts( int $guide ): array {
+	$entries = entries( $guide );
+	if ( ! $entries ) {
+		return array();
+	}
+	$suburbs = array();
+	$prices  = array();
+	foreach ( $entries as $e ) {
+		$s = suburb( (int) $e['listing'] );
+		if ( '' !== $s ) {
+			$suburbs[ $s ] = true;
+		}
+		if ( preg_match( '/\$\s?(\d[\d,]*(?:\.\d+)?)/', (string) $e['price_note'], $m ) ) {
+			$prices[] = (float) str_replace( ',', '', $m[1] );
+		}
+	}
+	$out   = array();
+	$out[] = array( 'label' => __( 'Picks', 'oria' ), 'value' => number_format_i18n( count( $entries ) ) );
+	if ( count( $suburbs ) > 1 ) {
+		$out[] = array( 'label' => __( 'Suburbs', 'oria' ), 'value' => number_format_i18n( count( $suburbs ) ) );
+	}
+	if ( count( $prices ) >= 2 ) {
+		$fmt   = static fn( float $n ): string => '$' . number_format_i18n( $n, floor( $n ) === $n ? 0 : 2 );
+		$out[] = array(
+			'label' => __( 'Published prices', 'oria' ),
+			'value' => min( $prices ) === max( $prices ) ? $fmt( min( $prices ) ) : $fmt( min( $prices ) ) . '–' . $fmt( max( $prices ) ),
+		);
+	}
+	$out[] = array( 'label' => __( 'Prices checked', 'oria' ), 'value' => wp_date( 'j M Y', reviewed_ts( $guide ) ) );
+	return $out;
+}
+
 /** The 40-80 word answer near the top, for a reader (or a machine) in a hurry. */
 function quick_answer( int $guide ): string {
 	return trim( (string) get_field( 'quick_answer', $guide ) );
@@ -284,6 +347,16 @@ function price_line( array $entry ): string {
 	$from = price_from( (int) $entry['listing'] );
 	/* translators: %s: price */
 	return '' !== $from ? sprintf( __( 'From %s', 'oria' ), $from ) : __( 'Price not published', 'oria' );
+}
+
+/**
+ * The price for the comparison table: the editor's note without its
+ * "— price checked October 2026" tail, which the facts strip above the
+ * table already states once for every pick.
+ */
+function table_price( array $entry ): string {
+	$line = price_line( $entry );
+	return trim( (string) preg_replace( '/\s*[—–-]\s*price checked\b.*$/iu', '', $line ) );
 }
 
 /** The rebate label for a pick, or '' when the editor said nothing. */
@@ -700,17 +773,55 @@ function schema(): void {
 	$url   = (string) get_permalink( $guide );
 	$items = array();
 	foreach ( entries( $guide ) as $i => $e ) {
+		$lurl = (string) get_permalink( $e['listing'] );
+		// The item is the listing's own business node, so the list links
+		// entities search already has rather than describing them again.
+		$item = array(
+			'@id'  => $lurl . '#business',
+			'name' => wp_specialchars_decode( (string) get_post_field( 'post_title', $e['listing'], 'raw' ) ),
+			'url'  => $lurl,
+		);
+		if ( function_exists( '\Oria\Core\Schema\business_type' ) ) {
+			$item = array( '@type' => \Oria\Core\Schema\business_type( (int) $e['listing'] ) ) + $item;
+		}
 		$items[] = array(
 			'@type'    => 'ListItem',
 			'position' => $i + 1,
-			'url'      => (string) get_permalink( $e['listing'] ),
-			'name'     => wp_specialchars_decode( (string) get_post_field( 'post_title', $e['listing'], 'raw' ) ),
+			'item'     => $item,
 		);
 	}
 	if ( count( $items ) < 2 ) {
 		return;
 	}
+	/*
+	 * The guide is an authored, dated piece of editorial, and says so:
+	 * Article, by and from the Organization the site already declares,
+	 * published when the post was and modified when the editor last reviewed
+	 * it. The picks list is what the article is about.
+	 */
+	$org     = array( '@id' => home_url( '/#organization' ) );
+	$thumb   = get_post_thumbnail_id( $guide ) ? (string) wp_get_attachment_image_url( get_post_thumbnail_id( $guide ), 'oria-wide' ) : '';
+	$excerpt = trim( wp_strip_all_tags( (string) get_post_field( 'post_excerpt', $guide ) ) );
+	$article = array(
+		'@type'            => 'Article',
+		'@id'              => $url . '#article',
+		'headline'         => wp_specialchars_decode( get_the_title( $guide ) ),
+		'mainEntityOfPage' => $url,
+		'inLanguage'       => 'en-AU',
+		'datePublished'    => (string) get_post_time( 'c', true, $guide ),
+		'dateModified'     => wp_date( 'c', reviewed_ts( $guide ) ),
+		'author'           => $org,
+		'publisher'        => $org,
+		'about'            => array( '@id' => $url . '#picks' ),
+	);
+	if ( '' !== $excerpt ) {
+		$article['description'] = wp_specialchars_decode( $excerpt, ENT_QUOTES );
+	}
+	if ( '' !== $thumb ) {
+		$article['image'] = $thumb;
+	}
 	$graph = array(
+		$article,
 		array(
 			'@type'           => 'ItemList',
 			'@id'             => $url . '#picks',
