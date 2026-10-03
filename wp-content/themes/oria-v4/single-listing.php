@@ -615,6 +615,70 @@ while ( have_posts() ) :
 				</button>
 			</div>
 
+			<?php
+			/*
+			 * Offers live in the decide card's footer: this listing's own
+			 * offer first (labelled "Advertised" when Oria Haven read it on
+			 * the business's site -- with the date and a link to the page,
+			 * since the offer is theirs to honour), then up to three other
+			 * live offers in the listing's category. Nothing when there are
+			 * none.
+			 */
+			$oria_more_offers = array();
+			$oria_oc          = null;
+			if ( function_exists( '\Oria\Core\Offers\among' ) && function_exists( '\Oria\Core\Categories\primary_for' ) && function_exists( '\Oria\Core\Intents\listings_in' ) ) {
+				$oria_oc = \Oria\Core\Categories\primary_for( $oria_id );
+				if ( $oria_oc instanceof WP_Term ) {
+					$oria_more_offers = \Oria\Core\Offers\among( array_diff( array_map( 'intval', \Oria\Core\Intents\listings_in( $oria_oc ) ), array( $oria_id ) ), 3 );
+				}
+			}
+			?>
+			<?php if ( $oria_offer || $oria_more_offers ) : ?>
+				<div class="xp-decide__offers">
+					<?php if ( $oria_offer ) : ?>
+						<div class="xp-decide__offer">
+							<p class="xp-label"><?php echo esc_html( ! empty( $oria_offer['advertised'] ) ? __( 'Advertised offer', 'oria' ) : __( 'Offer', 'oria' ) ); ?></p>
+							<p class="xp-decide__offer-title"><?php echo esc_html( $oria_offer['title'] ); ?></p>
+							<?php if ( $oria_offer['text'] ) : ?>
+								<p class="xp-decide__offer-text"><?php echo esc_html( $oria_offer['text'] ); ?></p>
+							<?php endif; ?>
+							<p class="xp-decide__offer-meta">
+								<?php if ( $oria_offer['until'] ) : ?>
+									<span><?php printf( esc_html__( 'Until %s', 'oria' ), esc_html( mysql2date( 'j F Y', $oria_offer['until'] ) ) ); ?></span>
+								<?php endif; ?>
+								<?php if ( ! empty( $oria_offer['advertised'] ) ) : ?>
+									<span>
+										<?php
+										echo esc_html(
+											'' !== (string) $oria_offer['checked']
+												? sprintf( /* translators: %s: date */ __( 'As advertised on their site, checked %s.', 'oria' ), mysql2date( 'j F Y', $oria_offer['checked'] ) )
+												: __( 'As advertised on their site.', 'oria' )
+										);
+										?>
+									</span>
+									<a href="<?php echo esc_url( \Oria\Theme\outbound( $oria_offer['source'], 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer_source" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'See the offer', 'oria' ); ?><span class="xp-vh"> <?php esc_html_e( '(opens their site)', 'oria' ); ?></span><?php echo arrow(); // phpcs:ignore ?></a>
+								<?php endif; ?>
+							</p>
+						</div>
+					<?php endif; ?>
+					<?php if ( $oria_more_offers ) : ?>
+						<div class="xp-decide__others">
+							<p class="xp-label"><?php echo esc_html( sprintf( /* translators: %s: category */ __( 'Other offers in %s', 'oria' ), \Oria\Theme\tname( $oria_oc ) ) ); ?></p>
+							<ul class="xp-rail__offerlist">
+								<?php foreach ( $oria_more_offers as $oria_mo ) : ?>
+									<li>
+										<a href="<?php echo esc_url( (string) get_permalink( $oria_mo['id'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_mo['id'] ) ) ); ?></a>
+										<span><?php echo esc_html( $oria_mo['offer']['title'] ); ?></span>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+							<a class="xp-rail__more" href="<?php echo esc_url( (string) get_term_link( $oria_oc ) . '#offers' ); ?>"><?php esc_html_e( 'All offers in this category', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
+						</div>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
+
+			<?php if ( 'featured' === $oria_display || 'unclaimed' !== $oria_status || $oria_ig || $oria_fbk ) : ?>
 			<p class="xp-decide__trust">
 				<?php if ( 'featured' === $oria_display ) : ?>
 					<span class="xp-decide__tag"><?php esc_html_e( 'Featured listing', 'oria' ); ?></span>
@@ -627,8 +691,6 @@ while ( have_posts() ) :
 							? sprintf( __( 'Managed by the practice. Details confirmed by the owner on %s.', 'oria' ), mysql2date( 'j F Y', $oria_verified ) )
 							: __( 'Managed by the practice.', 'oria' )
 					);
-				} else {
-					esc_html_e( 'Information independently sourced and hand-checked by Oria Haven.', 'oria' );
 				}
 				?>
 				<?php if ( $oria_ig || $oria_fbk ) : ?>
@@ -642,6 +704,7 @@ while ( have_posts() ) :
 					</span>
 				<?php endif; ?>
 			</p>
+			<?php endif; ?>
 		</div>
 
 		<?php if ( $oria_places_attr ) : // Google's terms require crediting photo contributors. ?>
@@ -1650,66 +1713,6 @@ while ( have_posts() ) :
 						<span class="xp-rail__name"><?php echo esc_html( get_the_title( $oria_qid ) ); ?></span>
 					<?php endif; ?>
 				</h2>
-
-				<?php if ( $oria_offer ) : ?>
-					<div class="xp-rail__top">
-						<p class="xp-label"><?php echo esc_html( ! empty( $oria_offer['advertised'] ) ? __( 'Advertised offer', 'oria' ) : __( 'Offer', 'oria' ) ); ?></p>
-						<p class="xp-rail__big"><?php echo esc_html( $oria_offer['title'] ); ?></p>
-						<?php if ( $oria_offer['text'] ) : ?>
-							<p class="xp-rail__sub"><?php echo esc_html( $oria_offer['text'] ); ?></p>
-						<?php endif; ?>
-						<?php if ( $oria_offer['until'] ) : ?>
-							<p class="xp-rail__sub"><?php printf( esc_html__( 'Until %s', 'oria' ), esc_html( mysql2date( 'j F Y', $oria_offer['until'] ) ) ); ?></p>
-						<?php endif; ?>
-						<?php if ( ! empty( $oria_offer['advertised'] ) ) : ?>
-							<?php
-							/*
-							 * Oria Haven read this on the business's own site; say so,
-							 * say when, and send people to the page it is on -- the
-							 * offer is theirs to honour, not ours.
-							 */
-							?>
-							<p class="xp-rail__sub xp-rail__src">
-								<?php
-								echo esc_html(
-									'' !== (string) $oria_offer['checked']
-										? sprintf( /* translators: %s: date */ __( 'As advertised on their site, checked %s.', 'oria' ), mysql2date( 'j F Y', $oria_offer['checked'] ) )
-										: __( 'As advertised on their site.', 'oria' )
-								);
-								?>
-								<a href="<?php echo esc_url( \Oria\Theme\outbound( $oria_offer['source'], 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer_source" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'See the offer', 'oria' ); ?><span class="xp-vh"> <?php esc_html_e( '(opens their site)', 'oria' ); ?></span></a>
-							</p>
-						<?php endif; ?>
-					</div>
-				<?php endif; ?>
-				<?php
-				/*
-				 * Other live offers in this listing's own category, three at
-				 * most -- the same set the category page shows, minus this
-				 * listing. Nothing when there are none.
-				 */
-				$oria_more_offers = array();
-				if ( function_exists( '\Oria\Core\Offers\among' ) && function_exists( '\Oria\Core\Categories\primary_for' ) && function_exists( '\Oria\Core\Intents\listings_in' ) ) {
-					$oria_oc = \Oria\Core\Categories\primary_for( $oria_id );
-					if ( $oria_oc instanceof WP_Term ) {
-						$oria_more_offers = \Oria\Core\Offers\among( array_diff( array_map( 'intval', \Oria\Core\Intents\listings_in( $oria_oc ) ), array( $oria_id ) ), 3 );
-					}
-				}
-				?>
-				<?php if ( $oria_more_offers ) : ?>
-					<div class="xp-rail__top xp-rail__offers">
-						<p class="xp-label"><?php echo esc_html( sprintf( /* translators: %s: category */ __( 'Other offers in %s', 'oria' ), \Oria\Theme\tname( $oria_oc ) ) ); ?></p>
-						<ul class="xp-rail__offerlist">
-							<?php foreach ( $oria_more_offers as $oria_mo ) : ?>
-								<li>
-									<a href="<?php echo esc_url( (string) get_permalink( $oria_mo['id'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_mo['id'] ) ) ); ?></a>
-									<span><?php echo esc_html( $oria_mo['offer']['title'] ); ?></span>
-								</li>
-							<?php endforeach; ?>
-						</ul>
-						<a class="xp-rail__more" href="<?php echo esc_url( (string) get_term_link( $oria_oc ) . '#offers' ); ?>"><?php esc_html_e( 'All offers in this category', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
-					</div>
-				<?php endif; ?>
 
 				<div class="xp-rail__ctas">
 					<?php if ( $oria_primary ) : ?>
