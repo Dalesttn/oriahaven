@@ -557,7 +557,17 @@ while ( have_posts() ) :
 		 */
 		$oria_hfacts = array();
 		if ( $oria_offer ) {
-			$oria_hfacts[] = array( 'offer', '<span class="xp-decide__k">' . esc_html__( 'Offer', 'oria' ) . '</span> ' . esc_html( $oria_offer['title'] ) );
+			// A sticker, not a fact: gold, bold, with the price when the record states one, linking to the offers box below.
+			$oria_oprice    = (string) ( $oria_offer['extra']['price'] ?? '' );
+			$oria_hfacts[]  = array(
+				'offer',
+				'<a class="xp-sticker" href="#offers">'
+				. '<span class="xp-sticker__k">' . esc_html__( 'Offer', 'oria' ) . '</span>'
+				. '<span class="xp-sticker__t">' . esc_html( $oria_offer['title'] ) . '</span>'
+				. ( '' !== $oria_oprice ? '<span class="xp-sticker__p">' . esc_html( $oria_oprice ) . '</span>' : '' )
+				. '<span class="xp-sticker__go" aria-hidden="true">' . arrow() . '</span>' // phpcs:ignore
+				. '</a>',
+			);
 		}
 		if ( '' !== $oria_rating_html ) {
 			$oria_hfacts[] = array( 'rating', $oria_rating_html );

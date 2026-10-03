@@ -313,6 +313,37 @@ button.xp-hero__shot:hover img { transform: scale(1.025); }
 }
 .xp-decide__fact--hours [data-open="1"] { color: var(--moss); }
 
+/* The offer sticker: its own row above the facts, gold, bold, with the
+   price as a dark badge; the whole thing links to the offers box. */
+.xp-decide__fact--offer { flex-basis: 100%; white-space: normal; min-height: 0; }
+.xp-sticker {
+  display: inline-flex; flex-wrap: wrap; align-items: center; gap: .5rem .7rem;
+  max-width: 100%;
+  padding: .55rem .6rem .55rem .55rem;
+  border: 1px solid #E2CB8E;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #F8EFD6, var(--gold-soft));
+  box-shadow: 0 1px 0 rgba(122, 90, 18, .12), inset 0 1px 0 rgba(255, 255, 255, .7);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.xp-sticker:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(122, 90, 18, .18), inset 0 1px 0 rgba(255, 255, 255, .7); }
+.xp-sticker:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.xp-sticker__k {
+  flex: none;
+  padding: .22rem .55rem;
+  border-radius: 8px;
+  background: var(--deep);
+  color: #fff;
+  font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+}
+.xp-sticker__t { flex: 1 1 12rem; min-width: 0; font-size: 1rem; font-weight: 700; line-height: 1.3; letter-spacing: -0.005em; }
+.xp-sticker__p { flex: none; font-size: 1.125rem; font-weight: 800; color: #7A5A12; font-variant-numeric: tabular-nums; }
+.xp-sticker__go { flex: none; display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center; border-radius: 50%; background: #fff; color: var(--deep); }
+.xp-sticker__go svg { width: 13px; height: 13px; }
+@media (prefers-reduced-motion: reduce) { .xp-sticker { transition: none; } .xp-sticker:hover { transform: none; } }
+
 .xp-decide__acts {
   display: flex; flex-wrap: wrap; justify-content: flex-end;
   gap: .5rem;
