@@ -61,8 +61,22 @@ $oria_badges = array(
 		<?php // 4:3, stated so the browser reserves the frame before the photo lands. The CSS decides the real size; these only set the ratio. ?>
 		<img src="<?php echo esc_url( \Oria\Theme\listing_image( $oria_id ) ); ?>" alt="<?php echo esc_attr( \Oria\Theme\listing_alt( $oria_id ) ); ?>" width="640" height="480" loading="lazy" decoding="async"
 			onerror="this.onerror=null;this.src='<?php echo esc_js( \Oria\Theme\listing_scene( $oria_id ) ); ?>'">
-		<?php if ( isset( $oria_badges[ $oria_status ] ) ) : ?>
-			<div class="listing__flag"><?php echo $oria_badges[ $oria_status ]; // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+		<?php
+		/*
+		 * Top-left corner: the plan flag (Featured / Claimed) and, under it,
+		 * the Best Of badge. Stacked in a column so the two never fight for
+		 * width, with the right edge held clear of the save heart.
+		 */
+		?>
+		<?php if ( isset( $oria_badges[ $oria_status ] ) || $oria_best ) : ?>
+			<div class="listing__corner">
+				<?php if ( isset( $oria_badges[ $oria_status ] ) ) : ?>
+					<div class="listing__flag"><?php echo $oria_badges[ $oria_status ]; // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+				<?php endif; ?>
+				<?php if ( $oria_best ) : ?>
+					<div class="listing__best"><?php echo \Oria\Core\BestOf\badge_html( $oria_best['label'], $oria_best['url'], '', (string) ( $oria_best['year'] ?? '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+				<?php endif; ?>
+			</div>
 		<?php endif; ?>
 		<?php
 		/*
@@ -86,11 +100,8 @@ $oria_badges = array(
 		 * because the number is the thing being compared.
 		 */
 		?>
-		<?php if ( $oria_best || $oria_rated['rating'] > 0 ) : ?>
+		<?php if ( $oria_rated['rating'] > 0 ) : ?>
 		<div class="listing__onmedia">
-			<?php if ( $oria_best ) : ?>
-				<div class="listing__best"><?php echo \Oria\Core\BestOf\badge_html( $oria_best['label'], $oria_best['url'], '', (string) ( $oria_best['year'] ?? '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
-			<?php endif; ?>
 			<?php if ( $oria_rated['rating'] > 0 ) : ?>
 				<span class="rating rating--onmedia">
 					<svg class="rating__star" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6L8 1.6z"/></svg>

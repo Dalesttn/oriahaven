@@ -2544,29 +2544,13 @@
             (l.image_fb && l.image_fb !== l.image
               ? " onerror=\"this.onerror=null;this.src='" + esc(l.image_fb) + "'\""
               : "") + '>' : "") +
-          (statusBadge ? '<div class="listing__flag">' + statusBadge + "</div>" : "") +
-          /* Top-right of the image: save to the device shortlist, and — on
-             pages that carry the map — jump the map to this practice. */
-          '<div class="listing__quick">' +
-            '<button class="qact" type="button" data-card-save="' + esc(String(l.id)) +
-              '" aria-pressed="' + (savedIds().indexOf(String(l.id)) > -1 ? "true" : "false") +
-              '" aria-label="Save ' + esc(l.name) + '" title="Save">' + ICON.heart + "</button>" +
-            '<button class="qact qact--pin" type="button" data-card-pin="' + esc(l.url) +
-              '" aria-label="Show ' + esc(l.name) + ' on the map" title="Show on map">' + ICON.pin + "</button>" +
-          "</div>" +
-          /* The strip along the foot of the picture: the award on the left,
-             the rating on the right. One row rather than two things pinned
-             to opposite corners -- pinned separately they overlapped by 23px
-             on a phone, where a long award label and a rating carrying its
-             review count together want more than the picture is wide. As a
-             row they cannot: the award gives way and ellipses, the rating
-             never shrinks, because the number is the thing being compared.
-
-             The badge markup matches BestOf\badge_html(); the server picks
-             which award and sends the year with it. Any change here belongs
-             there too. */
-          ((l.best && l.best.label) || l.rating > 0
-            ? '<div class="listing__onmedia">' +
+          /* Top-left corner: the plan flag and, under it, the Best Of badge,
+             stacked so neither fights the other for width. The badge markup
+             matches BestOf\badge_html(); the server picks which award and
+             sends the year with it. Any change here belongs there too. */
+          (statusBadge || (l.best && l.best.label)
+            ? '<div class="listing__corner">' +
+              (statusBadge ? '<div class="listing__flag">' + statusBadge + "</div>" : "") +
               (l.best && l.best.label
                 ? '<div class="listing__best"><a class="badge--best" href="' + esc(l.best.url) +
                   '" aria-label="' + esc(bestEyebrow(l.best.year) + ": " + l.best.label) +
@@ -2577,6 +2561,22 @@
                     '<span class="badge--best__title">' + esc(l.best.label) + "</span>" +
                   "</span></a></div>"
                 : "") +
+              "</div>"
+            : "") +
+          /* Top-right of the image: save to the device shortlist, and — on
+             pages that carry the map — jump the map to this practice. */
+          '<div class="listing__quick">' +
+            '<button class="qact" type="button" data-card-save="' + esc(String(l.id)) +
+              '" aria-pressed="' + (savedIds().indexOf(String(l.id)) > -1 ? "true" : "false") +
+              '" aria-label="Save ' + esc(l.name) + '" title="Save">' + ICON.heart + "</button>" +
+            '<button class="qact qact--pin" type="button" data-card-pin="' + esc(l.url) +
+              '" aria-label="Show ' + esc(l.name) + ' on the map" title="Show on map">' + ICON.pin + "</button>" +
+          "</div>" +
+          /* The foot of the picture: the rating, hard right. The Best Of
+             badge used to share this strip and had to ellipse; it now sits
+             in the top-left corner with the full width to itself. */
+          (l.rating > 0
+            ? '<div class="listing__onmedia">' +
               (l.rating > 0
                 ? '<span class="rating rating--onmedia">' + ICON.star + l.rating.toFixed(1) +
                   (l.reviews > 0

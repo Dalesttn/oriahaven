@@ -847,6 +847,15 @@ a.pill--glass:hover, button.pill--glass:hover { background: rgba(255,255,255,.2)
 .listing__media { position: relative; background: var(--deep-2); }
 .listing__media img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 1; }
 .listing__flag { position: absolute; top: var(--s-3); left: var(--s-3); }
+/* The top-left corner: plan flag above the Best Of badge, clear of the save heart on the right. */
+.listing__corner {
+  position: absolute; top: var(--s-3); left: var(--s-3); right: calc(var(--s-3) + 52px); z-index: 2;
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2);
+  pointer-events: none;
+}
+.listing__corner > * { pointer-events: auto; }
+.listing__corner .listing__flag { position: static; }
+.listing__corner .listing__best { max-width: 100%; }
 .listing__body { padding: var(--s-5); display: flex; flex-direction: column; gap: var(--s-3); min-width: 0; }
 .listing__head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-4); }
 .listing__name { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.018em; line-height: 1.2; }
