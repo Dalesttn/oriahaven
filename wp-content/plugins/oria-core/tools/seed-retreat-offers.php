@@ -45,6 +45,9 @@ $offers  = array(
 		'price_amount' => '914',
 		'price_currency' => 'USD',
 		'price_basis'  => 'per person, shared suite',
+		'styles'       => 'women,yoga',
+		'label'        => 'For a slower few days',
+		'meals'        => 'Three meals a day',
 	),
 	array(
 		'title'        => '7 Day Silent Meditation and Quiet Retreat',
@@ -69,6 +72,9 @@ $offers  = array(
 		'price_amount' => '2215',
 		'price_currency' => 'USD',
 		'price_basis'  => 'per person',
+		'styles'       => 'silence',
+		'label'        => 'For the quiet seeker',
+		'meals'        => 'Two vegan meals a day',
 	),
 	array(
 		'title'        => '7 Day Solo Travelers Retreat: Yoga, Culture & Fun',
@@ -91,6 +97,9 @@ $offers  = array(
 		'price_amount' => '399',
 		'price_currency' => 'USD',
 		'price_basis'  => 'per person, shared room',
+		'styles'       => 'yoga,solo',
+		'label'        => 'For the solo explorer',
+		'meals'        => 'All meals, vegetarian',
 	),
 	array(
 		'title'        => '7 Day Yoga, Meditation and Breathwork Retreat in Ubud',
@@ -113,6 +122,9 @@ $offers  = array(
 		'price_amount' => '2099',
 		'price_currency' => 'USD',
 		'price_basis'  => 'per person, junior suite',
+		'styles'       => 'yoga',
+		'label'        => 'For a full practice week',
+		'meals'        => 'Most meals, organic vegetarian',
 	),
 );
 
@@ -128,7 +140,15 @@ foreach ( $offers as $i => $o ) {
 		)
 	);
 	if ( $existing ) {
-		echo 'exists: ', $o['title'], "\n";
+		// Already seeded: only the fields added since (kind of escape, card label, meals), and only when empty.
+		$added = 0;
+		foreach ( array( 'styles', 'label', 'meals' ) as $k ) {
+			if ( isset( $o[ $k ] ) && '' === R\get( (int) $existing[0], $k ) ) {
+				update_post_meta( (int) $existing[0], '_ro_' . $k, wp_slash( (string) $o[ $k ] ) );
+				++$added;
+			}
+		}
+		echo 'exists: ', $o['title'], $added ? " (filled {$added} new field" . ( 1 === $added ? '' : 's' ) . ')' : '', "\n";
 		continue;
 	}
 	$id = wp_insert_post( array( 'post_type' => R\CPT, 'post_status' => 'draft', 'post_title' => $o['title'] ) );

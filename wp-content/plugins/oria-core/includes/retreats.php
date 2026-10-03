@@ -65,6 +65,13 @@ const STATES = array(
 	'unavailable' => 'Unavailable',
 );
 const CURRENCIES = array( 'AUD', 'USD', 'IDR', 'EUR', 'GBP', 'NZD' );
+/** Kinds of escape, from the documented programme only: the hub's second finder field. */
+const STYLES = array(
+	'yoga'    => 'Yoga & movement',
+	'silence' => 'Silence & meditation',
+	'solo'    => 'Solo travel & connection',
+	'women'   => "Women's retreats",
+);
 
 /** Every stored field: key => sanitiser kind. */
 const FIELDS = array(
@@ -86,6 +93,9 @@ const FIELDS = array(
 	'summary'       => 'textarea',
 	'suits'         => 'textarea',
 	'pace'          => 'text',
+	'styles'        => 'styles',
+	'label'         => 'text',
+	'meals'         => 'text',
 	'inclusions'    => 'textarea',
 	'exclusions'    => 'textarea',
 	'price_mode'    => 'pricemode',
@@ -300,6 +310,28 @@ function get( int $id, string $key ): string {
 	return (string) get_post_meta( $id, '_ro_' . $key, true );
 }
 
+/** The kinds of escape an offer is tagged with, as STYLES keys. @return string[] */
+function styles_of( int $id ): array {
+	return array_values( array_intersect( array_filter( array_map( 'trim', explode( ',', get( $id, 'styles' ) ) ) ), array_keys( STYLES ) ) );
+}
+
+/** When the stored exchange rate for $cur was last fetched, 'Y-m-d' in site time, or ''. */
+function fx_checked( string $cur ): string {
+	$last = (array) get_option( 'oria_fx_last', array() );
+	$at   = (int) ( $last[ strtoupper( $cur ) ]['at'] ?? 0 );
+	return $at ? wp_date( 'Y-m-d', $at ) : '';
+}
+
+/** The converted Australian-dollar figure, rounded to $10, or 0 when nothing can be converted. */
+function aud_estimate( int $id ): int {
+	$cur = get( $id, 'price_currency' ) ?: 'AUD';
+	if ( 'AUD' === $cur || '' === source_price( $id ) ) {
+		return 0;
+	}
+	$rate = aud_rate( $cur );
+	return $rate ? (int) ( round( (float) get( $id, 'price_amount' ) * $rate / 10 ) * 10 ) : 0;
+}
+
 /** Lines of a textarea field, trimmed, empty ones dropped. */
 function lines( int $id, string $key ): array {
 	return array_values( array_filter( array_map( 'trim', preg_split( '/\R/', get( $id, $key ) ) ?: array() ) ) );
@@ -394,6 +426,9 @@ function active_offers( array $args = array() ): array {
 	}
 	if ( ! empty( $args['length'] ) ) {
 		$ids = array_values( array_filter( $ids, static fn( int $id ): bool => get( $id, 'length' ) === $args['length'] ) );
+	}
+	if ( ! empty( $args['style'] ) ) {
+		$ids = array_values( array_filter( $ids, static fn( int $id ): bool => in_array( $args['style'], styles_of( $id ), true ) ) );
 	}
 	if ( empty( $args['ids'] ) ) {
 		usort(
@@ -704,7 +739,7 @@ function template( string $t ): string {
 }
 
 function seo_title( $t ) {
-	return serving() ? __( 'Retreat escapes: find a retreat that fits your time | Oria Haven', 'oria' ) : $t;
+	return serving() ? __( 'Wellness Retreats & Retreat Escapes | Oria Haven', 'oria' ) : $t;
 }
 
 function core_title( array $parts ): array {
@@ -715,7 +750,7 @@ function core_title( array $parts ): array {
 }
 
 function seo_description( $d ) {
-	return serving() ? __( 'Compare retreats from a day near Perth to a longer escape: the setting, the pace and the practical details, before you choose.', 'oria' ) : $d;
+	return serving() ? __( 'Explore wellness retreats in Bali and Western Australia. Compare yoga, meditation and women’s escapes, with clear inclusions and booking details.', 'oria' ) : $d;
 }
 
 function seo_canonical( $u ) {
@@ -755,6 +790,12 @@ function field_row( int $id, string $key, string $label, string $type = 'text', 
 		case 'number':
 			printf( '<input id="%1$s" type="number" min="0" step="any" name="%2$s" value="%3$s" style="width:8em">', esc_attr( $fid ), esc_attr( $name ), esc_attr( $val ) );
 			break;
+		case 'checks':
+			$chosen = array_filter( array_map( 'trim', explode( ',', $val ) ) );
+			foreach ( $options as $k => $l ) {
+				printf( '<label style="display:inline-block;margin:0 14px 6px 0"><input type="checkbox" name="%1$s[]" value="%2$s"%3$s> %4$s</label>', esc_attr( $name ), esc_attr( (string) $k ), checked( in_array( (string) $k, $chosen, true ), true, false ), esc_html( $l ) );
+			}
+			break;
 		default:
 			printf( '<input id="%1$s" type="text" name="%2$s" value="%3$s" class="large-text">', esc_attr( $fid ), esc_attr( $name ), esc_attr( $val ) );
 	}
@@ -790,6 +831,9 @@ function render_metabox( \WP_Post $post ): void {
 	field_row( $id, 'summary', __( 'Summary', 'oria' ), 'textarea', __( 'Two or three sentences in your own words: the setting and what the days are like.', 'oria' ) );
 	field_row( $id, 'suits', __( 'Who it may suit', 'oria' ), 'textarea', __( 'From the actual programme. Never medical suitability.', 'oria' ) );
 	field_row( $id, 'pace', __( 'Pace and style', 'oria' ) );
+	field_row( $id, 'styles', __( 'Kind of escape', 'oria' ), 'checks', __( 'Only what the programme documents. These drive the finder on the hub.', 'oria' ), STYLES );
+	field_row( $id, 'label', __( 'Card label', 'oria' ), 'text', __( 'One editorial line about the experience, e.g. "For the solo explorer". Not a rating.', 'oria' ) );
+	field_row( $id, 'meals', __( 'Meals', 'oria' ), 'text', __( 'As the source states, e.g. "All meals, vegetarian".', 'oria' ) );
 	field_row( $id, 'inclusions', __( 'Key inclusions', 'oria' ), 'textarea', __( 'One per line, only what the source confirms. The first three show on the card.', 'oria' ) );
 	field_row( $id, 'exclusions', __( 'Not included / limitations', 'oria' ), 'textarea', __( 'One per line, e.g. flights, airport transfers, shared room basis.', 'oria' ) );
 	field_row( $id, 'price_mode', __( 'Price', 'oria' ), 'select', '', array( 'check' => __( 'Check current price', 'oria' ), 'from' => __( 'Verified starting price', 'oria' ) ) );
@@ -825,6 +869,12 @@ function render_state( \WP_Post $post ): void {
 
 /** Clean one submitted value by its kind. */
 function clean( string $kind, $raw ): string {
+	if ( 'styles' === $kind ) {
+		// Checkboxes arrive as an array; a seed passes a comma string. Keep known keys, in STYLES order.
+		$in = is_array( $raw ) ? $raw : explode( ',', (string) ( is_scalar( $raw ) ? $raw : '' ) );
+		$in = array_map( static fn( $s ): string => sanitize_key( (string) $s ), $in );
+		return implode( ',', array_keys( array_intersect_key( STYLES, array_flip( $in ) ) ) );
+	}
 	$raw = is_scalar( $raw ) ? trim( (string) wp_unslash( $raw ) ) : '';
 	switch ( $kind ) {
 		case 'int':

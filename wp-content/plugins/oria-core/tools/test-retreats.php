@@ -58,9 +58,9 @@ preg_match( '/<a class="ro-card__cta" href="([^"]+)"/', $html, $m );
 $ok( 'rendered href decodes to the exact link', html_entity_decode( $m[1] ?? '', ENT_QUOTES ) === $AFF );
 $ok( 'card link is rel="sponsored noopener"', false !== strpos( $html, 'rel="sponsored noopener"' ) );
 $ok( 'card link opens in a new tab', false !== strpos( $html, 'target="_blank"' ) );
-$ok( 'card says Affiliate link', false !== strpos( $html, 'Affiliate link' ) );
-$ok( 'card shows only three inclusions', 3 === substr_count( $html, '<li>' ) );
-$ok( 'card shows exclusions', false !== strpos( $html, 'Not included: Flights' ) );
+$ok( 'card says affiliate link', false !== stripos( $html, 'affiliate link' ) );
+$ok( 'card keeps the full inclusions behind "A closer look"', false !== strpos( $html, 'A closer look' ) && false !== strpos( $html, 'class="ro-card__inc"' ) );
+$ok( 'card shows exclusions', false !== strpos( $html, 'Not included' ) && false !== strpos( $html, '<li>Flights</li>' ) );
 
 // 2. What is kept off the page.
 $b = $make( array( 'aff_url' => '' ) );

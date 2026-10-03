@@ -1,16 +1,19 @@
 <?php
 /**
- * /retreat-escapes/ -- comparing retreat escapes, from a day near Perth to
- * a longer stay, with disclosed affiliate links to BookRetreats.
+ * /retreat-escapes/ -- Retreat Escapes by Oria Haven: a retreat discovery
+ * page with its own header, a photographic hero, a two-field finder,
+ * destination tiles, the collection, planning guidance and a closing
+ * invitation. Disclosed affiliate links to BookRetreats throughout.
  *
- * Not the Perth retreat archive and not the Best Of guide: those keep
- * their own addresses and their own job (local practices, editorial
- * picks). This page links to both and never lists local practices itself.
+ * Everything shown comes from the retreat records: destinations and their
+ * counts, kinds of escape, prices and the dates they were checked. Nothing
+ * is manufactured to make the collection look larger.
  *
- * It is only served once at least one offer is eligible
- * (Retreats\published()); before that an editor sees a preview and
- * everybody else a 404. Filters work in the browser over server-rendered
- * cards, so the page never creates an indexable combination.
+ * Served only once at least one offer is eligible (Retreats\published());
+ * before that an editor sees a preview and everybody else a 404. The
+ * finder is a GET form: with the query in the URL the cards that do not
+ * match are rendered hidden, so it works with scripts off; with scripts it
+ * filters in place and rewrites the URL (canonical stays the hub).
  *
  * @package Oria
  */
@@ -25,26 +28,50 @@ wp_enqueue_style( 'oria-retreats', get_template_directory_uri() . '/assets/css/r
 $oria_all  = R\active_offers();
 $oria_live = R\published();
 
-// Which destinations and lengths actually have something.
-$oria_dests = array();
-$oria_lens  = array();
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- a read-only filter in the address bar.
+$oria_sel_dest  = isset( R\DESTINATIONS[ (string) ( $_GET['dest'] ?? '' ) ] ) ? (string) $_GET['dest'] : '';
+$oria_sel_style = isset( R\STYLES[ (string) ( $_GET['style'] ?? '' ) ] ) ? (string) $_GET['style'] : '';
+// phpcs:enable
+
+// What the records actually contain, for the finder and the tiles.
+$oria_dests  = array();
+$oria_styles = array();
 foreach ( $oria_all as $oria_id ) {
-	$oria_dests[ R\get( $oria_id, 'destination' ) ] = ( $oria_dests[ R\get( $oria_id, 'destination' ) ] ?? 0 ) + 1;
-	$oria_lens[ R\get( $oria_id, 'length' ) ]       = ( $oria_lens[ R\get( $oria_id, 'length' ) ] ?? 0 ) + 1;
+	$oria_d = R\get( $oria_id, 'destination' );
+	$oria_dests[ $oria_d ] = ( $oria_dests[ $oria_d ] ?? 0 ) + 1;
+	foreach ( R\styles_of( $oria_id ) as $oria_s ) {
+		$oria_styles[ $oria_s ] = ( $oria_styles[ $oria_s ] ?? 0 ) + 1;
+	}
+}
+$oria_match = static fn( int $id ): bool =>
+	( '' === $oria_sel_dest || R\get( $id, 'destination' ) === $oria_sel_dest )
+	&& ( '' === $oria_sel_style || in_array( $oria_sel_style, R\styles_of( $id ), true ) );
+$oria_shown = array_values( array_filter( $oria_all, $oria_match ) );
+
+// Destination tiles: a line each, and a photograph from one of its own retreats.
+$oria_tile_copy = array(
+	'bali'       => __( 'Yoga, warm mornings and new connections.', 'oria' ),
+	'wa'         => __( 'Country calm and space to slow down.', 'oria' ),
+	'near-perth' => __( 'A day or a weekend within easy reach of the city.', 'oria' ),
+);
+$oria_tile_img = array();
+foreach ( $oria_all as $oria_id ) {
+	$oria_d = R\get( $oria_id, 'destination' );
+	if ( ! isset( $oria_tile_img[ $oria_d ] ) && has_post_thumbnail( $oria_id ) ) {
+		$oria_tile_img[ $oria_d ] = $oria_id;
+	}
 }
 
-// A destination without offers may point at an existing local guide -- labelled a guide -- or not appear at all.
-$oria_guides = array(
-	'near-perth' => array( home_url( '/explore/perth/retreats/' ), __( 'Retreats around Perth', 'oria' ) ),
-	'wa'         => array( home_url( '/area/margaret-river/' ), __( 'Wellness in Margaret River', 'oria' ) ),
-);
-$oria_blurbs = array(
-	'near-perth' => __( 'A day or a weekend within easy reach, from the hills to the coast.', 'oria' ),
-	'wa'         => __( 'Further afield in Western Australia, with more time to settle in.', 'oria' ),
-	'bali'       => __( 'A longer escape, where flights and transfers are part of the plan.', 'oria' ),
-);
+// The hero photograph: a Bali retreat's own image when there is one, else the first with a picture.
+$oria_hero_id = $oria_tile_img['bali'] ?? ( $oria_tile_img ? (int) reset( $oria_tile_img ) : 0 );
+$oria_hero_src = $oria_hero_id ? (string) get_the_post_thumbnail_url( $oria_hero_id, 'full' ) : '';
+$oria_hero_set = $oria_hero_id ? (string) wp_get_attachment_image_srcset( (int) get_post_thumbnail_id( $oria_hero_id ), 'full' ) : '';
+$oria_hero_cap = $oria_hero_id ? R\place_label( $oria_hero_id ) : '';
 
-get_header();
+$oria_hub = R\hub_url();
+$oria_n   = count( $oria_shown );
+
+get_header( 'retreats' );
 ?>
 
 <div class="oria-retreats">
@@ -53,192 +80,263 @@ get_header();
 	<p class="ro-preview" role="status"><?php esc_html_e( 'Preview: this page is not public yet. It appears once at least one retreat offer is Active and complete, and Recommendations are switched on under Retreat offers → Settings.', 'oria' ); ?></p>
 <?php endif; ?>
 
-<!-- Hero -->
+<nav class="ro-crumbs ro-wrap" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
+	<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
+	<span aria-hidden="true">/</span><span aria-current="page"><?php esc_html_e( 'Retreat Escapes', 'oria' ); ?></span>
+</nav>
+
+<!-- 2. Hero -->
 <section class="ro-hero" aria-labelledby="roTitle">
-	<div class="ro-wrap">
-		<nav class="crumbs ro-crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
-			<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
-			<span aria-hidden="true">/</span><span><?php esc_html_e( 'Retreat escapes', 'oria' ); ?></span>
-		</nav>
-		<p class="ro-eyebrow"><?php esc_html_e( 'Retreat escapes', 'oria' ); ?></p>
-		<h1 class="ro-hero__title" id="roTitle"><?php esc_html_e( 'Find a retreat that fits the time you have.', 'oria' ); ?></h1>
-		<p class="ro-hero__lede"><?php esc_html_e( 'From a day near Perth to a longer escape, compare the setting, pace and practical details before you choose.', 'oria' ); ?></p>
-		<div class="ro-hero__acts">
-			<a class="ro-btn ro-btn--primary" href="#offers"><?php esc_html_e( 'Explore retreats', 'oria' ); ?></a>
-			<a class="ro-btn ro-btn--secondary" href="<?php echo esc_url( home_url( '/explore/perth/retreats/' ) ); ?>"><?php esc_html_e( 'Day retreats near Perth', 'oria' ); ?></a>
+	<?php if ( '' !== $oria_hero_src ) : ?>
+		<img class="ro-hero__img" src="<?php echo esc_url( $oria_hero_src ); ?>"<?php echo '' !== $oria_hero_set ? ' srcset="' . esc_attr( $oria_hero_set ) . '" sizes="100vw"' : ''; ?> alt="" width="1600" height="900" fetchpriority="high" decoding="async">
+	<?php endif; ?>
+	<div class="ro-hero__shade" aria-hidden="true"></div>
+	<div class="ro-wrap ro-hero__inner">
+		<div class="ro-hero__text">
+			<p class="ro-eyebrow ro-eyebrow--light"><?php esc_html_e( 'Somewhere new. Something for you.', 'oria' ); ?></p>
+			<h1 class="ro-hero__title" id="roTitle"><?php esc_html_e( 'Wellness retreats. A world away from the everyday.', 'oria' ); ?></h1>
+			<p class="ro-hero__lede"><?php esc_html_e( 'Quiet mornings. New connections. Room to breathe. Discover an escape that feels like you.', 'oria' ); ?></p>
 		</div>
+		<?php if ( '' !== $oria_hero_cap ) : ?>
+			<p class="ro-hero__cap"><?php echo esc_html( $oria_hero_cap ); ?></p>
+		<?php endif; ?>
 	</div>
+
+	<!-- 3. Finder -->
+	<form class="ro-wrap ro-finder" method="get" action="<?php echo esc_url( $oria_hub ); ?>#collection" data-ro-finder aria-label="<?php esc_attr_e( 'Find a retreat', 'oria' ); ?>">
+		<div class="ro-finder__field">
+			<label for="ro-dest"><?php esc_html_e( 'Destination', 'oria' ); ?></label>
+			<select id="ro-dest" name="dest">
+				<option value=""><?php esc_html_e( 'Anywhere', 'oria' ); ?></option>
+				<?php foreach ( R\DESTINATIONS as $oria_k => $oria_l ) : ?>
+					<?php if ( ! empty( $oria_dests[ $oria_k ] ) ) : ?>
+						<option value="<?php echo esc_attr( $oria_k ); ?>"<?php selected( $oria_sel_dest, $oria_k ); ?>><?php echo esc_html( $oria_l ); ?></option>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</select>
+		</div>
+		<div class="ro-finder__field">
+			<label for="ro-style"><?php esc_html_e( 'Kind of escape', 'oria' ); ?></label>
+			<select id="ro-style" name="style">
+				<option value=""><?php esc_html_e( 'Any', 'oria' ); ?></option>
+				<?php foreach ( R\STYLES as $oria_k => $oria_l ) : ?>
+					<?php if ( ! empty( $oria_styles[ $oria_k ] ) ) : ?>
+						<option value="<?php echo esc_attr( $oria_k ); ?>"<?php selected( $oria_sel_style, $oria_k ); ?>><?php echo esc_html( $oria_l ); ?></option>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</select>
+		</div>
+		<button class="ro-btn ro-btn--primary ro-finder__go" type="submit"><?php esc_html_e( 'Find my escape', 'oria' ); ?></button>
+	</form>
 </section>
 
-<!-- Where -->
-<section class="ro-section ro-section--tight" aria-labelledby="roWhereTitle">
+<!-- 4. Trust line -->
+<ul class="ro-wrap ro-trust" aria-label="<?php esc_attr_e( 'How this collection works', 'oria' ); ?>">
+	<li><?php esc_html_e( 'Thoughtfully selected stays', 'oria' ); ?> <a href="#how"><?php esc_html_e( 'how we choose', 'oria' ); ?></a></li>
+	<li><?php esc_html_e( 'Clear inclusions and practical details', 'oria' ); ?></li>
+	<li><?php esc_html_e( 'Bookings through BookRetreats', 'oria' ); ?></li>
+</ul>
+
+<!-- 5. Destinations -->
+<section class="ro-section" id="destinations" aria-labelledby="roWhereTitle">
 	<div class="ro-wrap">
-		<h2 class="ro-h2" id="roWhereTitle"><?php esc_html_e( 'Where would you like to go?', 'oria' ); ?></h2>
-		<ul class="ro-dests">
-			<?php foreach ( R\DESTINATIONS as $oria_k => $oria_label ) : ?>
+		<h2 class="ro-h2" id="roWhereTitle"><?php esc_html_e( 'Where will you find your pause?', 'oria' ); ?></h2>
+		<ul class="ro-tiles">
+			<?php foreach ( R\DESTINATIONS as $oria_k => $oria_l ) : ?>
 				<?php
-				$oria_n     = (int) ( $oria_dests[ $oria_k ] ?? 0 );
-				$oria_guide = $oria_guides[ $oria_k ] ?? null;
-				if ( ! $oria_n && ! $oria_guide ) {
-					continue;
+				$oria_c = (int) ( $oria_dests[ $oria_k ] ?? 0 );
+				if ( ! $oria_c ) {
+					continue; // Only destinations with a retreat to show.
 				}
+				$oria_tid = (int) ( $oria_tile_img[ $oria_k ] ?? 0 );
 				?>
-				<li class="ro-dest">
-					<p class="ro-dest__name"><?php echo esc_html( $oria_label ); ?></p>
-					<p class="ro-dest__line"><?php echo esc_html( $oria_blurbs[ $oria_k ] ?? '' ); ?></p>
-					<?php if ( $oria_n ) : ?>
-						<a class="ro-dest__go" href="<?php echo esc_url( add_query_arg( 'dest', $oria_k ) ); ?>#offers" data-ro-set="dest:<?php echo esc_attr( $oria_k ); ?>">
-							<?php echo esc_html( sprintf( _n( 'See %d retreat', 'See %d retreats', $oria_n, 'oria' ), $oria_n ) ); ?> <span aria-hidden="true">&rarr;</span>
-						</a>
-					<?php else : ?>
-						<a class="ro-dest__go" href="<?php echo esc_url( $oria_guide[0] ); ?>">
-							<?php echo esc_html( sprintf( /* translators: %s: guide name */ __( 'Guide: %s', 'oria' ), $oria_guide[1] ) ); ?> <span aria-hidden="true">&rarr;</span>
-						</a>
-					<?php endif; ?>
+				<li class="ro-tile">
+					<a class="ro-tile__link" href="<?php echo esc_url( add_query_arg( 'dest', $oria_k, $oria_hub ) . '#collection' ); ?>" data-ro-set="dest:<?php echo esc_attr( $oria_k ); ?>">
+						<?php if ( $oria_tid ) : ?>
+							<?php echo get_the_post_thumbnail( $oria_tid, 'large', array( 'loading' => 'lazy', 'decoding' => 'async', 'alt' => sprintf( /* translators: 1: retreat, 2: destination */ __( '%1$s in %2$s', 'oria' ), get_the_title( $oria_tid ), $oria_l ), 'sizes' => '(max-width: 48rem) 100vw, 50vw' ) ); ?>
+						<?php endif; ?>
+						<span class="ro-tile__text">
+							<span class="ro-tile__name"><?php echo esc_html( $oria_l ); ?></span>
+							<span class="ro-tile__line"><?php echo esc_html( $oria_tile_copy[ $oria_k ] ?? '' ); ?></span>
+							<span class="ro-tile__count"><?php echo esc_html( sprintf( _n( '%d retreat', '%d retreats', $oria_c, 'oria' ), $oria_c ) ); ?> <span aria-hidden="true">&rarr;</span></span>
+						</span>
+					</a>
 				</li>
 			<?php endforeach; ?>
 		</ul>
 	</div>
 </section>
 
-<!-- The offers -->
-<section class="ro-section" id="offers" aria-labelledby="roOffersTitle" data-ro-offers>
+<!-- 6. The collection -->
+<section class="ro-section ro-section--collection" id="collection" aria-labelledby="roOffersTitle" data-ro-offers>
 	<div class="ro-wrap">
 		<div class="ro-offers-head">
-			<h2 class="ro-h2" id="roOffersTitle"><?php esc_html_e( 'Retreats to compare', 'oria' ); ?></h2>
-			<p class="ro-count" data-ro-count role="status" aria-live="polite"><?php echo esc_html( sprintf( _n( '%d retreat', '%d retreats', count( $oria_all ), 'oria' ), count( $oria_all ) ) ); ?></p>
-		</div>
-		<?php echo R\disclosure_html(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
-
-		<?php if ( count( $oria_dests ) > 1 || count( $oria_lens ) > 1 ) : ?>
-			<div class="ro-filters" data-ro-filters>
-				<?php if ( count( $oria_dests ) > 1 ) : ?>
-					<div class="ro-filter" role="group" aria-label="<?php esc_attr_e( 'Destination', 'oria' ); ?>">
-						<button type="button" class="ro-chip" aria-pressed="true" data-ro-f="dest" data-ro-v=""><?php esc_html_e( 'Anywhere', 'oria' ); ?></button>
-						<?php foreach ( R\DESTINATIONS as $oria_k => $oria_label ) : ?>
-							<?php if ( ! empty( $oria_dests[ $oria_k ] ) ) : ?>
-								<button type="button" class="ro-chip" aria-pressed="false" data-ro-f="dest" data-ro-v="<?php echo esc_attr( $oria_k ); ?>"><?php echo esc_html( $oria_label ); ?></button>
-							<?php endif; ?>
-						<?php endforeach; ?>
-					</div>
-				<?php endif; ?>
-				<?php if ( count( $oria_lens ) > 1 ) : ?>
-					<div class="ro-filter" role="group" aria-label="<?php esc_attr_e( 'How long', 'oria' ); ?>">
-						<button type="button" class="ro-chip" aria-pressed="true" data-ro-f="len" data-ro-v=""><?php esc_html_e( 'Any length', 'oria' ); ?></button>
-						<?php foreach ( R\LENGTHS as $oria_k => $oria_label ) : ?>
-							<?php if ( ! empty( $oria_lens[ $oria_k ] ) ) : ?>
-								<button type="button" class="ro-chip" aria-pressed="false" data-ro-f="len" data-ro-v="<?php echo esc_attr( $oria_k ); ?>"><?php echo esc_html( $oria_label ); ?></button>
-							<?php endif; ?>
-						<?php endforeach; ?>
-					</div>
-				<?php endif; ?>
+			<div>
+				<h2 class="ro-h2" id="roOffersTitle"><?php esc_html_e( 'Less searching. More possibility.', 'oria' ); ?></h2>
+				<p class="ro-count" data-ro-count role="status" aria-live="polite"><?php echo esc_html( sprintf( _n( 'Showing %1$d of %2$d retreats', 'Showing %1$d of %2$d retreats', $oria_n, 'oria' ), $oria_n, count( $oria_all ) ) ); ?></p>
 			</div>
-		<?php endif; ?>
+			<?php echo R\disclosure_html(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
+		</div>
 
 		<?php if ( $oria_all ) : ?>
 			<div class="ro-grid" data-ro-grid>
-				<?php foreach ( $oria_all as $oria_id ) : ?>
-					<?php echo R\card( (int) $oria_id, 'hub' ); // phpcs:ignore WordPress.Security.EscapeOutput -- template part escapes. ?>
+				<?php foreach ( $oria_all as $oria_i => $oria_id ) : ?>
+					<?php get_template_part( 'template-parts/retreat-card', null, array( 'id' => (int) $oria_id, 'placement' => 'hub', 'hidden' => ! $oria_match( (int) $oria_id ), 'eager' => $oria_i < 2 ) ); ?>
 				<?php endforeach; ?>
 			</div>
-			<p class="ro-empty" data-ro-empty hidden><?php esc_html_e( 'Nothing matches that combination yet. Try another length or destination.', 'oria' ); ?></p>
+			<div class="ro-empty" data-ro-empty<?php echo $oria_n ? ' hidden' : ''; ?>>
+				<p><strong><?php esc_html_e( 'No exact match in this collection yet.', 'oria' ); ?></strong> <?php esc_html_e( 'Try another destination or kind of escape, or see everything.', 'oria' ); ?></p>
+				<a class="ro-btn ro-btn--secondary" href="<?php echo esc_url( $oria_hub . '#collection' ); ?>" data-ro-reset><?php esc_html_e( 'Show all retreats', 'oria' ); ?></a>
+			</div>
 		<?php else : ?>
 			<p class="ro-empty"><?php esc_html_e( 'No retreat offers are ready to show yet.', 'oria' ); ?></p>
 		<?php endif; ?>
 	</div>
 </section>
 
-<!-- How to choose -->
-<section class="ro-section ro-section--sage" aria-labelledby="roChooseTitle">
+<!-- 7. Planning -->
+<section class="ro-section ro-section--sage" id="plan" aria-labelledby="roPlanTitle">
 	<div class="ro-wrap ro-split">
 		<div>
-			<h2 class="ro-h2" id="roChooseTitle"><?php esc_html_e( 'Choosing a retreat', 'oria' ); ?></h2>
-			<p class="ro-copy"><?php esc_html_e( 'A few questions worth answering before you book, whichever retreat you are looking at.', 'oria' ); ?></p>
+			<h2 class="ro-h2" id="roPlanTitle"><?php esc_html_e( 'Your escape. Your own pace.', 'oria' ); ?></h2>
+			<p class="ro-copy"><?php esc_html_e( 'A few things worth knowing before you choose, whichever retreat you are looking at.', 'oria' ); ?></p>
+			<p class="ro-copy ro-copy--small" id="how"><?php esc_html_e( 'How we choose: each retreat is read in full on the provider page, written up in our own words, and kept only while its details, dates and price can be checked. Earning a commission is not a quality award and never decides the order. We have not stayed at these retreats.', 'oria' ); ?></p>
+			<p class="ro-copy ro-copy--small"><?php echo esc_html( R\settings()['disclosure'] ); ?></p>
 		</div>
-		<ul class="ro-choose">
-			<li><b><?php esc_html_e( 'How much time do you have?', 'oria' ); ?></b> <?php esc_html_e( 'A day retreat asks for nothing but the day. A longer stay needs travel, and time to settle in before it feels restful.', 'oria' ); ?></li>
-			<li><b><?php esc_html_e( 'What pace suits you?', 'oria' ); ?></b> <?php esc_html_e( 'Some programmes are full from morning to night; others leave long stretches free. Read the daily schedule, not just the headline.', 'oria' ); ?></li>
-			<li><b><?php esc_html_e( 'What is actually included?', 'oria' ); ?></b> <?php esc_html_e( 'Check meals, sessions, the room basis and transfers. Flights are rarely part of the price.', 'oria' ); ?></li>
-			<li><b><?php esc_html_e( 'What are the booking terms?', 'oria' ); ?></b> <?php esc_html_e( 'Deposits, cancellation and changes are set by the organiser and the booking provider. Read them before you pay.', 'oria' ); ?></li>
-			<li><b><?php esc_html_e( 'Anything about your health?', 'oria' ); ?></b> <?php esc_html_e( 'Talk it through with the organiser, and your own practitioner if needed, before you book.', 'oria' ); ?></li>
-		</ul>
+		<div class="ro-plan">
+			<details class="ro-plan__item" open>
+				<summary><?php esc_html_e( 'First retreat?', 'oria' ); ?></summary>
+				<p><?php esc_html_e( 'Compare how much silence there is, how much social time, how structured the days are and how much is left free. A full programme suits some people; others want long stretches with nothing planned. Read the daily schedule, not just the headline.', 'oria' ); ?></p>
+			</details>
+			<details class="ro-plan__item">
+				<summary><?php esc_html_e( 'What is included?', 'oria' ); ?></summary>
+				<p><?php esc_html_e( 'Check the room basis (shared or private), which meals, and whether transfers and activities are in the price. Flights are almost never included, so add them, and any visa and insurance, to get the real cost of the trip.', 'oria' ); ?></p>
+			</details>
+			<details class="ro-plan__item">
+				<summary><?php esc_html_e( 'How does booking work?', 'oria' ); ?></summary>
+				<p><?php esc_html_e( 'Oria Haven helps you discover and compare. "Check dates" takes you to BookRetreats, where you see current availability and prices and complete the booking with them. Oria Haven does not process bookings or payments, and you do not need an Oria account.', 'oria' ); ?></p>
+			</details>
+			<details class="ro-plan__item">
+				<summary><?php esc_html_e( 'Is it suitable for me?', 'oria' ); ?></summary>
+				<p><?php esc_html_e( 'Ask the organiser about physical demands, accessibility, dietary needs and the programme itself, and read the cancellation terms before you pay. A retreat is a change of pace, not a treatment for a medical condition.', 'oria' ); ?></p>
+			</details>
+		</div>
 	</div>
 </section>
 
-<!-- Closer to home -->
-<section class="ro-section" aria-labelledby="roLocalTitle">
+<!-- 8. Closing -->
+<section class="ro-close" aria-labelledby="roCloseTitle">
 	<div class="ro-wrap">
-		<h2 class="ro-h2" id="roLocalTitle"><?php esc_html_e( 'Closer to home', 'oria' ); ?></h2>
-		<p class="ro-copy"><?php esc_html_e( 'Local retreats and practices, booked directly with them. These links are not affiliate links.', 'oria' ); ?></p>
-		<ul class="ro-local">
-			<li><a href="<?php echo esc_url( home_url( '/explore/perth/retreats/' ) ); ?>"><b><?php esc_html_e( 'Retreats and day escapes around Perth', 'oria' ); ?></b><span><?php esc_html_e( 'The local directory, with each practice\'s own contact details.', 'oria' ); ?></span></a></li>
-			<li><a href="<?php echo esc_url( home_url( '/best/wellness-retreats-perth/' ) ); ?>"><b><?php esc_html_e( 'The best wellness retreats near Perth', 'oria' ); ?></b><span><?php esc_html_e( 'Our editorial guide to local retreats.', 'oria' ); ?></span></a></li>
-			<li><a href="<?php echo esc_url( home_url( '/journeys/' ) ); ?>"><b><?php esc_html_e( 'Wellness Journeys', 'oria' ); ?></b><span><?php esc_html_e( 'Ideas for trying something new around Perth.', 'oria' ); ?></span></a></li>
-		</ul>
-	</div>
-</section>
-
-<!-- How booking works -->
-<section class="ro-section ro-section--rule" aria-labelledby="roHowTitle">
-	<div class="ro-wrap ro-split">
-		<h2 class="ro-h2" id="roHowTitle"><?php esc_html_e( 'How booking works', 'oria' ); ?></h2>
-		<div class="ro-how">
-			<p><?php esc_html_e( 'The "Check dates" links on this page take you to BookRetreats, where you see current availability and prices and book. Oria Haven does not take bookings or payments, and you do not need an Oria account.', 'oria' ); ?></p>
-			<p><?php echo esc_html( R\settings()['disclosure'] ); ?></p>
-			<p><?php esc_html_e( 'Retreats are chosen for how well they suit the time and pace people are looking for, and for how clearly their details are set out. Earning a commission is not a quality award and does not decide the order.', 'oria' ); ?></p>
-			<p><?php esc_html_e( 'Ordinary directory enquiries and direct links to practices remain commission-free.', 'oria' ); ?></p>
-		</div>
+		<h2 class="ro-h2 ro-h2--light" id="roCloseTitle"><?php esc_html_e( 'Your next chapter can start here.', 'oria' ); ?></h2>
+		<p class="ro-close__line"><?php echo esc_html( sprintf( _n( '%d retreat in the collection, read in full and kept up to date.', '%d retreats in the collection, read in full and kept up to date.', count( $oria_all ), 'oria' ), count( $oria_all ) ) ); ?></p>
+		<a class="ro-btn ro-btn--cream" href="#collection" data-ro-reset><?php esc_html_e( 'Browse the collection', 'oria' ); ?></a>
+		<p class="ro-close__local"><?php esc_html_e( 'Closer to home?', 'oria' ); ?> <a href="<?php echo esc_url( home_url( '/explore/perth/retreats/' ) ); ?>"><?php esc_html_e( 'Retreats and day escapes around Perth', 'oria' ); ?></a> <?php esc_html_e( 'are in the directory, booked directly with each practice.', 'oria' ); ?></p>
 	</div>
 </section>
 
 </div>
+
+<?php
+// Describes what is on the page: the breadcrumb and the visible collection. No reviews, no offers markup.
+$oria_items = array();
+foreach ( $oria_all as $oria_i => $oria_id ) {
+	$oria_items[] = array(
+		'@type'    => 'ListItem',
+		'position' => $oria_i + 1,
+		'name'     => get_the_title( $oria_id ),
+		'url'      => $oria_hub . '#ro-offer-' . (int) $oria_id,
+	);
+}
+$oria_schema = array(
+	'@context' => 'https://schema.org',
+	'@graph'   => array(
+		array(
+			'@type'           => 'BreadcrumbList',
+			'itemListElement' => array(
+				array( '@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => home_url( '/' ) ),
+				array( '@type' => 'ListItem', 'position' => 2, 'name' => 'Retreat Escapes', 'item' => $oria_hub ),
+			),
+		),
+		array(
+			'@type'       => 'CollectionPage',
+			'@id'         => $oria_hub . '#page',
+			'url'         => $oria_hub,
+			'name'        => 'Retreat Escapes by Oria Haven',
+			'description' => 'Wellness retreats in Bali and Western Australia, compared with clear inclusions and booking details.',
+			'isPartOf'    => array( '@id' => home_url( '/#website' ) ),
+			'mainEntity'  => array( '@type' => 'ItemList', 'numberOfItems' => count( $oria_items ), 'itemListElement' => $oria_items ),
+		),
+	),
+);
+?>
+<script type="application/ld+json"><?php echo wp_json_encode( $oria_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
 
 <script>
 (function () {
 	"use strict";
 	var box = document.querySelector("[data-ro-offers]");
 	var grid = box && box.querySelector("[data-ro-grid]");
-	if (!grid) return;
+	var form = document.querySelector("[data-ro-finder]");
+	if (!grid || !form) return;
 	var cards = Array.prototype.slice.call(grid.querySelectorAll(".ro-card"));
+	var total = cards.length;
 	var count = box.querySelector("[data-ro-count]");
 	var empty = box.querySelector("[data-ro-empty]");
-	var q = new URLSearchParams(location.search);
-	var state = { dest: q.get("dest") || "", len: q.get("len") || "" };
-	function paint(push) {
-		var n = 0;
+	var dest = form.querySelector("#ro-dest");
+	var style = form.querySelector("#ro-style");
+	var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+	function push(name, params) {
+		window.dataLayer = window.dataLayer || [];
+		var p = { event: name };
+		for (var k in params) p[k] = params[k];
+		window.dataLayer.push(p);
+	}
+	function paint(announce) {
+		var d = dest.value, s = style.value, n = 0;
 		cards.forEach(function (c) {
-			var ok = (!state.dest || c.getAttribute("data-ro-dest") === state.dest) && (!state.len || c.getAttribute("data-ro-len") === state.len);
+			var ok = (!d || c.getAttribute("data-ro-dest") === d) && (!s || (" " + c.getAttribute("data-ro-styles") + " ").indexOf(" " + s + " ") > -1);
 			c.hidden = !ok;
 			if (ok) n++;
 		});
-		box.querySelectorAll("[data-ro-f]").forEach(function (b) {
-			b.setAttribute("aria-pressed", state[b.getAttribute("data-ro-f")] === b.getAttribute("data-ro-v") ? "true" : "false");
-		});
-		if (count) count.textContent = n + (n === 1 ? " retreat" : " retreats");
+		if (count) count.textContent = "Showing " + n + " of " + total + " retreats";
 		if (empty) empty.hidden = n > 0;
-		if (push) {
-			var p = new URLSearchParams(location.search);
-			["dest", "len"].forEach(function (k) { if (state[k]) p.set(k, state[k]); else p.delete(k); });
-			var qs = p.toString();
-			try { history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash); } catch (e) {}
+		var q = new URLSearchParams();
+		if (d) q.set("dest", d);
+		if (s) q.set("style", s);
+		var qs = q.toString();
+		try { history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + "#collection"); } catch (e) {}
+		if (announce) {
+			push("retreat_finder_submit", { retreat_destination: d || "any", retreat_style: s || "any", results_count: n });
+			if (!n) push("retreat_zero_results", { retreat_destination: d || "any", retreat_style: s || "any" });
 		}
 	}
-	box.addEventListener("click", function (e) {
-		var b = e.target.closest && e.target.closest("[data-ro-f]");
-		if (!b) return;
-		state[b.getAttribute("data-ro-f")] = b.getAttribute("data-ro-v");
+	form.addEventListener("submit", function (e) {
+		e.preventDefault();
 		paint(true);
+		box.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
 	});
 	document.querySelectorAll("[data-ro-set]").forEach(function (a) {
 		a.addEventListener("click", function (e) {
 			var kv = a.getAttribute("data-ro-set").split(":");
 			e.preventDefault();
-			state[kv[0]] = kv[1];
+			if (kv[0] === "dest") dest.value = kv[1];
+			push("retreat_destination_select", { retreat_destination: kv[1] });
 			paint(true);
-			box.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+			box.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
 		});
 	});
-	paint(false);
+	document.querySelectorAll("[data-ro-reset]").forEach(function (a) {
+		a.addEventListener("click", function (e) {
+			e.preventDefault();
+			dest.value = ""; style.value = "";
+			paint(false);
+			box.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+		});
+	});
+	grid.addEventListener("toggle", function (e) {
+		var d = e.target;
+		if (d && d.hasAttribute && d.hasAttribute("data-ro-look") && d.open) push("retreat_detail_open", { offer_id: Number(d.getAttribute("data-ro-look")) });
+	}, true);
 })();
 </script>
 
