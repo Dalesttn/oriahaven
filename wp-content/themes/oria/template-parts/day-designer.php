@@ -59,6 +59,11 @@ $oria_default = '' !== $oria_near ? $oria_near : 'perth-cbd';
 		<?php if ( '' !== $oria_note ) : ?>
 			<p class="dd__note"><?php echo esc_html( $oria_note ); ?></p>
 		<?php endif; ?>
+		<?php $oria_photo = function_exists( '\Oria\Core\DayDesigner\image' ) ? \Oria\Core\DayDesigner\image( $oria_ctx ) : ''; ?>
+		<?php if ( '' !== $oria_photo ) : ?>
+			<?php // Decorative: the category's own photo, shown only where the wide layout leaves room. ?>
+			<div class="dd__photo" aria-hidden="true"><img src="<?php echo esc_url( $oria_photo ); ?>" alt="" loading="lazy" decoding="async"></div>
+		<?php endif; ?>
 		<button type="button" class="dd__toggle" data-dd-toggle aria-expanded="false" aria-controls="<?php echo esc_attr( $oria_uid ); ?>-panel">
 			<span data-dd-toggle-label><?php esc_html_e( 'Start planning', 'oria' ); ?></span>
 			<svg class="dd__chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>

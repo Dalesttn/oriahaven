@@ -37,6 +37,7 @@
 .dd__title { margin: 8px 0 0; font-family: var(--font-edit, Georgia, serif); font-weight: 400; font-size: 24px; line-height: 1.17; letter-spacing: -0.01em; color: var(--dd-ink); text-wrap: balance; }
 .dd__blurb { margin: 6px 0 0; font-size: 14px; line-height: 1.5; color: var(--dd-muted); max-width: 46ch; }
 .dd__note { margin: 8px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--dd-muted); }
+.dd__photo { display: none; }
 .dd__toggle {
   display: none; width: 100%; margin-top: 14px; min-height: 46px; padding: 0 16px;
   align-items: center; justify-content: center; gap: 8px;
@@ -169,6 +170,10 @@
   .dd:has(.dd__result:not([hidden])) .dd__intro { border-bottom-left-radius: 0; }
   .dd__title { font-size: 27px; margin-top: 12px; }
   .dd__brand { flex-direction: column; align-items: flex-start; gap: 10px; }
+  /* The photo takes the space the form leaves under the text -- it never makes the card taller. */
+  .dd__intro { display: flex; flex-direction: column; }
+  .dd__photo { display: block; position: relative; flex: 1 1 0; min-height: 56px; margin-top: 14px; border-radius: 14px; overflow: hidden; background: var(--dd-line); }
+  .dd__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 }
 /* Tablet widths: icon beside the text, so the introduction costs one row less. */
 @container oh-dd (min-width: 600px) and (max-width: 959px) {

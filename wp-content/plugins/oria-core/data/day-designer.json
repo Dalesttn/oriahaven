@@ -19,7 +19,11 @@
    "budget": 200,
    "minutes": 120,
    "title": "Make time for the spa",
-   "blurb": "Find an outing that fits your budget and the time you have."
+   "blurb": "Find an outing that fits your budget and the time you have.",
+   "image": {
+    "taxonomy": "practice",
+    "term": "spa"
+   }
   },
   "couples": {
    "heading": "Plan a spa outing for two",
@@ -39,7 +43,11 @@
    "minutes": 240,
    "people": 2,
    "title": "Plan a spa outing for two",
-   "blurb": "Find a package for two that fits your budget and the time you have."
+   "blurb": "Find a package for two that fits your budget and the time you have.",
+   "image": {
+    "taxonomy": "practice",
+    "term": "spa"
+   }
   },
   "head-spa": {
    "heading": "Plan your head-spa outing",
@@ -56,7 +64,11 @@
    "minutes": 120,
    "title": "Make time for a head spa",
    "blurb": "Find an outing that fits your budget and the time you have.",
-   "note": "Hair drying and styling details shown where available."
+   "note": "Hair drying and styling details shown where available.",
+   "image": {
+    "taxonomy": "practice",
+    "term": "spa"
+   }
   },
   "float": {
    "heading": "Build a day around a float",
@@ -73,7 +85,11 @@
    "minutes": 120,
    "title": "Make time for a float",
    "blurb": "Find a float that fits your budget and the time you have.",
-   "note": "Water floats only, priced as a single session."
+   "note": "Water floats only, priced as a single session.",
+   "image": {
+    "taxonomy": "specialty",
+    "term": "float-therapy"
+   }
   },
   "sauna": {
    "heading": "Plan a sauna session",
@@ -89,7 +105,11 @@
    "budget": 100,
    "minutes": 120,
    "title": "Make time for a sauna",
-   "blurb": "Find a session that fits your budget and the time you have."
+   "blurb": "Find a session that fits your budget and the time you have.",
+   "image": {
+    "taxonomy": "specialty",
+    "term": "infrared-sauna"
+   }
   }
  },
  "facets": {
@@ -864,5 +884,6 @@
    "checked": "2026-09-13",
    "source": "Owner correction by email, 13 Sep 2026 (data/listing-edits.json)"
   }
- ]
+ ],
+ "_about_image": "contexts.*.image picks the photo in the card: a category or specialty term whose tile image the site already uses, or {\"url\": \"...\"} for an image in the media library. Licensed site photos only; listing photos are not used here (on production many come from Google Places)."
 }

@@ -505,6 +505,22 @@ function render( array $args = array() ): void {
 	get_template_part( 'template-parts/day-designer', null, $cur + array( 'variant' => (string) ( $args['variant'] ?? 'category' ), 'suburbs' => suburbs() ) );
 }
 
+/**
+ * The card's photo for a context: an explicit media-library URL, else the
+ * tile image the site already uses for the named category or specialty
+ * (Theme\term_tile, which falls back to the parent category). '' if none.
+ * Licensed site photos only -- listing photos are not used here.
+ */
+function image( array $ctx ): string {
+	$img = (array) ( $ctx['image'] ?? array() );
+	if ( ! empty( $img['url'] ) && preg_match( '#^https?://#', (string) $img['url'] ) ) {
+		return (string) $img['url'];
+	}
+	$tax  = (string) ( $img['taxonomy'] ?? 'practice' );
+	$term = get_term_by( 'slug', (string) ( $img['term'] ?? 'spa' ), $tax );
+	return ( $term instanceof \WP_Term && function_exists( '\Oria\Theme\term_tile' ) ) ? (string) \Oria\Theme\term_tile( $term ) : '';
+}
+
 /** Should the theme load the widget's CSS/JS on this request? */
 function active(): bool {
 	return null !== current();
