@@ -45,6 +45,7 @@ const RELATED = '_oria_retreat_ids';
 const DESTINATIONS = array(
 	'near-perth' => 'Near Perth',
 	'wa'         => 'Western Australia',
+	'aus-east'   => 'Eastern Australia',
 	'bali'       => 'Bali',
 );
 const LENGTHS = array(

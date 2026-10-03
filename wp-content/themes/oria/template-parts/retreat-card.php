@@ -87,28 +87,33 @@ $oria_did    = 'ro-look-' . $oria_id;
 
 		<div class="ro-card__foot">
 			<div class="ro-card__pricing">
-				<?php if ( '' !== $oria_shown ) : ?>
+				<?php if ( '' !== $oria_shown && $oria_aud ) : ?>
+					<?php // Australian dollars lead, because the reader is in Australia; the provider's own figure and the rate's date sit underneath. ?>
+					<p class="ro-card__price">
+						<span class="ro-card__from"><?php esc_html_e( 'From about', 'oria' ); ?></span>
+						<strong><?php echo esc_html( 'A$' . number_format_i18n( $oria_aud ) ); ?></strong>
+						<?php if ( '' !== $oria_basis ) : ?><span class="ro-card__basis"><?php echo esc_html( $oria_basis ); ?></span><?php endif; ?>
+					</p>
+					<p class="ro-card__aud">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: 1: price in the provider's currency, 2: booking provider, 3: date the rate was fetched */
+								__( 'Listed as %1$s on %2$s; A$ is an estimate at the reference rate of %3$s. Final price confirmed by %2$s.', 'oria' ),
+								$oria_shown,
+								$oria_book,
+								'' !== $oria_fxday ? mysql2date( 'j M', $oria_fxday ) : __( 'today', 'oria' )
+							)
+						);
+						?>
+					</p>
+				<?php elseif ( '' !== $oria_shown ) : ?>
 					<p class="ro-card__price">
 						<span class="ro-card__from"><?php esc_html_e( 'From', 'oria' ); ?></span>
 						<strong><?php echo esc_html( $oria_shown ); ?></strong>
 						<?php if ( '' !== $oria_basis ) : ?><span class="ro-card__basis"><?php echo esc_html( $oria_basis ); ?></span><?php endif; ?>
 					</p>
-					<?php if ( $oria_aud ) : ?>
-						<p class="ro-card__aud">
-							<?php
-							echo esc_html(
-								sprintf(
-									/* translators: 1: A$ amount, 2: date the rate was fetched, 3: booking provider */
-									__( 'Approx. A$%1$s at the reference rate of %2$s. Final price confirmed by %3$s in %4$s.', 'oria' ),
-									number_format_i18n( $oria_aud ),
-									'' !== $oria_fxday ? mysql2date( 'j M', $oria_fxday ) : __( 'today', 'oria' ),
-									$oria_book,
-									$oria_cur
-								)
-							);
-							?>
-						</p>
-					<?php elseif ( 'AUD' !== $oria_cur ) : ?>
+					<?php if ( 'AUD' !== $oria_cur ) : ?>
 						<p class="ro-card__aud"><?php echo esc_html( sprintf( /* translators: 1: currency, 2: provider */ __( 'Charged in %1$s by %2$s; no exchange estimate available right now.', 'oria' ), $oria_cur, $oria_book ) ); ?></p>
 					<?php else : ?>
 						<p class="ro-card__aud"><?php echo esc_html( sprintf( /* translators: %s: provider */ __( 'Final price confirmed by %s.', 'oria' ), $oria_book ) ); ?></p>

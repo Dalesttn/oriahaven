@@ -52,6 +52,7 @@ $oria_shown = array_values( array_filter( $oria_all, $oria_match ) );
 $oria_tile_copy = array(
 	'bali'       => __( 'Yoga, warm mornings and new connections.', 'oria' ),
 	'wa'         => __( 'Country calm and space to slow down.', 'oria' ),
+	'aus-east'   => __( 'Rainforest, coast and hinterland, a flight away.', 'oria' ),
 	'near-perth' => __( 'A day or a weekend within easy reach of the city.', 'oria' ),
 );
 $oria_tile_img = array();
