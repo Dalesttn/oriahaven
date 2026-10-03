@@ -431,6 +431,17 @@ foreach ( $offers as $i => $o ) {
 			}
 		}
 		echo 'exists: ', $o['title'], $added ? " (filled {$added} new field" . ( 1 === $added ? '' : 's' ) . ')' : '', "\n";
+		// A photo that failed to download first time round (host timeout, blocked fetch) is tried again.
+		if ( ! has_post_thumbnail( (int) $existing[0] ) && ! empty( $o['image'] ) ) {
+			$att = media_sideload_image( $o['image'], (int) $existing[0], $o['title'], 'id' );
+			if ( is_wp_error( $att ) ) {
+				echo '   image still failed: ', $att->get_error_message(), "\n   download it from ", $o['source_url'], " and set it as the Featured image by hand.\n";
+			} else {
+				set_post_thumbnail( (int) $existing[0], (int) $att );
+				update_post_meta( (int) $att, '_oria_image_source', $o['source_url'] );
+				echo "   image added\n";
+			}
+		}
 		continue;
 	}
 	$id = wp_insert_post( array( 'post_type' => R\CPT, 'post_status' => 'draft', 'post_title' => $o['title'] ) );
