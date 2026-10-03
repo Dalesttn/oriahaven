@@ -357,45 +357,81 @@ function push( int $id ): bool {
 		// Not an attempt: the row waits, untouched, for the key and list to exist.
 		return false;
 	}
-	$body = array(
-		'data' => array(
-			'type'          => 'profile-subscription-bulk-create-job',
-			'attributes'    => array(
-				'custom_source' => 'Oria Haven offers signup',
-				'profiles'      => array(
-					'data' => array(
-						array(
-							'type'       => 'profile',
-							'attributes' => array(
-								'email'         => $row['email'],
-								'properties'    => array(
-									'oria_interests' => interests_of( $row ),
-									'oria_suburb'    => (string) $row['suburb'],
-									'oria_source'    => (string) $row['source'],
-									'oria_consent'   => (string) $row['consent_text'],
-									'oria_signed_up' => (string) $row['created_at'],
-								),
-								'subscriptions' => array(
-									'email' => array( 'marketing' => array( 'consent' => 'SUBSCRIBED' ) ),
+	/*
+	 * Two calls, because the subscription job takes no custom properties:
+	 * first upsert the profile with what we know about them (interests,
+	 * suburb, source, the consent they gave), then subscribe that address to
+	 * the list with express consent.
+	 */
+	$res = request(
+		'profile-import',
+		array(
+			'data' => array(
+				'type'       => 'profile',
+				'attributes' => array(
+					'email'      => $row['email'],
+					'properties' => array(
+						'oria_interests' => interests_of( $row ),
+						'oria_suburb'    => (string) $row['suburb'],
+						'oria_source'    => (string) $row['source'],
+						'oria_consent'   => (string) $row['consent_text'],
+						'oria_signed_up' => (string) $row['created_at'],
+					),
+				),
+			),
+		)
+	);
+	if ( ! ok( $res ) ) {
+		note( $id, 'profile: ' . describe( $res ), false );
+		return false;
+	}
+	$res = request(
+		'profile-subscription-bulk-create-jobs',
+		array(
+			'data' => array(
+				'type'          => 'profile-subscription-bulk-create-job',
+				'attributes'    => array(
+					'custom_source' => 'Oria Haven offers signup',
+					'profiles'      => array(
+						'data' => array(
+							array(
+								'type'       => 'profile',
+								'attributes' => array(
+									'email'         => $row['email'],
+									'subscriptions' => array(
+										'email' => array( 'marketing' => array( 'consent' => 'SUBSCRIBED' ) ),
+									),
 								),
 							),
 						),
 					),
 				),
+				'relationships' => array(
+					'list' => array( 'data' => array( 'type' => 'list', 'id' => list_id() ) ),
+				),
 			),
-			'relationships' => array(
-				'list' => array( 'data' => array( 'type' => 'list', 'id' => list_id() ) ),
-			),
-		),
+		)
 	);
-	$res  = request( 'profile-subscription-bulk-create-jobs', $body );
-	$code = is_wp_error( $res ) ? 0 : (int) wp_remote_retrieve_response_code( $res );
-	if ( $code >= 200 && $code < 300 ) {
-		note( $id, '', true );
-		return true;
+	if ( ! ok( $res ) ) {
+		note( $id, 'subscribe: ' . describe( $res ), false );
+		return false;
 	}
-	note( $id, is_wp_error( $res ) ? $res->get_error_message() : 'HTTP ' . $code . ' ' . mb_substr( (string) wp_remote_retrieve_body( $res ), 0, 160 ), false );
-	return false;
+	note( $id, '', true );
+	return true;
+}
+
+/** @param array|\WP_Error $res */
+function ok( $res ): bool {
+	$code = is_wp_error( $res ) ? 0 : (int) wp_remote_retrieve_response_code( $res );
+	return $code >= 200 && $code < 300;
+}
+
+/** @param array|\WP_Error $res */
+function describe( $res ): string {
+	if ( is_wp_error( $res ) ) {
+		return $res->get_error_message();
+	}
+	return 'HTTP ' . wp_remote_retrieve_response_code( $res ) . ' ' . mb_substr( (string) wp_remote_retrieve_body( $res ), 0, 160 );
 }
 
 /** Tell Klaviyo the person left, so its sends stop too. Best effort. */
