@@ -1412,6 +1412,313 @@
 					"lead_badge": false
 				}
 			]
+		},
+		{
+			"slug": "head-spas-perth",
+			"category": "relax",
+			"choose": [
+				{
+					"listing": "the-head-spa-perth-south-perth",
+					"when": "you want the full ritual and to leave with your hair blow-dried"
+				},
+				{
+					"listing": "lush-skin-and-body",
+					"when": "you are booking a head spa for two"
+				},
+				{
+					"listing": "skin-wellness-clinic-northbridge",
+					"when": "you want a blow-dry included for $200"
+				},
+				{
+					"listing": "soothe-massage-dayspa-nedlands",
+					"when": "you want to book on a Sunday"
+				},
+				{
+					"listing": "japanese-head-spa-by-amore-landsdale",
+					"when": "you want to try a head spa for the lowest price"
+				}
+			],
+			"picks": [
+				{
+					"listing": "the-head-spa-perth-south-perth",
+					"award": "best_head_spa",
+					"spotlight": "Best overall",
+					"best_for": "The full ritual, blow-dry included",
+					"price_note": "Signature Head Spa $299, 2 hr — price checked October 2026",
+					"fact": "Blow-dry included",
+					"reason": "The only dedicated head spa in the guide, and the most thorough: every appointment opens with a microscope consultation, then steam, a head bath, scalp, neck and shoulder massage and hot towels, and ends with a proper blow-dry — or a diffuse if your hair is curly. The Yume rituals move onto heated, fully reclining Japanese spa beds and run to $485. The catch is the booking: a 50% deposit within 48 hours, full charges for late cancellations, and a wait of three to four weeks.",
+					"highlights": "Microscope scalp consultation, Blow-dry included, Japanese spa beds on Yume rituals, South Perth",
+					"lead_badge": true
+				},
+				{
+					"listing": "lush-skin-and-body",
+					"award": "best_head_spa",
+					"spotlight": "Best for two",
+					"best_for": "Booking for two",
+					"price_note": "Ultimate Head Spa Ritual $245, 70 min; $460–$480 for two — price checked October 2026",
+					"fact": "Towel-dried",
+					"reason": "The only head spa here that publishes a price for two: the 70-minute Ultimate ritual is $245 each, and the couples version is listed at $460 on its couples page and $480 on its head spa page — confirm which when you book. A camera scalp assessment, steam with a mask, an extended scalp massage, neck and décolletage massage and a waterfall rinse are included. It finishes with a towel-dry and a leave-in treatment rather than a blow-dry, and pregnant clients are asked to get in touch first.",
+					"highlights": "Couples ritual for two, Camera scalp assessment, Waterfall rinse, Mount Hawthorn",
+					"lead_badge": true
+				},
+				{
+					"listing": "skin-wellness-clinic-northbridge",
+					"award": "best_head_spa",
+					"spotlight": "Blow-dry for $200",
+					"best_for": "A blow-dry included for $200",
+					"price_note": "Signature Head Spa $200, 90 min — price checked October 2026",
+					"fact": "Blow-dry included",
+					"reason": "Ninety minutes for $200, finishing with a complimentary blow-dry and straightening — the only other spa here that styles your hair rather than drying it off. A camera scalp analysis, double cleanse, water-ring therapy and neck, shoulder and chest massage are included, and there is a separate scalp treatment for people having chemotherapy or living with alopecia. One person at a time, and the hours are short: closed Tuesdays and Sundays, and Thursdays and Fridays end at 2pm.",
+					"highlights": "Blow-dry and straightening included, Camera scalp analysis, Alopecia and chemotherapy option, Northbridge",
+					"lead_badge": true
+				},
+				{
+					"listing": "soothe-massage-dayspa-nedlands",
+					"award": "best_head_spa",
+					"best_for": "Seven days, in a day spa",
+					"price_note": "Ultimate Head Spa Ritual $195, 75 min — price checked October 2026",
+					"reason": "A 75-minute head spa ritual for $195 — scalp cleanse, exfoliation and massage — inside a day spa that opens seven days from 9am to 6pm, with free parking out the front. Add a 30-minute mini facial and it is $285 for an hour and three-quarters. The spa does not say whether hair is dried or styled afterwards, so ask when you book.",
+					"highlights": "Open seven days, Mini facial option, Free parking, Nedlands",
+					"lead_badge": false
+				},
+				{
+					"listing": "oshani-head-spa-north-perth",
+					"award": "best_head_spa",
+					"best_for": "A Korean-style scalp ritual",
+					"price_note": "Scalp & Head Spa Experience $230, 90 min — price checked October 2026",
+					"fact": "Dried off, not styled",
+					"reason": "Run as a Korean-inspired scalp ritual inside a North Perth studio: a scalp analysis with before-and-after photos, steam and exfoliation, a water-halo rinse, double shampoo, a mask, and hand and face massage, with a drink afterwards. Ninety minutes is $230 and the two-hour Ultimate is $290. Hair is dried off rather than styled, every visit is pre-booked, and the venue's listings give two different street addresses, so check the location when you book.",
+					"highlights": "Before-and-after scalp photos, Water-halo rinse, Hand and face massage, North Perth",
+					"lead_badge": false
+				},
+				{
+					"listing": "ardor-organics",
+					"award": "best_head_spa",
+					"best_for": "With a facial or sound healing",
+					"price_note": "Divine Scalp Sanctuary $299, 90 min — price checked October 2026",
+					"fact": "Semi-dry finish",
+					"reason": "A low-tox hair salon in Ellenbrook whose head spa menu runs from a 70-minute scalp facial at $189.99 to the two-hour Serenity & Stone at $399, which adds an organic facial and hot stones; one ritual pairs the head spa with sound healing. A camera scalp analysis comes first, and hair is left semi-dry, with a blow-dry as an extra. It is a salon rather than a spa, in the north-east suburbs.",
+					"highlights": "Camera scalp analysis, Sound healing option, Organic products, Ellenbrook",
+					"lead_badge": false
+				},
+				{
+					"listing": "japanese-head-spa-by-amore-landsdale",
+					"award": "best_head_spa",
+					"best_for": "The lowest entry price",
+					"price_note": "Scalp Revive $130, 45 min — price checked October 2026",
+					"fact": "Dried off, not styled",
+					"reason": "The cheapest way into a head spa in this guide: $130 for 45 minutes, with every ritual starting with an HD scalp analysis and finishing with half an hour to dry off. The $180 option adds a facial and the $230 Total Rejuvenation runs 90 minutes, on a massaging spa bed with a scalp steamer. It is not suitable during pregnancy or with extensions or braids, and a professional blow-dry costs extra.",
+					"highlights": "From $130, HD scalp analysis, Facial option, Landsdale",
+					"lead_badge": false
+				}
+			]
+		},
+		{
+			"slug": "couples-spa-packages-perth",
+			"category": "experiences",
+			"choose": [
+				{
+					"listing": "swan-valley-retreat",
+					"when": "you want food and a bottle of sparkling in the package"
+				},
+				{
+					"listing": "urban-retreat-day-spa-rockingham",
+					"when": "you want a sauna and a private bath for two"
+				},
+				{
+					"listing": "ganesha-wellness-spa",
+					"when": "you want a couples room for under $400"
+				},
+				{
+					"listing": "solace-day-spa-scarborough",
+					"when": "you want a steam room and to be near the beach"
+				},
+				{
+					"listing": "lush-skin-and-body",
+					"when": "you want the lowest published price for two"
+				}
+			],
+			"picks": [
+				{
+					"listing": "swan-valley-retreat",
+					"award": "best_couples_package",
+					"spotlight": "Best overall",
+					"best_for": "Wine and a platter for two",
+					"price_note": "Couples Escape $440 for two, 2 hr — price checked October 2026",
+					"fact": "Total for two",
+					"reason": "The Couples Escape puts a 60-minute couples relaxation massage together with an antipasto platter, a bottle of sparkling and time in a private outdoor area — $440 for two hours, or $580 with 90-minute massages. Double Indulgence, $930 for four hours, adds facials and an hour in the Oasis of sauna and ice bath. The couples massage is offered to two friends too. A 50% deposit is taken and kept inside 48 hours, Sundays carry a 10% surcharge, and it closes on public holidays.",
+					"highlights": "Platter and sparkling included, Oasis in the four-hour package, Friends welcome, Henley Brook",
+					"lead_badge": true
+				},
+				{
+					"listing": "urban-retreat-day-spa-rockingham",
+					"award": "best_couples_package",
+					"spotlight": "Best with a sauna",
+					"best_for": "Sauna and a private bath",
+					"price_note": "Retreat Sanctuary for Two $679, 2 hr 20 min — price checked October 2026",
+					"fact": "Total for two",
+					"reason": "Every couples package on the menu is priced as a total for two and labelled for couples or friends. Retreat Sanctuary for Two, $679 for two hours and twenty minutes, includes the infrared sauna for two with a cool-down tea, a full-body massage, back exfoliation, a 30-minute facial and a private bath for two; Spa Serenity for Two is $359 for an hour and twenty. Treatments are in a queen room. Couples bookings are by phone only, and same-day cancellations are charged in full.",
+					"highlights": "Sauna and private bath for two, Priced as a total, Friends welcome, Rockingham",
+					"lead_badge": true
+				},
+				{
+					"listing": "ganesha-wellness-spa",
+					"award": "best_couples_package",
+					"spotlight": "Under $400",
+					"best_for": "A couples room under $400",
+					"price_note": "Revive the Romance $369 for two, 2 hr — price checked October 2026",
+					"fact": "Same room",
+					"reason": "Revive the Romance is $369 for two for two hours: a foot wash and pressure-point massage, fifteen minutes each in the infrared cocoon and the massage chair, then a 60-minute massage together in the dedicated couples room, with a drink in the private lounge. The Day Spa Package is $550 for two and the Ultimate $899 for four and a half hours. The 40-jet jacuzzi is a separate add-on at $99 for half an hour. Couples packages cost $25 a person more on Saturdays, and Sundays are by request at $50 a person extra.",
+					"highlights": "Massage in the same room, Infrared pod included, Jacuzzi add-on from $99, East Perth",
+					"lead_badge": true
+				},
+				{
+					"listing": "solace-day-spa-scarborough",
+					"award": "best_couples_package",
+					"best_for": "Side by side, with a steam room",
+					"price_note": "A Slice of Solace $356 per person, 2 hr — price checked October 2026",
+					"fact": "Priced per person",
+					"reason": "Solace prices its packages per person, so A Slice of Solace is $356 each — $712 for two — for two hours: an aromatic footbath, a full-body exfoliation and rain shower, the couples steam room and a full-body massage side by side, with sparkling wine and chocolates. The three-hour Solace Retreat, $531 each, adds a private lounge and an adjoining double room. Bookings are online, and voucher bookings need 48 hours' notice to change.",
+					"highlights": "Couples steam room, Side-by-side massage, Sparkling and chocolates, Scarborough",
+					"lead_badge": false
+				},
+				{
+					"listing": "keturah-life-day-spa",
+					"award": "best_couples_package",
+					"best_for": "One voucher, two suburbs",
+					"price_note": "Couple's Far Infrared Sauna & Massage $460 for two, 1 hr 30 — price checked October 2026",
+					"fact": "Total for two",
+					"reason": "Keturah prices its couples packages as a total for two and sells them as vouchers that work at either of its rooms, in Nedlands or at Carine Glades in Duncraig. The Couple's Far Infrared Sauna & Full Body Massage is $460: half an hour in the sauna, then an hour's relaxation massage. The Couple's Escape, $1,040, adds a signature facial and a spa pedicure. Appointments are booked by phone, and cancellation notice is 48 hours from Saturday to Monday.",
+					"highlights": "Infrared sauna for two, Nedlands or Carine Glades, Vouchers valid three years, Since 1994",
+					"lead_badge": false
+				},
+				{
+					"listing": "revive-skin-emporium-mount-hawthorn",
+					"award": "best_couples_package",
+					"best_for": "Private spa access for two",
+					"price_note": "Couples Day Out $785 for two, 3 hr — price checked October 2026",
+					"reason": "The Couples Day Out, $785 for three hours, includes steam, private spa access for two, a deluxe facial, a full-body massage and refreshments, and the spa describes it as for you and a friend. The shorter Palm Springs Day Spa Journey for Two is $625 for two hours, with the aromatic steam room, a back massage, an hour's facial, champagne and chocolates. Book online, by phone or by email; the spa does not say whether treatments share a room.",
+					"highlights": "Private spa for two, Steam room, Friends welcome, Mount Hawthorn",
+					"lead_badge": false
+				},
+				{
+					"listing": "le-beau-clinic-spa-kardinya",
+					"award": "best_couples_package",
+					"best_for": "An alfresco spa",
+					"price_note": "Serenity Now $600, Romance in Paradise $868 — price checked October 2026",
+					"reason": "The only packages in the guide with time in an outdoor spa. Serenity Now, $600, pairs a foot soak and scrub with a 50-minute relaxation massage and the alfresco spa; Romance in Paradise, $868, adds a body scrub, a 30-minute Thalgo facial and Moscato in the spa. Le Beau's own pages give different lengths for both, and do not say whether the price covers one person or two — confirm both before booking.",
+					"highlights": "Alfresco spa, Couples massage from $330, Secure car park, Kardinya",
+					"lead_badge": false,
+					"sessions": "Ask the venue"
+				},
+				{
+					"listing": "lush-skin-and-body",
+					"award": "best_couples_package",
+					"best_for": "The lowest price for two",
+					"price_note": "Signature Massage for Two $290, 60 min — price checked October 2026",
+					"fact": "Book by phone or email",
+					"reason": "The lowest published total in the guide: an hour's Signature Massage for two is $290, described as taken together. Longer options include a 90-minute facial package for two at $400, with a back massage, foot soak and scrub, and a two-hour Signature Intense at $580. Couples bookings go through the clinic by phone or email rather than the online system, and vouchers last three years.",
+					"highlights": "From $290 for two, Couples head spa ritual, Book by phone or email, Mount Hawthorn",
+					"lead_badge": false
+				}
+			]
+		},
+		{
+			"slug": "float-tanks-perth",
+			"category": "relax",
+			"choose": [
+				{
+					"listing": "beyond-rest-east-perth",
+					"when": "it is your first float and you want the cheapest way to try three"
+				},
+				{
+					"listing": "clear-mind-studio-fremantle",
+					"when": "you would rather not be in an enclosed tank"
+				},
+				{
+					"listing": "life-spring-float-centre",
+					"when": "you want to float as a couple"
+				},
+				{
+					"listing": "rhema-wellness-studio",
+					"when": "you want the lowest casual price"
+				},
+				{
+					"listing": "float-lab-wembley",
+					"when": "you need an evening or weekend slot"
+				}
+			],
+			"picks": [
+				{
+					"listing": "clear-mind-studio-fremantle",
+					"award": "best_float",
+					"spotlight": "Most open space",
+					"best_for": "An open float pool",
+					"price_note": "Single float $89, 60 min — price checked October 2026",
+					"fact": "Open pool at Inglewood",
+					"reason": "Clear Mind runs pod-style tanks with a lid you can leave open at both its rooms — Holdsworth Street in Fremantle and Beaufort Street in Inglewood — and, at Inglewood only, an open float pool with no lid or enclosure at all, which a couple can share for $139. A single float is $89: an hour in the water and about 90 minutes in the room, with seven guided meditations or silence and music for the last five minutes. Packs never expire. Fremantle is closed on Sundays.",
+					"highlights": "Open float pool at Inglewood, Lid-open pods, Couples float $139, Fremantle and Inglewood",
+					"lead_badge": true
+				},
+				{
+					"listing": "life-spring-float-centre",
+					"award": "best_float",
+					"spotlight": "Best for two",
+					"best_for": "Roomy cabins you can share",
+					"price_note": "60-min float $86; two in one cabin $129 — price checked October 2026",
+					"fact": "Shared cabin allowed",
+					"reason": "Three Superior XL float cabins on Market Street, Rockingham — larger than a pod, with a door you can leave open and a light switch inside. An hour is $86, ninety minutes $109 and two hours $129, and two people can share a cabin for an hour for $129. Gowns, earplugs, shampoo, conditioner and hairdryers are provided. Floats run from 8am to an 8pm last session, and online bookings close 45 minutes before.",
+					"highlights": "Cabins you can share, Door and light controls, Floats up to two hours, Rockingham",
+					"lead_badge": true
+				},
+				{
+					"listing": "beyond-rest-east-perth",
+					"award": "best_float",
+					"spotlight": "Best intro offer",
+					"best_for": "A first-float offer",
+					"price_note": "Intro: three 60-min floats $177; casual $89 — price checked October 2026",
+					"fact": "Intro offer",
+					"reason": "The clearest first-float deal in the guide: three hour-long floats for $177, or $59 each, against $89 for a single casual float. Three private pod rooms on Edward Street, East Perth, with towels, robes, earplugs, shampoo and body wash provided; allow about 90 minutes in all. A second Beyond Rest on Cambridge Street, Wembley, opens at 6am on Mondays and Thursdays. Two people can't share a pod but can float at the same time, and late cancellations are charged as a full session.",
+					"highlights": "Three floats for $177, Robes and toiletries provided, Second room in Wembley, East Perth",
+					"lead_badge": true
+				},
+				{
+					"listing": "rhema-wellness-studio",
+					"award": "best_float",
+					"best_for": "The lowest casual price",
+					"price_note": "60-min float $70, 30 min $50 — price checked October 2026",
+					"reason": "The cheapest hour in the guide at $70, with a 30-minute float for $50 and a $60 hour on Tuesdays between 9.30am and 2pm for pregnant women, concession card holders and some other groups. The studio, formerly Float House, is at Cockburn Central; floaters choose silence or a guided meditation, and each session includes time to shower before and after, with tea in the lounge. A float and a 45-minute sauna together is $95.",
+					"highlights": "$70 an hour, Concession Tuesdays, Float and sauna $95, Cockburn Central",
+					"lead_badge": false
+				},
+				{
+					"listing": "salt-float-studio-south-perth",
+					"award": "best_float",
+					"best_for": "Lights and music in your hands",
+					"price_note": "60-min float $85 — price checked October 2026",
+					"reason": "Dreampod tanks, each in its own room with a shower, where you control the lighting and music and can float with the lid open — or play your own audio through the pod. An hour is $85, with 45 and 90-minute floats at $70 and $115 and a pregnancy float. Two friends can float in separate pods at the same time for $65 each. It is closed on Tuesdays and Wednesdays, and dreadlocks, thick braids and hair extensions aren't allowed in the pods.",
+					"highlights": "You control lights and music, Lid can stay open, 45 to 90-minute floats, South Perth",
+					"lead_badge": false
+				},
+				{
+					"listing": "float-lab-wembley",
+					"award": "best_float",
+					"best_for": "Open 9am to 9pm, seven days",
+					"price_note": "60-min float $89; two at once $160 — price checked October 2026",
+					"reason": "Four float rooms on Cambridge Street, Wembley, open from 9am to 9pm seven days a week by appointment — the longest hours in the guide — with a second Float Lab at Currambine. An hour is $89, two people floating at the same time pay $160, and a ten-pack is $699. Float Lab publishes no screening guidance or list of what is provided, so ask about both before a first visit.",
+					"highlights": "Open 9am to 9pm daily, Four rooms, Second centre at Currambine, Wembley",
+					"lead_badge": false
+				},
+				{
+					"listing": "swan-valley-retreat",
+					"award": "best_float",
+					"best_for": "A 90-minute float for $99",
+					"price_note": "60-min float $85, 90 min $99 — price checked October 2026",
+					"reason": "A single float pod inside a day spa at Henley Brook, at $85 for an hour and $99 for ninety minutes — the cheapest long float in the guide — or $130 with a sauna session first. With one pod, floats run one after another, so two people can't float at the same time. Tea and the outdoor areas are there afterwards; the retreat publishes no screening guidance, so ask if you have any concerns.",
+					"highlights": "90 minutes for $99, Sauna and float $130, Day spa setting, Henley Brook",
+					"lead_badge": false
+				}
+			]
 		}
 	]
 }

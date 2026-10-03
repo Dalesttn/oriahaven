@@ -60,6 +60,9 @@ const AWARDS = array(
 	'best_pregnancy_massage' => 'Best pregnancy massage',
 	'best_day_spa'         => 'Best day spa',
 	'best_couples_spa'     => 'Best couples spa',
+	'best_couples_package' => 'Best couples package',
+	'best_head_spa'        => 'Best head spa',
+	'best_float'           => 'Best float centre',
 	'best_luxury'          => 'Best luxury experience',
 	'best_reformer'        => 'Best reformer Pilates',
 	'best_intro_offer'     => 'Best intro offer',
@@ -272,7 +275,7 @@ function spotlights( array $entries ): array {
 /**
  * What a pick costs, in words. The editor's note wins ("From $35 — price
  * checked September 2026"); else the listing's own price_from; else an
- * honest "Check current pricing". Never a number nobody typed.
+ * honest "Price not published". Never a number nobody typed.
  */
 function price_line( array $entry ): string {
 	if ( '' !== $entry['price_note'] ) {
@@ -280,7 +283,7 @@ function price_line( array $entry ): string {
 	}
 	$from = price_from( (int) $entry['listing'] );
 	/* translators: %s: price */
-	return '' !== $from ? sprintf( __( 'From %s', 'oria' ), $from ) : __( 'Check current pricing', 'oria' );
+	return '' !== $from ? sprintf( __( 'From %s', 'oria' ), $from ) : __( 'Price not published', 'oria' );
 }
 
 /** The rebate label for a pick, or '' when the editor said nothing. */
@@ -313,10 +316,36 @@ function duration( int $listing ): string {
  * @return list<int>
  */
 function noted_minutes( array $entry ): array {
-	preg_match_all( '/\b(\d{2,3})\s*-?\s*(?:min|mins|minute|minutes)\b/i', (string) ( $entry['price_note'] ?? '' ), $m );
-	$mins = array_values( array_unique( array_filter( array_map( 'intval', $m[1] ) ) ) );
+	/*
+	 * Hours as well as minutes: "2 hr", "2 hr 20 min" and "1 hr 30" are how
+	 * package lengths are written. Read as minutes alone, "2 hr 20 min" came
+	 * out as "20 min" and "2 hr" as nothing at all.
+	 */
+	preg_match_all(
+		'/\b(\d{1,2})\s*(?:hr|hrs|hour|hours)\b(?:\s*(\d{1,2})\b(?:\s*(?:min|mins|minute|minutes)\b)?)?|\b(\d{2,3})\s*-?\s*(?:min|mins|minute|minutes)\b/i',
+		(string) ( $entry['price_note'] ?? '' ),
+		$m,
+		PREG_SET_ORDER
+	);
+	$mins = array();
+	foreach ( $m as $x ) {
+		$mins[] = '' !== ( $x[1] ?? '' ) ? (int) $x[1] * 60 + (int) ( $x[2] ?? 0 ) : (int) ( $x[3] ?? 0 );
+	}
+	$mins = array_values( array_unique( array_filter( $mins ) ) );
 	sort( $mins );
 	return $mins;
+}
+
+/** "45 min", "90 min", "2 hr", "2 hr 20 min": minutes under two hours, hours from there. */
+function minutes_label( int $mins ): string {
+	if ( $mins < 120 ) {
+		/* translators: %d: minutes */
+		return sprintf( __( '%d min', 'oria' ), $mins );
+	}
+	$h = intdiv( $mins, 60 );
+	$r = $mins % 60;
+	/* translators: 1: hours, 2: minutes */
+	return $r ? sprintf( __( '%1$d hr %2$d min', 'oria' ), $h, $r ) : sprintf( __( '%d hr', 'oria' ), $h );
 }
 
 /**
@@ -335,9 +364,12 @@ function time_label( array $entry ): string {
 		return $sessions;
 	}
 	$noted = noted_minutes( $entry );
-	if ( $noted ) {
+	if ( $noted && max( $noted ) < 120 ) {
 		/* translators: %s: minutes, e.g. "45" or "30 / 45" */
 		return sprintf( __( '%s min', 'oria' ), implode( ' / ', $noted ) );
+	}
+	if ( $noted ) {
+		return implode( ' / ', array_map( __NAMESPACE__ . '\minutes_label', $noted ) );
 	}
 	return duration( (int) ( $entry['listing'] ?? 0 ) );
 }

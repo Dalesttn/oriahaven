@@ -41,13 +41,31 @@ $argv    = $argv ?? array();
 $apply   = in_array( '--apply', $argv, true );
 $publish = in_array( '--publish', $argv, true );
 $sample  = in_array( '--sample-picks', $argv, true );
-// --refresh=slug[,slug]: rewrite an EXISTING guide's copy from this file (see the run loop).
+// --refresh=slug[,slug]: rewrite an EXISTING guide's copy and links from this file.
+// --refresh-links=slug[,slug]: rewrite only its related links (the copy is left alone).
+// --only=slug[,slug]: create (or report on) just these guides. Without it, --apply --publish
+// creates and PUBLISHES every guide in this file that the site does not have yet.
+$only    = array();
 $refresh = array();
+$relink  = array();
 foreach ( $argv as $a ) {
+	if ( str_starts_with( $a, '--only=' ) ) {
+		$only = array_filter( array_map( 'trim', explode( ',', substr( $a, 7 ) ) ) );
+	}
 	if ( str_starts_with( $a, '--refresh=' ) ) {
 		$refresh = array_filter( array_map( 'trim', explode( ',', substr( $a, 10 ) ) ) );
 	}
+	if ( str_starts_with( $a, '--refresh-links=' ) ) {
+		$relink = array_filter( array_map( 'trim', explode( ',', substr( $a, 16 ) ) ) );
+	}
 }
+// A guide's own search title, where the H1 alone is not what people search for.
+$seo_title = static function ( int $post_id, array $g ): void {
+	if ( ! empty( $g['seo_title'] ) ) {
+		update_post_meta( $post_id, '_yoast_wpseo_title', (string) $g['seo_title'] );
+	}
+};
+$link_rows = static fn( array $g ): array => (array) ( $g['links'] ?? array() );
 
 /* ------------------------------------------------------------- the guides */
 
@@ -224,6 +242,7 @@ $guides = array(
 			array( 'label' => 'Best breathwork classes in Perth', 'url' => home_url( '/best/breathwork-perth/' ) ),
 			array( 'label' => 'Best ice baths and cold plunges in Perth', 'url' => home_url( '/best/ice-baths-perth/' ) ),
 			array( 'label' => 'Wellness under $50 in Perth', 'url' => home_url( '/best/wellness-under-50-perth/' ) ),
+			array( 'label' => 'Best float tanks in Perth — pods, cabins and an open pool compared', 'url' => home_url( '/best/float-tanks-perth/' ) ),
 		),
 		'find'         => array( 'specialty' => array( 'float-therapy' ) ),
 	),
@@ -322,6 +341,8 @@ $guides = array(
 			array( 'label' => 'Best remedial massage in Perth', 'url' => home_url( '/best/remedial-massage-perth/' ) ),
 			array( 'label' => 'Best day spas in Perth', 'url' => home_url( '/best/day-spas-perth/' ) ),
 			array( 'label' => 'Best places to relax in Perth', 'url' => home_url( '/best/places-to-relax-perth/' ) ),
+			array( 'label' => 'Best couples spa packages in Perth — massage for two, priced', 'url' => home_url( '/best/couples-spa-packages-perth/' ) ),
+			array( 'label' => 'Best head spas in Perth — scalp massage rituals compared', 'url' => home_url( '/best/head-spas-perth/' ) ),
 		),
 		'find'         => array( 'specialty' => array( 'massage' ) ),
 	),
@@ -350,8 +371,96 @@ $guides = array(
 			array( 'label' => 'Best massage in Perth', 'url' => home_url( '/best/massage-perth/' ) ),
 			array( 'label' => 'Best saunas in Perth', 'url' => home_url( '/best/saunas-perth/' ) ),
 			array( 'label' => 'Best places to relax in Perth', 'url' => home_url( '/best/places-to-relax-perth/' ) ),
+			array( 'label' => 'Best couples spa packages in Perth — the two-person packages compared, total price for two', 'url' => home_url( '/best/couples-spa-packages-perth/' ) ),
+			array( 'label' => 'Best head spas in Perth', 'url' => home_url( '/best/head-spas-perth/' ) ),
 		),
 		'find'         => array( 'practice' => 'spa' ),
+	),
+
+	/* ---- October 2026 brief: head spas, couples packages, float tanks ---- */
+	array(
+		'slug'         => 'head-spas-perth',
+		'title'        => 'Best head spas in Perth',
+		'seo_title'    => 'Best Head Spas in Perth: Prices & Packages | Oria Haven',
+		'excerpt'      => 'Compare head spas in Perth by treatment price, session length, scalp care, massage inclusions and hair drying. Find an experience that suits you.',
+		'intro'        => "A head spa can be a 45-minute scalp treatment or a two-hour appointment with steam, a head bath, massage and a facial — and the part people most often get wrong is the end, because some spas send you out blow-dried and others towel-dry your hair and send you home. This guide compares Perth head spas by what is included, how long you are there, what it costs and what happens to your hair afterwards. Every price was checked on the venue's own site or booking page in October 2026.",
+		'quick_answer' => "The Head Spa Perth in South Perth is the most complete: a microscope scalp consultation, Japanese spa beds on its Yume rituals and a blow-dry to finish, with the two-hour Signature at $299. For two people, Lush Skin and Body in Mount Hawthorn publishes a couples ritual at $460 to $480 for two. For a blow-dry included at a lower price, Skin Wellness Clinic in Northbridge finishes its 90-minute, $200 Signature with one. Soothe in Nedlands runs a 75-minute ritual for $195, seven days a week. Prices checked October 2026.",
+		'category'     => 'relax',
+		'practice'     => 'spa',
+		'featured'     => false,
+		'award'        => 'best_head_spa',
+		'reviewed'     => '2026-10-03',
+		'method'       => "We compared head spas on what happens in the appointment rather than on the name of the ritual: how long it runs, whether the scalp is assessed first, which steps are included, whether two people can book together, and what happens to your hair at the end. Every price was checked on the venue's own site or the booking page it links to in October 2026. Several of these businesses say their treatments help with hair growth or hair loss; this guide does not repeat those claims. Venues whose prices we could not find published were left out.",
+		'faq'          => array(
+			array( 'question' => 'What does a head spa cost in Perth?', 'answer' => 'Among the spas in this guide, the cheapest standard ritual is $130 for 45 minutes at Japanese Head Spa by Amore in Landsdale, and most 70 to 90-minute rituals cost $195 to $245. Two hours runs from $290 at Oshani to $299 at The Head Spa Perth, whose rituals on Japanese spa beds reach $485. Prices checked October 2026.' ),
+			array( 'question' => 'Is a blow-dry included?', 'answer' => 'Only at some. The Head Spa Perth and Skin Wellness Clinic finish with a blow-dry. Oshani and Japanese Head Spa by Amore dry your hair off without styling it, Lush finishes with a towel-dry and a leave-in treatment, and Ardor leaves it semi-dry with a blow-dry as an extra. Soothe does not say. If you are going somewhere afterwards, ask before you book.' ),
+			array( 'question' => 'What happens during a head spa?', 'answer' => 'The spas here share a pattern: a look at the scalp first — by camera at most, by microscope at The Head Spa Perth — then cleansing and exfoliation, steam with a mask, a long scalp massage, a rinse under a water halo or waterfall, and neck and shoulder massage. The longer rituals add a facial, hot stones or sound healing.' ),
+			array( 'question' => 'Can two people book a head spa together?', 'answer' => 'Lush Skin and Body publishes a couples ritual: its couples page lists it at $460 for two and its head spa page at $480, so confirm the price when you book. The Head Spa Perth mentions a private duo room but publishes no duo price. Skin Wellness Clinic treats one person at a time.' ),
+			array( 'question' => 'What should I check before booking?', 'answer' => 'Tell the spa first about hair extensions, braids, recent colour or a scalp condition. Japanese Head Spa by Amore says its rituals are not suitable with extensions or braids or during pregnancy, Skin Wellness Clinic does not recommend them with extensions or weaves, and Lush asks pregnant clients to contact it first. The Head Spa Perth takes a 50% deposit and charges in full for late cancellations.' ),
+		),
+		'links'        => array(
+			array( 'label' => 'All spa and recovery in Perth', 'url' => home_url( '/explore/perth/spa/' ) ),
+			array( 'label' => 'Best day spas in Perth', 'url' => home_url( '/best/day-spas-perth/' ) ),
+			array( 'label' => 'Best massage in Perth', 'url' => home_url( '/best/massage-perth/' ) ),
+			array( 'label' => 'Best couples spa packages in Perth', 'url' => home_url( '/best/couples-spa-packages-perth/' ) ),
+		),
+		'find'         => array( 'practice' => 'spa' ),
+	),
+	array(
+		'slug'         => 'couples-spa-packages-perth',
+		'title'        => 'Best couples spa packages in Perth',
+		'seo_title'    => 'Best Couples Spa Packages in Perth | Oria Haven',
+		'excerpt'      => 'Compare Perth couples spa packages by total price for two, treatment time, private rooms and spa access. Find an option for your next occasion.',
+		'intro'        => "Booking a spa visit for two involves more than choosing a massage. The useful details are whether you share a room, what the total price covers, and whether time in a sauna, steam room, bath or hot tub is part of the package or an extra. This guide compares the actual two-person packages Perth spas publish — the total for two where the spa prices it that way, and the per-person price where it does not. Every package was checked on the spa's own site or menu in October 2026.",
+		'quick_answer' => "For food and wine, Swan Valley Retreat's Couples Escape is $440 for two hours with a grazing platter and sparkling. For a sauna and a private bath, Urban Retreat in Rockingham does Retreat Sanctuary for Two at $679. Under $400, Ganesha's Revive the Romance is $369 for two in a dedicated couples room, with an infrared pod. For the lowest published price, Lush Skin and Body's Signature Massage for Two is $290. Prices checked October 2026.",
+		'category'     => 'experiences',
+		'practice'     => 'spa',
+		'featured'     => false,
+		'award'        => 'best_couples_package',
+		'reviewed'     => '2026-10-03',
+		'method'       => "We compared actual two-person packages rather than spas in general: what the package is called, whether the price is a total for two or per person, how long the appointment runs, whether you are treated in the same room, and which facilities — sauna, steam, a bath or hot tub — come with it rather than costing extra. Every package was checked on the spa's own site or menu in October 2026. Where a spa prices per person, that is what we show; we never double a single price and call it a couples package. Spas with double rooms but no published couples package, such as Annasha in Gooseberry Hill, and spas with no couples package at all, such as Crown, are left out.",
+		'faq'          => array(
+			array( 'question' => 'Which packages publish a total price for two?', 'answer' => 'Swan Valley Retreat, Urban Retreat, Ganesha, Keturah, Revive Skin Emporium and Lush all publish a total for two. Solace prices per person, so its two-hour Slice of Solace is $356 each, or $712 for two. Le Beau\'s couples packages do not say whether the price covers one person or two, so ask.' ),
+			array( 'question' => 'Are the treatments in the same room?', 'answer' => 'Ganesha says the massage is together in its couples room, Urban Retreat uses a queen room, Solace treats couples side by side, and Lush describes its couples massage as together. Swan Valley Retreat, Keturah, Revive and Le Beau do not say, so ask when you book.' ),
+			array( 'question' => 'Is a sauna, steam room or hot tub included?', 'answer' => 'In some packages. Urban Retreat\'s Retreat Sanctuary includes the infrared sauna and a private bath for two, Keturah\'s $460 package starts with half an hour in the infrared sauna, Solace includes its couples steam room, Ganesha includes the infrared pod, Revive\'s Couples Day Out includes private spa access, Le Beau includes its alfresco spa, and Swan Valley\'s four-hour Double Indulgence includes an hour in the Oasis. Ganesha\'s jacuzzi is an add-on at $99 for half an hour.' ),
+			array( 'question' => 'Can two friends book a couples package?', 'answer' => 'At several, yes. Urban Retreat labels its packages for couples or friends, Swan Valley Retreat offers its couples massage to two friends, and Revive Skin Emporium describes its Couples Day Out as for you and a friend.' ),
+			array( 'question' => 'What about surcharges and cancellations?', 'answer' => 'Ganesha adds $25 a person to couples packages on Saturdays, and Sundays are by request with $50 a person. Swan Valley Retreat adds 10% on Sundays and takes a 50% deposit, kept for cancellations inside 48 hours. Urban Retreat charges same-day cancellations in full, and Keturah needs 24 hours\' notice Tuesday to Friday and 48 hours Saturday to Monday. Vouchers at Lush, Keturah, Solace and Swan Valley Retreat last three years.' ),
+		),
+		'links'        => array(
+			array( 'label' => 'All spa and recovery in Perth', 'url' => home_url( '/explore/perth/spa/' ) ),
+			array( 'label' => 'Best day spas in Perth', 'url' => home_url( '/best/day-spas-perth/' ) ),
+			array( 'label' => 'Best head spas in Perth', 'url' => home_url( '/best/head-spas-perth/' ) ),
+			array( 'label' => 'Best massage in Perth', 'url' => home_url( '/best/massage-perth/' ) ),
+		),
+		'find'         => array( 'practice' => 'spa' ),
+	),
+	array(
+		'slug'         => 'float-tanks-perth',
+		'title'        => 'Best float tanks in Perth',
+		'seo_title'    => 'Best Float Tanks in Perth: Compare Sessions | Oria Haven',
+		'excerpt'      => 'Compare float tanks in Perth by session price, pod or room type, first-visit options and booking details. Find a float experience that suits you.',
+		'intro'        => "Your first float is easier to choose when you know what you are booking: an enclosed pod, a larger cabin or an open pool; how long you are actually in the water; and how long the whole appointment takes once showering before and after is added. This guide compares Perth float centres on those practical details and the prices they publish. Every price was checked on the centre's own site or booking page in October 2026.",
+		'quick_answer' => "For a first float, Beyond Rest in East Perth sells three hour-long floats for $177. For more space, Clear Mind's Inglewood room has an open float pool with no lid, and The Life Spring in Rockingham has cabins two people can share. Rhema Wellness Studio at Cockburn Central has the lowest casual price, $70 for an hour. Prices checked October 2026.",
+		'category'     => 'relax',
+		'practice'     => 'spa',
+		'featured'     => false,
+		'award'        => 'best_float',
+		'reviewed'     => '2026-10-03',
+		'method'       => "We compared water-based floating only — pods, cabins and an open pool — on what you book: the kind of tank, the time in the water against the time in the room, the casual price, any first-float offer, what is provided, and whether two people can float together. Every price was checked on the centre's own site or booking page in October 2026; first-float offers, packs and memberships are labelled as such and never stand in for a casual price. Two centres in the directory, in Willetton and Kelmscott, are left out because their websites were down and their float services could not be confirmed. Dry cocoon pods that use heat rather than water are not part of this comparison. Several centres make health claims about floating; this guide does not repeat them.",
+		'faq'          => array(
+			array( 'question' => 'What does a float cost in Perth?', 'answer' => 'Among the centres here, a casual hour costs $70 at Rhema Wellness Studio, $85 at Salt Float Studio and Swan Valley Retreat, $86 at The Life Spring and $89 at Beyond Rest, Float Lab and Clear Mind. First-float offers bring it lower — Beyond Rest\'s three floats for $177 work out at $59 each — and packs and memberships go lower again. Prices checked October 2026.' ),
+			array( 'question' => 'What is the difference between a pod, a cabin and an open pool?', 'answer' => 'A pod is an enclosed tank with a lid, and at Salt Float Studio and Clear Mind you can leave the lid open. The Life Spring\'s cabins are larger, with a door rather than a lid, which can also stay open. Clear Mind\'s Inglewood room has an open float pool with no lid or enclosure at all. If closed spaces worry you, the open pool or a cabin with the door open is the gentler start.' ),
+			array( 'question' => 'How long should a first float take?', 'answer' => 'Allow about an hour and a half. The float itself is usually an hour, and Beyond Rest and Clear Mind both say to allow 90 minutes in all for showering before and after. Most centres ask first-timers to arrive ten to fifteen minutes early.' ),
+			array( 'question' => 'Can two people float together?', 'answer' => 'Only where the space is shared: The Life Spring lets two people share a cabin, at $129 for an hour, and Clear Mind\'s open pool at Inglewood takes a couple for $139. Elsewhere you book separate tanks at the same time — Float Lab charges $160 for two and Salt Float Studio $65 each — and Swan Valley Retreat\'s single pod means one after the other.' ),
+			array( 'question' => 'What should I check before a float?', 'answer' => 'Each centre publishes its own guidance, and it differs. Common items are a fresh tattoo, recently coloured hair, open wounds, epilepsy and early pregnancy: Beyond Rest asks you to wait five days after a tattoo and two after hair dye, and Clear Mind seven days after colouring, with pregnancy from 13 weeks. Read the centre\'s own list before booking, and ask your doctor if you have a medical condition.' ),
+		),
+		'links'        => array(
+			array( 'label' => 'All float therapy in Perth', 'url' => home_url( '/explore/perth/spa/float-therapy/' ) ),
+			array( 'label' => 'Best places to relax in Perth', 'url' => home_url( '/best/places-to-relax-perth/' ) ),
+			array( 'label' => 'Best saunas in Perth', 'url' => home_url( '/best/saunas-perth/' ) ),
+			array( 'label' => 'Sauna, ice bath or float?', 'url' => home_url( '/sauna-ice-bath-or-float/' ) ),
+		),
+		'find'         => array( 'specialty' => array( 'float-therapy' ) ),
 	),
 	array(
 		'slug'         => 'reformer-pilates-perth',
@@ -524,8 +633,19 @@ foreach ( $guides as $g ) {
 	echo "{$g['title']}\n  /best/{$g['slug']}/\n";
 
 	$existing = get_page_by_path( $g['slug'], OBJECT, 'best_of' );
-	if ( $refresh && ! in_array( $g['slug'], $refresh, true ) ) {
-		echo "  (not named in --refresh, skipped)\n\n";
+	if ( ( $refresh || $relink || $only ) && ! in_array( $g['slug'], array_merge( $refresh, $relink, $only ), true ) ) {
+		echo "  (not named, skipped)\n\n";
+		continue;
+	}
+	if ( $existing instanceof WP_Post && in_array( $g['slug'], $relink, true ) && ! in_array( $g['slug'], $refresh, true ) ) {
+		$before = array_map( static fn( $r ) => (string) ( $r['label'] ?? '' ), (array) get_field( 'guide_links', $existing->ID ) );
+		$after  = array_map( static fn( $r ) => (string) ( $r['label'] ?? '' ), $link_rows( $g ) );
+		printf( "  LINKS post %d\n    before: %s\n    after:  %s\n", $existing->ID, implode( ' | ', $before ), implode( ' | ', $after ) );
+		if ( $apply ) {
+			update_field( 'guide_links', $link_rows( $g ), $existing->ID );
+			echo "    links written\n";
+		}
+		echo "\n";
 		continue;
 	}
 	if ( $existing instanceof WP_Post && in_array( $g['slug'], $refresh, true ) ) {
@@ -549,7 +669,10 @@ foreach ( $guides as $g ) {
 		}
 		printf( "    %-13s %d question(s) -> %d\n", 'guide_faq', count( (array) get_field( 'guide_faq', $existing->ID ) ), count( $g['faq'] ) );
 		printf( "    %-13s -> %s\n", 'reviewed', (string) ( $g['reviewed'] ?? '' ) );
+		printf( "    %-13s -> %d link(s)%s\n", 'guide_links', count( $link_rows( $g ) ), empty( $g['seo_title'] ) ? '' : ', seo title: ' . $g['seo_title'] );
 		if ( $apply ) {
+			update_field( 'guide_links', $link_rows( $g ), $existing->ID );
+			$seo_title( $existing->ID, $g );
 			wp_update_post( array( 'ID' => $existing->ID, 'post_excerpt' => $g['excerpt'] ) );
 			update_field( 'guide_intro', $g['intro'], $existing->ID );
 			update_field( 'quick_answer', (string) ( $g['quick_answer'] ?? '' ), $existing->ID );
@@ -605,6 +728,7 @@ foreach ( $guides as $g ) {
 	update_field( 'methodology', $g['method'], $post_id );
 	update_field( 'guide_faq', $g['faq'], $post_id );
 	update_field( 'guide_links', $g['links'], $post_id );
+	$seo_title( $post_id, $g );
 	update_field( 'editorially_reviewed_date', $g['reviewed'] ?? gmdate( 'Y-m-d' ), $post_id );
 	if ( ! empty( $g['quick_answer'] ) ) {
 		update_field( 'quick_answer', $g['quick_answer'], $post_id );

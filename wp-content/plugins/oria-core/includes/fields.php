@@ -1508,7 +1508,7 @@ function register_best_of_fields(): void {
 							'label'        => 'Price note (optional)',
 							'type'         => 'text',
 							'placeholder'  => 'From $35 — price checked September 2026',
-							'instructions' => 'Replaces the automatic "From $X" from the listing. Leave empty to use the listing price, or "Check current pricing" when unknown.',
+							'instructions' => 'Replaces the automatic "From $X" from the listing. Leave empty to use the listing price, or "Price not published" when unknown.',
 							'wrapper'      => array( 'width' => '40' ),
 						),
 						array(

@@ -1838,6 +1838,28 @@
    ]
   },
   {
+   "slug": "head-spa",
+   "name": "Head spa",
+   "categories": [
+    "spa",
+    "beauty"
+   ],
+   "aliases": [
+    "japanese head spa",
+    "korean head spa",
+    "scalp spa",
+    "head spa ritual",
+    "scalp ritual",
+    "head and scalp spa",
+    "ultimate head spa ritual"
+   ],
+   "traits": [
+    "Scalp cleanse, steam and massage",
+    "Drying varies, so ask before you book",
+    "Longer rituals add a facial"
+   ]
+  },
+  {
    "slug": "bathhouse",
    "name": "Bathhouse",
    "categories": [

@@ -347,5 +347,27 @@
    "Casual classes, no membership"
   ],
   "note": "Studio has left Locke Lane; mat-only classes at The Raw Space, Henley Brook. Private sessions and intro classes no longer offered on its site."
+ },
+ {
+  "slug": "lush-skin-and-body",
+  "requested_by": "Oria Haven, 3 Oct 2026 - tags the new head-spa service (data/services.json) so the listing joins the head spa facet and the Best head spas guide's browse link; head spa menu verified on the business's own site",
+  "terms": {
+   "service": {
+    "add": [
+     "head-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "ardor-organics",
+  "requested_by": "Oria Haven, 3 Oct 2026 - tags the new head-spa service (data/services.json) so the listing joins the head spa facet and the Best head spas guide's browse link; head spa menu verified on the business's own site",
+  "terms": {
+   "service": {
+    "add": [
+     "head-spa"
+    ]
+   }
+  }
  }
 ]
