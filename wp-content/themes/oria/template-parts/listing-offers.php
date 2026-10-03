@@ -64,8 +64,30 @@ $oria_src_label = static function ( array $o ): string {
 		: __( 'Advertised by the business', 'oria' );
 };
 $oria_n = 0;
+
+/*
+ * Collapsed by default: a one-line banner (the offer and its price, or how
+ * many offers are nearby) with a plus to open the full showcase. A native
+ * <details>, so it works without JavaScript, is keyboard-operable and the
+ * content stays in the page for crawlers. #offers in the URL opens it.
+ */
+$oria_bar_x     = (array) ( $oria_offer['extra'] ?? array() );
+$oria_bar_label = $oria_offer ? ( empty( $oria_offer['advertised'] ) ? __( 'Offer', 'oria' ) : __( 'Advertised offer', 'oria' ) ) : __( 'Offers nearby', 'oria' );
+$oria_bar_text  = $oria_offer
+	? (string) $oria_offer['title']
+	: sprintf( /* translators: 1: count, 2: category */ _n( '%1$s current %2$s offer', '%1$s current %2$s offers', count( $oria_more ), 'oria' ), number_format_i18n( count( $oria_more ) ), $oria_cl );
+$oria_bar_price = (string) ( $oria_bar_x['price'] ?? '' );
 ?>
-<section class="wrap oh-offers" id="offers" aria-labelledby="oh-offers-title">
+<details class="wrap oh-offers" id="offers" data-oh-offers>
+	<summary class="oh-offers__bar" aria-label="<?php echo esc_attr( sprintf( /* translators: 1: label, 2: offer */ __( '%1$s: %2$s. Show details', 'oria' ), $oria_bar_label, $oria_bar_text ) ); ?>">
+		<span class="oh-offers__bar-label"><?php echo esc_html( $oria_bar_label ); ?></span>
+		<span class="oh-offers__bar-text"><?php echo esc_html( $oria_bar_text ); ?></span>
+		<?php if ( '' !== $oria_bar_price ) : ?>
+			<span class="oh-offers__bar-price"><?php echo esc_html( $oria_bar_price ); ?></span>
+		<?php endif; ?>
+		<span class="oh-offers__plus" aria-hidden="true"><span></span><span></span></span>
+	</summary>
+	<div class="oh-offers__inner">
 	<div class="oh-offers__head">
 		<p class="micro"><?php esc_html_e( 'Offers & intro passes', 'oria' ); ?></p>
 		<h2 class="h2" id="oh-offers-title"><?php echo esc_html( $oria_head ); ?></h2>
@@ -188,4 +210,6 @@ $oria_n = 0;
 	<?php endif; ?>
 
 	<?php get_template_part( 'template-parts/offers-signup', null, array( 'source' => 'listing', 'listing' => $oria_id ) ); ?>
-</section>
+	</div>
+	<script>(function(d){if(location.hash==='#offers')d.open=true;addEventListener('hashchange',function(){if(location.hash==='#offers'){d.open=true;}});})(document.getElementById('offers'));</script>
+</details>
