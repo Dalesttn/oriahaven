@@ -924,13 +924,19 @@ function display_status( int $post_id ): string {
 }
 
 /**
- * The listing's live special offer, or null. Offers are a paid feature:
- * they only exist while the listing is claimed, and they expire themselves.
+ * The listing's live special offer, or null.
  *
- * @return array{title: string, text: string, until: string}|null
+ * Two kinds. An owner's offer, typed into the claimed listing, shows while
+ * the listing is claimed. An ADVERTISED offer is one Oria Haven read on the
+ * business's own site: it carries the page it came from and the date it
+ * was checked, shows on an unclaimed listing too, and is labelled as the
+ * business's own advertisement with a link to it. Both expire themselves.
+ *
+ * @return array{title: string, text: string, until: string, source: string, checked: string, advertised: bool}|null
  */
 function active_offer( int $post_id ): ?array {
-	if ( 'unclaimed' === claim_status( $post_id ) ) {
+	$source = esc_url_raw( (string) get_field( 'offer_source', $post_id ) );
+	if ( '' === $source && 'unclaimed' === claim_status( $post_id ) ) {
 		return null;
 	}
 	$title = trim( (string) get_field( 'offer_title', $post_id ) );
@@ -942,9 +948,12 @@ function active_offer( int $post_id ): ?array {
 		return null;
 	}
 	return array(
-		'title' => $title,
-		'text'  => (string) get_field( 'offer_text', $post_id ),
-		'until' => $until,
+		'title'      => $title,
+		'text'       => (string) get_field( 'offer_text', $post_id ),
+		'until'      => $until,
+		'source'     => $source,
+		'checked'    => (string) get_field( 'offer_checked', $post_id ),
+		'advertised' => '' !== $source,
 	);
 }
 

@@ -1,0 +1,234 @@
+{
+ "_about": "Advertised offers read from each business's own site. One row per listing. valid_until is the end date the site states, or empty when it states none (Offers\\sweep removes a row the day after it ends; re-check undated rows monthly). Set removed:true to clear a row. Applied by tools/apply-offers.php.",
+ "offers": [
+  {
+   "category": "spa",
+   "listing": "beyond-rest-east-perth",
+   "title": "Three floats for $177 for first-timers",
+   "details": "Introductory float package: three one-hour floats for $177 ($59 each) at Beyond Rest East Perth. First-time floaters, one per person, non-transferable. Buy and book online.",
+   "valid_until": "",
+   "source_url": "https://beyondrest.com.au/location-perth",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "spa",
+   "listing": "recovery-lab-jolimont",
+   "title": "10-Day Recovery Experience for $79, first visit",
+   "details": "Ten days of access to every modality at Recovery Lab Jolimont (private infrared sauna, ice baths, NuCalm, compression lounge, Compex) for $79. First-time guests only, one per person.",
+   "valid_until": "",
+   "source_url": "https://recoverylab.com.au/find-a-lab-jolimont/",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "spa",
+   "listing": "salt-float-studio-south-perth",
+   "title": "October special: buy one 60-minute float, get one free",
+   "details": "Salt Float Studio, South Perth, is running buy-one-get-one-free in October on 60-minute floats ($85), 45-minute sauna, 20-minute red light and compression sessions. Book through the links on the studio's site.",
+   "valid_until": "2026-10-31",
+   "source_url": "https://saltfloatstudio.com.au",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "spa",
+   "listing": "melt-sauna-cold-plunge-subiaco",
+   "title": "Buy 3 sauna sessions, get your 4th free",
+   "details": "Pay for three 60-minute sauna and cold plunge sessions at Melt Subiaco and the fourth is free. Advertised as a limited-time offer with no end date given; buy through the offer page.",
+   "valid_until": "",
+   "source_url": "https://meltsaunas.com/4-for-3sessions",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "spa",
+   "listing": "reclab-wembley",
+   "title": "7-day unlimited Reclab pass for $99",
+   "details": "Seven consecutive days of unlimited access to Reclab's hot and cold plunge pools, steam room, sauna and compression boots for $99 (a single casual session is $39.50). Claim via the special offers page.",
+   "valid_until": "",
+   "source_url": "https://www.reclab.com.au/special-offers/",
+   "checked": "2026-10-03"
+  },
+
+  {
+   "category": "bodywork",
+   "listing": "fremantle-remedial-massage-clinic",
+   "title": "Buy 6 remedial massages, get a 7th free",
+   "details": "Prepaid packs at Fremantle Remedial Massage Clinic: six 60-minute massages plus one free for $780 (save $130); 30, 45 and 90-minute packs too. Buy at the clinic; valid 12 months from purchase.",
+   "valid_until": "",
+   "source_url": "https://www.fremantlemassage.com.au/#prices",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "bodywork",
+   "listing": "royal-silk-remedial-thai-massage-rockingham",
+   "title": "Early bird: $10 off massages of an hour or more",
+   "details": "Book any massage of 60 minutes or longer starting between 8am and 2pm at Royal Silk Rockingham and pay $10 less. Conditions apply; call the clinic to confirm. Public-holiday surcharge applies.",
+   "valid_until": "",
+   "source_url": "https://royalsilkthaimassage.com.au",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "bodywork",
+   "listing": "modern-day-spa",
+   "title": "10% off your first appointment booked online",
+   "details": "New clients save 10% on their first visit to Modern Day Spa, Nedlands, by booking online and entering code BOOKONLINE10 at checkout. Applies to massage, facial and body treatments.",
+   "valid_until": "",
+   "source_url": "https://moderndayspa.com.au",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "bodywork",
+   "listing": "holiday-massage-spa-joondalup",
+   "title": "Spring Refresh: 90-minute massage package $120",
+   "details": "Footbath, 15 minutes of dry body brushing, a 60-minute full-body massage and a 15-minute head massage for $120 at Holiday Massage & Spa, Joondalup. Not combinable with other offers.",
+   "valid_until": "",
+   "source_url": "https://holidayspa.com.au/special-offer",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "bodywork",
+   "listing": "ganesha-wellness-spa",
+   "title": "Weekday Surprise Package $119, normally $213",
+   "details": "A 25-minute body scrub, 15-minute jasmine and coconut body mask, foot reflexology machine session, snacks and a glass of wine in the lounge for $119. Monday to Friday, 8am to 5pm; not valid with other discounts.",
+   "valid_until": "",
+   "source_url": "https://ganeshawellnessspa.com.au/current-special",
+   "checked": "2026-10-03"
+  },
+
+  {
+   "category": "yoga",
+   "listing": "the-yoga-garage",
+   "title": "14 days of unlimited hot yoga and Pilates for $39",
+   "details": "First-time visitors to The Yoga Garage, Scarborough, get 14 consecutive days of unlimited Hot Vinyasa, Bikram, Yin and Hot Core Pilates for $39. Perth residents only; buy online and arrive 15 minutes early.",
+   "valid_until": "",
+   "source_url": "https://theyogagarageperth.com.au/",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "yoga",
+   "listing": "horizon-yoga-cottesloe",
+   "title": "21 days of unlimited yoga for $59, buddy pass included",
+   "details": "New students get 21 days of unlimited classes at both the Cottesloe and Swanbourne studios for $59, props provided, plus one guest pass to bring a friend. Once per person; the 21 days start at your first class.",
+   "valid_until": "",
+   "source_url": "https://www.horizonyoga.com.au/intro-offer",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "yoga",
+   "listing": "yogahub-perth",
+   "title": "14 days of unlimited classes for $39",
+   "details": "New students get 14 days of unlimited Ashtanga, Vinyasa, Iyengar and Yin classes at Yogahub, Mount Hawthorn, for $39. One purchase per person; no suspensions; excludes courses, workshops and events.",
+   "valid_until": "",
+   "source_url": "https://yogahubperth.com.au/pricing/",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "yoga",
+   "listing": "hot-for-yoga-jandakot",
+   "title": "25 days of unlimited hot yoga for $49",
+   "details": "First-timers to Hot For Yoga, Jandakot, get 25 days of unlimited hot yoga for $49, mat and towel hire included. Book online or turn up 15 minutes before your first class.",
+   "valid_until": "",
+   "source_url": "https://www.hotforyoga.com.au/",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "yoga",
+   "listing": "yoga-corner-duncraig",
+   "title": "30 days of unlimited classes for $59, new students",
+   "details": "New students get 30 days of unlimited drop-in classes (Vinyasa Slow Flow, Yin, Yin/Yang, Gentle, Restore & Relax) at Yoga Corner, Duncraig, for $59. Buy through the new-students page; courses are separate.",
+   "valid_until": "",
+   "source_url": "https://www.yogacornerperth.com/newstudents",
+   "checked": "2026-10-03"
+  },
+
+  {
+   "category": "fitness",
+   "listing": "competitive-boxing-fitness-malaga",
+   "title": "2 weeks unlimited classes + body scan for $49",
+   "details": "New members get two weeks of unlimited boxing and fitness classes at Competitive Boxing & Fitness, Malaga, plus an Evolt 360 body scan, for $49. New members only, no previous trial; limited time, no end date given.",
+   "valid_until": "",
+   "source_url": "https://competitiveboxing.com.au/index.php?option=com_sppagebuilder&view=page&id=64",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "fitness",
+   "listing": "element-pilates-vic-park",
+   "title": "14 days unlimited reformer Pilates for $69",
+   "details": "New members get 14 days of unlimited reformer classes (Classic, Powerhouse, Sweat and Burn, Mums and Bubs) at Element Pilates, Victoria Park, for $69. The 14 days run from your first class.",
+   "valid_until": "",
+   "source_url": "https://elementpilates.com.au/",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "fitness",
+   "listing": "proactive-pilates-scarborough",
+   "title": "New clients: 4 reformer classes for $49",
+   "details": "New clients get four reformer Pilates classes for $49 at Proactive Pilates, Scarborough (Horizon Building, 18 Brighton Rd). Buy through the booking link on the studio's homepage. New clients only.",
+   "valid_until": "",
+   "source_url": "https://www.proactivepilates.com.au",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "fitness",
+   "listing": "strong-pilates-rockingham",
+   "title": "STRONG Experience: 10 days unlimited for $29.50",
+   "details": "The STRONG Experience intro pass gives unlimited reformer-based sessions for 10 days at STRONG Pilates Rockingham for $29.50, advertised as half price. Buy via the booking section of the location page.",
+   "valid_until": "",
+   "source_url": "https://strongpilates.com.au/location/rockingham/",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "fitness",
+   "listing": "flying-high-aerial-arts-studios-malaga",
+   "title": "New students: 2 weeks unlimited classes for $95",
+   "details": "New students get 14 days of unlimited beginner-friendly pole, flexibility and conditioning classes at Flying High Aerial Arts, Malaga, for $95. Once per new student; buy through the studio's booking link.",
+   "valid_until": "",
+   "source_url": "https://flyinghighaerialartsstudios.com.au/",
+   "checked": "2026-10-03"
+  },
+
+  {
+   "category": "beauty",
+   "listing": "skin-wellness-clinic-northbridge",
+   "title": "Lash Focus package $135 (RRP $169) until end of October",
+   "details": "Lash lift, lash tint, hydrating eye mask, head massage, aftercare serum and a reusable lash brush for $135 (RRP $169) at Skin Wellness Clinic, Northbridge. The clinic's Aug to Oct 2026 quarterly special.",
+   "valid_until": "2026-10-31",
+   "source_url": "https://skinwellnessclinic.com.au/specials",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "beauty",
+   "listing": "cult-cosmetica-inglewood",
+   "title": "Book The Sculpt in October, your second is $220",
+   "details": "Book The Sculpt 75-minute facial ($260) at Cult Cosmetica, Inglewood, in October 2026 and a second Sculpt within six weeks is $220. From Tuesday 6 October; one second visit per client; not with other promotions.",
+   "valid_until": "2026-10-31",
+   "source_url": "https://www.cultcosmetica.com.au/pages/specials",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "beauty",
+   "listing": "endota-spa-joondalup",
+   "title": "20% off the Spring Glow Spa Package, code GLOW20",
+   "details": "The 75-minute Spring Glow Spa Package (Relax Massage, Organic Express Facial, Hyaluronic Eye Mask) is 20% off with code GLOW20 online or in-spa. Monday to Friday, excluding public holidays, until 30 November 2026.",
+   "valid_until": "2026-11-30",
+   "source_url": "https://endotaspa.com.au/pages/spa/joondalup",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "beauty",
+   "listing": "serendipity-medi-spa-canning-vale",
+   "title": "Spring skin needling facial $249, was $378",
+   "details": "A 50-minute Spring Signature Facial with full-face skin needling, deep cleanse, hydrating sheet mask with hand and arm massage and booster serum for $249 (usually $378). Bundle of three $597. Limited bundles.",
+   "valid_until": "",
+   "source_url": "https://serendipitymedispa.com.au/specials/",
+   "checked": "2026-10-03"
+  },
+  {
+   "category": "beauty",
+   "listing": "reda-and-co-claremont",
+   "title": "First visit: spray tan + 20-minute LED session $50",
+   "details": "New visitors to REDA & CO, Claremont, get a spray tan plus a 20-minute LED light session for $50 on their first visit. Reserve online through the studio's booking page.",
+   "valid_until": "",
+   "source_url": "https://reda-andco.com/pages/light-therapy",
+   "checked": "2026-10-03"
+  }
+ ]
+}

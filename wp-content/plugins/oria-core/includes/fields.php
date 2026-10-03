@@ -661,6 +661,23 @@ function register_listing_fields(): void {
 					'return_format'  => 'Y-m-d',
 					'instructions'   => 'The offer hides itself after this date. Leave empty for no end date.',
 				),
+				array(
+					'key'          => 'field_oria_offer_source',
+					'name'         => 'offer_source',
+					'label'        => 'Special offer — where it is advertised',
+					'type'         => 'url',
+					'placeholder'  => 'https://…',
+					'instructions' => 'For an offer Oria Haven found on the business\'s own site (not typed by the owner): the exact page it appears on. With this set, the offer shows on an unclaimed listing too, labelled as advertised by the business and linking here.',
+				),
+				array(
+					'key'            => 'field_oria_offer_checked',
+					'name'           => 'offer_checked',
+					'label'          => 'Special offer — last checked',
+					'type'           => 'date_picker',
+					'display_format' => 'j F Y',
+					'return_format'  => 'Y-m-d',
+					'instructions'   => 'When the advertised offer was last confirmed on that page.',
+				),
 
 				// --- Photos & practical info --------------------------------
 				array(

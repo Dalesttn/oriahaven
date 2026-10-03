@@ -1036,6 +1036,15 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
  * old section menu.
  */
 ?>
+<?php
+/*
+ * Current offers among the places this page shows -- after the Dock, before
+ * the ribbon and the list. Only live offers (Theme\active_offer), five at
+ * most; the strip is absent when there are none.
+ */
+get_template_part( 'template-parts/category-offers', null, array( 'ids' => $oria_ids, 'label' => $oria_facet ? $oria_h1_shown : $oria_pname ) );
+?>
+
 <div class="xc-ribbon xc-js" id="xcRibbon" role="region" aria-label="<?php esc_attr_e( 'Refine these places', 'oria' ); ?>">
 	<div class="wrap xc-ribbon__row">
 		<span class="xc-ribbon__cat"><?php echo esc_html( $oria_facet ? $oria_h1_shown : $oria_psent ); ?></span>
