@@ -615,74 +615,6 @@ while ( have_posts() ) :
 				</button>
 			</div>
 
-			<?php
-			/*
-			 * Offers live in the decide card's footer: this listing's own
-			 * offer first (labelled "Advertised" when Oria Haven read it on
-			 * the business's site -- with the date and a link to the page,
-			 * since the offer is theirs to honour), then up to three other
-			 * live offers in the listing's category. Nothing when there are
-			 * none.
-			 */
-			$oria_more_offers = array();
-			$oria_oc          = null;
-			if ( function_exists( '\Oria\Core\Offers\among' ) && function_exists( '\Oria\Core\Categories\primary_for' ) && function_exists( '\Oria\Core\Intents\listings_in' ) ) {
-				$oria_oc = \Oria\Core\Categories\primary_for( $oria_id );
-				if ( $oria_oc instanceof WP_Term ) {
-					$oria_more_offers = \Oria\Core\Offers\among( array_diff( array_map( 'intval', \Oria\Core\Intents\listings_in( $oria_oc ) ), array( $oria_id ) ), 3 );
-				}
-			}
-			?>
-			<?php if ( $oria_offer || $oria_more_offers ) : ?>
-				<div class="xp-decide__offers">
-					<?php if ( $oria_offer ) : ?>
-						<div class="xp-decide__offer">
-							<p class="xp-label"><?php echo esc_html( ! empty( $oria_offer['advertised'] ) ? __( 'Advertised offer', 'oria' ) : __( 'Offer', 'oria' ) ); ?></p>
-							<p class="xp-decide__offer-title"><?php echo esc_html( $oria_offer['title'] ); ?></p>
-							<?php if ( $oria_offer['text'] ) : ?>
-								<p class="xp-decide__offer-text"><?php echo esc_html( $oria_offer['text'] ); ?></p>
-							<?php endif; ?>
-							<p class="xp-decide__offer-meta">
-								<?php if ( $oria_offer['until'] ) : ?>
-									<span><?php printf( esc_html__( 'Until %s', 'oria' ), esc_html( mysql2date( 'j F Y', $oria_offer['until'] ) ) ); ?></span>
-								<?php endif; ?>
-								<?php if ( ! empty( $oria_offer['advertised'] ) ) : ?>
-									<span>
-										<?php
-										echo esc_html(
-											'' !== (string) $oria_offer['checked']
-												? sprintf( /* translators: %s: date */ __( 'As advertised on their site, checked %s.', 'oria' ), mysql2date( 'j F Y', $oria_offer['checked'] ) )
-												: __( 'As advertised on their site.', 'oria' )
-										);
-										?>
-									</span>
-									<a href="<?php echo esc_url( \Oria\Theme\outbound( $oria_offer['source'], 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer_source" data-oria-id="<?php echo (int) $oria_id; ?>"><?php esc_html_e( 'See the offer', 'oria' ); ?><span class="xp-vh"> <?php esc_html_e( '(opens their site)', 'oria' ); ?></span><?php echo arrow(); // phpcs:ignore ?></a>
-								<?php endif; ?>
-							</p>
-							<?php
-							// Collapsed until they click through to the offer -- the moment they want the next one.
-							get_template_part( 'template-parts/offers-signup', null, array( 'source' => 'offer_click', 'listing' => $oria_id, 'hidden' => true ) );
-							?>
-						</div>
-					<?php endif; ?>
-					<?php if ( $oria_more_offers ) : ?>
-						<div class="xp-decide__others">
-							<p class="xp-label"><?php echo esc_html( sprintf( /* translators: %s: category */ __( 'Other offers in %s', 'oria' ), \Oria\Theme\tname( $oria_oc ) ) ); ?></p>
-							<ul class="xp-rail__offerlist">
-								<?php foreach ( $oria_more_offers as $oria_mo ) : ?>
-									<li>
-										<a href="<?php echo esc_url( (string) get_permalink( $oria_mo['id'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_mo['id'] ) ) ); ?></a>
-										<span><?php echo esc_html( $oria_mo['offer']['title'] ); ?></span>
-									</li>
-								<?php endforeach; ?>
-							</ul>
-							<a class="xp-rail__more" href="<?php echo esc_url( (string) get_term_link( $oria_oc ) . '#offers' ); ?>"><?php esc_html_e( 'All offers in this category', 'oria' ); ?><?php echo arrow(); // phpcs:ignore ?></a>
-						</div>
-					<?php endif; ?>
-					<?php get_template_part( 'template-parts/offers-signup', null, array( 'source' => 'listing', 'listing' => $oria_id ) ); ?>
-				</div>
-			<?php endif; ?>
-
 			<?php if ( 'featured' === $oria_display || 'unclaimed' !== $oria_status || $oria_ig || $oria_fbk ) : ?>
 			<p class="xp-decide__trust">
 				<?php if ( 'featured' === $oria_display ) : ?>
@@ -727,6 +659,12 @@ while ( have_posts() ) :
 			</p>
 		<?php endif; ?>
 	</section>
+
+	<?php
+	// Offers: this business's own as the main card, then others in its
+	// category -- its own box straight after the header. template-parts/listing-offers.php.
+	get_template_part( 'template-parts/listing-offers', null, array( 'id' => $oria_id ) );
+	?>
 
 	<?php if ( '' !== $oria_hours_json ) : ?>
 		<script type="application/json" id="xp-hours-data"><?php echo $oria_hours_json; // phpcs:ignore WordPress.Security.EscapeOutput -- wp_json_encode. ?></script>

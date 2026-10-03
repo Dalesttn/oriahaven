@@ -64,6 +64,7 @@ foreach ( $data['offers'] as $o ) {
 	foreach ( \Oria\Core\Offers\FIELDS as $f ) {
 		$have[ $f ] = (string) get_field( $f, $id );
 	}
+	$have_extra = (string) get_post_meta( $id, \Oria\Core\Offers\META, true );
 
 	if ( $claimed ) {
 		printf( "SKIP       %s -- claimed; the owner runs this listing's offer\n", $post->post_title );
@@ -87,6 +88,7 @@ foreach ( $data['offers'] as $o ) {
 			foreach ( \Oria\Core\Offers\FIELDS as $f ) {
 				update_field( $f, '', $id );
 			}
+			delete_post_meta( $id, \Oria\Core\Offers\META );
 		}
 		++$n['cleared'];
 		continue;
@@ -109,8 +111,16 @@ foreach ( $data['offers'] as $o ) {
 		++$n['skipped'];
 		continue;
 	}
+	/*
+	 * The structured part the listing card shows -- kind, price, basis,
+	 * inclusions, eligibility, terms -- as one JSON meta beside the ACF
+	 * fields. Only what the row states; nothing is derived from the prose.
+	 */
+	$extra = \Oria\Core\Offers\extra_from( $o );
+	$extra_json = $extra ? (string) wp_json_encode( $extra, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) : '';
+
 	// ACF stores dates as Ymd; compare on the normalised form.
-	$same = true;
+	$same = $extra_json === $have_extra;
 	foreach ( $want as $f => $v ) {
 		if ( str_replace( '-', '', $have[ $f ] ) !== str_replace( '-', '', $v ) ) {
 			$same = false;
@@ -125,6 +135,11 @@ foreach ( $data['offers'] as $o ) {
 	if ( $apply ) {
 		foreach ( $want as $f => $v ) {
 			update_field( $f, $v, $id );
+		}
+		if ( '' !== $extra_json ) {
+			update_post_meta( $id, \Oria\Core\Offers\META, $extra_json );
+		} else {
+			delete_post_meta( $id, \Oria\Core\Offers\META );
 		}
 	}
 	++$n['written'];

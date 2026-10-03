@@ -954,7 +954,22 @@ function active_offer( int $post_id ): ?array {
 		'source'     => $source,
 		'checked'    => (string) get_field( 'offer_checked', $post_id ),
 		'advertised' => '' !== $source,
+		// kind / price / basis / includes / eligibility / terms, when the record states them.
+		'extra'      => function_exists( '\Oria\Core\Offers\extra' ) ? \Oria\Core\Offers\extra( $post_id ) : array(),
 	);
+}
+
+/**
+ * A price for screen readers: "$39" + "14-day pass" reads as "39 Australian
+ * dollars, 14-day pass"; a non-dollar price ("2 for 1", "10% off") is read as
+ * written. Display strings only -- nothing here computes a price.
+ */
+function offer_price_words( string $price, string $basis = '' ): string {
+	$words = $price;
+	if ( preg_match( '/^\$\s*([0-9][0-9,]*(?:\.[0-9]{1,2})?)(.*)$/', $price, $m ) ) {
+		$words = trim( $m[1] . ' ' . __( 'Australian dollars', 'oria' ) . $m[2] );
+	}
+	return '' !== $basis ? $words . ', ' . $basis : $words;
 }
 
 /* -------------------------------------------------------------------------

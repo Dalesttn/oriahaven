@@ -30,6 +30,41 @@ if ( ! defined( 'ABSPATH' ) ) {
 const CRON   = 'oria_offers_sweep';
 const OPTION = 'oria_offers_last_sweep';
 const FIELDS = array( 'offer_title', 'offer_text', 'offer_until', 'offer_source', 'offer_checked' );
+/** One JSON meta beside the ACF fields: the structured part the listing card shows. See extra_from(). */
+const META   = '_offer_extra';
+
+/**
+ * The structured part of an offer row, exactly as stated: kind (e.g.
+ * "Introductory pass"), price (a display string such as "$39", "2 for 1",
+ * "10% off" -- never computed), basis ("14-day pass", "normally $213"),
+ * up to three inclusions, one eligibility line, and the terms list. Empty
+ * entries are dropped; an empty result means the row has no structure.
+ *
+ * @return array{kind?:string,price?:string,basis?:string,includes?:list<string>,eligibility?:string,terms?:list<string>}
+ */
+function extra_from( array $row ): array {
+	$out = array();
+	foreach ( array( 'kind', 'price', 'basis', 'eligibility' ) as $k ) {
+		$v = trim( (string) ( $row[ $k ] ?? '' ) );
+		if ( '' !== $v ) {
+			$out[ $k ] = mb_substr( $v, 0, 120 );
+		}
+	}
+	foreach ( array( 'includes' => 3, 'terms' => 8 ) as $k => $max ) {
+		$list = array_values( array_filter( array_map( static fn( $s ): string => trim( (string) $s ), (array) ( $row[ $k ] ?? array() ) ) ) );
+		if ( $list ) {
+			$out[ $k ] = array_slice( $list, 0, $max );
+		}
+	}
+	return $out;
+}
+
+/** The stored structure for a listing's offer, or an empty array. */
+function extra( int $listing ): array {
+	$raw = (string) get_post_meta( $listing, META, true );
+	$arr = '' !== $raw ? json_decode( $raw, true ) : null;
+	return is_array( $arr ) ? $arr : array();
+}
 
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\schedule' );
@@ -109,6 +144,7 @@ function sweep(): array {
 		foreach ( FIELDS as $f ) {
 			update_field( $f, '', $id );
 		}
+		delete_post_meta( $id, META );
 		$done[] = $id;
 	}
 	update_option( OPTION, array( 'at' => $today, 'cleared' => $done ), false );
