@@ -10,6 +10,8 @@
  *   Dry run is the default and writes nothing. --apply writes.
  *   A guide that already has picks is left alone unless --replace is given.
  *   --publish also publishes each guide it writes to.
+ *   --only=slug[,slug] limits the run to those guides. Use it with --replace:
+ *   without it, --replace rewrites the picks of EVERY guide in the file.
  *
  * USAGE (from the WordPress root, on the server)
  *     php wp-content/plugins/oria-core/tools/apply-best-of-picks.php
@@ -34,6 +36,12 @@ $argv    = $argv ?? array();
 $apply   = in_array( '--apply', $argv, true );
 $replace = in_array( '--replace', $argv, true );
 $publish = in_array( '--publish', $argv, true );
+$only    = array();
+foreach ( $argv as $arg ) {
+	if ( str_starts_with( $arg, '--only=' ) ) {
+		$only = array_filter( array_map( 'trim', explode( ',', substr( $arg, 7 ) ) ) );
+	}
+}
 $file    = ORIA_CORE_DIR . 'data/best-of-picks.json';
 $data    = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : null;
 
@@ -46,6 +54,9 @@ $written = 0;
 
 foreach ( $data['guides'] as $g ) {
 	$slug  = (string) ( $g['slug'] ?? '' );
+	if ( $only && ! in_array( $slug, $only, true ) ) {
+		continue;
+	}
 	$guide = get_page_by_path( $slug, OBJECT, 'best_of' );
 	if ( ! $guide instanceof WP_Post ) {
 		printf( "NOT FOUND  guide /best/%s/ — run seed-best-of.php --apply first\n\n", $slug );

@@ -934,11 +934,15 @@
 			"choose": [
 				{
 					"listing": "crown-spa-perth",
-					"when": "you want a pool, sauna and steam circuit as part of the visit"
+					"when": "you want a pool, sauna and steam circuit included with the treatment"
 				},
 				{
 					"listing": "annasha-day-spa",
 					"when": "you are booking for two and want to be out of the city"
+				},
+				{
+					"listing": "solace-day-spa-scarborough",
+					"when": "you want a bathhouse by the beach for under $70"
 				},
 				{
 					"listing": "ganesha-wellness-spa",
@@ -946,7 +950,7 @@
 				},
 				{
 					"listing": "soothe-massage-dayspa-nedlands",
-					"when": "you want a spa open seven days with easy parking"
+					"when": "you want the lowest price for an hour, seven days a week"
 				},
 				{
 					"listing": "swan-valley-retreat",
@@ -959,8 +963,9 @@
 					"award": "best_day_spa",
 					"spotlight": "Best overall",
 					"best_for": "A full spa circuit",
-					"reason": "The most complete facilities of any spa in the guide: an Aqua Retreat with vitality pool, sauna, steam room and rainforest shower, in separate men's and women's areas, alongside the treatment rooms. Treatments of an hour or more include four hours of valet parking, which quietly removes the most annoying part of a city spa visit. Sixteen and over.",
-					"highlights": "Vitality pool sauna and steam, Subtle Energies and La Prairie, Valet parking with an hour treatment, Burswood",
+					"price_note": "60-min massage from $250 weekdays — price checked October 2026",
+					"reason": "The most complete facilities in the guide: an Aqua Retreat of vitality pool, sauna, steam room and rainforest shower, in separate men's and women's areas, included with any treatment of an hour or more — arrive an hour early to use it. Those treatments also come with four hours of valet parking. It is the dearest spa here, with a surcharge Friday to Sunday. Sixteen and over.",
+					"highlights": "Pool sauna and steam included, Valet parking with an hour treatment, Subtle Energies and La Prairie, Burswood",
 					"lead_badge": true
 				},
 				{
@@ -968,8 +973,9 @@
 					"award": "best_couples_spa",
 					"spotlight": "Best for two",
 					"best_for": "A couples afternoon in the hills",
-					"reason": "Five treatment rooms, three of them built for couples, in the gardens of a Gooseberry Hill property that started life as Kalamunda's first girls' high school. The menu runs from massage and Omnilux facials through to crystal body treatments and prenatal work, arranged into day packages. Tuesday to Saturday.",
-					"highlights": "Three couples rooms, Garden setting in the hills, Omnilux and prenatal treatments, Day packages",
+					"price_note": "60-min massage $195, two-hour packages from $390 — price checked October 2026",
+					"reason": "Five treatment rooms, three of them built for two, in the gardens of a Gooseberry Hill house that began as Kalamunda's first girls' high school. The menu runs from massage and Sodashi facials to crystal body treatments and pregnancy massage, arranged into packages of two to four and a half hours, each with a sound treatment. There is no pool or sauna — the garden is the setting. Tuesday to Saturday.",
+					"highlights": "Three couples rooms, Garden setting in the hills, Packages two to four and a half hours, Gooseberry Hill",
 					"lead_badge": true
 				},
 				{
@@ -977,32 +983,55 @@
 					"award": "best_luxury",
 					"spotlight": "Best private hire",
 					"best_for": "A hot tub and a night upstairs",
-					"reason": "A converted house on Kensington Street with three massage rooms, a cabin holding a cedar hot tub and a fireplace, and lounges and a terrace upstairs looking back at the city. There is an adults-only bed and breakfast above the spa, which makes it the one place here where the afternoon can simply continue.",
-					"highlights": "Cedar hot tub cabin with fireplace, Couples rooms, Terrace with city views, B&B upstairs",
+					"price_note": "60-min massage $129, Day Spa Package $299 — price checked October 2026",
+					"reason": "A boutique spa on Kensington Street with three massage rooms for singles or couples, and a 40-jet jacuzzi with a fireplace in its own cabin — an add-on, from $99 for half an hour for two. The two-hour Day Spa Package is $299, or $550 for a couple. Suites upstairs mean the afternoon can simply continue; children under fourteen are not catered for.",
+					"highlights": "Jacuzzi cabin with fireplace, Couples rooms, Day packages from $299, Suites upstairs",
 					"lead_badge": true
 				},
 				{
 					"listing": "soothe-massage-dayspa-nedlands",
 					"award": "best_day_spa",
+					"spotlight": "Best value",
 					"best_for": "Open seven days",
-					"reason": "A 240-square-metre spa on Stirling Highway run by a remedial therapist of more than ten years and a skin therapist of fifteen. Open seven days from 9am to 6pm with free parking at the front — the two things that most often decide whether a spa booking actually happens. A German-designed infrared sauna sits alongside the treatment rooms.",
-					"highlights": "Open seven days, Free parking at the front, Infrared sauna, HydroPeptide facials and head spa",
+					"price_note": "60-min massage $120, infrared sauna $70 for two — price checked October 2026",
+					"reason": "A 240-square-metre spa on Stirling Highway run by a remedial therapist of more than ten years and a skin therapist of fifteen, and the cheapest hour of massage in the guide. Open seven days from 9am to 6pm with free parking out the front. A German-designed infrared sauna takes two for $70 the half hour, or comes inside the Stress Release package at $300.",
+					"highlights": "Open seven days, Free parking at the front, Infrared sauna for two, HydroPeptide facials and head spa",
 					"lead_badge": true
+				},
+				{
+					"listing": "solace-day-spa-scarborough",
+					"award": "best_day_spa",
+					"best_for": "A bathhouse by the beach",
+					"price_note": "Bathhouse $69 an hour, 60-min massage $181 — price checked October 2026",
+					"reason": "On the Esplanade at Scarborough, inside the Rendezvous Hotel: a day spa that has added a bathhouse of magnesium tub, ice bath, sauna and monsoon shower, at $69 an hour on its own or $224 with an hour's massage. Couples packages use an adjoining double room with its own steam room. Treatments run Monday to Saturday, Sundays by appointment.",
+					"highlights": "Bathhouse $69 an hour, Magnesium tub ice bath and sauna, Couples steam room, Scarborough",
+					"lead_badge": false
 				},
 				{
 					"listing": "swan-valley-retreat",
 					"award": "best_day_spa",
 					"best_for": "Water in every form",
-					"reason": "An unusually broad menu for a day spa: massage, facials and clay treatments alongside hydrotherapy, floatation, and an Oasis of sauna, ice bath and spa. Day visitors are explicitly welcome six days a week, with Oasis and float sessions running Sundays too, and three rooms for anyone who would rather stay over.",
-					"highlights": "Floatation and hydrotherapy, Sauna and ice bath sessions, Day visitors welcome, Henley Brook",
+					"price_note": "60-min massage $175, Oasis from $165 for two — price checked October 2026",
+					"reason": "An unusually broad menu for a day spa: massage, facials and clay treatments alongside hydrotherapy, floatation, and an Oasis of cedar sauna, ice bath and jetted hot tub, booked for up to four from $165 an hour for two. Treatments run Monday to Saturday, with Oasis and float sessions on Sundays too, and three rooms for anyone who would rather stay over.",
+					"highlights": "Floatation and hydrotherapy, Sauna ice bath and hot tub, Couples packages, Henley Brook",
+					"lead_badge": false
+				},
+				{
+					"listing": "le-beau-clinic-spa-kardinya",
+					"award": "best_day_spa",
+					"best_for": "Everything priced up front",
+					"price_note": "50-min Swedish massage $169, packages from $350 — price checked October 2026",
+					"reason": "A 900-square-metre spa and clinic on Gilbertson Road, open since 1997 and one of the few in Perth to publish its whole price list. Ten treatment rooms sit alongside an infrared sauna, a hydrotherapy spa, Vichy showers and a private alfresco spa used in the couples packages. There is a secure car park with disabled bays, and Thursdays run to 9pm.",
+					"highlights": "Full price list published, Alfresco couples spa, Infrared sauna and hydrotherapy, Kardinya",
 					"lead_badge": false
 				},
 				{
 					"listing": "urban-retreat-day-spa-rockingham",
 					"award": "best_day_spa",
 					"best_for": "South of the river",
-					"reason": "On Railway Terrace at Rockingham Beach and open since 2007, with massage, facials, skin needling, Dermalux LED, body wraps and a sauna, grouped into packages for one or two. Lift access for wheelchairs, and gift vouchers sold online, by phone or in store — worth knowing if you are buying it as a present.",
-					"highlights": "Open since 2007, Couples packages, Sauna and Dermalux LED, Lift access",
+					"price_note": "60-min massage $169, couples from $359 — price checked October 2026",
+					"reason": "On Railway Terrace at Rockingham Beach and open since 2007, with massage, facials, skin needling, Dermalux LED, body wraps and an infrared sauna ($35 for half an hour), grouped into packages for one or two. It says plainly that it does not do deep tissue or remedial massage. Lift access for wheelchairs, and gift vouchers sold online or in store. Closed Sundays and Mondays.",
+					"highlights": "Open since 2007, Couples packages, Infrared sauna and Dermalux LED, Lift access",
 					"lead_badge": false
 				}
 			]

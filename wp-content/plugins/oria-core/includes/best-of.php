@@ -643,7 +643,14 @@ function description( string $desc ): string {
 		return '' !== $desc ? $desc : hub_lede();
 	}
 	if ( '' === $desc && is_singular( POST_TYPE ) ) {
-		return wp_trim_words( intro( (int) get_the_ID() ), 28, '…' );
+		/*
+		 * The excerpt is written as a summary; the intro is the page's opening
+		 * paragraph, and 28 words of it shipped as "…it is whether there…".
+		 * Excerpt first, then the intro, both cut on a sentence or a word.
+		 */
+		$guide   = (int) get_the_ID();
+		$excerpt = trim( wp_strip_all_tags( (string) get_post_field( 'post_excerpt', $guide ) ) );
+		return \Oria\Core\Seo\snippet( wp_specialchars_decode( '' !== $excerpt ? $excerpt : intro( $guide ), ENT_QUOTES ) );
 	}
 	return $desc;
 }

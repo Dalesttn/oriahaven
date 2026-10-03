@@ -41,6 +41,13 @@ $argv    = $argv ?? array();
 $apply   = in_array( '--apply', $argv, true );
 $publish = in_array( '--publish', $argv, true );
 $sample  = in_array( '--sample-picks', $argv, true );
+// --refresh=slug[,slug]: rewrite an EXISTING guide's copy from this file (see the run loop).
+$refresh = array();
+foreach ( $argv as $a ) {
+	if ( str_starts_with( $a, '--refresh=' ) ) {
+		$refresh = array_filter( array_map( 'trim', explode( ',', substr( $a, 10 ) ) ) );
+	}
+}
 
 /* ------------------------------------------------------------- the guides */
 
@@ -321,20 +328,21 @@ $guides = array(
 	array(
 		'slug'         => 'day-spas-perth',
 		'title'        => 'Best day spas in Perth',
-		'excerpt'      => 'Perth day spas worth the afternoon — city, coast and hills — with couples rooms, saunas and what each one actually has on site.',
-		'intro'        => "A day spa is bought for an occasion more often than for a treatment, so the thing that matters is rarely the menu — it is whether there is a couples room, whether you can sit in a sauna afterwards, how long you get to stay, and how far you have to drive. These are the Perth spas worth the afternoon, from a hotel spa with a pool circuit to a hills garden and a converted East Perth house with a cedar hot tub.",
-		'quick_answer' => "Crown Spa at Burswood is the most complete: an Aqua Retreat with vitality pool, sauna and steam alongside the treatment rooms, and valet parking included with an hour-long treatment. Annasha in Gooseberry Hill has three couples rooms in a garden setting up in the hills. Ganesha in East Perth has a cedar hot tub cabin and rooms upstairs if you want to stay. Soothe in Nedlands is open seven days with free parking out the front.",
+		'excerpt'      => 'Eight Perth day spas compared on what is on site and what it costs — an hour of massage runs $120 to $250 — plus couples rooms, saunas and bathhouses.',
+		'intro'        => "A day spa is bought for an occasion more often than for a treatment, so the thing that matters is rarely the menu — it is whether there is a couples room, whether you can sit in a sauna afterwards, how long you get to stay, how far you have to drive, and what the afternoon will actually cost. These are the Perth spas worth it, from a hotel spa with a pool circuit to a hills garden, a beachside bathhouse and an East Perth spa with a jacuzzi cabin. Every price here was checked on the spa's own site in October 2026.",
+		'quick_answer' => "Crown Spa at Burswood is the most complete: its Aqua Retreat of vitality pool, sauna and steam comes with any treatment of an hour, which starts at $250. For two, Annasha in Gooseberry Hill has three couples rooms in a hills garden, with two-hour packages from $390. For the lowest price, Soothe in Nedlands charges $120 for an hour's massage and opens seven days. For a sauna and ice bath by the beach, Solace in Scarborough runs a bathhouse at $69 an hour. Prices checked October 2026.",
 		'category'     => 'relax',
 		'practice'     => 'spa',
 		'featured'     => true,
 		'award'        => 'best_day_spa',
-		'reviewed'     => '2026-09-16',
-		'method'       => "We looked at what is physically on site rather than at the treatment list, because that is what separates one spa afternoon from another: couples rooms, sauna or steam, a pool or hot tub, how many days a week it opens, parking, and whether packages and gift vouchers are sold. Prices are named only where the spa publishes them.",
+		'reviewed'     => '2026-10-03',
+		'method'       => "We looked at what is physically on site rather than at the treatment list, because that is what separates one spa afternoon from another: couples rooms, sauna or steam, a pool or hot tub, how many days a week it opens, parking, and whether packages and gift vouchers are sold. Every price was checked on the spa's own website or menu in October 2026 and is named only where the spa publishes it; spas change prices, and some add a weekend surcharge.",
 		'faq'          => array(
-			array( 'question' => 'What does a day spa cost in Perth?', 'answer' => 'Individual treatments usually start around the price of a good massage and rise with length and skincare brand; packages that fill a morning or afternoon cost considerably more. Most Perth spas publish packages rather than a full price list, so the guide names figures only where a spa publishes them.' ),
-			array( 'question' => 'Which Perth day spas have couples rooms?', 'answer' => 'Annasha in Gooseberry Hill has three, and Urban Retreat in Rockingham, Manusa in East Fremantle, Serene in Scarborough and Ganesha in East Perth all run couples treatments. Ganesha also has a cedar hot tub cabin, which is the closest thing to a private spa afternoon in the guide.' ),
+			array( 'question' => 'What does a day spa cost in Perth?', 'answer' => 'Among the spas in this guide, an hour of massage runs from $120 at Soothe in Nedlands to $250 on a weekday at Crown Spa, with most between $169 and $195. Packages of about two hours start at $230 at Soothe, $299 at Ganesha and $390 at Annasha, and a full day runs from $795 at Swan Valley Retreat to $1,282 at Solace. Crown adds a surcharge Friday to Sunday. Prices checked October 2026.' ),
+			array( 'question' => 'Which Perth day spas include a sauna or pool?', 'answer' => 'Only Crown includes one with the treatment: its Aqua Retreat of vitality pool, sauna and steam comes with anything an hour or longer. Elsewhere it is extra. Solace in Scarborough runs its bathhouse at $69 an hour, Swan Valley Retreat books its Oasis of sauna, ice bath and hot tub from $165 an hour for two, Soothe charges $70 for half an hour in its infrared sauna for two, and Urban Retreat charges $35.' ),
+			array( 'question' => 'Which Perth day spas have couples rooms?', 'answer' => 'Annasha in Gooseberry Hill has three, though it does not publish a couples price. Those that do: Swan Valley Retreat charges $340 for an hour\'s couples massage, Urban Retreat in Rockingham starts at $359 for two, Ganesha\'s two-hour Revive the Romance is $369, and Solace in Scarborough puts couples in an adjoining room with its own steam room. Le Beau in Kardinya adds a private alfresco spa to its couples packages.' ),
 			array( 'question' => 'What is the difference between a day spa and a wellness centre?', 'answer' => 'A day spa is built around treatments booked as an occasion, with the facilities — sauna, steam, a pool — as part of the visit. A wellness centre is usually built around practitioners you see repeatedly for a reason. Some Perth venues genuinely do both, and this guide notes where that is the case.' ),
-			array( 'question' => 'Can I buy a day spa gift voucher in Perth?', 'answer' => 'Yes, and nearly every spa here sells them. Urban Retreat sells vouchers online, by phone or in store, and Crown sells Crown gift cards usable across the property. Check the expiry terms before buying — in Australia gift cards must be valid for at least three years.' ),
+			array( 'question' => 'Can I buy a day spa gift voucher in Perth?', 'answer' => 'Yes, and nearly every spa here sells them. Soothe and Urban Retreat sell them online, and Swan Valley Retreat emails them as a PDF. Check the terms before buying — in Australia most gift cards must be valid for at least three years, and it is worth knowing whether a voucher buys a named package or a dollar amount.' ),
 			array( 'question' => 'Are there day spas in the Perth Hills or Swan Valley?', 'answer' => 'Yes. Annasha is in Gooseberry Hill, Amaroo Retreat & Spa is at Mount Helena with chalets and a day spa, and Swan Valley Retreat at Henley Brook runs a day spa with floatation, hydrotherapy, sauna and ice bath, and takes day visitors six days a week.' ),
 		),
 		'links'        => array(
@@ -516,6 +524,43 @@ foreach ( $guides as $g ) {
 	echo "{$g['title']}\n  /best/{$g['slug']}/\n";
 
 	$existing = get_page_by_path( $g['slug'], OBJECT, 'best_of' );
+	if ( $refresh && ! in_array( $g['slug'], $refresh, true ) ) {
+		echo "  (not named in --refresh, skipped)\n\n";
+		continue;
+	}
+	if ( $existing instanceof WP_Post && in_array( $g['slug'], $refresh, true ) ) {
+		/*
+		 * --refresh=<slug>: rewrite this guide's COPY from the file -- excerpt,
+		 * intro, quick answer, method, FAQ, reviewed date. Picks, links,
+		 * category and status are left as they are (picks have their own
+		 * tool). Named guides only, so a refresh never sweeps the set.
+		 */
+		$copy = array(
+			'excerpt'      => array( (string) $existing->post_excerpt, $g['excerpt'] ),
+			'guide_intro'  => array( (string) get_field( 'guide_intro', $existing->ID ), $g['intro'] ),
+			'quick_answer' => array( (string) get_field( 'quick_answer', $existing->ID ), (string) ( $g['quick_answer'] ?? '' ) ),
+			'methodology'  => array( (string) get_field( 'methodology', $existing->ID ), $g['method'] ),
+		);
+		printf( "  REFRESH post %d (%s)\n", $existing->ID, $existing->post_status );
+		foreach ( $copy as $k => $v ) {
+			if ( trim( $v[0] ) !== trim( $v[1] ) ) {
+				printf( "    %-13s %s\n    %-13s -> %s\n", $k, mb_substr( $v[0], 0, 100 ), '', mb_substr( $v[1], 0, 100 ) );
+			}
+		}
+		printf( "    %-13s %d question(s) -> %d\n", 'guide_faq', count( (array) get_field( 'guide_faq', $existing->ID ) ), count( $g['faq'] ) );
+		printf( "    %-13s -> %s\n", 'reviewed', (string) ( $g['reviewed'] ?? '' ) );
+		if ( $apply ) {
+			wp_update_post( array( 'ID' => $existing->ID, 'post_excerpt' => $g['excerpt'] ) );
+			update_field( 'guide_intro', $g['intro'], $existing->ID );
+			update_field( 'quick_answer', (string) ( $g['quick_answer'] ?? '' ), $existing->ID );
+			update_field( 'methodology', $g['method'], $existing->ID );
+			update_field( 'guide_faq', $g['faq'], $existing->ID );
+			update_field( 'editorially_reviewed_date', $g['reviewed'] ?? gmdate( 'Y-m-d' ), $existing->ID );
+			echo "    refreshed\n";
+		}
+		echo "\n";
+		continue;
+	}
 	if ( $existing instanceof WP_Post ) {
 		printf( "  exists already (post %d, %s) — left alone\n", $existing->ID, $existing->post_status );
 	}
