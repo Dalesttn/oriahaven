@@ -553,13 +553,13 @@ a.xa-stop__name:hover { text-decoration-color: currentColor; }
 .oag-ev__go { margin-top: auto; padding-top: 4px; font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .oag-empty { margin: 0; padding: 16px 18px; border: 1px dashed var(--oag-line); border-radius: 14px; color: var(--oag-muted); }
 
-/* 7 + 8. Plan your visit and Explore a little further: one dark band. */
+/* 7 + 8. Plan your visit and Explore a little further: one dark band, in the footer's petrol teal. */
 .oag-dark {
-  --oag-dk: #242C28;
-  --oag-dk-panel: #2D3631;
+  --oag-dk: var(--deep, #0E3B38);
+  --oag-dk-panel: rgba(255, 255, 255, .05);
   --oag-dk-line: rgba(252, 251, 247, .14);
   --oag-dk-ink: #F4F2EA;
-  --oag-dk-muted: #C4CEC6;
+  --oag-dk-muted: var(--mist-2, #C8D9CF);
   background: var(--oag-dk);
   color: var(--oag-dk-ink);
   padding-block: clamp(16px, 3vw, 32px);
@@ -588,7 +588,7 @@ a.xa-stop__name:hover { text-decoration-color: currentColor; }
   background: var(--oag-dk-panel); color: var(--oag-dk-ink); text-decoration: none;
   transition: border-color .15s ease, background-color .15s ease;
 }
-.oag-near__card:hover { border-color: rgba(252, 251, 247, .38); background: #333D37; color: var(--oag-dk-ink); }
+.oag-near__card:hover { border-color: rgba(252, 251, 247, .38); background: rgba(255, 255, 255, .09); color: var(--oag-dk-ink); }
 .oag-near__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
 .oag-near__pin { width: 24px; height: 24px; color: var(--oag-dk-muted); }
 .oag-near__count { padding: 6px 12px; border-radius: 10px; background: rgba(252, 251, 247, .09); font-size: 14.5px; color: var(--oag-dk-muted); font-variant-numeric: tabular-nums; }
