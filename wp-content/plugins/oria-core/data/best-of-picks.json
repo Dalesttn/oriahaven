@@ -20,6 +20,10 @@
 				{
 					"listing": "the-yoga-garage",
 					"when": "you want to try hot yoga cheaply"
+				},
+				{
+					"listing": "body-mind-yoga-mbsr",
+					"when": "you'd like a slower, gentler class in a community hall"
 				}
 			],
 			"picks": [
@@ -66,6 +70,14 @@
 					"reason": "Foundation classes sit on the timetable alongside vinyasa, yin and prenatal, in a Stirling Highway studio open seven days around class times. Private sessions are available if a group room isn't how you want to start, and there's a spa downstairs for afterwards.",
 					"highlights": "Foundation classes, Private sessions, Open seven days, Nedlands",
 					"lead_badge": false
+				},
+				{
+					"listing": "body-mind-yoga-mbsr",
+					"award": "beginner_friendly",
+					"best_for": "A gentle, unhurried start",
+					"reason": "Classes here are deliberately gentle and non-competitive: warm-ups for the neck, shoulders, hips and back, then stronger stretches and core work, finishing with breathing and meditation, all at your own pace. Both teachers are senior registered teachers with Yoga Australia, a first class is $21, and a term includes unlimited Zoom classes if you miss a week.",
+					"highlights": "Gentle classes for all ages, First class $21, Zoom included with a term, North Beach Churchlands and South Perth",
+					"lead_badge": true
 				}
 			]
 		},

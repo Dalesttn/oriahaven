@@ -217,14 +217,6 @@
   }
  },
  {
-  "slug": "body-mind-yoga-mbsr",
-  "requested_by": "Not requested — found while writing outreach, 16 Sep 2026. price_from held the 8-week MBSR course fee, so a $21 class was priced and banded as a $550 one, and the Experience DNA read affordability off the same field.",
-  "fields": {
-   "price_from": 21,
-   "price_band": "$"
-  }
- },
- {
   "slug": "ellenbrook-life-balance",
   "requested_by": "Oria Haven, 17 Sep 2026 -- the centre runs a Sunlighten SoloCarbon infrared cabin in 30-minute sessions and was never tagged for it, so it was missing from the spa and infrared-sauna pages it belongs on. Its own sauna page makes detox and calorie claims; none of those are repeated here or in the excerpt.",
   "terms": {
@@ -366,6 +358,32 @@
    "service": {
     "add": [
      "head-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "body-mind-yoga-mbsr",
+  "requested_by": "Oria Haven, 4 Oct 2026 -- the listing only described the MBSR course; the business's own site (home, class timetable, payment and what-to-expect pages, read 4 Oct 2026) shows weekly gentle yoga classes are the main offer.",
+  "title": "Body Mind Yoga Perth",
+  "excerpt": "Gentle yoga for all ages from Quentin and Bhumi, a husband-and-wife team who are both registered senior teachers with Yoga Australia and have taught in Perth for twenty-eight years between them. Each class opens with gentle warm-ups for the neck, shoulders, hips and lower back, moves into stronger stretches and core work, and finishes with breathing and meditation, in a non-competitive room where you move at your own pace. Classes run in heated community halls in North Beach, Churchlands and South Perth, eight a week across mornings and evenings. A first class is $21, a ten-week term $190 and a casual class $25; a term also includes unlimited Zoom classes. Quentin, trained through the Mindfulness Training Institute Australasia, also teaches the eight-week Mindfulness-Based Stress Reduction course ($550), and Bhumi runs sound healing sessions.",
+  "fields": {
+   "price_from": 21,
+   "price_band": "$"
+  },
+  "services": [
+   "Gentle yoga classes (10-week terms or casual)",
+   "Zoom online yoga classes",
+   "Breathing and meditation",
+   "Mindfulness-Based Stress Reduction (8-week course)",
+   "Sound healing sessions",
+   "Yallingup yoga retreat",
+   "Workplace yoga"
+  ],
+  "terms": {
+   "practice": {
+    "add": [
+     "sound"
     ]
    }
   }
