@@ -678,7 +678,8 @@
 					"best_for": "The full recovery set-up",
 					"reason": "Perth's first fully dedicated recovery centre: cold plunge pools alongside a magnesium-enriched hot plunge for contrast, a Finnish sauna, steam room, red light therapy and compression boots. Memberships run in two tiers and casual dips are available, which makes it usable for a one-off as well as a routine.",
 					"highlights": "Cold and hot plunge, Finnish sauna and steam, Casual dips, Wembley",
-					"lead_badge": true
+					"lead_badge": true,
+					"price_note": "$39.50 for 60 min (hot and cold plunge, sauna, steam) — price checked October 2026"
 				},
 				{
 					"listing": "ember-bath-house",
@@ -687,7 +688,8 @@
 					"best_for": "A bathhouse circuit",
 					"reason": "A Finnish sauna, steam room, hot mineral bath and ice bath, taken as a circuit on a single day pass in a communal bathhouse on Donovan Street. Open seven days, from 6am on Thursdays and Fridays and until 8pm most nights. All-gender, 18-plus, swimwear required.",
 					"highlights": "Circuit on a day pass, Open from 6am Thu–Fri, All-gender 18+, Osborne Park",
-					"lead_badge": false
+					"lead_badge": false,
+					"price_note": "$89 for 90 min (ice bath, hot mineral bath, sauna, steam) — price checked October 2026"
 				},
 				{
 					"listing": "loyly-recovery-stirling",
@@ -695,7 +697,8 @@
 					"best_for": "A private room",
 					"reason": "A Finnish sauna house on Erindale Road built around aufguss — a facilitator working steam and scent through the sauna in rounds — with hot and cold magnesium plunge pools alongside, and a separate private room for anyone who would rather do sauna and ice bath alone. Physiotherapy and massage book from the same room.",
 					"highlights": "Private sauna and ice bath room, Hot and cold magnesium pools, Aufguss rounds, Stirling",
-					"lead_badge": true
+					"lead_badge": true,
+					"price_note": "Memberships from $45 a week (one 60-min session) — price checked October 2026"
 				},
 				{
 					"listing": "melt-sauna-cold-plunge-subiaco",
