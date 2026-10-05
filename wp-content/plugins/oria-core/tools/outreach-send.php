@@ -388,6 +388,11 @@ if ( ! $batch ) {
 	exit( "Nothing left to send.\n" );
 }
 
+if ( $send && function_exists( '\Oria\Core\Mail\outreach_paused' ) && \Oria\Core\Mail\outreach_paused() ) {
+	fwrite( STDERR, "Refusing to send: outreach is paused site-wide (option oria_outreach_paused).\n" );
+	exit( 1 );
+}
+
 if ( $send && ! file_exists( $armed ) ) {
 	fwrite( STDERR, "Refusing to send: ARMED is missing.\nRun without --send, read the output, then: touch " . $armed . "\n" );
 	exit( 1 );

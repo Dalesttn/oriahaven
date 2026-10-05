@@ -518,7 +518,7 @@ function burn( int $listing_id ): void {
  * Write to one practice. Returns true if the mail was handed off.
  */
 function send( int $listing_id ): bool {
-	if ( blocked( $listing_id ) ) {
+	if ( blocked( $listing_id ) || \Oria\Core\Mail\outreach_paused() ) {
 		return false;
 	}
 

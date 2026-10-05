@@ -477,6 +477,12 @@ function heal( int $listing_id, string $upto ): void {
 function run( bool $dry = false, int $only = 0, bool $force = false, int $limit = 400 ): array {
 	$out = array( 'checked' => 0, 'eligible' => 0, 'sent' => 0, 'failed' => 0, 'skipped' => 0, 'lines' => array() );
 
+	// Outreach is paused site-wide: report what would go, send nothing.
+	if ( ! $dry && \Oria\Core\Mail\outreach_paused() ) {
+		$out['lines'][] = 'Outreach is paused (oria_outreach_paused). Nothing sent.';
+		return $out;
+	}
+
 	/*
 	 * --force overrides thresholds, not decisions. It gets past the five
 	 * clicks and the seven-day gap, which are rules of thumb; it does not

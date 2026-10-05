@@ -25,6 +25,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 const OPTION_FROM = 'oria_mail_from';
 const OPTION_NAME = 'oria_mail_from_name';
 
+/**
+ * The master switch for OUTREACH: email Oria sends to businesses that did
+ * not ask for it -- claim invitations (Invites), the claim outreach batch
+ * (tools/outreach-send.php) and the weekly practice impact reports. Paused
+ * unless the option is explicitly '0' (wp option update oria_outreach_paused 0).
+ * Transactional mail a person triggered (enquiries, receipts, claims,
+ * sign-ups, job alerts) is not outreach and is unaffected.
+ */
+const OPTION_OUTREACH_PAUSED = 'oria_outreach_paused';
+
+function outreach_paused(): bool {
+	return '0' !== (string) get_option( OPTION_OUTREACH_PAUSED, '1' );
+}
+
 function bootstrap(): void {
 	add_action( 'admin_init', __NAMESPACE__ . '\settings' );
 	add_filter( 'wp_mail_from', __NAMESPACE__ . '\from_address' );
