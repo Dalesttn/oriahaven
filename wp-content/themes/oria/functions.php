@@ -972,6 +972,39 @@ function offer_price_words( string $price, string $basis = '' ): string {
 	return '' !== $basis ? $words . ', ' . $basis : $words;
 }
 
+/**
+ * When an event happens, in words, from naive Perth timestamps (strtotime of
+ * event_start / event_end, printed with gmdate -- see the date trap in
+ * events.php). A start at exactly 00:00 means no time was published, so it
+ * prints the date alone rather than "12.00am". An event ending on a later
+ * day prints as a range: "Fri 13 – Sat 14 Nov".
+ *
+ *   $style 'short' "Fri 13 Nov, 6.00pm–7.30pm"   'long' "Friday 13 November · 6.00pm"
+ */
+function event_when( int $ts, int $te = 0, string $style = 'short' ): string {
+	if ( ! $ts ) {
+		return '';
+	}
+	$long    = 'long' === $style;
+	$day_fmt = $long ? 'l j F' : 'D j M';
+	$timed   = '00:00' !== gmdate( 'H:i', $ts );
+	$multi   = $te > $ts && gmdate( 'Y-m-d', $te ) !== gmdate( 'Y-m-d', $ts );
+
+	if ( $multi ) {
+		$same_month = gmdate( 'Y-m', $te ) === gmdate( 'Y-m', $ts );
+		$from       = gmdate( $same_month ? ( $long ? 'l j' : 'D j' ) : $day_fmt, $ts );
+		return $from . ' – ' . gmdate( $day_fmt, $te );
+	}
+	if ( ! $timed ) {
+		return gmdate( $day_fmt, $ts );
+	}
+	$out = gmdate( $day_fmt, $ts ) . ( $long ? ' · ' : ', ' ) . gmdate( 'g.ia', $ts );
+	if ( ! $long && $te > $ts && '00:00' !== gmdate( 'H:i', $te ) ) {
+		$out .= '–' . gmdate( 'g.ia', $te );
+	}
+	return $out;
+}
+
 /* -------------------------------------------------------------------------
  * Editable-content helpers.
  *

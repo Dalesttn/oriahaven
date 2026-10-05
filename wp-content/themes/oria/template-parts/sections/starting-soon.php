@@ -28,18 +28,19 @@ $oria_when = static function ( int $ts ): string {
 	$day   = gmdate( 'Y-m-d', $ts );
 	$today = gmdate( 'Y-m-d', $now );
 	$tmrw  = gmdate( 'Y-m-d', $now + DAY_IN_SECONDS );
-	$time  = gmdate( 'g.ia', $ts );
+	// 00:00 means no time was published: say the day, not "12.00am".
+	$time  = '00:00' === gmdate( 'H:i', $ts ) ? '' : ' ' . gmdate( 'g.ia', $ts );
 
 	if ( $day === $today ) {
-		return sprintf( __( 'Today %s', 'oria' ), $time );
+		return trim( sprintf( __( 'Today %s', 'oria' ), ltrim( $time ) ) );
 	}
 	if ( $day === $tmrw ) {
-		return sprintf( __( 'Tomorrow %s', 'oria' ), $time );
+		return trim( sprintf( __( 'Tomorrow %s', 'oria' ), ltrim( $time ) ) );
 	}
 	if ( $ts - $now < 6 * DAY_IN_SECONDS ) {
-		return gmdate( 'D', $ts ) . ' ' . $time;
+		return gmdate( 'D', $ts ) . $time;
 	}
-	return gmdate( 'j M', $ts ) . ' ' . $time;
+	return gmdate( 'j M', $ts ) . $time;
 };
 
 $oria_events = get_posts(

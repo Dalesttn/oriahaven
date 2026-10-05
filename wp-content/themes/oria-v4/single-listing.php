@@ -1386,7 +1386,7 @@ while ( have_posts() ) :
 								</div>
 								<div>
 									<?php if ( $oria_ev_ts ) : ?>
-										<span class="muted" style="font-size:.8125rem"><?php echo esc_html( gmdate( 'D, g.ia', $oria_ev_ts ) ); ?></span>
+										<span class="muted" style="font-size:.8125rem"><?php echo esc_html( '00:00' === gmdate( 'H:i', $oria_ev_ts ) ? gmdate( 'l', $oria_ev_ts ) : gmdate( 'D, g.ia', $oria_ev_ts ) ); ?></span>
 									<?php endif; ?>
 									<h3 class="h3" style="font-size:1.15rem;margin-top:.25rem"><a href="<?php echo esc_url( get_permalink( $oria_ev ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( $oria_ev ) ); ?></a></h3>
 									<?php if ( $oria_ev_venue ) : ?>

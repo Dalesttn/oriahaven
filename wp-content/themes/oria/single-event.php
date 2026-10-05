@@ -150,7 +150,7 @@ while ( have_posts() ) :
 			<aside class="aside">
 				<div class="keyfacts" style="grid-template-columns:1fr 1fr">
 					<?php if ( $oria_ts ) : ?>
-						<div><div class="keyfact__k"><?php esc_html_e( 'When', 'oria' ); ?></div><div class="keyfact__v"><?php echo esc_html( gmdate( 'D j M, g.ia', $oria_ts ) . ( $oria_te ? '–' . gmdate( 'g.ia', $oria_te ) : '' ) ); ?></div></div>
+						<div><div class="keyfact__k"><?php esc_html_e( 'When', 'oria' ); ?></div><div class="keyfact__v"><?php echo esc_html( \Oria\Theme\event_when( (int) $oria_ts, (int) $oria_te ) ); ?></div></div>
 					<?php endif; ?>
 					<?php if ( $oria_price ) : ?>
 						<div><div class="keyfact__k"><?php esc_html_e( 'Price', 'oria' ); ?></div><div class="keyfact__v"><?php echo esc_html( $oria_price ); ?></div></div>
@@ -297,7 +297,7 @@ while ( have_posts() ) :
 							data-save-event="<?php echo (int) get_the_ID(); ?>"
 							data-title="<?php echo esc_attr( wp_specialchars_decode( get_the_title(), ENT_QUOTES ) ); ?>"
 							data-url="<?php echo esc_url( (string) get_permalink() ); ?>"
-							data-when="<?php echo esc_attr( $oria_ts ? gmdate( 'D j M · g.ia', $oria_ts ) : '' ); ?>"
+							data-when="<?php echo esc_attr( \Oria\Theme\event_when( (int) $oria_ts, (int) $oria_te ) ); ?>"
 							data-where="<?php echo esc_attr( $oria_venue ); ?>">
 							<span class="savebtn__label"><?php esc_html_e( 'Save', 'oria' ); ?></span>
 						</button>

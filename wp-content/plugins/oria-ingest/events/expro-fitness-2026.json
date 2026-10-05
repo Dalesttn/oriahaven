@@ -1,0 +1,22 @@
+{
+  "generated": "2026-10-05",
+  "city": "Perth",
+  "_note": "Read on exprofitness.com.au (home, get-tickets, festival, FAQ pages) on 5 Oct 2026. The home page gives 13-14 November 2026; the Pro Summit page still shows last year's 21-22 November weekdays, so the home page date is used. No start times are published, so the event is date-only. The site does not say which of the two days is the public festival day, so the listing spans both and the price line says so.",
+  "events": [
+    {
+      "title": "ExPRO Fitness Summit & Festival 2026",
+      "start": "2026-11-13 00:00:00",
+      "end": "2026-11-14 00:00:00",
+      "type": "fitness",
+      "venue": "Scarborough Beach foreshore",
+      "suburb": "scarborough",
+      "price": "Festival day pass $45; two-day VIP pass $299",
+      "free": false,
+      "description": "Perth's fitness festival returns to the Scarborough Beach foreshore for a third year. One day is a professional summit for trainers, coaches and gym owners (VIP pass holders, 18+); the festival day is open to everyone, with beach workouts, group training, Pilates and dance fitness sessions, workshops, a fitness expo and marketplace, DJs, and family and youth activities. Bring activewear, water, a hat and sunscreen, and a towel or mat for the beach sessions.",
+      "booking_url": "https://megatix.com.au/white-label/expro-fitness-summit-festival-2026",
+      "source_url": "https://exprofitness.com.au/",
+      "organiser": "ExPRO",
+      "checked": "2026-10-05"
+    }
+  ]
+}

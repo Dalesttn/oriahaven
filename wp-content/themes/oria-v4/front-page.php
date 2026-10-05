@@ -300,8 +300,9 @@ $oria_events = get_posts(
 // event_start is naive local time: parse and print it without an offset
 // (the same convention as the parent's starting-soon section).
 $oria_when = static function ( WP_Post $ev, bool $long = false ): string {
-	$ts = strtotime( (string) get_field( 'event_start', $ev->ID ) );
-	return $ts ? gmdate( $long ? 'l j F · g.ia' : 'D j M · g.ia', $ts ) : '';
+	$ts = (int) strtotime( (string) get_field( 'event_start', $ev->ID ) );
+	$te = (int) strtotime( (string) get_field( 'event_end', $ev->ID ) );
+	return str_replace( ', ', ' · ', \Oria\Theme\event_when( $ts, $te, $long ? 'long' : 'short' ) );
 };
 $oria_ev_where = static function ( WP_Post $ev ): string {
 	foreach ( wp_get_post_terms( $ev->ID, 'area' ) as $t ) {
