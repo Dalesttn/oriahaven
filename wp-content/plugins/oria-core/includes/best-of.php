@@ -114,6 +114,14 @@ function bootstrap(): void {
 	add_action( 'trashed_post', __NAMESPACE__ . '\forget_index' );
 	add_action( 'untrashed_post', __NAMESPACE__ . '\forget_index' );
 
+	// A guide shows its picks' names, photos and prices, so a change to a
+	// listing has to reach the cached guide pages it appears in -- otherwise
+	// a new featured image shows on the listing and not on the guide.
+	add_action( 'save_post_' . PostTypes\LISTING, __NAMESPACE__ . '\purge_guides_for' );
+	add_action( 'updated_post_meta', __NAMESPACE__ . '\purge_on_thumbnail', 10, 3 );
+	add_action( 'added_post_meta', __NAMESPACE__ . '\purge_on_thumbnail', 10, 3 );
+	add_action( 'deleted_post_meta', __NAMESPACE__ . '\purge_on_thumbnail', 10, 3 );
+
 	add_filter( 'manage_' . POST_TYPE . '_posts_columns', __NAMESPACE__ . '\admin_columns' );
 	add_action( 'manage_' . POST_TYPE . '_posts_custom_column', __NAMESPACE__ . '\admin_column', 10, 2 );
 }
@@ -663,6 +671,27 @@ function forget_index( int $post_id ): void {
 /** @return list<array{guide:int, award:string, label:string, reason:string, lead:bool}> */
 function guides_for_listing( int $listing ): array {
 	return index()[ $listing ] ?? array();
+}
+
+/** Purge the page cache of every guide a listing is picked in. Once per listing per request. */
+function purge_guides_for( int $listing ): void {
+	static $done = array();
+	if ( isset( $done[ $listing ] ) || PostTypes\LISTING !== get_post_type( $listing ) ) {
+		return;
+	}
+	$done[ $listing ] = true;
+	foreach ( guides_for_listing( $listing ) as $row ) {
+		if ( ! empty( $row['guide'] ) ) {
+			do_action( 'litespeed_purge_post', (int) $row['guide'] );
+		}
+	}
+}
+
+/** A featured image set, changed or removed is a listing change too; it does not always fire save_post. */
+function purge_on_thumbnail( $meta_id, $object_id, $meta_key ): void {
+	if ( '_thumbnail_id' === $meta_key ) {
+		purge_guides_for( (int) $object_id );
+	}
 }
 
 /**
