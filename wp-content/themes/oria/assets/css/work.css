@@ -740,3 +740,13 @@
 }
 .ohj-related .ohw-link, .ohj-notice a { display: inline-flex; align-items: center; min-height: 44px; }
 .ohj-report .wkreport button, .ohj-report .wkreport .ohw-btn { min-height: 44px; }
+
+/* Workplace request page: the three steps, and the consent ticks as full-width rows rather than pills. */
+.wksteps__list { list-style: none; counter-reset: wkstep; margin: var(--s-3) 0 var(--s-3); padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+.wksteps__list li { counter-increment: wkstep; display: grid; gap: .3rem; padding-top: var(--s-3); border-top: 1px solid var(--line); }
+.wksteps__list li::before { content: counter(wkstep); font-family: var(--font-edit); font-size: 1.5rem; line-height: 1; color: var(--moss); }
+.wksteps__list strong { font-size: 1rem; color: var(--ink); }
+.wksteps__list span { font-size: var(--fs-sm); line-height: 1.55; color: var(--text-soft); }
+.wkenquire .wkcheck { display: flex; width: 100%; border-radius: var(--r-md); margin-top: .5rem; align-items: flex-start; padding: .7rem .9rem; }
+.wkenquire .wkcheck input { margin-top: .2rem; flex: none; }
+@media (max-width: 720px) { .wksteps__list { grid-template-columns: 1fr; } }

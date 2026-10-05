@@ -108,8 +108,52 @@ get_header();
 <!-- The two services -->
 <section class="wh-section wh-section--sage" id="services" aria-labelledby="whSvcTitle">
 	<div class="wh-wrap">
-		<h2 class="wh-h2" id="whSvcTitle"><?php esc_html_e( 'Two focused ways to help', 'oria' ); ?></h2>
-		<p class="wh-copy"><?php esc_html_e( 'Both are quoted after a short review, once the scope is agreed. Nothing is changed until you say yes.', 'oria' ); ?></p>
+		<h2 class="wh-h2" id="whSvcTitle"><?php esc_html_e( 'Focused ways to help', 'oria' ); ?></h2>
+		<p class="wh-copy"><?php esc_html_e( 'Start with the fixed-price booking-page refresh, or ask for a quote on something bigger. Nothing is changed until you say yes.', 'oria' ); ?></p>
+
+		<?php
+		/*
+		 * The booking-page refresh: one existing page, a fixed scope and a
+		 * fixed price. The price shows only once it is set in Settings
+		 * (WebHelp\pilot_price()), so nothing is quoted before the GST
+		 * treatment is decided. No results are promised.
+		 */
+		$oria_pilot = function_exists( '\Oria\Core\WebHelp\pilot_price' ) ? \Oria\Core\WebHelp\pilot_price() : '';
+		?>
+		<article class="wh-card wh-pilot" aria-labelledby="whSvcP">
+			<div class="wh-pilot__main">
+				<p class="wh-card__kicker"><?php esc_html_e( 'Fixed price · one page', 'oria' ); ?></p>
+				<h3 class="wh-card__title" id="whSvcP"><?php esc_html_e( 'Booking-page refresh', 'oria' ); ?></h3>
+				<p class="wh-card__text"><?php esc_html_e( 'A focused refresh of one existing page, with clearer information, a smoother mobile layout and a direct route to your booking system.', 'oria' ); ?></p>
+				<div class="wh-pilot__cols">
+					<div>
+						<p class="wh-pilot__h"><?php esc_html_e( 'Included', 'oria' ); ?></p>
+						<ul class="wh-card__list">
+							<li><?php esc_html_e( 'A review of the page and its mobile booking journey', 'oria' ); ?></li>
+							<li><?php esc_html_e( 'A clearer headline, service details and main booking button', 'oria' ); ?></li>
+							<li><?php esc_html_e( 'Mobile layout fixes on that page', 'oria' ); ?></li>
+							<li><?php esc_html_e( 'Connected to the booking system you already use', 'oria' ); ?></li>
+							<li><?php esc_html_e( 'Booking-click tracking added or checked, where your access allows', 'oria' ); ?></li>
+							<li><?php esc_html_e( 'One round of changes and a short handover', 'oria' ); ?></li>
+						</ul>
+					</div>
+					<div>
+						<p class="wh-pilot__h"><?php esc_html_e( 'Not included', 'oria' ); ?></p>
+						<ul class="wh-pilot__no">
+							<li><?php esc_html_e( 'A full website rebuild or a new booking platform', 'oria' ); ?></li>
+							<li><?php esc_html_e( 'Ongoing SEO, advertising or new photography', 'oria' ); ?></li>
+							<li><?php esc_html_e( 'Any guarantee of bookings or rankings', 'oria' ); ?></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="wh-pilot__side">
+				<p class="wh-pilot__price"><?php echo esc_html( '' !== $oria_pilot ? $oria_pilot : __( 'Fixed price', 'oria' ) ); ?></p>
+				<p class="wh-pilot__terms"><?php echo esc_html( '' !== $oria_pilot ? __( 'Pilot price. Timing is confirmed once I have seen the page and your access.', 'oria' ) : __( 'Confirmed before any work starts, once I have seen the page and your access.', 'oria' ) ); ?></p>
+				<a class="wh-btn wh-btn--primary" href="<?php echo esc_url( add_query_arg( 'service', 'refresh' ) ); ?>#request" data-wh-service="refresh" data-oria-event="website_help_cta_click" data-oria-placement="service_refresh"><?php esc_html_e( 'Ask about a booking-page refresh', 'oria' ); ?></a>
+			</div>
+		</article>
+
 		<div class="wh-cards">
 			<article class="wh-card" aria-labelledby="whSvcA">
 				<p class="wh-card__kicker"><?php esc_html_e( 'Improve what you have', 'oria' ); ?></p>

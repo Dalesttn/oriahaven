@@ -696,6 +696,8 @@ function notice(): ?array {
 		'feedback_saved' => __( 'Thank you — that stays private and helps us match better.', 'oria' ),
 		'cancelled'      => __( 'Cancelled. The business has been told, and the shift is open again.', 'oria' ),
 		'request_sent'   => __( 'Thanks — we will be in touch within one business day with practitioners who suit.', 'oria' ),
+		// A workplace request that was really stored (spam bounces land on request_sent instead).
+		'group_stored'   => __( 'Thanks — your request has reached a person at Oria Haven. We will look at what local providers can do and come back to you with options and any fees before anything is booked.', 'oria' ),
 	);
 	$bad = array(
 		'expired'       => __( 'That form had expired. Please try again.', 'oria' ),
@@ -719,6 +721,7 @@ function notice(): ?array {
 		'evidence'      => __( 'Please attach a PDF or photo under 5 MB.', 'oria' ),
 		'too_late'      => __( 'That shift has already started. Please contact the business directly.', 'oria' ),
 		'request_more'  => __( 'Please add your organisation, name, a valid email and a sentence or two about what you need.', 'oria' ),
+		'group_more'    => __( 'Please add your name and a work email, tell us roughly how many people and what kind of session, and tick that we may contact you about this request.', 'oria' ),
 	);
 	if ( isset( $ok[ $code ] ) ) {
 		return array( 'text' => $ok[ $code ], 'type' => 'ok' );

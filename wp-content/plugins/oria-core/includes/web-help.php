@@ -33,6 +33,12 @@ const OPT_RECIPIENT = 'oria_web_help_recipient';
 const OPT_REVIEW    = 'oria_web_help_review_line';
 const ACTION        = 'oria_web_help';
 const NONCE         = 'oria_web_help_nonce';
+/** The booking-page refresh pilot price as it is shown publicly; '' until Dale sets it. */
+const OPT_PILOT_PRICE = 'oria_web_help_pilot_price';
+
+function pilot_price(): string {
+	return trim( (string) get_option( OPT_PILOT_PRICE, '' ) );
+}
 
 /** Pipeline statuses, in order. */
 const STATUSES = array(
@@ -45,6 +51,7 @@ const STATUSES = array(
 
 /** What somebody can ask about. Keys travel in ?service= and the form. */
 const SERVICES = array(
+	'refresh' => 'Booking-page refresh',
 	'tuneup'  => 'Website tune-up',
 	'landing' => 'Workshop or offer page',
 	'unsure'  => 'Not sure yet',
@@ -148,6 +155,22 @@ function settings(): void {
 	);
 	register_setting( 'general', OPT_RECIPIENT, array( 'type' => 'string', 'sanitize_callback' => 'sanitize_email', 'default' => '' ) );
 	register_setting( 'general', OPT_REVIEW, array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+	register_setting( 'general', OPT_PILOT_PRICE, array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+	add_settings_field(
+		OPT_PILOT_PRICE,
+		__( 'Booking-page refresh price', 'oria' ),
+		static function (): void {
+			printf(
+				'<input type="text" class="regular-text" name="%1$s" id="%1$s" value="%2$s" placeholder="A$450 incl. GST"><p class="description">%3$s</p>',
+				esc_attr( OPT_PILOT_PRICE ),
+				esc_attr( pilot_price() ),
+				esc_html__( 'Shown on /websites/ exactly as typed, e.g. "A$450 incl. GST". Leave empty and the page says "Fixed price, confirmed before any work starts" until the GST treatment is settled.', 'oria' )
+			);
+		},
+		'general',
+		'oria_settings',
+		array( 'label_for' => OPT_PILOT_PRICE )
+	);
 	add_settings_field(
 		OPT_RECIPIENT,
 		__( 'Website help enquiries', 'oria' ),

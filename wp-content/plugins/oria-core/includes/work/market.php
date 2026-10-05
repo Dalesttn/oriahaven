@@ -120,7 +120,32 @@ function handle_request(): void {
 	$name  = Forms\txt( 'name', 80 );
 	$email = sanitize_email( Forms\txt( 'email', 120 ) );
 	$need  = Forms\area( 'need', 2000 );
-	if ( '' === $org || '' === $name || ! is_email( $email ) || strlen( $need ) < 20 ) {
+
+	/*
+	 * A workplace request is a team session, not a staffing brief: the
+	 * organiser picks a group size, a format and a TOTAL budget band from
+	 * fixed lists, the notes are optional, and they must say we may contact
+	 * them about it. Marketing is a separate, optional tick. Nothing is
+	 * forwarded to a provider without asking them first.
+	 */
+	$extra = array();
+	if ( 'corporate' === $market ) {
+		$size    = Forms\txt( 'group_size', 20 );
+		$format  = Forms\txt( 'format', 40 );
+		$budget  = Forms\txt( 'budget_total', 20 );
+		$contact = '1' === (string) ( $_POST['contact_ok'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked in Forms\check().
+		if ( '' === $name || ! is_email( $email ) || ! isset( GROUP_SIZES[ $size ] ) || ! isset( GROUP_FORMATS[ $format ] ) || ! $contact ) {
+			Forms\back( $back, 'group_more', '#enquire' );
+		}
+		$extra = array(
+			'group_size'   => GROUP_SIZES[ $size ],
+			'format'       => GROUP_FORMATS[ $format ],
+			'budget_total' => GROUP_BUDGETS[ $budget ] ?? GROUP_BUDGETS['unsure'],
+			'contact_ok'   => current_time( 'mysql' ),
+			'marketing_ok' => '1' === (string) ( $_POST['marketing_ok'] ?? '' ) ? current_time( 'mysql' ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		);
+		$org = '' !== $org ? $org : __( 'Workplace (no company given)', 'oria' );
+	} elseif ( '' === $org || '' === $name || ! is_email( $email ) || strlen( $need ) < 20 ) {
 		Forms\back( $back, 'request_more', '#enquire' );
 	}
 	$id = wp_insert_post(
@@ -132,7 +157,7 @@ function handle_request(): void {
 		)
 	);
 	if ( $id ) {
-		foreach ( array( 'market' => $market, 'org' => $org, 'name' => $name, 'email' => $email, 'phone' => Forms\txt( 'phone', 40 ), 'when' => Forms\txt( 'when', 120 ), 'where' => Forms\txt( 'where', 120 ), 'people' => Forms\txt( 'people', 40 ), 'budget' => Forms\txt( 'budget', 80 ), 'status' => 'new' ) as $k => $v ) {
+		foreach ( array( 'market' => $market, 'org' => $org, 'name' => $name, 'email' => $email, 'phone' => Forms\txt( 'phone', 40 ), 'when' => Forms\txt( 'when', 120 ), 'where' => Forms\txt( 'where', 120 ), 'people' => Forms\txt( 'people', 40 ), 'budget' => Forms\txt( 'budget', 80 ), 'status' => 'new' ) + $extra as $k => $v ) {
 			Work\set( (int) $id, $k, $v );
 		}
 		Notify\mail(
@@ -140,12 +165,36 @@ function handle_request(): void {
 			/* translators: %s: organisation */
 			sprintf( __( 'Talent request: %s', 'oria' ), $org ),
 			'retreat' === $market ? __( 'A retreat needs staff', 'oria' ) : __( 'A workplace wants wellness practitioners', 'oria' ),
-			array_filter( array( "$name, $org ($email)", Forms\txt( 'when', 120 ), Forms\txt( 'where', 120 ), $need ) ),
+			array_filter( array( "$name, $org ($email)", $extra ? sprintf( '%s · %s people · %s', $extra['format'], $extra['group_size'], $extra['budget_total'] ) : '', Forms\txt( 'when', 120 ), Forms\txt( 'where', 120 ), $need ) ),
 			array( admin_url( 'post.php?post=' . $id . '&action=edit' ), __( 'Open the request', 'oria' ) )
 		);
 	}
-	Forms\back( $back, 'request_sent', '#enquire' );
+	Forms\back( $back, $id && 'corporate' === $market ? 'group_stored' : 'request_sent', '#enquire' );
 }
+
+/** The workplace form's fixed choices. Keys travel in the form; labels are stored. */
+const GROUP_SIZES = array(
+	'u10'    => 'Under 10',
+	'10-25'  => '10 to 25',
+	'26-50'  => '26 to 50',
+	'51-100' => '51 to 100',
+	'o100'   => 'Over 100',
+);
+const GROUP_FORMATS = array(
+	'movement'   => 'Yoga or gentle movement',
+	'mindful'    => 'Mindfulness or meditation',
+	'breathwork' => 'Breathwork',
+	'massage'    => 'Chair massage',
+	'sound'      => 'Sound bath',
+	'unsure'     => 'Not sure yet, suggest something',
+);
+const GROUP_BUDGETS = array(
+	'unsure'  => 'Not sure yet',
+	'u500'    => 'Under $500 total',
+	'500-1k'  => '$500 to $1,000 total',
+	'1k-2500' => '$1,000 to $2,500 total',
+	'o2500'   => 'Over $2,500 total',
+);
 
 /* ------------------------------------------------------------------ courses */
 
@@ -199,10 +248,16 @@ function courses( string $profession = '' ): array {
 
 function request_box( \WP_Post $post ): void {
 	echo '<table class="widefat striped">';
-	foreach ( array( 'market', 'org', 'name', 'email', 'phone', 'when', 'where', 'people', 'budget' ) as $k ) {
+	foreach ( array( 'market', 'org', 'name', 'email', 'phone', 'when', 'where', 'group_size', 'format', 'budget_total', 'people', 'budget', 'contact_ok', 'marketing_ok' ) as $k ) {
+		if ( '' === (string) Work\meta( $post->ID, $k ) ) {
+			continue;
+		}
 		echo '<tr><th style="width:20%">' . esc_html( $k ) . '</th><td>' . esc_html( (string) Work\meta( $post->ID, $k ) ) . '</td></tr>';
 	}
 	echo '</table><p>' . esc_html__( 'Reply to the business directly. Introduce practitioners only with their agreement.', 'oria' ) . '</p>';
+	if ( 'corporate' === (string) Work\meta( $post->ID, 'market' ) ) {
+		echo '<p>' . esc_html__( 'Workplace pilot: ask providers for availability using the anonymised requirements (size, format, date window, budget band, suburb) first. Pass on the organiser’s name or email only after they agree. Agree ONE fee model before quoting (a coordination fee to the customer, or a referral fee from the provider, never both) and say which in the options you send.', 'oria' ) . '</p>';
+	}
 }
 
 /* ------------------------------------------------------------ salary guide */

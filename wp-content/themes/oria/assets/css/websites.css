@@ -82,6 +82,25 @@
 .wh-card__cta { align-self: flex-start; margin-top: auto; }
 .wh-card__list + .wh-card__note { margin-bottom: 8px; }
 
+/* The fixed-price pilot: one wide card above the quoted services. */
+.wh-pilot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 280px); gap: 0; padding: 0; margin-bottom: clamp(16px, 2vw, 24px); overflow: hidden; border-color: var(--wh-green); }
+.wh-pilot__main { display: flex; flex-direction: column; gap: 10px; padding: clamp(22px, 3vw, 32px); min-width: 0; }
+.wh-pilot__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px clamp(18px, 3vw, 36px); margin-top: 4px; }
+.wh-pilot__h { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--wh-ink); }
+.wh-pilot__no { display: grid; gap: 8px; margin: 6px 0 0; padding: 0; list-style: none; }
+.wh-pilot__no li { position: relative; padding-left: 22px; line-height: 1.5; color: var(--wh-muted); }
+.wh-pilot__no li::before { content: "–"; position: absolute; left: 4px; top: 0; color: var(--wh-muted); }
+.wh-pilot__side { display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: clamp(22px, 3vw, 32px); background: var(--wh-green); color: #FFFDF9; }
+.wh-pilot__price { margin: 0; font-family: var(--font-edit); font-size: clamp(1.75rem, 3vw, 2.375rem); line-height: 1.1; }
+.wh-pilot__terms { margin: 0; font-size: 14px; line-height: 1.55; color: rgba(255, 253, 249, .82); }
+.wh-pilot__side .wh-btn--primary { align-self: flex-start; background: #FFFDF9; color: var(--wh-ink); border-color: #FFFDF9; }
+.wh-pilot__side .wh-btn--primary:hover { background: var(--wh-sage); }
+.wh-pilot__side .wh-btn--primary:focus-visible { outline-color: #FFFDF9; }
+@media (max-width: 52rem) {
+	.wh-pilot { grid-template-columns: 1fr; }
+	.wh-pilot__cols { grid-template-columns: 1fr; }
+}
+
 /* Process */
 .wh-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; }
 .wh-step { min-width: 0; padding-top: 18px; border-top: 1px solid var(--wh-line); }
