@@ -140,6 +140,15 @@ foreach ( $data['guides'] as $g ) {
 		if ( ! empty( $g['quick_answer'] ) ) {
 			update_field( 'quick_answer', (string) $g['quick_answer'], $guide->ID );
 		}
+		// The shortlist's own heading and one-line introduction (optional; the
+		// template falls back to wording that suits any guide).
+		foreach ( array( 'shortlist_title', 'shortlist_intro' ) as $oria_k ) {
+			if ( array_key_exists( $oria_k, $g ) ) {
+				'' !== trim( (string) $g[ $oria_k ] )
+					? update_post_meta( $guide->ID, '_oria_' . $oria_k, sanitize_text_field( (string) $g[ $oria_k ] ) )
+					: delete_post_meta( $guide->ID, '_oria_' . $oria_k );
+			}
+		}
 		delete_transient( \Oria\Core\BestOf\INDEX_KEY );
 		if ( $publish && 'publish' !== $guide->post_status ) {
 			wp_update_post( array( 'ID' => $guide->ID, 'post_status' => 'publish' ) );

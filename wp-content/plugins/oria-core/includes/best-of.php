@@ -301,6 +301,98 @@ function quick_answer( int $guide ): string {
 }
 
 /**
+ * The shortlist at the top of a guide: its heading, one-line introduction,
+ * and up to three cards built from the spotlighted picks in editorial order.
+ * Each card carries the pick's rank (for the #pick-N anchor in the same
+ * guide), its spotlight label, best-for line and the first sentence of the
+ * editor's reason. Copy comes from optional guide meta written by the picks
+ * file; the fallback wording names nothing a guide does not contain.
+ *
+ * @return array{title:string, intro:string, cards:list<array>}
+ */
+function shortlist( int $guide ): array {
+	$entries = entries( $guide );
+	$cards   = array();
+	foreach ( $entries as $i => $e ) {
+		if ( '' === $e['spotlight'] ) {
+			continue;
+		}
+		$why = '';
+		if ( '' !== $e['reason'] && preg_match( '/^.+?[.!?](?=\s|$)/u', $e['reason'], $m ) ) {
+			$why = $m[0];
+		}
+		$cards[] = $e + array( 'rank' => $i + 1, 'why' => $why );
+		if ( 3 === count( $cards ) ) {
+			break;
+		}
+	}
+	$n     = count( $entries );
+	$words = array( 1 => 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve' );
+	$say   = static fn( int $k ): string => $words[ $k ] ?? number_format_i18n( $k );
+	$intro = trim( (string) get_post_meta( $guide, '_oria_shortlist_intro', true ) );
+	if ( '' === $intro && $n ) {
+		$intro = $cards && count( $cards ) < $n
+			/* translators: 1: number of picks in words, 2: number of shortlisted cards in words */
+			? sprintf( __( '%1$s picks in this guide. These are the %2$s we\'d start with.', 'oria' ), ucfirst( $say( $n ) ), $say( count( $cards ) ) )
+			/* translators: %s: number of picks in words */
+			: sprintf( __( '%s picks in this guide, each for a different reason.', 'oria' ), ucfirst( $say( $n ) ) );
+	}
+	$title = trim( (string) get_post_meta( $guide, '_oria_shortlist_title', true ) );
+	return array(
+		'title' => '' !== $title ? $title : __( 'Where we\'d start.', 'oria' ),
+		'intro' => $intro,
+		'cards' => $cards,
+	);
+}
+
+/**
+ * The quick answer with each pick's name linked to its section in the guide.
+ * Matches the full name, or a single distinctive first word ("Melt" for
+ * "Melt Sauna & Cold Plunge") when only that is used; each pick is linked
+ * once. Returns escaped HTML.
+ */
+function quick_answer_html( int $guide ): string {
+	$text = quick_answer( $guide );
+	if ( '' === $text ) {
+		return '';
+	}
+	$entries = entries( $guide );
+	$firsts  = array();
+	foreach ( $entries as $e ) {
+		$w = strtok( wp_specialchars_decode( get_the_title( $e['listing'] ), ENT_QUOTES ), ' ' );
+		$firsts[ (string) $w ] = ( $firsts[ (string) $w ] ?? 0 ) + 1;
+	}
+	$html = esc_html( $text );
+	$done = array();
+	foreach ( $entries as $i => $e ) {
+		$name  = wp_specialchars_decode( get_the_title( $e['listing'] ), ENT_QUOTES );
+		$first = (string) strtok( $name, ' ' );
+		$tries = array( $name );
+		if ( mb_strlen( $first ) >= 4 && 1 === ( $firsts[ $first ] ?? 0 ) ) {
+			$tries[] = $first;
+		}
+		foreach ( $tries as $t ) {
+			$needle = esc_html( $t );
+			$pos    = mb_strpos( $html, $needle );
+			if ( false === $pos || isset( $done[ $e['listing'] ] ) ) {
+				continue;
+			}
+			// Whole words only, and never inside a link already made.
+			$before = $pos ? mb_substr( $html, $pos - 1, 1 ) : ' ';
+			$after  = mb_substr( $html, $pos + mb_strlen( $needle ), 1 );
+			if ( preg_match( '/[\p{L}\p{N}]/u', $before . $after ) || substr_count( mb_substr( $html, 0, $pos ), '<a ' ) > substr_count( mb_substr( $html, 0, $pos ), '</a>' ) ) {
+				continue;
+			}
+			$link = '<a href="#pick-' . ( $i + 1 ) . '">' . $needle . '</a>';
+			$html = mb_substr( $html, 0, $pos ) . $link . mb_substr( $html, $pos + mb_strlen( $needle ) );
+			$done[ $e['listing'] ] = true;
+			break;
+		}
+	}
+	return $html;
+}
+
+/**
  * "Choose X if …" -- the decision block. Rows name a listing and a
  * condition; the listing must be published or the row is dropped.
  *

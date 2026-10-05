@@ -125,9 +125,79 @@ $oria_hero = get_post_thumbnail_id( $oria_id ) ? (string) wp_get_attachment_imag
 </section>
 </div>
 
-<?php if ( $oria_qa || $oria_spots ) : ?>
-	<section class="wrap bosection">
-		<?php if ( $oria_qa ) : ?>
+<?php
+/*
+ * The Oria shortlist: a heading and one line, the guide's facts as a quiet
+ * row, up to three image-led cards for the spotlighted picks (first one
+ * featured), the quick answer with its names linked into the guide, and a
+ * slim row of links to each part of the page. Every card goes to its pick's
+ * own section further down, so the cards are a shortcut, not a detour.
+ */
+$oria_sl        = BestOf\shortlist( $oria_id );
+$oria_sl_cards  = $oria_sl['cards'];
+$oria_qa_html   = BestOf\quick_answer_html( $oria_id );
+$oria_sl_facts  = array_values( array_filter( $oria_facts, static fn( array $f ): bool => __( 'Prices checked', 'oria' ) !== $f['label'] ) );
+$oria_sl_check  = array_values( array_filter( $oria_facts, static fn( array $f ): bool => __( 'Prices checked', 'oria' ) === $f['label'] ) );
+?>
+<?php if ( $oria_sl_cards || $oria_qa || $oria_facts || count( $oria_jump ) > 1 ) : ?>
+<section class="oria-shortlist" aria-labelledby="oria-shortlist-title">
+	<div class="wrap oria-shortlist__inner">
+		<header class="oria-shortlist__head">
+			<p class="oria-shortlist__eyebrow"><?php esc_html_e( 'The Oria shortlist', 'oria' ); ?></p>
+			<h2 class="oria-shortlist__title" id="oria-shortlist-title"><?php echo esc_html( $oria_sl['title'] ); ?></h2>
+			<?php if ( '' !== $oria_sl['intro'] ) : ?>
+				<p class="oria-shortlist__intro"><?php echo esc_html( $oria_sl['intro'] ); ?></p>
+			<?php endif; ?>
+			<?php if ( $oria_sl_facts || $oria_sl_check ) : ?>
+				<p class="oria-shortlist__facts">
+					<?php foreach ( $oria_sl_facts as $oria_fi => $oria_f ) : ?>
+						<?php if ( $oria_fi ) : ?><span class="oria-shortlist__dot" aria-hidden="true">·</span><?php endif; ?>
+						<span><?php echo esc_html( __( 'Picks', 'oria' ) === $oria_f['label'] || __( 'Suburbs', 'oria' ) === $oria_f['label'] ? $oria_f['value'] . ' ' . mb_strtolower( $oria_f['label'] ) : $oria_f['label'] . ' ' . $oria_f['value'] ); ?></span>
+					<?php endforeach; ?>
+					<?php if ( $oria_sl_check ) : ?>
+						<span class="oria-shortlist__checked"><?php echo esc_html( sprintf( /* translators: %s: date */ __( 'Prices checked %s', 'oria' ), $oria_sl_check[0]['value'] ) ); ?></span>
+					<?php endif; ?>
+				</p>
+			<?php endif; ?>
+		</header>
+
+		<?php if ( $oria_sl_cards ) : ?>
+			<ul class="oria-shortlist__grid oria-shortlist__grid--<?php echo (int) count( $oria_sl_cards ); ?>">
+				<?php foreach ( $oria_sl_cards as $oria_ci => $oria_c ) : ?>
+					<?php
+					$oria_cl    = (int) $oria_c['listing'];
+					$oria_cname = \Oria\Theme\ptitle( get_post( $oria_cl ) );
+					$oria_thumb = (int) get_post_thumbnail_id( $oria_cl );
+					$oria_photo = $oria_thumb ? '' : ( function_exists( '\Oria\Core\Places\card_photo' ) ? (string) \Oria\Core\Places\card_photo( $oria_cl ) : '' );
+					$oria_eager = 0 === $oria_ci;
+					?>
+					<li class="oria-shortlist__item<?php echo 0 === $oria_ci ? ' oria-shortlist__item--featured' : ''; ?>">
+						<a class="oria-shortlist__card" href="#pick-<?php echo (int) $oria_c['rank']; ?>">
+							<span class="oria-shortlist__media">
+								<?php if ( $oria_thumb ) : ?>
+									<?php echo wp_get_attachment_image( $oria_thumb, 'oria-wide', false, array( 'alt' => '', 'loading' => $oria_eager ? 'eager' : 'lazy', 'decoding' => 'async', 'sizes' => $oria_eager ? '(max-width: 1099px) 100vw, 640px' : '(max-width: 699px) 100vw, (max-width: 1099px) 50vw, 320px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+								<?php elseif ( '' !== $oria_photo ) : ?>
+									<img src="<?php echo esc_url( $oria_photo ); ?>" alt="" width="800" height="600" loading="<?php echo $oria_eager ? 'eager' : 'lazy'; ?>" decoding="async">
+								<?php else : ?>
+									<span class="oria-shortlist__fallback" aria-hidden="true"><?php echo esc_html( mb_substr( $oria_cname, 0, 1 ) ); ?></span>
+								<?php endif; ?>
+								<span class="oria-shortlist__badge"><span class="badge--best__mark" aria-hidden="true">&#10022;</span> <?php echo esc_html( $oria_c['spotlight'] ); ?></span>
+							</span>
+							<span class="oria-shortlist__body">
+								<span class="oria-shortlist__name"><?php echo esc_html( $oria_cname ); ?></span>
+								<span class="oria-shortlist__where"><?php echo esc_html( implode( ' · ', array_filter( array( BestOf\suburb( $oria_cl ), $oria_c['best_for'] ) ) ) ); ?></span>
+								<?php if ( '' !== $oria_c['why'] ) : ?>
+									<span class="oria-shortlist__why"><?php echo esc_html( $oria_c['why'] ); ?></span>
+								<?php endif; ?>
+								<span class="oria-shortlist__go"><?php esc_html_e( 'See why we chose it', 'oria' ); ?> <span class="oria-shortlist__arrow" aria-hidden="true">&rarr;</span></span>
+							</span>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+
+		<?php if ( '' !== $oria_qa_html ) : ?>
 			<?php
 			/*
 			 * The quick answer: the guide in three sentences, for somebody
@@ -135,52 +205,24 @@ $oria_hero = get_post_thumbnail_id( $oria_id ) ? (string) wp_get_attachment_imag
 			 * so it is useful on its own and never a teaser.
 			 */
 			?>
-			<div class="boqa reveal">
-				<span class="micro"><?php esc_html_e( 'Quick answer', 'oria' ); ?></span>
-				<p><?php echo esc_html( $oria_qa ); ?></p>
+			<div class="oria-shortlist__qa">
+				<p class="oria-shortlist__qa-label"><?php esc_html_e( 'Quick answer', 'oria' ); ?></p>
+				<p class="oria-shortlist__qa-text"><?php echo $oria_qa_html; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in quick_answer_html(). ?></p>
 			</div>
 		<?php endif; ?>
-		<?php if ( $oria_spots ) : ?>
-			<ul class="bospots reveal">
-				<?php foreach ( $oria_spots as $oria_s ) : ?>
-					<li class="bospot">
-						<span class="bospot__label"><?php echo esc_html( $oria_s['spotlight'] ); ?></span>
-						<a class="bospot__name" href="<?php echo esc_url( (string) get_permalink( $oria_s['listing'] ) ); ?>"><?php echo esc_html( \Oria\Theme\ptitle( get_post( $oria_s['listing'] ) ) ); ?></a>
-						<span class="bospot__where"><?php echo esc_html( BestOf\suburb( $oria_s['listing'] ) ); ?></span>
-					</li>
-				<?php endforeach; ?>
-			</ul>
-		<?php endif; ?>
-	</section>
-<?php endif; ?>
 
-<?php if ( $oria_facts || count( $oria_jump ) > 1 ) : ?>
-	<?php
-	/*
-	 * What the guide covers, in numbers the picks themselves supply, and
-	 * the way to each part of the page -- so the table and the questions
-	 * are a tap away rather than ten screens down.
-	 */
-	?>
-	<section class="wrap bosection bosection--flush">
-		<div class="bofacts reveal">
-			<?php if ( $oria_facts ) : ?>
-				<dl class="bofacts__list">
-					<?php foreach ( $oria_facts as $oria_f ) : ?>
-						<div class="bofacts__item"><dt><?php echo esc_html( $oria_f['label'] ); ?></dt><dd><?php echo esc_html( $oria_f['value'] ); ?></dd></div>
-					<?php endforeach; ?>
-				</dl>
-			<?php endif; ?>
-			<?php if ( count( $oria_jump ) > 1 ) : ?>
-				<nav class="bojump" aria-label="<?php esc_attr_e( 'On this page', 'oria' ); ?>">
-					<span class="bojump__label"><?php esc_html_e( 'On this page', 'oria' ); ?></span>
+		<?php if ( count( $oria_jump ) > 1 ) : ?>
+			<nav class="oria-shortlist__nav" aria-label="<?php esc_attr_e( 'Explore this guide', 'oria' ); ?>">
+				<span class="oria-shortlist__nav-label"><?php esc_html_e( 'Explore this guide', 'oria' ); ?></span>
+				<span class="oria-shortlist__nav-links">
 					<?php foreach ( $oria_jump as $oria_j ) : ?>
 						<a href="<?php echo esc_attr( $oria_j[0] ); ?>"><?php echo esc_html( $oria_j[1] ); ?></a>
 					<?php endforeach; ?>
-				</nav>
-			<?php endif; ?>
-		</div>
-	</section>
+				</span>
+			</nav>
+		<?php endif; ?>
+	</div>
+</section>
 <?php endif; ?>
 
 <?php

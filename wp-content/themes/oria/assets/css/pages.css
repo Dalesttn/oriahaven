@@ -8565,3 +8565,105 @@ article.is-spotlit {
 .oh-category-offers__fold[open] .oh-category-offers__hide { display: inline; }
 .oh-category-offers__fold[open] .oh-category-offers__toggle { margin-bottom: var(--s-4); }
 @media (prefers-reduced-motion: reduce) { .oh-category-offers__plus { transition: none; } }
+
+/* =====================================================================
+   The Oria shortlist (single-best_of.php): heading and facts, three
+   image-led cards (first featured), the quick answer, and a slim row of
+   links into the guide. Scoped to .oria-shortlist; nothing here touches
+   global heading, link or card rules.
+   ===================================================================== */
+.oria-shortlist {
+  --os-bg: #F7F5EF;
+  --os-surface: #FFFFFF;
+  --os-ink: #173D35;
+  --os-muted: #5D6B65;
+  --os-border: #DEDFD6;
+  --os-brass: #B39A58;
+  --os-soft: #EEF1E9;
+  --os-radius: 18px;
+  color: var(--os-ink);
+  background: var(--os-bg);
+  padding-block: clamp(36px, 5vw, 64px);
+}
+.oria-shortlist__inner { max-width: min(var(--maxw), 1280px); }
+.oria-shortlist__head { margin-bottom: clamp(20px, 2.6vw, 28px); }
+.oria-shortlist__eyebrow { margin: 0 0 10px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--os-muted); }
+.oria-shortlist__title { margin: 0; max-width: 18ch; font-family: var(--font-edit); font-weight: 400; font-size: clamp(2rem, 4vw, 3.375rem); line-height: 1.1; letter-spacing: -0.015em; color: var(--os-ink); text-wrap: balance; }
+.oria-shortlist__intro { margin: 12px 0 0; max-width: 62ch; font-size: clamp(1rem, 1.2vw, 1.125rem); line-height: 1.6; color: var(--os-muted); }
+.oria-shortlist__facts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 14px 0 0; font-size: .9375rem; font-weight: 600; color: var(--os-ink); font-variant-numeric: tabular-nums; }
+.oria-shortlist__dot { color: var(--os-muted); font-weight: 400; }
+.oria-shortlist__checked { flex-basis: 100%; font-size: .875rem; font-weight: 400; color: var(--os-muted); }
+
+.oria-shortlist__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 22px; }
+.oria-shortlist__grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.oria-shortlist__grid--1 { grid-template-columns: minmax(0, 46rem); }
+.oria-shortlist__item { min-width: 0; display: flex; }
+.oria-shortlist__card {
+  display: flex; flex-direction: column; width: 100%; min-width: 0;
+  overflow: hidden; border: 1px solid var(--os-border); border-radius: var(--os-radius);
+  background: var(--os-surface); color: var(--os-ink); text-decoration: none;
+}
+.oria-shortlist__card:focus-visible { outline: 3px solid var(--os-ink); outline-offset: 4px; }
+.oria-shortlist__media { position: relative; display: block; height: clamp(220px, 20vw, 270px); background: var(--os-soft); overflow: hidden; }
+.oria-shortlist__media img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .22s ease; }
+.oria-shortlist__fallback { display: grid; place-items: center; width: 100%; height: 100%; font-family: var(--font-edit); font-size: 4.5rem; color: var(--os-ink); opacity: .35; background: linear-gradient(135deg, var(--os-soft), #F3EEDF); }
+.oria-shortlist__badge {
+  position: absolute; top: 16px; left: 16px;
+  display: inline-flex; align-items: center; gap: 6px; max-width: calc(100% - 32px);
+  padding: 6px 12px 6px 10px; border-radius: 999px; background: #FBF7EC; color: var(--os-ink);
+  font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; line-height: 1.2;
+  box-shadow: 0 1px 2px rgba(23, 61, 53, .12);
+}
+.oria-shortlist__badge .badge--best__mark { font-size: .9rem; }
+.oria-shortlist__body { display: flex; flex-direction: column; flex: 1; gap: 6px; padding: 22px 24px 24px; }
+.oria-shortlist__name { font-size: 1.25rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.oria-shortlist__item--featured .oria-shortlist__name { font-family: var(--font-edit); font-weight: 400; font-size: clamp(1.5rem, 2.2vw, 1.875rem); }
+.oria-shortlist__where { font-size: .875rem; color: var(--os-muted); }
+.oria-shortlist__why { margin-top: 4px; font-size: .9375rem; line-height: 1.55; color: #33463F; }
+.oria-shortlist__go { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: auto; padding-top: 8px; font-weight: 700; font-size: .9375rem; }
+.oria-shortlist__arrow { display: inline-block; transition: transform .22s ease; }
+@media (hover: hover) {
+  .oria-shortlist__card:hover .oria-shortlist__media img { transform: scale(1.025); }
+  .oria-shortlist__card:hover .oria-shortlist__arrow { transform: translateX(3px); }
+  .oria-shortlist__card:hover .oria-shortlist__go { text-decoration: underline; text-underline-offset: 4px; }
+}
+
+.oria-shortlist__qa {
+  display: grid; grid-template-columns: 9rem minmax(0, 75ch); gap: 8px 24px;
+  margin-top: clamp(20px, 2.6vw, 28px); padding: 22px 24px;
+  border-left: 2px solid var(--os-brass); border-radius: 16px; background: var(--os-soft);
+}
+.oria-shortlist__qa-label { margin: 2px 0 0; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--os-muted); }
+.oria-shortlist__qa-text { margin: 0; font-size: 1.0625rem; line-height: 1.65; color: var(--os-ink); }
+.oria-shortlist__qa-text a { color: var(--os-ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--os-brass); text-underline-offset: 3px; }
+.oria-shortlist__qa-text a:hover { text-decoration-thickness: 2px; }
+
+.oria-shortlist__nav { display: flex; align-items: center; gap: 8px 18px; margin-top: clamp(22px, 3vw, 32px); padding-top: 16px; border-top: 1px solid var(--os-border); }
+.oria-shortlist__nav-label { flex: none; font-size: .875rem; color: var(--os-muted); }
+.oria-shortlist__nav-links { display: flex; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: thin; padding-right: 24px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); }
+.oria-shortlist__nav-links a { flex: none; display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 10px; color: var(--os-ink); font-weight: 600; font-size: .9375rem; text-decoration: none; }
+.oria-shortlist__nav-links a:hover { background: var(--os-soft); }
+.oria-shortlist__nav-links a[aria-current="location"] { background: var(--os-soft); box-shadow: inset 0 -2px 0 var(--os-ink); }
+.oria-shortlist a:focus-visible { outline: 3px solid var(--os-ink); outline-offset: 3px; border-radius: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oria-shortlist__media img, .oria-shortlist__arrow { transition: none; }
+  .oria-shortlist__card:hover .oria-shortlist__media img, .oria-shortlist__card:hover .oria-shortlist__arrow { transform: none; }
+}
+@media (max-width: 1099px) {
+  .oria-shortlist__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .oria-shortlist__item--featured { grid-column: 1 / -1; }
+  .oria-shortlist__grid--2 .oria-shortlist__item--featured { grid-column: auto; }
+  .oria-shortlist__item--featured .oria-shortlist__media { height: clamp(240px, 34vw, 320px); }
+}
+@media (max-width: 699px) {
+  .oria-shortlist { padding-block: 36px; }
+  .oria-shortlist__grid, .oria-shortlist__grid--2 { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .oria-shortlist__item--featured { grid-column: auto; }
+  .oria-shortlist__media, .oria-shortlist__item--featured .oria-shortlist__media { height: clamp(200px, 56vw, 240px); }
+  .oria-shortlist__body { padding: 18px 20px 20px; }
+  .oria-shortlist__qa { grid-template-columns: minmax(0, 1fr); padding: 18px 20px; }
+  .oria-shortlist__qa-text { font-size: 1rem; }
+  .oria-shortlist__nav { flex-direction: column; align-items: stretch; gap: 4px; }
+  .oria-shortlist__nav-links { margin-inline: -4px; }
+}
