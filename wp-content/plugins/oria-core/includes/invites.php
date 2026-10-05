@@ -60,12 +60,24 @@ function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\route' );
 	add_filter( 'query_vars', __NAMESPACE__ . '\query_vars' );
 	add_action( 'template_redirect', __NAMESPACE__ . '\handle_link' );
+	add_action( 'phpmailer_init', __NAMESPACE__ . '\attach_alt_text' );
+
+	/*
+	 * While outreach is paused the whole sending side disappears: no queue
+	 * page, no Invite column or box, no Send handler and no daily cron.
+	 * Links in emails that already went out (claim, opt-out) keep working
+	 * above. Un-pausing (oria_outreach_paused = 0) brings it all back.
+	 */
+	if ( \Oria\Core\Mail\outreach_paused() ) {
+		add_action( 'admin_post_oria_invite', __NAMESPACE__ . '\refuse_paused' );
+		add_action( 'init', __NAMESPACE__ . '\unschedule' );
+		return;
+	}
 
 	add_filter( 'manage_listing_posts_columns', __NAMESPACE__ . '\column' );
 	add_action( 'manage_listing_posts_custom_column', __NAMESPACE__ . '\column_content', 20, 2 );
 	add_action( 'admin_post_oria_invite', __NAMESPACE__ . '\handle_send' );
 	add_action( 'admin_menu', __NAMESPACE__ . '\menu' );
-	add_action( 'phpmailer_init', __NAMESPACE__ . '\attach_alt_text' );
 	add_action( 'admin_notices', __NAMESPACE__ . '\notice' );
 	add_action( 'add_meta_boxes', __NAMESPACE__ . '\metabox' );
 
@@ -117,6 +129,25 @@ function schedule(): void {
 		return;
 	}
 	wp_schedule_event( $next->getTimestamp(), 'daily', CRON_HOOK );
+}
+
+/** Paused: take the daily run off the schedule so nothing fires. */
+function unschedule(): void {
+	if ( wp_next_scheduled( CRON_HOOK ) ) {
+		wp_clear_scheduled_hook( CRON_HOOK );
+	}
+}
+
+/** An old bookmarked Send link while paused: say why, send nothing. */
+function refuse_paused(): void {
+	wp_die(
+		esc_html__( 'Outreach is paused, so invitations are switched off. Nothing was sent.', 'oria' ),
+		esc_html__( 'Outreach paused', 'oria' ),
+		array(
+			'response'  => 403,
+			'back_link' => true,
+		)
+	);
 }
 
 /**
