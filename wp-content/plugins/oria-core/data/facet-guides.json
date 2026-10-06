@@ -12,13 +12,19 @@
         },
         {
           "category": "spa",
+          "facet": "cryotherapy",
+          "label": "Cryotherapy",
+          "line": "Cold air in a chamber for a few minutes, rather than cold water"
+        },
+        {
+          "category": "spa",
           "facet": "saunas",
           "label": "Saunas in Perth",
           "line": "Traditional and infrared"
         }
       ],
       "intro": [
-        "{count} places in Perth list an ice bath or cold plunge, and they fall into three kinds of room. Recovery studios, most of this list, sell the plunge by the session, usually alongside a sauna and often other equipment such as compression boots or red light. Bathhouses and a few day spas include an ice bath in a circuit with a sauna, steam room or hot bath. And a handful of gyms, yoga and Pilates studios keep a plunge beside the training floor.",
+        "Looking for cold therapy in Perth? {count} places here list an ice bath or cold plunge, and they fall into three kinds of room. Recovery studios, most of this list, sell the plunge by the session, usually alongside a sauna and often other equipment such as compression boots or red light. Bathhouses and a few day spas include an ice bath in a circuit with a sauna, steam room or hot bath. And a handful of gyms, yoga and Pilates studios keep a plunge beside the training floor.",
         "The biggest difference between them is whether you share. Some sessions are communal, with a group in the same sauna and pools at a set time, often for a flat hour; others are booked as a private room for one or two people, and a few places can be hired outright for a group. Each listing says which where the place publishes it.",
         "Where a session price is published, a sauna-and-plunge block starts at about $25 for thirty minutes and an hour runs about $35 to $45, with cheaper early-morning sessions at some rooms and packs or memberships at most. Each place sets its own prices and they change, so check before you go.",
         "Swimwear is required at communal bathhouses, towels and change rooms vary, and some places set a minimum age. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
@@ -31,6 +37,10 @@
         {
           "q": "Is an ice bath the same as a cold plunge?",
           "a": "Perth places use the two names for the same thing: cold water you sit in for a short time. Some use chilled plunge pools, others ice baths or ice showers, and one beach-based operator uses the ocean itself. This page lists them all together."
+        },
+        {
+          "q": "Is an ice bath the same as cryotherapy?",
+          "a": "No. An ice bath or cold plunge is cold water you sit in. Cryotherapy means standing in a chamber of very cold, dry air for a few minutes, and only a handful of Perth recovery studios offer it. They have their own page: cryotherapy in Perth."
         },
         {
           "q": "Can I book an ice bath privately?",
@@ -238,6 +248,84 @@
         {
           "q": "Where can I do a sauna and ice bath together?",
           "a": "Most dedicated sauna studios have a cold plunge or ice bath too. The places set up to alternate the two in one session are listed under Ice bath & sauna together (contrast therapy)."
+        }
+      ]
+    },
+    "cryotherapy": {
+      "phrase": "Cryotherapy",
+      "intro": [
+        "{count} places in Perth list cryotherapy: Perth Cryo in Currambine, Element Health Centres in Claremont, Mindbody Lounge in Victoria Park and Recovery Haus in Innaloo. It is not an ice bath. Instead of sitting in cold water, you stand in a chamber of very cold, dry air for a few minutes. Element Health Centres, for example, runs whole-body sessions of up to three minutes at temperatures down to −87.5°C. Some places also offer localised cryotherapy, which cools one area rather than the whole body.",
+        "All four are recovery studios rather than cryotherapy-only clinics, so the chamber sits alongside things like an infrared sauna, compression boots, red light or hyperbaric oxygen. Most sell it in packs or memberships that cover several of them.",
+        "Where prices are published, Mindbody Lounge sells session credits that work out at $33 to $40 a session depending on the pack, and Perth Cryo's packages start from $60. Element Health Centres sells weekly memberships and multi-week programmes rather than single sessions. Prices change, so check with the place before you book.",
+        "Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "Is cryotherapy the same as an ice bath?",
+          "a": "No. Cryotherapy is a few minutes in a chamber of very cold, dry air; an ice bath or cold plunge is cold water you sit in. If you're after cold water, see ice baths and cold plunges in Perth."
+        },
+        {
+          "q": "How long is a cryotherapy session?",
+          "a": "Short. Element Health Centres publishes sessions of up to three minutes. Most places don't publish a length, so ask when you book."
+        },
+        {
+          "q": "How much does cryotherapy cost in Perth?",
+          "a": "Where it's published, Mindbody Lounge's session credits work out at $33 to $40 a session, and Perth Cryo's packages start from $60. Some places only sell memberships or programmes. Check the place's own site for current prices."
+        },
+        {
+          "q": "Where can I try cryotherapy in Perth?",
+          "a": "Perth Cryo in Currambine, Element Health Centres in Claremont, Mindbody Lounge in Victoria Park and Recovery Haus in Innaloo all list it. Each listing links to the place's own booking page."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "spa",
+          "facet": "cold-plunge",
+          "label": "Ice baths & cold plunges",
+          "line": "Cold water rather than cold air"
+        },
+        {
+          "category": "spa",
+          "facet": "infrared-sauna",
+          "label": "Infrared saunas",
+          "line": "Often in the same recovery studios"
+        }
+      ]
+    },
+    "red-light-therapy": {
+      "phrase": "Red Light Therapy",
+      "intro": [
+        "{count} places in Perth list red light therapy. Almost all are recovery studios, float centres or wellness spas that offer it beside a sauna, ice bath or compression boots. It is a light session, not a cold one, so if you came looking for cold therapy, ice baths and cold plunges have their own page.",
+        "The equipment varies. Several places use a full-body bed you lie in, such as the TheraLight 360 at Mindbody Lounge in Victoria Park and the full-body bed at Reclab in Wembley. Element Health Centres publishes 20-minute full-body sessions. Others use smaller targeted devices, like the handheld units at My Recovery Club in Harrisdale, and Beyond Rest in East Perth offers red light as a body-contouring service.",
+        "Single-session prices are rarely published. Red light is usually sold in packs or memberships that cover several pieces of equipment; Mindbody Lounge's session credits, for example, work out at $33 to $40 a session. Check the place's own site for current prices.",
+        "Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "Is red light therapy the same as an infrared sauna?",
+          "a": "No, it's different equipment. An infrared sauna is a heated cabin you sit in; red light therapy uses a bed, panel or handheld device fitted with LEDs. Many Perth recovery studios offer both."
+        },
+        {
+          "q": "How long is a red light session?",
+          "a": "Element Health Centres publishes 20 minutes for a full-body session. Most places don't publish a length, so ask when you book."
+        },
+        {
+          "q": "How much does red light therapy cost in Perth?",
+          "a": "Few places publish a single-session price; most sell red light within packs or memberships. Mindbody Lounge's session credits work out at $33 to $40 a session. Check the place's own site for current prices."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "spa",
+          "facet": "infrared-sauna",
+          "label": "Infrared saunas",
+          "line": "Heat rather than light, often in the same studios"
+        },
+        {
+          "category": "spa",
+          "facet": "cold-plunge",
+          "label": "Ice baths & cold plunges",
+          "line": "For cold therapy"
         }
       ]
     }

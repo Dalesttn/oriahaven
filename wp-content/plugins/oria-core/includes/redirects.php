@@ -190,6 +190,13 @@ function maybe_redirect(): void {
 	// A 301 into a 404 is worse than the 404 alone; land on the parent.
 	$to = survivable( $to );
 
+	// A 301 into a duplicate is a 301 into a noindex; land on its canonical.
+	$to = canonical_target( $to );
+
+	if ( $path === normalise( $to ) ) {
+		return;
+	}
+
 	$query = (string) wp_parse_url( $uri, PHP_URL_QUERY );
 	$dest  = home_url( $to ) . ( '' !== $query ? '?' . $query : '' );
 
@@ -396,6 +403,49 @@ function survivable( string $to ): string {
 	}
 
 	return count( $rows ) > 0 ? $to : $parent;
+}
+
+/**
+ * The canonical copy of a destination that is a duplicate facet page.
+ *
+ * Some modalities answer under more than one category, and only one copy is
+ * canonical: /explore/perth/recovery/traditional-sauna/ names
+ * /explore/perth/spa/traditional-sauna/ as its canonical, and robots() makes
+ * the recovery copy noindex so the pair consolidates. But the migration
+ * mapped /practices/recovery/traditional-sauna/ -- 720 impressions in 90
+ * days -- onto the recovery copy, so every one of those ranking signals was
+ * being redirected into a page that asks Google to drop it.
+ *
+ * Same answer facet_canonical_url() gives the page's own canonical tag, so
+ * the redirect and the tag can never disagree. Only a four-segment /explore/
+ * facet is ever changed, and the canonical is put through survivable() too.
+ */
+function canonical_target( string $to ): string {
+	$seg = explode( '/', trim( (string) wp_parse_url( $to, PHP_URL_PATH ), '/' ) );
+	if ( 4 !== count( $seg ) || 'explore' !== $seg[0] ) {
+		return $to;
+	}
+	if ( ! function_exists( '\Oria\Core\Cities\get' )
+		|| ! function_exists( '\Oria\Core\PracticesIndex\resolve_facet' )
+		|| ! function_exists( '\Oria\Core\PracticesIndex\facet_canonical_url' ) ) {
+		return $to;
+	}
+
+	$city     = \Oria\Core\Cities\get( $seg[1] );
+	$practice = get_term_by( 'slug', $seg[2], \Oria\Core\Taxonomies\PRACTICE );
+	if ( ! $city || ! $practice instanceof \WP_Term ) {
+		return $to;
+	}
+	$facet = \Oria\Core\PracticesIndex\resolve_facet( $practice, $seg[3] );
+	if ( null === $facet ) {
+		return $to;
+	}
+
+	$canon = (string) wp_parse_url( \Oria\Core\PracticesIndex\facet_canonical_url( $practice, $facet, $city ), PHP_URL_PATH );
+	if ( '' === $canon || normalise( $canon ) === normalise( $to ) ) {
+		return $to;
+	}
+	return survivable( normalise( $canon ) );
 }
 
 /* ------------------------------------------------------------------ admin */
