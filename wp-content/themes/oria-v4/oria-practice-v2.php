@@ -2505,11 +2505,12 @@ echo $oria_ch['jobs'] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput -- 
 
 <?php
 /*
- * 9. Products, then apps (template-parts/support-bands.php): each left out
+ * 9. Apps (template-parts/support-bands.php; products paused): left out
  * when nothing genuinely fits the category. Skipped on a suburb page.
  */
 if ( ! $oria_area && ! $oria_facet && '' === $oria_fac && $oria_term instanceof WP_Term ) {
-	get_template_part( 'template-parts/support', 'bands', array( 'term' => $oria_term ) );
+	// Products paused on category pages for now (Dale, 7 Oct 2026): apps only.
+	get_template_part( 'template-parts/support', 'bands', array( 'term' => $oria_term, 'products' => false ) );
 }
 ?>
 

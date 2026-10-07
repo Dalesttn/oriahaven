@@ -18,7 +18,8 @@
  *
  * @package Oria
  *
- * Args: term (WP_Term, the category).
+ * Args: term (WP_Term, the category), products (bool, default true: false
+ *       leaves the products band out and keeps the apps).
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -32,7 +33,7 @@ if ( ! $oria_term instanceof WP_Term ) {
 // inside a sentence. The cards say what the category is.
 
 // ---------------------------------------------------------------- products
-$oria_products = function_exists( '\Oria\Shop\Engine\products_for_practice' )
+$oria_products = ( ( $args['products'] ?? true ) && function_exists( '\Oria\Shop\Engine\products_for_practice' ) )
 	? \Oria\Shop\Engine\products_for_practice( $oria_term, 3 )
 	: array();
 
