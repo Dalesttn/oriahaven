@@ -1316,3 +1316,32 @@ html.xc-locked { overflow: hidden; }
 }
 .xc-hz2__checked { display: block; margin: .15rem 0 0; }
 .xc-hz2__checked::before { content: none; }
+
+/* ---- Tabs (2026-10): one section at a time, turned like a page --------- */
+.xc-tabs-on .xc-panel[hidden] { display: none; }
+.xc-tabs-on .xc-panel { min-height: 55vh; }
+.xc-tabs-on .xc-panel:not([data-xc-panel="places"]) { padding-top: var(--s-5); }
+.xc-tabs-on .xc-panel:focus { outline: none; }
+.xc-tab { cursor: pointer; }
+.xc-tab[aria-selected="true"] { color: var(--deep); border-bottom-color: var(--deep); }
+.xc-tab:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; border-radius: 4px; }
+.xc-panel.is-turning {
+  animation: xcTurn .34s cubic-bezier(.2, .75, .25, 1) both;
+  transform-origin: left center;
+}
+.xc-panel.is-back.is-turning { animation-name: xcTurnBack; transform-origin: right center; }
+@keyframes xcTurn {
+  from { opacity: 0; transform: perspective(1600px) rotateY(-7deg) translateX(32px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes xcTurnBack {
+  from { opacity: 0; transform: perspective(1600px) rotateY(7deg) translateX(-32px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xc-panel.is-turning, .xc-panel.is-back.is-turning { animation: none; }
+}
+/* In a panel the guide sections need no extra top gap of their own. */
+.xc-tabs-on .xc-panel > .section:first-child,
+.xc-tabs-on .xc-panel > .xc-prices:first-child { margin-top: 0; padding-top: 0; }
+.xc-prices { padding-block: 0 var(--s-6); }

@@ -814,36 +814,52 @@ $oria_eyebrow = $oria_facet || $oria_area
 
 <?php
 /*
- * Section navigation: real anchors to what this page actually has. A
- * section with nothing in it is not linked. The offers section is only
- * known once it has drawn, so its link is filled in by a placeholder the
- * template swaps at the end (see oria_secnav).
+ * Tabs (2026-10, after the redesign): the page's sections grouped into a
+ * few tabs so it is not one long scroll. Every panel is in the HTML --
+ * without scripting (and for search engines) they simply follow one
+ * another; v4-category.js turns the list into tabs and shows one panel at
+ * a time. A tab whose panel turns out empty is removed by the script.
  */
-$oria_secnav = array( array( '#results', __( 'Places', 'oria' ) ) );
-if ( '' !== $oria_offers_html ) {
-	$oria_secnav[] = array( '#offers', __( 'Offers', 'oria' ) );
+$oria_ev_any = ! empty( $oria_events );
+$oria_tabs   = array( 'places' => __( 'Places', 'oria' ) );
+if ( '' !== $oria_offers_html || $oria_ev_any ) {
+	$oria_tabs['offers'] = '' !== $oria_offers_html
+		? ( $oria_ev_any ? __( 'Offers & events', 'oria' ) : __( 'Offers', 'oria' ) )
+		: __( 'What’s on', 'oria' );
 }
-if ( $oria_first_early ) {
-	$oria_secnav[] = array( '#first-visit', __( 'First visit', 'oria' ) );
-}
+$oria_tabs['first'] = $oria_first_early ? __( 'First visit', 'oria' ) : __( 'Before you go', 'oria' );
 if ( $oria_ins_entry ) {
-	$oria_secnav[] = array( '#xcInsights', __( 'Prices', 'oria' ) );
+	$oria_tabs['prices'] = __( 'Prices', 'oria' );
+}
+if ( $oria_guides || $oria_latest || ! empty( $oria_bo['guides'] ) ) {
+	$oria_tabs['guides'] = __( 'Guides', 'oria' );
 }
 if ( $oria_faqs ) {
-	$oria_secnav[] = array( '#faq', __( 'FAQs', 'oria' ) );
+	$oria_tabs['faqs'] = __( 'FAQs', 'oria' );
 }
 ?>
-<?php if ( count( $oria_secnav ) > 1 ) : ?>
-<nav class="xc-secnav" aria-label="<?php esc_attr_e( 'On this page', 'oria' ); ?>">
+<nav class="xc-secnav xc-tabs" id="xcTabs" aria-label="<?php esc_attr_e( 'Sections of this page', 'oria' ); ?>">
 	<div class="wrap">
-		<ul class="xc-secnav__list">
-			<?php foreach ( $oria_secnav as $oria_sn ) : ?>
-				<li<?php echo ! empty( $oria_sn[2] ) ? ' data-xc-secnav="' . esc_attr( $oria_sn[2] ) . '"' : ''; ?>><a href="<?php echo esc_attr( $oria_sn[0] ); ?>"><?php echo esc_html( $oria_sn[1] ); ?></a></li>
+		<div class="xc-secnav__list" role="tablist">
+			<?php $oria_tfirst = true; ?>
+			<?php foreach ( $oria_tabs as $oria_tk => $oria_tl ) : ?>
+				<a class="xc-tab" role="tab" id="xc-tabbtn-<?php echo esc_attr( $oria_tk ); ?>" href="#xc-tab-<?php echo esc_attr( $oria_tk ); ?>" aria-controls="xc-tab-<?php echo esc_attr( $oria_tk ); ?>" aria-selected="<?php echo $oria_tfirst ? 'true' : 'false'; ?>" data-xc-tab="<?php echo esc_attr( $oria_tk ); ?>" data-oria-event="category_tab_select"><?php echo esc_html( $oria_tl ); ?></a>
+				<?php $oria_tfirst = false; ?>
 			<?php endforeach; ?>
-		</ul>
+		</div>
 	</div>
 </nav>
-<?php endif; ?>
+
+<?php
+// Opens or closes one tab panel. A section with no tab of its own is
+// printed below the tabs instead (see the end of this template).
+$oria_panel_open = static function ( string $k ) use ( $oria_tabs ): string {
+	return isset( $oria_tabs[ $k ] )
+		? '<div class="xc-panel" id="xc-tab-' . esc_attr( $k ) . '" role="tabpanel" aria-labelledby="xc-tabbtn-' . esc_attr( $k ) . '" data-xc-panel="' . esc_attr( $k ) . '" tabindex="-1">'
+		: '';
+};
+$oria_panel_close = static fn( string $k ): string => isset( $oria_tabs[ $k ] ) ? '</div>' : '';
+?>
 
 <?php ob_start(); // The dock is drawn here and printed with the results (redesign: one finder, at the results). ?>
 <!-- 2. Discovery Dock: feeling, experience, location, then the places -->
@@ -1115,6 +1131,8 @@ if ( $oria_faqs ) {
 	</div>
 </div>
 
+<div class="xc-panels" id="xcPanels">
+<?php echo $oria_panel_open( 'places' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 <!-- 3. The places -->
 <section class="wrap section section--top-flush floor xc-browse" id="browse">
 	<div class="xc-reshead">
@@ -1704,6 +1722,7 @@ if ( $oria_faqs ) {
 	<?php $oria_ask_html = (string) ob_get_clean(); ?>
 	<div class="xc-browse-end" aria-hidden="true"></div>
 </section>
+<?php echo $oria_panel_close( 'places' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 <?php ob_start(); // Everything after the results is gathered into chunks and printed in the redesign's order below. ?>
 
 <?php
@@ -1902,7 +1921,7 @@ if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
 	// (data/facet-insights.json). Whole-city facet and category pages only.
 	if ( ! $oria_area && ( $oria_facet || $oria_term ) && function_exists( '\Oria\Core\FacetInsights\render' ) ) {
 		$oria_ins_name = '' !== $oria_fg_name ? $oria_fg_name : ( $oria_facet ? (string) ( $oria_facet['label'] ?? '' ) : $oria_pname ) . ' ' . sprintf( /* translators: %s: city */ __( 'in %s', 'oria' ), $oria_cin );
-		echo \Oria\Core\FacetInsights\render( $oria_facet ?: null, is_array( $oria_city ) ? $oria_city : null, $oria_ins_name, $oria_facet ? null : $oria_term ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in render()
+		$oria_insights_html = \Oria\Core\FacetInsights\render( $oria_facet ?: null, is_array( $oria_city ) ? $oria_city : null, $oria_ins_name, $oria_facet ? null : $oria_term ); // printed in the Prices tab
 	}
 	?>
 
@@ -2232,23 +2251,35 @@ if ( $oria_facet ) {
 $oria_ch['mesh'] = (string) ob_get_clean();
 
 /*
- * The redesign's order below the results: the offers, the practical guide
- * (first visit, then the figures and the facet's own guide), further
- * reading, questions, onward discovery, one event, and the quieter asks
- * (the Oria note, the Pass, Ask Oria, jobs) at the foot. The second events
- * strip is left out -- one events block per page.
+ * The panels after Places, each grouping like with like, then what belongs
+ * to every tab (onward discovery, the Pass, jobs) below them all.
  */
-if ( '' !== $oria_offers_html ) {
-	echo '<div class="xc-offers2" id="offers">' . $oria_offers_html . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
-}
-foreach ( array( 'first', 'read', 'guides', 'bestof', 'faq', 'mesh', 'event', 'retreat' ) as $oria_ck ) {
-	echo $oria_ch[ $oria_ck ] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
-}
-if ( '' !== trim( (string) ( $oria_note_html ?? '' ) ) ) {
-	echo '<div class="wrap xc-foot-asks">' . $oria_note_html . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
-}
+$oria_below = '';
+$oria_put   = static function ( string $k, string $html ) use ( $oria_tabs, $oria_panel_open, $oria_panel_close, &$oria_below ): void {
+	if ( '' === trim( $html ) ) {
+		return;
+	}
+	if ( isset( $oria_tabs[ $k ] ) ) {
+		echo $oria_panel_open( $k ) . $html . $oria_panel_close( $k ); // phpcs:ignore WordPress.Security.EscapeOutput -- template output
+	} else {
+		$oria_below .= $html;
+	}
+};
+$oria_offers_wrapped = '' !== $oria_offers_html ? '<div class="xc-offers2" id="offers">' . $oria_offers_html . '</div>' : '';
+$oria_note_wrapped   = '' !== trim( (string) ( $oria_note_html ?? '' ) ) ? '<div class="wrap xc-foot-asks">' . $oria_note_html . '</div>' : '';
+$oria_ask_wrapped    = '<div class="wrap xc-foot-asks">' . ( $oria_ask_html ?? '' ) . '</div>';
+$oria_ins_wrapped    = '' !== trim( (string) ( $oria_insights_html ?? '' ) ) ? '<div class="wrap xc-prices">' . $oria_insights_html . '</div>' : '';
+
+$oria_put( 'offers', $oria_offers_wrapped . ( $oria_ch['event'] ?? '' ) );
+$oria_put( 'first', ( $oria_ch['first'] ?? '' ) . ( $oria_ch['read'] ?? '' ) . ( $oria_ch['retreat'] ?? '' ) );
+$oria_put( 'prices', $oria_ins_wrapped );
+$oria_put( 'guides', ( $oria_ch['guides'] ?? '' ) . ( $oria_ch['bestof'] ?? '' ) . $oria_note_wrapped . ( isset( $oria_tabs['faqs'] ) ? '' : $oria_ask_wrapped ) );
+$oria_put( 'faqs', ( $oria_ch['faq'] ?? '' ) . $oria_ask_wrapped );
+echo '</div>'; // .xc-panels
+
+echo $oria_below; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
+echo $oria_ch['mesh'] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
 echo $oria_ch['pass'] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
-echo '<div class="wrap xc-foot-asks">' . ( $oria_ask_html ?? '' ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
 echo $oria_ch['jobs'] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
 ?>
 <?php endif; ?>

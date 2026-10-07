@@ -751,30 +751,115 @@
   });
 })();
 
-/* Section navigation (2026-10 redesign): mark the section in view. Real
-   anchors do the scrolling; this only says where you are. */
+/* Tabs (2026-10): the page's sections as tabs. Every panel is in the HTML;
+   this shows one at a time, turns the page between them, keeps the choice
+   in the address (#xc-tab-prices) and follows in-page links into a panel. */
 (function () {
-  var nav = document.querySelector(".xc-secnav");
-  if (!nav || !("IntersectionObserver" in window)) return;
-  var links = Array.prototype.slice.call(nav.querySelectorAll("a[href^='#']"));
-  var targets = links.map(function (a) {
-    var el = document.getElementById(a.getAttribute("href").slice(1));
-    // A heading anchor (#results) is watched through the section it opens.
-    return el && /^H[1-6]$/.test(el.tagName) ? (el.closest("section") || el) : el;
+  var bar = document.getElementById("xcTabs");
+  var wrap = document.getElementById("xcPanels");
+  if (!bar || !wrap) return;
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var tabs = Array.prototype.slice.call(bar.querySelectorAll("[role=tab]"));
+  var panelOf = function (t) { return document.getElementById(t.getAttribute("aria-controls")); };
+
+  // A tab whose panel drew nothing is not offered.
+  tabs = tabs.filter(function (t) {
+    var p = panelOf(t);
+    if (p && p.children.length) return true;
+    t.remove();
+    if (p) p.remove();
+    return false;
   });
-  var seen = {};
-  function paint() {
-    var cur = null;
-    links.forEach(function (a, i) { if (targets[i] && seen[targets[i].id]) cur = cur || a; });
-    links.forEach(function (a) {
-      var on = a === cur;
-      a.classList.toggle("is-current", on);
-      if (on) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
-    });
+  if (tabs.length < 2) { bar.hidden = true; return; }
+  document.documentElement.classList.add("xc-tabs-on");
+
+  var current = null;
+  function headLine() {
+    var v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--xc-head-h")) || 0;
+    return v + 8;
   }
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) { seen[e.target.id] = e.isIntersecting; });
-    paint();
-  }, { rootMargin: "-30% 0px -60% 0px" });
-  targets.forEach(function (t) { if (t) io.observe(t); });
+  function select(tab, opts) {
+    opts = opts || {};
+    if (!tab || tab === current) {
+      if (tab && opts.scroll) bar.scrollIntoView({ block: "start" });
+      return;
+    }
+    var from = current ? tabs.indexOf(current) : -1;
+    var to = tabs.indexOf(tab);
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.setAttribute("tabindex", on ? "0" : "-1");
+      t.classList.toggle("is-current", on);
+      var p = panelOf(t);
+      if (p) {
+        p.hidden = !on;
+        p.classList.remove("is-turning", "is-back");
+      }
+    });
+    var panel = panelOf(tab);
+    if (panel && current && !reduced) {
+      if (to < from) panel.classList.add("is-back");
+      void panel.offsetWidth; // restart the animation
+      panel.classList.add("is-turning");
+    }
+    current = tab;
+    if (opts.hash !== false && history.replaceState) {
+      history.replaceState(null, "", to === 0 ? location.pathname + location.search : "#" + panel.id);
+    }
+    if (opts.scroll) {
+      var y = bar.getBoundingClientRect().top + window.pageYOffset - headLine();
+      if (window.pageYOffset > y) window.scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
+    }
+    if (opts.focus) tab.focus();
+    // The list reflows when it comes back into view (map, cards).
+    window.dispatchEvent(new Event("resize"));
+  }
+
+  bar.addEventListener("click", function (e) {
+    var t = e.target.closest("[role=tab]");
+    if (!t) return;
+    e.preventDefault();
+    select(t, { scroll: true });
+  });
+  bar.addEventListener("keydown", function (e) {
+    var i = tabs.indexOf(document.activeElement);
+    if (i < 0) return;
+    var n = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+    if (n === undefined) return;
+    e.preventDefault();
+    select(tabs[(n + tabs.length) % tabs.length], { focus: true });
+  });
+
+  // Where an address or an in-page link points: a panel, or something in one.
+  function tabFor(id) {
+    var el = id && document.getElementById(id);
+    if (!el) return null;
+    var p = el.closest("[data-xc-panel]");
+    if (!p) return null;
+    for (var k = 0; k < tabs.length; k++) if (panelOf(tabs[k]) === p) return { tab: tabs[k], el: el, panel: p };
+    return null;
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a || bar.contains(a)) return;
+    var hit = tabFor(a.getAttribute("href").slice(1));
+    if (!hit || hit.tab === current) return;
+    e.preventDefault();
+    select(hit.tab, { hash: false });
+    var target = hit.el === hit.panel ? bar : hit.el;
+    requestAnimationFrame(function () {
+      var y = target.getBoundingClientRect().top + window.pageYOffset - headLine();
+      window.scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
+    });
+  });
+
+  window.addEventListener("hashchange", function () {
+    var hit = tabFor(location.hash.slice(1));
+    if (hit) select(hit.tab, { hash: false, scroll: true });
+  });
+
+  var start = tabFor(location.hash.slice(1));
+  select(start ? start.tab : tabs[0], { hash: false });
+  if (start && start.el !== start.panel) start.el.scrollIntoView();
 })();
