@@ -774,7 +774,7 @@ html.xc-locked { overflow: hidden; }
 #dirResults > .listing.xc-twin { display: none !important; }
 /* The hub's list grows by "Show more listings"; it stays beside the map. */
 @media (min-width: 64rem) {
-  html body #browse.is-map .xc-results > #dirMore { display: block !important; grid-column: 1; }
+  html body #browse.is-map .xc-results > #dirMore:not([hidden]) { display: block !important; grid-column: 1; }
 }
 
 /* ---- The dock on a page too small to filter: the category nearby ------- */
