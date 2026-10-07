@@ -2306,7 +2306,20 @@ $oria_first = function_exists( '\Oria\Core\FirstVisit\for_context' )
 	: null;
 
 if ( $oria_first ) {
-	get_template_part( 'template-parts/first-visit', null, array( 'guide' => $oria_first, 'id' => 'first-visit' ) );
+	$oria_fv_topic = trim( (string) ( $oria_ins_entry['topic'] ?? '' ) );
+	if ( '' === $oria_fv_topic ) {
+		$oria_fv_topic = strtolower( (string) preg_replace( '/\s+in\s+.+$/i', '', '' !== $oria_fg_name ? $oria_fg_name : ( $oria_facet ? (string) ( $oria_facet['label'] ?? '' ) : $oria_pname ) ) );
+	}
+	get_template_part(
+		'template-parts/first-visit-guide',
+		null,
+		array(
+			'guide'  => $oria_first,
+			'id'     => 'first-visit',
+			'topic'  => $oria_fv_topic,
+			'prices' => (bool) $oria_ins_entry,
+		)
+	);
 }
 
 $oria_ch['first'] = (string) ob_get_clean(); ob_start();

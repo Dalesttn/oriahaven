@@ -1889,3 +1889,132 @@ html.xc-locked { overflow: hidden; }
 }
 .xc-chooser__card { align-content: start; }
 .xc-chooser__go { display: inline-block; gap: 0; line-height: 48px; padding-block: 0; text-align: center; }
+
+/* =========================================================================
+   First-visit guide (October 2026). DESIGN/October 2026/oria-haven-first-
+   visit-redesign-claude.md. Scoped to .fvg.
+   ========================================================================= */
+.fvg {
+  --fvg-ink: #183d35;
+  --fvg-muted: #56645e;
+  --fvg-ivory: #f7f5ef;
+  --fvg-sage: #e8eee4;
+  --fvg-border: #d7ded4;
+  --fvg-focus: #a77c3a;
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 3rem);
+  padding-block: clamp(1.5rem, 3vw, 2.5rem);
+  color: var(--fvg-ink);
+}
+.fvg a { color: var(--fvg-ink); text-underline-offset: 3px; }
+.fvg a:focus-visible { outline: 3px solid var(--fvg-focus); outline-offset: 3px; border-radius: 4px; }
+.fvg__icon { flex: none; color: var(--moss, #3f6e60); }
+
+/* 1. Opening */
+.fvg__intro { display: grid; gap: .6rem; }
+.fvg__eyebrow { margin: 0; font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--moss, #3f6e60); }
+.fvg__title {
+  margin: 0; max-width: 24ch;
+  font-family: var(--font-edit); font-weight: 500;
+  font-size: clamp(1.75rem, 3.2vw, 2.6rem); line-height: 1.12; letter-spacing: -0.02em; text-wrap: balance;
+}
+.fvg__lede { margin: 0; max-width: 65ch; font-size: 1.0625rem; line-height: 1.6; color: var(--fvg-muted); }
+
+/* 2. Quick facts: one shallow sage strip */
+.fvg__quick {
+  display: grid; grid-template-columns: 1fr; gap: 0;
+  margin: 0; padding: .25rem 1.25rem; list-style: none;
+  border-radius: 18px; background: var(--fvg-sage);
+}
+.fvg__fact {
+  display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: .7rem; row-gap: .15rem; align-content: start;
+  padding: 1rem 0;
+}
+.fvg__fact + .fvg__fact { border-top: 1px solid color-mix(in srgb, var(--fvg-border) 80%, var(--fvg-ink)); }
+.fvg__fact .fvg__icon { grid-row: 1 / span 3; margin-top: .1rem; }
+.fvg__fact-l { font-size: .85rem; font-weight: 600; letter-spacing: .01em; color: var(--fvg-muted); }
+.fvg__fact-v { font-size: 1.125rem; font-weight: 600; line-height: 1.3; color: var(--fvg-ink); }
+a.fvg__fact-v { justify-self: start; text-decoration: underline; text-decoration-thickness: 1px; }
+.fvg__fact-s { font-size: .85rem; line-height: 1.4; color: var(--fvg-muted); }
+@media (min-width: 30rem) {
+  .fvg__quick { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.5rem; }
+  .fvg__fact + .fvg__fact { border-top: 0; }
+  .fvg__fact:nth-child(n + 3) { border-top: 1px solid color-mix(in srgb, var(--fvg-border) 80%, var(--fvg-ink)); }
+}
+@media (min-width: 64rem) {
+  .fvg__quick { grid-template-columns: repeat(var(--fvg-n, 4), minmax(0, 1fr)); padding: .25rem 1.5rem; column-gap: 0; }
+  .fvg__fact { padding: 1.15rem 1.25rem; }
+  .fvg__fact:first-child { padding-left: 0; }
+  .fvg__fact:nth-child(n + 3) { border-top: 0; }
+  .fvg__fact + .fvg__fact { border-left: 1px solid color-mix(in srgb, var(--fvg-border) 80%, var(--fvg-ink)); }
+}
+
+/* 3. The visit, in order */
+.fvg__h3 { margin: 0 0 1.25rem; font-family: var(--font-edit); font-weight: 500; font-size: clamp(1.35rem, 2.2vw, 1.7rem); line-height: 1.2; color: var(--fvg-ink); }
+.fvg__steps { position: relative; display: grid; gap: 1.75rem; margin: 0; padding: 0; list-style: none; }
+.fvg__step { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 1rem; align-content: start; }
+.fvg__num {
+  position: relative; z-index: 1;
+  display: grid; place-items: center; width: 44px; height: 44px; grid-row: 1 / span 2;
+  border: 1px solid var(--fvg-ink); border-radius: 999px; background: var(--paper, #f5f4f0);
+  font-family: var(--font-edit); font-size: 1rem; font-variant-numeric: lining-nums tabular-nums;
+}
+/* The connector: decorative, behind the markers. */
+.fvg__step:not(:last-child)::after {
+  content: ""; position: absolute; left: 22px; top: 44px; bottom: -1.75rem; width: 1px; background: var(--fvg-border);
+}
+.fvg__step-h { margin: .6rem 0 .5rem; font-size: 1.125rem; font-weight: 600; line-height: 1.3; }
+.fvg__step-list { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+.fvg__step-list li { position: relative; padding-left: 1rem; font-size: 1rem; line-height: 1.6; color: var(--fvg-ink); }
+.fvg__step-list li::before { content: ""; position: absolute; left: 0; top: .7em; width: 5px; height: 5px; border-radius: 999px; background: var(--moss, #3f6e60); }
+@media (min-width: 56rem) {
+  .fvg__steps { grid-template-columns: repeat(var(--fvg-steps, 3), minmax(0, 1fr)); gap: 2.5rem; }
+  .fvg__step { grid-template-columns: 1fr; }
+  .fvg__num { grid-row: auto; }
+  .fvg__step-h { margin-top: 1rem; }
+  .fvg__step:not(:last-child)::after { left: 52px; right: -2.5rem; top: 22px; bottom: auto; width: auto; height: 1px; }
+}
+
+/* 4. Preparation and questions */
+.fvg__practical { display: grid; gap: 1.25rem; }
+@media (min-width: 52rem) { .fvg__practical:not(.is-single) { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); } }
+.fvg__prep, .fvg__ask { padding: clamp(1.25rem, 2.5vw, 1.75rem); border-radius: 18px; }
+.fvg__prep { background: color-mix(in srgb, var(--fvg-ivory) 70%, #ece8dc); }
+.fvg__ask { background: #fff; border: 1px solid var(--fvg-border); }
+.fvg__prep .fvg__h3, .fvg__ask .fvg__h3 { font-size: 1.3rem; margin-bottom: .9rem; }
+.fvg__rows { display: grid; margin: 0; padding: 0; list-style: none; }
+.fvg__rows li { display: flex; gap: .8rem; padding: .8rem 0; }
+.fvg__rows li + li { border-top: 1px solid var(--fvg-border); }
+.fvg__rows p { margin: 0; font-size: 1rem; line-height: 1.55; color: var(--fvg-muted); }
+.fvg__rows b { font-weight: 600; color: var(--fvg-ink); }
+.fvg__rows .fvg__icon { margin-top: .15rem; }
+.fvg__qs { display: grid; gap: .8rem; margin: 0 0 1rem; padding: 0; list-style: none; counter-reset: fvgq; }
+.fvg__qs li { position: relative; padding-left: 2.4rem; min-height: 1.75rem; font-size: 1rem; line-height: 1.55; counter-increment: fvgq; }
+.fvg__qs li::before {
+  content: counter(fvgq); position: absolute; left: 0; top: -.05rem;
+  display: grid; place-items: center; width: 1.75rem; height: 1.75rem;
+  border-radius: 999px; background: var(--fvg-sage); font-size: .85rem; font-weight: 700;
+}
+.fvg__more { display: inline-flex; align-items: center; gap: .3rem; min-height: 44px; font-weight: 600; }
+
+/* 5. Guidance, kept in view */
+.fvg__note {
+  display: flex; gap: .9rem; align-items: flex-start;
+  padding: 1.15rem 1.35rem; border-radius: 16px; background: var(--fvg-sage);
+}
+.fvg__note .fvg__icon { width: 22px; height: 22px; color: var(--fvg-ink); margin-top: .1rem; }
+.fvg__note-h { margin: 0 0 .25rem; font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
+.fvg__note p { margin: 0; max-width: 75ch; font-size: 1rem; line-height: 1.6; }
+.fvg__whose { margin: -1rem 0 0; max-width: 80ch; font-size: .9rem; line-height: 1.55; color: var(--fvg-muted); }
+
+/* 6. Onward */
+.fvg__cta {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 1.5rem;
+  padding-top: 1.5rem; border-top: 1px solid var(--fvg-border);
+}
+.fvg__cta-h { margin: 0; font-family: var(--font-edit); font-size: clamp(1.2rem, 2vw, 1.4rem); }
+.fvg__cta-act { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.5rem; }
+.fvg__go { min-height: 48px; gap: .5rem; background: var(--fvg-ink); border-color: var(--fvg-ink); color: #fff !important; }
+.fvg__go:hover { background: var(--ink, #082220); }
+.fvg__cmp { display: inline-flex; align-items: center; gap: .3rem; min-height: 44px; font-weight: 600; }
+.fvg__practical { align-items: start; }

@@ -25,11 +25,20 @@
     "Keyed by SPECIALTY slug. The registry key names the matching entry in",
     "compare.json where the two vocabularies differ (cold-plunge is",
     "ice-bath there); without it the slug is used. A specialty with no entry",
-    "gets no guide rather than a guessed one."
+    "gets no guide rather than a guessed one.",
+    "",
+    "THE VISIT GUIDE (v4 category pages, October 2026). A guide may add:",
+    "  heading, intro      -- the editorial opening;",
+    "  quick               -- four facts [{icon,label,value,sub,link}], link \"prices\" or \"results\";",
+    "  visit               -- {before,arrive,leave}: two or three short items each;",
+    "  prep, ask           -- the checklist [{icon,label,text}] and the booking questions;",
+    "  note                -- {title,text}: guidance kept visible, never folded away;",
+    "  compare             -- {pair,label}: a working compare pair page.",
+    "A guide without them is laid out from lede/arrive/wear/bring/steps/worry.",
+    "Facility facts (privacy, towels, showers) must agree with facet-insights.json:",
+    "what that file counts as \"not stated\" is never written here as confirmed."
   ],
-
   "guides": {
-
     "massage": {
       "lede": "A massage appointment is one practitioner, one room, and a table. Nothing is asked of you except that you turn up and say where it hurts.",
       "arrive": "Five to ten minutes early. The first appointment usually starts with a short written health history — what you do for work, injuries, anything you are being treated for.",
@@ -47,7 +56,6 @@
         "a": "As much or as little as you want. Most people undress to their underwear and keep it on. You are under a towel throughout either way, and a good therapist will work around clothing without comment if you would rather stay dressed."
       }
     },
-
     "remedial-massage": {
       "lede": "Remedial massage is a treatment appointment rather than an hour off. It starts with questions and often ends with homework.",
       "arrive": "Ten minutes early for the first one. There is a longer intake form than for a relaxation massage, and it asks about medication and past injuries.",
@@ -65,7 +73,6 @@
         "a": "Firm work on a tight area can be uncomfortable while it is happening, and practitioners generally aim for a level you can breathe through rather than brace against. You set that level, and you can change it mid-session. You may feel it the next day, the way you would after unfamiliar exercise."
       }
     },
-
     "yoga": {
       "lede": "A general yoga class expects nothing from you except that you are there. Nobody is looking at you; they are all busy.",
       "arrive": "Ten minutes early for a first class — enough to sign in, find the mats and props, and tell the teacher it is your first time.",
@@ -83,7 +90,6 @@
         "a": "No — that is what the blocks and straps in the corner are for, and the teacher will show you where they go. A general or beginner class assumes bodies that do not fold easily. If you want the gentlest start, look for classes named hatha, yin or restorative rather than vinyasa or power."
       }
     },
-
     "pilates": {
       "lede": "Mat Pilates is a small class on the floor. Reformer Pilates is a small class on a machine, and most studios want you to do an introductory session before joining one.",
       "arrive": "Ten to fifteen minutes early for a first reformer class. Setting up the bed to your height is done with the instructor.",
@@ -101,7 +107,6 @@
         "a": "For mat classes, no. For reformer, most Perth studios ask newcomers to do an intro or beginner-tagged class first, purely so the machine is explained properly rather than as a fitness test. Check what the studio calls its entry class before booking a general one."
       }
     },
-
     "reformer-pilates": {
       "registry": "pilates-reformer",
       "lede": "One machine each, six to twelve people, and an instructor who set your springs before you started.",
@@ -120,7 +125,6 @@
         "a": "In a beginner or intro class, no. In a general class it happens, and it is the reason most studios ask you to start with the intro one. If a studio lets you book straight into a general class and you would rather not, ring and ask for their beginner slot — they will have one."
       }
     },
-
     "meditation": {
       "lede": "A guided session in a quiet room. Someone talks, you sit, and that is most of it.",
       "arrive": "Five to ten minutes early. Latecomers are sometimes not admitted once a session has started, because the door disturbs the room.",
@@ -138,7 +142,6 @@
         "a": "Both are expected and neither is a problem. Nobody can stop thinking, and guides say so in the first five minutes of most beginner sessions. Shifting position is fine, and if sitting on the floor is uncomfortable, take a chair."
       }
     },
-
     "breathwork": {
       "lede": "You lie down and breathe in a pattern a facilitator sets, usually to music, for an hour or so. It is more physical than it sounds.",
       "arrive": "Ten minutes early. Facilitators generally ask about heart conditions, pregnancy, epilepsy and recent surgery before starting, so allow time for that conversation.",
@@ -156,7 +159,6 @@
         "a": "For some people it is, and rooms are set up for that — blankets, eye masks, low light, and a facilitator who stays in the room. Nobody is asked to share afterwards. If that possibility puts you off a group, one-to-one breathwork is widely available and several Perth facilitators start beginners that way."
       }
     },
-
     "sound-healing": {
       "lede": "You lie on the floor under a blanket while someone plays bowls, gongs and chimes around the room. There is nothing to do.",
       "arrive": "Ten minutes early to settle. Once a sound bath starts, people are lying down in the dark and a late entry is disruptive.",
@@ -174,7 +176,6 @@
         "a": "No. Nothing is asked of you and nothing is claimed of you. Sessions vary in how much spiritual language the facilitator uses, and that is worth checking if it matters either way to you — some are framed as a rest with instruments, others draw on a specific tradition."
       }
     },
-
     "reiki": {
       "lede": "You lie fully clothed on a table while a practitioner holds their hands on or just above you. It is quiet and it is still.",
       "arrive": "Five to ten minutes early. There is usually a conversation first about what has brought you in.",
@@ -192,7 +193,6 @@
         "a": "That is a common report and practitioners will tell you so. People describe warmth, heaviness, or simply an hour of lying still; some describe nothing in particular. None of those is the wrong result, and a practitioner who tells you that you did it wrong is not one to go back to."
       }
     },
-
     "infrared-sauna": {
       "lede": "A private cabin, booked by the half hour, that you use on your own or with someone you came with.",
       "arrive": "Five to ten minutes early. Your session time is usually cabin time, so arriving late shortens it.",
@@ -208,9 +208,88 @@
       "worry": {
         "q": "What if I cannot handle the heat for the whole session?",
         "a": "You step out. The door is not locked, the room is yours, and staff expect first-timers to come out early or in stages. Many venues suggest a shorter first session and a lower temperature, and will set it for you if you say it is your first time."
+      },
+      "heading": "Your first infrared sauna, made simple.",
+      "intro": "A little preparation helps you know what to expect. Here’s what to check before booking and how a visit may unfold.",
+      "quick": [
+        {
+          "icon": "clock",
+          "label": "Booking length",
+          "value": "30–60 minutes",
+          "sub": "30 minutes is the most common booking"
+        },
+        {
+          "icon": "door",
+          "label": "Private or shared?",
+          "value": "Check the session format",
+          "sub": "15 of 25 venues we checked say sessions are private"
+        },
+        {
+          "icon": "spark",
+          "label": "New to sauna?",
+          "value": "Say it’s your first visit",
+          "sub": "Ask what they suggest for a first session"
+        },
+        {
+          "icon": "tag",
+          "label": "What it costs",
+          "value": "See published prices",
+          "link": "prices"
+        }
+      ],
+      "visit": {
+        "before": [
+          "Check the venue’s arrival instructions and what your booking includes. At some venues the booked time is room time, so arriving late shortens it.",
+          "Check what to wear, and whether towels are supplied, hired or brought from home.",
+          "Ask whether the room is private, and for how many people."
+        ],
+        "arrive": [
+          "Ask staff to show you the room, the controls and how to get help if you need it.",
+          "Confirm what’s included, such as towels or a shower.",
+          "You can step out whenever you like. The booked time is not a target."
+        ],
+        "leave": [
+          "Follow the venue’s changing and checkout arrangements.",
+          "Check whether there’s a shower rather than assuming. Only 6 of 23 venues we checked mention one.",
+          "Collect your belongings, and take your time before you head off."
+        ]
+      },
+      "prep": [
+        {
+          "icon": "shirt",
+          "label": "Clothing",
+          "text": "Check what your venue asks you to wear. Swimmers or light gym clothes are common; some private rooms allow a towel only."
+        },
+        {
+          "icon": "towel",
+          "label": "Towels",
+          "text": "Supplied at some venues and extra at others, about $5 where charged. Most don’t say, so ask."
+        },
+        {
+          "icon": "bag",
+          "label": "Personal items",
+          "text": "Water and a change of clothes, plus anything on the venue’s own list."
+        },
+        {
+          "icon": "ticket",
+          "label": "Booking details",
+          "text": "Keep your session time and the arrival instructions handy."
+        }
+      ],
+      "ask": [
+        "Is the room private, and who is the booking for?",
+        "Are towels, showers or other facilities included?",
+        "Does the booking time include changing and setup?"
+      ],
+      "note": {
+        "title": "If the heat feels like too much",
+        "text": "Step out. Staff expect first-timers to come out early or in stages, and many venues suggest a shorter first session at a lower temperature if you tell them it’s your first time."
+      },
+      "compare": {
+        "pair": "infrared-vs-traditional-sauna",
+        "label": "Compare infrared and traditional saunas"
       }
     },
-
     "cold-plunge": {
       "registry": "ice-bath",
       "name": "cold plunge",

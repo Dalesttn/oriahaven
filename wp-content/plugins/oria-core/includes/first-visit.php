@@ -126,6 +126,27 @@ function for_slug( string $slug, string $label = '' ): ?array {
 			'a' => (string) ( $guide['worry']['a'] ?? '' ),
 		),
 		'facts'  => facts( (string) ( $guide['registry'] ?? $slug ) ),
+
+		// The visit guide's optional fields (v4 category pages). Absent
+		// fields stay empty and the layout falls back to the ones above.
+		'slug'    => $slug,
+		'heading' => (string) ( $guide['heading'] ?? '' ),
+		'intro'   => (string) ( $guide['intro'] ?? '' ),
+		'quick'   => array_values( array_filter( (array) ( $guide['quick'] ?? array() ), static fn( $q ): bool => is_array( $q ) && '' !== (string) ( $q['label'] ?? '' ) && '' !== (string) ( $q['value'] ?? '' ) ) ),
+		'visit'   => array_map(
+			static fn( $items ): array => array_values( array_filter( array_map( 'strval', (array) $items ) ) ),
+			array_intersect_key( (array) ( $guide['visit'] ?? array() ), array_flip( array( 'before', 'arrive', 'leave' ) ) )
+		),
+		'prep'    => array_values( array_filter( (array) ( $guide['prep'] ?? array() ), static fn( $r ): bool => is_array( $r ) && '' !== (string) ( $r['text'] ?? '' ) ) ),
+		'ask'     => array_values( array_filter( array_map( 'strval', (array) ( $guide['ask'] ?? array() ) ) ) ),
+		'note'    => array(
+			'title' => (string) ( $guide['note']['title'] ?? '' ),
+			'text'  => (string) ( $guide['note']['text'] ?? '' ),
+		),
+		'compare' => array(
+			'pair'  => (string) ( $guide['compare']['pair'] ?? '' ),
+			'label' => (string) ( $guide['compare']['label'] ?? '' ),
+		),
 	);
 }
 
