@@ -1680,3 +1680,13 @@ html.xc-locked { overflow: hidden; }
 }
 .xc-ins details[open] > summary::after { content: "–"; }
 @media (max-width: 39.99rem) { .xc-ins__meta > span + span::before { content: none; } .xc-ins__meta { flex-direction: column; align-items: flex-start; gap: .15rem; } }
+
+/* Insights price cards: compact (2026-10-08). */
+.xc-ins__lead { gap: 16px; }
+.xc-ins__card { padding: 1rem 1.15rem; border-radius: 16px; }
+.xc-ins__label { font-size: .875rem; }
+.xc-ins__price { margin-top: .3rem !important; font-size: clamp(1.75rem, 2.6vw, 2.25rem); }
+.xc-ins__unit { margin-top: .2rem !important; font-size: .9rem; color: var(--ins-muted); }
+.xc-ins__foot { gap: .2rem; padding-top: .7rem; }
+.xc-ins__card .xc-ins__unit + .xc-ins__foot, .xc-ins__card .xc-ins__price + .xc-ins__foot { margin-top: .7rem !important; }
+.xc-ins__evidence, .xc-ins__detail { font-size: .85rem; }
