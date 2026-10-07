@@ -41,7 +41,7 @@
   // Category pages (data-mode="category") and the Explore hub (app.js's
   // directory mode): both carry the Horizon hero.
   // The area guide has its own hero and says so with data-xc-root.
-  if (!root || !($(".xc-hz") || $("[data-xc-root]"))) return;
+  if (!root || !($(".xc-hz") || $(".xc-hz2") || $("[data-xc-root]"))) return;
   var CAT = root.getAttribute("data-mode") === "category";
 
   var phone = window.matchMedia("(max-width: 50rem)");
@@ -449,7 +449,9 @@
 
   /* ---- 5. after every render ------------------------------------------- */
   var homes = {};
-  ["xcNote", "xcLocal"].forEach(function (id) {
+  /* The Oria Note now sits with the guides below the results (2026-10
+     redesign): the list is interrupted only by the Day Designer invitation. */
+  ["xcLocal"].forEach(function (id) {
     var el = doc.getElementById(id);
     if (!el) return;
     homes[id] = { el: el, mark: doc.createComment(id + "-home") };
@@ -747,4 +749,32 @@
       window.scrollTo({ top: Math.max(0, top), behavior: reduced ? "auto" : "smooth" });
     }, 0);
   });
+})();
+
+/* Section navigation (2026-10 redesign): mark the section in view. Real
+   anchors do the scrolling; this only says where you are. */
+(function () {
+  var nav = document.querySelector(".xc-secnav");
+  if (!nav || !("IntersectionObserver" in window)) return;
+  var links = Array.prototype.slice.call(nav.querySelectorAll("a[href^='#']"));
+  var targets = links.map(function (a) {
+    var el = document.getElementById(a.getAttribute("href").slice(1));
+    // A heading anchor (#results) is watched through the section it opens.
+    return el && /^H[1-6]$/.test(el.tagName) ? (el.closest("section") || el) : el;
+  });
+  var seen = {};
+  function paint() {
+    var cur = null;
+    links.forEach(function (a, i) { if (targets[i] && seen[targets[i].id]) cur = cur || a; });
+    links.forEach(function (a) {
+      var on = a === cur;
+      a.classList.toggle("is-current", on);
+      if (on) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
+    });
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { seen[e.target.id] = e.isIntersecting; });
+    paint();
+  }, { rootMargin: "-30% 0px -60% 0px" });
+  targets.forEach(function (t) { if (t) io.observe(t); });
 })();

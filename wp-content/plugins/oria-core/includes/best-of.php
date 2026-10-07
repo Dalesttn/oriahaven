@@ -705,6 +705,24 @@ function card_badge( int $listing ): ?array {
 	if ( ! $in ) {
 		return null;
 	}
+	/*
+	 * On a facet page, only an award from a guide about that facet. Reclab's
+	 * lead award is "Best ice bath"; on the traditional sauna page that read
+	 * as a sauna award. Where the page has its own guides, an award from any
+	 * other guide is left off the card (the listing keeps it everywhere else).
+	 */
+	$ctx = context_guides();
+	if ( null !== $ctx ) {
+		$in = array_values(
+			array_filter(
+				$in,
+				static fn( array $row ): bool => in_array( (string) get_post_field( 'post_name', (int) ( $row['guide'] ?? 0 ) ), $ctx, true )
+			)
+		);
+		if ( ! $in ) {
+			return null;
+		}
+	}
 	$pick = $in[0];
 	foreach ( $in as $row ) {
 		if ( $row['lead'] ) {
@@ -717,6 +735,43 @@ function card_badge( int $listing ): ?array {
 		'url'   => (string) get_permalink( $pick['guide'] ),
 		'year'  => award_year( (int) $pick['guide'] ),
 	);
+}
+
+/**
+ * The Best Of guide slugs that belong to the facet page being viewed, from
+ * data/best-of-browse.json (guide => the facet pages it points on to), or
+ * null when the request is not a facet page or no guide claims the facet --
+ * then cards keep their usual award.
+ *
+ * @return list<string>|null
+ */
+function context_guides(): ?array {
+	static $memo = false;
+	if ( false !== $memo ) {
+		return $memo;
+	}
+	$memo = null;
+	if ( ! function_exists( '\Oria\Core\PracticesIndex\facet' ) || ! is_tax( 'practice' ) ) {
+		return $memo;
+	}
+	$facet = \Oria\Core\PracticesIndex\facet();
+	if ( ! $facet ) {
+		return $memo;
+	}
+	$path = ORIA_CORE_DIR . 'data/best-of-browse.json';
+	$json = is_readable( $path ) ? json_decode( (string) file_get_contents( $path ), true ) : null; // phpcs:ignore WordPress.WP.AlternativeFunctions
+	$want = array( (string) ( $facet['slug'] ?? '' ), (string) ( $facet['value'] ?? '' ) );
+	$out  = array();
+	foreach ( (array) ( $json['guides'] ?? array() ) as $guide => $links ) {
+		foreach ( (array) $links as $l ) {
+			if ( ! empty( $l['facet'] ) && in_array( (string) $l['facet'], $want, true ) ) {
+				$out[] = (string) $guide;
+				break;
+			}
+		}
+	}
+	$memo = $out ? $out : null;
+	return $memo;
 }
 
 /**

@@ -2604,7 +2604,7 @@
                 ? "$" + l.priceFrom + ' <span>/ session</span>'
                 : l.priceBand === "Free"
                   ? "Free"
-                  : '<span class="listing__price--none">Price not published</span>') +
+                  : '<span class="listing__price--none">Check venue pricing</span>') +
               (l.next ? '<span class="listing__next">Next: ' + esc(l.next) + "</span>" : "") +
             "</span>" +
             /* Compare toggle, mirroring listing-card.php. The pressed state

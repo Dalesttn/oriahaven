@@ -502,7 +502,18 @@ function render( array $args = array() ): void {
 		return;
 	}
 	$done = true;
-	get_template_part( 'template-parts/day-designer', null, $cur + array( 'variant' => (string) ( $args['variant'] ?? 'category' ), 'suburbs' => suburbs() ) );
+	get_template_part(
+		'template-parts/day-designer',
+		null,
+		$cur + array(
+			'variant' => (string) ( $args['variant'] ?? 'category' ),
+			'suburbs' => suburbs(),
+			// Category redesign: placed after this many rows of cards, and folded
+			// to a one-line invitation until the visitor asks for the planner.
+			'rows'    => max( 1, (int) ( $args['rows'] ?? 1 ) ),
+			'folded'  => ! empty( $args['folded'] ),
+		)
+	);
 }
 
 /**

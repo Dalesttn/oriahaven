@@ -1122,3 +1122,197 @@ html.xc-locked { overflow: hidden; }
 .xc-jobs { margin-top: var(--s-5); font-size: var(--fs-sm); color: var(--text-soft); }
 .xc-jobs span { color: var(--gold); }
 .xc-jobs a { font-weight: 700; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+/* =========================================================================
+   Category redesign (October 2026): compact editorial hero, section
+   navigation, one finder at the results, calmer order below the list.
+   Brief: DESIGN/oria-haven-traditional-sauna-redesign-claude.md.
+   ========================================================================= */
+
+/* ---- 1. Hero: words left, one photograph right ------------------------- */
+.xc-hz2 { padding-block: var(--s-4) var(--s-5); background: var(--paper); }
+.xc-hz2__grid {
+  display: grid;
+  gap: var(--s-5);
+  align-items: center;
+}
+.xc-hz2__copy { display: grid; gap: .85rem; align-content: center; min-width: 0; }
+.xc-hz2__crumbs { margin: 0 0 .25rem; font-size: .875rem; color: var(--text-soft); }
+.xc-hz2__crumbs a { color: var(--text-soft); }
+.xc-hz2__crumbs span[aria-current] { color: var(--ink); }
+.xc-hz2__eyebrow { margin: 0; color: var(--moss); letter-spacing: .14em; }
+.xc-hz2__title {
+  margin: 0;
+  font-family: var(--font-edit);
+  font-weight: 500;
+  font-size: clamp(2.25rem, 4.5vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.xc-hz2__title .edit { font-style: normal; font-weight: 400; }
+.xc-hz2__line { margin: 0; max-width: 46ch; font-size: clamp(1rem, 1.3vw, 1.125rem); line-height: 1.55; color: var(--text-soft); }
+.xc-hz2__acts { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.25rem; margin-top: .35rem; }
+.xc-hz2__acts .btn { min-height: 48px; gap: .5rem; }
+.xc-hz2__second {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--deep);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.xc-hz2__second:hover { color: var(--ink); }
+.xc-hz2__meta { margin: .25rem 0 0; font-size: .875rem; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.xc-hz2__checked { display: inline-block; margin-left: .35rem; }
+.xc-hz2__checked::before { content: "·"; margin-right: .35rem; }
+.xc-hz2__media {
+  margin: 0;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--sand);
+  aspect-ratio: 16 / 10;
+}
+.xc-hz2__img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--xc-hz-pos, 55% 50%); }
+
+/* Phones: text first, a short image strip after it. */
+@media (max-width: 59.99rem) {
+  .xc-hz2__media { aspect-ratio: 21 / 9; }
+  .xc-hz2__crumbs { display: none; }
+}
+@media (min-width: 60rem) {
+  .xc-hz2 { padding-block: var(--s-5) var(--s-5); }
+  .xc-hz2__grid { grid-template-columns: minmax(0, 55fr) minmax(0, 45fr); gap: clamp(2rem, 4vw, 4rem); }
+  .xc-hz2__grid--bare { grid-template-columns: 1fr; }
+  .xc-hz2__media { aspect-ratio: auto; height: clamp(320px, 30vw, 400px); }
+}
+
+/* ---- 2. Section navigation -------------------------------------------- */
+.xc-secnav { border-bottom: 1px solid var(--line); background: var(--paper); }
+.xc-secnav__list {
+  display: flex;
+  gap: clamp(1rem, 3vw, 2.25rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+          mask-image: linear-gradient(90deg, #000 85%, transparent);
+}
+.xc-secnav__list::-webkit-scrollbar { display: none; }
+@media (min-width: 48rem) { .xc-secnav__list { -webkit-mask-image: none; mask-image: none; } }
+.xc-secnav__list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  white-space: nowrap;
+  font-size: .9375rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+.xc-secnav__list a:hover { color: var(--ink); }
+.xc-secnav__list a.is-current { color: var(--deep); border-bottom-color: var(--deep); }
+.xc-secnav__list a:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
+
+/* Anchors clear the header and the pinned ribbon. */
+#results, #offers, #first-visit, #xcInsights, #faq, #read { scroll-margin-top: calc(var(--xc-head-h, 88px) + 64px); }
+
+/* ---- 3. The finder lives at the results ------------------------------- */
+#browse.xc-browse { padding-top: var(--s-6); }
+#browse .results__head { font-family: var(--font-edit); font-weight: 500; font-size: clamp(1.6rem, 2.6vw, 2.1rem); letter-spacing: -0.01em; }
+/* The old Discovery Dock: kept for its panels and as the ribbon's marker
+   (the ribbon pins once the filters have scrolled away). Not drawn. */
+.xc-dockwrap--in { margin: 0 !important; z-index: 40; }
+.xc-dockwrap--in .xc-dockwrap__inner { padding: 0; }
+.xc-dockwrap--in .xc-dock {
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+}
+.xc-dockwrap--in .xc-dock__controls,
+.xc-dockwrap--in .xc-dock__foot { display: none; }
+
+/* ---- 4. Cards: a calmer, more even grid -------------------------------- */
+#browse #dirResults .listing__media,
+#browse #dirResults .listing__media img { aspect-ratio: 3 / 2; }
+#browse .listing__desc { -webkit-line-clamp: 2; }
+#browse #dirResults { gap: 24px; }
+
+/* ---- 5. Day Designer: an invitation first, the planner on request ------ */
+.dd.dd--folded[data-dd-js] .dd__toggle { display: inline-flex; }
+.dd.dd--folded[data-dd-js]:not(.is-open) .dd__panel,
+.dd.dd--folded[data-dd-js]:not(.is-open) .dd__photo,
+.dd.dd--folded[data-dd-js]:not(.is-open) .dd__note { display: none; }
+.dd.dd--folded[data-dd-js]:not(.is-open) {
+  display: block;
+  background: var(--sand-2);
+}
+.dd.dd--folded[data-dd-js]:not(.is-open) .dd__intro {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: .25rem 1.25rem;
+  padding: 1.1rem 1.4rem;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+}
+.dd.dd--folded[data-dd-js]:not(.is-open) .dd__brand { grid-row: span 2; }
+.dd.dd--folded[data-dd-js]:not(.is-open) .dd__label { display: none; }
+.dd.dd--folded[data-dd-js]:not(.is-open) .dd__title { margin: 0; font-family: var(--font-edit); font-weight: 500; font-size: 1.3rem; }
+.dd.dd--folded[data-dd-js]:not(.is-open) .dd__blurb { margin: 0; grid-column: 2; }
+.dd.dd--folded[data-dd-js]:not(.is-open) .dd__toggle {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  min-height: 44px;
+  padding: .6rem 1.2rem;
+  border-radius: var(--radius-pill);
+  background: var(--deep);
+  color: var(--white);
+  font-weight: 600;
+}
+@media (max-width: 40rem) {
+  .dd.dd--folded[data-dd-js]:not(.is-open) .dd__intro { grid-template-columns: 1fr; }
+  .dd.dd--folded[data-dd-js]:not(.is-open) .dd__brand { grid-row: auto; }
+  .dd.dd--folded[data-dd-js]:not(.is-open) .dd__blurb,
+  .dd.dd--folded[data-dd-js]:not(.is-open) .dd__toggle { grid-column: 1; grid-row: auto; justify-self: start; }
+}
+
+/* ---- 6. Below the results ---------------------------------------------- */
+.xc-offers2 { padding-top: var(--s-6); }
+.xc-foot-asks { padding-block: var(--s-5) 0; }
+.xc-foot-asks:empty { display: none; }
+.xc-foot-asks .xc-note { margin: 0; }
+#xcInsights { margin-top: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .xc-secnav__list a { transition: none; }
+}
+/* Redesign: green primary action in the hero; breathing room before the FAQ. */
+.xc-hz2__acts .xc-btn-primary { background: var(--deep); border-color: var(--deep); color: var(--white); }
+.xc-hz2__acts .xc-btn-primary:hover { background: var(--ink); border-color: var(--ink); }
+.xc-hz2__acts .xc-btn-primary:focus-visible { outline: 3px solid var(--moss); outline-offset: 3px; }
+#faq { margin-top: var(--s-7, 3rem); }
+@media (max-width: 40rem) {
+  .xc-hz2__checked { display: block; margin-left: 0; }
+  .xc-hz2__checked::before { content: none; }
+}
+.xc-hz2__checked { display: block; margin: .15rem 0 0; }
+.xc-hz2__checked::before { content: none; }

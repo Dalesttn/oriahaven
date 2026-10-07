@@ -214,7 +214,7 @@ $oria_badges = array(
 					<?php // Free is a published price; "not published" beside a Free pill contradicted itself. ?>
 					<?php esc_html_e( 'Free', 'oria' ); ?>
 				<?php else : ?>
-					<span class="listing__price--none"><?php esc_html_e( 'Price not published', 'oria' ); ?></span>
+					<span class="listing__price--none"><?php esc_html_e( 'Check venue pricing', 'oria' ); ?></span>
 				<?php endif; ?>
 				<?php $oria_next = (string) get_field( 'next_session', $oria_id ); ?>
 				<?php if ( $oria_next ) : ?>

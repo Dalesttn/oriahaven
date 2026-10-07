@@ -101,7 +101,9 @@
 			if ( ! slot || ! grid ) { return; }
 			var cols = getComputedStyle( grid ).gridTemplateColumns.split( ' ' ).filter( Boolean ).length || 1;
 			var cards = Array.prototype.filter.call( grid.children, function ( el ) { return el !== slot && el.matches( '.listing, article' ); } );
-			var after = cards.length >= cols ? cards[ cols - 1 ] : cards[ cards.length - 1 ];
+			var rows = parseInt( root.getAttribute( 'data-dd-rows' ), 10 ) || 1;
+			var want = cols * rows;
+			var after = cards.length >= want ? cards[ want - 1 ] : cards[ cards.length - 1 ];
 			if ( mo ) { mo.disconnect(); }
 			if ( after ) {
 				if ( after.nextElementSibling !== slot ) { after.insertAdjacentElement( 'afterend', slot ); }

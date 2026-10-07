@@ -729,83 +729,123 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 <?php // Controls that need scripting stay out of the way without it. ?>
 <noscript><style>.xc-js{display:none!important}</style></noscript>
 
-<!-- 1. Hero: one photograph, full width, text on the left -->
-<section class="xc-hz<?php echo '' === $oria_hz['src'] ? ' xc-hz--bare' : ''; ?><?php echo strlen( $oria_h1_shown ) > 30 ? ' xc-hz--long' : ''; ?>" id="decide"<?php echo '' !== $oria_hz['pos'] ? ' style="--xc-hz-pos:' . esc_attr( $oria_hz['pos'] ) . '"' : ''; ?>>
-	<?php if ( '' !== $oria_hz['src'] ) : ?>
-		<div class="xc-hz__media">
-			<img class="xc-hz__img" src="<?php echo esc_url( $oria_hz['src'] ); ?>"<?php echo '' !== $oria_hz['srcset'] ? ' srcset="' . esc_attr( $oria_hz['srcset'] ) . '" sizes="100vw"' : ''; ?> width="<?php echo (int) $oria_hz['w']; ?>" height="<?php echo (int) $oria_hz['h']; ?>" alt="" fetchpriority="high" decoding="async">
-		</div>
-	<?php endif; ?>
-	<div class="xc-hz__shade" aria-hidden="true"></div>
-	<div class="wrap xc-hz__inner">
-		<nav class="crumbs xc-hz__crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
-			<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
-			<span aria-hidden="true">/</span>
-			<a href="<?php echo esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/explore/' ) ); ?>"><?php esc_html_e( 'Explore', 'oria' ); ?></a>
-			<span aria-hidden="true">/</span>
-			<a href="<?php echo esc_url( \Oria\Core\Explore\base_url( $oria_city ) ); ?>"><?php echo esc_html( $oria_cname ); ?></a>
-			<span aria-hidden="true">/</span>
-			<?php if ( $oria_facet ) : ?>
-				<a href="<?php echo esc_url( $oria_here ); ?>"><?php echo esc_html( $oria_pname ); ?></a>
-				<?php
-				// The label carries the city; the crumb already named it.
-				$oria_fl = (string) ( $oria_facet['page']['label'] ?? '' );
-				if ( '' === $oria_fl && ( $oria_facet['area'] ?? null ) instanceof WP_Term ) {
-					$oria_fl = \Oria\Theme\tname( $oria_facet['area'] );
-				}
-				if ( '' === $oria_fl ) {
-					$oria_fl = (string) preg_replace(
-						'/ in ' . preg_quote( \Oria\Core\PracticesIndex\label_city(), '/' ) . '$/',
-						'',
-						(string) $oria_facet['label']
-					);
-				}
-				?>
-				<span aria-hidden="true">/</span><span><?php echo esc_html( $oria_fl ); ?></span>
-			<?php else : ?>
-				<span><?php echo esc_html( $oria_pname ); ?></span>
-			<?php endif; ?>
-		</nav>
-
-		<div class="xc-hz__copy">
-			<p class="micro xc-hz__eyebrow">
-				<?php
-				if ( $oria_facet ) {
-					echo esc_html( $oria_pname ) . ' · ' . esc_html__( 'Filtered view', 'oria' );
-				} else {
-					/* translators: %s: city name */
-					printf( esc_html__( 'Explore %s', 'oria' ), esc_html( $oria_cname ) );
-				}
-				?>
-			</p>
-			<h1 class="xc-hz__title"><?php echo $oria_h1_html; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above ?></h1>
-			<p class="xc-hz__line"><?php echo esc_html( $oria_line ); ?></p>
-			<p class="xc-hz__trust">
-				<?php
-				printf(
-					/* translators: 1: number of places, 2: city or suburb, 3: day and month */
-					esc_html( _n( '%1$s hand-checked place across %2$s · Updated %3$s', '%1$s hand-checked places across %2$s · Updated %3$s', $oria_n, 'oria' ) ),
-					esc_html( number_format_i18n( $oria_n ) ),
-					esc_html( $oria_place_in ),
-					esc_html( $oria_updated_dm )
-				);
-				?>
-			</p>
-			<div class="xc-hz__acts">
-				<?php if ( $oria_moods || $oria_ways ) : ?>
-					<button type="button" class="btn xc-btn-primary xc-js" data-xc-open="xcWays" aria-controls="xcWays" aria-expanded="false" aria-haspopup="dialog" data-oria-event="category_ways_open"><?php echo $oria_moods ? esc_html__( 'Find your kind of reset', 'oria' ) : esc_html__( 'Ways to begin', 'oria' ); ?></button>
+<?php
+/*
+ * 1. Hero (2026-10 redesign): a compact editorial split -- words on the
+ * left, one photograph on the right -- so the first screen says where you
+ * are, what is here and how to narrow it, and the results start promptly.
+ * The finder lives with the results, not over the photograph.
+ */
+ob_start();
+get_template_part( 'template-parts/category-offers', null, array( 'ids' => $oria_ids, 'label' => $oria_facet ? $oria_h1_shown : $oria_pname, 'interest' => $oria_term ? $oria_term->slug : '' ) );
+$oria_offers_html = trim( (string) ob_get_clean() );
+$oria_first_early = function_exists( '\Oria\Core\FirstVisit\for_context' )
+	? \Oria\Core\FirstVisit\for_context( $oria_term, $oria_facet, (bool) $oria_area )
+	: null;
+$oria_ins_entry = ( ! $oria_area && function_exists( '\Oria\Core\FacetInsights\entry' ) )
+	? \Oria\Core\FacetInsights\entry( $oria_facet ?: null, is_array( $oria_city ) ? $oria_city : null, $oria_facet ? null : $oria_term )
+	: array();
+$oria_eyebrow = $oria_facet || $oria_area
+	? strtoupper( $oria_cname ) . ' · ' . $oria_pname
+	: strtoupper( $oria_cname ) . ' · ' . __( 'Wellness directory', 'oria' );
+?>
+<section class="xc-hz2" id="decide">
+	<div class="wrap xc-hz2__grid<?php echo '' === $oria_hz['src'] ? ' xc-hz2__grid--bare' : ''; ?>">
+		<div class="xc-hz2__copy">
+			<nav class="crumbs xc-hz2__crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
+				<span aria-hidden="true">/</span>
+				<a href="<?php echo esc_url( \Oria\Core\Explore\base_url( $oria_city ) ); ?>"><?php echo esc_html( $oria_cname ); ?></a>
+				<span aria-hidden="true">/</span>
+				<?php if ( $oria_facet ) : ?>
+					<a href="<?php echo esc_url( $oria_here ); ?>"><?php echo esc_html( $oria_pname ); ?></a>
+					<?php
+					$oria_fl = (string) ( $oria_facet['page']['label'] ?? '' );
+					if ( '' === $oria_fl && ( $oria_facet['area'] ?? null ) instanceof WP_Term ) {
+						$oria_fl = \Oria\Theme\tname( $oria_facet['area'] );
+					}
+					if ( '' === $oria_fl ) {
+						$oria_fl = (string) preg_replace( '/ in ' . preg_quote( \Oria\Core\PracticesIndex\label_city(), '/' ) . '$/', '', (string) $oria_facet['label'] );
+					}
+					?>
+					<span aria-hidden="true">/</span><span aria-current="page"><?php echo esc_html( $oria_fl ); ?></span>
+				<?php else : ?>
+					<span aria-current="page"><?php echo esc_html( $oria_pname ); ?></span>
 				<?php endif; ?>
-				<a class="btn xc-btn-light" href="#results" data-xc-show>
+			</nav>
+			<p class="micro xc-hz2__eyebrow"><?php echo esc_html( $oria_eyebrow ); ?></p>
+			<h1 class="xc-hz2__title"><?php echo $oria_h1_html; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above ?></h1>
+			<p class="xc-hz2__line"><?php echo esc_html( $oria_line ); ?></p>
+			<div class="xc-hz2__acts">
+				<a class="btn xc-btn-primary" href="#results" data-xc-show>
 					<?php
 					/* translators: %s: number of places */
-					printf( esc_html( _n( 'View all %s place', 'View all %s places', $oria_n, 'oria' ) ), esc_html( number_format_i18n( $oria_n ) ) );
+					printf( esc_html( _n( 'Explore %s place', 'Explore %s places', $oria_n, 'oria' ) ), esc_html( number_format_i18n( $oria_n ) ) );
 					?>
+					<span aria-hidden="true">&rarr;</span>
 				</a>
+				<?php if ( $oria_first_early ) : ?>
+					<a class="xc-hz2__second" href="#first-visit"><?php esc_html_e( 'First time? Start here', 'oria' ); ?></a>
+				<?php elseif ( $oria_moods || $oria_ways ) : ?>
+					<button type="button" class="xc-hz2__second xc-js" data-xc-open="xcWays" aria-controls="xcWays" aria-expanded="false" aria-haspopup="dialog" data-oria-event="category_ways_open"><?php echo $oria_moods ? esc_html__( 'Find your kind of reset', 'oria' ) : esc_html__( 'Ways to begin', 'oria' ); ?></button>
+				<?php endif; ?>
 			</div>
+			<?php if ( $oria_snap ) : ?>
+				<p class="xc-hz2__meta">
+					<?php echo esc_html( implode( ' · ', $oria_snap ) ); ?>
+					<?php if ( ! empty( $oria_ins_entry['checked'] ) ) : ?>
+						<span class="xc-hz2__checked">
+							<?php
+							/* translators: %s: date prices were checked */
+							printf( esc_html__( 'Prices checked %s', 'oria' ), esc_html( date_i18n( 'j F Y', (int) strtotime( (string) $oria_ins_entry['checked'] ) ) ) );
+							?>
+						</span>
+					<?php endif; ?>
+				</p>
+			<?php endif; ?>
 		</div>
+		<?php if ( '' !== $oria_hz['src'] ) : ?>
+			<figure class="xc-hz2__media"<?php echo '' !== $oria_hz['pos'] ? ' style="--xc-hz-pos:' . esc_attr( $oria_hz['pos'] ) . '"' : ''; ?>>
+				<img class="xc-hz2__img" src="<?php echo esc_url( $oria_hz['src'] ); ?>"<?php echo '' !== $oria_hz['srcset'] ? ' srcset="' . esc_attr( $oria_hz['srcset'] ) . '" sizes="(min-width: 900px) 45vw, 100vw"' : ''; ?> width="<?php echo (int) $oria_hz['w']; ?>" height="<?php echo (int) $oria_hz['h']; ?>" alt="" fetchpriority="high" decoding="async">
+			</figure>
+		<?php endif; ?>
 	</div>
 </section>
 
+<?php
+/*
+ * Section navigation: real anchors to what this page actually has. A
+ * section with nothing in it is not linked. The offers section is only
+ * known once it has drawn, so its link is filled in by a placeholder the
+ * template swaps at the end (see oria_secnav).
+ */
+$oria_secnav = array( array( '#results', __( 'Places', 'oria' ) ) );
+if ( '' !== $oria_offers_html ) {
+	$oria_secnav[] = array( '#offers', __( 'Offers', 'oria' ) );
+}
+if ( $oria_first_early ) {
+	$oria_secnav[] = array( '#first-visit', __( 'First visit', 'oria' ) );
+}
+if ( $oria_ins_entry ) {
+	$oria_secnav[] = array( '#xcInsights', __( 'Prices', 'oria' ) );
+}
+if ( $oria_faqs ) {
+	$oria_secnav[] = array( '#faq', __( 'FAQs', 'oria' ) );
+}
+?>
+<?php if ( count( $oria_secnav ) > 1 ) : ?>
+<nav class="xc-secnav" aria-label="<?php esc_attr_e( 'On this page', 'oria' ); ?>">
+	<div class="wrap">
+		<ul class="xc-secnav__list">
+			<?php foreach ( $oria_secnav as $oria_sn ) : ?>
+				<li<?php echo ! empty( $oria_sn[2] ) ? ' data-xc-secnav="' . esc_attr( $oria_sn[2] ) . '"' : ''; ?>><a href="<?php echo esc_attr( $oria_sn[0] ); ?>"><?php echo esc_html( $oria_sn[1] ); ?></a></li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
+</nav>
+<?php endif; ?>
+
+<?php ob_start(); // The dock is drawn here and printed with the results (redesign: one finder, at the results). ?>
 <!-- 2. Discovery Dock: feeling, experience, location, then the places -->
 <div class="xc-dockwrap" id="xcDockWrap">
 	<div class="wrap xc-dockwrap__inner">
@@ -1036,6 +1076,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
 	</div>
 </div>
 
+<?php $oria_dock_html = str_replace( 'class="xc-dockwrap"', 'class="xc-dockwrap xc-dockwrap--in"', (string) ob_get_clean() ); ?>
 <?php
 /*
  * The Discovery Ribbon: the dock's essentials, pinned under the site header
@@ -1050,7 +1091,7 @@ $oria_all_label = sprintf( __( 'All %s', 'oria' ), $oria_place_name );
  * the ribbon and the list. Only live offers (Theme\active_offer), five at
  * most; the strip is absent when there are none.
  */
-get_template_part( 'template-parts/category-offers', null, array( 'ids' => $oria_ids, 'label' => $oria_facet ? $oria_h1_shown : $oria_pname, 'interest' => $oria_term ? $oria_term->slug : '' ) );
+// Offers are drawn before the hero (so the section nav knows) and printed below the results.
 ?>
 
 <div class="xc-ribbon xc-js" id="xcRibbon" role="region" aria-label="<?php esc_attr_e( 'Refine these places', 'oria' ); ?>">
@@ -1187,6 +1228,8 @@ get_template_part( 'template-parts/category-offers', null, array( 'ids' => $oria
 			'style_label' => function_exists( '\Oria\Core\Categories\style_label_for' ) ? \Oria\Core\Categories\style_label_for( $oria_term ) : '',
 		)
 	);
+	// The dock's panels and the ribbon's sentinel, now after the real filters.
+	echo $oria_dock_html; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped when drawn
 	?>
 	<div class="dirbar">
 		<?php if ( $oria_bo['slugs'] ) : ?>
@@ -1339,7 +1382,7 @@ get_template_part( 'template-parts/category-offers', null, array( 'ids' => $oria
 		 * float, head spa and sauna pages), page one.
 		 */
 		if ( function_exists( '\Oria\Core\DayDesigner\render' ) ) {
-			\Oria\Core\DayDesigner\render( array( 'variant' => 'category' ) );
+			\Oria\Core\DayDesigner\render( array( 'variant' => 'category', 'rows' => 2, 'folded' => true ) );
 		}
 		?>
 
@@ -1428,6 +1471,7 @@ get_template_part( 'template-parts/category-offers', null, array( 'ids' => $oria
 	 */
 	$oria_note_on = ( $oria_note_cfg && ( $oria_note_cmp || $oria_note_guide ) ) || $oria_note_cmp;
 	?>
+	<?php ob_start(); // The Oria Note: printed lower down, with the guides, not inside the list. ?>
 	<?php if ( $oria_note_on ) : ?>
 		<aside class="xc-note xc-note--two" id="xcNote" aria-labelledby="xcNoteTitle">
 			<div class="xc-note__main">
@@ -1461,6 +1505,7 @@ get_template_part( 'template-parts/category-offers', null, array( 'ids' => $oria
 			</div>
 		</aside>
 	<?php endif; ?>
+	<?php $oria_note_html = (string) ob_get_clean(); ?>
 
 	<?php
 	/*
@@ -1628,6 +1673,7 @@ get_template_part( 'template-parts/category-offers', null, array( 'ids' => $oria
 		/* translators: %s: category name, lowercased */
 		: sprintf( __( 'e.g. %s near the city after work', 'oria' ), strtolower( $oria_pname ) );
 	?>
+	<?php ob_start(); // Ask Oria: printed near the foot of the page. ?>
 	<aside class="askband" aria-labelledby="askband-title">
 		<?php get_template_part( 'template-parts/oria-orb', null, array( 'class' => 'askband__orb', 'uid' => 'band' ) ); ?>
 		<div class="askband__text">
@@ -1655,8 +1701,10 @@ get_template_part( 'template-parts/category-offers', null, array( 'ids' => $oria
 			</p>
 		</div>
 	</aside>
+	<?php $oria_ask_html = (string) ob_get_clean(); ?>
 	<div class="xc-browse-end" aria-hidden="true"></div>
 </section>
+<?php ob_start(); // Everything after the results is gathered into chunks and printed in the redesign's order below. ?>
 
 <?php
 /*
@@ -1710,6 +1758,7 @@ $oria_bo_cards = array_slice( (array) $oria_bo['guides'], 0, 3 );
 	</section>
 <?php endif; ?>
 
+<?php $oria_ch['bestof'] = (string) ob_get_clean(); ob_start(); ?>
 <?php
 /*
  * 5. One upcoming experience (brief 9.4), ticket style: the first event
@@ -1771,6 +1820,7 @@ $oria_ev     = $oria_ev_row ? get_post( (int) $oria_ev_row['id'] ) : null;
 	</section>
 <?php endif; ?>
 
+<?php $oria_ch['event'] = (string) ob_get_clean(); ob_start(); ?>
 <?php
 // The category's introduction, whole, as the guide.
 $oria_intro_html = ( is_string( $oria_intro ) && '' !== trim( $oria_intro ) && $oria_term )
@@ -1802,6 +1852,7 @@ if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
 	<p class="wrap xc-jobs"><span aria-hidden="true">&#10022;</span> <?php esc_html_e( 'Work in this field?', 'oria' ); ?>
 		<a href="<?php echo esc_url( $oria_jobs_link[1] ); ?>" data-oria-event="category_jobs_click"><?php echo esc_html( $oria_jobs_link[0] ); ?> (<?php echo (int) $oria_jobs_link[2]; ?>) &rarr;</a></p>
 <?php endif; ?>
+<?php $oria_ch['jobs'] = (string) ob_get_clean(); ob_start(); ?>
 <!-- 6. Guide -->
 <section class="wrap section floor xc-guide" id="read">
 	<p class="micro floor__label"><?php esc_html_e( 'Guide', 'oria' ); ?></p>
@@ -1952,6 +2003,8 @@ if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
 </section>
 
 <?php
+$oria_ch['read'] = (string) ob_get_clean(); ob_start();
+
 /*
  * What's on in this category. Only when there is something: an "Upcoming
  * yoga events" heading over an empty row tells a visitor the category is
@@ -1972,6 +2025,7 @@ if ( $oria_term && function_exists( '\Oria\Core\Events\for_practice' ) ) {
 }
 ?>
 
+<?php $oria_ch['eventsmod'] = (string) ob_get_clean(); ob_start(); ?>
 <?php
 // No note on this category, so the Pass gets its own band instead.
 if ( empty( $oria_note_on ) ) {
@@ -1979,6 +2033,7 @@ if ( empty( $oria_note_on ) ) {
 }
 ?>
 
+<?php $oria_ch['pass'] = (string) ob_get_clean(); ob_start(); ?>
 <?php
 // The guides for this practice, as image cards; the journal's latest where
 // none are tagged to it yet.
@@ -1995,6 +2050,22 @@ if ( '' !== $oria_fac ) {
 		)
 	);
 	$oria_latest = array();
+} elseif ( $oria_facet && ! $oria_area ) {
+	/*
+	 * A facet page keeps the category's guides only where they are about
+	 * the facet: the traditional sauna page was offering "How to choose a
+	 * singing bowl". Matched on the facet's own words (sauna, plunge,
+	 * reformer...), and no journal fallback on unrelated things.
+	 */
+	$oria_fwords = array_filter(
+		preg_split( '/[^a-z]+/', strtolower( (string) ( $oria_facet['value'] ?? '' ) . ' ' . (string) ( $oria_facet['slug'] ?? '' ) ) ) ?: array(),
+		static fn( string $w ): bool => strlen( $w ) > 3 && ! in_array( $w, array( 'therapy', 'perth', 'online', 'class', 'classes' ), true )
+	);
+	if ( $oria_fwords ) {
+		$oria_frx    = '/' . implode( '|', array_map( static fn( string $w ): string => preg_quote( $w, '/' ), $oria_fwords ) ) . '/i';
+		$oria_guides = array_values( array_filter( (array) $oria_guides, static fn( $g ): bool => (bool) preg_match( $oria_frx, (string) get_the_title( $g ) ) ) );
+		$oria_latest = array();
+	}
 }
 if ( $oria_guides || $oria_latest ) {
 	get_template_part(
@@ -2010,6 +2081,7 @@ if ( $oria_guides || $oria_latest ) {
 }
 ?>
 
+<?php $oria_ch['guides'] = (string) ob_get_clean(); ob_start(); ?>
 <?php
 
 /*
@@ -2030,6 +2102,8 @@ if ( $oria_first ) {
 	get_template_part( 'template-parts/first-visit', null, array( 'guide' => $oria_first, 'id' => 'first-visit' ) );
 }
 
+$oria_ch['first'] = (string) ob_get_clean(); ob_start();
+
 /*
  * Retreats only: one compact line to the retreat escapes hub, once it has
  * something in it. The local list above, and each practice's own contact
@@ -2046,6 +2120,8 @@ if ( $oria_term && in_array( $oria_term->slug, array( 'retreats', 'day-retreats'
 	<?php
 }
 
+$oria_ch['retreat'] = (string) ob_get_clean(); ob_start();
+
 // 7. FAQs: the frame's on a facet page (none if it has no frame), the
 // category's otherwise.
 if ( $oria_facet ) {
@@ -2058,6 +2134,7 @@ if ( $oria_facet ) {
 }
 ?>
 
+<?php $oria_ch['faq'] = (string) ob_get_clean(); ob_start(); ?>
 <!-- 8. Browse by area and by experience: the crawlable mesh -->
 <section class="wrap section section--top-flush floor xc-mesh">
 	<?php
@@ -2151,6 +2228,29 @@ if ( $oria_facet ) {
 	);
 	?>
 </section>
+<?php
+$oria_ch['mesh'] = (string) ob_get_clean();
+
+/*
+ * The redesign's order below the results: the offers, the practical guide
+ * (first visit, then the figures and the facet's own guide), further
+ * reading, questions, onward discovery, one event, and the quieter asks
+ * (the Oria note, the Pass, Ask Oria, jobs) at the foot. The second events
+ * strip is left out -- one events block per page.
+ */
+if ( '' !== $oria_offers_html ) {
+	echo '<div class="xc-offers2" id="offers">' . $oria_offers_html . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
+}
+foreach ( array( 'first', 'read', 'guides', 'bestof', 'faq', 'mesh', 'event', 'retreat' ) as $oria_ck ) {
+	echo $oria_ch[ $oria_ck ] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
+}
+if ( '' !== trim( (string) ( $oria_note_html ?? '' ) ) ) {
+	echo '<div class="wrap xc-foot-asks">' . $oria_note_html . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
+}
+echo $oria_ch['pass'] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
+echo '<div class="wrap xc-foot-asks">' . ( $oria_ask_html ?? '' ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
+echo $oria_ch['jobs'] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput -- template output
+?>
 <?php endif; ?>
 
 <?php
@@ -2158,7 +2258,7 @@ if ( $oria_facet ) {
  * 9. Products, then apps (template-parts/support-bands.php): each left out
  * when nothing genuinely fits the category. Skipped on a suburb page.
  */
-if ( ! $oria_area && '' === $oria_fac && $oria_term instanceof WP_Term ) {
+if ( ! $oria_area && ! $oria_facet && '' === $oria_fac && $oria_term instanceof WP_Term ) {
 	get_template_part( 'template-parts/support', 'bands', array( 'term' => $oria_term ) );
 }
 ?>

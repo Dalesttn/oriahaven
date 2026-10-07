@@ -26,6 +26,9 @@ $oria_ctx     = (array) ( $args['ctx'] ?? array() );
 $oria_near    = (string) ( $args['near'] ?? '' );
 $oria_subs    = (array) ( $args['suburbs'] ?? array() );
 $oria_variant = (string) ( $args['variant'] ?? 'category' );
+$oria_rows    = max( 1, (int) ( $args['rows'] ?? 1 ) );
+$oria_folded  = ! empty( $args['folded'] );
+$oria_open_l  = $oria_folded ? __( 'Plan my visit', 'oria' ) : __( 'Start planning', 'oria' );
 if ( ! $oria_ctx ) {
 	return;
 }
@@ -43,7 +46,7 @@ $oria_note    = (string) ( $oria_ctx['note'] ?? '' );
 $oria_default = '' !== $oria_near ? $oria_near : 'perth-cbd';
 ?>
 <div class="oh-dd-slot<?php echo 'category' === $oria_variant ? ' oh-dd-slot--grid' : ' wrap'; ?>" data-dd-slot>
-<section class="dd" id="day-designer" aria-labelledby="<?php echo esc_attr( $oria_uid ); ?>-title"
+<section class="dd<?php echo $oria_folded ? ' dd--folded' : ''; ?>" id="day-designer" data-dd-rows="<?php echo (int) $oria_rows; ?>" aria-labelledby="<?php echo esc_attr( $oria_uid ); ?>-title"
 	data-dd data-dd-ctx="<?php echo esc_attr( (string) $oria_ctx['key'] ); ?>" data-dd-variant="<?php echo esc_attr( $oria_variant ); ?>"
 	data-dd-endpoint="<?php echo esc_url( rest_url( 'oria/v1/day-plan' ) ); ?>">
 
@@ -65,7 +68,7 @@ $oria_default = '' !== $oria_near ? $oria_near : 'perth-cbd';
 			<div class="dd__photo" aria-hidden="true"><img src="<?php echo esc_url( $oria_photo ); ?>" alt="" loading="lazy" decoding="async"></div>
 		<?php endif; ?>
 		<button type="button" class="dd__toggle" data-dd-toggle aria-expanded="false" aria-controls="<?php echo esc_attr( $oria_uid ); ?>-panel">
-			<span data-dd-toggle-label><?php esc_html_e( 'Start planning', 'oria' ); ?></span>
+			<span data-dd-toggle-label><?php echo esc_html( $oria_open_l ); ?></span>
 			<svg class="dd__chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
 		</button>
 	</div>
@@ -173,7 +176,7 @@ $oria_default = '' !== $oria_near ? $oria_near : 'perth-cbd';
 	t.addEventListener( 'click', function () {
 		var o = r.classList.toggle( 'is-open' );
 		t.setAttribute( 'aria-expanded', o ? 'true' : 'false' );
-		t.querySelector( '[data-dd-toggle-label]' ).textContent = o ? <?php echo wp_json_encode( __( 'Hide planner', 'oria' ) ); ?> : <?php echo wp_json_encode( __( 'Start planning', 'oria' ) ); ?>;
+		t.querySelector( '[data-dd-toggle-label]' ).textContent = o ? <?php echo wp_json_encode( __( 'Hide planner', 'oria' ) ); ?> : <?php echo wp_json_encode( $oria_open_l ); ?>;
 	} );
 	m.addEventListener( 'click', function () {
 		var o = box.hidden;
