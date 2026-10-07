@@ -276,7 +276,9 @@ $oria_rows   = $oria_term && function_exists( '\Oria\Core\Intents\for_practice' 
 	? \Oria\Core\Intents\for_practice( $oria_term, $oria_area ? $oria_ids : $oria_all )
 	: array();
 $oria_guides = $oria_term && function_exists( '\Oria\Core\Guides\for_term' ) ? \Oria\Core\Guides\for_term( $oria_term ) : array();
-$oria_latest = $oria_guides ? array() : get_posts( array( 'post_type' => 'post', 'post_status' => 'publish', 'numberposts' => 3, 'orderby' => 'date', 'order' => 'DESC' ) );
+// No journal fallback: unrelated recent posts are not a reading list for
+// this category (guides-tab brief, section 5).
+$oria_latest = array();
 
 // Events and workshops on now or coming up in this category. Asked for
 // here, before the section menu is drawn, so the menu offers "What's on"
@@ -1924,9 +1926,9 @@ $oria_bo_cards = array_slice( (array) $oria_bo['guides'], 0, 3 );
 <?php if ( $oria_bo_cards && function_exists( '\Oria\Core\BestOf\intro' ) ) : ?>
 	<section class="wrap xc-bo" id="xcBestOf" aria-labelledby="xcBestOfTitle">
 		<div class="xc-bo__head">
-			<p class="micro xc-bo__eyebrow"><span class="badge--best__mark" aria-hidden="true">&#10022;</span> <?php esc_html_e( 'From our Best Of guides', 'oria' ); ?></p>
-			<h2 class="h3 xc-bo__title" id="xcBestOfTitle"><?php esc_html_e( 'Shortlisted by our editors', 'oria' ); ?></h2>
-			<p class="xc-bo__note"><?php esc_html_e( 'Editorial choices, never paid for.', 'oria' ); ?></p>
+			<p class="xc-bo__eyebrow"><span class="badge--best__mark" aria-hidden="true">&#10022;</span> <?php esc_html_e( 'The Oria edit', 'oria' ); ?></p>
+			<h2 class="xc-bo__title" id="xcBestOfTitle"><?php esc_html_e( 'Places worth a closer look', 'oria' ); ?></h2>
+			<p class="xc-bo__note"><?php esc_html_e( 'Shortlists from our Best Of guides. Editorial choices, never paid for.', 'oria' ); ?></p>
 		</div>
 		<ul class="xc-bo__grid">
 			<?php foreach ( $oria_bo_cards as $oria_g ) : ?>
@@ -1937,7 +1939,19 @@ $oria_bo_cards = array_slice( (array) $oria_bo['guides'], 0, 3 );
 					// No cover yet: the first pick's photo, as the guide cards elsewhere do.
 					$oria_gimg = \Oria\Theme\listing_image( (int) $oria_g['picks'][0]['listing'] );
 				}
-				$oria_gwhy = wp_trim_words( wp_strip_all_tags( \Oria\Core\BestOf\intro( $oria_gid ) ), 18 );
+				// The guide's own excerpt -- a curated sentence -- else whole
+				// sentences from its intro, up to about 26 words; a trim last.
+				$oria_gwhy = has_excerpt( $oria_gid ) ? trim( wp_strip_all_tags( get_the_excerpt( $oria_gid ) ) ) : trim( wp_strip_all_tags( \Oria\Core\BestOf\intro( $oria_gid ) ) );
+				$oria_gfst = '';
+				foreach ( preg_split( '/(?<=[.!?])\s+/', $oria_gwhy ) ?: array() as $oria_gs ) {
+					if ( str_word_count( $oria_gfst . ' ' . $oria_gs ) > 26 ) {
+						break;
+					}
+					$oria_gfst = trim( $oria_gfst . ' ' . $oria_gs );
+				}
+				$oria_gwhy = has_excerpt( $oria_gid ) && str_word_count( $oria_gwhy ) <= 40
+					? $oria_gwhy
+					: ( '' !== $oria_gfst ? $oria_gfst : wp_trim_words( $oria_gwhy, 18 ) );
 				?>
 				<li>
 					<a class="xc-bocard" href="<?php echo esc_url( $oria_g['url'] ); ?>" data-oria-event="category_best_of_guide_click">
@@ -1957,6 +1971,7 @@ $oria_bo_cards = array_slice( (array) $oria_bo['guides'], 0, 3 );
 								printf( esc_html( _n( '%s of these places shortlisted', '%s of these places shortlisted', count( $oria_g['picks'] ), 'oria' ) ), esc_html( number_format_i18n( count( $oria_g['picks'] ) ) ) );
 								?>
 							</span>
+							<span class="xc-bocard__go"><?php esc_html_e( 'Explore the shortlist', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></span>
 						</span>
 					</a>
 				</li>
@@ -2277,15 +2292,13 @@ if ( '' !== $oria_fac ) {
 		$oria_latest = array();
 	}
 }
-if ( $oria_guides || $oria_latest ) {
+if ( $oria_guides ) {
 	get_template_part(
-		'template-parts/guides',
-		'floor',
+		'template-parts/guides-reading',
+		null,
 		array(
-			'guides'  => $oria_guides ?: $oria_latest,
-			'heading' => $oria_guides ? sprintf( __( 'Guides to %s worth reading first', 'oria' ), strtolower( $oria_pname ) ) : __( 'From the journal', 'oria' ),
-			'icon'    => ( $oria_term && function_exists( '\Oria\Core\Categories\icon' ) ) ? \Oria\Core\Categories\icon( $oria_term->slug ) : '',
-			'compact' => true,
+			'guides' => $oria_guides,
+			'topic'  => strtolower( $oria_facet && ! $oria_area ? (string) ( $oria_facet['label'] ?? $oria_pname ) : $oria_pname ),
 		)
 	);
 }
