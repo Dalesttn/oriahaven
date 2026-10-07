@@ -138,7 +138,7 @@
       panel.removeAttribute("aria-modal");
       position(panel, trigger);
     }
-    var first = $('.xc-mood[aria-pressed="true"]', panel) || focusables($(".xc-pop__body", panel) || panel)[0] || $(".xc-pop__x", panel);
+    var first = $('[data-xc-mood][aria-pressed="true"]', panel) || focusables($(".xc-pop__body", panel) || panel)[0] || $(".xc-pop__x", panel);
     if (first) first.focus({ preventScroll: true });
     if (!phone.matches && panel.getBoundingClientRect().bottom > window.innerHeight) {
       panel.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
@@ -173,7 +173,7 @@
     lock(true);
     setExpanded(dlg.id, true);
     dlg.showModal();
-    var first = $('.xc-chooser__card[aria-current="page"]', dlg) || $(".xc-chooser__all", dlg) || $(".xc-chooser__x", dlg);
+    var first = $('.xc-chooser__card[aria-current="page"], [data-xc-mood][aria-pressed="true"]', dlg) || $(".xc-chooser__all, .xc-chooser__card", dlg) || $(".xc-chooser__x", dlg);
     if (first) {
       first.focus({ preventScroll: true });
       if (first.scrollIntoView) first.scrollIntoView({ block: "nearest" });
@@ -258,6 +258,8 @@
     var go = e.target.closest && e.target.closest("[data-xc-show]");
     if (!go) return;
     e.preventDefault();
+    var dlg = go.closest("dialog");
+    if (dlg && dlg.open) dlg.close();
     closePop(false);
     closeFilterSheet(false);
     scrollToResults();
@@ -271,7 +273,7 @@
     return i ? i.getAttribute("data-filter") : "svc";
   })();
   var expBoxes = $$('[data-xc-exp-list] input[data-filter="' + KIND + '"]');
-  var moodBtns = $$(".xc-mood");
+  var moodBtns = $$("[data-xc-mood]");
   var activeMood = null;
   function moodItems(btn) { return (btn.getAttribute("data-items") || "").split(",").filter(Boolean); }
   function svcBoxes() {
@@ -307,6 +309,9 @@
         }
       }
       paintDock();
+      // In the chooser, bring the feeling's fine-tune list into view.
+      var detail = activeMood && btn.closest(".xc-chooser") && $('[data-xc-mood-detail="' + activeMood + '"]');
+      if (detail) detail.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
     });
   });
   function deriveMood() {
@@ -344,7 +349,7 @@
   doc.addEventListener("click", function (e) {
     var c = e.target.closest && e.target.closest("[data-xc-clear]");
     if (!c) return;
-    var panel = c.closest(".xc-pop");
+    var panel = c.closest(".xc-pop, .xc-chooser");
     if (!panel) return;
     if (panel.id === "xcWays") { activeMood = null; setSvc([]); }
     else {

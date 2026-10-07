@@ -1824,3 +1824,68 @@ html.xc-locked { overflow: hidden; }
 /* The shared sensation marks come wrapped for the style cards' corner. */
 .xc-chooser__icon .xcard__icon { position: static; opacity: 1; color: inherit; }
 .xc-chooser__icon .xcard__icon svg { width: 24px; height: 24px; stroke-width: 1.6; }
+
+/* "Help me choose" (root categories): the same shell, as a guided filter.
+   Feeling cards are toggle buttons; a fixed bar below applies them. */
+.xc-chooser__mood {
+  --m: var(--ch-ink); --m-wash: var(--ch-sage);
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  grid-template-areas: "icon state state" "text text text";
+  row-gap: .8rem;
+  font: inherit; text-align: left; cursor: pointer;
+}
+.xc-chooser__mood[data-xc-mood="switch-off"]        { --m: #4d5f7d; --m-wash: #e3e8f2; }
+.xc-chooser__mood[data-xc-mood="recover"]           { --m: #9c563c; --m-wash: #f5e4da; }
+.xc-chooser__mood[data-xc-mood="feel-lighter"]      { --m: #3d6b75; --m-wash: #dfecee; }
+.xc-chooser__mood[data-xc-mood="indulge"],
+.xc-chooser__mood[data-xc-mood="treat-yourself"]    { --m: #84681d; --m-wash: #f4ead0; }
+.xc-chooser__mood[data-xc-mood="wind-down"]         { --m: #74566f; --m-wash: #eee4ec; }
+.xc-chooser__mood[data-xc-mood="try-something-new"],
+.xc-chooser__mood[data-xc-mood="move"]              { --m: #416b43; --m-wash: #e1ecdf; }
+.xc-chooser__mood[data-xc-mood="connect"]           { --m: #9a6122; --m-wash: #f7e6cf; }
+.xc-chooser__mood .xc-chooser__icon { grid-area: icon; background: var(--m-wash); color: var(--m); }
+.xc-chooser__mood .xc-chooser__icon svg { width: 24px; height: 24px; stroke-width: 1.6; }
+.xc-chooser__mood .xc-chooser__text { grid-area: text; }
+.xc-chooser__mood .xc-chooser__state { grid-area: state; align-self: start; }
+.xc-chooser__ring { width: 20px; height: 20px; border: 1.5px solid var(--ch-border); border-radius: 999px; }
+.xc-chooser__on { display: none; align-items: center; gap: .3rem; }
+.xc-chooser__mood[aria-pressed="true"] {
+  background: var(--ch-sage); border-color: var(--ch-ink); box-shadow: inset 0 0 0 1px var(--ch-ink);
+}
+.xc-chooser__mood[aria-pressed="true"] .xc-chooser__icon { background: var(--ch-card); }
+.xc-chooser__mood[aria-pressed="true"] .xc-chooser__ring { display: none; }
+.xc-chooser__mood[aria-pressed="true"] .xc-chooser__on { display: inline-flex; }
+.xc-chooser__mood:hover .xc-chooser__ring { border-color: var(--ch-ink); }
+.xc-chooser__mood .xc-chooser__state { color: var(--ch-ink); font-size: .85rem; font-weight: 600; }
+.xc-chooser__mood:focus-visible { outline: 3px solid var(--ch-focus); outline-offset: 3px; }
+.xc-chooser__grid--moods { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.xc-chooser__grid--moods .xc-chooser__card { min-height: 0; }
+
+/* The chosen feeling's fine-tune list. */
+.xc-chooser .xc-mood__detail { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--ch-border); }
+.xc-chooser .xc-mood__hint { color: var(--ch-muted); font-size: .95rem; margin: 0 0 .35rem; }
+
+/* Clear / Show N places: always visible under the list. */
+.xc-chooser__bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .9rem var(--ch-pad) calc(.9rem + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--ch-border); background: var(--ch-paper);
+}
+.xc-chooser__clear {
+  min-height: 44px; padding: 0 .25rem; border: 0; background: none; cursor: pointer;
+  font: inherit; font-weight: 600; color: var(--ch-ink); text-decoration: underline; text-underline-offset: 3px;
+}
+.xc-chooser__clear:focus-visible { outline: 3px solid var(--ch-focus); outline-offset: 3px; }
+.xc-chooser__go { min-height: 48px; }
+.xc-chooser--moods .xc-chooser__body { padding-bottom: 1.25rem; }
+
+@media (max-width: 760px) {
+  .xc-chooser__grid--moods { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .xc-chooser__grid--moods { grid-template-columns: 1fr; }
+  .xc-chooser__mood { grid-template-columns: 40px minmax(0, 1fr) auto; grid-template-areas: "icon text state"; }
+  .xc-chooser__go { flex: 1; justify-content: center; }
+}
+.xc-chooser__card { align-content: start; }
+.xc-chooser__go { display: inline-block; gap: 0; line-height: 48px; padding-block: 0; text-align: center; }

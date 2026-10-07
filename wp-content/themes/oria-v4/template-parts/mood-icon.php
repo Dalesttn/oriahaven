@@ -72,6 +72,29 @@ $oria_paths = array(
 		'<path d="M10.6 3.6c0 4.4 1.4 5.8 5.8 5.8-4.4 0-5.8 1.4-5.8 5.8 0-4.4-1.4-5.8-5.8-5.8 4.4 0 5.8-1.4 5.8-5.8Z"/>',
 		'<path d="M17.6 14.4c0 2 .7 2.7 2.7 2.7-2 0-2.7.7-2.7 2.7 0-2-.7-2.7-2.7-2.7 2 0 2.7-.7 2.7-2.7Z"/>',
 	),
+	// Indulge borrows the same brightness: the words mean the same thing.
+	'indulge'        => array(
+		'<path d="M10.6 3.6c0 4.4 1.4 5.8 5.8 5.8-4.4 0-5.8 1.4-5.8 5.8 0-4.4-1.4-5.8-5.8-5.8 4.4 0 5.8-1.4 5.8-5.8Z"/>',
+		'<path d="M17.6 14.4c0 2 .7 2.7 2.7 2.7-2 0-2.7.7-2.7 2.7 0-2-.7-2.7-2.7-2.7 2 0 2.7-.7 2.7-2.7Z"/>',
+	),
+
+	// Afloat: a body-length line resting on water, the water below it.
+	'feel-lighter'   => array(
+		'<path d="M4.4 11.6c3.1-1.3 11.9-1.6 15.4-.3"/><circle cx="6.1" cy="9" r="1.5"/>',
+		'<path d="M3.6 15.4c1.9 0 2.3-1.2 4.1-1.2s2.2 1.2 4.1 1.2 2.3-1.2 4.1-1.2 2.3 1.2 4.3 1.2"/><path d="M6.4 18.8c1.4 0 1.8-.9 3.1-.9s1.8.9 3.1.9 1.8-.9 3.1-.9"/>',
+	),
+
+	// The sun half under the horizon, and the last of its light.
+	'wind-down'      => array(
+		'<path d="M7.3 15.6a4.8 4.8 0 0 1 9.5-.2"/><path d="M3.6 15.8c5.4-.3 11.3-.4 16.9.1"/>',
+		'<path d="M12 6.3v1.8"/><path d="M5.8 9l1.2 1.2"/><path d="M18.3 9.2l-1.3 1.1"/><path d="M7.2 19.2c3.2-.2 6.6-.2 9.8.1"/>',
+	),
+
+	// A door left ajar: somewhere you have not been yet.
+	'try-something-new' => array(
+		'<path d="M6.6 19.6V5.4c0-.6.4-1 1-1h8.6c.6 0 1 .4 1 1v14.2"/><path d="M6.6 19.6l6.1-1.4V6.1L6.6 4.6"/>',
+		'<circle cx="11.1" cy="12.6" r=".55"/><path d="M4.6 19.8c4.6-.2 10-.2 14.9.1"/>',
+	),
 );
 
 // An unknown feeling still gets a doorway, just an unmarked one.

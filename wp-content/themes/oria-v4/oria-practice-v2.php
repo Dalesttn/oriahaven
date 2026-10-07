@@ -1004,67 +1004,80 @@ $oria_panel_close = static fn( string $k ): string => isset( $oria_tabs[ $k ] ) 
 		?>
 		<?php if ( $oria_moods || $oria_ways ) : ?>
 			<?php if ( $oria_moods ) : ?>
-			<div class="xc-pop xc-pop--wide" id="xcWays" role="dialog" aria-labelledby="xcWaysTitle" hidden>
-				<div class="xc-pop__head">
-					<h2 class="xc-pop__title" id="xcWaysTitle"><?php echo $oria_moods ? esc_html__( 'What would feel good right now?', 'oria' ) : esc_html__( 'Ways to begin', 'oria' ); ?></h2>
-					<button type="button" class="xc-pop__x" data-xc-close aria-label="<?php esc_attr_e( 'Close', 'oria' ); ?>">&times;</button>
-				</div>
-				<div class="xc-pop__body">
-					<?php if ( $oria_moods ) : ?>
-						<div class="xc-moods" role="group" aria-label="<?php esc_attr_e( 'Moods', 'oria' ); ?>">
-							<?php foreach ( $oria_moods as $oria_m ) : ?>
-								<button type="button" class="xc-mood" aria-pressed="false" data-xc-mood="<?php echo esc_attr( $oria_m['slug'] ); ?>" data-xc-mood-name="<?php echo esc_attr( $oria_m['name'] ); ?>" data-kind="svc" data-items="<?php echo esc_attr( implode( ',', $oria_m['items'] ) ); ?>">
-									<span class="xc-mood__name"><?php echo esc_html( $oria_m['name'] ); ?></span>
-									<?php if ( '' !== $oria_m['line'] ) : ?>
-										<span class="xc-mood__line"><?php echo esc_html( $oria_m['line'] ); ?></span>
-									<?php endif; ?>
-									<span class="xc-mood__n">
-										<?php
-										/* translators: %s: number of places */
-										printf( esc_html( _n( '%s place', '%s places', $oria_m['n'], 'oria' ) ), esc_html( number_format_i18n( $oria_m['n'] ) ) );
-										?>
-									</span>
-								</button>
-							<?php endforeach; ?>
-						</div>
-						<?php foreach ( $oria_moods as $oria_m ) : ?>
-							<div class="xc-mood__detail" data-xc-mood-detail="<?php echo esc_attr( $oria_m['slug'] ); ?>" hidden>
-								<p class="xc-mood__hint">
+				<?php
+				/*
+				 * "Help me choose" on a category: a real guided filter. The same
+				 * dialog shell as the experience chooser below, but its cards
+				 * are toggle buttons (one feeling at a time) that tick the
+				 * feeling's services in place, and its footer applies them.
+				 */
+				?>
+				<dialog class="xc-chooser xc-chooser--moods" id="xcWays" aria-labelledby="xcWaysTitle">
+					<div class="xc-chooser__inner">
+						<header class="xc-chooser__head">
+							<div>
+								<p class="xc-chooser__eyebrow">
 									<?php
-									/* translators: %s: mood name */
-									printf( esc_html__( 'In “%s” — untick anything you would rather skip:', 'oria' ), esc_html( $oria_m['name'] ) );
+									/* translators: %s: category name */
+									printf( esc_html__( 'Explore %s', 'oria' ), esc_html( $oria_pname ) );
 									?>
 								</p>
-								<div class="xc-checks">
-									<?php foreach ( $oria_m['items'] as $oria_it ) { $oria_svc_box( $oria_it, $oria_exp[ $oria_it ] ); } ?>
-								</div>
+								<h2 class="xc-chooser__title" id="xcWaysTitle"><?php esc_html_e( 'What would feel good right now?', 'oria' ); ?></h2>
+								<p class="xc-chooser__lede"><?php esc_html_e( 'Pick a feeling and we’ll show the places for it. You can fine-tune the list after.', 'oria' ); ?></p>
 							</div>
-						<?php endforeach; ?>
-					<?php else : ?>
-						<ul class="xc-ways">
-							<?php foreach ( $oria_ways as $oria_w ) : ?>
-								<li>
-									<a href="<?php echo esc_url( $oria_w['url'] ); ?>" data-oria-event="category_quick_filter_select"<?php echo $oria_w['on'] ? ' aria-current="page"' : ''; ?>>
-										<span><?php echo esc_html( $oria_w['label'] ); ?></span>
-										<span class="xc-check__n"><?php echo esc_html( number_format_i18n( $oria_w['n'] ) ); ?></span>
-									</a>
-								</li>
+							<button type="button" class="xc-chooser__x" data-xc-chooser-close aria-label="<?php esc_attr_e( 'Close', 'oria' ); ?>">
+								<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg>
+							</button>
+						</header>
+						<div class="xc-chooser__body">
+							<div class="xc-chooser__grid xc-chooser__grid--moods" role="group" aria-label="<?php esc_attr_e( 'Feelings', 'oria' ); ?>">
+								<?php foreach ( $oria_moods as $oria_m ) : ?>
+									<button type="button" class="xc-chooser__card xc-chooser__mood" aria-pressed="false" data-xc-mood="<?php echo esc_attr( $oria_m['slug'] ); ?>" data-xc-mood-name="<?php echo esc_attr( $oria_m['name'] ); ?>" data-kind="svc" data-items="<?php echo esc_attr( implode( ',', $oria_m['items'] ) ); ?>">
+										<span class="xc-chooser__icon" aria-hidden="true"><?php get_template_part( 'template-parts/mood-icon', null, array( 'slug' => $oria_m['slug'] ) ); ?></span>
+										<span class="xc-chooser__text">
+											<span class="xc-chooser__name"><?php echo esc_html( $oria_m['name'] ); ?></span>
+											<?php if ( '' !== $oria_m['line'] ) : ?>
+												<span class="xc-chooser__note"><?php echo esc_html( $oria_m['line'] ); ?></span>
+											<?php endif; ?>
+											<span class="xc-chooser__n">
+												<?php
+												/* translators: %s: number of places */
+												printf( esc_html( _n( '%s place', '%s places', $oria_m['n'], 'oria' ) ), esc_html( number_format_i18n( $oria_m['n'] ) ) );
+												?>
+											</span>
+										</span>
+										<span class="xc-chooser__state" aria-hidden="true">
+											<span class="xc-chooser__ring"></span>
+											<span class="xc-chooser__on"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3 8.5 6.5 12 13 4.5"/></svg><?php esc_html_e( 'Chosen', 'oria' ); ?></span>
+										</span>
+									</button>
+								<?php endforeach; ?>
+							</div>
+							<?php foreach ( $oria_moods as $oria_m ) : ?>
+								<div class="xc-mood__detail" data-xc-mood-detail="<?php echo esc_attr( $oria_m['slug'] ); ?>" hidden>
+									<p class="xc-mood__hint">
+										<?php
+										/* translators: %s: mood name */
+										printf( esc_html__( 'In “%s” — untick anything you would rather skip:', 'oria' ), esc_html( $oria_m['name'] ) );
+										?>
+									</p>
+									<div class="xc-checks">
+										<?php foreach ( $oria_m['items'] as $oria_it ) { $oria_svc_box( $oria_it, $oria_exp[ $oria_it ] ); } ?>
+									</div>
+								</div>
 							<?php endforeach; ?>
-						</ul>
-					<?php endif; ?>
-				</div>
-				<?php if ( $oria_moods ) : ?>
-					<div class="xc-pop__foot">
-						<button type="button" class="xc-pop__clear" data-xc-clear><?php esc_html_e( 'Clear', 'oria' ); ?></button>
-						<a class="btn xc-btn-primary" href="#results" data-xc-show>
-							<?php
-							/* translators: %s: number of places (updated live) */
-							printf( esc_html__( 'Show %s matching places', 'oria' ), '<b data-xc-count>' . esc_html( number_format_i18n( $oria_n ) ) . '</b>' );
-							?>
-						</a>
+						</div>
+						<div class="xc-chooser__bar">
+							<button type="button" class="xc-chooser__clear" data-xc-clear><?php esc_html_e( 'Clear', 'oria' ); ?></button>
+							<a class="btn xc-btn-primary xc-chooser__go" href="#results" data-xc-show>
+								<?php
+								/* translators: %s: number of places (updated live) */
+								printf( esc_html__( 'Show %s matching places', 'oria' ), '<b data-xc-count>' . esc_html( number_format_i18n( $oria_n ) ) . '</b>' );
+								?>
+							</a>
+						</div>
 					</div>
-				<?php endif; ?>
-			</div>
+				</dialog>
 			<?php else : ?>
 				<?php
 				/*
