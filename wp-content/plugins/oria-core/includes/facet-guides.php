@@ -221,6 +221,11 @@ function refinements( ?array $facet, array $ids = array() ): array {
 	return $out;
 }
 
+/** The facet's own short accent line for the hero, or '' (the category's is used). */
+function tagline( ?array $facet ): string {
+	return applies( $facet ) ? trim( (string) ( entry( $facet )['tagline'] ?? '' ) ) : '';
+}
+
 function phrase( ?array $facet ): string {
 	return applies( $facet ) ? trim( (string) ( entry( $facet )['phrase'] ?? '' ) ) : '';
 }

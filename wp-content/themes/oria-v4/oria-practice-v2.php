@@ -62,6 +62,14 @@ $oria_hz      = array( 'src' => '', 'srcset' => '', 'w' => 1600, 'h' => 900, 'po
 $oria_hz_term = get_queried_object();
 if ( $oria_hz_term instanceof WP_Term ) {
 	$oria_hz_slugs = array( $oria_hz_term->slug );
+	/*
+	 * A sub-page can carry its own photograph (f-sound-healing-1600.webp):
+	 * otherwise Sound healing opened on Spa & Recovery's sauna.
+	 */
+	$oria_hz_facet = function_exists( '\Oria\Core\PracticesIndex\facet' ) ? \Oria\Core\PracticesIndex\facet() : null;
+	if ( $oria_hz_facet ) {
+		array_unshift( $oria_hz_slugs, 'f-' . sanitize_title( (string) ( $oria_hz_facet['slug'] ?? '' ) ), 'f-' . sanitize_title( (string) ( $oria_hz_facet['value'] ?? '' ) ) );
+	}
 	if ( $oria_hz_term->parent ) {
 		$oria_hz_parent = get_term( (int) $oria_hz_term->parent, $oria_hz_term->taxonomy );
 		if ( $oria_hz_parent instanceof WP_Term ) {
@@ -630,8 +638,8 @@ if ( $oria_term && '' !== $oria_pname && 0 === strpos( $oria_h1, $oria_pname . '
 
 // One supporting line: the category's tagline (its parent's for a sub-
 // category), a facet frame's opener, the description; else a plain line.
-$oria_tag = '';
-if ( $oria_term && function_exists( '\Oria\Core\Categories\tagline_for' ) ) {
+$oria_tag = ( $oria_facet && function_exists( '\Oria\Core\FacetGuides\tagline' ) ) ? \Oria\Core\FacetGuides\tagline( $oria_facet ) : '';
+if ( '' === $oria_tag && $oria_term && function_exists( '\Oria\Core\Categories\tagline_for' ) ) {
 	$oria_tag = \Oria\Core\Categories\tagline_for( (string) $oria_term->slug );
 	if ( '' === $oria_tag && $oria_term->parent ) {
 		$oria_tag = '' !== $oria_parent_slug ? \Oria\Core\Categories\tagline_for( $oria_parent_slug ) : '';

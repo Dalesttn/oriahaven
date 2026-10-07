@@ -434,6 +434,10 @@
           "line": "Which recovery session to book first"
         }
       ]
+    },
+    "sound-healing": {
+      "phrase": "Sound Healing",
+      "tagline": "Bowls, gongs and a place to lie down."
     }
   }
 }
