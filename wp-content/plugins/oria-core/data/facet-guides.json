@@ -188,6 +188,38 @@
           "label": "Ice bath & sauna together",
           "line": "Places with both, for contrast sessions"
         }
+      ],
+      "intro": [
+        "{count} places in Perth list an infrared sauna, and most of them book the cabin privately: you have the room to yourself, or share it with one other person, for a timed session. That is the main practical difference from a traditional sauna, which runs at a much higher air temperature and is more often a shared room.",
+        "Most are recovery studios, where the sauna sits beside an ice bath, red light or compression boots and can be booked with them. The rest are day spas and float centres that offer it alongside other treatments, plus a few physio and Pilates studios. One Claremont clinic uses a one-person pod with your head outside instead of a cabin.",
+        "Where a single-session price is published, thirty minutes costs $25 to $40 at most places, and $25 at studios in Beldon and Cockburn Central. Forty-five minutes is usually $35 to $50. Bringing a second person into the cabin generally adds $10 to $25 rather than doubling the price. Several studios publish only packs or memberships, and sauna-and-ice-bath sessions are priced separately. Prices were checked on the places' own websites in October 2026, and each place sets its own, so check before you book.",
+        "Because most cabins are private, light clothing, swimwear or a towel is the norm. Bring water, and check whether towels are supplied. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much does an infrared sauna cost in Perth?",
+          "a": "Where a single-session price is published, thirty minutes costs $25 to $40 at most places, and forty-five minutes $35 to $50. The lowest published price is $25 for thirty minutes, at Zen Zone in Beldon and Rhema Wellness Studio in Cockburn Central. Prices checked October 2026 on the places' own websites."
+        },
+        {
+          "q": "How long is an infrared sauna session?",
+          "a": "Most Perth studios sell thirty- or forty-five-minute sessions, and some offer sixty. A combined sauna-and-ice-bath session usually runs an hour."
+        },
+        {
+          "q": "What do you wear in an infrared sauna?",
+          "a": "Most infrared cabins in Perth are booked privately, so light clothing, swimwear or a towel is usual. Bring water, and check the place's website for whether towels are supplied."
+        },
+        {
+          "q": "Can two people share an infrared sauna?",
+          "a": "Yes, at many places. Published two-person prices for thirty minutes include $40 at Zen Zone, $44 at The Neighbourhood Sauna, $45 at Rhema Wellness Studio and $50 at Salt Float Studio."
+        },
+        {
+          "q": "Is an infrared sauna the same as a traditional sauna?",
+          "a": "No. A traditional sauna heats the air in a wood-lined room and runs much hotter, often as a shared room. An infrared cabin runs at a lower air temperature, is usually private, and sessions tend to be longer. Our infrared vs traditional sauna comparison sets them side by side."
+        },
+        {
+          "q": "Where can I do an infrared sauna and ice bath together?",
+          "a": "Many recovery studios sell the two as one session. Locked In Recovery in Warwick, for example, publishes sixty minutes of sauna and ice bath for $45. The ice bath and sauna page lists every place that offers both."
+        }
       ]
     },
     "steam-room": {
