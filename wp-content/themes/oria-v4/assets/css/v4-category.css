@@ -1345,3 +1345,19 @@ html.xc-locked { overflow: hidden; }
 .xc-tabs-on .xc-panel > .section:first-child,
 .xc-tabs-on .xc-panel > .xc-prices:first-child { margin-top: 0; padding-top: 0; }
 .xc-prices { padding-block: 0 var(--s-6); }
+
+/* ---- Explore (by treatment / by location): its own contained panel ----- */
+.xc-mesh {
+  width: calc(100% - 2 * var(--gutter));
+  max-width: calc(var(--maxw) - 2 * var(--gutter));
+  margin: var(--s-7, 3rem) auto var(--s-6);
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  background: var(--sand-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-feature);
+}
+@media (min-width: 60rem) { .xc-mesh { margin-top: clamp(4rem, 7vw, 6rem); } }
+@media (min-width: 60rem) { .xc-mesh { margin-top: clamp(3rem, 5vw, 4.5rem); } }
+.xc-mesh > :first-child,
+.xc-mesh > :first-child > :first-child,
+.xc-mesh h2:first-of-type { margin-top: 0; padding-top: 0; }
