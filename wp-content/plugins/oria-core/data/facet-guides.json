@@ -412,6 +412,28 @@
           "line": "For cold therapy"
         }
       ]
+    },
+    "float-therapy": {
+      "phrase": "Float Tanks",
+      "all_categories": true,
+      "see_also": [
+        {
+          "path": "/best/float-tanks-perth/",
+          "label": "Best float tanks in Perth",
+          "line": "Seven float centres compared, prices checked October 2026"
+        },
+        {
+          "category": "spa",
+          "facet": "saunas",
+          "label": "Saunas in Perth",
+          "line": "Several float centres also have an infrared sauna"
+        },
+        {
+          "path": "/journal/sauna-ice-bath-or-float/",
+          "label": "Sauna, ice bath or float",
+          "line": "Which recovery session to book first"
+        }
+      ]
     }
   }
 }

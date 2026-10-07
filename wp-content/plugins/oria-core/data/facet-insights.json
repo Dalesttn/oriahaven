@@ -399,6 +399,114 @@
           "note": "Say they run sessions on Sundays; most of the rest don't say."
         }
       ]
+    },
+    "float-therapy": {
+      "city": "perth",
+      "checked": "2026-10-07",
+      "basis": "prices published by seven Perth float centres on their own websites (checked 3–7 October 2026)",
+      "snapshot": "Typical 60-min float $86",
+      "items": [
+        {
+          "label": "Typical 60-minute float",
+          "value": "$86",
+          "note": "Median of seven float centres. Range $70–$89."
+        },
+        {
+          "label": "Cheapest",
+          "value": "$70",
+          "note": "Rhema Wellness Studio, Cockburn Central, which also sells 30 minutes for $50.",
+          "links": {
+            "Rhema Wellness Studio": "rhema-wellness-studio"
+          }
+        },
+        {
+          "label": "Cheapest north of the river",
+          "value": "$85",
+          "note": "Swan Valley Retreat, Henley Brook, which also sells 90 minutes for $99.",
+          "links": {
+            "Swan Valley Retreat": "swan-valley-retreat"
+          }
+        },
+        {
+          "label": "Floating as a pair",
+          "value": "From $129",
+          "note": "Life Spring Float Centre, Rockingham, two in one cabin. Clear Mind Studio: $139; Float Lab, two rooms at once: $160.",
+          "links": {
+            "Life Spring Float Centre": "life-spring-float-centre",
+            "Clear Mind Studio": "clear-mind-studio-fremantle",
+            "Float Lab": "float-lab-wembley"
+          }
+        },
+        {
+          "label": "Intro offer",
+          "value": "$59 a float",
+          "note": "Beyond Rest, East Perth: three 60-minute floats for $177.",
+          "links": {
+            "Beyond Rest": "beyond-rest-east-perth"
+          }
+        },
+        {
+          "label": "Most common length",
+          "value": "60 minutes",
+          "note": "Every centre sells an hour; a few also sell 30, 45, 90 or 120 minutes."
+        }
+      ]
+    },
+    "cold-plunge": {
+      "city": "perth",
+      "checked": "2026-10-07",
+      "basis": "prices published by 21 of the 28 Perth ice bath venues listed here, on their own websites",
+      "snapshot": "Ice bath from $15 · with a sauna from $35",
+      "items": [
+        {
+          "label": "Cheapest ice bath",
+          "value": "$15 for 20 min",
+          "note": "New Movement, Osborne Park — a plunge on its own, no sauna.",
+          "links": {
+            "New Movement": "new-movement-perth"
+          }
+        },
+        {
+          "label": "Cheapest short session",
+          "value": "$30 for 30 min",
+          "note": "Recovery Lab, Jolimont, for any one of its modalities, cold water included.",
+          "links": {
+            "Recovery Lab": "recovery-lab-jolimont"
+          }
+        },
+        {
+          "label": "Cheapest with a sauna",
+          "value": "$35 an hour",
+          "note": "Alchemy Saunas, East Perth, shared. Private from $40 at Zen Zone, Beldon, and Sauna & Ice Bath Booragoon.",
+          "links": {
+            "Alchemy Saunas": "alchemy-saunas-perth",
+            "Zen Zone": "zen-zone-perth",
+            "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon"
+          }
+        },
+        {
+          "label": "Sauna and ice bath, an hour",
+          "value": "Mostly $40–$80",
+          "note": "Six of the nine venues publishing a combined price sit in that range; the top is $99 for a private room."
+        },
+        {
+          "label": "Bathhouse circuits",
+          "value": "$69–$89",
+          "note": "Solace Day Spa, Scarborough: $69 for an hour, up to four guests. Ember Bath House, Osborne Park: $89 for 90 minutes with steam and a hot mineral bath.",
+          "links": {
+            "Solace Day Spa": "solace-day-spa-scarborough",
+            "Ember Bath House": "ember-bath-house"
+          }
+        },
+        {
+          "label": "Members only",
+          "value": "1 venue",
+          "note": "Vitality House, West Leederville, sells no casual sessions.",
+          "links": {
+            "Vitality House": "vitality-house-west-leederville"
+          }
+        }
+      ]
     }
   }
 }
