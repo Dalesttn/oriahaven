@@ -603,7 +603,15 @@ if ( count( $oria_suburbs ) > 1 ) {
 	/* translators: %s: number of suburbs */
 	$oria_snap[] = sprintf( __( '%s suburbs', 'oria' ), number_format_i18n( count( $oria_suburbs ) ) );
 }
-if ( $oria_price > 0 ) {
+// A facet with checked insights shows its checked price instead: the median
+// of listings' generic starting prices said a traditional sauna typically
+// costs $20.
+$oria_ins_price = ( $oria_facet && ! $oria_area && function_exists( '\Oria\Core\FacetInsights\snapshot_price' ) )
+	? \Oria\Core\FacetInsights\snapshot_price( $oria_facet, is_array( $oria_city ) ? $oria_city : null )
+	: '';
+if ( '' !== $oria_ins_price ) {
+	$oria_snap[] = $oria_ins_price;
+} elseif ( $oria_price > 0 ) {
 	/* translators: %s: median published starting price */
 	$oria_snap[] = sprintf( __( 'Typical published price $%s', 'oria' ), number_format_i18n( round( $oria_price ) ) );
 }
@@ -1835,6 +1843,15 @@ if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
 			null,
 			array( 'facts' => $oria_lfacts, 'place' => \Oria\Theme\tname( $oria_area ) )
 		);
+	}
+	?>
+
+	<?php
+	// Oria insights: figures worked out from checked sources, dated
+	// (data/facet-insights.json). Whole-city facet pages only.
+	if ( $oria_facet && ! $oria_area && function_exists( '\Oria\Core\FacetInsights\render' ) ) {
+		$oria_ins_name = '' !== $oria_fg_name ? $oria_fg_name : (string) ( $oria_facet['label'] ?? '' ) . ' ' . sprintf( /* translators: %s: city */ __( 'in %s', 'oria' ), $oria_cin );
+		echo \Oria\Core\FacetInsights\render( $oria_facet, is_array( $oria_city ) ? $oria_city : null, $oria_ins_name ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in render()
 	}
 	?>
 

@@ -807,6 +807,25 @@ html.xc-locked { overflow: hidden; }
 .xc-also__line { font-size: var(--fs-sm); color: var(--text-soft); }
 @media (prefers-reduced-motion: reduce) { .xc-also__link { transition: none; } }
 
+/* ---- Oria insights: checked, dated figures for a facet ------------------ */
+.xc-insights {
+  margin: 0 0 var(--s-6); padding: var(--s-5);
+  border: 1px solid var(--line); border-radius: var(--radius-card);
+  background: var(--surface);
+}
+.xc-insights__title { margin: 0 0 .35rem; }
+.xc-insights__basis { margin: 0 0 var(--s-4); font-size: var(--fs-sm); color: var(--text-soft); }
+.xc-insights__grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--s-4) var(--s-5); margin: 0;
+}
+.xc-insights__item { display: grid; gap: .2rem; align-content: start; padding-top: var(--s-3); border-top: 1px solid var(--line); }
+.xc-insights__item dt { font-size: var(--fs-sm); color: var(--text-soft); }
+.xc-insights__item dd { margin: 0; display: grid; gap: .15rem; }
+.xc-insights__value { font-size: 1.25rem; font-weight: 700; color: var(--deep); font-variant-numeric: tabular-nums; line-height: 1.25; }
+.xc-insights__note { font-size: var(--fs-sm); color: var(--text-soft); }
+.xc-insights__note a { color: var(--deep); }
+
 /* ---------------------------------------------------------------------
    The Oria note, with the Pass alongside it.
 
