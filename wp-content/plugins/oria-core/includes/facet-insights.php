@@ -53,13 +53,21 @@ function all(): array {
  * @param array<string, mixed>|null $facet PracticesIndex\facet()
  * @param array<string, mixed>|null $city  Cities\get()
  */
-function entry( ?array $facet, ?array $city = null ): array {
-	if ( ! $facet ) {
+function entry( ?array $facet, ?array $city = null, ?\WP_Term $category = null ): array {
+	/*
+	 * A whole category page (/explore/perth/yoga/) has no facet; its panel
+	 * is keyed "cat:{slug}" so a category and a facet of the same name
+	 * can never collide.
+	 */
+	$keys = $facet
+		? array( (string) ( $facet['slug'] ?? '' ), (string) ( $facet['value'] ?? '' ) )
+		: ( $category ? array( 'cat:' . $category->slug ) : array() );
+	if ( ! $keys ) {
 		return array();
 	}
 	$all = all();
 	$e   = array();
-	foreach ( array( (string) ( $facet['slug'] ?? '' ), (string) ( $facet['value'] ?? '' ) ) as $k ) {
+	foreach ( $keys as $k ) {
 		if ( '' !== $k && isset( $all[ $k ] ) && is_array( $all[ $k ] ) ) {
 			$e = $all[ $k ];
 			break;
@@ -84,8 +92,8 @@ function entry( ?array $facet, ?array $city = null ): array {
  * The checked typical price for the hero's snapshot line, replacing the
  * median of listings' generic starting prices on pages that have one.
  */
-function snapshot_price( ?array $facet, ?array $city = null ): string {
-	$e = entry( $facet, $city );
+function snapshot_price( ?array $facet, ?array $city = null, ?\WP_Term $category = null ): string {
+	$e = entry( $facet, $city, $category );
 	return (string) ( $e['snapshot'] ?? '' );
 }
 
@@ -119,8 +127,8 @@ function linked_note( string $note, array $links ): string {
  *
  * @param string $name e.g. "Infrared Saunas in Perth"
  */
-function render( ?array $facet, ?array $city, string $name ): string {
-	$e = entry( $facet, $city );
+function render( ?array $facet, ?array $city, string $name, ?\WP_Term $category = null ): string {
+	$e = entry( $facet, $city, $category );
 	if ( ! $e ) {
 		return '';
 	}

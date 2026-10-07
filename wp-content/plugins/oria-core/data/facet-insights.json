@@ -211,6 +211,150 @@
           "note": "Of 28 infrared and traditional venues checked; four are closed Sundays and five don't publish their hours."
         }
       ]
+    },
+    "reformer": {
+      "city": "perth",
+      "checked": "2026-09-19",
+      "basis": "prices published by 25 Perth reformer Pilates studios on their own websites",
+      "snapshot": "Typical casual class $38",
+      "items": [
+        {
+          "label": "Typical casual class",
+          "value": "$38",
+          "note": "Median of the 16 studios publishing a drop-in price. Range $26–$70; the dearest are physio-led clinical classes."
+        },
+        {
+          "label": "Cheapest casual class",
+          "value": "$26",
+          "note": "The Pilates Warehouse, Joondalup. South of the river: The Studio Perth, East Victoria Park, $34.",
+          "links": {
+            "The Pilates Warehouse": "the-pilates-warehouse-joondalup",
+            "The Studio Perth": "the-studio-perth"
+          }
+        },
+        {
+          "label": "Typical intro offer",
+          "value": "$69",
+          "note": "Median of 14 new-client offers, usually two to four weeks of classes. Range $55–$190."
+        },
+        {
+          "label": "Cheapest 10-class pack",
+          "value": "$240",
+          "note": "The Pilates Warehouse — $24 a class. Most packs work out at $26–$33 a class.",
+          "links": {
+            "The Pilates Warehouse": "the-pilates-warehouse-joondalup"
+          }
+        },
+        {
+          "label": "One class a week",
+          "value": "About $30",
+          "note": "Median of nine one-class-a-week plans. Several need a 12-week or three-month minimum."
+        },
+        {
+          "label": "Private session",
+          "value": "$90–$110",
+          "note": "Published by eight studios; median about $100."
+        },
+        {
+          "label": "Physio-led studios",
+          "value": "6 of 25",
+          "note": "Run by physiotherapists; clinical Pilates usually starts with a one-to-one assessment."
+        }
+      ]
+    },
+    "acupuncture": {
+      "city": "perth",
+      "checked": "2026-10-02",
+      "basis": "fees published by 14 Perth acupuncture clinics on their own websites or booking pages",
+      "snapshot": "Typical first visit $129",
+      "items": [
+        {
+          "label": "Typical first visit",
+          "value": "$129",
+          "note": "Median initial consultation and treatment at the 8 clinics publishing a fee. Range $95–$200."
+        },
+        {
+          "label": "Typical follow-up",
+          "value": "$99",
+          "note": "Median of 8 clinics. Range $75–$120."
+        },
+        {
+          "label": "Cheapest first visit",
+          "value": "$95",
+          "note": "Baolin Acupuncture & Chinese Medicine Centre, Perth CBD, with $75 follow-ups. South of the river: Nature's Chinese Medicine & Acupuncture, Belmont, $105.",
+          "links": {
+            "Baolin Acupuncture & Chinese Medicine Centre": "baolin-acupuncture-chinese-medicine",
+            "Nature's Chinese Medicine & Acupuncture": "natures-chinese-medicine-acupuncture"
+          }
+        },
+        {
+          "label": "Specialist clinics",
+          "value": "$95–$140",
+          "note": "First-visit range at the six clinics that do acupuncture and Chinese medicine only; multi-discipline clinics charge up to $200."
+        },
+        {
+          "label": "Fees published",
+          "value": "8 of 14",
+          "note": "The other six quote on enquiry or inside a booking app."
+        },
+        {
+          "label": "Health fund rebates",
+          "value": "Ask your fund",
+          "note": "One clinic publishes a typical rebate of $20–$55 a treatment; it depends on your fund and level of cover."
+        }
+      ]
+    },
+    "contrast-therapy": {
+      "city": "perth",
+      "checked": "2026-10-07",
+      "basis": "prices and hours published by 10 Perth sauna-and-ice-bath venues on their own websites",
+      "snapshot": "Typical session $45",
+      "items": [
+        {
+          "label": "Typical session",
+          "value": "$45",
+          "note": "Median sauna-and-ice-bath price at the 7 venues publishing one, usually for an hour. Range $35–$99."
+        },
+        {
+          "label": "Cheapest",
+          "value": "$35 an hour",
+          "note": "Alchemy Saunas, East Perth: shared saunas with an ice pool and magnesium pool.",
+          "links": {
+            "Alchemy Saunas": "alchemy-saunas-perth"
+          }
+        },
+        {
+          "label": "Cheapest private",
+          "value": "$40 an hour",
+          "note": "Zen Zone, Beldon, and Sauna & Ice Bath Booragoon, south of the river.",
+          "links": {
+            "Zen Zone": "zen-zone-perth",
+            "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon"
+          }
+        },
+        {
+          "label": "For two",
+          "value": "From $70",
+          "note": "Zen Zone, an hour for two people. Locked In Recovery, Warwick: $80.",
+          "links": {
+            "Zen Zone": "zen-zone-perth",
+            "Locked In Recovery": "locked-in-recovery"
+          }
+        },
+        {
+          "label": "Open on Sundays",
+          "value": "7 of 9",
+          "note": "Of the venues whose hours we checked; Sauna & Ice Bath Booragoon is closed Sundays and one doesn't publish hours."
+        },
+        {
+          "label": "Showers mentioned",
+          "value": "4 of 9",
+          "note": "Alchemy Saunas, Sauna & Ice Bath Booragoon, Locked In Recovery and Ultimate Recovery Lounge.",
+          "links": {
+            "Ultimate Recovery Lounge": "ultimate-recovery-lounge"
+          }
+        }
+      ]
     }
   }
 }

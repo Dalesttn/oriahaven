@@ -606,8 +606,8 @@ if ( count( $oria_suburbs ) > 1 ) {
 // A facet with checked insights shows its checked price instead: the median
 // of listings' generic starting prices said a traditional sauna typically
 // costs $20.
-$oria_ins_price = ( $oria_facet && ! $oria_area && function_exists( '\Oria\Core\FacetInsights\snapshot_price' ) )
-	? \Oria\Core\FacetInsights\snapshot_price( $oria_facet, is_array( $oria_city ) ? $oria_city : null )
+$oria_ins_price = ( ! $oria_area && ( $oria_facet || $oria_term ) && function_exists( '\Oria\Core\FacetInsights\snapshot_price' ) )
+	? \Oria\Core\FacetInsights\snapshot_price( $oria_facet ?: null, is_array( $oria_city ) ? $oria_city : null, $oria_facet ? null : $oria_term )
 	: '';
 if ( '' !== $oria_ins_price ) {
 	$oria_snap[] = $oria_ins_price;
@@ -1848,10 +1848,10 @@ if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
 
 	<?php
 	// Oria insights: figures worked out from checked sources, dated
-	// (data/facet-insights.json). Whole-city facet pages only.
-	if ( $oria_facet && ! $oria_area && function_exists( '\Oria\Core\FacetInsights\render' ) ) {
-		$oria_ins_name = '' !== $oria_fg_name ? $oria_fg_name : (string) ( $oria_facet['label'] ?? '' ) . ' ' . sprintf( /* translators: %s: city */ __( 'in %s', 'oria' ), $oria_cin );
-		echo \Oria\Core\FacetInsights\render( $oria_facet, is_array( $oria_city ) ? $oria_city : null, $oria_ins_name ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in render()
+	// (data/facet-insights.json). Whole-city facet and category pages only.
+	if ( ! $oria_area && ( $oria_facet || $oria_term ) && function_exists( '\Oria\Core\FacetInsights\render' ) ) {
+		$oria_ins_name = '' !== $oria_fg_name ? $oria_fg_name : ( $oria_facet ? (string) ( $oria_facet['label'] ?? '' ) : $oria_pname ) . ' ' . sprintf( /* translators: %s: city */ __( 'in %s', 'oria' ), $oria_cin );
+		echo \Oria\Core\FacetInsights\render( $oria_facet ?: null, is_array( $oria_city ) ? $oria_city : null, $oria_ins_name, $oria_facet ? null : $oria_term ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in render()
 	}
 	?>
 
