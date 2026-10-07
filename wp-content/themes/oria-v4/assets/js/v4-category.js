@@ -159,6 +159,47 @@
     }
   }
 
+  /*
+   * The experience chooser is a native <dialog> opened with showModal(): the
+   * browser makes the page behind it inert, keeps focus inside and closes it
+   * on Escape. We lock the page scroll and hand focus back to the trigger.
+   */
+  var chooserTrigger = null;
+  function openChooser(dlg, trigger) {
+    if (dlg.open || typeof dlg.showModal !== "function") return;
+    closePop(false);
+    closeFilterSheet(false);
+    chooserTrigger = trigger;
+    lock(true);
+    setExpanded(dlg.id, true);
+    dlg.showModal();
+    var first = $('.xc-chooser__card[aria-current="page"]', dlg) || $(".xc-chooser__all", dlg) || $(".xc-chooser__x", dlg);
+    if (first) {
+      first.focus({ preventScroll: true });
+      if (first.scrollIntoView) first.scrollIntoView({ block: "nearest" });
+    }
+  }
+  $$("dialog.xc-chooser").forEach(function (dlg) {
+    dlg.addEventListener("close", function () {
+      lock(false);
+      setExpanded(dlg.id, false);
+      var t = chooserTrigger;
+      chooserTrigger = null;
+      if (t && doc.body.contains(t) && t.offsetParent !== null) t.focus({ preventScroll: true });
+    });
+    dlg.addEventListener("click", function (e) {
+      // The backdrop: a click on the <dialog> itself, outside its inner box.
+      if (e.target === dlg) { dlg.close(); return; }
+      if (e.target.closest("[data-xc-chooser-close]")) { dlg.close(); return; }
+      // Choosing the page you are already on just closes the chooser.
+      var here = e.target.closest('a[aria-current="page"]');
+      if (here && !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button)) {
+        e.preventDefault();
+        dlg.close();
+      }
+    });
+  });
+
   doc.addEventListener("click", function (e) {
     var t = e.target;
     if (!t.closest) return;
@@ -167,6 +208,7 @@
       var panel = doc.getElementById(opener.getAttribute("data-xc-open"));
       if (!panel) return;
       e.preventDefault();
+      if (panel.tagName === "DIALOG") { openChooser(panel, opener); return; }
       if (openPanel === panel) closePop(true);
       else openPop(panel, opener);
       return;

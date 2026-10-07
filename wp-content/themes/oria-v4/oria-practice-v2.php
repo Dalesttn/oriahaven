@@ -571,7 +571,7 @@ if ( ! $oria_moods && $oria_term ) {
 	$oria_wrows = $oria_rows;
 	usort( $oria_wrows, static fn( array $a, array $b ): int => (int) $b['count'] <=> (int) $a['count'] );
 	if ( $oria_facet ) {
-		$oria_ways[] = array( 'label' => sprintf( __( 'All %s', 'oria' ), strtolower( $oria_pname ) ), 'n' => count( $oria_all ), 'url' => $oria_here, 'on' => false );
+		$oria_ways[] = array( 'label' => sprintf( __( 'All %s', 'oria' ), strtolower( $oria_pname ) ), 'n' => count( $oria_all ), 'url' => $oria_here, 'on' => false, 'all' => true, 'note' => '' );
 	}
 	foreach ( $oria_wrows as $oria_w ) {
 		if ( (int) $oria_w['count'] < 3 ) {
@@ -583,8 +583,9 @@ if ( ! $oria_moods && $oria_term ) {
 			'n'     => (int) $oria_w['count'],
 			'url'   => $oria_wh,
 			'on'    => '' !== $oria_facet_href && untrailingslashit( $oria_wh ) === untrailingslashit( $oria_facet_href ),
+			'note'  => (string) ( $oria_w['note'] ?? '' ),
 		);
-		if ( count( $oria_ways ) >= 8 ) {
+		if ( count( $oria_ways ) >= 13 ) {
 			break;
 		}
 	}
@@ -826,7 +827,7 @@ if ( ! empty( $oria_online ) ) {
 					<span aria-hidden="true">&rarr;</span>
 				</a>
 				<?php if ( $oria_moods || $oria_ways ) : ?>
-					<button type="button" class="xc-hz2__second xc-js" data-xc-open="xcWays" aria-controls="xcWays" aria-expanded="false" aria-haspopup="dialog" data-oria-event="category_ways_open"><?php esc_html_e( 'Help me choose', 'oria' ); ?> <span aria-hidden="true">&#8599;</span></button>
+					<button type="button" class="xc-hz2__second xc-js" data-xc-open="xcWays" aria-controls="xcWays" aria-expanded="false" aria-haspopup="dialog" data-oria-event="category_ways_open"><?php echo $oria_moods ? esc_html__( 'Help me choose', 'oria' ) : esc_html__( 'Choose an experience', 'oria' ); ?> <span aria-hidden="true">&#8599;</span></button>
 				<?php else : ?>
 					<a class="xc-hz2__second" href="#xc-tab-first" data-oria-event="category_hero_before_you_go"><?php echo $oria_first_early ? esc_html__( 'First visit', 'oria' ) : esc_html__( 'Before you go', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
 				<?php endif; ?>
@@ -957,7 +958,7 @@ $oria_panel_close = static fn( string $k ): string => isset( $oria_tabs[ $k ] ) 
 				if ( $oria_moods ) {
 					$oria_dock_ctl( 'xcWays', __( 'Desired feeling', 'oria' ), __( 'How do you want to feel?', 'oria' ), 'mood', __( 'Any feeling', 'oria' ) );
 				} elseif ( $oria_ways ) {
-					$oria_dock_ctl( 'xcWays', __( 'Ways to begin', 'oria' ), __( 'Ways to begin', 'oria' ), 'ways', $oria_facet ? __( 'Another kind', 'oria' ) : __( 'Browse by kind', 'oria' ) );
+					$oria_dock_ctl( 'xcWays', __( 'Experience', 'oria' ), __( 'Choose an experience', 'oria' ), 'ways', (string) ( array_values( wp_list_filter( $oria_ways, array( 'on' => true ) ) )[0]['label'] ?? __( 'Choose an experience', 'oria' ) ) );
 				}
 				if ( $oria_exp ) {
 					$oria_dock_ctl( 'xcExp', __( 'Experience', 'oria' ), __( 'Choose an experience', 'oria' ), 'exp', __( 'All experiences', 'oria' ) );
@@ -1002,6 +1003,7 @@ $oria_panel_close = static fn( string $k ): string => isset( $oria_tabs[ $k ] ) 
 		 */
 		?>
 		<?php if ( $oria_moods || $oria_ways ) : ?>
+			<?php if ( $oria_moods ) : ?>
 			<div class="xc-pop xc-pop--wide" id="xcWays" role="dialog" aria-labelledby="xcWaysTitle" hidden>
 				<div class="xc-pop__head">
 					<h2 class="xc-pop__title" id="xcWaysTitle"><?php echo $oria_moods ? esc_html__( 'What would feel good right now?', 'oria' ) : esc_html__( 'Ways to begin', 'oria' ); ?></h2>
@@ -1063,6 +1065,124 @@ $oria_panel_close = static fn( string $k ): string => isset( $oria_tabs[ $k ] ) 
 					</div>
 				<?php endif; ?>
 			</div>
+			<?php else : ?>
+				<?php
+				/*
+				 * The experience chooser (DESIGN/October 2026/oria-haven-
+				 * experience-chooser-redesign): a modal dialog of the category's
+				 * kinds as real links, each with its one-line description, an
+				 * icon and its count. Selecting one navigates; the current one
+				 * just closes the dialog. v4-category.js opens it with
+				 * showModal(); without JavaScript the trigger is hidden (.xc-js)
+				 * and the hero's tabs and directory still reach every kind.
+				 */
+				$oria_cw_all  = null;
+				$oria_cw_rows = array();
+				foreach ( $oria_ways as $oria_w ) {
+					if ( ! empty( $oria_w['all'] ) ) {
+						$oria_cw_all = $oria_w;
+					} else {
+						$oria_cw_rows[] = $oria_w;
+					}
+				}
+				if ( ! $oria_cw_all && $oria_term ) {
+					$oria_cw_all = array( 'label' => sprintf( __( 'All %s', 'oria' ), strtolower( $oria_pname ) ), 'n' => count( $oria_all ), 'url' => \Oria\Core\PracticesIndex\category_url( $oria_term, is_array( $oria_city ) ? $oria_city : null ), 'on' => ! $oria_facet );
+				}
+				$oria_cw_senses = is_readable( get_template_directory() . '/data/sensations.php' ) ? (array) require get_template_directory() . '/data/sensations.php' : array();
+				$oria_cw_cmp    = ( $oria_facet && $oria_term && function_exists( '\Oria\Core\Compare\prompt_for_facet' ) )
+					? \Oria\Core\Compare\prompt_for_facet( $oria_term, $oria_facet )
+					: ( $oria_gcmp ?: $oria_cmp );
+				?>
+				<dialog class="xc-chooser" id="xcWays" aria-labelledby="xcChooserTitle">
+					<div class="xc-chooser__inner">
+						<header class="xc-chooser__head">
+							<div>
+								<p class="xc-chooser__eyebrow">
+									<?php
+									/* translators: %s: category name */
+									printf( esc_html__( 'Explore %s', 'oria' ), esc_html( $oria_pname ) );
+									?>
+								</p>
+								<h2 class="xc-chooser__title" id="xcChooserTitle"><?php esc_html_e( 'Find your kind of reset', 'oria' ); ?></h2>
+								<p class="xc-chooser__lede">
+									<?php
+									/* translators: %s: city */
+									printf( esc_html__( 'Choose an experience to explore places around %s.', 'oria' ), esc_html( $oria_cname ) );
+									?>
+								</p>
+							</div>
+							<button type="button" class="xc-chooser__x" data-xc-chooser-close aria-label="<?php esc_attr_e( 'Close experience chooser', 'oria' ); ?>">
+								<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg>
+							</button>
+						</header>
+						<div class="xc-chooser__body">
+							<?php if ( $oria_cw_all ) : ?>
+								<a class="xc-chooser__all" href="<?php echo esc_url( $oria_cw_all['url'] ); ?>"<?php echo ! empty( $oria_cw_all['on'] ) ? ' aria-current="page"' : ''; ?> data-oria-event="category_quick_filter_select">
+									<span>
+										<?php
+										/* translators: %s: category, lower case */
+										printf( esc_html__( 'Explore all %s', 'oria' ), esc_html( strtolower( $oria_pname ) ) );
+										?>
+									</span>
+									<span class="xc-chooser__alln">
+										<?php
+										/* translators: %s: number of places */
+										printf( esc_html( _n( '%s place', '%s places', (int) $oria_cw_all['n'], 'oria' ) ), esc_html( number_format_i18n( (int) $oria_cw_all['n'] ) ) );
+										?>
+										<span aria-hidden="true">&rarr;</span>
+									</span>
+								</a>
+							<?php endif; ?>
+							<ul class="xc-chooser__grid">
+								<?php foreach ( $oria_cw_rows as $oria_w ) : ?>
+									<?php
+									$oria_cw_slug = basename( untrailingslashit( (string) wp_parse_url( (string) $oria_w['url'], PHP_URL_PATH ) ) );
+									$oria_cw_fam  = (string) ( $oria_cw_senses[ $oria_cw_slug ][0] ?? '' );
+									?>
+									<li>
+										<a class="xc-chooser__card" href="<?php echo esc_url( $oria_w['url'] ); ?>"<?php echo $oria_w['on'] ? ' aria-current="page"' : ''; ?> data-oria-event="category_quick_filter_select">
+											<span class="xc-chooser__icon" aria-hidden="true">
+												<?php
+												if ( '' !== $oria_cw_fam ) {
+													get_template_part( 'template-parts/sensation-icon', null, array( 'family' => $oria_cw_fam ) );
+												} else {
+													echo '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.2"/></svg>';
+												}
+												?>
+											</span>
+											<span class="xc-chooser__text">
+												<span class="xc-chooser__name"><?php echo esc_html( $oria_w['label'] ); ?></span>
+												<?php if ( '' !== (string) ( $oria_w['note'] ?? '' ) ) : ?>
+													<span class="xc-chooser__note"><?php echo esc_html( (string) $oria_w['note'] ); ?></span>
+												<?php endif; ?>
+												<span class="xc-chooser__n">
+													<?php
+													/* translators: %s: number of places */
+													printf( esc_html( _n( '%s place', '%s places', (int) $oria_w['n'], 'oria' ) ), esc_html( number_format_i18n( (int) $oria_w['n'] ) ) );
+													?>
+												</span>
+											</span>
+											<span class="xc-chooser__state">
+												<?php if ( $oria_w['on'] ) : ?>
+													<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8.5 6.5 12 13 4.5"/></svg><?php esc_html_e( 'Current', 'oria' ); ?>
+												<?php else : ?>
+													<span aria-hidden="true">&rarr;</span>
+												<?php endif; ?>
+											</span>
+										</a>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+							<?php if ( $oria_cw_cmp && ! empty( $oria_cw_cmp['url'] ) ) : ?>
+								<p class="xc-chooser__foot">
+									<?php esc_html_e( 'Unsure where to start?', 'oria' ); ?>
+									<a href="<?php echo esc_url( $oria_cw_cmp['url'] ); ?>" data-oria-event="category_compare"><?php echo esc_html( (string) ( $oria_cw_cmp['label'] ?? __( 'Compare the experiences', 'oria' ) ) ); ?> <span aria-hidden="true">&rarr;</span></a>
+								</p>
+							<?php endif; ?>
+						</div>
+					</div>
+				</dialog>
+			<?php endif; ?>
 		<?php endif; ?>
 
 		<?php if ( $oria_exp ) : ?>

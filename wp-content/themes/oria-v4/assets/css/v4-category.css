@@ -1690,3 +1690,137 @@ html.xc-locked { overflow: hidden; }
 .xc-ins__foot { gap: .2rem; padding-top: .7rem; }
 .xc-ins__card .xc-ins__unit + .xc-ins__foot, .xc-ins__card .xc-ins__price + .xc-ins__foot { margin-top: .7rem !important; }
 .xc-ins__evidence, .xc-ins__detail { font-size: .85rem; }
+
+/* =========================================================================
+   The experience chooser (October 2026): a modal <dialog> of the category's
+   kinds as whole-card links. DESIGN/October 2026/oria-haven-experience-
+   chooser-redesign-claude.md. Scoped to .xc-chooser.
+   ========================================================================= */
+.xc-chooser {
+  --ch-ink: #183d35;
+  --ch-muted: #56645e;
+  --ch-paper: #f7f5ef;
+  --ch-card: #ffffff;
+  --ch-sage: #e8eee4;
+  --ch-border: #d7ded4;
+  --ch-focus: #a77c3a;
+  --ch-pad: clamp(1.25rem, 3vw, 2rem);
+  width: min(840px, calc(100vw - 48px));
+  max-width: none;
+  max-height: calc(100dvh - 48px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--ch-border);
+  border-radius: 24px;
+  background: var(--ch-paper);
+  color: var(--ch-ink);
+  box-shadow: 0 24px 60px -20px rgb(8 34 32 / .35), 0 2px 6px rgb(8 34 32 / .08);
+  overflow: hidden;
+}
+.xc-chooser[open] { display: flex; animation: xcChooserIn 160ms ease-out; }
+.xc-chooser::backdrop { background: rgb(12 38 32 / .55); }
+.xc-chooser[open]::backdrop { animation: xcChooserFade 160ms ease-out; }
+@keyframes xcChooserIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes xcChooserFade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .xc-chooser[open], .xc-chooser[open]::backdrop { animation: none; }
+}
+.xc-chooser__inner { display: flex; flex-direction: column; width: 100%; min-height: 0; }
+
+/* Header: stays put while the list scrolls. */
+.xc-chooser__head {
+  display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 1rem;
+  padding: var(--ch-pad) var(--ch-pad) 1rem;
+}
+.xc-chooser__eyebrow {
+  margin: 0 0 .5rem; font-size: .75rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--moss, #3f6e60);
+}
+.xc-chooser__title {
+  margin: 0; font-family: var(--font-edit); font-weight: 500;
+  font-size: clamp(1.65rem, 3vw, 2.25rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--ch-ink);
+  text-wrap: balance;
+}
+.xc-chooser__lede { margin: .5rem 0 0; font-size: 1rem; line-height: 1.5; color: var(--ch-muted); }
+.xc-chooser__x {
+  display: inline-grid; place-items: center; width: 44px; height: 44px; margin: -6px -10px 0 0;
+  padding: 0; border: 0; border-radius: 999px; background: transparent; color: var(--ch-ink); cursor: pointer;
+}
+.xc-chooser__x:hover { background: var(--ch-sage); }
+
+/* Body: the only part that scrolls. */
+.xc-chooser__body {
+  min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  padding: .25rem var(--ch-pad) var(--ch-pad);
+}
+
+/* The broad fallback. */
+.xc-chooser__all {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  min-height: 52px; margin-bottom: 1rem; padding: .75rem 1.1rem;
+  border: 1px solid var(--ch-border); border-radius: 14px;
+  color: var(--ch-ink); font-weight: 600; text-decoration: none;
+}
+.xc-chooser__alln { display: inline-flex; align-items: center; gap: .5rem; font-weight: 500; font-size: .9rem; color: var(--ch-muted); white-space: nowrap; }
+.xc-chooser__all:hover { border-color: color-mix(in srgb, var(--ch-border) 50%, var(--ch-ink)); background: color-mix(in srgb, var(--ch-sage) 45%, var(--ch-paper)); }
+
+/* The cards. */
+.xc-chooser__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.xc-chooser__grid > li { display: flex; margin: 0; }
+.xc-chooser__card {
+  display: grid; grid-template-columns: 44px minmax(0, 1fr) 5.5rem; align-items: start; gap: .9rem;
+  width: 100%; min-height: 104px; padding: 1rem 1.1rem;
+  border: 1px solid var(--ch-border); border-radius: 16px; background: var(--ch-card);
+  color: var(--ch-ink); text-decoration: none;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+.xc-chooser__card:hover { border-color: color-mix(in srgb, var(--ch-border) 45%, var(--ch-ink)); background: color-mix(in srgb, var(--ch-sage) 35%, var(--ch-card)); }
+.xc-chooser__card[aria-current="page"] {
+  background: var(--ch-sage); border-color: var(--ch-ink);
+  box-shadow: inset 0 0 0 1px var(--ch-ink); /* a 2px border without moving anything */
+}
+.xc-chooser__card:focus-visible, .xc-chooser__all:focus-visible, .xc-chooser__x:focus-visible, .xc-chooser__foot a:focus-visible {
+  outline: 3px solid var(--ch-focus); outline-offset: 3px;
+}
+.xc-chooser__icon {
+  display: grid; place-items: center; width: 44px; height: 44px;
+  border-radius: 12px; background: var(--ch-sage); color: var(--ch-ink);
+}
+.xc-chooser__card[aria-current="page"] .xc-chooser__icon { background: var(--ch-card); }
+.xc-chooser__icon svg { width: 24px; height: 24px; }
+.xc-chooser__text { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
+.xc-chooser__name { font-size: 1.0625rem; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+.xc-chooser__note { font-size: .9rem; line-height: 1.4; color: var(--ch-muted); }
+.xc-chooser__n { margin-top: .3rem; font-size: .85rem; color: var(--ch-muted); font-variant-numeric: tabular-nums; }
+.xc-chooser__state {
+  display: inline-flex; align-items: center; justify-content: flex-end; gap: .3rem;
+  font-size: .85rem; font-weight: 600; color: var(--ch-ink); white-space: nowrap; padding-top: .15rem;
+}
+.xc-chooser__card:not([aria-current]) .xc-chooser__state { color: var(--ch-muted); font-size: 1.1rem; font-weight: 400; }
+
+/* The way to the comparison. */
+.xc-chooser__foot {
+  margin: 1.25rem 0 0; padding-top: 1rem; border-top: 1px solid var(--ch-border);
+  font-size: .95rem; color: var(--ch-muted);
+}
+.xc-chooser__foot a { color: var(--ch-ink); font-weight: 600; text-underline-offset: 3px; display: inline-flex; align-items: center; min-height: 44px; gap: .25rem; }
+
+/* Phone: a bottom sheet, one column. */
+@media (max-width: 640px) {
+  .xc-chooser {
+    width: 100%; max-height: 90dvh; margin: auto 0 0;
+    border-radius: 24px 24px 0 0; border-bottom: 0;
+  }
+  .xc-chooser[open] { animation-name: xcChooserUp; }
+  @keyframes xcChooserUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  .xc-chooser__head { padding: 1.25rem 1.1rem .75rem; }
+  .xc-chooser__title { font-size: 1.75rem; }
+  .xc-chooser__body { padding: .25rem 1.1rem calc(1.25rem + env(safe-area-inset-bottom)); }
+  .xc-chooser__grid { grid-template-columns: 1fr; gap: 10px; }
+  .xc-chooser__card { min-height: 0; grid-template-columns: 40px minmax(0, 1fr) auto; padding: .9rem 1rem; }
+  .xc-chooser__icon { width: 40px; height: 40px; }
+  .xc-chooser__state { min-width: 4.75rem; }
+  .xc-chooser__card:not([aria-current]) .xc-chooser__state { min-width: 1.25rem; }
+}
+/* The shared sensation marks come wrapped for the style cards' corner. */
+.xc-chooser__icon .xcard__icon { position: static; opacity: 1; color: inherit; }
+.xc-chooser__icon .xcard__icon svg { width: 24px; height: 24px; stroke-width: 1.6; }
