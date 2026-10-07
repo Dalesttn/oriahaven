@@ -670,6 +670,61 @@
           "note": "Say they open Sundays; most of the rest don't publish Sunday hours."
         }
       ]
+    },
+    "cat:yoga": {
+      "city": "perth",
+      "checked": "2026-10-07",
+      "basis": "prices and timetables published by 46 Perth yoga studios and teachers on their own websites and booking pages",
+      "snapshot": "Typical casual class $29",
+      "items": [
+        {
+          "label": "Typical casual class",
+          "value": "$29",
+          "note": "Median drop-in price at the 27 studios publishing one. Range $22–$39."
+        },
+        {
+          "label": "Cheapest casual class",
+          "value": "$22",
+          "note": "WildFlower Yoga Collective, City Beach, and Restful Waters, Bedfordale.",
+          "links": {
+            "WildFlower Yoga Collective": "wildflower-yoga-collective",
+            "Restful Waters": "restful-waters-bedfordale"
+          }
+        },
+        {
+          "label": "Typical intro offer",
+          "value": "$69",
+          "note": "Median of 19 new-student offers, most often two weeks unlimited. Range $39–$99."
+        },
+        {
+          "label": "Class packs",
+          "value": "About $21.50 a class",
+          "note": "Median of the cheapest pack at 26 studios. Range $17–$30 a class."
+        },
+        {
+          "label": "Unlimited classes",
+          "value": "About $42 a week",
+          "note": "Median of 22 unlimited memberships. From $28.75 a week at The Yoga Garage, Scarborough, paid as a year upfront.",
+          "links": {
+            "The Yoga Garage": "the-yoga-garage"
+          }
+        },
+        {
+          "label": "Heated classes",
+          "value": "6 studios",
+          "note": "Run hot yoga; two more run warm rooms."
+        },
+        {
+          "label": "Free or by donation",
+          "value": "6 studios",
+          "note": "Run community classes that are free or by donation."
+        },
+        {
+          "label": "Sunday classes",
+          "value": "16 of 46",
+          "note": "Timetables show a Sunday yoga class; many booking widgets don't show one without an account."
+        }
+      ]
     }
   }
 }
