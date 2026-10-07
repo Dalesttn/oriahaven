@@ -774,6 +774,15 @@
   document.documentElement.classList.add("xc-tabs-on");
 
   var current = null;
+  var strip = bar.querySelector("[role=tablist]");
+  // On a phone the strip scrolls sideways; bring a tab into it without
+  // moving the page.
+  function keepInStrip(t) {
+    if (!strip || strip.scrollWidth <= strip.clientWidth) return;
+    var l = t.offsetLeft - strip.offsetLeft, r = l + t.offsetWidth;
+    if (l < strip.scrollLeft) strip.scrollLeft = l - 8;
+    else if (r > strip.scrollLeft + strip.clientWidth) strip.scrollLeft = r - strip.clientWidth + 8;
+  }
   function headLine() {
     var v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--xc-head-h")) || 0;
     return v + 8;
@@ -804,9 +813,12 @@
       panel.classList.add("is-turning");
     }
     current = tab;
-    if (opts.hash !== false && history.replaceState) {
-      history.replaceState(null, "", to === 0 ? location.pathname + location.search : "#" + panel.id);
+    if (opts.hash !== false && history.pushState) {
+      // A tab is a place in the page's history (Back returns to the last one);
+      // the query string -- the filters -- is always kept.
+      history.pushState({ xcTab: panel.id }, "", location.pathname + location.search + (to === 0 ? "" : "#" + panel.id));
     }
+    keepInStrip(tab);
     if (opts.scroll) {
       var y = bar.getBoundingClientRect().top + window.pageYOffset - headLine();
       if (window.pageYOffset > y) window.scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
@@ -828,7 +840,15 @@
     var n = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
     if (n === undefined) return;
     e.preventDefault();
-    select(tabs[(n + tabs.length) % tabs.length], { focus: true });
+    var next = tabs[(n + tabs.length) % tabs.length];
+    tabs.forEach(function (t) { t.setAttribute("tabindex", t === next ? "0" : "-1"); });
+    next.focus();
+    keepInStrip(next);
+  });
+  // Leaving the list puts the roving stop back on the selected tab.
+  bar.addEventListener("focusout", function (e) {
+    if (bar.contains(e.relatedTarget)) return;
+    tabs.forEach(function (t) { t.setAttribute("tabindex", t === current ? "0" : "-1"); });
   });
 
   // Where an address or an in-page link points: a panel, or something in one.
@@ -854,6 +874,10 @@
     });
   });
 
+  window.addEventListener("popstate", function () {
+    var hit = tabFor(location.hash.slice(1));
+    select(hit ? hit.tab : tabs[0], { hash: false });
+  });
   window.addEventListener("hashchange", function () {
     var hit = tabFor(location.hash.slice(1));
     if (hit) select(hit.tab, { hash: false, scroll: true });

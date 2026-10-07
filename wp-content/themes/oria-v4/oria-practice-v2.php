@@ -747,10 +747,38 @@ $oria_ins_entry = ( ! $oria_area && function_exists( '\Oria\Core\FacetInsights\e
 	: array();
 $oria_eyebrow = $oria_facet || $oria_area
 	? strtoupper( $oria_cname ) . ' · ' . $oria_pname
-	: strtoupper( $oria_cname ) . ' · ' . __( 'Wellness directory', 'oria' );
+	: strtoupper( $oria_cname ) . ' · ' . $oria_pname;
+?>
+<?php
+/*
+ * Hero v3 (DESIGN/October 2026/oria-haven-area-discovery-integration):
+ * eyebrow, H1, an italic accent line (the category's own tagline), one
+ * practical sentence, two actions, then three grouped facts -- counted
+ * live, each left out when it has nothing to say. No price here: a figure
+ * that mixes unlike sessions belongs in the Prices tab, qualified.
+ */
+$oria_intro_line = sprintf(
+	/* translators: 1: category or facet name, lower case, 2: city */
+	__( 'Explore %1$s across %2$s, compare the details and choose somewhere that suits your day.', 'oria' ),
+	strtolower( $oria_facet ? ( ( function_exists( '\Oria\Core\FacetGuides\phrase' ) && '' !== \Oria\Core\FacetGuides\phrase( $oria_facet ) ) ? \Oria\Core\FacetGuides\phrase( $oria_facet ) : $oria_h1_shown ) : $oria_pname ),
+	$oria_place_in
+);
+// "Traditional saunas in Perth" already carries the place: say it once.
+$oria_intro_line = (string) preg_replace( '/ in ' . preg_quote( strtolower( $oria_place_in ), '/' ) . ' across /', ' across ', $oria_intro_line );
+$oria_facts = array();
+if ( $oria_n > 0 ) {
+	$oria_facts[] = array( number_format_i18n( $oria_n ), _n( 'place to explore', 'places to explore', $oria_n, 'oria' ) );
+}
+if ( count( $oria_suburbs ) > 1 ) {
+	/* translators: %s: city */
+	$oria_facts[] = array( number_format_i18n( count( $oria_suburbs ) ), sprintf( __( '%s suburbs', 'oria' ), $oria_cname ) );
+}
+if ( ! empty( $oria_online ) ) {
+	$oria_facts[] = array( number_format_i18n( (int) $oria_online ), __( 'online or hybrid', 'oria' ) );
+}
 ?>
 <section class="xc-hz2" id="decide">
-	<div class="wrap xc-hz2__grid<?php echo '' === $oria_hz['src'] ? ' xc-hz2__grid--bare' : ''; ?>">
+	<div class="wrap xc-hz2__grid<?php echo '' === $oria_hz['src'] ? ' xc-hz2__grid--bare' : ''; ?><?php echo strlen( $oria_h1_shown ) > 34 ? ' xc-hz2__grid--long' : ''; ?>">
 		<div class="xc-hz2__copy">
 			<nav class="crumbs xc-hz2__crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'oria' ); ?>">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'oria' ); ?></a>
@@ -775,39 +803,41 @@ $oria_eyebrow = $oria_facet || $oria_area
 			</nav>
 			<p class="micro xc-hz2__eyebrow"><?php echo esc_html( $oria_eyebrow ); ?></p>
 			<h1 class="xc-hz2__title"><?php echo $oria_h1_html; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above ?></h1>
-			<p class="xc-hz2__line"><?php echo esc_html( $oria_line ); ?></p>
+			<p class="xc-hz2__accent"><span class="xc-hz2__rule" aria-hidden="true"></span><?php echo esc_html( $oria_line ); ?></p>
+			<p class="xc-hz2__line"><?php echo esc_html( $oria_intro_line ); ?></p>
 			<div class="xc-hz2__acts">
-				<a class="btn xc-btn-primary" href="#results" data-xc-show>
+				<a class="btn xc-btn-primary" href="#results" data-xc-show data-oria-event="category_hero_explore">
 					<?php
-					/* translators: %s: number of places */
-					printf( esc_html( _n( 'Explore %s place', 'Explore %s places', $oria_n, 'oria' ) ), esc_html( number_format_i18n( $oria_n ) ) );
+					if ( $oria_n > 0 ) {
+						/* translators: %s: number of places */
+						printf( esc_html( _n( 'Explore %s place', 'Explore %s places', $oria_n, 'oria' ) ), esc_html( number_format_i18n( $oria_n ) ) );
+					} else {
+						esc_html_e( 'Explore places', 'oria' );
+					}
 					?>
 					<span aria-hidden="true">&rarr;</span>
 				</a>
-				<?php if ( $oria_first_early ) : ?>
-					<a class="xc-hz2__second" href="#first-visit"><?php esc_html_e( 'First time? Start here', 'oria' ); ?></a>
-				<?php elseif ( $oria_moods || $oria_ways ) : ?>
-					<button type="button" class="xc-hz2__second xc-js" data-xc-open="xcWays" aria-controls="xcWays" aria-expanded="false" aria-haspopup="dialog" data-oria-event="category_ways_open"><?php echo $oria_moods ? esc_html__( 'Find your kind of reset', 'oria' ) : esc_html__( 'Ways to begin', 'oria' ); ?></button>
+				<?php if ( $oria_moods || $oria_ways ) : ?>
+					<button type="button" class="xc-hz2__second xc-js" data-xc-open="xcWays" aria-controls="xcWays" aria-expanded="false" aria-haspopup="dialog" data-oria-event="category_ways_open"><?php esc_html_e( 'Help me choose', 'oria' ); ?> <span aria-hidden="true">&#8599;</span></button>
+				<?php else : ?>
+					<a class="xc-hz2__second" href="#xc-tab-first" data-oria-event="category_hero_before_you_go"><?php echo $oria_first_early ? esc_html__( 'First visit', 'oria' ) : esc_html__( 'Before you go', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
 				<?php endif; ?>
 			</div>
-			<?php if ( $oria_snap ) : ?>
-				<p class="xc-hz2__meta">
-					<?php echo esc_html( implode( ' · ', $oria_snap ) ); ?>
-					<?php if ( ! empty( $oria_ins_entry['checked'] ) ) : ?>
-						<span class="xc-hz2__checked">
-							<?php
-							/* translators: %s: date prices were checked */
-							printf( esc_html__( 'Prices checked %s', 'oria' ), esc_html( date_i18n( 'j F Y', (int) strtotime( (string) $oria_ins_entry['checked'] ) ) ) );
-							?>
-						</span>
-					<?php endif; ?>
-				</p>
+			<?php if ( $oria_facts ) : ?>
+				<ul class="xc-hz2__facts" aria-label="<?php esc_attr_e( 'At a glance', 'oria' ); ?>">
+					<?php foreach ( $oria_facts as $oria_fx ) : ?>
+						<li class="xc-hz2__fact"><b><?php echo esc_html( $oria_fx[0] ); ?></b> <span><?php echo esc_html( $oria_fx[1] ); ?></span></li>
+					<?php endforeach; ?>
+				</ul>
 			<?php endif; ?>
 		</div>
 		<?php if ( '' !== $oria_hz['src'] ) : ?>
-			<figure class="xc-hz2__media"<?php echo '' !== $oria_hz['pos'] ? ' style="--xc-hz-pos:' . esc_attr( $oria_hz['pos'] ) . '"' : ''; ?>>
-				<img class="xc-hz2__img" src="<?php echo esc_url( $oria_hz['src'] ); ?>"<?php echo '' !== $oria_hz['srcset'] ? ' srcset="' . esc_attr( $oria_hz['srcset'] ) . '" sizes="(min-width: 900px) 45vw, 100vw"' : ''; ?> width="<?php echo (int) $oria_hz['w']; ?>" height="<?php echo (int) $oria_hz['h']; ?>" alt="" fetchpriority="high" decoding="async">
-			</figure>
+			<div class="xc-hz2__art">
+				<svg class="xc-hz2__motif" viewBox="0 0 200 200" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="100" cy="100" r="96"/><circle cx="100" cy="100" r="74"/><circle cx="100" cy="100" r="52"/><circle cx="100" cy="100" r="30"/></g></svg>
+				<figure class="xc-hz2__media"<?php echo '' !== $oria_hz['pos'] ? ' style="--xc-hz-pos:' . esc_attr( $oria_hz['pos'] ) . '"' : ''; ?>>
+					<img class="xc-hz2__img" src="<?php echo esc_url( $oria_hz['src'] ); ?>"<?php echo '' !== $oria_hz['srcset'] ? ' srcset="' . esc_attr( $oria_hz['srcset'] ) . '" sizes="(min-width: 900px) 45vw, 100vw"' : ''; ?> width="<?php echo (int) $oria_hz['w']; ?>" height="<?php echo (int) $oria_hz['h']; ?>" alt="" fetchpriority="high" decoding="async">
+				</figure>
+			</div>
 		<?php endif; ?>
 	</div>
 </section>
@@ -838,12 +868,29 @@ if ( $oria_faqs ) {
 	$oria_tabs['faqs'] = __( 'FAQs', 'oria' );
 }
 ?>
-<nav class="xc-secnav xc-tabs" id="xcTabs" aria-label="<?php esc_attr_e( 'Sections of this page', 'oria' ); ?>">
+<?php
+$oria_svg = static fn( string $d ): string => '<svg class="xc-tab__icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . $d . '</svg>';
+$oria_tab_icons = array(
+	'places' => $oria_svg( '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/>' ),
+	'offers' => $oria_svg( '<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/>' ),
+	'first'  => $oria_svg( '<circle cx="12" cy="12" r="8.5"/><path d="m14.8 9.2-1.7 4.1-4.1 1.7 1.7-4.1Z"/>' ),
+	'prices' => $oria_svg( '<path d="M20 12.5 12.5 20 4 11.5V4h7.5Z"/><circle cx="8" cy="8" r="1.3"/>' ),
+	'guides' => $oria_svg( '<path d="M4 5.5A2 2 0 0 1 6 4h13v14H6a2 2 0 0 0-2 2Z"/><path d="M4 19.5V5.5"/>' ),
+	'faqs'   => $oria_svg( '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5"/><path d="M12 16.5h.01"/>' ),
+);
+?>
+<nav class="xc-secnav xc-tabs xc-js" id="xcTabs" aria-label="<?php esc_attr_e( 'Sections of this page', 'oria' ); ?>">
 	<div class="wrap">
-		<div class="xc-secnav__list" role="tablist">
+		<div class="xc-secnav__list" role="tablist" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: page heading */ __( '%s: sections', 'oria' ), $oria_h1_shown ) ); ?>">
 			<?php $oria_tfirst = true; ?>
 			<?php foreach ( $oria_tabs as $oria_tk => $oria_tl ) : ?>
-				<a class="xc-tab" role="tab" id="xc-tabbtn-<?php echo esc_attr( $oria_tk ); ?>" href="#xc-tab-<?php echo esc_attr( $oria_tk ); ?>" aria-controls="xc-tab-<?php echo esc_attr( $oria_tk ); ?>" aria-selected="<?php echo $oria_tfirst ? 'true' : 'false'; ?>" data-xc-tab="<?php echo esc_attr( $oria_tk ); ?>" data-oria-event="category_tab_select"><?php echo esc_html( $oria_tl ); ?></a>
+				<button type="button" class="xc-tab" role="tab" id="xc-tabbtn-<?php echo esc_attr( $oria_tk ); ?>" aria-controls="xc-tab-<?php echo esc_attr( $oria_tk ); ?>" aria-selected="<?php echo $oria_tfirst ? 'true' : 'false'; ?>" tabindex="<?php echo $oria_tfirst ? '0' : '-1'; ?>" data-xc-tab="<?php echo esc_attr( $oria_tk ); ?>" data-oria-event="category_tab_select">
+					<?php echo $oria_tab_icons[ $oria_tk ] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput -- static SVG ?>
+					<span class="xc-tab__label"><?php echo esc_html( $oria_tl ); ?></span>
+					<?php if ( 'places' === $oria_tk && $oria_n > 0 ) : ?>
+						<span class="xc-tab__n"><?php echo esc_html( number_format_i18n( $oria_n ) ); ?><span class="screen-reader-text"> <?php esc_html_e( 'places', 'oria' ); ?></span></span>
+					<?php endif; ?>
+				</button>
 				<?php $oria_tfirst = false; ?>
 			<?php endforeach; ?>
 		</div>
@@ -855,7 +902,7 @@ if ( $oria_faqs ) {
 // printed below the tabs instead (see the end of this template).
 $oria_panel_open = static function ( string $k ) use ( $oria_tabs ): string {
 	return isset( $oria_tabs[ $k ] )
-		? '<div class="xc-panel" id="xc-tab-' . esc_attr( $k ) . '" role="tabpanel" aria-labelledby="xc-tabbtn-' . esc_attr( $k ) . '" data-xc-panel="' . esc_attr( $k ) . '" tabindex="-1">'
+		? '<div class="xc-panel" id="xc-tab-' . esc_attr( $k ) . '" role="tabpanel" aria-labelledby="xc-tabbtn-' . esc_attr( $k ) . '" data-xc-panel="' . esc_attr( $k ) . '" tabindex="0">'
 		: '';
 };
 $oria_panel_close = static fn( string $k ): string => isset( $oria_tabs[ $k ] ) ? '</div>' : '';
@@ -2265,7 +2312,7 @@ $oria_put   = static function ( string $k, string $html ) use ( $oria_tabs, $ori
 		$oria_below .= $html;
 	}
 };
-$oria_offers_wrapped = '' !== $oria_offers_html ? '<div class="xc-offers2" id="offers">' . $oria_offers_html . '</div>' : '';
+$oria_offers_wrapped = '' !== $oria_offers_html ? '<div class="xc-offers2">' . $oria_offers_html . '</div>' : '';
 $oria_note_wrapped   = '' !== trim( (string) ( $oria_note_html ?? '' ) ) ? '<div class="wrap xc-foot-asks">' . $oria_note_html . '</div>' : '';
 $oria_ask_wrapped    = '<div class="wrap xc-foot-asks">' . ( $oria_ask_html ?? '' ) . '</div>';
 $oria_ins_wrapped    = '' !== trim( (string) ( $oria_insights_html ?? '' ) ) ? '<div class="wrap xc-prices">' . $oria_insights_html . '</div>' : '';
