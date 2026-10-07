@@ -70,6 +70,11 @@
           "facet": "saunas",
           "label": "Saunas in Perth",
           "line": "Traditional and infrared"
+        },
+        {
+          "path": "/journal/sauna-prices-perth/",
+          "label": "What a sauna costs in Perth",
+          "line": "Prices from 31 venues, checked October 2026"
         }
       ],
       "intro": [
@@ -104,6 +109,11 @@
           "path": "/compare/infrared-vs-traditional-sauna/",
           "label": "Infrared vs traditional sauna",
           "line": "Heat, session length, privacy and price side by side"
+        },
+        {
+          "path": "/journal/sauna-prices-perth/",
+          "label": "What a sauna costs in Perth",
+          "line": "Prices from 31 venues, checked October 2026"
         },
         {
           "category": "spa",
@@ -164,6 +174,11 @@
           "path": "/compare/infrared-vs-traditional-sauna/",
           "label": "Infrared vs traditional sauna",
           "line": "Heat, session length, privacy and price side by side"
+        },
+        {
+          "path": "/journal/sauna-prices-perth/",
+          "label": "What a sauna costs in Perth",
+          "line": "Prices from 31 venues, checked October 2026"
         },
         {
           "category": "spa",
@@ -268,6 +283,11 @@
     "saunas": {
       "phrase": "Saunas",
       "see_also": [
+        {
+          "path": "/journal/sauna-prices-perth/",
+          "label": "What a sauna costs in Perth",
+          "line": "Prices from 31 venues, checked October 2026"
+        },
         {
           "category": "spa",
           "facet": "traditional-sauna",
