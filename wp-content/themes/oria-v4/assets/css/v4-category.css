@@ -1505,3 +1505,42 @@ html.xc-locked { overflow: hidden; }
 .xc-panel.is-turning, .xc-panel.is-back.is-turning { animation: xcFadeIn .18s ease-out both; }
 @keyframes xcFadeIn { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .xc-panel.is-turning { animation: none; } .xc-tab { transition: none; } }
+
+/* ---- Hero: the photograph across the whole header (2026-10-08) ---------
+   The text sits on a soft ivory wash on the left; the photo shows clearly
+   to the right. Phones get a fuller wash so the words stay legible. */
+.xc-hz2 { position: relative; isolation: isolate; overflow: hidden; padding-block: clamp(2rem, 5vw, 4.5rem); }
+.xc-hz2__grid { grid-template-columns: minmax(0, 1fr) !important; min-height: clamp(440px, 44vw, 580px); align-items: center; }
+.xc-hz2__copy { position: relative; z-index: 2; max-width: 620px; }
+.xc-hz2__art { position: absolute; inset: 0; z-index: 0; padding: 0; }
+.xc-hz2__art::before, .xc-hz2__motif { display: none; }
+.xc-hz2__media {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  border-radius: 0;
+  aspect-ratio: auto;
+  height: 100% !important;
+  background: var(--sand);
+}
+.xc-hz2__img { object-position: var(--xc-hz-pos, 70% 50%); }
+.xc-hz2__art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgb(245 244 240 / 97%) 0%,
+    rgb(245 244 240 / 92%) 34%,
+    rgb(245 244 240 / 55%) 52%,
+    rgb(245 244 240 / 0%) 72%);
+}
+@media (max-width: 59.99rem) {
+  .xc-hz2__grid { min-height: 0; }
+  .xc-hz2__media { height: 100% !important; }
+  .xc-hz2__art::after {
+    background: linear-gradient(180deg,
+      rgb(245 244 240 / 90%) 0%,
+      rgb(245 244 240 / 84%) 70%,
+      rgb(245 244 240 / 70%) 100%);
+  }
+}

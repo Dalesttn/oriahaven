@@ -835,7 +835,7 @@ if ( ! empty( $oria_online ) ) {
 			<div class="xc-hz2__art">
 				<svg class="xc-hz2__motif" viewBox="0 0 200 200" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1"><circle cx="100" cy="100" r="96"/><circle cx="100" cy="100" r="74"/><circle cx="100" cy="100" r="52"/><circle cx="100" cy="100" r="30"/></g></svg>
 				<figure class="xc-hz2__media"<?php echo '' !== $oria_hz['pos'] ? ' style="--xc-hz-pos:' . esc_attr( $oria_hz['pos'] ) . '"' : ''; ?>>
-					<img class="xc-hz2__img" src="<?php echo esc_url( $oria_hz['src'] ); ?>"<?php echo '' !== $oria_hz['srcset'] ? ' srcset="' . esc_attr( $oria_hz['srcset'] ) . '" sizes="(min-width: 900px) 45vw, 100vw"' : ''; ?> width="<?php echo (int) $oria_hz['w']; ?>" height="<?php echo (int) $oria_hz['h']; ?>" alt="" fetchpriority="high" decoding="async">
+					<img class="xc-hz2__img" src="<?php echo esc_url( $oria_hz['src'] ); ?>"<?php echo '' !== $oria_hz['srcset'] ? ' srcset="' . esc_attr( $oria_hz['srcset'] ) . '" sizes="100vw"' : ''; ?> width="<?php echo (int) $oria_hz['w']; ?>" height="<?php echo (int) $oria_hz['h']; ?>" alt="" fetchpriority="high" decoding="async">
 				</figure>
 			</div>
 		<?php endif; ?>
