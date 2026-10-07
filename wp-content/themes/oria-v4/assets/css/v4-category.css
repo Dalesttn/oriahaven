@@ -2018,3 +2018,48 @@ a.fvg__fact-v { justify-self: start; text-decoration: underline; text-decoration
 .fvg__go:hover { background: var(--ink, #082220); }
 .fvg__cmp { display: inline-flex; align-items: center; gap: .3rem; min-height: 44px; font-weight: 600; }
 .fvg__practical { align-items: start; }
+
+/* =========================================================================
+   The guide (October 2026): one readable column with a lede, and the
+   hand-picked neighbours as a quiet "Keep exploring" list beside it.
+   Same family as the first-visit guide (.fvg). Scoped to .xc-rd.
+   ========================================================================= */
+.xc-rd { --rd-ink: #183d35; --rd-muted: #56645e; --rd-border: #d7ded4; --rd-sage: #e8eee4; color: var(--rd-ink); }
+.xc-rd__eyebrow { margin: 0 0 .6rem; font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--moss, #3f6e60); }
+.xc-rd__title {
+  margin: 0 0 1.25rem; max-width: 26ch;
+  font-family: var(--font-edit); font-weight: 500;
+  font-size: clamp(1.65rem, 3vw, 2.4rem); line-height: 1.12; letter-spacing: -0.02em; text-wrap: balance; color: var(--rd-ink);
+}
+.xc-rd__grid { display: grid; gap: 2rem 3.5rem; align-items: start; }
+@media (min-width: 64rem) {
+  .xc-rd.has-aside .xc-rd__grid { grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem); }
+}
+/* One column of prose, not two: long lines in two columns made a reader
+   finish one, then hunt back up for the other. */
+.xc-rd .prose--intro { columns: auto; max-width: 68ch; }
+.xc-rd .prose--intro > * + * { margin-top: 1.1rem; }
+.xc-rd .prose--intro p { font-size: 1.0625rem; line-height: 1.7; color: var(--rd-muted); }
+.xc-rd .prose--intro > p:first-child {
+  font-size: clamp(1.125rem, 1.6vw, 1.25rem); line-height: 1.6; color: var(--rd-ink);
+}
+.xc-rd .prose--intro a { color: var(--rd-ink); text-underline-offset: 3px; }
+
+/* Keep exploring */
+.xc-rd .xc-also { margin: 0; padding: 1.25rem 1.35rem .5rem; border-radius: 18px; background: var(--rd-sage); }
+
+.xc-rd .xc-also__label {
+  margin: 0 0 .35rem; font-family: var(--font-edit); font-weight: 500; font-size: 1.3rem; line-height: 1.2; color: var(--rd-ink);
+  letter-spacing: 0; text-transform: none;
+}
+.xc-rd .xc-also__list { display: grid; grid-template-columns: 1fr; gap: 0; margin: 0; padding: 0; list-style: none; }
+.xc-rd .xc-also__list > li + li { border-top: 1px solid color-mix(in srgb, var(--rd-border) 80%, var(--rd-ink)); }
+.xc-rd .xc-also__link {
+  display: grid; gap: .15rem; padding: .85rem 0; min-height: 44px;
+  border: 0; border-radius: 0; background: none; box-shadow: none; text-decoration: none; transform: none;
+}
+.xc-rd .xc-also__link:hover .xc-also__name { text-decoration: underline; text-underline-offset: 3px; }
+.xc-rd .xc-also__link:focus-visible { outline: 3px solid #a77c3a; outline-offset: 2px; border-radius: 6px; }
+.xc-rd .xc-also__name { font-size: 1rem; font-weight: 600; line-height: 1.35; color: var(--rd-ink); }
+.xc-rd .xc-also__line { font-size: .9rem; line-height: 1.45; color: var(--rd-muted); }
+.xc-rd .cmpnudge { margin: 0 0 1rem; }

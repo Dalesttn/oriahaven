@@ -2061,24 +2061,24 @@ if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
 <?php endif; ?>
 <?php $oria_ch['jobs'] = (string) ob_get_clean(); ob_start(); ?>
 <!-- 6. Guide -->
-<section class="wrap section floor xc-guide" id="read">
-	<p class="micro floor__label"><?php esc_html_e( 'Guide', 'oria' ); ?></p>
-	<?php if ( $oria_gcmp && ! $oria_note_cfg ) : ?>
-		<p class="cmpnudge cmpnudge--group">
-			<a href="<?php echo esc_url( $oria_gcmp['url'] ); ?>" data-oria-event="category_compare_group">
-				<?php echo esc_html( $oria_gcmp['label'] ); ?>
-				<span aria-hidden="true">&rarr;</span>
-			</a>
-		</p>
-	<?php endif; ?>
-	<?php if ( $oria_cmp && $oria_gcmp ) : ?>
-		<p class="cmpnudge">
-			<a href="<?php echo esc_url( $oria_cmp['url'] ); ?>" data-oria-event="category_compare">
-				<?php echo esc_html( $oria_cmp['label'] ); ?>
-				<span aria-hidden="true">&rarr;</span>
-			</a>
-		</p>
-	<?php endif; ?>
+<?php
+/*
+ * "Keep exploring": the compare nudges first (they used to sit loose above
+ * the heading), then the facet's hand-picked neighbours.
+ */
+$oria_rd_links = array();
+if ( $oria_gcmp && ! $oria_note_cfg ) {
+	$oria_rd_links[] = array( 'url' => $oria_gcmp['url'], 'label' => $oria_gcmp['label'], 'line' => '', 'ev' => 'category_compare_group' );
+}
+if ( $oria_cmp && $oria_gcmp ) {
+	$oria_rd_links[] = array( 'url' => $oria_cmp['url'], 'label' => $oria_cmp['label'], 'line' => '', 'ev' => 'category_compare' );
+}
+foreach ( (array) $oria_fg_also as $oria_sa ) {
+	$oria_rd_links[] = array( 'url' => $oria_sa['url'], 'label' => $oria_sa['label'], 'line' => (string) $oria_sa['line'], 'ev' => 'category_see_also_click' );
+}
+?>
+<section class="wrap section floor xc-guide xc-rd<?php echo $oria_rd_links ? ' has-aside' : ''; ?>" id="read">
+	<p class="xc-rd__eyebrow"><?php esc_html_e( 'The guide', 'oria' ); ?></p>
 
 	<?php
 	/*
@@ -2113,8 +2113,10 @@ if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
 	}
 	?>
 
+	<div class="xc-rd__grid">
+	<div class="xc-rd__body">
 	<?php if ( $oria_facet && ! empty( $oria_frame['worth_knowing'] ) ) : ?>
-		<h2 class="h3" style="margin-bottom:1rem"><?php esc_html_e( 'Worth knowing', 'oria' ); ?></h2>
+		<h2 class="xc-rd__title"><?php esc_html_e( 'Worth knowing', 'oria' ); ?></h2>
 		<div class="prose prose--intro">
 			<?php foreach ( (array) $oria_frame['worth_knowing'] as $oria_para ) : ?>
 				<p><?php echo esc_html( $oria_fill( (string) $oria_para ) ); ?></p>
@@ -2128,7 +2130,7 @@ if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
 		 * every Spa facet page carried the same 369 words.
 		 */
 		?>
-		<h2 class="h3" style="margin-bottom:1rem">
+		<h2 class="xc-rd__title">
 			<?php
 			/* translators: %s: facet name, e.g. Ice baths & cold plunges in Perth */
 			printf( esc_html__( 'Before you go: %s', 'oria' ), esc_html( $oria_fg_name ) );
@@ -2162,7 +2164,7 @@ if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
 			$oria_guide_place = \Oria\Core\Cities\name( \Oria\Core\Cities\default_city() );
 		}
 		?>
-		<h2 class="h3" style="margin-bottom:1rem">
+		<h2 class="xc-rd__title">
 			<?php
 			/* translators: 1: category, lower case, 2: city */
 			printf( esc_html__( 'Before you go: %1$s in %2$s', 'oria' ), esc_html( strtolower( $oria_pname ) ), esc_html( $oria_guide_place ) );
@@ -2181,15 +2183,15 @@ if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
 			</p>
 		<?php endif; ?>
 	<?php endif; ?>
+	</div>
 
-	<?php if ( $oria_fg_also ) : ?>
-		<?php // Hand-picked neighbours: "Want both? Ice bath & sauna together". ?>
-		<nav class="xc-also" aria-label="<?php esc_attr_e( 'Related pages', 'oria' ); ?>">
-			<p class="micro xc-also__label"><?php esc_html_e( 'You might also look at', 'oria' ); ?></p>
+	<?php if ( $oria_rd_links ) : ?>
+		<nav class="xc-also" aria-labelledby="xcAlsoTitle">
+			<h3 class="xc-also__label" id="xcAlsoTitle"><?php esc_html_e( 'Keep exploring', 'oria' ); ?></h3>
 			<ul class="xc-also__list">
-				<?php foreach ( $oria_fg_also as $oria_sa ) : ?>
+				<?php foreach ( $oria_rd_links as $oria_sa ) : ?>
 					<li>
-						<a class="xc-also__link" href="<?php echo esc_url( $oria_sa['url'] ); ?>" data-oria-event="category_see_also_click">
+						<a class="xc-also__link" href="<?php echo esc_url( $oria_sa['url'] ); ?>" data-oria-event="<?php echo esc_attr( $oria_sa['ev'] ); ?>">
 							<span class="xc-also__name"><?php echo esc_html( $oria_sa['label'] ); ?> <span aria-hidden="true">&rarr;</span></span>
 							<?php if ( '' !== $oria_sa['line'] ) : ?>
 								<span class="xc-also__line"><?php echo esc_html( $oria_sa['line'] ); ?></span>
@@ -2200,6 +2202,7 @@ if ( $oria_term && function_exists( '\Oria\Core\Work\category_jobs_link' ) ) {
 			</ul>
 		</nav>
 	<?php endif; ?>
+	</div>
 
 	<?php
 	// Trend to Try: one published trend an editor tied to this category.
@@ -2472,7 +2475,9 @@ $oria_ask_wrapped    = '<div class="wrap xc-foot-asks">' . ( $oria_ask_html ?? '
 $oria_ins_wrapped    = '' !== trim( (string) ( $oria_insights_html ?? '' ) ) ? '<div class="wrap xc-prices">' . $oria_insights_html . '</div>' : '';
 
 $oria_put( 'offers', $oria_offers_wrapped . ( $oria_ch['event'] ?? '' ) );
-$oria_put( 'first', ( $oria_ch['first'] ?? '' ) . ( $oria_ch['read'] ?? '' ) . ( $oria_ch['retreat'] ?? '' ) );
+// The overview first, then the practical first-visit guide, whose
+// "Explore" row is the tab's natural last word.
+$oria_put( 'first', ( $oria_ch['read'] ?? '' ) . ( $oria_ch['first'] ?? '' ) . ( $oria_ch['retreat'] ?? '' ) );
 $oria_put( 'prices', $oria_ins_wrapped );
 $oria_put( 'guides', ( $oria_ch['guides'] ?? '' ) . ( $oria_ch['bestof'] ?? '' ) . $oria_note_wrapped . ( isset( $oria_tabs['faqs'] ) ? '' : $oria_ask_wrapped ) );
 $oria_put( 'faqs', ( $oria_ch['faq'] ?? '' ) . $oria_ask_wrapped );
