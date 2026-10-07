@@ -5,7 +5,8 @@
     "cheapest_for_two": "Lowest published two-person price for the shortest common session.",
     "river": "North or south of the Swan River by the venue's suburb.",
     "private": "Venues whose own site says sessions are private or the cabin is your own; 'not stated' is not counted either way.",
-    "lengths": "Count of venues offering each session length, out of venues with a working website."
+    "lengths": "Count of venues offering each session length, out of venues with a working website.",
+    "amenities": "Showers, Sunday hours and towels from venues' own sites or the booking page they link to (D:/OriaHaven/drafts/saunas/sauna-amenities-checked-2026-10-07.json). Excluded where the source contradicts itself or only mentions the feature for another service: Merse's showers are a circuit feature; Recovery Haus and The Neighbourhood Sauna give conflicting towel answers; Rhema's and Salt Float's showers are for float rooms only."
   },
   "facets": {
     "infrared-sauna": {
@@ -14,14 +15,86 @@
       "basis": "prices published by 25 Perth infrared sauna venues on their own websites",
       "snapshot": "Typical 30-min session $35",
       "items": [
-        { "label": "Typical 30-minute session", "value": "$35", "note": "Median of the 10 venues publishing a single 30-minute price. Range $25–$70." },
-        { "label": "Typical 45-minute session", "value": "$49", "note": "Median of 7 venues. Range $35–$55." },
-        { "label": "Cheapest published", "value": "$25 for 30 min", "note": "Zen Zone in Beldon and Rhema Wellness Studio in Cockburn Central.", "links": { "Zen Zone": "zen-zone-perth", "Rhema Wellness Studio": "rhema-wellness-studio" } },
-        { "label": "Most common session length", "value": "30 minutes", "note": "Offered by 13 of 25 venues; 45 and 60 minutes by 9 each." },
-        { "label": "Cheapest for two", "value": "$40 for 30 min", "note": "Zen Zone. Elsewhere a second person adds $10–$30 rather than doubling the price.", "links": { "Zen Zone": "zen-zone-perth" } },
-        { "label": "Cheapest north of the river", "value": "$25", "note": "Zen Zone, Beldon, for 30 minutes. Next: Recovery Lab, Jolimont, $30.", "links": { "Zen Zone": "zen-zone-perth", "Recovery Lab": "recovery-lab-jolimont" } },
-        { "label": "Cheapest south of the river", "value": "$25", "note": "Rhema Wellness Studio, Cockburn Central, for 30 minutes. Next: Salt Float Studio, South Perth, $30.", "links": { "Rhema Wellness Studio": "rhema-wellness-studio", "Salt Float Studio": "salt-float-studio-south-perth" } },
-        { "label": "Private cabins", "value": "15 of 25", "note": "Say in writing that sessions are private. None say shared; the rest don't state it." }
+        {
+          "label": "Typical 30-minute session",
+          "value": "$35",
+          "note": "Median of the 10 venues publishing a single 30-minute price. Range $25–$70."
+        },
+        {
+          "label": "Typical 45-minute session",
+          "value": "$49",
+          "note": "Median of 7 venues. Range $35–$55."
+        },
+        {
+          "label": "Cheapest published",
+          "value": "$25 for 30 min",
+          "note": "Zen Zone in Beldon and Rhema Wellness Studio in Cockburn Central.",
+          "links": {
+            "Zen Zone": "zen-zone-perth",
+            "Rhema Wellness Studio": "rhema-wellness-studio"
+          }
+        },
+        {
+          "label": "Most common session length",
+          "value": "30 minutes",
+          "note": "Offered by 13 of 25 venues; 45 and 60 minutes by 9 each."
+        },
+        {
+          "label": "Cheapest for two",
+          "value": "$40 for 30 min",
+          "note": "Zen Zone. Elsewhere a second person adds $10–$30 rather than doubling the price.",
+          "links": {
+            "Zen Zone": "zen-zone-perth"
+          }
+        },
+        {
+          "label": "Cheapest north of the river",
+          "value": "$25",
+          "note": "Zen Zone, Beldon, for 30 minutes. Next: Recovery Lab, Jolimont, $30.",
+          "links": {
+            "Zen Zone": "zen-zone-perth",
+            "Recovery Lab": "recovery-lab-jolimont"
+          }
+        },
+        {
+          "label": "Cheapest south of the river",
+          "value": "$25",
+          "note": "Rhema Wellness Studio, Cockburn Central, for 30 minutes. Next: Salt Float Studio, South Perth, $30.",
+          "links": {
+            "Rhema Wellness Studio": "rhema-wellness-studio",
+            "Salt Float Studio": "salt-float-studio-south-perth"
+          }
+        },
+        {
+          "label": "Private cabins",
+          "value": "15 of 25",
+          "note": "Say in writing that sessions are private. None say shared; the rest don't state it."
+        },
+        {
+          "label": "Open on Sundays",
+          "value": "15 of 23",
+          "note": "Of 23 venues checked; three are closed Sundays and five don't publish their hours. Earliest start: Zen Zone, 5am.",
+          "links": {
+            "Zen Zone": "zen-zone-perth"
+          }
+        },
+        {
+          "label": "Showers mentioned",
+          "value": "6 of 23",
+          "note": "The Neighbourhood Sauna (South Terrace), Palm Beach Wellness, Locked In Recovery, Ultimate Recovery Lounge, Recovery Lab and Modern Ritual say guests can shower.",
+          "links": {
+            "The Neighbourhood Sauna": "the-neighbourhood-sauna-fremantle",
+            "Palm Beach Wellness": "palm-beach-wellness-nedlands",
+            "Locked In Recovery": "locked-in-recovery",
+            "Ultimate Recovery Lounge": "ultimate-recovery-lounge",
+            "Modern Ritual": "modern-ritual-contrast"
+          }
+        },
+        {
+          "label": "Towels",
+          "value": "Sometimes extra",
+          "note": "Merse, Zen Zone and Recovery Lab charge $4.95–$5; Mindbody Lounge, Palm Beach Wellness and Ultimate Recovery Lounge supply them. Most don't say."
+        }
       ]
     },
     "traditional-sauna": {
@@ -30,11 +103,63 @@
       "basis": "prices published by five dedicated Perth sauna houses on their own websites",
       "snapshot": "From $35 an hour",
       "items": [
-        { "label": "Cheapest hour", "value": "$35", "note": "Alchemy Saunas, East Perth (shared, ice and magnesium pools included), and Sauna & Ice Bath Booragoon (private barrel sauna, sauna only).", "links": { "Alchemy Saunas": "alchemy-saunas-perth", "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon" } },
-        { "label": "Cheapest session", "value": "$25 for 30 min", "note": "Sauna & Ice Bath Booragoon, booked for exclusive use.", "links": { "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon" } },
-        { "label": "Full bathhouse circuit", "value": "$89 for 90 min", "note": "Ember Bath House, Osborne Park: Finnish sauna, steam room, hot mineral bath and ice bath, towel and robe included.", "links": { "Ember Bath House": "ember-bath-house" } },
-        { "label": "Most common session length", "value": "An hour", "note": "Four of the five sell a 60-minute session." },
-        { "label": "Weekly memberships from", "value": "$45", "note": "Löyly Recovery, Stirling, for one communal session a week. RecWell, Wangara: $49 for two.", "links": { "Löyly Recovery": "loyly-recovery-stirling", "RecWell": "recwell-wangara" } }
+        {
+          "label": "Cheapest hour",
+          "value": "$35",
+          "note": "Alchemy Saunas, East Perth (shared, ice and magnesium pools included), and Sauna & Ice Bath Booragoon (private barrel sauna, sauna only).",
+          "links": {
+            "Alchemy Saunas": "alchemy-saunas-perth",
+            "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon"
+          }
+        },
+        {
+          "label": "Cheapest session",
+          "value": "$25 for 30 min",
+          "note": "Sauna & Ice Bath Booragoon, booked for exclusive use.",
+          "links": {
+            "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon"
+          }
+        },
+        {
+          "label": "Full bathhouse circuit",
+          "value": "$89 for 90 min",
+          "note": "Ember Bath House, Osborne Park: Finnish sauna, steam room, hot mineral bath and ice bath, towel and robe included.",
+          "links": {
+            "Ember Bath House": "ember-bath-house"
+          }
+        },
+        {
+          "label": "Most common session length",
+          "value": "An hour",
+          "note": "Four of the five sell a 60-minute session."
+        },
+        {
+          "label": "Weekly memberships from",
+          "value": "$45",
+          "note": "Löyly Recovery, Stirling, for one communal session a week. RecWell, Wangara: $49 for two.",
+          "links": {
+            "Löyly Recovery": "loyly-recovery-stirling",
+            "RecWell": "recwell-wangara"
+          }
+        },
+        {
+          "label": "Open on Sundays",
+          "value": "4 of 5",
+          "note": "All but Sauna & Ice Bath Booragoon. Alchemy Saunas opens 6am–10pm, seven days.",
+          "links": {
+            "Alchemy Saunas": "alchemy-saunas-perth"
+          }
+        },
+        {
+          "label": "Showers mentioned",
+          "value": "2 of 5",
+          "note": "Alchemy Saunas and Sauna & Ice Bath Booragoon say guests can shower; the others don't say."
+        },
+        {
+          "label": "Towels",
+          "value": "Varies",
+          "note": "Ember Bath House and Löyly Recovery supply them; Alchemy Saunas asks you to bring two."
+        }
       ]
     },
     "saunas": {
@@ -43,11 +168,48 @@
       "basis": "prices published by 30 Perth sauna venues on their own websites",
       "snapshot": "Infrared from $25 · traditional from $25",
       "items": [
-        { "label": "Typical infrared session", "value": "$35 for 30 min", "note": "Median of 10 venues publishing a single 30-minute price." },
-        { "label": "Cheapest infrared", "value": "$25 for 30 min", "note": "Zen Zone, Beldon, and Rhema Wellness Studio, Cockburn Central.", "links": { "Zen Zone": "zen-zone-perth", "Rhema Wellness Studio": "rhema-wellness-studio" } },
-        { "label": "Cheapest traditional", "value": "$25 for 30 min", "note": "Sauna & Ice Bath Booragoon, private barrel sauna. An hour's shared drop-in at Alchemy Saunas, East Perth, is $35.", "links": { "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon", "Alchemy Saunas": "alchemy-saunas-perth" } },
-        { "label": "Private or shared", "value": "Infrared private, traditional often shared", "note": "15 of 25 infrared venues say sessions are private; three of the five sauna houses checked run shared sessions." },
-        { "label": "Sauna and ice bath together", "value": "From $40 an hour", "note": "Zen Zone and Sauna & Ice Bath Booragoon. Most combined sessions are $40–$80.", "links": { "Zen Zone": "zen-zone-perth", "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon" } }
+        {
+          "label": "Typical infrared session",
+          "value": "$35 for 30 min",
+          "note": "Median of 10 venues publishing a single 30-minute price."
+        },
+        {
+          "label": "Cheapest infrared",
+          "value": "$25 for 30 min",
+          "note": "Zen Zone, Beldon, and Rhema Wellness Studio, Cockburn Central.",
+          "links": {
+            "Zen Zone": "zen-zone-perth",
+            "Rhema Wellness Studio": "rhema-wellness-studio"
+          }
+        },
+        {
+          "label": "Cheapest traditional",
+          "value": "$25 for 30 min",
+          "note": "Sauna & Ice Bath Booragoon, private barrel sauna. An hour's shared drop-in at Alchemy Saunas, East Perth, is $35.",
+          "links": {
+            "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon",
+            "Alchemy Saunas": "alchemy-saunas-perth"
+          }
+        },
+        {
+          "label": "Private or shared",
+          "value": "Infrared private, traditional often shared",
+          "note": "15 of 25 infrared venues say sessions are private; three of the five sauna houses checked run shared sessions."
+        },
+        {
+          "label": "Sauna and ice bath together",
+          "value": "From $40 an hour",
+          "note": "Zen Zone and Sauna & Ice Bath Booragoon. Most combined sessions are $40–$80.",
+          "links": {
+            "Zen Zone": "zen-zone-perth",
+            "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon"
+          }
+        },
+        {
+          "label": "Open on Sundays",
+          "value": "19 of 28",
+          "note": "Of 28 infrared and traditional venues checked; four are closed Sundays and five don't publish their hours."
+        }
       ]
     }
   }
