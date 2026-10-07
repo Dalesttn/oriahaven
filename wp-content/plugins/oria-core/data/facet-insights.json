@@ -16,72 +16,106 @@
       "snapshot": "Typical 30-min session $35",
       "items": [
         {
+          "group": "lead",
           "label": "Typical 30-minute session",
           "value": "$35",
-          "note": "Median of the 10 venues publishing a single 30-minute price. Range $25–$70."
+          "unit": "for a single 30-minute session",
+          "note": "Median across 10 venues",
+          "detail": "Published range: $25–$70"
         },
         {
+          "group": "lead",
           "label": "Typical 45-minute session",
           "value": "$49",
-          "note": "Median of 7 venues. Range $35–$55."
+          "unit": "for a single 45-minute session",
+          "note": "Median across 7 venues",
+          "detail": "Published range: $35–$55"
         },
         {
-          "label": "Cheapest published",
-          "value": "$25 for 30 min",
-          "note": "Zen Zone in Beldon and Rhema Wellness Studio in Cockburn Central.",
+          "group": "lead",
+          "tint": true,
+          "label": "Lowest published 30-minute price",
+          "value": "$25",
+          "unit": "for 30 minutes",
+          "note": "Lowest among the comparable prices checked",
+          "detail": "Zen Zone · Beldon and Rhema Wellness Studio · Cockburn Central",
           "links": {
             "Zen Zone": "zen-zone-perth",
             "Rhema Wellness Studio": "rhema-wellness-studio"
           }
         },
         {
-          "label": "Most common session length",
-          "value": "30 minutes",
-          "note": "Offered by 13 of 25 venues; 45 and 60 minutes by 9 each."
-        },
-        {
-          "label": "Cheapest for two",
-          "value": "$40 for 30 min",
-          "note": "Zen Zone. Elsewhere a second person adds $10–$30 rather than doubling the price.",
+          "group": "fit",
+          "label": "Going with someone",
+          "value": "$40",
+          "unit": "30 min · total for two people",
+          "note": "Zen Zone · Beldon",
+          "other": "Elsewhere a second person adds $10–$30 rather than doubling the price.",
           "links": {
             "Zen Zone": "zen-zone-perth"
           }
         },
         {
-          "label": "Cheapest north of the river",
+          "group": "fit",
+          "label": "North of the river",
           "value": "$25",
-          "note": "Zen Zone, Beldon, for 30 minutes. Next: Recovery Lab, Jolimont, $30.",
+          "unit": "30 min",
+          "note": "Zen Zone · Beldon",
+          "other": "Next: Recovery Lab, Jolimont, $30.",
           "links": {
             "Zen Zone": "zen-zone-perth",
             "Recovery Lab": "recovery-lab-jolimont"
           }
         },
         {
-          "label": "Cheapest south of the river",
+          "group": "fit",
+          "label": "South of the river",
           "value": "$25",
-          "note": "Rhema Wellness Studio, Cockburn Central, for 30 minutes. Next: Salt Float Studio, South Perth, $30.",
+          "unit": "30 min",
+          "note": "Rhema Wellness Studio · Cockburn Central",
+          "other": "Next: Salt Float Studio, South Perth, $30.",
           "links": {
             "Rhema Wellness Studio": "rhema-wellness-studio",
             "Salt Float Studio": "salt-float-studio-south-perth"
           }
         },
         {
-          "label": "Private cabins",
-          "value": "15 of 25",
-          "note": "Say in writing that sessions are private. None say shared; the rest don't state it."
+          "group": "detail",
+          "side": "left",
+          "label": "Most common booking length",
+          "value": "30 minutes",
+          "note": "Offered by 13 of 25 checked venues; 45 and 60 minutes by 9 each. Many venues offer more than one length."
         },
         {
-          "label": "Open on Sundays",
-          "value": "15 of 23",
-          "note": "Of 23 venues checked; three are closed Sundays and five don't publish their hours. Earliest start: Zen Zone, 5am.",
+          "group": "detail",
+          "side": "left",
+          "label": "Privacy",
+          "value": "15 of 25 confirm private sessions",
+          "note": "The other 10 don't state it in the information checked.",
+          "strip": [
+            15,
+            25,
+            "Confirmed private",
+            "Not stated"
+          ]
+        },
+        {
+          "group": "detail",
+          "icon": "calendar",
+          "label": "Sunday visits",
+          "value": "15 of 23 open",
+          "note": "Three are closed on Sundays and five don't publish their hours. Earliest start: Zen Zone, 5am.",
           "links": {
             "Zen Zone": "zen-zone-perth"
           }
         },
         {
-          "label": "Showers mentioned",
-          "value": "6 of 23",
-          "note": "The Neighbourhood Sauna (South Terrace), Palm Beach Wellness, Locked In Recovery, Ultimate Recovery Lounge, Recovery Lab and Modern Ritual say guests can shower.",
+          "group": "detail",
+          "icon": "shower",
+          "label": "Showers",
+          "value": "6 of 23 mention showers",
+          "note": "Not mentioned isn't the same as not available.",
+          "more": "The Neighbourhood Sauna (South Terrace), Palm Beach Wellness, Locked In Recovery, Ultimate Recovery Lounge, Recovery Lab and Modern Ritual say guests can shower.",
           "links": {
             "The Neighbourhood Sauna": "the-neighbourhood-sauna-fremantle",
             "Palm Beach Wellness": "palm-beach-wellness-nedlands",
@@ -91,11 +125,24 @@
           }
         },
         {
+          "group": "detail",
+          "icon": "towel",
           "label": "Towels",
-          "value": "Sometimes extra",
-          "note": "Merse, Zen Zone and Recovery Lab charge $4.95–$5; Mindbody Lounge, Palm Beach Wellness and Ultimate Recovery Lounge supply them. Most don't say."
+          "value": "Included at some venues; extra at others",
+          "note": "Most venues don't say.",
+          "more": "Merse, Zen Zone and Recovery Lab charge $4.95–$5; Mindbody Lounge, Palm Beach Wellness and Ultimate Recovery Lounge supply them."
         }
-      ]
+      ],
+      "method": [
+        "Typical means the median: the middle published price, one price per venue for each session length.",
+        "Single-person, sauna-only casual prices. Memberships, packs, intro offers and sauna-plus-ice-bath bundles are counted separately; pods and multi-therapy rooms are left out of the sauna figures.",
+        "Two-person prices are the total for two, as published.",
+        "North or south of the river is by the venue's suburb.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 25,
+      "topic": "infrared saunas"
     },
     "traditional-sauna": {
       "city": "perth",
@@ -110,7 +157,8 @@
           "links": {
             "Alchemy Saunas": "alchemy-saunas-perth",
             "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Cheapest session",
@@ -118,7 +166,8 @@
           "note": "Sauna & Ice Bath Booragoon, booked for exclusive use.",
           "links": {
             "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Full bathhouse circuit",
@@ -126,12 +175,14 @@
           "note": "Ember Bath House, Osborne Park: Finnish sauna, steam room, hot mineral bath and ice bath, towel and robe included.",
           "links": {
             "Ember Bath House": "ember-bath-house"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Most common session length",
           "value": "An hour",
-          "note": "Four of the five sell a 60-minute session."
+          "note": "Four of the five sell a 60-minute session.",
+          "group": "detail"
         },
         {
           "label": "Weekly memberships from",
@@ -140,7 +191,8 @@
           "links": {
             "Löyly Recovery": "loyly-recovery-stirling",
             "RecWell": "recwell-wangara"
-          }
+          },
+          "group": "detail"
         },
         {
           "label": "Open on Sundays",
@@ -148,19 +200,31 @@
           "note": "All but Sauna & Ice Bath Booragoon. Alchemy Saunas opens 6am–10pm, seven days.",
           "links": {
             "Alchemy Saunas": "alchemy-saunas-perth"
-          }
+          },
+          "group": "detail"
         },
         {
           "label": "Showers mentioned",
           "value": "2 of 5",
-          "note": "Alchemy Saunas and Sauna & Ice Bath Booragoon say guests can shower; the others don't say."
+          "note": "Alchemy Saunas and Sauna & Ice Bath Booragoon say guests can shower; the others don't say.",
+          "group": "detail"
         },
         {
           "label": "Towels",
           "value": "Varies",
-          "note": "Ember Bath House and Löyly Recovery supply them; Alchemy Saunas asks you to bring two."
+          "note": "Ember Bath House and Löyly Recovery supply them; Alchemy Saunas asks you to bring two.",
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "Typical means the median: the middle published price, one price per venue for each session length.",
+        "Single-person, sauna-only casual prices. Memberships, packs, intro offers and sauna-plus-ice-bath bundles are counted separately; pods and multi-therapy rooms are left out of the sauna figures.",
+        "Two-person prices are the total for two, as published.",
+        "North or south of the river is by the venue's suburb.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 5
     },
     "saunas": {
       "city": "perth",
@@ -171,7 +235,8 @@
         {
           "label": "Typical infrared session",
           "value": "$35 for 30 min",
-          "note": "Median of 10 venues publishing a single 30-minute price."
+          "note": "Median of 10 venues publishing a single 30-minute price.",
+          "group": "lead"
         },
         {
           "label": "Cheapest infrared",
@@ -180,7 +245,8 @@
           "links": {
             "Zen Zone": "zen-zone-perth",
             "Rhema Wellness Studio": "rhema-wellness-studio"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Cheapest traditional",
@@ -189,12 +255,14 @@
           "links": {
             "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon",
             "Alchemy Saunas": "alchemy-saunas-perth"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Private or shared",
           "value": "Infrared private, traditional often shared",
-          "note": "15 of 25 infrared venues say sessions are private; three of the five sauna houses checked run shared sessions."
+          "note": "15 of 25 infrared venues say sessions are private; three of the five sauna houses checked run shared sessions.",
+          "group": "detail"
         },
         {
           "label": "Sauna and ice bath together",
@@ -203,14 +271,25 @@
           "links": {
             "Zen Zone": "zen-zone-perth",
             "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon"
-          }
+          },
+          "group": "detail"
         },
         {
           "label": "Open on Sundays",
           "value": "19 of 28",
-          "note": "Of 28 infrared and traditional venues checked; four are closed Sundays and five don't publish their hours."
+          "note": "Of 28 infrared and traditional venues checked; four are closed Sundays and five don't publish their hours.",
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "Typical means the median: the middle published price, one price per venue for each session length.",
+        "Single-person, sauna-only casual prices. Memberships, packs, intro offers and sauna-plus-ice-bath bundles are counted separately; pods and multi-therapy rooms are left out of the sauna figures.",
+        "Two-person prices are the total for two, as published.",
+        "North or south of the river is by the venue's suburb.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 30
     },
     "reformer": {
       "city": "perth",
@@ -221,7 +300,8 @@
         {
           "label": "Typical casual class",
           "value": "$38",
-          "note": "Median of the 16 studios publishing a drop-in price. Range $26–$70; the dearest are physio-led clinical classes."
+          "note": "Median of the 16 studios publishing a drop-in price. Range $26–$70; the dearest are physio-led clinical classes.",
+          "group": "lead"
         },
         {
           "label": "Cheapest casual class",
@@ -230,12 +310,14 @@
           "links": {
             "The Pilates Warehouse": "the-pilates-warehouse-joondalup",
             "The Studio Perth": "the-studio-perth"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Typical intro offer",
           "value": "$69",
-          "note": "Median of 14 new-client offers, usually two to four weeks of classes. Range $55–$190."
+          "note": "Median of 14 new-client offers, usually two to four weeks of classes. Range $55–$190.",
+          "group": "lead"
         },
         {
           "label": "Cheapest 10-class pack",
@@ -243,24 +325,37 @@
           "note": "The Pilates Warehouse — $24 a class. Most packs work out at $26–$33 a class.",
           "links": {
             "The Pilates Warehouse": "the-pilates-warehouse-joondalup"
-          }
+          },
+          "group": "detail"
         },
         {
           "label": "One class a week",
           "value": "About $30",
-          "note": "Median of nine one-class-a-week plans. Several need a 12-week or three-month minimum."
+          "note": "Median of nine one-class-a-week plans. Several need a 12-week or three-month minimum.",
+          "group": "detail"
         },
         {
           "label": "Private session",
           "value": "$90–$110",
-          "note": "Published by eight studios; median about $100."
+          "note": "Published by eight studios; median about $100.",
+          "group": "detail"
         },
         {
           "label": "Physio-led studios",
           "value": "6 of 25",
-          "note": "Run by physiotherapists; clinical Pilates usually starts with a one-to-one assessment."
+          "note": "Run by physiotherapists; clinical Pilates usually starts with a one-to-one assessment.",
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "Typical means the median of casual drop-in class prices, one per studio.",
+        "Intro offers, class packs and memberships are reported separately and never mixed into the casual figure.",
+        "Checked for Oria Haven's reformer Pilates prices article.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 25,
+      "topic": "reformer Pilates"
     },
     "acupuncture": {
       "city": "perth",
@@ -271,12 +366,14 @@
         {
           "label": "Typical first visit",
           "value": "$129",
-          "note": "Median initial consultation and treatment at the 8 clinics publishing a fee. Range $95–$200."
+          "note": "Median initial consultation and treatment at the 8 clinics publishing a fee. Range $95–$200.",
+          "group": "lead"
         },
         {
           "label": "Typical follow-up",
           "value": "$99",
-          "note": "Median of 8 clinics. Range $75–$120."
+          "note": "Median of 8 clinics. Range $75–$120.",
+          "group": "lead"
         },
         {
           "label": "Cheapest first visit",
@@ -285,24 +382,36 @@
           "links": {
             "Baolin Acupuncture & Chinese Medicine Centre": "baolin-acupuncture-chinese-medicine",
             "Nature's Chinese Medicine & Acupuncture": "natures-chinese-medicine-acupuncture"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Specialist clinics",
           "value": "$95–$140",
-          "note": "First-visit range at the six clinics that do acupuncture and Chinese medicine only; multi-discipline clinics charge up to $200."
+          "note": "First-visit range at the six clinics that do acupuncture and Chinese medicine only; multi-discipline clinics charge up to $200.",
+          "group": "detail"
         },
         {
           "label": "Fees published",
           "value": "8 of 14",
-          "note": "The other six quote on enquiry or inside a booking app."
+          "note": "The other six quote on enquiry or inside a booking app.",
+          "group": "detail"
         },
         {
           "label": "Health fund rebates",
           "value": "Ask your fund",
-          "note": "One clinic publishes a typical rebate of $20–$55 a treatment; it depends on your fund and level of cover."
+          "note": "One clinic publishes a typical rebate of $20–$55 a treatment; it depends on your fund and level of cover.",
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "Standard acupuncture fees as each clinic publishes them: first visit and follow-up.",
+        "Cosmetic acupuncture and herbal-only consultations are left out.",
+        "Typical means the median of the clinics publishing a fee.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 14
     },
     "contrast-therapy": {
       "city": "perth",
@@ -313,7 +422,8 @@
         {
           "label": "Typical session",
           "value": "$45",
-          "note": "Median sauna-and-ice-bath price at the 7 venues publishing one, usually for an hour. Range $35–$99."
+          "note": "Median sauna-and-ice-bath price at the 7 venues publishing one, usually for an hour. Range $35–$99.",
+          "group": "lead"
         },
         {
           "label": "Cheapest",
@@ -321,7 +431,8 @@
           "note": "Alchemy Saunas, East Perth: shared saunas with an ice pool and magnesium pool.",
           "links": {
             "Alchemy Saunas": "alchemy-saunas-perth"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Cheapest private",
@@ -330,7 +441,8 @@
           "links": {
             "Zen Zone": "zen-zone-perth",
             "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "For two",
@@ -339,12 +451,14 @@
           "links": {
             "Zen Zone": "zen-zone-perth",
             "Locked In Recovery": "locked-in-recovery"
-          }
+          },
+          "group": "fit"
         },
         {
           "label": "Open on Sundays",
           "value": "7 of 9",
-          "note": "Of the venues whose hours we checked; Sauna & Ice Bath Booragoon is closed Sundays and one doesn't publish hours."
+          "note": "Of the venues whose hours we checked; Sauna & Ice Bath Booragoon is closed Sundays and one doesn't publish hours.",
+          "group": "detail"
         },
         {
           "label": "Showers mentioned",
@@ -352,9 +466,19 @@
           "note": "Alchemy Saunas, Sauna & Ice Bath Booragoon, Locked In Recovery and Ultimate Recovery Lounge.",
           "links": {
             "Ultimate Recovery Lounge": "ultimate-recovery-lounge"
-          }
+          },
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "Typical means the median: the middle published price, one price per venue for each session length.",
+        "Single-person, sauna-only casual prices. Memberships, packs, intro offers and sauna-plus-ice-bath bundles are counted separately; pods and multi-therapy rooms are left out of the sauna figures.",
+        "Two-person prices are the total for two, as published.",
+        "North or south of the river is by the venue's suburb.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 10
     },
     "cat:breathwork": {
       "city": "perth",
@@ -365,7 +489,8 @@
         {
           "label": "Typical group session",
           "value": "$80",
-          "note": "Median of five group breathwork journeys with a clear published price, most running two to three hours. Range $75–$95."
+          "note": "Median of five group breathwork journeys with a clear published price, most running two to three hours. Range $75–$95.",
+          "group": "lead"
         },
         {
           "label": "Cheapest group session",
@@ -373,12 +498,14 @@
           "note": "Asana Breathwork, Southern River, for three hours, with a $55 early-bird ticket.",
           "links": {
             "Asana Breathwork": "asana-breathwork"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Typical private session",
           "value": "$180",
-          "note": "Median of eight one-to-one prices, usually 90 to 120 minutes. Range $155–$330."
+          "note": "Median of eight one-to-one prices, usually 90 to 120 minutes. Range $155–$330.",
+          "group": "lead"
         },
         {
           "label": "Cheapest private session",
@@ -386,19 +513,30 @@
           "note": "Energise Natural Health, Kallaroo, for 90 minutes.",
           "links": {
             "Energise Natural Health": "energise-natural-health"
-          }
+          },
+          "group": "detail"
         },
         {
           "label": "Online sessions",
           "value": "9 of 23",
-          "note": "Say on their own websites that they run breathwork sessions online as well as in person."
+          "note": "Say on their own websites that they run breathwork sessions online as well as in person.",
+          "group": "detail"
         },
         {
           "label": "Sunday sessions",
           "value": "6 of 23",
-          "note": "Say they run sessions on Sundays; most of the rest don't say."
+          "note": "Say they run sessions on Sundays; most of the rest don't say.",
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "Group price is one regular group session; workshops and retreats are counted separately.",
+        "Ticket totals that appear to include a booking fee, and prices assumed from other services, are left out.",
+        "Typical means the median.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 23
     },
     "float-therapy": {
       "city": "perth",
@@ -409,7 +547,8 @@
         {
           "label": "Typical 60-minute float",
           "value": "$86",
-          "note": "Median of seven float centres. Range $70–$89."
+          "note": "Median of seven float centres. Range $70–$89.",
+          "group": "lead"
         },
         {
           "label": "Cheapest",
@@ -417,7 +556,8 @@
           "note": "Rhema Wellness Studio, Cockburn Central, which also sells 30 minutes for $50.",
           "links": {
             "Rhema Wellness Studio": "rhema-wellness-studio"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Cheapest north of the river",
@@ -425,7 +565,8 @@
           "note": "Swan Valley Retreat, Henley Brook, which also sells 90 minutes for $99.",
           "links": {
             "Swan Valley Retreat": "swan-valley-retreat"
-          }
+          },
+          "group": "fit"
         },
         {
           "label": "Floating as a pair",
@@ -435,7 +576,8 @@
             "Life Spring Float Centre": "life-spring-float-centre",
             "Clear Mind Studio": "clear-mind-studio-fremantle",
             "Float Lab": "float-lab-wembley"
-          }
+          },
+          "group": "fit"
         },
         {
           "label": "Intro offer",
@@ -443,14 +585,23 @@
           "note": "Beyond Rest, East Perth: three 60-minute floats for $177.",
           "links": {
             "Beyond Rest": "beyond-rest-east-perth"
-          }
+          },
+          "group": "detail"
         },
         {
           "label": "Most common length",
           "value": "60 minutes",
-          "note": "Every centre sells an hour; a few also sell 30, 45, 90 or 120 minutes."
+          "note": "Every centre sells an hour; a few also sell 30, 45, 90 or 120 minutes.",
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "A single casual 60-minute float, one price per centre.",
+        "Typical means the median.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 7
     },
     "cold-plunge": {
       "city": "perth",
@@ -464,7 +615,8 @@
           "note": "New Movement, Osborne Park — a plunge on its own, no sauna.",
           "links": {
             "New Movement": "new-movement-perth"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Cheapest short session",
@@ -472,7 +624,8 @@
           "note": "Recovery Lab, Jolimont, for any one of its modalities, cold water included.",
           "links": {
             "Recovery Lab": "recovery-lab-jolimont"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Cheapest with a sauna",
@@ -482,12 +635,14 @@
             "Alchemy Saunas": "alchemy-saunas-perth",
             "Zen Zone": "zen-zone-perth",
             "Sauna & Ice Bath Booragoon": "sauna-ice-bath-booragoon"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Sauna and ice bath, an hour",
           "value": "Mostly $40–$80",
-          "note": "Six of the nine venues publishing a combined price sit in that range; the top is $99 for a private room."
+          "note": "Six of the nine venues publishing a combined price sit in that range; the top is $99 for a private room.",
+          "group": "detail"
         },
         {
           "label": "Bathhouse circuits",
@@ -496,7 +651,8 @@
           "links": {
             "Solace Day Spa": "solace-day-spa-scarborough",
             "Ember Bath House": "ember-bath-house"
-          }
+          },
+          "group": "detail"
         },
         {
           "label": "Members only",
@@ -504,9 +660,18 @@
           "note": "Vitality House, West Leederville, sells no casual sessions.",
           "links": {
             "Vitality House": "vitality-house-west-leederville"
-          }
+          },
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "Typical means the median: the middle published price, one price per venue for each session length.",
+        "Ice bath prices are single-person casual sessions; bathhouse circuits and members-only venues are shown as they are sold.",
+        "North or south of the river is by the venue's suburb.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 21
     },
     "remedial-massage": {
       "city": "perth",
@@ -517,12 +682,14 @@
         {
           "label": "Typical 60-minute remedial",
           "value": "$120",
-          "note": "Median of the 22 clinics publishing a 60-minute price. Range $99–$200."
+          "note": "Median of the 22 clinics publishing a 60-minute price. Range $99–$200.",
+          "group": "lead"
         },
         {
           "label": "Typical 90-minute remedial",
           "value": "$170",
-          "note": "Median of 18 clinics. Range $149–$225."
+          "note": "Median of 18 clinics. Range $149–$225.",
+          "group": "lead"
         },
         {
           "label": "Cheapest north of the river",
@@ -531,7 +698,8 @@
           "links": {
             "Pure Health and Wellness Clinic": "pure-health-wellness-clinic",
             "Perth Thai Massage": "perth-thai-massage-bedford"
-          }
+          },
+          "group": "fit"
         },
         {
           "label": "Cheapest south of the river",
@@ -539,17 +707,20 @@
           "note": "MyoFix Massage Therapy, Cannington, for 60 minutes.",
           "links": {
             "MyoFix Massage Therapy": "myofix-massage-cannington"
-          }
+          },
+          "group": "fit"
         },
         {
           "label": "Claim on the spot",
           "value": "10 of 34",
-          "note": "Say you can claim your health fund rebate at the clinic. Eleven more mention rebates; two say remedial massage is no longer covered."
+          "note": "Say you can claim your health fund rebate at the clinic. Eleven more mention rebates; two say remedial massage is no longer covered.",
+          "group": "detail"
         },
         {
           "label": "Open on Sundays",
           "value": "12 of 34",
-          "note": "Six say they're closed Sundays; the rest don't publish Sunday hours."
+          "note": "Six say they're closed Sundays; the rest don't publish Sunday hours.",
+          "group": "detail"
         },
         {
           "label": "Comes to you",
@@ -559,9 +730,18 @@
             "Ellenbrook Remedial Massage": "ellenbrook-remedial-massage",
             "Victoria Park Sports Massage & Acupuncture Clinic": "victoria-park-sports-massage-acupuncture",
             "Life Wellness Massage Therapy": "life-wellness-massage-subiaco"
-          }
+          },
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "Standard remedial massage prices for one person, by length.",
+        "Typical means the median, one price per clinic for each length.",
+        "North or south of the river is by the clinic's suburb.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 34
     },
     "sound-healing": {
       "city": "perth",
@@ -572,7 +752,8 @@
         {
           "label": "Typical group sound bath",
           "value": "$45–$50",
-          "note": "Across the five venues publishing a price for a dedicated sound session. Range $35–$59."
+          "note": "Across the five venues publishing a price for a dedicated sound session. Range $35–$59.",
+          "group": "lead"
         },
         {
           "label": "Cheapest",
@@ -580,7 +761,8 @@
           "note": "Loop Yoga, North Fremantle: an hour of sound and yoga nidra, fortnightly on Sunday afternoons.",
           "links": {
             "Loop Yoga": "loop-yoga-north-fremantle"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Longer sessions",
@@ -589,7 +771,8 @@
           "links": {
             "Restful Waters": "restful-waters-bedfordale",
             "Lionheart Yoga & Sound Healing": "lionheart-womens-circle"
-          }
+          },
+          "group": "detail"
         },
         {
           "label": "Private session",
@@ -597,19 +780,29 @@
           "note": "Four venues publish one; median $140. Longer sessions cost more: $250 is for two hours at Treemendus Health.",
           "links": {
             "Treemendus Health": "treemendus-health"
-          }
+          },
+          "group": "detail"
         },
         {
           "label": "Sunday sessions",
           "value": "6 of 15",
-          "note": "Say they run sound sessions on Sundays; most of the rest don't say."
+          "note": "Say they run sound sessions on Sundays; most of the rest don't say.",
+          "group": "detail"
         },
         {
           "label": "Prices published",
           "value": "8 of 15",
-          "note": "The other seven quote on enquiry or only sell through a booking app."
+          "note": "The other seven quote on enquiry or only sell through a booking app.",
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "Only dedicated sound sessions: yoga classes that include sound, and ticket totals that include a booking fee, are left out.",
+        "Typical is the middle of the published group prices.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 15
     },
     "cat:bodywork": {
       "city": "perth",
@@ -620,17 +813,20 @@
         {
           "label": "Typical 60-minute massage",
           "value": "$120",
-          "note": "Median of the 39 businesses publishing a 60-minute body massage price. Range $95–$195."
+          "note": "Median of the 39 businesses publishing a 60-minute body massage price. Range $95–$195.",
+          "group": "lead"
         },
         {
           "label": "Typical 90-minute massage",
           "value": "$178",
-          "note": "Median of 33 businesses. Range $120–$275."
+          "note": "Median of 33 businesses. Range $120–$275.",
+          "group": "lead"
         },
         {
           "label": "Day spa or clinic",
           "value": "$167 vs $120",
-          "note": "Median 60-minute price at ten day spas, against 25 massage and remedial clinics."
+          "note": "Median 60-minute price at ten day spas, against 25 massage and remedial clinics.",
+          "group": "lead"
         },
         {
           "label": "Cheapest north of the river",
@@ -640,7 +836,8 @@
             "Pure Health and Wellness Clinic": "pure-health-wellness-clinic",
             "Perth Thai Massage": "perth-thai-massage-bedford",
             "Holiday Massage & Spa": "holiday-massage-spa-joondalup"
-          }
+          },
+          "group": "fit"
         },
         {
           "label": "Cheapest south of the river",
@@ -649,7 +846,8 @@
           "links": {
             "BodyFix Clinic": "bodyfix-clinic-mandurah",
             "MyoFix Massage Therapy": "myofix-massage-cannington"
-          }
+          },
+          "group": "fit"
         },
         {
           "label": "Couples massage",
@@ -657,19 +855,30 @@
           "note": "Bali Spirit Day Spa, Ellenbrook, for 60 minutes. Eight businesses publish one; most are $220–$390.",
           "links": {
             "Bali Spirit Day Spa": "bali-spirit-day-spa-ellenbrook"
-          }
+          },
+          "group": "fit"
         },
         {
           "label": "Claim on the spot",
           "value": "11 of 67",
-          "note": "Say you can claim a health fund rebate at the clinic; more mention rebates in general."
+          "note": "Say you can claim a health fund rebate at the clinic; more mention rebates in general.",
+          "group": "detail"
         },
         {
           "label": "Open on Sundays",
           "value": "16 of 67",
-          "note": "Say they open Sundays; most of the rest don't publish Sunday hours."
+          "note": "Say they open Sundays; most of the rest don't publish Sunday hours.",
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "Each business's cheapest standard 60- and 90-minute body massage for one person.",
+        "'From' prices for longer services and massage-plus-facial bundles are left out.",
+        "Typical means the median.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 67
     },
     "cat:yoga": {
       "city": "perth",
@@ -680,7 +889,8 @@
         {
           "label": "Typical casual class",
           "value": "$29",
-          "note": "Median drop-in price at the 27 studios publishing one. Range $22–$39."
+          "note": "Median drop-in price at the 27 studios publishing one. Range $22–$39.",
+          "group": "lead"
         },
         {
           "label": "Cheapest casual class",
@@ -689,17 +899,20 @@
           "links": {
             "WildFlower Yoga Collective": "wildflower-yoga-collective",
             "Restful Waters": "restful-waters-bedfordale"
-          }
+          },
+          "group": "lead"
         },
         {
           "label": "Typical intro offer",
           "value": "$69",
-          "note": "Median of 19 new-student offers, most often two weeks unlimited. Range $39–$99."
+          "note": "Median of 19 new-student offers, most often two weeks unlimited. Range $39–$99.",
+          "group": "lead"
         },
         {
           "label": "Class packs",
           "value": "About $21.50 a class",
-          "note": "Median of the cheapest pack at 26 studios. Range $17–$30 a class."
+          "note": "Median of the cheapest pack at 26 studios. Range $17–$30 a class.",
+          "group": "detail"
         },
         {
           "label": "Unlimited classes",
@@ -707,24 +920,36 @@
           "note": "Median of 22 unlimited memberships. From $28.75 a week at The Yoga Garage, Scarborough, paid as a year upfront.",
           "links": {
             "The Yoga Garage": "the-yoga-garage"
-          }
+          },
+          "group": "detail"
         },
         {
           "label": "Heated classes",
           "value": "6 studios",
-          "note": "Run hot yoga; two more run warm rooms."
+          "note": "Run hot yoga; two more run warm rooms.",
+          "group": "detail"
         },
         {
           "label": "Free or by donation",
           "value": "6 studios",
-          "note": "Run community classes that are free or by donation."
+          "note": "Run community classes that are free or by donation.",
+          "group": "detail"
         },
         {
           "label": "Sunday classes",
           "value": "16 of 46",
-          "note": "Timetables show a Sunday yoga class; many booking widgets don't show one without an account."
+          "note": "Timetables show a Sunday yoga class; many booking widgets don't show one without an account.",
+          "group": "detail"
         }
-      ]
+      ],
+      "method": [
+        "Casual is a standard adult drop-in class.",
+        "Out-of-date and holiday-only rates are left out.",
+        "Sunday classes count only where the timetable shows a yoga class.",
+        "Where a venue doesn't say something (hours, showers, privacy), it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 46
     }
   }
 }

@@ -887,3 +887,16 @@
   select(start ? start.tab : tabs[0], { hash: false });
   if (start && start.el !== start.panel) start.el.scrollIntoView();
 })();
+
+/* "How we worked this out" opens the method disclosure it points at. */
+document.addEventListener("click", function (e) {
+  var a = e.target.closest && e.target.closest("a[data-xc-details]");
+  if (!a) return;
+  var d = document.getElementById(a.getAttribute("href").slice(1));
+  if (!d || d.tagName !== "DETAILS") return;
+  e.preventDefault();
+  d.open = true;
+  d.scrollIntoView({ block: "start", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  var s = d.querySelector("summary");
+  if (s) s.focus({ preventScroll: true });
+});

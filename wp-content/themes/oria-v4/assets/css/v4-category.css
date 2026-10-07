@@ -1552,3 +1552,131 @@ html.xc-locked { overflow: hidden; }
 .xc-hz2__facts { margin-top: .5rem; }
 .xc-secnav.xc-tabs { padding-top: clamp(1rem, 1.8vw, 1.5rem); }
 @media (max-width: 59.99rem) { .xc-hz2__grid { min-height: 0; } }
+
+/* =========================================================================
+   The Oria insight (October 2026 redesign): an editorial snapshot.
+   DESIGN/October 2026/oria-haven-insights-section-redesign-claude.md
+   ========================================================================= */
+.xc-ins {
+  --ins-ink: #183d35;
+  --ins-muted: #56645e;
+  --ins-surface: #ffffff;
+  --ins-sage: #e8eee4;
+  --ins-border: #d7ded4;
+  --ins-accent: #a77c3a;
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  border: 1px solid var(--ins-border);
+  border-radius: 22px;
+  background: var(--paper);
+  color: var(--ins-ink);
+}
+.xc-ins a { color: var(--ins-ink); text-underline-offset: 3px; }
+.xc-ins a:focus-visible, .xc-ins summary:focus-visible { outline: 3px solid var(--ins-accent); outline-offset: 3px; border-radius: 4px; }
+
+/* 1. Heading */
+.xc-ins__head { display: grid; gap: .6rem; }
+.xc-ins__eyebrow {
+  display: flex; align-items: center; gap: .5rem; margin: 0;
+  font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--moss);
+}
+.xc-ins__eyebrow svg { color: var(--ins-accent); }
+.xc-ins__title {
+  margin: 0; max-width: 24ch;
+  font-family: var(--font-edit); font-weight: 500;
+  font-size: clamp(1.7rem, 3vw, 2.5rem); line-height: 1.12; letter-spacing: -0.02em;
+  color: var(--ins-ink); text-wrap: balance;
+}
+.xc-ins__lede { margin: 0; max-width: 70ch; font-size: 1.0625rem; line-height: 1.55; color: var(--ins-muted); }
+.xc-ins__meta { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem 1rem; margin: .1rem 0 0; font-size: .9rem; color: var(--ins-muted); }
+.xc-ins__meta > span + span::before { content: "·"; margin-right: 1rem; }
+.xc-ins__how { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+
+/* 2. Price cards */
+.xc-ins__lead { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr)); }
+@media (min-width: 60rem) { .xc-ins__lead { grid-template-columns: repeat(var(--xc-ins-n, 3), minmax(0, 1fr)); } }
+.xc-ins__card {
+  display: flex; flex-direction: column; margin: 0;
+  padding: clamp(1.25rem, 2.2vw, 1.75rem);
+  border: 1px solid var(--ins-border); border-radius: 18px; background: var(--ins-surface);
+}
+.xc-ins__card.is-tint { background: var(--ins-sage); border-color: color-mix(in srgb, var(--ins-border) 70%, var(--ins-ink)); }
+.xc-ins__card dd { margin: 0; }
+.xc-ins__label { font-size: .95rem; font-weight: 600; color: var(--ins-muted); }
+.xc-ins__price {
+  margin-top: .5rem !important;
+  font-family: var(--font-edit); font-weight: 500;
+  font-size: clamp(2.3rem, 4vw, 3.4rem); line-height: 1; letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums; color: var(--ins-ink);
+}
+.xc-ins__unit { margin-top: .4rem !important; font-size: 1rem; color: var(--ins-ink); }
+.xc-ins__foot { display: grid; gap: .35rem; margin-top: auto !important; padding-top: 1.1rem; border-top: 1px solid var(--ins-border); }
+.xc-ins__card .xc-ins__unit + .xc-ins__foot, .xc-ins__card .xc-ins__price + .xc-ins__foot { margin-top: 1.1rem !important; }
+.xc-ins__evidence { font-size: .9rem; font-weight: 600; color: var(--ins-ink); }
+.xc-ins__detail { font-size: .9rem; line-height: 1.45; color: var(--ins-muted); }
+
+/* Sub-headings for the groups below */
+.xc-ins__h3 { margin: 0 0 1rem; font-family: var(--font-edit); font-weight: 500; font-size: clamp(1.3rem, 2vw, 1.6rem); color: var(--ins-ink); }
+
+/* 3. Find a session that fits */
+.xc-ins__rows { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--ins-border); }
+.xc-ins__row {
+  display: grid; gap: .3rem 1.5rem; align-items: baseline;
+  padding: 1rem 0; border-bottom: 1px solid var(--ins-border);
+}
+.xc-ins__need { font-weight: 600; }
+.xc-ins__rowprice b { font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.xc-ins__rowprice span { color: var(--ins-muted); font-size: .9rem; }
+.xc-ins__venue { color: var(--ins-muted); font-size: .95rem; }
+.xc-ins__act a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; white-space: nowrap; }
+.xc-ins__other { grid-column: 1 / -1; font-size: .9rem; color: var(--ins-muted); }
+.xc-ins__other summary { display: inline-flex; align-items: center; min-height: 36px; cursor: pointer; font-weight: 600; color: var(--ins-ink); }
+.xc-ins__other p { margin: .25rem 0 .25rem; }
+@media (min-width: 48rem) {
+  .xc-ins__row { grid-template-columns: minmax(9rem, 1.1fr) minmax(8rem, 1fr) minmax(12rem, 1.6fr) auto; }
+}
+
+/* 4. A few details worth knowing */
+.xc-ins__knowgrid { display: grid; gap: 2rem 3rem; }
+@media (min-width: 60rem) { .xc-ins__knowgrid:not(.is-single) { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); } }
+.xc-ins__keyfacts { display: grid; gap: 1.6rem; margin: 0; }
+.xc-ins__keyfact dt { font-size: .95rem; font-weight: 600; color: var(--ins-muted); }
+.xc-ins__keyfact dd { margin: 0; }
+.xc-ins__keyval { margin-top: .25rem !important; font-family: var(--font-edit); font-size: clamp(1.5rem, 2.4vw, 1.9rem); line-height: 1.15; color: var(--ins-ink); }
+.xc-ins__keynote { margin-top: .35rem !important; font-size: .95rem; line-height: 1.5; color: var(--ins-muted); }
+.xc-ins__strip { margin-top: .7rem !important; height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--ins-border) 70%, var(--paper)); overflow: hidden; }
+.xc-ins__strip span { display: block; height: 100%; background: var(--ins-ink); border-radius: 999px; }
+.xc-ins__striplab { display: flex; justify-content: space-between; gap: 1rem; margin-top: .35rem !important; font-size: .82rem; color: var(--ins-muted); }
+.xc-ins__check { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--ins-border); }
+.xc-ins__check li { display: grid; grid-template-columns: 20px 1fr; gap: .9rem; padding: 1rem 0; border-bottom: 1px solid var(--ins-border); }
+.xc-ins__icon { margin-top: .15rem; color: var(--moss); }
+.xc-ins__checkhead { margin: 0; display: flex; flex-wrap: wrap; gap: .15rem .5rem; align-items: baseline; }
+.xc-ins__checklabel { font-weight: 600; color: var(--ins-muted); font-size: .95rem; }
+.xc-ins__checkhead b { font-weight: 600; color: var(--ins-ink); }
+.xc-ins__checknote { margin: .3rem 0 0; font-size: .95rem; line-height: 1.5; color: var(--ins-muted); }
+
+/* 5. Sources and method */
+.xc-ins__method { border-top: 1px solid var(--ins-border); padding-top: .75rem; }
+.xc-ins__method summary { display: flex; align-items: center; gap: .5rem; min-height: 44px; cursor: pointer; font-weight: 600; color: var(--ins-ink); }
+.xc-ins__methodbody ul { margin: .5rem 0 0; padding-left: 1.1rem; display: grid; gap: .45rem; font-size: .95rem; line-height: 1.5; color: var(--ins-muted); max-width: 80ch; }
+
+/* 6. The way back */
+.xc-ins__cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--ins-border); }
+.xc-ins__cta p { margin: 0; font-family: var(--font-edit); font-size: 1.25rem; color: var(--ins-ink); }
+.xc-ins__go { min-height: 48px; background: var(--ins-ink); border-color: var(--ins-ink); color: #fff !important; gap: .5rem; }
+.xc-ins__go:hover { background: var(--ink); }
+
+/* Inside the Prices tab the panel already pads; keep one quiet surface. */
+.xc-prices { padding-block: 0 var(--s-6); }
+.xc-ins__evidence a, .xc-ins__detail a, .xc-ins__venue a, .xc-ins__keynote a, .xc-ins__checknote a, .xc-ins__other p a {
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--ins-ink) 45%, transparent);
+}
+.xc-ins summary { list-style: none; }
+.xc-ins summary::-webkit-details-marker { display: none; }
+.xc-ins summary::after {
+  content: "+"; display: inline-grid; place-items: center; width: 1.35rem; height: 1.35rem; margin-left: .45rem;
+  border: 1px solid var(--ins-border); border-radius: 999px; font-weight: 500; line-height: 1; color: var(--ins-ink);
+}
+.xc-ins details[open] > summary::after { content: "–"; }
+@media (max-width: 39.99rem) { .xc-ins__meta > span + span::before { content: none; } .xc-ins__meta { flex-direction: column; align-items: flex-start; gap: .15rem; } }
