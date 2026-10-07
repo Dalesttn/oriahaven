@@ -355,6 +355,50 @@
           }
         }
       ]
+    },
+    "cat:breathwork": {
+      "city": "perth",
+      "checked": "2026-10-07",
+      "basis": "prices published by 23 Perth breathwork providers on their own websites and the booking pages they link to",
+      "snapshot": "Typical group session $80",
+      "items": [
+        {
+          "label": "Typical group session",
+          "value": "$80",
+          "note": "Median of five group breathwork journeys with a clear published price, most running two to three hours. Range $75–$95."
+        },
+        {
+          "label": "Cheapest group session",
+          "value": "$75",
+          "note": "Asana Breathwork, Southern River, for three hours, with a $55 early-bird ticket.",
+          "links": {
+            "Asana Breathwork": "asana-breathwork"
+          }
+        },
+        {
+          "label": "Typical private session",
+          "value": "$180",
+          "note": "Median of eight one-to-one prices, usually 90 to 120 minutes. Range $155–$330."
+        },
+        {
+          "label": "Cheapest private session",
+          "value": "$155",
+          "note": "Energise Natural Health, Kallaroo, for 90 minutes.",
+          "links": {
+            "Energise Natural Health": "energise-natural-health"
+          }
+        },
+        {
+          "label": "Online sessions",
+          "value": "9 of 23",
+          "note": "Say on their own websites that they run breathwork sessions online as well as in person."
+        },
+        {
+          "label": "Sunday sessions",
+          "value": "6 of 23",
+          "note": "Say they run sessions on Sundays; most of the rest don't say."
+        }
+      ]
     }
   }
 }
