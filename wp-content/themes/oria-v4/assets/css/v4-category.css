@@ -1544,3 +1544,11 @@ html.xc-locked { overflow: hidden; }
       rgb(245 244 240 / 70%) 100%);
   }
 }
+
+/* Hero: tighter (2026-10-08) -- less padding, lower minimum height. */
+.xc-hz2 { padding-block: clamp(1.25rem, 2.5vw, 2rem); }
+.xc-hz2__grid { min-height: clamp(340px, 32vw, 430px); }
+.xc-hz2__copy { gap: .6rem; }
+.xc-hz2__facts { margin-top: .5rem; }
+.xc-secnav.xc-tabs { padding-top: clamp(1rem, 1.8vw, 1.5rem); }
+@media (max-width: 59.99rem) { .xc-hz2__grid { min-height: 0; } }
