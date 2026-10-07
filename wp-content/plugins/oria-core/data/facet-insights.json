@@ -507,6 +507,61 @@
           }
         }
       ]
+    },
+    "remedial-massage": {
+      "city": "perth",
+      "checked": "2026-10-07",
+      "basis": "prices published by 34 Perth remedial massage clinics on their own websites and booking pages",
+      "snapshot": "Typical 60-min remedial $120",
+      "items": [
+        {
+          "label": "Typical 60-minute remedial",
+          "value": "$120",
+          "note": "Median of the 22 clinics publishing a 60-minute price. Range $99–$200."
+        },
+        {
+          "label": "Typical 90-minute remedial",
+          "value": "$170",
+          "note": "Median of 18 clinics. Range $149–$225."
+        },
+        {
+          "label": "Cheapest north of the river",
+          "value": "$99",
+          "note": "Pure Health and Wellness Clinic, Bassendean, for 60 minutes. Next: Perth Thai Massage, Bedford, $100.",
+          "links": {
+            "Pure Health and Wellness Clinic": "pure-health-wellness-clinic",
+            "Perth Thai Massage": "perth-thai-massage-bedford"
+          }
+        },
+        {
+          "label": "Cheapest south of the river",
+          "value": "$110",
+          "note": "MyoFix Massage Therapy, Cannington, for 60 minutes.",
+          "links": {
+            "MyoFix Massage Therapy": "myofix-massage-cannington"
+          }
+        },
+        {
+          "label": "Claim on the spot",
+          "value": "10 of 34",
+          "note": "Say you can claim your health fund rebate at the clinic. Eleven more mention rebates; two say remedial massage is no longer covered."
+        },
+        {
+          "label": "Open on Sundays",
+          "value": "12 of 34",
+          "note": "Six say they're closed Sundays; the rest don't publish Sunday hours."
+        },
+        {
+          "label": "Comes to you",
+          "value": "3 clinics",
+          "note": "Ellenbrook Remedial Massage, Victoria Park Sports Massage & Acupuncture Clinic and Life Wellness Massage Therapy offer home visits.",
+          "links": {
+            "Ellenbrook Remedial Massage": "ellenbrook-remedial-massage",
+            "Victoria Park Sports Massage & Acupuncture Clinic": "victoria-park-sports-massage-acupuncture",
+            "Life Wellness Massage Therapy": "life-wellness-massage-subiaco"
+          }
+        }
+      ]
     }
   }
 }
