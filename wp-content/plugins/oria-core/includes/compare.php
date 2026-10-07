@@ -707,14 +707,26 @@ function experience_url( array $e ): string {
 	if ( isset( $pinned[ $key ] ) ) {
 		return home_url( $pinned[ $key ] );
 	}
-	if ( isset( $archive[ $key ] ) ) {
-		return home_url( (string) $archive[ $key ] );
-	}
 	$alt = (string) preg_replace( '~^/practice/~', '/practices/', $key );
-	if ( isset( $archive[ $alt ] ) ) {
-		return home_url( (string) $archive[ $alt ] );
+	foreach ( array( $key, $alt ) as $k ) {
+		if ( isset( $archive[ $k ] ) ) {
+			return home_url( canonical_path( (string) $archive[ $k ] ) );
+		}
 	}
 	return home_url( $key );
+}
+
+/**
+ * The archive's address, or the canonical copy when that address is a
+ * duplicate facet. The archive maps /practices/recovery/traditional-sauna/
+ * to the recovery copy, which names the spa copy as canonical and is
+ * noindex -- so every "Explore" link on the sauna comparison pointed at a
+ * page asking Google to drop it. Same rule the redirects apply.
+ */
+function canonical_path( string $path ): string {
+	return function_exists( '\Oria\Core\Redirects\canonical_target' )
+		? \Oria\Core\Redirects\canonical_target( $path )
+		: $path;
 }
 
 /** A 1-5 score in words, so a scale never depends on the dots alone. */

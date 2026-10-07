@@ -11,7 +11,10 @@
       { "category": "spa", "facet": "saunas", "label": "Saunas in Perth — traditional and infrared" },
       { "category": "spa", "facet": "traditional-sauna", "label": "Traditional saunas in Perth" },
       { "category": "spa", "facet": "infrared-sauna", "label": "Infrared saunas in Perth" },
-      { "category": "spa", "facet": "contrast-therapy", "label": "Ice bath & sauna together" }
+      { "category": "spa", "facet": "contrast-therapy", "label": "Ice bath & sauna together" },
+      { "path": "/compare/infrared-vs-traditional-sauna/", "label": "Infrared vs traditional sauna, compared" },
+      { "path": "/journal/what-an-infrared-sauna-is-like/", "label": "What an infrared sauna is actually like" },
+      { "path": "/journal/sauna-ice-bath-or-float/", "label": "Sauna, ice bath or float: which to book first" }
     ],
     "ice-baths-perth": [
       { "category": "spa", "facet": "cold-plunge", "label": "Ice baths & cold plunges in Perth" },

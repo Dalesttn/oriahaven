@@ -226,6 +226,32 @@ function phrase( ?array $facet ): string {
 }
 
 /**
+ * A link entry that names a page by path rather than by facet:
+ * {"path": "/compare/infrared-vs-traditional-sauna/", "label": "..."}.
+ *
+ * A topic is more than its facet pages -- the comparison, the journal
+ * pieces and the Best Of guide belong in the same web of links, and the
+ * facet-only shape could not reach them. On-site paths only; anything else
+ * is ignored rather than linked.
+ *
+ * @param array<string, mixed> $s
+ * @return array{url: string, label: string}|null
+ */
+function page_link( array $s ): ?array {
+	$path = (string) ( $s['path'] ?? '' );
+	if ( '' === $path || empty( $s['label'] ) ) {
+		return null;
+	}
+	if ( ! preg_match( '#^/[a-z0-9/_-]*$#', $path ) ) {
+		return null;
+	}
+	return array(
+		'url'   => home_url( trailingslashit( $path ) ),
+		'label' => (string) $s['label'],
+	);
+}
+
+/**
  * Hand-picked neighbours, each a facet slug in a category, as links.
  *
  * @return list<array{url: string, label: string, line: string}>
@@ -236,6 +262,11 @@ function see_also( ?array $facet, ?array $city = null ): array {
 	}
 	$out = array();
 	foreach ( (array) ( entry( $facet )['see_also'] ?? array() ) as $s ) {
+		$page = page_link( $s );
+		if ( null !== $page ) {
+			$out[] = $page + array( 'line' => (string) ( $s['line'] ?? '' ) );
+			continue;
+		}
 		$cat = get_term_by( 'slug', (string) ( $s['category'] ?? '' ), 'practice' );
 		if ( ! $cat instanceof \WP_Term || empty( $s['facet'] ) || empty( $s['label'] ) ) {
 			continue;
@@ -272,6 +303,11 @@ function best_of_links( string $guide ): array {
 	}
 	$out = array();
 	foreach ( (array) ( $data[ $guide ] ?? array() ) as $l ) {
+		$page = page_link( $l );
+		if ( null !== $page ) {
+			$out[] = $page;
+			continue;
+		}
 		$cat = get_term_by( 'slug', (string) ( $l['category'] ?? '' ), 'practice' );
 		if ( $cat instanceof \WP_Term && ! empty( $l['facet'] ) && ! empty( $l['label'] ) ) {
 			$out[] = array(

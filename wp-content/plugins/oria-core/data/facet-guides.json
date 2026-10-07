@@ -101,6 +101,17 @@
       "phrase": "Traditional Saunas",
       "see_also": [
         {
+          "path": "/compare/infrared-vs-traditional-sauna/",
+          "label": "Infrared vs traditional sauna",
+          "line": "Heat, session length, privacy and price side by side"
+        },
+        {
+          "category": "spa",
+          "facet": "saunas",
+          "label": "All saunas in Perth",
+          "line": "Traditional and infrared together"
+        },
+        {
           "category": "spa",
           "facet": "infrared-sauna",
           "label": "Infrared saunas",
@@ -149,6 +160,22 @@
         }
       ],
       "see_also": [
+        {
+          "path": "/compare/infrared-vs-traditional-sauna/",
+          "label": "Infrared vs traditional sauna",
+          "line": "Heat, session length, privacy and price side by side"
+        },
+        {
+          "category": "spa",
+          "facet": "saunas",
+          "label": "All saunas in Perth",
+          "line": "Traditional and infrared together"
+        },
+        {
+          "path": "/journal/what-an-infrared-sauna-is-like/",
+          "label": "What an infrared sauna is actually like",
+          "line": "A first session, start to finish"
+        },
         {
           "category": "spa",
           "facet": "traditional-sauna",
@@ -220,6 +247,11 @@
           "facet": "infrared-sauna",
           "label": "Infrared saunas",
           "line": "Lower air temperature, longer sessions"
+        },
+        {
+          "path": "/compare/infrared-vs-traditional-sauna/",
+          "label": "Infrared vs traditional sauna",
+          "line": "Heat, session length, privacy and price side by side"
         },
         {
           "category": "spa",
