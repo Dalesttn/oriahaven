@@ -610,6 +610,66 @@
           "note": "The other seven quote on enquiry or only sell through a booking app."
         }
       ]
+    },
+    "cat:bodywork": {
+      "city": "perth",
+      "checked": "2026-10-07",
+      "basis": "prices published by 67 Perth massage and bodywork businesses on their own websites and booking pages",
+      "snapshot": "Typical 60-min massage $120",
+      "items": [
+        {
+          "label": "Typical 60-minute massage",
+          "value": "$120",
+          "note": "Median of the 39 businesses publishing a 60-minute body massage price. Range $95–$195."
+        },
+        {
+          "label": "Typical 90-minute massage",
+          "value": "$178",
+          "note": "Median of 33 businesses. Range $120–$275."
+        },
+        {
+          "label": "Day spa or clinic",
+          "value": "$167 vs $120",
+          "note": "Median 60-minute price at ten day spas, against 25 massage and remedial clinics."
+        },
+        {
+          "label": "Cheapest north of the river",
+          "value": "$99",
+          "note": "Pure Health and Wellness Clinic, Bassendean. Then $100 at Perth Thai Massage, Bedford, and Holiday Massage & Spa, Joondalup.",
+          "links": {
+            "Pure Health and Wellness Clinic": "pure-health-wellness-clinic",
+            "Perth Thai Massage": "perth-thai-massage-bedford",
+            "Holiday Massage & Spa": "holiday-massage-spa-joondalup"
+          }
+        },
+        {
+          "label": "Cheapest south of the river",
+          "value": "$95",
+          "note": "BodyFix Clinic, Mandurah, for 60 minutes. Closer in: MyoFix Massage Therapy, Cannington, $110.",
+          "links": {
+            "BodyFix Clinic": "bodyfix-clinic-mandurah",
+            "MyoFix Massage Therapy": "myofix-massage-cannington"
+          }
+        },
+        {
+          "label": "Couples massage",
+          "value": "From $210",
+          "note": "Bali Spirit Day Spa, Ellenbrook, for 60 minutes. Eight businesses publish one; most are $220–$390.",
+          "links": {
+            "Bali Spirit Day Spa": "bali-spirit-day-spa-ellenbrook"
+          }
+        },
+        {
+          "label": "Claim on the spot",
+          "value": "11 of 67",
+          "note": "Say you can claim a health fund rebate at the clinic; more mention rebates in general."
+        },
+        {
+          "label": "Open on Sundays",
+          "value": "16 of 67",
+          "note": "Say they open Sundays; most of the rest don't publish Sunday hours."
+        }
+      ]
     }
   }
 }
