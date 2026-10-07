@@ -562,6 +562,54 @@
           }
         }
       ]
+    },
+    "sound-healing": {
+      "city": "perth",
+      "checked": "2026-10-07",
+      "basis": "prices published by 15 Perth sound healing venues on their own websites and booking pages",
+      "snapshot": "Group sound bath $45–$50",
+      "items": [
+        {
+          "label": "Typical group sound bath",
+          "value": "$45–$50",
+          "note": "Across the five venues publishing a price for a dedicated sound session. Range $35–$59."
+        },
+        {
+          "label": "Cheapest",
+          "value": "$35",
+          "note": "Loop Yoga, North Fremantle: an hour of sound and yoga nidra, fortnightly on Sunday afternoons.",
+          "links": {
+            "Loop Yoga": "loop-yoga-north-fremantle"
+          }
+        },
+        {
+          "label": "Longer sessions",
+          "value": "90 minutes",
+          "note": "Restful Waters, Bedfordale, $59, and Lionheart Yoga & Sound Healing, Bicton, $39–$49.",
+          "links": {
+            "Restful Waters": "restful-waters-bedfordale",
+            "Lionheart Yoga & Sound Healing": "lionheart-womens-circle"
+          }
+        },
+        {
+          "label": "Private session",
+          "value": "$120–$250",
+          "note": "Four venues publish one; median $140. Longer sessions cost more: $250 is for two hours at Treemendus Health.",
+          "links": {
+            "Treemendus Health": "treemendus-health"
+          }
+        },
+        {
+          "label": "Sunday sessions",
+          "value": "6 of 15",
+          "note": "Say they run sound sessions on Sundays; most of the rest don't say."
+        },
+        {
+          "label": "Prices published",
+          "value": "8 of 15",
+          "note": "The other seven quote on enquiry or only sell through a booking app."
+        }
+      ]
     }
   }
 }
