@@ -232,6 +232,44 @@
 					"recurrence"
 				]
 			}
+		},
+		{
+			"key": "creative-therapy",
+			"slug": "creative",
+			"name": "Creative Therapies",
+			"taxonomy": "practice",
+			"reuse_term_id": 223,
+			"kind": "practice",
+			"feelings": [
+				"reset",
+				"relax",
+				"connect"
+			],
+			"intro": "Find creative arts therapists around Perth: art, music, dance-movement and drama therapy, with who each practitioner works with and how sessions are booked.",
+			"tags": [
+				{
+					"slug": "art-therapy",
+					"name": "Art therapy"
+				},
+				{
+					"slug": "music-therapy",
+					"name": "Music therapy"
+				},
+				{
+					"slug": "dance-movement",
+					"name": "Dance & movement"
+				},
+				{
+					"slug": "drama-therapy",
+					"name": "Drama therapy"
+				}
+			],
+			"details": [
+				"Modality",
+				"Who it's for",
+				"Session format",
+				"Registration"
+			]
 		}
 	]
 }

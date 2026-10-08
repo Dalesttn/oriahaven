@@ -1,0 +1,2892 @@
+{
+  "batch": "2026-10-08-creative-therapies",
+  "_note": "Creative arts therapists in and around Perth. One record per practice. status: candidate = import as a draft once verified; manual = real and relevant but needs an editor; rejected = out of scope, with reason. Evidence is from each practice's own website. Blurbs are our own summaries. Unknown stays unknown. Personal phone numbers and emails were not collected.",
+  "candidates": [
+    {
+      "key": "trulybe-glen-forrest",
+      "category": "creative-therapy",
+      "status": "candidate",
+      "reason": "",
+      "name": "Trulybe",
+      "kind": "practice",
+      "website": "https://trulybe.au/",
+      "source_urls": [
+        "https://trulybe.au/creative-art-therapy",
+        "https://trulybe.au/contact",
+        "https://trulybe.au/ethos"
+      ],
+      "suburb": "Glen Forrest",
+      "region": "hills",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "Kim Holland runs creative arts and play therapy from a private bush studio in Glen Forrest in the Perth Hills, working with children, teens and adults through painting, clay, drawing, sand tray and movement. Sessions are one-to-one and booked in advance.",
+      "join": {
+        "method": "enquiry",
+        "url": "https://trulybe.au/contact"
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "art-therapy"
+      ],
+      "details": [
+        {
+          "label": "Modality",
+          "value": "Creative arts therapy: art-making, clay, sand tray, play and movement"
+        },
+        {
+          "label": "Who it's for",
+          "value": "Children, teens and adults"
+        },
+        {
+          "label": "Session format",
+          "value": "One-to-one at the Glen Forrest studio; online sessions also offered"
+        }
+      ],
+      "flags": [
+        "Practitioner also offers energy therapy and craniosacral work; creative arts therapy is one of several services.",
+        "Qualification stated on /ethos is a Postgraduate Diploma in Counselling and Creative Arts Therapy (Murdoch University); no ANZACATA registration is stated.",
+        "Exact Glen Forrest address is only given on booking. Site copy uses outcome language; blurb avoids it."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://trulybe.au/creative-art-therapy",
+          "excerpt": "Discover Creative Arts & Play Therapy in Perth Hills with Trulybe."
+        },
+        {
+          "field": "activity",
+          "url": "https://trulybe.au/creative-art-therapy",
+          "excerpt": "Kim Holland offers professional creative arts therapy and play therapy in Perth's Glen Forrest studio."
+        },
+        {
+          "field": "location",
+          "url": "https://trulybe.au/creative-art-therapy",
+          "excerpt": "I offer Creative Arts and Play Therapy from my workspace located in Glen Forrest in the Perth Hills"
+        },
+        {
+          "field": "tag:art-therapy",
+          "url": "https://trulybe.au/creative-art-therapy",
+          "excerpt": "Specialising in art therapy for children, adolescents, and adults"
+        },
+        {
+          "field": "detail:Modality",
+          "url": "https://trulybe.au/creative-art-therapy",
+          "excerpt": "I offer art-making, crafts, play therapy, sand tray therapy and movement therapy."
+        },
+        {
+          "field": "detail:Who it's for",
+          "url": "https://trulybe.au/creative-art-therapy",
+          "excerpt": "Specialising in art therapy for children, adolescents, and adults"
+        },
+        {
+          "field": "detail:Session format",
+          "url": "https://trulybe.au/creative-art-therapy",
+          "excerpt": "You can book an in-person or online session."
+        },
+        {
+          "field": "join",
+          "url": "https://trulybe.au/contact",
+          "excerpt": "If you still have questions after visiting my website feel free to reach out, give me a call or send an email."
+        }
+      ]
+    },
+    {
+      "key": "honeywood-music-leeming",
+      "category": "creative-therapy",
+      "status": "candidate",
+      "reason": "",
+      "name": "Honeywood Music",
+      "kind": "practice",
+      "website": "https://honeywoodmusic.com.au/",
+      "source_urls": [
+        "https://honeywoodmusic.com.au/",
+        "https://honeywoodmusic.com.au/music-therapy/",
+        "https://honeywoodmusic.com.au/fees-access/",
+        "https://honeywoodmusic.com.au/contact/"
+      ],
+      "suburb": "Leeming",
+      "region": "",
+      "meeting_point": "",
+      "address": "2/96 Farrington Road, Leeming WA 6149",
+      "meeting_varies": false,
+      "blurb": "A music therapy practice in Leeming led by a Registered Music Therapist, working with neurodivergent children and adults and people living with mental ill-health. Individual and group sessions run in the Leeming music space, at home or school, or by telehealth.",
+      "join": {
+        "method": "booking",
+        "url": "https://honeywoodmusic.com.au/contact/"
+      },
+      "cost": "paid",
+      "price_note": "Ongoing music therapy: 45-minute session $117.12, 60-minute session $156.16 (incl. GST); same fees for self-funded and NDIS clients; travel charged extra for visits.",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "music-therapy"
+      ],
+      "details": [
+        {
+          "label": "Registration",
+          "value": "Registered Music Therapist (AMTA member)"
+        },
+        {
+          "label": "Who it's for",
+          "value": "Neurodivergent people and people living with mental ill-health, all ages"
+        },
+        {
+          "label": "Session format",
+          "value": "Leeming music space, home or school visits, or telehealth"
+        }
+      ],
+      "flags": [
+        "Music therapy page also mentions a 'Wandi studio space' while the address everywhere else is Leeming; confirm the current venue.",
+        "Prices are not whole dollars so price_from left at 0."
+      ],
+      "contact": {
+        "email": "hello@honeywoodmusic.com.au",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://honeywoodmusic.com.au/",
+          "excerpt": "Honeywood Music - Perth Music Therapy and Group Programs"
+        },
+        {
+          "field": "activity",
+          "url": "https://honeywoodmusic.com.au/",
+          "excerpt": "since then our community has evolved into delivering music therapy services."
+        },
+        {
+          "field": "location",
+          "url": "https://honeywoodmusic.com.au/",
+          "excerpt": "2/96 Farrington Road, Leeming, WA 6149"
+        },
+        {
+          "field": "tag:music-therapy",
+          "url": "https://honeywoodmusic.com.au/",
+          "excerpt": "am an active member of the Australian Music Therapy Association (AMTA)."
+        },
+        {
+          "field": "detail:Registration",
+          "url": "https://honeywoodmusic.com.au/",
+          "excerpt": "Registered Music Therapist & Director"
+        },
+        {
+          "field": "detail:Who it's for",
+          "url": "https://honeywoodmusic.com.au/",
+          "excerpt": "Collaborative musicking to support neurodivergent individuals and those living with mental ill-health."
+        },
+        {
+          "field": "detail:Session format",
+          "url": "https://honeywoodmusic.com.au/music-therapy/",
+          "excerpt": "Services delivered where you're most comfortable At our music space in Leeming In your preferred environment Telehealth video therapy"
+        },
+        {
+          "field": "cost",
+          "url": "https://honeywoodmusic.com.au/fees-access/",
+          "excerpt": "The same fees apply regardless of funding source (self-funded, NDIS funded, or organisation funded)."
+        },
+        {
+          "field": "price",
+          "url": "https://honeywoodmusic.com.au/fees-access/",
+          "excerpt": "Ongoing Music Therapy 45 minute session$117.12 Ongoing Music Therapy 60 minute session$156.16"
+        },
+        {
+          "field": "join",
+          "url": "https://honeywoodmusic.com.au/",
+          "excerpt": "Book an Introduction Call to find out which program is right for you."
+        }
+      ]
+    },
+    {
+      "key": "attuned-health-perth",
+      "category": "creative-therapy",
+      "status": "candidate",
+      "reason": "",
+      "name": "Attuned Health",
+      "kind": "practice",
+      "website": "https://www.attunedhealth.com.au/",
+      "source_urls": [
+        "https://www.attunedhealth.com.au/",
+        "https://www.attunedhealth.com.au/music-therapy-perth-individuals"
+      ],
+      "suburb": "",
+      "region": "freo",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": true,
+      "blurb": "A team of Registered Music Therapists who travel to clients' homes across the Perth metro area, from Mandurah to Clarkson and Cottesloe to Midland. They work with children, teens, adults and older adults, including people living with disability or dementia, in 45- or 60-minute sessions.",
+      "join": {
+        "method": "enquiry",
+        "url": "https://www.attunedhealth.com.au/music-therapy-perth-individuals"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "music-therapy"
+      ],
+      "details": [
+        {
+          "label": "Registration",
+          "value": "Registered Music Therapists"
+        },
+        {
+          "label": "Who it's for",
+          "value": "Children, teens, adults and older adults, including people living with disability or dementia"
+        },
+        {
+          "label": "Session format",
+          "value": "In-home sessions of 45 or 60 minutes, weekly or fortnightly"
+        }
+      ],
+      "flags": [
+        "Mobile service across the metro area; region set to freo only because the office is at 72a Elvira St, Palmyra.",
+        "No session price published; cost set to paid because self-funded clients are listed as a funding option."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.attunedhealth.com.au/",
+          "excerpt": "At Attuned Health this is at the core of what we do."
+        },
+        {
+          "field": "activity",
+          "url": "https://www.attunedhealth.com.au/music-therapy-perth-individuals",
+          "excerpt": "Music therapy for individuals, delivered in your home across Perth."
+        },
+        {
+          "field": "tag:music-therapy",
+          "url": "https://www.attunedhealth.com.au/music-therapy-perth-individuals",
+          "excerpt": "Our Registered Music Therapists come to you from Mandurah to Clarkson & Cottesloe to Midland."
+        },
+        {
+          "field": "detail:Registration",
+          "url": "https://www.attunedhealth.com.au/music-therapy-perth-individuals",
+          "excerpt": "Our Registered Music Therapists come to you from Mandurah to Clarkson & Cottesloe to Midland."
+        },
+        {
+          "field": "detail:Who it's for",
+          "url": "https://www.attunedhealth.com.au/music-therapy-perth-individuals",
+          "excerpt": "We support children, teens, adults and older adults with disability, mental health conditions, dementia, Parkinson's and rehabilitation needs."
+        },
+        {
+          "field": "detail:Session format",
+          "url": "https://www.attunedhealth.com.au/music-therapy-perth-individuals",
+          "excerpt": "We offer 45 or 60 minute sessions delivered weekly or fortnightly to suit your needs."
+        },
+        {
+          "field": "cost",
+          "url": "https://www.attunedhealth.com.au/music-therapy-perth-individuals",
+          "excerpt": "Self-funded clients (privately funded music therapy for loved ones in residential aged care, or to support your overall wellbeing)"
+        },
+        {
+          "field": "join",
+          "url": "https://www.attunedhealth.com.au/music-therapy-perth-individuals",
+          "excerpt": "To discuss your needs and book an initial consultation with a Perth Registered Music Therapist, contact us today."
+        }
+      ]
+    },
+    {
+      "key": "mood-indigo-music-therapy",
+      "category": "creative-therapy",
+      "status": "candidate",
+      "reason": "",
+      "name": "Mood Indigo Music Therapy",
+      "kind": "practice",
+      "website": "https://moodindigomusictherapy.com/",
+      "source_urls": [
+        "https://moodindigomusictherapy.com/about",
+        "https://moodindigomusictherapy.com/",
+        "https://moodindigomusictherapy.com/services",
+        "https://moodindigomusictherapy.com/appointments"
+      ],
+      "suburb": "",
+      "region": "freo",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": true,
+      "blurb": "A Registered Music Therapist based in the City of Cockburn who visits clients at home, using live music, songwriting, improvising and music technology. Works one-to-one or with groups, with people of all ages.",
+      "join": {
+        "method": "booking",
+        "url": "https://moodindigomusictherapy.com/appointments"
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mobile appointments on Mondays, Wednesdays and Sundays",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "music-therapy"
+      ],
+      "details": [
+        {
+          "label": "Registration",
+          "value": "Registered Music Therapist (AMTA)"
+        },
+        {
+          "label": "Who it's for",
+          "value": "People of all ages, individually or in groups"
+        },
+        {
+          "label": "Session format",
+          "value": "Mobile sessions at your home; no clinic room yet"
+        }
+      ],
+      "flags": [
+        "Mobile only for now (site says a clinic space is planned). Postcode 6163 / City of Cockburn; region set to freo."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://moodindigomusictherapy.com/about",
+          "excerpt": "My name is Gabbi, and I'm the director of Mood Indigo Music Therapy."
+        },
+        {
+          "field": "activity",
+          "url": "https://moodindigomusictherapy.com/about",
+          "excerpt": "I am now a Registered Music Therapist (RMT) with the Australian Music Therapy Association (AMTA)."
+        },
+        {
+          "field": "tag:music-therapy",
+          "url": "https://moodindigomusictherapy.com/",
+          "excerpt": "made individually to each person's needs and goals by a Registered Music Therapist (RMT) who is registered with the Australian Music Therapy Association (AMTA)."
+        },
+        {
+          "field": "detail:Registration",
+          "url": "https://moodindigomusictherapy.com/about",
+          "excerpt": "I am now a Registered Music Therapist (RMT) with the Australian Music Therapy Association (AMTA)."
+        },
+        {
+          "field": "detail:Who it's for",
+          "url": "https://moodindigomusictherapy.com/",
+          "excerpt": "We are able to work in an individual or group capacity, depending on your needs."
+        },
+        {
+          "field": "detail:Session format",
+          "url": "https://moodindigomusictherapy.com/services",
+          "excerpt": "This is currently the only available option we have for private clients."
+        },
+        {
+          "field": "schedule",
+          "url": "https://moodindigomusictherapy.com/appointments",
+          "excerpt": "Current availability for mobile service appointments is Monday, Wednesday & Sunday."
+        },
+        {
+          "field": "join",
+          "url": "https://moodindigomusictherapy.com/appointments",
+          "excerpt": "Scroll down to book an appointment or send a message with any queries you have."
+        }
+      ]
+    },
+    {
+      "key": "the-make-it-well-fremantle",
+      "category": "creative-therapy",
+      "status": "candidate",
+      "reason": "",
+      "name": "The Make It Well",
+      "kind": "practice",
+      "website": "https://www.themakeitwell.com.au/",
+      "source_urls": [
+        "https://www.themakeitwell.com.au/about",
+        "https://www.themakeitwell.com.au/",
+        "https://www.themakeitwell.com.au/fees",
+        "https://www.themakeitwell.com.au/art-therapy",
+        "https://www.themakeitwell.com.au/contact"
+      ],
+      "suburb": "Fremantle",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "Jessica Wilkes offers art therapy alongside counselling from a quiet room in the Fremantle area, using paint, clay, drawing, writing, collage and movement. Sessions are one-to-one, with online sessions also available.",
+      "join": {
+        "method": "enquiry",
+        "url": "https://www.themakeitwell.com.au/contact"
+      },
+      "cost": "paid",
+      "price_note": "Art therapy: $180 per 60-minute session, $220 per 90 minutes; NDIS rates apply for NDIS clients; sliding scale on request.",
+      "price_from": 180,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "art-therapy"
+      ],
+      "details": [
+        {
+          "label": "Registration",
+          "value": "Registered Counsellor (ACA); practises as a Creative Arts Therapist"
+        },
+        {
+          "label": "Modality",
+          "value": "Art therapy with paint, clay, drawing, writing, collage and movement"
+        },
+        {
+          "label": "Session format",
+          "value": "In person in the Fremantle area, or online"
+        }
+      ],
+      "flags": [
+        "Contact email on site is a gmail address; not collected. No ANZACATA registration stated."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.themakeitwell.com.au/about",
+          "excerpt": "The Make It Well is an independent private practice directed by myself, Jessica Wilkes."
+        },
+        {
+          "field": "activity",
+          "url": "https://www.themakeitwell.com.au/",
+          "excerpt": "Creative Art Therapies invites safe exploration of conscious and unconscious material through supported facilitation."
+        },
+        {
+          "field": "location",
+          "url": "https://www.themakeitwell.com.au/fees",
+          "excerpt": "Situated in Walyalup, Fremantle, The Make It Well offers services from a"
+        },
+        {
+          "field": "tag:art-therapy",
+          "url": "https://www.themakeitwell.com.au/art-therapy",
+          "excerpt": "including paint, clay, drawing mediums, writing, collage and movement"
+        },
+        {
+          "field": "detail:Registration",
+          "url": "https://www.themakeitwell.com.au/about",
+          "excerpt": "I am a registered Counsellor (ACA), IFS Therapist, Creative Arts Therapist and Clinical Supervisor"
+        },
+        {
+          "field": "detail:Modality",
+          "url": "https://www.themakeitwell.com.au/art-therapy",
+          "excerpt": "including paint, clay, drawing mediums, writing, collage and movement"
+        },
+        {
+          "field": "detail:Session format",
+          "url": "https://www.themakeitwell.com.au/fees",
+          "excerpt": "Online sessions are conducted from private counselling rooms to ensure your safety and"
+        },
+        {
+          "field": "cost",
+          "url": "https://www.themakeitwell.com.au/fees",
+          "excerpt": "Art Therapy: $180 per 60minute session/ $220 per 90 min"
+        },
+        {
+          "field": "price",
+          "url": "https://www.themakeitwell.com.au/fees",
+          "excerpt": "Art Therapy: $180 per 60minute session/ $220 per 90 min"
+        },
+        {
+          "field": "join",
+          "url": "https://www.themakeitwell.com.au/contact",
+          "excerpt": "If you have any questions or would like to book a 15 min free welcome session please submit your details through the contact form."
+        }
+      ]
+    },
+    {
+      "key": "heart-song-creative-arts-therapy",
+      "category": "creative-therapy",
+      "status": "candidate",
+      "reason": "",
+      "name": "Heart Song Creative Arts Therapy and Counselling",
+      "kind": "practice",
+      "website": "https://www.heartsongtherapy.com.au/",
+      "source_urls": [
+        "https://www.heartsongtherapy.com.au/",
+        "https://www.heartsongtherapy.com.au/about",
+        "https://www.heartsongtherapy.com.au/faq",
+        "https://www.heartsongtherapy.com.au/contact"
+      ],
+      "suburb": "",
+      "region": "freo",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "Brodie, a creative arts therapist and counsellor in the Fremantle area, works with people of all ages and abilities using visual art, music, songwriting and play alongside talk. New clients start with a free discovery call.",
+      "join": {
+        "method": "enquiry",
+        "url": "https://www.heartsongtherapy.com.au/contact"
+      },
+      "cost": "paid",
+      "price_note": "Generally $150 per hour (NDIS set price); travel, longer sessions or specific materials may cost extra.",
+      "price_from": 150,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "art-therapy"
+      ],
+      "details": [
+        {
+          "label": "Registration",
+          "value": "ANZACATA and PACFA accredited"
+        },
+        {
+          "label": "Modality",
+          "value": "Multimodal creative arts therapy: visual art, music, play and talk"
+        },
+        {
+          "label": "Who it's for",
+          "value": "People of all ages and abilities"
+        }
+      ],
+      "flags": [
+        "Site only says 'City of Walyalup/Fremantle'; directories put the studio in Samson. Suburb left blank, region freo.",
+        "Uses music and songwriting within creative arts therapy but is not described as a Registered Music Therapist, so no music-therapy tag."
+      ],
+      "contact": {
+        "email": "hello@heartsongtherapy.com.au",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.heartsongtherapy.com.au/",
+          "excerpt": "My name is Brodie and I am the practitioner at Heart Song Creative Arts Therapy and Counselling."
+        },
+        {
+          "field": "activity",
+          "url": "https://www.heartsongtherapy.com.au/",
+          "excerpt": "I include all modalities in my work, including music, art, play and talk therapy approaches"
+        },
+        {
+          "field": "tag:art-therapy",
+          "url": "https://www.heartsongtherapy.com.au/about",
+          "excerpt": "I use a \"multimodal\" arts approach (which includes visual art, music and play therapy processes)"
+        },
+        {
+          "field": "detail:Registration",
+          "url": "https://www.heartsongtherapy.com.au/about",
+          "excerpt": "hold dual accreditation with ANZACATA and PACFA"
+        },
+        {
+          "field": "detail:Modality",
+          "url": "https://www.heartsongtherapy.com.au/about",
+          "excerpt": "I use a \"multimodal\" arts approach (which includes visual art, music and play therapy processes)"
+        },
+        {
+          "field": "detail:Who it's for",
+          "url": "https://www.heartsongtherapy.com.au/",
+          "excerpt": "have experience supporting people of all ages and abilities"
+        },
+        {
+          "field": "cost",
+          "url": "https://www.heartsongtherapy.com.au/faq",
+          "excerpt": "Creative Arts Therapy and Counselling sessions are generally charged at the NDIS set price of $150 for one hour."
+        },
+        {
+          "field": "price",
+          "url": "https://www.heartsongtherapy.com.au/faq",
+          "excerpt": "Creative Arts Therapy and Counselling sessions are generally charged at the NDIS set price of $150 for one hour."
+        },
+        {
+          "field": "join",
+          "url": "https://www.heartsongtherapy.com.au/contact",
+          "excerpt": "please fill out this contact form and Brodie will be in contact to organise a time for your free"
+        }
+      ]
+    },
+    {
+      "key": "paperbark-grove-collective",
+      "category": "creative-therapy",
+      "status": "candidate",
+      "reason": "",
+      "name": "Paperbark Grove Collective",
+      "kind": "practice",
+      "website": "https://www.michellematchamtherapy.com/",
+      "source_urls": [
+        "https://www.michellematchamtherapy.com/",
+        "https://www.michellematchamtherapy.com/general-1",
+        "https://www.michellematchamtherapy.com/about-5"
+      ],
+      "suburb": "Mount Lawley",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "Michelle Matcham, a mental health social worker and art therapist, offers art therapy alongside counselling, with a focus on pre-teens, teens and young adults. Sessions are in person in Mount Lawley on Tuesdays or by telehealth, and may use drawing, painting, collage, clay or sand tray.",
+      "join": {
+        "method": "enquiry",
+        "url": "https://www.michellematchamtherapy.com/"
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "In person on Tuesdays in Mount Lawley; telehealth on other days",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "art-therapy"
+      ],
+      "details": [
+        {
+          "label": "Modality",
+          "value": "Art therapy with drawing, painting, collage, clay, movement and sand tray"
+        },
+        {
+          "label": "Who it's for",
+          "value": "Pre-teens, teens and young adults, and adults"
+        },
+        {
+          "label": "Session format",
+          "value": "In person in Mount Lawley (Tuesdays) or telehealth"
+        }
+      ],
+      "flags": [
+        "Website domain is michellematchamtherapy.com but the practice now trades as Paperbark Grove Collective.",
+        "Art therapy qualification is an Advanced Diploma of Art Therapy (Vancouver Art Therapy Institute); registration stated is AMHSW, not ANZACATA.",
+        "Fees and contact pages linked from the site returned 404.",
+        "Wix host returned HTTP 429 when re-fetched in quick succession; space out verify requests."
+      ],
+      "contact": {
+        "email": "hello@paperbarkgrovecollective.com",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.michellematchamtherapy.com/",
+          "excerpt": "Paperbark Grove Collective: psychotherapy, trauma therapy, EMDR, art therapy and Clinical Supervision"
+        },
+        {
+          "field": "activity",
+          "url": "https://www.michellematchamtherapy.com/general-1",
+          "excerpt": "Art therapy uses creativity as part of therapy, guided by a trained art therapist."
+        },
+        {
+          "field": "location",
+          "url": "https://www.michellematchamtherapy.com/",
+          "excerpt": "Currently available for in person sessions on Tuesdays in Mt Lawley and telehealth Australia wide."
+        },
+        {
+          "field": "schedule",
+          "url": "https://www.michellematchamtherapy.com/",
+          "excerpt": "Currently available for in person sessions on Tuesdays in Mt Lawley and telehealth Australia wide."
+        },
+        {
+          "field": "tag:art-therapy",
+          "url": "https://www.michellematchamtherapy.com/about-5",
+          "excerpt": "Advanced Diploma of Art Therapy, Vancouver Art Therapy Institute, BC, CAN (DVATI)"
+        },
+        {
+          "field": "detail:Modality",
+          "url": "https://www.michellematchamtherapy.com/general-1",
+          "excerpt": "We might use drawing, painting, collage, clay, movement or objects to express things"
+        },
+        {
+          "field": "detail:Who it's for",
+          "url": "https://www.michellematchamtherapy.com/about-5",
+          "excerpt": "with a particular focus on pre-teens, teens, and young adults (and the young at heart)"
+        },
+        {
+          "field": "detail:Session format",
+          "url": "https://www.michellematchamtherapy.com/about-5",
+          "excerpt": "Currently available for in person sessions on Tuesdays in Mt Lawley and telehealth Australia wide."
+        },
+        {
+          "field": "join",
+          "url": "https://www.michellematchamtherapy.com/",
+          "excerpt": "for a free 15-minute chat and see if working together feels right for you."
+        }
+      ]
+    },
+    {
+      "key": "heart-and-play-therapy-hilton",
+      "category": "creative-therapy",
+      "status": "candidate",
+      "reason": "",
+      "name": "Heart and Play Therapy",
+      "kind": "practice",
+      "website": "https://www.heartandplaytherapy.com/",
+      "source_urls": [
+        "https://www.heartandplaytherapy.com/",
+        "https://www.heartandplaytherapy.com/contact",
+        "https://www.heartandplaytherapy.com/about"
+      ],
+      "suburb": "Hilton",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "Vanessa Rickwood offers creative arts therapy for adolescents and adults and child-centred play therapy for children from rooms in Hilton, near Fremantle. Art therapy sessions run for an hour, with online sessions by Zoom also available.",
+      "join": {
+        "method": "enquiry",
+        "url": "https://www.heartandplaytherapy.com/contact"
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "art-therapy"
+      ],
+      "details": [
+        {
+          "label": "Registration",
+          "value": "Registered Creative Arts Therapist with the Australian Counselling Association (ACA)"
+        },
+        {
+          "label": "Who it's for",
+          "value": "Art therapy for adolescents and adults; play therapy for children"
+        },
+        {
+          "label": "Session format",
+          "value": "One-hour art therapy sessions in Hilton, or online via Zoom"
+        }
+      ],
+      "flags": [
+        "Site footer is dated 2023; confirm the practice is current. Contact email is a personal gmail address; not collected."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.heartandplaytherapy.com/",
+          "excerpt": "Welcome to Heart and Play Therapy."
+        },
+        {
+          "field": "activity",
+          "url": "https://www.heartandplaytherapy.com/",
+          "excerpt": "Art Therapy is about the process, not the art - no skill is required!"
+        },
+        {
+          "field": "location",
+          "url": "https://www.heartandplaytherapy.com/contact",
+          "excerpt": "Location in Hilton, Fremantle, WA"
+        },
+        {
+          "field": "tag:art-therapy",
+          "url": "https://www.heartandplaytherapy.com/",
+          "excerpt": "Through mixed media and modalities, you can explore issues in a safe and non-judgmental way."
+        },
+        {
+          "field": "detail:Registration",
+          "url": "https://www.heartandplaytherapy.com/about",
+          "excerpt": "Registered Creative Arts Therapist with the Australian Counselling Association (ACA)"
+        },
+        {
+          "field": "detail:Who it's for",
+          "url": "https://www.heartandplaytherapy.com/",
+          "excerpt": "Creative Arts Therapy - Adolescents to adults."
+        },
+        {
+          "field": "detail:Session format",
+          "url": "https://www.heartandplaytherapy.com/contact",
+          "excerpt": "Art Therapy Sessions are 1 hour."
+        },
+        {
+          "field": "join",
+          "url": "https://www.heartandplaytherapy.com/contact",
+          "excerpt": "Contact via email or fill out the Contact Us form below to get in touch."
+        }
+      ]
+    },
+    {
+      "key": "artsense-dunsborough",
+      "category": "creative-therapy",
+      "status": "candidate",
+      "reason": "",
+      "name": "Artsense Creative Art Therapy",
+      "kind": "practice",
+      "website": "https://artsense.au/",
+      "source_urls": [
+        "https://artsense.au/"
+      ],
+      "suburb": "Dunsborough",
+      "region": "",
+      "meeting_point": "",
+      "address": "15 Ashbrook Green, Dunsborough WA 6281",
+      "meeting_varies": false,
+      "blurb": "A creative art therapy practice in Dunsborough in the South West, run by a registered nurse who trained in counselling and creative art therapy at Murdoch University. Works with children and adults, individuals, families and groups, in person.",
+      "join": {
+        "method": "enquiry",
+        "url": "https://artsense.au/"
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "art-therapy"
+      ],
+      "details": [
+        {
+          "label": "Registration",
+          "value": "ANZACATA affiliate member"
+        },
+        {
+          "label": "Who it's for",
+          "value": "Children and adults; individuals, families and groups"
+        }
+      ],
+      "flags": [
+        "Regional (South West, about 3.5 hours from Perth).",
+        "ANZACATA affiliate (not registered) membership; site says NDIS registration is in progress."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://artsense.au/",
+          "excerpt": "Artsense Creative Art Therapy Art Therapy for individuals and families"
+        },
+        {
+          "field": "activity",
+          "url": "https://artsense.au/",
+          "excerpt": "Artsense therapy is a counselling service that supports individuals and groups in a creative investigation into their inner world."
+        },
+        {
+          "field": "location",
+          "url": "https://artsense.au/",
+          "excerpt": "15 Ashbrook Green, Dunsborough Western Australia 6281, Australia"
+        },
+        {
+          "field": "tag:art-therapy",
+          "url": "https://artsense.au/",
+          "excerpt": "Art Therapy for individuals and families"
+        },
+        {
+          "field": "detail:Registration",
+          "url": "https://artsense.au/",
+          "excerpt": "Artsense is an affiliate member of ANZACATA"
+        },
+        {
+          "field": "detail:Who it's for",
+          "url": "https://artsense.au/",
+          "excerpt": "Children and adults can benefit from this gentle model of practice"
+        },
+        {
+          "field": "join",
+          "url": "https://artsense.au/",
+          "excerpt": "Please contact us for any further details on our services"
+        }
+      ]
+    },
+    {
+      "key": "creative-minds-art-therapy-perth",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Real Perth art therapy practice (directories say Lord St, Perth; ANZACATA/PACFA registered), but its website is a single 'under construction' page with no service detail. Re-check later or get details from the practitioner.",
+      "name": "Creative Minds Art Therapy",
+      "kind": "practice",
+      "website": "https://www.creativemindsarttherapy.com.au/",
+      "source_urls": [
+        "https://www.creativemindsarttherapy.com.au/"
+      ],
+      "suburb": "",
+      "region": "central",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "little-lamb-music",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Northern-suburbs music therapy practice with Registered Music Therapists (per search results), but the website shows 'currently unavailable while we make some changes'. Nothing citable on its own site right now.",
+      "name": "Little Lamb Music",
+      "kind": "practice",
+      "website": "https://www.littlelambmusic.com.au/",
+      "source_urls": [
+        "https://www.littlelambmusic.com.au/"
+      ],
+      "suburb": "",
+      "region": "north",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "cara-flame-arts-therapy",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Experiential arts therapist in Perth; site returns 403 to our crawler (blocks bot user-agent). Editor to review manually.",
+      "name": "Cara Flame (Flame Collective)",
+      "kind": "practice",
+      "website": "https://caraflame.com/arts-therapy/",
+      "source_urls": [
+        "https://caraflame.com/arts-therapy/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "louise-farnay-art-therapy",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Transpersonal art therapist offering one-hour sessions for children, teens, women and groups, but it is an artist's site with no suburb, region or registration stated. Needs location before it can be listed.",
+      "name": "Louise Farnay Art Therapy",
+      "kind": "practice",
+      "website": "https://www.louisefarnay.com/art-therapy",
+      "source_urls": [
+        "https://www.louisefarnay.com/art-therapy"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "creative-catalyst-art-therapy",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Transpersonal art therapy in Perth by arrangement, but the site now describes art therapy as part of creative coaching and consulting; unclear whether it is still an active therapy practice.",
+      "name": "Creative Catalyst Art Therapy (Lauren Amos)",
+      "kind": "practice",
+      "website": "http://laurenamos.com/art-therapy/",
+      "source_urls": [
+        "http://laurenamos.com/art-therapy/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "movementality-somatic-movement",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Mount Lawley Pilates studio; somatic movement therapy sessions are run by a DTAA Provisional Professional Dance Movement Therapist. Primarily a Pilates business, so editor should decide if it belongs in creative therapies.",
+      "name": "Movementality",
+      "kind": "practice",
+      "website": "https://www.movementality.com.au/somatic-movement-therapy",
+      "source_urls": [
+        "https://www.movementality.com.au/somatic-movement-therapy"
+      ],
+      "suburb": "Mount Lawley",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "swaroopa-unni-dmt",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Perth dance movement therapist (DTAA Provisional Professional Member) found only in the DTAA directory; no practice website found.",
+      "name": "Swaroopa Unni (Dance Movement Therapy)",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [
+        "https://dtaa.org.au/dmt-directory/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "michelle-backhouse-dmt",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Albany/Denmark dance movement therapist listed in the DTAA directory only; no website found. Regional.",
+      "name": "Michelle Backhouse (Dance Movement Therapy)",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [
+        "https://dtaa.org.au/dmt-directory/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "emma-mak-music-therapy",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Thornlie-based registered music therapist and counsellor found only on directories (musicteacher.com.au, Healthshare, Halaxy); no own website found.",
+      "name": "Dr Emma Mak Counselling & Music Therapy",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "agape-music-therapy",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "East Cannington music therapy (aged care focus) with a WordPress blog whose latest post is November 2022; no current service, location or price detail on the site. Check it is still operating.",
+      "name": "Agape Music Therapy Service",
+      "kind": "practice",
+      "website": "https://agapemusictherapyservice.wordpress.com/",
+      "source_urls": [
+        "https://agapemusictherapyservice.wordpress.com/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "janeen-cameron-art-psychotherapy",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Northbridge art psychotherapist (MA, AThR per Psychology Today) with no own website found.",
+      "name": "Janeen Cameron (Art Psychotherapy)",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "sam-music-therapy-bunbury",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "South Bunbury music therapy listed by SWAN with a Facebook page as its only web presence. Regional.",
+      "name": "S.A.M. Music Therapy",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [
+        "https://swanautism.org.au/provider_type/registered-music-therapist/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "jacqueline-ross-music-therapy",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "South Bunbury Registered Music Therapist listed by SWAN; no own website found. Regional.",
+      "name": "Jacqueline Ross Registered Music Therapist",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [
+        "https://swanautism.org.au/provider_type/registered-music-therapist/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "renee-webse-art-therapy",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Busselton art therapy found via search/Facebook; the reneewebse.com domain does not resolve. Regional.",
+      "name": "Renee Webse Art Therapy",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "megs-art-therapy-clarkson",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Clarkson transpersonal art therapy (practitioner listed as a student counsellor); megsarttherapy.com.au does not resolve and only a Facebook page exists.",
+      "name": "Meg's Art Therapy",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "waves-of-change-mandurah",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Mandurah counselling and art therapy listed on Natural Therapy Pages only; no own website found.",
+      "name": "Waves of Change",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "create-therapy-through-arts",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "North Perth art therapy/creative counselling seen on Psychology Today; createartstherapy.com.au does not resolve.",
+      "name": "Create Therapy Through Arts",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "halcyon-music-therapy",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Appeared in search as a Perth music therapy practice, but halcyonmusictherapy.com does not resolve. Check whether it still operates.",
+      "name": "Halcyon Music Therapy",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "stacys-sound-studio",
+      "category": "creative-therapy",
+      "status": "manual",
+      "reason": "Hammond Park/Aubin Grove piano lessons and music therapy listed on musicteacher.com.au; stacysoundstudio.com does not resolve. Mostly lessons; check registration.",
+      "name": "Stacy's Sound Studio",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "perth-equine-art-therapy",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Darling Downs centre, but its Art Psychotherapy page says 'No Art Therapy Sessions Currently Available' and it is recruiting an art therapist.",
+      "name": "Perth Equine & Art Therapy",
+      "kind": "practice",
+      "website": "https://www.equinearttherapy.com.au/",
+      "source_urls": [
+        "https://www.equinearttherapy.com.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "belong-health",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Multi-disciplinary allied health provider; music therapy page says it is not currently offering Registered Music Therapy.",
+      "name": "Belong Health",
+      "kind": "practice",
+      "website": "https://www.belonghealth.com.au/musictherapy.html",
+      "source_urls": [
+        "https://www.belonghealth.com.au/musictherapy.html"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "baby-steps-health",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Paediatric medical centre; its music therapist is Tara Del Borrello of Sol Music Therapy, which is already listed.",
+      "name": "Baby Steps Health",
+      "kind": "practice",
+      "website": "https://babystepshealth.com.au/specialists/music-therapists/",
+      "source_urls": [
+        "https://babystepshealth.com.au/specialists/music-therapists/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "thrive-music-therapy",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Website returns 404; the founder now appears on Little Lamb Music's team. Treat as closed.",
+      "name": "Thrive Music Therapy",
+      "kind": "practice",
+      "website": "https://www.thrivemusictherapy.com.au/",
+      "source_urls": [
+        "https://www.thrivemusictherapy.com.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "mini-minds-health",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Child psychology clinic in East Fremantle; music therapy is a minor line item.",
+      "name": "Mini Minds Child & Adolescent Health",
+      "kind": "practice",
+      "website": "https://www.minimindshealth.com.au/what-is-music-therapy",
+      "source_urls": [
+        "https://www.minimindshealth.com.au/what-is-music-therapy"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "perth-injury-pain-clinic",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "'Dance / Performance Therapy' is physiotherapy for dancers, not dance movement therapy.",
+      "name": "Perth Injury & Pain Clinic",
+      "kind": "practice",
+      "website": "https://perthipc.com.au/services/dance-performance-therapy/",
+      "source_urls": [
+        "https://perthipc.com.au/services/dance-performance-therapy/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "we-tackle-trauma",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Fremantle consulting/counselling service; own site does not offer dance movement therapy.",
+      "name": "We Tackle Trauma",
+      "kind": "practice",
+      "website": "https://wetackletrauma.com/",
+      "source_urls": [
+        "https://wetackletrauma.com/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "perth-hills-allied-health",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Kelmscott speech therapy practice; art therapy no longer listed among services.",
+      "name": "Perth Hills Allied Health",
+      "kind": "practice",
+      "website": "https://perthhillsalliedhealth.com.au/services",
+      "source_urls": [
+        "https://perthhillsalliedhealth.com.au/services"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "healing-arts-ellenbrook",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Ellenbrook counselling practice; no art therapy service described on its site.",
+      "name": "Healing Arts Psychotherapy & Counselling",
+      "kind": "practice",
+      "website": "https://www.healingarts.net.au/",
+      "source_urls": [
+        "https://www.healingarts.net.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "toni-jackson-counselling",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Fremantle psychotherapist; art is one of several approaches and the site is not an arts therapy practice.",
+      "name": "Toni Jackson Counselling & Psychotherapy",
+      "kind": "practice",
+      "website": "https://tonijacksoncounselling.com/",
+      "source_urls": [
+        "https://tonijacksoncounselling.com/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "calista-therapy",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Generalist integrative/spiritual practice (includes Akashic records); creative arts are a minor element.",
+      "name": "Calista Therapy",
+      "kind": "practice",
+      "website": "https://www.calistatherapy.com/",
+      "source_urls": [
+        "https://www.calistatherapy.com/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "core-clinical-psychology",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Bunbury psychotherapy practice listing art therapy as one of many modalities.",
+      "name": "Core Clinical Psychology",
+      "kind": "practice",
+      "website": "https://corecp.com.au/",
+      "source_urls": [
+        "https://corecp.com.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "justine-omalley-counselling",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Wanneroo counsellor/social worker; art therapy is one of many approaches.",
+      "name": "Justine O'Malley Counselling",
+      "kind": "practice",
+      "website": "https://justineomalleycounselling.com/",
+      "source_urls": [
+        "https://justineomalleycounselling.com/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "anunda-merz",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Hilton social worker using art-based strategies; not an arts therapy practice.",
+      "name": "Anunda C Merz",
+      "kind": "practice",
+      "website": "https://www.anundamerz.com.au/therapy",
+      "source_urls": [
+        "https://www.anundamerz.com.au/therapy"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "kelly-hefferon",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Yangebup social worker using creative techniques; directory only.",
+      "name": "Kelly Hefferon",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "beck-janes",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "North Perth counsellor/psychotherapist using arts-based methods; directory only and no arts therapy registration stated.",
+      "name": "Beck Janes",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "emma-tucek-creative-wellness",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Life coaching/EFT practitioner with an art therapy diploma; directory only.",
+      "name": "Emma Tucek Creative Wellness",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "sarahs-circle-desrae-edwards",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Mandurah holistic hub (art therapy and reiki); directory only, not a creative arts therapy practice.",
+      "name": "Desrae Edwards (Sarah's Circle)",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "south-west-allied-therapies",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Multi-disciplinary allied health provider in Eaton; music therapy is one of many services.",
+      "name": "South West Allied Therapies",
+      "kind": "practice",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "ot-services-group",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Multi-disciplinary OT provider; robots.txt also disallows our crawler.",
+      "name": "Occupational Therapy Services Group",
+      "kind": "practice",
+      "website": "https://otservicesgroup.com/music-therapy.html",
+      "source_urls": [
+        "https://otservicesgroup.com/music-therapy.html"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "visability-wa",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Large disability organisation; music therapy is a small part of its services.",
+      "name": "VisAbility",
+      "kind": "practice",
+      "website": "https://www.visability.com.au/our-teams-vision/music-therapy/",
+      "source_urls": [
+        "https://www.visability.com.au/our-teams-vision/music-therapy/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "cecat-graylands",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Public mental health service on a hospital campus.",
+      "name": "Creative Expression Centre for Arts Therapy (CECAT)",
+      "kind": "practice",
+      "website": "https://www.nmhs.health.wa.gov.au/Hospitals-and-Services/Mental-Health/Community/CACAT",
+      "source_urls": [
+        "https://www.nmhs.health.wa.gov.au/Hospitals-and-Services/Mental-Health/Community/CACAT"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "beyond-speech",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Healesville, Victoria.",
+      "name": "Beyond Speech",
+      "kind": "practice",
+      "website": "https://www.beyondspeech.com.au/musictherapy",
+      "source_urls": [
+        "https://www.beyondspeech.com.au/musictherapy"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "resonator-music",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Music store in the Northern Rivers, NSW.",
+      "name": "Resonator Music",
+      "kind": "practice",
+      "website": "https://www.resonatormusic.com/",
+      "source_urls": [
+        "https://www.resonatormusic.com/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "artstherapy-org",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Bondi Junction, NSW.",
+      "name": "artstherapy.org",
+      "kind": "practice",
+      "website": "https://www.artstherapy.org/about-me",
+      "source_urls": [
+        "https://www.artstherapy.org/about-me"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "creative-spirit-arts-therapy",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Melbourne (Burwood East/Box Hill North).",
+      "name": "Creative Spirit Arts Therapy",
+      "kind": "practice",
+      "website": "https://creativespiritartstherapy.com.au/",
+      "source_urls": [
+        "https://creativespiritartstherapy.com.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "arts-therapy-studio",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Mornington, Victoria.",
+      "name": "Arts Therapy Studio",
+      "kind": "practice",
+      "website": "https://artstherapystudio.com.au/",
+      "source_urls": [
+        "https://artstherapystudio.com.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "wayfinding-creative-therapy",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Blue Mountains and Penrith, NSW.",
+      "name": "Wayfinding Creative Therapy",
+      "kind": "practice",
+      "website": "https://wayfindingcreativetherapy.com.au/",
+      "source_urls": [
+        "https://wayfindingcreativetherapy.com.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "nectar-art-therapy",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Melbourne inner north.",
+      "name": "Nectar Art Therapy",
+      "kind": "practice",
+      "website": "https://www.nectararttherapy.com.au/",
+      "source_urls": [
+        "https://www.nectararttherapy.com.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "creative-minds-art-therapy-uk",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Newcastle upon Tyne, UK (not the Perth practice of a similar name).",
+      "name": "Creative Minds - Art Therapy",
+      "kind": "practice",
+      "website": "https://www.creative-minds-art-therapy.com/about-us",
+      "source_urls": [
+        "https://www.creative-minds-art-therapy.com/about-us"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "creative-care-therapy",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Braidwood, NSW.",
+      "name": "Creative Care Therapy",
+      "kind": "practice",
+      "website": "https://www.creativecaretherapy.com.au/",
+      "source_urls": [
+        "https://www.creativecaretherapy.com.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "amanda-scott-art-therapy",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Northern Rivers NSW and Melbourne.",
+      "name": "Amanda Scott Art Therapy",
+      "kind": "practice",
+      "website": "https://www.amandascottarttherapy.com.au/",
+      "source_urls": [
+        "https://www.amandascottarttherapy.com.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "music-beat-therapy",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Brisbane.",
+      "name": "Music Beat Therapy Services",
+      "kind": "practice",
+      "website": "https://musicbeattherapy.com.au/",
+      "source_urls": [
+        "https://musicbeattherapy.com.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "the-hills-music-therapy",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Dandenong Ranges, Victoria.",
+      "name": "The Hills Music Therapy",
+      "kind": "practice",
+      "website": "https://thehillsmusictherapy.com.au/our-team",
+      "source_urls": [
+        "https://thehillsmusictherapy.com.au/our-team"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "stonewater-art-therapy",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Ferntree Gully, Victoria.",
+      "name": "Stonewater Art Therapy",
+      "kind": "practice",
+      "website": "https://www.stonewaterarttherapy.com/",
+      "source_urls": [
+        "https://www.stonewaterarttherapy.com/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "playful-minds",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Sydney dramatherapy practice.",
+      "name": "Playful Minds",
+      "kind": "practice",
+      "website": "https://www.playfulminds.com.au/",
+      "source_urls": [
+        "https://www.playfulminds.com.au/"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "little-window",
+      "category": "creative-therapy",
+      "status": "rejected",
+      "reason": "Queensland.",
+      "name": "Little Window",
+      "kind": "practice",
+      "website": "https://www.littlewindow.com.au/dramatherapy",
+      "source_urls": [
+        "https://www.littlewindow.com.au/dramatherapy"
+      ],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "blurb": "",
+      "join": {
+        "method": "enquiry",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    }
+  ]
+}

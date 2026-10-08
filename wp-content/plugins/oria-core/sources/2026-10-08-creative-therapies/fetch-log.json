@@ -1,0 +1,208 @@
+{
+    "batch": "2026-10-08-creative-therapies",
+    "requests": [
+        {
+            "url": "https://trulybe.au/creative-art-therapy",
+            "at": "2026-10-08T04:23:32+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "13428 chars of text"
+        },
+        {
+            "url": "https://trulybe.au/contact",
+            "at": "2026-10-08T04:23:36+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2585 chars of text"
+        },
+        {
+            "url": "https://trulybe.au/ethos",
+            "at": "2026-10-08T04:23:39+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "7447 chars of text"
+        },
+        {
+            "url": "https://honeywoodmusic.com.au/",
+            "at": "2026-10-08T04:23:41+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2386 chars of text"
+        },
+        {
+            "url": "https://honeywoodmusic.com.au/music-therapy/",
+            "at": "2026-10-08T04:23:43+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "8161 chars of text"
+        },
+        {
+            "url": "https://honeywoodmusic.com.au/fees-access/",
+            "at": "2026-10-08T04:23:46+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3310 chars of text"
+        },
+        {
+            "url": "https://honeywoodmusic.com.au/contact/",
+            "at": "2026-10-08T04:23:49+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1114 chars of text"
+        },
+        {
+            "url": "https://www.attunedhealth.com.au/",
+            "at": "2026-10-08T04:23:52+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3753 chars of text"
+        },
+        {
+            "url": "https://www.attunedhealth.com.au/music-therapy-perth-individuals",
+            "at": "2026-10-08T04:23:55+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "4860 chars of text"
+        },
+        {
+            "url": "https://moodindigomusictherapy.com/about",
+            "at": "2026-10-08T04:23:57+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2671 chars of text"
+        },
+        {
+            "url": "https://moodindigomusictherapy.com/",
+            "at": "2026-10-08T04:24:00+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3062 chars of text"
+        },
+        {
+            "url": "https://moodindigomusictherapy.com/services",
+            "at": "2026-10-08T04:24:04+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1427 chars of text"
+        },
+        {
+            "url": "https://moodindigomusictherapy.com/appointments",
+            "at": "2026-10-08T04:24:07+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1412 chars of text"
+        },
+        {
+            "url": "https://www.themakeitwell.com.au/about",
+            "at": "2026-10-08T04:24:09+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2359 chars of text"
+        },
+        {
+            "url": "https://www.themakeitwell.com.au/",
+            "at": "2026-10-08T04:24:13+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2436 chars of text"
+        },
+        {
+            "url": "https://www.themakeitwell.com.au/fees",
+            "at": "2026-10-08T04:24:16+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1828 chars of text"
+        },
+        {
+            "url": "https://www.themakeitwell.com.au/art-therapy",
+            "at": "2026-10-08T04:24:19+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1578 chars of text"
+        },
+        {
+            "url": "https://www.themakeitwell.com.au/contact",
+            "at": "2026-10-08T04:24:22+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "809 chars of text"
+        },
+        {
+            "url": "https://www.heartsongtherapy.com.au/",
+            "at": "2026-10-08T04:24:24+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1544 chars of text"
+        },
+        {
+            "url": "https://www.heartsongtherapy.com.au/about",
+            "at": "2026-10-08T04:24:28+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3021 chars of text"
+        },
+        {
+            "url": "https://www.heartsongtherapy.com.au/faq",
+            "at": "2026-10-08T04:24:31+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3406 chars of text"
+        },
+        {
+            "url": "https://www.heartsongtherapy.com.au/contact",
+            "at": "2026-10-08T04:24:34+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1160 chars of text"
+        },
+        {
+            "url": "https://www.michellematchamtherapy.com/",
+            "at": "2026-10-08T04:24:36+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2893 chars of text"
+        },
+        {
+            "url": "https://www.michellematchamtherapy.com/general-1",
+            "at": "2026-10-08T04:24:39+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3258 chars of text"
+        },
+        {
+            "url": "https://www.michellematchamtherapy.com/about-5",
+            "at": "2026-10-08T04:24:42+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3393 chars of text"
+        },
+        {
+            "url": "https://www.heartandplaytherapy.com/",
+            "at": "2026-10-08T04:24:44+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2157 chars of text"
+        },
+        {
+            "url": "https://www.heartandplaytherapy.com/contact",
+            "at": "2026-10-08T04:24:47+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "682 chars of text"
+        },
+        {
+            "url": "https://www.heartandplaytherapy.com/about",
+            "at": "2026-10-08T04:24:50+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3501 chars of text"
+        },
+        {
+            "url": "https://artsense.au/",
+            "at": "2026-10-08T04:24:51+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "4722 chars of text"
+        }
+    ]
+}

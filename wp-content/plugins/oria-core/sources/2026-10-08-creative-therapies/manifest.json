@@ -1,0 +1,487 @@
+{
+  "batch": "2026-10-08-creative-therapies",
+  "_note": "Every domain considered. decision: fetch = practice's own site used as evidence; discovery = used only to find candidates; manual = needs an editor; reject = ruled out, with reason.",
+  "sources": [
+    {
+      "category": "creative-therapy",
+      "domain": "websearch",
+      "type": "search",
+      "decision": "discovery",
+      "reason": "Web searches used only to find practice names."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "psychologytoday.com",
+      "type": "directory",
+      "decision": "discovery",
+      "reason": "Names only; no evidence taken."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "therapytribe.com",
+      "type": "directory",
+      "decision": "discovery",
+      "reason": "Names only."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "naturaltherapypages.com.au",
+      "type": "directory",
+      "decision": "discovery",
+      "reason": "Names only."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "musicteacher.com.au",
+      "type": "directory",
+      "decision": "discovery",
+      "reason": "List of Perth music therapy listings; names only."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "dtaa.org.au",
+      "type": "directory",
+      "decision": "discovery",
+      "reason": "DTAA find-a-DMT directory; names only."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "swanautism.org.au",
+      "type": "directory",
+      "decision": "discovery",
+      "reason": "SWAN provider list (registered music therapists); names only."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "anzacata.org",
+      "type": "directory",
+      "decision": "discovery",
+      "reason": "Find-a-therapist is JavaScript-driven; not usable."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "musictherapywa.org",
+      "type": "directory",
+      "decision": "reject",
+      "reason": "Washington State (USA) association, not Western Australia."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "trulybe.au",
+      "type": "practice-site",
+      "decision": "fetch",
+      "reason": "Candidate: Glen Forrest creative arts and play therapy.",
+      "urls": [
+        "https://trulybe.au/creative-art-therapy",
+        "https://trulybe.au/contact",
+        "https://trulybe.au/ethos"
+      ]
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "honeywoodmusic.com.au",
+      "type": "practice-site",
+      "decision": "fetch",
+      "reason": "Candidate: Leeming music therapy.",
+      "urls": [
+        "https://honeywoodmusic.com.au/",
+        "https://honeywoodmusic.com.au/music-therapy/",
+        "https://honeywoodmusic.com.au/fees-access/",
+        "https://honeywoodmusic.com.au/contact/"
+      ]
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "attunedhealth.com.au",
+      "type": "practice-site",
+      "decision": "fetch",
+      "reason": "Candidate: mobile Registered Music Therapists across Perth.",
+      "urls": [
+        "https://www.attunedhealth.com.au/",
+        "https://www.attunedhealth.com.au/music-therapy-perth-individuals"
+      ]
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "moodindigomusictherapy.com",
+      "type": "practice-site",
+      "decision": "fetch",
+      "reason": "Candidate: mobile music therapy, City of Cockburn.",
+      "urls": [
+        "https://moodindigomusictherapy.com/about",
+        "https://moodindigomusictherapy.com/",
+        "https://moodindigomusictherapy.com/services",
+        "https://moodindigomusictherapy.com/appointments"
+      ]
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "themakeitwell.com.au",
+      "type": "practice-site",
+      "decision": "fetch",
+      "reason": "Candidate: Fremantle art therapy and counselling.",
+      "urls": [
+        "https://www.themakeitwell.com.au/about",
+        "https://www.themakeitwell.com.au/",
+        "https://www.themakeitwell.com.au/fees",
+        "https://www.themakeitwell.com.au/art-therapy",
+        "https://www.themakeitwell.com.au/contact"
+      ]
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "heartsongtherapy.com.au",
+      "type": "practice-site",
+      "decision": "fetch",
+      "reason": "Candidate: Fremantle-area creative arts therapy.",
+      "urls": [
+        "https://www.heartsongtherapy.com.au/",
+        "https://www.heartsongtherapy.com.au/about",
+        "https://www.heartsongtherapy.com.au/faq",
+        "https://www.heartsongtherapy.com.au/contact"
+      ]
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "michellematchamtherapy.com",
+      "type": "practice-site",
+      "decision": "fetch",
+      "reason": "Candidate: Paperbark Grove Collective, Mount Lawley art therapy. Wix host rate-limits (429) rapid requests.",
+      "urls": [
+        "https://www.michellematchamtherapy.com/",
+        "https://www.michellematchamtherapy.com/general-1",
+        "https://www.michellematchamtherapy.com/about-5"
+      ]
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "heartandplaytherapy.com",
+      "type": "practice-site",
+      "decision": "fetch",
+      "reason": "Candidate: Hilton creative arts and play therapy.",
+      "urls": [
+        "https://www.heartandplaytherapy.com/",
+        "https://www.heartandplaytherapy.com/contact",
+        "https://www.heartandplaytherapy.com/about"
+      ]
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "artsense.au",
+      "type": "practice-site",
+      "decision": "fetch",
+      "reason": "Candidate: Dunsborough creative art therapy (regional).",
+      "urls": [
+        "https://artsense.au/"
+      ]
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "creativemindsarttherapy.com.au",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "Website under construction."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "littlelambmusic.com.au",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "Website temporarily unavailable."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "caraflame.com",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "Returns 403 to our crawler."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "louisefarnay.com",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "No location stated."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "laurenamos.com",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "Art therapy folded into coaching; unclear if active."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "movementality.com.au",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "Pilates studio with somatic movement therapy by a provisional DMT."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "agapemusictherapyservice.wordpress.com",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "Stale blog, last post 2022."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "reneewebse.com",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "Domain does not resolve; Facebook only."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "megsarttherapy.com.au",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "Domain does not resolve."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "createartstherapy.com.au",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "Domain does not resolve."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "halcyonmusictherapy.com",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "Domain does not resolve."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "stacysoundstudio.com",
+      "type": "practice-site",
+      "decision": "manual",
+      "reason": "Domain does not resolve."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "equinearttherapy.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "No art therapy sessions currently available."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "belonghealth.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Not currently offering music therapy; multi-disciplinary."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "babystepshealth.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Medical centre; music therapist is Sol Music Therapy (already listed)."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "thrivemusictherapy.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Website 404; treated as closed."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "minimindshealth.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Psychology clinic; music therapy a minor line item."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "perthipc.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Physiotherapy for dancers, not DMT."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "wetackletrauma.com",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Site does not offer dance movement therapy."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "perthhillsalliedhealth.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Art therapy no longer listed."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "healingarts.net.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Counselling; no art therapy on site."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "tonijacksoncounselling.com",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Psychotherapist; not an arts therapy practice."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "calistatherapy.com",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Generalist/spiritual practice."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "corecp.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Psychotherapy; art therapy one of many modalities."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "justineomalleycounselling.com",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Counsellor; art therapy one of many approaches."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "anundamerz.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Social worker using art-based strategies."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "otservicesgroup.com",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Multi-disciplinary OT provider; robots.txt disallows our crawler."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "visability.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Large disability organisation."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "nmhs.health.wa.gov.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Public hospital-campus service."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "beyondspeech.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Victoria."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "resonatormusic.com",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "NSW."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "artstherapy.org",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Bondi Junction NSW."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "creativespiritartstherapy.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Melbourne."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "artstherapystudio.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Mornington VIC."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "wayfindingcreativetherapy.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "NSW."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "nectararttherapy.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Melbourne."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "creative-minds-art-therapy.com",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "UK."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "creativecaretherapy.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "NSW."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "amandascottarttherapy.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "NSW/VIC."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "musicbeattherapy.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Brisbane."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "thehillsmusictherapy.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Victoria."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "stonewaterarttherapy.com",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Victoria."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "playfulminds.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Sydney."
+    },
+    {
+      "category": "creative-therapy",
+      "domain": "littlewindow.com.au",
+      "type": "practice-site",
+      "decision": "reject",
+      "reason": "Queensland."
+    }
+  ]
+}
