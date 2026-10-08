@@ -570,6 +570,34 @@ function top_for( int $listing_id, int $limit = 2 ): array {
 		}
 	}
 
+	/*
+	 * The listing's own STORED primary practice leads, ahead of the plan
+	 * order. Without this a Reiki Master who also runs a few sound sessions
+	 * was headed "Spa & Recovery", because Spa comes before Spirituality in
+	 * the plan -- whatever the listing said. A merely inferred primary
+	 * (Primary\infer's flagged guesses) does not reorder anything.
+	 */
+	$stored = (string) get_post_meta( $listing_id, 'primary_practice', true );
+	if ( count( $out ) > 1 && '' !== $stored ) {
+		$primary = get_term_by( 'slug', $stored, Taxonomies\PRACTICE );
+		$hops    = 0;
+		while ( $primary instanceof \WP_Term && $primary->parent && $hops < 20 ) {
+			$parent  = get_term( (int) $primary->parent, Taxonomies\PRACTICE );
+			$primary = $parent instanceof \WP_Term ? $parent : null;
+			$hops++;
+		}
+		if ( $primary instanceof \WP_Term ) {
+			foreach ( $out as $i => $row ) {
+				if ( $row['term']->slug === $primary->slug && $i > 0 ) {
+					array_unshift( $out, $row );
+					unset( $out[ $i + 1 ] );
+					$out = array_values( $out );
+					break;
+				}
+			}
+		}
+	}
+
 	return array_slice( $out, 0, max( 1, $limit ) );
 }
 
