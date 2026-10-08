@@ -488,7 +488,7 @@ $oria_short = static function ( string $name ): string {
 			?>
 		</p>
 		<div class="xh-actions xh-hero__actions">
-			<a class="btn xh-btn-white" href="#concierge"><?php esc_html_e( 'Find my reset', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
+			<a class="btn xh-btn-white xh-hero__find" href="#concierge"><?php esc_html_e( 'Find my reset', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a>
 			<a class="btn xh-btn-outline" href="<?php echo esc_url( home_url( '/wellness-map/' ) ); ?>"><?php esc_html_e( 'Explore nearby', 'oria' ); ?></a>
 		</div>
 	</div>
@@ -521,6 +521,8 @@ $oria_short = static function ( string $name ): string {
 				<button class="btn xh-bar__go" type="submit"><?php esc_html_e( 'Find my reset', 'oria' ); ?></button>
 			</div>
 		</form>
+		<?php // A plain way in for somebody who already knows they want a sauna or yoga. ?>
+		<p class="xh-browse"><a class="xh-link" href="<?php echo esc_url( home_url( '/explore/' ) ); ?>"><?php esc_html_e( 'Or browse every category', 'oria' ); ?> <span aria-hidden="true">&rarr;</span></a></p>
 	</div>
 </section>
 

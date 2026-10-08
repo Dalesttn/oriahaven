@@ -211,7 +211,10 @@
       var count = rot.querySelector("[data-xh-rot-count]");
       var pauseBtn = rot.querySelector("[data-xh-rot-pause]");
       var icon = rot.querySelector("[data-xh-rot-icon]");
-      var cur = 0, timer = null, paused = still, hovered = false, seen = false;
+      // Mobile review brief: manual turns only -- content never moves while
+      // somebody is reading it. The timer code stays for the Play button's
+      // sake but nothing starts it, and the Pause button is hidden.
+      var cur = 0, timer = null, paused = true, hovered = false, seen = false;
       function warm(i) {
         sets[i].querySelectorAll("img[loading=lazy]").forEach(function (img) { img.loading = "eager"; });
       }
@@ -236,6 +239,7 @@
         timer = window.setTimeout(function () { show(cur + 1, false); schedule(); }, 8000);
       }
       ctl.hidden = false;
+      if (pauseBtn) pauseBtn.hidden = true;
       rot.classList.add("is-live");
       show(Math.floor(Math.random() * sets.length), false);
       paintPause();
