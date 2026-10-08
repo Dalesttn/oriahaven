@@ -1546,35 +1546,49 @@ html.xp-sheet-open { overflow: hidden; }
   background: var(--sand-2);
 }
 .xp-shop .shopband h2 { font-size: 1.15rem; }
-.xp-shop .prodgrid { position: relative; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
-/* Keeps the cards' absolutely placed screen-reader text inside the scroller on phones. */
-.xp-shop .prodcard { position: relative; }
 .xp-shop .shopband__disclosure { margin-top: var(--s-3); }
-/* Compact: a small picture beside the name and the one action. The note,
-   pairings and "why we picked it" stay on the shop page. */
+/* Compact cards: a fixed square picture beside the name, the price and the
+   one action stacked at the foot. The note, pairings and "why we picked
+   it" stay on the shop page. Cards wrap rather than scroll sideways, so
+   nothing is clipped on a phone. */
+.xp-shop .prodgrid {
+  position: relative; display: grid; gap: .75rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+}
 .xp-shop .prodcard {
+  position: relative;
   display: grid;
   grid-template-columns: 5.5rem minmax(0, 1fr);
-  align-content: start;
-  gap: .2rem .9rem;
-  padding: .75rem;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "img head" "img foot";
+  align-items: start;
+  gap: .35rem 1rem;
+  padding: 1rem;
+  min-width: 0;
 }
 .xp-shop .prodcard:hover { transform: none; }
 .xp-shop .prodcard__img {
-  grid-row: 1 / span 3;
-  margin: 0;
-  width: 5.5rem;
-  border-radius: var(--r-sm);
+  grid-area: img; align-self: start;
+  position: relative; width: 5.5rem; height: 5.5rem; margin: 0;
+  border-radius: var(--r-sm); background: #fff; overflow: hidden;
 }
-.xp-shop .prodcard__img img,
-.xp-shop .prodcard__img--none { aspect-ratio: 1; padding: .25rem; }
-.xp-shop .prodcard__img--art img { padding: 0; }
+.xp-shop .prodcard__img img { width: 100%; height: 100%; aspect-ratio: auto; padding: .35rem; object-fit: contain; }
+.xp-shop .prodcard__img--art img { padding: 0; object-fit: cover; }
+.xp-shop .prodcard__img--none { aspect-ratio: auto; background: var(--sand-2); }
 .xp-shop .prodcard__artnote { right: 3px; bottom: 3px; padding: 1px 4px; font-size: 8px; }
+.xp-shop .prodcard__head { grid-area: head; min-width: 0; }
+.xp-shop .prodcard__name { overflow-wrap: anywhere; }
 .xp-shop .prodcard__blurb,
 .xp-shop .prodcard__goes,
 .xp-shop .prodcard__why,
 .xp-shop .prodcard__tag { display: none; }
-.xp-shop .prodcard__foot { margin-top: .35rem; }
+.xp-shop .prodcard__foot {
+  grid-area: foot; align-self: end;
+  display: flex; flex-direction: column; align-items: flex-start; gap: .5rem;
+  margin-top: .4rem; min-width: 0;
+}
+.xp-shop .prodcard__price { white-space: normal; }
+.xp-shop .prodcard__acts { width: 100%; }
 
 /* --- 6. Phone action bar -------------------------------------------------- */
 
@@ -1613,14 +1627,7 @@ html.xp-sheet-open { overflow: hidden; }
   /* The desktop rule is single-column now, so the override and the
      fold button it widened have both gone. */
 
-  .xp-shop .prodgrid {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    margin-inline: calc(var(--gutter) * -1);
-    padding: .25rem var(--gutter) .5rem;
-  }
-  .xp-shop .prodcard { flex: 0 0 min(15rem, 75%); scroll-snap-align: start; }
+  /* Products stack on a phone (the grid above wraps); no scroller. */
 
   /* The bar: words under every icon, clear of the home indicator. Without
      script it is simply always there; v4-listing.js adds .xp-bar--js and
