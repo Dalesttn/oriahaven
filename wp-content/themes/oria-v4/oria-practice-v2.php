@@ -198,6 +198,22 @@ $oria_cin = function_exists( '\Oria\Core\Cities\place' ) ? \Oria\Core\Cities\pla
  * says "Check current price" rather than borrowing another service's.
  */
 $oria_fac      = ( $oria_facet && function_exists( '\Oria\Core\FacetGuides\facility' ) ) ? \Oria\Core\FacetGuides\facility( $oria_facet ) : '';
+
+/*
+ * A treatment page (a specialty or service facet: /spa/infrared-sauna/).
+ * A venue's price_from is the cheapest thing it sells -- a float pack, a
+ * Pilates intro pass -- not this treatment's price, so here the cards say
+ * "Check infrared sauna pricing" and the price sort and budget filter step
+ * aside (mobile review brief, priority 0). A facility page has its own
+ * verified per-venue prices and keeps them.
+ */
+$oria_treat = '';
+if ( $oria_facet && '' === $oria_fac && in_array( (string) ( $oria_facet['key'] ?? '' ), array( 'spec', 'svc' ), true ) ) {
+	$oria_treat = strtolower( trim( (string) preg_replace( '/\s+in\s+.+$/i', '', (string) ( $oria_facet['label'] ?? '' ) ) ) );
+	if ( '' !== $oria_treat ) {
+		$GLOBALS['oria_treat_ctx'] = $oria_treat;
+	}
+}
 $oria_fac_sums = array();
 if ( '' !== $oria_fac && function_exists( '\Oria\Core\FacilityAccess\summary' ) ) {
 	$GLOBALS['oria_facility_ctx'] = $oria_fac;
@@ -1425,6 +1441,8 @@ $oria_panel_close = static fn( string $k ): string => isset( $oria_tabs[ $k ] ) 
 	// belong here, whatever their category.
 	if ( '' !== $oria_fac ) {
 		get_template_part( 'template-parts/facility-shortcuts', null, array( 'sums' => $oria_fac_sums, 'ids' => $oria_ids, 'facility' => $oria_fac ) );
+	} elseif ( '' !== $oria_treat ) {
+		echo '<script>window.ORIA_TREAT = ' . wp_json_encode( array( 'label' => $oria_treat ) ) . ';</script>';
 	}
 	get_template_part(
 		'template-parts/directory',

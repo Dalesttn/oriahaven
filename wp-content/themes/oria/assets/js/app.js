@@ -2087,6 +2087,19 @@
       });
     }
 
+    /* A treatment page (window.ORIA_TREAT, oria-practice-v2.php): a venue's
+       "from" price is the cheapest thing it sells, not this treatment's, so
+       it is set aside -- no price, no band, last in a price order -- and the
+       card says "Check {treatment} pricing". Kept on _venuePrice so the
+       relevance ranking is unchanged. A facility page has real prices. */
+    var TREAT = (!FAC && window.ORIA_TREAT) || null;
+    if (TREAT) {
+      DATA.listings.forEach(function (l) {
+        l._venuePrice = l.priceFrom; l._venueBand = l.priceBand;
+        l.priceFrom = 0; l.priceBand = "";
+      });
+    }
+
     /* Category pages (oria-practice-v2.php, data-mode="category") switch on
        four things the other directory pages keep off:
 
@@ -2175,6 +2188,8 @@
     if (["relevance", "featured", "rating", "price", "name", "near"].indexOf(params.get("sort")) > -1 && params.get("sort") !== "near") {
       state.sort = params.get("sort");
     }
+    // A treatment page has no treatment prices to sort or filter by.
+    if (TREAT) { state.price = []; if (state.sort === "price") state.sort = "relevance"; }
 
     // Category and suburb landing pages lock one facet: the page IS the
     // filter, so it never appears as a removable chip and never hits the URL.
@@ -2430,7 +2445,7 @@
        tie between two ratings, never enough to lift a bare listing over a
        well-reviewed one. "About these results" says so in words. */
     function completeness(l) {
-      return ((l.priceFrom > 0 || l.priceBand) ? 1 : 0) +
+      return ((l.priceFrom > 0 || l.priceBand || l._venuePrice > 0 || l._venueBand) ? 1 : 0) +
         ((l.blurb || "").length >= 100 ? 1 : 0) +
         ((l.services || []).length >= 2 ? 1 : 0);
     }
@@ -2604,7 +2619,7 @@
                 ? "$" + l.priceFrom + ' <span>/ session</span>'
                 : l.priceBand === "Free"
                   ? "Free"
-                  : '<span class="listing__price--none">Check venue pricing</span>') +
+                  : '<span class="listing__price--none">' + (TREAT ? "Check " + esc(TREAT.label) + " pricing" : "Check venue pricing") + "</span>") +
               (l.next ? '<span class="listing__next">Next: ' + esc(l.next) + "</span>" : "") +
             "</span>" +
             /* Compare toggle, mirroring listing-card.php. The pressed state

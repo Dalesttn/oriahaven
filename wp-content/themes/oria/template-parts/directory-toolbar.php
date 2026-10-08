@@ -303,7 +303,8 @@ if ( isset( $oria_auds['beginners'] ) ) {
 	</details>
 	<?php endif; ?>
 
-	<?php if ( ( $oria_cat || $oria_guide ) && $oria_band_n ) : ?>
+	<?php // Not on a treatment page: the bands are venue-wide "from" prices, not this treatment's. ?>
+	<?php if ( ( $oria_cat || $oria_guide ) && $oria_band_n && empty( $GLOBALS['oria_treat_ctx'] ) ) : ?>
 	<details class="popover" data-popover>
 		<summary class="btn btn--ghost btn--sm"><?php esc_html_e( 'Price', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
 		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'Price', 'oria' ); ?>">
@@ -419,7 +420,9 @@ if ( isset( $oria_auds['beginners'] ) ) {
 				<option value="relevance"><?php esc_html_e( 'Sort: Members first', 'oria' ); ?></option>
 			<?php endif; ?>
 			<option value="rating"><?php esc_html_e( 'Sort: Highest rated', 'oria' ); ?></option>
-			<option value="price"><?php echo $oria_cat ? esc_html__( 'Sort: Lowest published price', 'oria' ) : esc_html__( 'Sort: Lowest price', 'oria' ); ?></option>
+			<?php if ( empty( $GLOBALS['oria_treat_ctx'] ) ) : ?>
+				<option value="price"><?php echo $oria_cat ? esc_html__( 'Sort: Lowest published price', 'oria' ) : esc_html__( 'Sort: Lowest price', 'oria' ); ?></option>
+			<?php endif; ?>
 			<option value="name"><?php esc_html_e( 'Sort: A–Z', 'oria' ); ?></option>
 		</select>
 	</div>

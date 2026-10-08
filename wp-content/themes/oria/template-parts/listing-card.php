@@ -208,6 +208,14 @@ $oria_badges = array(
 					<?php if ( ! $oria_fac_s ) : ?>
 						<span class="listing__price--none"><?php esc_html_e( 'Check current price', 'oria' ); ?></span>
 					<?php endif; ?>
+				<?php elseif ( ! empty( $GLOBALS['oria_treat_ctx'] ) ) : ?>
+					<?php // A treatment page: the venue's "from" price is for something else. ?>
+					<span class="listing__price--none">
+						<?php
+						/* translators: %s: treatment, lower case, e.g. infrared sauna */
+						printf( esc_html__( 'Check %s pricing', 'oria' ), esc_html( (string) $GLOBALS['oria_treat_ctx'] ) );
+						?>
+					</span>
 				<?php elseif ( (int) $oria_price_from > 0 ) : ?>
 					$<?php echo esc_html( (string) (int) $oria_price_from ); ?> <span>/ <?php esc_html_e( 'session', 'oria' ); ?></span>
 				<?php elseif ( 'Free' === (string) get_field( 'price_band', $oria_id ) ) : ?>
