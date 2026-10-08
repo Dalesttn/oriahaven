@@ -1380,6 +1380,9 @@ function handle_save(): void {
 		notify_review( $listing, $held, $user );
 	}
 
+	// PortalWatch emails the directory about it (portal-watch.php).
+	do_action( 'oria_listing_owner_saved', $listing, (string) $section['label'], $written, $held, $user );
+
 	$state = $held ? 'review' : ( $written ? 'ok' : 'none' );
 
 	// The public page is cached; an owner who saves and then looks at their
@@ -1411,6 +1414,7 @@ function handle_withdraw(): void {
 
 	clear_pending( $listing, $field );
 	Audit\note( $listing, sprintf( __( 'Owner withdrew a proposed change to %s', 'oria' ), $field ), $user );
+	do_action( 'oria_listing_owner_withdrew', $listing, $field, $user );
 
 	wp_safe_redirect( \Oria\Core\MyOria\url( 'listing' ) );
 	exit;
