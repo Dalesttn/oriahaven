@@ -2143,3 +2143,21 @@ a.fvg__fact-v { justify-self: start; text-decoration: underline; text-decoration
 .xc-bocard__n { font-size: .85rem; font-weight: 600; color: #3f6e60; }
 .xc-bocard__go { margin-top: auto; padding-top: .6rem; font-size: .95rem; font-weight: 600; color: #183d35; }
 .xc-bocard:focus-visible { outline: 3px solid #a77c3a; outline-offset: 3px; border-radius: 18px; }
+
+/* =========================================================================
+   Mobile review (October 2026): less above the first card on a phone, and
+   44px touch targets. Nothing here changes wide screens.
+   ========================================================================= */
+@media (max-width: 40rem) {
+  /* The Explore button already carries the count. */
+  .xc-hz2__facts { display: none; }
+  /* The hero names the page; above the results a compact heading will do. */
+  #browse .xc-reshead .results__head { font-family: inherit; font-size: 1.05rem; font-weight: 650; letter-spacing: 0; }
+  /* The list labels its two groups where they meet; the summary line repeats it. */
+  .xc-split { display: none !important; }
+  /* Touch targets. */
+  #dirResults .qact, #dirResults .cmpbtn, #dirResults .listing .btn { min-height: 44px; }
+  #dirResults .qact { min-width: 44px; }
+  .xtabs__chips .pill, .xc-refine__btn { min-height: 44px; }
+  .xc-feat__how { display: inline-flex; align-items: center; min-height: 44px; }
+}

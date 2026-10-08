@@ -398,3 +398,14 @@
   }, { threshold: 0.4 });
   io.observe(hx);
 })();
+
+/* "On this page" (phones): drop any link whose section this listing lacks. */
+(function () {
+  "use strict";
+  var nav = document.querySelector("[data-xp-jump]");
+  if (!nav) return;
+  Array.prototype.forEach.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    if (!document.getElementById(a.getAttribute("href").slice(1))) a.parentNode.removeChild(a);
+  });
+  if (nav.querySelectorAll("a").length < 2) nav.hidden = true;
+})();

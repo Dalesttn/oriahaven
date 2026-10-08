@@ -314,6 +314,23 @@ while ( have_posts() ) :
 		? sprintf( __( 'From $%d a session', 'oria' ), $oria_price_num )
 		: ( '' === $oria_band_label ? '' : ( 'Free' === $oria_band_raw ? $oria_band_label : sprintf( /* translators: %s: price band such as $25–60 */ __( 'Typically %s', 'oria' ), $oria_band_label ) ) );
 
+	/*
+	 * A sourced casual-entry price beats a "from" figure or a band (mobile
+	 * review brief): the first confirmed Facility access row with a price,
+	 * named for what it buys -- "$39.50 per person · Casual Contrast
+	 * Session, 60 min access". Passes and memberships stay in the price
+	 * section below, labelled as what they are.
+	 */
+	if ( function_exists( '\Oria\Core\FacilityAccess\rows' ) && function_exists( '\Oria\Core\FacilityAccess\summary' ) ) {
+		foreach ( \Oria\Core\FacilityAccess\rows( (int) $oria_id ) as $oria_far ) {
+			$oria_fas = \Oria\Core\FacilityAccess\summary( (int) $oria_id, (string) ( $oria_far['facility'] ?? '' ) );
+			if ( $oria_fas && ! empty( $oria_fas['price'] ) && '' !== (string) ( $oria_fas['price_text'] ?? '' ) && 'Casual entry' === (string) ( $oria_fas['access'] ?? '' ) ) {
+				$oria_price_txt = trim( (string) $oria_fas['price_text'] . ( '' !== (string) ( $oria_fas['product'] ?? '' ) ? ' · ' . $oria_fas['product'] : '' ) . ( '' !== (string) ( $oria_fas['duration'] ?? '' ) ? ', ' . $oria_fas['duration'] : '' ) );
+				break;
+			}
+		}
+	}
+
 	// Special offer (paid; hides itself when expired or unclaimed).
 	$oria_offer = \Oria\Theme\active_offer( $oria_id );
 
@@ -680,6 +697,34 @@ while ( have_posts() ) :
 		<script type="application/json" id="xp-hours-data"><?php echo $oria_hours_json; // phpcs:ignore WordPress.Security.EscapeOutput -- wp_json_encode. ?></script>
 	<?php endif; ?>
 
+	<?php
+	/*
+	 * Mobile review brief: a small "on this page" row, so the practical
+	 * answers -- prices, where it is, what people say -- are one tap away.
+	 * Prices points at the first verified facility price section; links
+	 * whose section isn't on this page are removed by v4-listing.js (and
+	 * simply scroll nowhere without it). Hidden from 60rem, where the rail
+	 * sits beside the story.
+	 */
+	$oria_jump_price = '';
+	if ( function_exists( '\Oria\Core\FacilityAccess\rows' ) ) {
+		foreach ( \Oria\Core\FacilityAccess\rows( (int) $oria_id ) as $oria_jr ) {
+			if ( in_array( (string) ( $oria_jr['status'] ?? '' ), array( 'confirmed', 'temporarily_unavailable' ), true ) ) {
+				$oria_jump_price = 'facility-' . (string) $oria_jr['facility'];
+				break;
+			}
+		}
+	}
+	?>
+	<nav class="wrap xp-jump" aria-label="<?php esc_attr_e( 'On this page', 'oria' ); ?>" data-xp-jump>
+		<a href="#about"><?php esc_html_e( 'Overview', 'oria' ); ?></a>
+		<?php if ( '' !== $oria_jump_price ) : ?>
+			<a href="#<?php echo esc_attr( $oria_jump_price ); ?>"><?php esc_html_e( 'Prices', 'oria' ); ?></a>
+		<?php endif; ?>
+		<a href="#getting-there"><?php esc_html_e( 'Location', 'oria' ); ?></a>
+		<a href="#reviews"><?php esc_html_e( 'Reviews', 'oria' ); ?></a>
+	</nav>
+
 	<!-- 2. Story (left) and the action rail (right) -->
 	<div class="wrap xp-body">
 		<div class="xp-story">
@@ -764,8 +809,13 @@ while ( have_posts() ) :
 								</div>
 							<?php endif; ?>
 
-							<?php if ( $oria_dna ) : ?>
-								<div class="xp__b xp__b--rule xp-dna-block">
+							<?php
+							// Captured, not printed: Experience DNA describes the kind of
+							// session, so it follows this venue's own practical details
+							// (services, prices, location) further down.
+							?>
+							<?php if ( $oria_dna ) : ob_start(); ?>
+								<div class="xp__b xp-dna-block">
 									<span class="xp-dna__mark" aria-hidden="true"></span>
 									<h3 class="micro rowlabel xp-dna__head"><?php esc_html_e( 'Experience DNA', 'oria' ); ?></h3>
 									<p class="xp__lede">
@@ -894,7 +944,7 @@ while ( have_posts() ) :
 										</div>
 									</details>
 								</div>
-							<?php endif; ?>
+							<?php $oria_dna_html = (string) ob_get_clean(); endif; ?>
 
 							<?php if ( '' !== $oria_likely ) : ?>
 								<div class="xp__b xp__b--rule">
@@ -1289,6 +1339,17 @@ while ( have_posts() ) :
 					?>
 				</section>
 			<?php endif; ?>
+
+			<?php
+			/* --- Experience DNA, after the practical details --------------- */
+			if ( '' !== ( $oria_dna_html ?? '' ) ) :
+				?>
+				<section class="xp-sec xp-sec--dna" aria-label="<?php esc_attr_e( 'Experience DNA', 'oria' ); ?>">
+					<div class="xp xp-profile"><?php echo $oria_dna_html; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped where built. ?></div>
+				</section>
+				<?php
+			endif;
+			?>
 
 			<?php
 			/* --- Why our editors picked it --------------------------------

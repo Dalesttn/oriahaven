@@ -48,7 +48,9 @@
 }
 
 /* Anchored sections clear the sticky header. */
-.xp-page [id] { scroll-margin-top: calc(var(--head-h) + 1rem); }
+/* html already pads by the header (base.css scroll-padding-top); adding the
+   header again here landed every anchor twice its height down. */
+.xp-page [id] { scroll-margin-top: 1rem; }
 
 /* Small uppercase label -- burnt orange on cream. */
 .xp-label {
@@ -1959,3 +1961,46 @@ html.xp-sheet-open { overflow: hidden; }
 .fac-compare__table .fac__notice { display: inline-block; margin-top: .3rem; font-size: .8rem; }
 .fac-compare__h { margin-top: var(--s-6, 2rem); }
 .fac-compare__go { display: grid; gap: .5rem; max-width: 70ch; margin: .75rem 0 0; padding-left: 1.1rem; line-height: 1.55; }
+
+/* =========================================================================
+   Mobile review (October 2026): an "on this page" row, stacked price
+   records, Experience DNA after the practical details.
+   ========================================================================= */
+.xp-jump { display: none; }
+.xp-jump[hidden] { display: none !important; }
+@media (max-width: 59.99rem) {
+  .xp-jump {
+    display: flex; gap: .5rem; overflow-x: auto; scrollbar-width: none;
+    margin-top: 1rem; padding-block: .25rem;
+  }
+  .xp-jump::-webkit-scrollbar { display: none; }
+  .xp-jump a {
+    flex: none; display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem;
+    border: 1px solid var(--line); border-radius: 999px; background: var(--surface, #fff);
+    color: var(--deep); font-size: .9rem; font-weight: 600; text-decoration: none;
+  }
+  .xp-jump a:focus-visible { outline: 2px solid var(--focus, var(--deep)); outline-offset: 2px; }
+}
+.xp-sec--dna .xp-profile { margin-top: 0; }
+
+/* "Other ways in": labelled records on a phone, never a clipped table. */
+.fac-compare__table--stack { min-width: 34rem; }
+@media (max-width: 44rem) {
+  .fac-compare__scroll:has(.fac-compare__table--stack) { overflow: visible; border: 0; border-radius: 0; }
+  .fac-compare__table--stack { min-width: 0; }
+  .fac-compare__table--stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .fac-compare__table--stack, .fac-compare__table--stack tbody, .fac-compare__table--stack tr,
+  .fac-compare__table--stack th, .fac-compare__table--stack td { display: block; width: 100%; }
+  .fac-compare__table--stack tbody { display: grid; gap: .6rem; }
+  .fac-compare__table--stack tbody tr { border: 1px solid var(--line); border-radius: 14px; background: var(--surface, #fff); overflow: hidden; }
+  .fac-compare__table--stack tbody th { padding: .75rem .9rem .5rem; border-bottom: 0; font-weight: 700; }
+  .fac-compare__table--stack td { display: grid; grid-template-columns: 6.25rem minmax(0, 1fr); gap: .75rem; padding: .45rem .9rem; border-bottom: 0; }
+  .fac-compare__table--stack td:last-child { padding-bottom: .8rem; }
+  .fac-compare__table--stack td::before { content: attr(data-label); font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-soft); padding-top: .15rem; }
+}
+/* 44px targets on a phone: FAQ questions, offer terms, the shop link. */
+@media (max-width: 40rem) {
+  .xp-page .qanda__q { display: flex; align-items: center; min-height: 44px; }
+  .xp-page .oh-offer__terms > summary { display: inline-flex; align-items: center; min-height: 44px; }
+  .xp-shop .shopband .btn { min-height: 44px; }
+}

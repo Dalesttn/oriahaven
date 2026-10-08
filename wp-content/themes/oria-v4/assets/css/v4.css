@@ -63,3 +63,12 @@
   -webkit-mask: url(../../../oria/assets/img/logo-mark.svg) center / contain no-repeat;
           mask: url(../../../oria/assets/img/logo-mark.svg) center / contain no-repeat;
 }
+
+/* Mobile review (October 2026): 44px footer targets on a phone. The gap
+   goes, so the footer is no longer than it was. */
+@media (max-width: 40rem) {
+  .foot__list { gap: 0; }
+  .foot__list a, .foot__legal a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; }
+  .foot__social a { min-width: 44px; min-height: 44px; display: inline-grid; place-items: center; }
+  .linkcloud a { display: inline-flex; align-items: center; min-height: 44px; }
+}

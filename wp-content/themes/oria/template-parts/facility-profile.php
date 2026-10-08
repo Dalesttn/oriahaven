@@ -33,7 +33,7 @@ foreach ( FA\rows( $oria_id ) as $oria_row ) :
 		<?php get_template_part( 'template-parts/facility-block', null, array( 's' => $oria_s ) ); ?>
 		<?php if ( $oria_s['others'] ) : ?>
 			<div class="fac-compare__scroll" tabindex="0" role="region" aria-label="<?php esc_attr_e( 'Other ways in', 'oria' ); ?>" style="margin-top:.75rem">
-				<table class="fac-compare__table" style="min-width:34rem">
+				<table class="fac-compare__table fac-compare__table--stack">
 					<caption class="sr-only"><?php esc_html_e( 'Other offers that include it', 'oria' ); ?></caption>
 					<thead><tr>
 						<th scope="col"><?php esc_html_e( 'Other ways in', 'oria' ); ?></th>
@@ -45,9 +45,9 @@ foreach ( FA\rows( $oria_id ) as $oria_row ) :
 						<?php foreach ( (array) $oria_s['others'] as $oria_o ) : ?>
 							<tr>
 								<th scope="row"><?php echo esc_html( (string) $oria_o['product'] ); ?></th>
-								<td><?php echo esc_html( FA\KINDS[ $oria_o['kind'] ] ?? '' ); ?></td>
-								<td><?php echo esc_html( FA\price_label( $oria_o ) ); ?></td>
-								<td><?php echo esc_html( (string) $oria_o['conditions'] ); ?></td>
+								<td data-label="<?php esc_attr_e( 'Kind', 'oria' ); ?>"><?php echo esc_html( FA\KINDS[ $oria_o['kind'] ] ?? '' ); ?></td>
+								<td data-label="<?php esc_attr_e( 'Price', 'oria' ); ?>"><?php echo esc_html( FA\price_label( $oria_o ) ); ?></td>
+								<td data-label="<?php esc_attr_e( 'Conditions', 'oria' ); ?>"><?php echo esc_html( (string) $oria_o['conditions'] ); ?></td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
