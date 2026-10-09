@@ -270,6 +270,64 @@
 				"Session format",
 				"Registration"
 			]
+		},
+		{
+			"key": "health-stores",
+			"slug": "health-food-stores",
+			"name": "Health Food Stores",
+			"taxonomy": "practice",
+			"parent": "nutrition",
+			"kind": "place",
+			"feelings": [
+				"recharge",
+				"reset"
+			],
+			"intro": "Find independent health food stores around Perth: organic produce, bulk and refill aisles, supplements and allergy-friendly ranges, with what each store stocks and how to shop.",
+			"description": "Independent health food stores in Perth: organic produce, bulk and refill, supplements, gluten-free and plant-based ranges, in-store naturopaths and cafés, with hours and delivery options.",
+			"tags": [
+				{
+					"slug": "organic-produce",
+					"name": "Organic produce"
+				},
+				{
+					"slug": "bulk-refill",
+					"name": "Bulk & refill"
+				},
+				{
+					"slug": "supplements",
+					"name": "Supplements & vitamins"
+				},
+				{
+					"slug": "in-store-naturopath",
+					"name": "Naturopath in store"
+				},
+				{
+					"slug": "store-cafe",
+					"name": "Café on site"
+				}
+			],
+			"details": [
+				"Range",
+				"Bulk & refill",
+				"Dietary ranges",
+				"Practitioner in store",
+				"Café",
+				"Delivery & click-and-collect"
+			],
+			"glance": {
+				"eyebrow": "The store at a glance",
+				"heading": "Know what's on the shelves before you go.",
+				"when": "Opening hours",
+				"summary": [
+					"Range",
+					"Bulk & refill",
+					"Delivery & click-and-collect"
+				],
+				"prep_heading": "Good to know",
+				"source_note": "Stores change their range and hours — check with the store before a special trip.",
+				"link_note": "(opens the store’s website in a new tab)",
+				"hide_cost": true
+			}
 		}
 	]
 }

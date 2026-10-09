@@ -1,0 +1,298 @@
+{
+  "batch": "2026-10-09-health-stores",
+  "_note": "Every domain considered. decision: fetch = store's own site used as evidence; discovery = used only to find candidates; manual = needs an editor; reject = ruled out, with reason.",
+  "sources": [
+    {
+      "category": "health-stores",
+      "domain": "earthwholefood.com.au",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://earthwholefood.com.au/",
+        "https://earthwholefood.com.au/our-shop/",
+        "https://earthwholefood.com.au/contact-us/",
+        "https://earthwholefood.com.au/nutrition-clinic/",
+        "https://earthwholefood.com.au/our-cafe/"
+      ],
+      "reason": "Store's own site; every quoted page listed."
+    },
+    {
+      "category": "health-stores",
+      "domain": "thelittlebigstore.com.au",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://www.thelittlebigstore.com.au/about-us/",
+        "https://www.thelittlebigstore.com.au/",
+        "https://www.thelittlebigstore.com.au/contact-us/",
+        "https://www.thelittlebigstore.com.au/faq/"
+      ],
+      "reason": "Store's own site; every quoted page listed."
+    },
+    {
+      "category": "health-stores",
+      "domain": "dunnandwalton.com.au",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://dunnandwalton.com.au/pages/our-story",
+        "https://dunnandwalton.com.au/pages/contact-us",
+        "https://dunnandwalton.com.au/pages/faq"
+      ],
+      "reason": "Store's own site; every quoted page listed."
+    },
+    {
+      "category": "health-stores",
+      "domain": "scoopwholefoodswa.com.au",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://www.scoopwholefoodswa.com.au/",
+        "https://www.scoopwholefoodswa.com.au/pages/contact",
+        "https://www.scoopwholefoodswa.com.au/pages/our-story"
+      ],
+      "reason": "Store's own site; every quoted page listed."
+    },
+    {
+      "category": "health-stores",
+      "domain": "looseproduce.com.au",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://looseproduce.com.au/"
+      ],
+      "reason": "Store's own site; every quoted page listed."
+    },
+    {
+      "category": "health-stores",
+      "domain": "replenishkalamunda.com.au",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://www.replenishkalamunda.com.au/",
+        "https://www.replenishkalamunda.com.au/contact-us",
+        "https://www.replenishkalamunda.com.au/faq"
+      ],
+      "reason": "Store's own site; every quoted page listed."
+    },
+    {
+      "category": "health-stores",
+      "domain": "wastelesspantry.com.au",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://www.wastelesspantry.com.au/contact-us-2/mundaring/",
+        "https://www.wastelesspantry.com.au/",
+        "https://www.wastelesspantry.com.au/contact-us-2/bassendean/"
+      ],
+      "reason": "Store's own site; every quoted page listed."
+    },
+    {
+      "category": "health-stores",
+      "domain": "organiccollective.com.au",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://www.organiccollective.com.au/map/",
+        "https://www.organiccollective.com.au/",
+        "https://www.organiccollective.com.au/how-it-works/"
+      ],
+      "reason": "Store's own site; every quoted page listed."
+    },
+    {
+      "category": "health-stores",
+      "domain": "samshealthemporium.com.au",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://samshealthemporium.com.au/",
+        "https://samshealthemporium.com.au/contact-us/",
+        "https://samshealthemporium.com.au/about-us/"
+      ],
+      "reason": "Store's own site; every quoted page listed."
+    },
+    {
+      "category": "health-stores",
+      "domain": "pantryman.com.au",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://www.pantryman.com.au/our-stores/"
+      ],
+      "reason": "Store's own site; every quoted page listed."
+    },
+    {
+      "category": "health-stores",
+      "domain": "thewellnessstoremandurah.com.au",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://www.thewellnessstoremandurah.com.au/about/",
+        "https://www.thewellnessstoremandurah.com.au/"
+      ],
+      "reason": "Store's own site; every quoted page listed."
+    },
+    {
+      "category": "health-stores",
+      "domain": "magicapplewholefoods.com",
+      "type": "store-site",
+      "decision": "fetch",
+      "urls": [
+        "https://www.magicapplewholefoods.com/"
+      ],
+      "reason": "Existing listing's own site (Wix, JS-only); only the title/meta description is readable. Record is manual."
+    },
+    {
+      "category": "health-stores",
+      "domain": "mannawholefoods.com.au",
+      "type": "store-site",
+      "decision": "manual",
+      "urls": [],
+      "reason": "Existing listing; site returns 403 Forbidden to automated requests."
+    },
+    {
+      "category": "health-stores",
+      "domain": "hillsfreshwa.com.au",
+      "type": "store-site",
+      "decision": "manual",
+      "urls": [],
+      "reason": "Readable store site, but a general fresh-produce/gourmet grocer; borderline, left for an editor."
+    },
+    {
+      "category": "health-stores",
+      "domain": "kakulassister.net.au",
+      "type": "store-site",
+      "decision": "manual",
+      "urls": [],
+      "reason": "Readable store site, but a gourmet/continental grocer with bulk; borderline, left for an editor."
+    },
+    {
+      "category": "health-stores",
+      "domain": "smallfarmswholefoods.com.au",
+      "type": "store-site",
+      "decision": "manual",
+      "urls": [],
+      "reason": "Domain did not resolve."
+    },
+    {
+      "category": "health-stores",
+      "domain": "thestorehousefremantle.com.au",
+      "type": "store-site",
+      "decision": "manual",
+      "urls": [],
+      "reason": "Main site returns a WordPress critical error (500)."
+    },
+    {
+      "category": "health-stores",
+      "domain": "pranahealthfood.com.au",
+      "type": "store-site",
+      "decision": "manual",
+      "urls": [],
+      "reason": "Domain did not resolve."
+    },
+    {
+      "category": "health-stores",
+      "domain": "organicvalleywa.com.au",
+      "type": "store-site",
+      "decision": "manual",
+      "urls": [],
+      "reason": "Domain parked."
+    },
+    {
+      "category": "health-stores",
+      "domain": "aliveorganics.com.au",
+      "type": "store-site",
+      "decision": "reject",
+      "urls": [],
+      "reason": "Store reported closed; domain did not resolve."
+    },
+    {
+      "category": "health-stores",
+      "domain": "beyondorganicwholefoods.com.au",
+      "type": "store-site",
+      "decision": "reject",
+      "urls": [],
+      "reason": "Victorian store, out of area."
+    },
+    {
+      "category": "health-stores",
+      "domain": "healthkick.com.au",
+      "type": "store-site",
+      "decision": "reject",
+      "urls": [],
+      "reason": "Vitamin/supplement chain."
+    },
+    {
+      "category": "health-stores",
+      "domain": "thesourcebulkfoods.com.au",
+      "type": "store-site",
+      "decision": "reject",
+      "urls": [],
+      "reason": "National bulk-food franchise."
+    },
+    {
+      "category": "health-stores",
+      "domain": "flannerys.com.au",
+      "type": "store-site",
+      "decision": "reject",
+      "urls": [],
+      "reason": "Eastern-states chain, no Perth store."
+    },
+    {
+      "category": "health-stores",
+      "domain": "facebook.com",
+      "type": "directory",
+      "decision": "discovery",
+      "urls": [],
+      "reason": "Social media; used only to note stores without their own site."
+    },
+    {
+      "category": "health-stores",
+      "domain": "instagram.com",
+      "type": "directory",
+      "decision": "discovery",
+      "urls": [],
+      "reason": "Social media; used only to note stores without their own site."
+    },
+    {
+      "category": "health-stores",
+      "domain": "yelp.com",
+      "type": "directory",
+      "decision": "discovery",
+      "urls": [],
+      "reason": "Directory used to find candidates and closures."
+    },
+    {
+      "category": "health-stores",
+      "domain": "happycow.net",
+      "type": "directory",
+      "decision": "discovery",
+      "urls": [],
+      "reason": "Directory used to find candidates and closures."
+    },
+    {
+      "category": "health-stores",
+      "domain": "theurbanlist.com",
+      "type": "directory",
+      "decision": "discovery",
+      "urls": [],
+      "reason": "Editorial list used to find candidates."
+    },
+    {
+      "category": "health-stores",
+      "domain": "perthisok.com",
+      "type": "directory",
+      "decision": "discovery",
+      "urls": [],
+      "reason": "Editorial list used to find candidates."
+    },
+    {
+      "category": "health-stores",
+      "domain": "avenueperth.com",
+      "type": "directory",
+      "decision": "discovery",
+      "urls": [],
+      "reason": "Editorial list used to find candidates."
+    }
+  ]
+}

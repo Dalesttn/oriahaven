@@ -507,6 +507,7 @@ function join_label( string $method, string $url = '' ): string {
 		'turn-up'  => __( 'See where to meet', 'oria' ),
 		'email'    => __( 'Email the organiser', 'oria' ),
 		'message'  => __( 'Message the organiser', 'oria' ),
+		'visit'    => __( 'Plan your visit', 'oria' ),
 	);
 	return $map[ $method ] ?? __( 'How to join', 'oria' );
 }

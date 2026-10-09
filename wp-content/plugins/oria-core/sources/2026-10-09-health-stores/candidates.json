@@ -1,0 +1,2083 @@
+{
+  "batch": "2026-10-09-health-stores",
+  "_note": "Independent health food stores in and around Perth. One record per store. status: candidate = import as a draft once verified; manual = real and relevant but needs an editor; rejected = out of scope, with reason. Evidence is from each store's own website. Blurbs are our own summaries; no health claims. Unknown stays unknown. Personal phone numbers and emails were not collected.",
+  "candidates": [
+    {
+      "key": "earth-wholefoods-joondalup",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "Earth Wholefoods",
+      "kind": "place",
+      "website": "https://earthwholefood.com.au/",
+      "source_urls": [
+        "https://earthwholefood.com.au/",
+        "https://earthwholefood.com.au/our-shop/",
+        "https://earthwholefood.com.au/contact-us/",
+        "https://earthwholefood.com.au/nutrition-clinic/",
+        "https://earthwholefood.com.au/our-cafe/"
+      ],
+      "suburb": "Joondalup",
+      "region": "",
+      "meeting_point": "",
+      "address": "3/25 Delage Street, Joondalup WA 6027",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "A West Australian-owned organic shop and plant-based café in Joondalup, stocking certified organic fruit and veg, daily sourdough, a bulk section, fridge and freezer lines, eco household goods and natural skincare. Qualified nutritionists consult from the store's own clinic.",
+      "join": {
+        "method": "visit",
+        "url": "https://earthwholefood.com.au/contact-us/"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mon–Fri 8am–5:30pm; Sat 8am–4pm; Sun closed",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "organic-produce",
+        "bulk-refill",
+        "supplements",
+        "store-cafe"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Certified organic fresh produce, organic sourdough bread, fridge and frozen lines, eco cleaning and household products, natural skincare and personal care, baby and pet care, organic seed packets"
+        },
+        {
+          "label": "Bulk & refill",
+          "value": "Bulk section in store"
+        },
+        {
+          "label": "Dietary ranges",
+          "value": "Organic, vegan and gluten-free food; allergy-free products"
+        },
+        {
+          "label": "Practitioner in store",
+          "value": "Nutrition clinic with qualified nutritionists; book by calling the store"
+        },
+        {
+          "label": "Café",
+          "value": "100% plant-based organic café, dine-in or take-away, with specialty coffee and smoothies"
+        }
+      ],
+      "flags": [
+        "Practitioners are nutritionists (BHSc), not naturopaths, so the in-store-naturopath tag is not applied; the Practitioner detail covers it.",
+        "Café page lists Sunday 10am–2pm while the contact page and footer say Sunday closed; schedule uses the contact page. Confirm Sunday hours.",
+        "Site footer says © 2021; the site has an online shop/cart but no delivery terms were found, so Delivery is left unknown."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://earthwholefood.com.au/",
+          "excerpt": "Earth Wholefoods Shop & Café were created out of one woman’s determination to provide a place where great nutritional advice can be had"
+        },
+        {
+          "field": "activity",
+          "url": "https://earthwholefood.com.au/our-shop/",
+          "excerpt": "We stock fresh, organic, pesticide, chemical and allergy-free products that are good for the health of the environment"
+        },
+        {
+          "field": "location",
+          "url": "https://earthwholefood.com.au/contact-us/",
+          "excerpt": "Address: 3/25 Delage Street, Joondalup WA 6027"
+        },
+        {
+          "field": "cost",
+          "url": "https://earthwholefood.com.au/",
+          "excerpt": "Purchase wholesome organic, vegan and gluten-free food in our shop"
+        },
+        {
+          "field": "schedule",
+          "url": "https://earthwholefood.com.au/contact-us/",
+          "excerpt": "Opening Hours: Mon – Fri : 8am – 5:30pm Sat : 8am – 4pm Sun : CLOSED"
+        },
+        {
+          "field": "join",
+          "url": "https://earthwholefood.com.au/contact-us/",
+          "excerpt": "Phone: 08 9301 1141 Address: 3/25 Delage Street, Joondalup WA 6027"
+        },
+        {
+          "field": "tag:organic-produce",
+          "url": "https://earthwholefood.com.au/",
+          "excerpt": "We stock a large range of fresh seasonal certified organic fruit and veggies from local and Eastern states growers."
+        },
+        {
+          "field": "tag:bulk-refill",
+          "url": "https://earthwholefood.com.au/our-shop/",
+          "excerpt": "Supplements and Health Care Baby Care Bulk Section Organic and Vegan Cafe"
+        },
+        {
+          "field": "tag:supplements",
+          "url": "https://earthwholefood.com.au/our-shop/",
+          "excerpt": "Safe Skincare and Beauty Products Supplements and Health Care"
+        },
+        {
+          "field": "tag:store-cafe",
+          "url": "https://earthwholefood.com.au/",
+          "excerpt": "Earth Wholefoods café is 100% plant-based. We use certified organic ingredients where possible and make everything in-house."
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://earthwholefood.com.au/our-shop/",
+          "excerpt": "Certified Organic Fresh Produce Eco Cleaning and Household Products Safe and Environmentally Friendly Personal Hygiene Products"
+        },
+        {
+          "field": "detail:Bulk & refill",
+          "url": "https://earthwholefood.com.au/our-shop/",
+          "excerpt": "Baby Care Bulk Section Organic and Vegan Cafe Pet Care"
+        },
+        {
+          "field": "detail:Dietary ranges",
+          "url": "https://earthwholefood.com.au/",
+          "excerpt": "Purchase wholesome organic, vegan and gluten-free food in our shop or visit our cafe"
+        },
+        {
+          "field": "detail:Practitioner in store",
+          "url": "https://earthwholefood.com.au/nutrition-clinic/",
+          "excerpt": "Our team of qualified nutritionists utilise evidence-based practices in order to educate clients"
+        },
+        {
+          "field": "detail:Café",
+          "url": "https://earthwholefood.com.au/our-cafe/",
+          "excerpt": "At Earth Wholefoods Café we serve healthy organic wholesome food."
+        }
+      ]
+    },
+    {
+      "key": "little-big-store-wangara",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "The Little Big Store",
+      "kind": "place",
+      "website": "https://www.thelittlebigstore.com.au/",
+      "source_urls": [
+        "https://www.thelittlebigstore.com.au/about-us/",
+        "https://www.thelittlebigstore.com.au/",
+        "https://www.thelittlebigstore.com.au/contact-us/",
+        "https://www.thelittlebigstore.com.au/faq/"
+      ],
+      "suburb": "Wangara",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "A certified organic grocer in Wangara working with WA organic and biodynamic farms: seasonal fruit and veg, meat, dairy, bread, pantry staples and weigh-and-pay wholefoods, with home delivery across most of metro Perth and click and collect.",
+      "join": {
+        "method": "visit",
+        "url": "https://www.thelittlebigstore.com.au/contact-us/"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mon–Fri 9am–5pm; Sat 8:30am–2pm; Sun & public holidays closed",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "organic-produce",
+        "bulk-refill",
+        "supplements"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Certified organic and biodynamic fruit and veg, meat, dairy, eggs, bread, pantry items, drinks, household and personal care"
+        },
+        {
+          "label": "Bulk & refill",
+          "value": "Weigh & pay wholefoods"
+        },
+        {
+          "label": "Dietary ranges",
+          "value": "Gluten-free and plant-based ranges (tofu, tempeh, non-dairy alternatives, vegan snacks and pantry)"
+        },
+        {
+          "label": "Delivery & click-and-collect",
+          "value": "Online shop with home delivery to most of metro Perth, weekly box subscriptions, and click & collect Tue–Thu 10:30am–4:30pm"
+        }
+      ],
+      "flags": [
+        "Site gives Wangara but no street address; set the address by hand if wanted.",
+        "Also trades at Subiaco Markets on Saturday mornings; a 'Cafe (NEW)' menu item exists but the café is not described, so no café tag."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.thelittlebigstore.com.au/about-us/",
+          "excerpt": "The Little Big Store is passionate about working closely with our Western Australian biodynamic and organic farming families"
+        },
+        {
+          "field": "activity",
+          "url": "https://www.thelittlebigstore.com.au/about-us/",
+          "excerpt": "We have a bricks and mortar store as well as offering an extensive online delivery service to majority of metro Perth."
+        },
+        {
+          "field": "location",
+          "url": "https://www.thelittlebigstore.com.au/",
+          "excerpt": "VISIT US IN STORE LOCATED IN WANGARA GET DIRECTIONS"
+        },
+        {
+          "field": "cost",
+          "url": "https://www.thelittlebigstore.com.au/",
+          "excerpt": "FREE DELIVERY On orders over $70 Shop now"
+        },
+        {
+          "field": "schedule",
+          "url": "https://www.thelittlebigstore.com.au/contact-us/",
+          "excerpt": "Opening Hours Monday to Friday: 9:00am – 5:00pm Saturday: 8.30am – 2.00pm Sunday & Public Holidays: CLOSED"
+        },
+        {
+          "field": "join",
+          "url": "https://www.thelittlebigstore.com.au/contact-us/",
+          "excerpt": "You can visit us instore, online, and at Subiaco Markets"
+        },
+        {
+          "field": "tag:organic-produce",
+          "url": "https://www.thelittlebigstore.com.au/faq/",
+          "excerpt": "Our Seasonal Mixed Boxes offer a variety of Certified Organic and Biodynamic produce to the value of your box."
+        },
+        {
+          "field": "tag:bulk-refill",
+          "url": "https://www.thelittlebigstore.com.au/",
+          "excerpt": "Flour, Sugar & Baking Chocolate, Chips & Snacks Weigh & Pay Wholefoods Gluten Free Cereals"
+        },
+        {
+          "field": "tag:supplements",
+          "url": "https://www.thelittlebigstore.com.au/",
+          "excerpt": "Cleaning Products Kitchen Products Health Products & Supplements Bathroom Products Pet Items"
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://www.thelittlebigstore.com.au/about-us/",
+          "excerpt": "We offer a large range of meats, dairy items, breads, pantry items and bulk-foods all of which are Certified Organic"
+        },
+        {
+          "field": "detail:Bulk & refill",
+          "url": "https://www.thelittlebigstore.com.au/",
+          "excerpt": "Chocolate, Chips & Snacks Weigh & Pay Wholefoods Gluten Free"
+        },
+        {
+          "field": "detail:Dietary ranges",
+          "url": "https://www.thelittlebigstore.com.au/",
+          "excerpt": "Plant Based Tofu, Tempeh & Patties Non Dairy Alternatives Vegan Chocolate & Snacks Vegan Pantry Items"
+        },
+        {
+          "field": "detail:Delivery & click-and-collect",
+          "url": "https://www.thelittlebigstore.com.au/faq/",
+          "excerpt": "Click & Collect is available Tuesday – Thursday between 10.30am and 4.30pm."
+        }
+      ]
+    },
+    {
+      "key": "dunn-and-walton-doubleview",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "Dunn & Walton",
+      "kind": "place",
+      "website": "https://dunnandwalton.com.au/",
+      "source_urls": [
+        "https://dunnandwalton.com.au/pages/our-story",
+        "https://dunnandwalton.com.au/pages/contact-us",
+        "https://dunnandwalton.com.au/pages/faq"
+      ],
+      "suburb": "Doubleview",
+      "region": "",
+      "meeting_point": "",
+      "address": "Shop 8, 257 Scarborough Beach Rd, Doubleview WA 6018",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "An all-organic wholefoods store and takeaway café in Doubleview, with certified organic fruit and veg, pantry and fridge lines, household and personal care, and seasonal fruit and veg boxes for delivery or same-day pickup.",
+      "join": {
+        "method": "visit",
+        "url": "https://dunnandwalton.com.au/pages/contact-us"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mon–Wed 7am–5:30pm; Thu 7am–6pm; Fri 7am–5:30pm; Sat 8am–5pm; Sun 8am–4pm; public holidays 8am–2pm",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "organic-produce",
+        "store-cafe"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Organic-only range: certified organic fruit and veg, pantry, fridge (dairy, eggs, juice), house-made kitchen food, household and personal care"
+        },
+        {
+          "label": "Café",
+          "value": "Organic takeaway café with food made on site and specialty coffee"
+        },
+        {
+          "label": "Delivery & click-and-collect",
+          "value": "Online shop; seasonal fruit and veg boxes delivered in Perth (Wed and Sat by postcode) or same-day pickup"
+        }
+      ],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://dunnandwalton.com.au/pages/our-story",
+          "excerpt": "We blossomed again in 2015 to the unique and wonderful place we now call Dunn & Walton."
+        },
+        {
+          "field": "activity",
+          "url": "https://dunnandwalton.com.au/pages/contact-us",
+          "excerpt": "ORGANIC WHOLEFOODS STORE & CAFE DOUBLEVIEW, OR DELIVERY"
+        },
+        {
+          "field": "location",
+          "url": "https://dunnandwalton.com.au/pages/contact-us",
+          "excerpt": "Shop 8, 257 Scarborough Beach Rd Doubleview Western Australia 6018"
+        },
+        {
+          "field": "cost",
+          "url": "https://dunnandwalton.com.au/pages/our-story",
+          "excerpt": "We offer a great range of organic food in store and for delivery"
+        },
+        {
+          "field": "schedule",
+          "url": "https://dunnandwalton.com.au/pages/contact-us",
+          "excerpt": "Monday 7am - 5:30pm Tuesday 7am - 5:30pm Wednesday 7am - 5:30pm Thursday 7am - 6pm Friday 7am - 5:30pm Saturday 8am - 5pm Sunday 8am - 4pm"
+        },
+        {
+          "field": "join",
+          "url": "https://dunnandwalton.com.au/pages/contact-us",
+          "excerpt": "Shop 8, 257 Scarborough Beach Rd Doubleview Western Australia 6018"
+        },
+        {
+          "field": "tag:organic-produce",
+          "url": "https://dunnandwalton.com.au/pages/faq",
+          "excerpt": "All our fresh produce groceries are organic, produce is sourced from certified organic and biodynamic farms."
+        },
+        {
+          "field": "tag:store-cafe",
+          "url": "https://dunnandwalton.com.au/pages/our-story",
+          "excerpt": "Alongside our store we run an organic takeaway café. With all food made on site from ingredients in our store alongside specialty coffee."
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://dunnandwalton.com.au/pages/our-story",
+          "excerpt": "there is no room for confusion as we don’t stock foods that aren’t organic"
+        },
+        {
+          "field": "detail:Café",
+          "url": "https://dunnandwalton.com.au/pages/our-story",
+          "excerpt": "Alongside our store we run an organic takeaway café."
+        },
+        {
+          "field": "detail:Delivery & click-and-collect",
+          "url": "https://dunnandwalton.com.au/pages/contact-us",
+          "excerpt": "available for same day pick-up or delivered in Perth WA, see terms for details"
+        }
+      ]
+    },
+    {
+      "key": "scoop-wholefoods-cottesloe",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "Scoop Wholefoods Cottesloe",
+      "kind": "place",
+      "website": "https://www.scoopwholefoodswa.com.au/",
+      "source_urls": [
+        "https://www.scoopwholefoodswa.com.au/",
+        "https://www.scoopwholefoodswa.com.au/pages/contact",
+        "https://www.scoopwholefoodswa.com.au/pages/our-story"
+      ],
+      "suburb": "Cottesloe",
+      "region": "",
+      "meeting_point": "",
+      "address": "460 Stirling Hwy, Cottesloe WA 6011",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "A family-run bulk wholefoods store in Cottesloe Central where you scoop nuts, grains, spices, chocolate and pantry staples by the gram, with nut butters ground in store, eco household refills and natural body care. Bring your own jar or use theirs.",
+      "join": {
+        "method": "visit",
+        "url": "https://www.scoopwholefoodswa.com.au/pages/contact"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mon–Fri 9am–6pm; Sat 9am–5pm; Sun 11am–4pm",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "bulk-refill",
+        "supplements"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Bulk nuts, dried fruit, grains, rice, pasta, beans and lentils, herbs and spices, tea and coffee, chocolate; oils and pantry; nut butters ground in store; eco cleaning refills; natural body and face care"
+        },
+        {
+          "label": "Bulk & refill",
+          "value": "Everything sold by the gram; bring your own jar; household refills"
+        },
+        {
+          "label": "Dietary ranges",
+          "value": "Gluten-free, vegan, high-protein, no-added-sugar and caffeine-free ranges; hundreds of certified organic lines"
+        },
+        {
+          "label": "Delivery & click-and-collect",
+          "value": "Online shop; free pickup in Cottesloe; free local delivery to nearby suburbs over a minimum spend; WA-wide delivery"
+        }
+      ],
+      "flags": [
+        "Trades as Scoop Wholefoods Cottesloe; the site presents it as a family-run store but the Scoop name is shared with other bulk stores, so check whether it is part of a franchise network.",
+        "Owners' story page contains health claims about diet; the blurb avoids them.",
+        "Same suburb as the existing Magic Apple listing but a different business."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.scoopwholefoodswa.com.au/",
+          "excerpt": "Bulk Foods Perth | Scoop Wholefoods Cottesloe"
+        },
+        {
+          "field": "activity",
+          "url": "https://www.scoopwholefoodswa.com.au/",
+          "excerpt": "Nuts, grains, chocolate, spices and eco household refills, scooped by hand at Cottesloe Central."
+        },
+        {
+          "field": "location",
+          "url": "https://www.scoopwholefoodswa.com.au/pages/contact",
+          "excerpt": "460 Stirling Hwy, Cottesloe WA 6011"
+        },
+        {
+          "field": "cost",
+          "url": "https://www.scoopwholefoodswa.com.au/",
+          "excerpt": "Pick from over 700 products on our shelves and in our bins, in the amounts you want."
+        },
+        {
+          "field": "schedule",
+          "url": "https://www.scoopwholefoodswa.com.au/pages/contact",
+          "excerpt": "Monday - Friday 9:00 am - 6:00 pm Saturday 9:00 am - 5:00 pm Sunday 11:00 am - 4:00 pm"
+        },
+        {
+          "field": "join",
+          "url": "https://www.scoopwholefoodswa.com.au/pages/contact",
+          "excerpt": "460 Stirling Hwy, Cottesloe WA 6011"
+        },
+        {
+          "field": "tag:bulk-refill",
+          "url": "https://www.scoopwholefoodswa.com.au/",
+          "excerpt": "Wholefoods by the gram at 460 Stirling Highway, Cottesloe. Nuts, grains, spices, chocolate, refills and skincare, with no minimum. Bring your own jar."
+        },
+        {
+          "field": "tag:supplements",
+          "url": "https://www.scoopwholefoodswa.com.au/",
+          "excerpt": "HEALTH & PROTEIN Protein Powders Superfoods Supplements & Vitamins"
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://www.scoopwholefoodswa.com.au/",
+          "excerpt": "Almond, peanut, cashew and macadamia butter ground in store while you wait"
+        },
+        {
+          "field": "detail:Bulk & refill",
+          "url": "https://www.scoopwholefoodswa.com.au/pages/our-story",
+          "excerpt": "Grab a paper bag or a glass jar, and come say hi!"
+        },
+        {
+          "field": "detail:Dietary ranges",
+          "url": "https://www.scoopwholefoodswa.com.au/",
+          "excerpt": "Shop by Diet & Lifestyle Gluten Free"
+        },
+        {
+          "field": "detail:Delivery & click-and-collect",
+          "url": "https://www.scoopwholefoodswa.com.au/",
+          "excerpt": "Free pickup at Cottesloe, ready in 4 hours. WA delivery $20, free over $250. Western Australia only."
+        }
+      ]
+    },
+    {
+      "key": "loose-produce-victoria-park",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "Loose Produce",
+      "kind": "place",
+      "website": "https://looseproduce.com.au/",
+      "source_urls": [
+        "https://looseproduce.com.au/"
+      ],
+      "suburb": "Victoria Park",
+      "region": "",
+      "meeting_point": "",
+      "address": "171 Albany Highway, Victoria Park",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "An organic wholefood grocer on Albany Highway in Victoria Park, with organic fruit and veg, a large weigh-and-pay range, hard-to-find gluten-free flours and baking goods, eco bathroom and laundry supplies, plus a café counter and take-home meals.",
+      "join": {
+        "method": "visit",
+        "url": "https://looseproduce.com.au/"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "organic-produce",
+        "bulk-refill",
+        "store-cafe"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Organic fruit and veg, loose and packaged wholefoods for fridge, freezer and pantry, spices, teas, premade meals, ethical bathroom, laundry and kitchen supplies"
+        },
+        {
+          "label": "Bulk & refill",
+          "value": "Extensive weigh-and-pay range of loose produce"
+        },
+        {
+          "label": "Dietary ranges",
+          "value": "Gluten-free, vegan and paleo specialty items; will try to source dietary requirements on request"
+        },
+        {
+          "label": "Café",
+          "value": "Café with barista coffee, smoothies, lunches and snacks; coffee window from 7:30am"
+        }
+      ],
+      "flags": [
+        "One-page site with no opening hours; schedule left blank.",
+        "The site's FAQ section still holds template placeholder text (including the BYO-containers question), so BYO containers is not claimed."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "Loose Produce is one of Perth’s best-kept secrets."
+        },
+        {
+          "field": "activity",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "looseproduce.com.au | Organic | Wholefood Grocer | Victoria Park"
+        },
+        {
+          "field": "location",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "171 Albany Highway, Victoria Park"
+        },
+        {
+          "field": "cost",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "Then head home with a premade healthy meal for one or the family."
+        },
+        {
+          "field": "join",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "Please come in and say hello, we would love to have you drop on by!"
+        },
+        {
+          "field": "tag:organic-produce",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "We have a great range of fresh organic fruit and vegetables as well as many organic loose and packaged items available."
+        },
+        {
+          "field": "tag:bulk-refill",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "an extensive collection of weigh n pay as well as ethical bathroom, laundry and kitchen supplies"
+        },
+        {
+          "field": "tag:store-cafe",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "Enjoy one of our barista beverages with something from our delicious selection of lunches, snacks, treat."
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "We carry a comprehensive range of loose and packaged whole food items for fridge, freezer and pantry."
+        },
+        {
+          "field": "detail:Bulk & refill",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "Healthy café option, organic fresh vegetables, grocery items, an extensive collection of weigh n pay"
+        },
+        {
+          "field": "detail:Dietary ranges",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "We stock a treasure trove of speciality ingredients including gourmet, organic, gluten-free, vegan, paleo and everyone in-between."
+        },
+        {
+          "field": "detail:Café",
+          "url": "https://looseproduce.com.au/",
+          "excerpt": "Our coffee window is open from 7:30am just when you need that coffee before work"
+        }
+      ]
+    },
+    {
+      "key": "replenish-kalamunda",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "Replenish",
+      "kind": "place",
+      "website": "https://www.replenishkalamunda.com.au/",
+      "source_urls": [
+        "https://www.replenishkalamunda.com.au/",
+        "https://www.replenishkalamunda.com.au/contact-us",
+        "https://www.replenishkalamunda.com.au/faq"
+      ],
+      "suburb": "Kalamunda",
+      "region": "",
+      "meeting_point": "",
+      "address": "Shop 12/12 Barber St, Kalamunda",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "A waste-less bulk store in Kalamunda selling pantry staples, oils, sauces, tea and coffee, cleaning products and toiletries by weight. Bring your own containers to fill, or use their paper bags and donated jars.",
+      "join": {
+        "method": "visit",
+        "url": "https://www.replenishkalamunda.com.au/contact-us"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mon closed; Tue–Fri 9am–5pm; Sat 9am–3pm; Sun 8am–1pm",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "bulk-refill"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Flours, pasta, rice, beans, seeds, dried fruit, nuts, cereals, oils, sauces, vinegars, honey, tea and coffee; household cleaning products, toiletries and reusables"
+        },
+        {
+          "label": "Bulk & refill",
+          "value": "Self-weighing bulk store: bring your own containers, or use paper bags and donated sterilised jars"
+        },
+        {
+          "label": "Delivery & click-and-collect",
+          "value": "Click and collect online store"
+        }
+      ],
+      "flags": [
+        "Site footer reads © 2017-2021; confirm hours are current.",
+        "Positioned as a zero-waste bulk store rather than an organic grocer; no organic produce claimed."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.replenishkalamunda.com.au/",
+          "excerpt": "Welcome to Replenish. Replenish is born out of the growing interest in waste and its minimisation."
+        },
+        {
+          "field": "activity",
+          "url": "https://www.replenishkalamunda.com.au/",
+          "excerpt": "By providing food, home and personal care in bulk we hope to help our community reduce one use plastics and food waste."
+        },
+        {
+          "field": "location",
+          "url": "https://www.replenishkalamunda.com.au/contact-us",
+          "excerpt": "Find us at Shop 12 / 12 Barber St Kalamunda, Perth Hills, Western Australia."
+        },
+        {
+          "field": "cost",
+          "url": "https://www.replenishkalamunda.com.au/contact-us",
+          "excerpt": "Why not visit our online shop and place your order straight away."
+        },
+        {
+          "field": "schedule",
+          "url": "https://www.replenishkalamunda.com.au/contact-us",
+          "excerpt": "Monday - Closed Tuesday to Friday - 9am to 5pm Saturday - 9am to 3pm Sunday - 8am to 1pm"
+        },
+        {
+          "field": "join",
+          "url": "https://www.replenishkalamunda.com.au/contact-us",
+          "excerpt": "Find us at Shop 12 / 12 Barber St Kalamunda, Perth Hills, Western Australia."
+        },
+        {
+          "field": "tag:bulk-refill",
+          "url": "https://www.replenishkalamunda.com.au/",
+          "excerpt": "We have a surprisingly simple self-weighing system that allows you to bring your own container to fill."
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://www.replenishkalamunda.com.au/faq",
+          "excerpt": "At Replenish we sell most foods you would expect to find in a supermarket including flours, pasta, rice, beans, seeds, dried fruits, nuts"
+        },
+        {
+          "field": "detail:Bulk & refill",
+          "url": "https://www.replenishkalamunda.com.au/faq",
+          "excerpt": "We take donations from our customers of glass jars and bottles, these are sterilised, weighed and available free for anyone to use in our shop."
+        },
+        {
+          "field": "detail:Delivery & click-and-collect",
+          "url": "https://www.replenishkalamunda.com.au/faq",
+          "excerpt": "Yes, you can. Replenish has a Click and Collect online store."
+        }
+      ]
+    },
+    {
+      "key": "wasteless-pantry-mundaring",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "Wasteless Pantry Mundaring",
+      "kind": "place",
+      "website": "https://www.wastelesspantry.com.au/",
+      "source_urls": [
+        "https://www.wastelesspantry.com.au/contact-us-2/mundaring/",
+        "https://www.wastelesspantry.com.au/"
+      ],
+      "suburb": "Mundaring",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": true,
+      "blurb": "The original Wasteless Pantry, a zero-waste bulk food store in Mundaring open since 2015, with nuts, spices, dried fruit, oils, vinegars and coffee alongside natural cleaning and personal care products. Bring containers to refill, or order online for pickup or delivery.",
+      "join": {
+        "method": "visit",
+        "url": "https://www.wastelesspantry.com.au/contact-us-2/mundaring/"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mon–Fri 9am–5:30pm; Sat 9am–5pm; Sun 11am–4pm; closed public holidays",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "bulk-refill"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Bulk foods including organic and specialty items, nuts, spices, dried fruit, oils, vinegars, coffee; natural cleaning and personal care products; plastic-free reusables"
+        },
+        {
+          "label": "Bulk & refill",
+          "value": "Bring your own containers to refill, or leave containers with the store"
+        },
+        {
+          "label": "Delivery & click-and-collect",
+          "value": "Online shop with in-store pickup or home delivery (Australia-wide)"
+        }
+      ],
+      "flags": [
+        "Branch of a two-store local chain (Mundaring and Bassendean), each with its own page; no street address is published on the site.",
+        "Online shop is shared by both stores."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/mundaring/",
+          "excerpt": "Since opening in 2015, Wasteless Pantry Mundaring has set the standard in Perth, Australia, for sustainable shopping."
+        },
+        {
+          "field": "activity",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/mundaring/",
+          "excerpt": "As the original store specializing in eco-friendly products and raw bulk foods, we've grown from our roots in Mundaring"
+        },
+        {
+          "field": "location",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/mundaring/",
+          "excerpt": "we've grown from our roots in Mundaring to offer a comprehensive online shopping experience"
+        },
+        {
+          "field": "cost",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/mundaring/",
+          "excerpt": "Online and in-store shopping options to suit all customers."
+        },
+        {
+          "field": "schedule",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/mundaring/",
+          "excerpt": "Opening Hours are: Monday to Friday - 9am to 5:30pm Saturday - 9am to 5pm Sunday - 11am to 4pm CLOSED Public Holidays"
+        },
+        {
+          "field": "join",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/mundaring/",
+          "excerpt": "Wasteless Pantry Mundaring is your premier destination for all your zero-waste needs"
+        },
+        {
+          "field": "tag:bulk-refill",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/mundaring/",
+          "excerpt": "Our store is dedicated to reducing waste and promoting sustainability by encouraging customers to refill and reuse."
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/mundaring/",
+          "excerpt": "Wide range of bulk foods, including organic and specialty items."
+        },
+        {
+          "field": "detail:Bulk & refill",
+          "url": "https://www.wastelesspantry.com.au/",
+          "excerpt": "Bring your own containers to refill at our store, Leave your containers with us for convenient shopping,"
+        },
+        {
+          "field": "detail:Delivery & click-and-collect",
+          "url": "https://www.wastelesspantry.com.au/",
+          "excerpt": "Order online for in-store pickup, or Opt for home delivery,"
+        }
+      ]
+    },
+    {
+      "key": "wasteless-pantry-bassendean",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "Bassendean Wasteless Pantry",
+      "kind": "place",
+      "website": "https://www.wastelesspantry.com.au/",
+      "source_urls": [
+        "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+        "https://www.wastelesspantry.com.au/"
+      ],
+      "suburb": "Bassendean",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": true,
+      "blurb": "Wasteless Pantry's Bassendean store: a zero-waste bulk food shop with organic grains, spices and gluten-free options, plus eco cleaning and personal care products. Bring your own containers to fill, or order online for pickup or delivery.",
+      "join": {
+        "method": "visit",
+        "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mon–Fri 9am–6pm; Sat 9am–5pm; Sun 11am–5pm; closed public holidays",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "bulk-refill"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Bulk foods from organic grains to spices; eco-friendly cleaning products and personal care items"
+        },
+        {
+          "label": "Bulk & refill",
+          "value": "Bring-your-own-container store"
+        },
+        {
+          "label": "Dietary ranges",
+          "value": "Organic and gluten-free options"
+        },
+        {
+          "label": "Delivery & click-and-collect",
+          "value": "Online shop with in-store pickup or home delivery (Australia-wide)"
+        }
+      ],
+      "flags": [
+        "Name is taken word-for-word from the branch page ('Bassendean Wasteless Pantry'); an editor may prefer 'Wasteless Pantry Bassendean'.",
+        "Branch of a two-store local chain; no street address is published on the site."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+          "excerpt": "Discover a cleaner, greener way to shop at Bassendean Wasteless Pantry, a pioneering zero-waste bulk food store"
+        },
+        {
+          "field": "activity",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+          "excerpt": "a pioneering zero-waste bulk food store dedicated to helping you reduce your environmental footprint"
+        },
+        {
+          "field": "location",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+          "excerpt": "Located in the heart of Bassendean, our store offers a wide range of bulk foods"
+        },
+        {
+          "field": "cost",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+          "excerpt": "our store offers a wide range of bulk foods—from organic grains and fresh spices to eco-friendly cleaning products and personal care items"
+        },
+        {
+          "field": "schedule",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+          "excerpt": "Opening Hours are: Monday to Friday - 9 am to 6 pm Saturday - 9 am to 5 pm Sunday - 11 am to 5 pm CLOSED Public Holidays"
+        },
+        {
+          "field": "join",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+          "excerpt": "Located in the heart of Bassendean, our store offers a wide range of bulk foods"
+        },
+        {
+          "field": "tag:bulk-refill",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+          "excerpt": "Shoppers are encouraged to bring their own containers to fill, eliminating the need for single-use packaging"
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+          "excerpt": "from organic grains and fresh spices to eco-friendly cleaning products and personal care items"
+        },
+        {
+          "field": "detail:Bulk & refill",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+          "excerpt": "Bring-your-own-container policy to minimize packaging waste."
+        },
+        {
+          "field": "detail:Dietary ranges",
+          "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+          "excerpt": "Extensive selection of bulk foods, including organic and gluten-free options."
+        },
+        {
+          "field": "detail:Delivery & click-and-collect",
+          "url": "https://www.wastelesspantry.com.au/",
+          "excerpt": "Order online for in-store pickup, or Opt for home delivery,"
+        }
+      ]
+    },
+    {
+      "key": "organic-collective-hamilton-hill",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "The Organic Collective",
+      "kind": "place",
+      "website": "https://www.organiccollective.com.au/",
+      "source_urls": [
+        "https://www.organiccollective.com.au/map/",
+        "https://www.organiccollective.com.au/",
+        "https://www.organiccollective.com.au/how-it-works/"
+      ],
+      "suburb": "Hamilton Hill",
+      "region": "",
+      "meeting_point": "",
+      "address": "1-3 Greenslade Street (cnr Winterfold Rd), Hamilton Hill WA 6163",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "A long-running certified organic produce business with a retail shop in Hamilton Hill, where you can hand-pick seasonal fruit and veg and groceries, alongside organic box subscriptions and an online shop delivering across Perth.",
+      "join": {
+        "method": "visit",
+        "url": "https://www.organiccollective.com.au/map/"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mon–Fri 9am–5pm (Thu to 6pm); Sat 9am–1:30pm",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "organic-produce"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Certified organic seasonal fruit and veg, groceries, pantry staples, dairy, meat and everyday essentials"
+        },
+        {
+          "label": "Delivery & click-and-collect",
+          "value": "Seasonal organic box subscriptions and an online shop with home delivery"
+        }
+      ],
+      "flags": [
+        "Mainly an organic box-delivery business; the Hamilton Hill retail shop is secondary. The map page's meta description says Monday to Friday while the page text includes Saturday morning.",
+        "Map page has two address forms (1-3 and 1 Greenslade Street)."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.organiccollective.com.au/map/",
+          "excerpt": "Visit the Organic Collective Retail Shop: -Monday – Friday 9am to 5pm"
+        },
+        {
+          "field": "activity",
+          "url": "https://www.organiccollective.com.au/map/",
+          "excerpt": "visit the store in Hamilton Hill, open Monday to Friday for you to meet us and hand pick all your fruit vegetables and groceries"
+        },
+        {
+          "field": "location",
+          "url": "https://www.organiccollective.com.au/map/",
+          "excerpt": "1-3 Greenslade Street (cnr Winterfold Rd) Hamilton Hill, 6163 WA"
+        },
+        {
+          "field": "cost",
+          "url": "https://www.organiccollective.com.au/",
+          "excerpt": "Your organic pantry online, hand-packed and delivered straight to your door."
+        },
+        {
+          "field": "schedule",
+          "url": "https://www.organiccollective.com.au/map/",
+          "excerpt": "-Monday – Friday 9am to 5pm -Thursday 9 am – 6 pm -Saturday 9am to 1:30 pm"
+        },
+        {
+          "field": "join",
+          "url": "https://www.organiccollective.com.au/map/",
+          "excerpt": "1-3 Greenslade Street (cnr Winterfold Rd) Hamilton Hill, 6163 WA"
+        },
+        {
+          "field": "tag:organic-produce",
+          "url": "https://www.organiccollective.com.au/",
+          "excerpt": "We hand-pick the season’s best certified organic produce and deliver it straight to your door"
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://www.organiccollective.com.au/",
+          "excerpt": "organic groceries, pantry staples, dairy, meat and everyday essentials to your next delivery"
+        },
+        {
+          "field": "detail:Delivery & click-and-collect",
+          "url": "https://www.organiccollective.com.au/how-it-works/",
+          "excerpt": "Whether you’d like the home delivery convenience of a Seasonal Organic Box or prefer to choose every item yourself"
+        }
+      ]
+    },
+    {
+      "key": "sams-health-emporium-willetton",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "Sam's Health Emporium",
+      "kind": "place",
+      "website": "https://samshealthemporium.com.au/",
+      "source_urls": [
+        "https://samshealthemporium.com.au/",
+        "https://samshealthemporium.com.au/contact-us/",
+        "https://samshealthemporium.com.au/about-us/"
+      ],
+      "suburb": "Willetton",
+      "region": "",
+      "meeting_point": "",
+      "address": "Shop 31-33, Southlands Boulevarde Shopping Centre, 45 Burrendah Blvd, Willetton WA 6155",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "A large health food and natural health store at Southlands Boulevarde in Willetton, stocking wholefoods, organic and specialty foods, vegan and gluten-free lines, supplements, natural skincare and eco-home goods, with naturopaths and nutritionists consulting in its in-store clinic.",
+      "join": {
+        "method": "visit",
+        "url": "https://samshealthemporium.com.au/contact-us/"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mon–Fri 8am–6pm; Sat 8am–5pm; Sun 11am–4pm",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "supplements",
+        "in-store-naturopath"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Vitamins and supplements, herbal medicines, wholefoods, organic and specialty foods, natural skincare and makeup, sports nutrition, eco-home and aromatherapy, gifts and homewares"
+        },
+        {
+          "label": "Dietary ranges",
+          "value": "Vegan and gluten-free foods"
+        },
+        {
+          "label": "Practitioner in store",
+          "value": "Health Emporium Clinic in store with naturopaths and nutritionists; walk in or call to book"
+        }
+      ],
+      "flags": [
+        "Trades as 'Go Vita Southlands', part of the national Go Vita cooperative of independently owned stores. Editor to decide whether that fits 'independent'.",
+        "Supplement-heavy range; the about page lists wholefoods and organic and specialty foods. Clinic copy uses health-outcome language; the blurb avoids it."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://samshealthemporium.com.au/",
+          "excerpt": "Sam's Health Emporium - Go Vita Southlands"
+        },
+        {
+          "field": "activity",
+          "url": "https://samshealthemporium.com.au/",
+          "excerpt": "Health Food Store & Natural Health Clinic Willetton"
+        },
+        {
+          "field": "location",
+          "url": "https://samshealthemporium.com.au/contact-us/",
+          "excerpt": "Shop 31-33, Southlands Boulevarde Shopping Centre, 45 Burrendah Blvd, Willetton WA 6155"
+        },
+        {
+          "field": "cost",
+          "url": "https://samshealthemporium.com.au/",
+          "excerpt": "Being part of the Go Vita cooperative, we can offer you the highest quality brands at the most competitive prices."
+        },
+        {
+          "field": "schedule",
+          "url": "https://samshealthemporium.com.au/contact-us/",
+          "excerpt": "Open Mon-Fri 8am-6pm | Sat 8am-5pm | Sun 11am-4pm"
+        },
+        {
+          "field": "join",
+          "url": "https://samshealthemporium.com.au/contact-us/",
+          "excerpt": "Use the form below for all Store and Clinic Enquiries."
+        },
+        {
+          "field": "tag:supplements",
+          "url": "https://samshealthemporium.com.au/about-us/",
+          "excerpt": "Practitioner-only supplements, Vitamins and minerals, Herbal medicines, Natural skincare, Sports nutrition, Organic and specialty foods"
+        },
+        {
+          "field": "tag:in-store-naturopath",
+          "url": "https://samshealthemporium.com.au/",
+          "excerpt": "Qualified Naturopaths & Nutritionists in-store."
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://samshealthemporium.com.au/about-us/",
+          "excerpt": "Our store brings together a carefully selected range of vitamins, minerals, herbal medicines, wholefoods, natural skincare, sports nutrition products, and wellness essentials"
+        },
+        {
+          "field": "detail:Dietary ranges",
+          "url": "https://samshealthemporium.com.au/",
+          "excerpt": "Health Foods Gifts & Homewares Vegan & Gluten Free Foods Eco-home & Aromatherapy"
+        },
+        {
+          "field": "detail:Practitioner in store",
+          "url": "https://samshealthemporium.com.au/",
+          "excerpt": "Walk-in or call to book your private consultation today."
+        }
+      ]
+    },
+    {
+      "key": "pantryman-mandurah",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "Pantryman",
+      "kind": "place",
+      "website": "https://www.pantryman.com.au/our-stores/",
+      "source_urls": [
+        "https://www.pantryman.com.au/our-stores/"
+      ],
+      "suburb": "Mandurah",
+      "region": "",
+      "meeting_point": "",
+      "address": "Mandurah Forum, Shop G020, 330 Pinjarra Rd, Mandurah WA 6210",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "A bulk pantry and wholefoods store in Mandurah Forum selling scoop-and-weigh nuts, dried fruit, seeds, flours, herbs and spices, loose tea and coffee beans, with gluten-free and organic lines and an online shop.",
+      "join": {
+        "method": "visit",
+        "url": "https://www.pantryman.com.au/our-stores/"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mon–Sat 9am–5pm; Sun 11am–3pm",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "bulk-refill"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Bulk groceries and wholefoods, dry and liquid: coffee beans, loose tea, nuts, seeds, legumes, dried fruit, herbs and spices, flours and baking goods"
+        },
+        {
+          "label": "Bulk & refill",
+          "value": "Scoop-and-weigh bulk groceries"
+        },
+        {
+          "label": "Dietary ranges",
+          "value": "Gluten-free and organic foods"
+        },
+        {
+          "label": "Delivery & click-and-collect",
+          "value": "Online shop"
+        }
+      ],
+      "flags": [
+        "Two stores (Mandurah Forum and Rockingham Centre) share one page, so one record for the Mandurah store; the Rockingham store (Shop T013, 1 Council Avenue) could be added by hand.",
+        "Pantry/bulk store rather than an organic grocer: the range also includes mainstream items (gravy mixes, confectionery). Editor to confirm it fits the category."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.pantryman.com.au/our-stores/",
+          "excerpt": "Currently Pantryman has 2 stores south of Perth."
+        },
+        {
+          "field": "activity",
+          "url": "https://www.pantryman.com.au/our-stores/",
+          "excerpt": "The store retails bulk groceries and whole foods, dry and liquid."
+        },
+        {
+          "field": "location",
+          "url": "https://www.pantryman.com.au/our-stores/",
+          "excerpt": "Mandurah Forum – Shop G020 (near Woolworths) 330 Pinjarra Rd Mandurah WA 6210"
+        },
+        {
+          "field": "cost",
+          "url": "https://www.pantryman.com.au/our-stores/",
+          "excerpt": "Our online shop means that you do not have to be near our stores to get access to our products."
+        },
+        {
+          "field": "schedule",
+          "url": "https://www.pantryman.com.au/our-stores/",
+          "excerpt": "Friday 9:00am – 5:00pm Saturday 9:00am – 5:00pm Sunday 11:00am – 3:00pm Pantryman: Rockingham"
+        },
+        {
+          "field": "join",
+          "url": "https://www.pantryman.com.au/our-stores/",
+          "excerpt": "Pantryman: Mandurah Location Mandurah Forum – Shop G020 (near Woolworths)"
+        },
+        {
+          "field": "tag:bulk-refill",
+          "url": "https://www.pantryman.com.au/our-stores/",
+          "excerpt": "The store retails bulk groceries and whole foods, dry and liquid."
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://www.pantryman.com.au/our-stores/",
+          "excerpt": "This includes coffee beans, loose tea, nuts, baking goods, gluten free and organic foods."
+        },
+        {
+          "field": "detail:Bulk & refill",
+          "url": "https://www.pantryman.com.au/our-stores/",
+          "excerpt": "Tags Packaged Scoop and weigh"
+        },
+        {
+          "field": "detail:Dietary ranges",
+          "url": "https://www.pantryman.com.au/our-stores/",
+          "excerpt": "nuts, baking goods, gluten free and organic foods"
+        },
+        {
+          "field": "detail:Delivery & click-and-collect",
+          "url": "https://www.pantryman.com.au/our-stores/",
+          "excerpt": "Our online shop means that you do not have to be near our stores to get access to our products."
+        }
+      ]
+    },
+    {
+      "key": "wellness-store-mandurah",
+      "category": "health-stores",
+      "status": "candidate",
+      "reason": "",
+      "name": "The Wellness Store",
+      "kind": "place",
+      "website": "https://www.thewellnessstoremandurah.com.au/",
+      "source_urls": [
+        "https://www.thewellnessstoremandurah.com.au/about/",
+        "https://www.thewellnessstoremandurah.com.au/"
+      ],
+      "suburb": "Mandurah",
+      "region": "",
+      "meeting_point": "",
+      "address": "106 Anstruther Road, Mandurah",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "A family-owned natural wellness store in Mandurah with a wall of loose herbs, herbal teas and their own organic cacao, plus vitamins and supplements, natural skin and body care and water filtration, and a counter serving organic coffee, smoothies and cold-pressed juice.",
+      "join": {
+        "method": "visit",
+        "url": "https://www.thewellnessstoremandurah.com.au/"
+      },
+      "cost": "paid",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "Mon–Fri 7am–4pm; Sat 7:30am–3pm",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [
+        "supplements"
+      ],
+      "details": [
+        {
+          "label": "Range",
+          "value": "Loose herbs, herbal teas, organic cacao, organic coffee, vitamins and supplements, natural skin and body care, water filtration, homewares and gifts"
+        },
+        {
+          "label": "Café",
+          "value": "Counter serving organic coffee, tea, cacao, smoothies and cold-pressed juice"
+        },
+        {
+          "label": "Delivery & click-and-collect",
+          "value": "Online shop for teas and cacao"
+        }
+      ],
+      "flags": [
+        "Borderline for the category: a tea, herb and supplement wellness store with a drinks counter rather than a wholefoods grocer; no bulk or produce range stated.",
+        "Home page says 'Our online shop is on the way' while the about page links to an online shop; the owners also run breathwork and counselling, not part of this listing."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.thewellnessstoremandurah.com.au/about/",
+          "excerpt": "We’re a family-owned and operated wellness store in Mandurah."
+        },
+        {
+          "field": "activity",
+          "url": "https://www.thewellnessstoremandurah.com.au/",
+          "excerpt": "A family-owned store full of natural alternatives, herbal teas and our own organic cacao."
+        },
+        {
+          "field": "location",
+          "url": "https://www.thewellnessstoremandurah.com.au/",
+          "excerpt": "Your local wellness store106 Anstruther Road, Mandurah"
+        },
+        {
+          "field": "cost",
+          "url": "https://www.thewellnessstoremandurah.com.au/about/",
+          "excerpt": "Our online range begins with teas and cacao. There’s much more waiting in store."
+        },
+        {
+          "field": "schedule",
+          "url": "https://www.thewellnessstoremandurah.com.au/",
+          "excerpt": "Opening hours Mon - Fri7am - 4pm Saturday7:30am - 3pm"
+        },
+        {
+          "field": "join",
+          "url": "https://www.thewellnessstoremandurah.com.au/",
+          "excerpt": "Find us 106 Anstruther Road Mandurah, WAGet directions"
+        },
+        {
+          "field": "tag:supplements",
+          "url": "https://www.thewellnessstoremandurah.com.au/about/",
+          "excerpt": "You’ll find vitamins and supplements, natural skin and body care, homewares, gifts and water filtration."
+        },
+        {
+          "field": "detail:Range",
+          "url": "https://www.thewellnessstoremandurah.com.au/",
+          "excerpt": "There’s more to discover in store: a whole wall of herbs, organic coffee, natural products"
+        },
+        {
+          "field": "detail:Café",
+          "url": "https://www.thewellnessstoremandurah.com.au/about/",
+          "excerpt": "Organic coffee, tea, ceremonial cacao, smoothies and cold-pressed juice. Stop by for a drink"
+        },
+        {
+          "field": "detail:Delivery & click-and-collect",
+          "url": "https://www.thewellnessstoremandurah.com.au/",
+          "excerpt": "Our own Inti cacao and loose herbal teas, ready to explore online."
+        }
+      ]
+    },
+    {
+      "key": "magic-apple-wholefoods-cottesloe",
+      "category": "health-stores",
+      "status": "manual",
+      "reason": "Existing listing. The site is a JavaScript-only Wix page whose only readable text describes 'a complete wholefoods restaurant' with menus and bookings; no store range, address or hours can be read. Editor should check whether a retail shop still operates and whether the listing belongs in this category.",
+      "name": "Magic Apple Wholefoods",
+      "kind": "place",
+      "website": "https://www.magicapplewholefoods.com",
+      "source_urls": [
+        "https://www.magicapplewholefoods.com/"
+      ],
+      "suburb": "Cottesloe",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "Already listed. Its website now presents Magic Apple as a wholefoods restaurant in Cottesloe rather than a grocery store.",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [
+        "Do not overwrite the existing listing."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": [
+        {
+          "field": "name",
+          "url": "https://www.magicapplewholefoods.com/",
+          "excerpt": "Magic Apple Wholefoods | A complete wholefoods restaurant | Reinventing clean eating | Cottesloe Beach"
+        }
+      ]
+    },
+    {
+      "key": "manna-wholefoods-south-fremantle",
+      "category": "health-stores",
+      "status": "manual",
+      "reason": "Existing listing. The site returns HTTP 403 Forbidden to automated requests (robots.txt allows all), so nothing could be verified from it. Editor to check range, bulk, café and hours by hand.",
+      "name": "Manna Wholefoods & Café",
+      "kind": "place",
+      "website": "https://www.mannawholefoods.com.au",
+      "source_urls": [],
+      "suburb": "South Fremantle",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "Already listed. A long-standing wholefoods store and café in South Fremantle.",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [
+        "Do not overwrite the existing listing."
+      ],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "hills-fresh-mundaring",
+      "category": "health-stores",
+      "status": "manual",
+      "reason": "Real and open (7110 Great Eastern Hwy, open 7 days 7am–7pm per its site) but it is a fresh-produce and gourmet grocer that lists organic, gluten-free and raw ranges among general grocery, deli and meat. Borderline for a health food category; editor to decide.",
+      "name": "Hills Fresh",
+      "kind": "place",
+      "website": "https://www.hillsfreshwa.com.au/",
+      "source_urls": [],
+      "suburb": "Mundaring",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "kakulas-sister-fremantle",
+      "category": "health-stores",
+      "status": "manual",
+      "reason": "Real (29/31 Market Street, Fremantle; second store in Nollamara) with bulk beans, grains, nuts and BYO refills, but its own site calls it a gourmet and continental grocery store. Borderline; editor to decide.",
+      "name": "Kakulas Sister",
+      "kind": "place",
+      "website": "https://kakulassister.net.au/",
+      "source_urls": [],
+      "suburb": "Fremantle",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "small-farms-wholefoods-applecross",
+      "category": "health-stores",
+      "status": "manual",
+      "reason": "Found via directories as a wholefoods store and café at 769 Canning Hwy, Applecross, but its domain did not resolve when checked (2026-10-09). Nothing verifiable from its own site.",
+      "name": "Small Farms Wholefoods",
+      "kind": "place",
+      "website": "https://smallfarmswholefoods.com.au/",
+      "source_urls": [],
+      "suburb": "Applecross",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "the-storehouse-south-fremantle",
+      "category": "health-stores",
+      "status": "manual",
+      "reason": "Bulk zero-waste store reported at Hampton Road, South Fremantle; its main site returned a WordPress critical error (HTTP 500) and the shop subdomain has no store details.",
+      "name": "The Storehouse Fremantle",
+      "kind": "place",
+      "website": "https://thestorehousefremantle.com.au/",
+      "source_urls": [],
+      "suburb": "South Fremantle",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "prana-health-food-subiaco",
+      "category": "health-stores",
+      "status": "manual",
+      "reason": "Listed in directories at 41 Station St, Subiaco; its website domain did not resolve when checked.",
+      "name": "Prana Health Food & Organics",
+      "kind": "place",
+      "website": "https://pranahealthfood.com.au/",
+      "source_urls": [],
+      "suburb": "Subiaco",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "organic-valley-wa-east-cannington",
+      "category": "health-stores",
+      "status": "manual",
+      "reason": "Organic produce wholesaler with a retail shop per directories; its domain is now parked (VentraIP holding page). Needs an editor to confirm it still trades.",
+      "name": "Organic Valley WA",
+      "kind": "place",
+      "website": "https://organicvalleywa.com.au/",
+      "source_urls": [],
+      "suburb": "East Cannington",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "nourish-me-wholefoods-east-fremantle",
+      "category": "health-stores",
+      "status": "manual",
+      "reason": "Small organic health food shop found only on Facebook and HappyCow; no own website.",
+      "name": "Nourish Me Wholefoods",
+      "kind": "place",
+      "website": "",
+      "source_urls": [],
+      "suburb": "East Fremantle",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "organic-circle-armadale",
+      "category": "health-stores",
+      "status": "manual",
+      "reason": "Organic café and health food store found only on Instagram and directories; no own website found.",
+      "name": "The Organic Circle",
+      "kind": "place",
+      "website": "",
+      "source_urls": [],
+      "suburb": "Armadale",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "clean-food-store-subiaco",
+      "category": "health-stores",
+      "status": "manual",
+      "reason": "Wholefoods store and café found only in directories and review sites; no own website found.",
+      "name": "The Clean Food Store",
+      "kind": "place",
+      "website": "",
+      "source_urls": [],
+      "suburb": "Subiaco",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "organic-on-charles-north-perth",
+      "category": "health-stores",
+      "status": "rejected",
+      "reason": "Reported closed (HappyCow lists it CLOSED; a directory notes closure in December 2024); no own website found.",
+      "name": "Organic on Charles",
+      "kind": "place",
+      "website": "",
+      "source_urls": [],
+      "suburb": "North Perth",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "alive-organics-morley",
+      "category": "health-stores",
+      "status": "rejected",
+      "reason": "Listed as closed on Yelp; its domain did not resolve.",
+      "name": "Alive Organics",
+      "kind": "place",
+      "website": "https://www.aliveorganics.com.au/",
+      "source_urls": [],
+      "suburb": "Morley",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "beyond-organic-wholefoods",
+      "category": "health-stores",
+      "status": "rejected",
+      "reason": "Out of area: the store is in Prahran, Victoria.",
+      "name": "Beyond Organic Wholefoods",
+      "kind": "place",
+      "website": "https://beyondorganicwholefoods.com.au/",
+      "source_urls": [],
+      "suburb": "Prahran",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "healthkick-vitamin-centre",
+      "category": "health-stores",
+      "status": "rejected",
+      "reason": "Supplement-focused vitamin chain in shopping centres; out of scope.",
+      "name": "Healthkick Vitamin Centre",
+      "kind": "place",
+      "website": "https://www.healthkick.com.au/",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "the-source-bulk-foods-perth",
+      "category": "health-stores",
+      "status": "rejected",
+      "reason": "National bulk-food franchise; out of scope for independent stores.",
+      "name": "The Source Bulk Foods (Victoria Park, Mt Hawthorn)",
+      "kind": "place",
+      "website": "https://victoria-park.thesourcebulkfoods.com.au/",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "fresh-provisions",
+      "category": "health-stores",
+      "status": "rejected",
+      "reason": "Upmarket independent supermarket group, not a health food store.",
+      "name": "Fresh Provisions",
+      "kind": "place",
+      "website": "",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "healthy-choice-baldivis",
+      "category": "health-stores",
+      "status": "rejected",
+      "reason": "Outlet of a national health food franchise; out of scope.",
+      "name": "Healthy Choice Baldivis",
+      "kind": "place",
+      "website": "",
+      "source_urls": [],
+      "suburb": "Baldivis",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    },
+    {
+      "key": "flannerys",
+      "category": "health-stores",
+      "status": "rejected",
+      "reason": "Eastern-states organic supermarket chain; no Perth store found.",
+      "name": "Flannerys",
+      "kind": "place",
+      "website": "https://flannerys.com.au/",
+      "source_urls": [],
+      "suburb": "",
+      "region": "",
+      "meeting_point": "",
+      "address": "",
+      "meeting_varies": false,
+      "branch": false,
+      "blurb": "",
+      "join": {
+        "method": "visit",
+        "url": ""
+      },
+      "cost": "unknown",
+      "price_note": "",
+      "price_from": 0,
+      "schedule": "",
+      "beginner": "unknown",
+      "come_alone": "unknown",
+      "tags": [],
+      "details": [],
+      "flags": [],
+      "contact": {
+        "email": "",
+        "phone": ""
+      },
+      "evidence": []
+    }
+  ]
+}

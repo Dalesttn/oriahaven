@@ -129,7 +129,7 @@ $oria_gl_when  = '' !== $oria_gl['checked'] ? strtotime( $oria_gl['checked'] ) :
 								<a class="oh-link" href="<?php echo esc_url( $oria_gl_url ); ?>" rel="nofollow noopener" target="_blank"
 									data-oria-track="<?php echo esc_attr( $oria_gl_track ); ?>" data-oria-id="<?php echo (int) $oria_gl_id; ?>">
 									<?php echo esc_html( \Oria\Core\Sources\join_label( $oria_gl['join']['method'], $oria_gl['join']['url'] ) ); ?>
-									<span class="sr-only"><?php esc_html_e( '(opens the organiser’s site in a new tab)', 'oria' ); ?></span>
+									<span class="sr-only"><?php echo esc_html( $oria_gl['link_note'] ?? __( '(opens the organiser’s site in a new tab)', 'oria' ) ); ?></span>
 									<span aria-hidden="true">&rarr;</span>
 								</a>
 							</p>
@@ -139,7 +139,7 @@ $oria_gl_when  = '' !== $oria_gl['checked'] ? strtotime( $oria_gl['checked'] ) :
 
 				<?php if ( $oria_gl_has_prep ) : ?>
 					<section class="oh-prep" aria-labelledby="oh-prep-<?php echo (int) $oria_gl_id; ?>">
-						<h3 class="oh-h" id="oh-prep-<?php echo (int) $oria_gl_id; ?>"><?php echo $oria_gl_ico( 'pack' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?><?php esc_html_e( 'Before you join', 'oria' ); ?></h3>
+						<h3 class="oh-h" id="oh-prep-<?php echo (int) $oria_gl_id; ?>"><?php echo $oria_gl_ico( 'pack' ); // phpcs:ignore WordPress.Security.EscapeOutput -- fixed markup ?><?php echo esc_html( $oria_gl['prep_head'] ?? __( 'Before you join', 'oria' ) ); ?></h3>
 						<dl class="oh-items">
 							<?php foreach ( $oria_gl['prep'] as $oria_gl_p ) : ?>
 								<div class="oh-item">
@@ -168,10 +168,11 @@ $oria_gl_when  = '' !== $oria_gl['checked'] ? strtotime( $oria_gl['checked'] ) :
 				<?php
 				printf(
 					/* translators: 1: website, 2: date */
-					esc_html__( 'Details checked against %1$s on %2$s. Organisers change things — confirm with them before you go.', 'oria' ),
+					esc_html__( 'Details checked against %1$s on %2$s.', 'oria' ),
 					esc_html( $oria_gl_host ),
 					esc_html( wp_date( 'j F Y', (int) $oria_gl_when ) )
 				);
+				echo ' ' . esc_html( $oria_gl['src_note'] ?? __( 'Organisers change things — confirm with them before you go.', 'oria' ) );
 				?>
 			</p>
 		<?php endif; ?>

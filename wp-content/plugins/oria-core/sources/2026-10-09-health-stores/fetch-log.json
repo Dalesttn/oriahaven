@@ -1,0 +1,229 @@
+{
+    "batch": "2026-10-09-health-stores",
+    "requests": [
+        {
+            "url": "https://earthwholefood.com.au/",
+            "at": "2026-10-09T11:05:08+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3591 chars of text"
+        },
+        {
+            "url": "https://earthwholefood.com.au/our-shop/",
+            "at": "2026-10-09T11:05:10+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1911 chars of text"
+        },
+        {
+            "url": "https://earthwholefood.com.au/contact-us/",
+            "at": "2026-10-09T11:05:13+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1158 chars of text"
+        },
+        {
+            "url": "https://earthwholefood.com.au/nutrition-clinic/",
+            "at": "2026-10-09T11:05:16+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2976 chars of text"
+        },
+        {
+            "url": "https://earthwholefood.com.au/our-cafe/",
+            "at": "2026-10-09T11:05:18+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2373 chars of text"
+        },
+        {
+            "url": "https://www.thelittlebigstore.com.au/about-us/",
+            "at": "2026-10-09T11:05:19+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "5169 chars of text"
+        },
+        {
+            "url": "https://www.thelittlebigstore.com.au/",
+            "at": "2026-10-09T11:05:22+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "4629 chars of text"
+        },
+        {
+            "url": "https://www.thelittlebigstore.com.au/contact-us/",
+            "at": "2026-10-09T11:05:24+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3342 chars of text"
+        },
+        {
+            "url": "https://www.thelittlebigstore.com.au/faq/",
+            "at": "2026-10-09T11:05:27+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "9240 chars of text"
+        },
+        {
+            "url": "https://dunnandwalton.com.au/pages/our-story",
+            "at": "2026-10-09T11:05:28+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3647 chars of text"
+        },
+        {
+            "url": "https://dunnandwalton.com.au/pages/contact-us",
+            "at": "2026-10-09T11:05:31+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2340 chars of text"
+        },
+        {
+            "url": "https://dunnandwalton.com.au/pages/faq",
+            "at": "2026-10-09T11:05:34+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3549 chars of text"
+        },
+        {
+            "url": "https://www.scoopwholefoodswa.com.au/",
+            "at": "2026-10-09T11:05:36+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "7252 chars of text"
+        },
+        {
+            "url": "https://www.scoopwholefoodswa.com.au/pages/contact",
+            "at": "2026-10-09T11:05:39+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3528 chars of text"
+        },
+        {
+            "url": "https://www.scoopwholefoodswa.com.au/pages/our-story",
+            "at": "2026-10-09T11:05:42+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "5662 chars of text"
+        },
+        {
+            "url": "https://looseproduce.com.au/",
+            "at": "2026-10-09T11:05:42+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "6134 chars of text"
+        },
+        {
+            "url": "https://www.replenishkalamunda.com.au/",
+            "at": "2026-10-09T11:05:44+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3328 chars of text"
+        },
+        {
+            "url": "https://www.replenishkalamunda.com.au/contact-us",
+            "at": "2026-10-09T11:05:47+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1720 chars of text"
+        },
+        {
+            "url": "https://www.replenishkalamunda.com.au/faq",
+            "at": "2026-10-09T11:05:51+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "5513 chars of text"
+        },
+        {
+            "url": "https://www.wastelesspantry.com.au/contact-us-2/mundaring/",
+            "at": "2026-10-09T11:05:56+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3193 chars of text"
+        },
+        {
+            "url": "https://www.wastelesspantry.com.au/",
+            "at": "2026-10-09T11:05:58+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2827 chars of text"
+        },
+        {
+            "url": "https://www.wastelesspantry.com.au/contact-us-2/bassendean/",
+            "at": "2026-10-09T11:06:00+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3342 chars of text"
+        },
+        {
+            "url": "https://www.organiccollective.com.au/map/",
+            "at": "2026-10-09T11:06:03+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1919 chars of text"
+        },
+        {
+            "url": "https://www.organiccollective.com.au/",
+            "at": "2026-10-09T11:06:05+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "6084 chars of text"
+        },
+        {
+            "url": "https://www.organiccollective.com.au/how-it-works/",
+            "at": "2026-10-09T11:06:07+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "6308 chars of text"
+        },
+        {
+            "url": "https://samshealthemporium.com.au/",
+            "at": "2026-10-09T11:06:08+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "26685 chars of text"
+        },
+        {
+            "url": "https://samshealthemporium.com.au/contact-us/",
+            "at": "2026-10-09T11:06:11+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "6355 chars of text"
+        },
+        {
+            "url": "https://samshealthemporium.com.au/about-us/",
+            "at": "2026-10-09T11:06:13+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "9875 chars of text"
+        },
+        {
+            "url": "https://www.pantryman.com.au/our-stores/",
+            "at": "2026-10-09T11:06:24+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3309 chars of text"
+        },
+        {
+            "url": "https://www.thewellnessstoremandurah.com.au/about/",
+            "at": "2026-10-09T11:06:25+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1962 chars of text"
+        },
+        {
+            "url": "https://www.thewellnessstoremandurah.com.au/",
+            "at": "2026-10-09T11:06:27+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1534 chars of text"
+        },
+        {
+            "url": "https://www.magicapplewholefoods.com/",
+            "at": "2026-10-09T11:06:29+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "161 chars of text"
+        }
+    ]
+}

@@ -128,7 +128,7 @@ function model( int $id, ?\DateTimeImmutable $now = null ): ?array {
 	}
 	if ( '' !== $j['price_note'] ) {
 		$prep[] = array( 'label' => __( 'Price', 'oria' ), 'text' => $j['price_note'] );
-	} elseif ( '' !== $j['cost'] && ! in_array( 'cost', (array) ( $cfg['summary'] ?? array() ), true ) ) {
+	} elseif ( '' !== $j['cost'] && empty( $cfg['hide_cost'] ) && ! in_array( 'cost', (array) ( $cfg['summary'] ?? array() ), true ) ) {
 		$prep[] = array( 'label' => __( 'Cost', 'oria' ), 'text' => Sources\cost_label( $j['cost'] ) );
 	}
 	// Water activities: saying nothing about supervision reads as reassurance.
@@ -156,6 +156,11 @@ function model( int $id, ?\DateTimeImmutable $now = null ): ?array {
 		'join'       => array( 'url' => $j['url'], 'method' => $j['method'] ),
 		'checked'    => $j['checked'],
 		'source_url' => $j['source_url'],
+		// Per-category words (source-categories.json "glance"): a shop is not
+		// joined and has no organiser. Activity categories keep the defaults.
+		'prep_head'  => (string) ( $cfg['prep_heading'] ?? __( 'Before you join', 'oria' ) ),
+		'src_note'   => (string) ( $cfg['source_note'] ?? __( 'Organisers change things — confirm with them before you go.', 'oria' ) ),
+		'link_note'  => (string) ( $cfg['link_note'] ?? __( '(opens the organiser’s site in a new tab)', 'oria' ) ),
 	);
 
 	$empty = ! $facts && ! $schedule['seasons'] && ! $schedule['lines'] && ! $prep && ! $notice && '' === $j['url'] && '' === $location;
