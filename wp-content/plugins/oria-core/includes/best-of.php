@@ -69,6 +69,7 @@ const AWARDS = array(
 	'best_retreat'         => 'Best retreat',
 	'best_day_retreat'     => 'Best day retreat',
 	'best_acupuncture'     => 'Best acupuncture',
+	'best_music_aged_care' => 'Best music for aged care',
 	'oria_pick'            => 'Oria Haven pick',
 );
 
