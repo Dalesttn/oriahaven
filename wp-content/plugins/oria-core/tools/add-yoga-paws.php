@@ -73,5 +73,40 @@ wp_set_object_terms( $id, array( 'inglewood', 'northbridge', 'central', 'north' 
 update_post_meta( $id, 'claim_status', 'unclaimed' );
 update_post_meta( $id, '_oria_source_note', 'yoga-paws.com checked 11 Oct 2026; age 12+ and start times from Patrick (Yoga Paws) by email' );
 
+// Photos: three of Yoga Paws' own session shots from yoga-paws.com, used
+// with their permission (via Dale), resized to webp. First one is featured.
+if ( ! get_post_meta( $id, '_oria_yp_photos', true ) ) {
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	$photos = array(
+		'yoga-paws-1.webp' => 'A guest cuddling a golden retriever puppy at a Yoga Paws session',
+		'yoga-paws-2.webp' => 'A spaniel puppy standing on a yoga mat during a Yoga Paws class',
+		'yoga-paws-3.webp' => 'A dachshund puppy resting on a guest\'s lap during a Yoga Paws class',
+	);
+	$ids = array();
+	foreach ( $photos as $file => $alt ) {
+		$src = __DIR__ . '/assets/' . $file;
+		if ( ! is_readable( $src ) ) {
+			continue;
+		}
+		$tmp = wp_tempnam( $file );
+		copy( $src, $tmp );
+		$att = media_handle_sideload( array( 'name' => $file, 'tmp_name' => $tmp ), $id, 'Yoga Paws puppy yoga' );
+		if ( is_wp_error( $att ) ) {
+			WP_CLI::warning( $file . ': ' . $att->get_error_message() );
+			continue;
+		}
+		update_post_meta( (int) $att, '_wp_attachment_image_alt', $alt );
+		update_post_meta( (int) $att, '_oria_image_source', 'yoga-paws.com (used with permission, via Dale)' );
+		$ids[] = (int) $att;
+	}
+	if ( $ids ) {
+		set_post_thumbnail( $id, $ids[0] );
+		ListingEditor\write( $id, 'gallery', $ids );
+		update_post_meta( $id, '_oria_yp_photos', implode( ',', $ids ) );
+	}
+}
+
 clean_post_cache( $id );
 WP_CLI::success( sprintf( 'Yoga Paws Perth is #%d (%s). Review it, then publish.', $id, get_post_status( $id ) ) );
