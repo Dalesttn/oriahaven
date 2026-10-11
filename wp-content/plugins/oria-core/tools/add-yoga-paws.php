@@ -25,7 +25,7 @@ $id   = $post instanceof WP_Post ? (int) $post->ID : 0;
 
 $desc = 'Beginner-friendly puppy yoga in Perth: a 60-minute session of gentle floor yoga and relaxation while puppies from WA breeders and shelters wander the room. Weekend sessions run at studios in Inglewood, Clarkson and Northbridge, $65 a ticket, with everything provided.';
 
-$body = '<p>Yoga Paws runs weekly puppy yoga across Australia, and in Perth most weekends at three hired studios. Each session is an hour of relaxed, beginner-friendly floor yoga with a litter of puppies free to wander, settle beside you or climb into your lap &mdash; you follow along at your own pace and stop for a visitor whenever one arrives. No yoga experience is needed and the mats and puppies are provided, so you just bring yourself.</p>'
+$body = '<p>Yoga Paws runs weekly puppy yoga across Australia, and in Perth most weekends at three hired studios. Each session is an hour of relaxed, beginner-friendly floor yoga with a litter of puppies free to wander, settle beside you or climb into your lap &mdash; you follow along at your own pace and stop for a visitor whenever one arrives. No yoga experience is needed and Yoga Paws takes care of everything else, so you just bring yourself.</p>'
 	. '<h3>Where Perth sessions run</h3><ul>'
 	. '<li><strong>Inglewood</strong> &mdash; Inspiration Space, 1&amp;2/885 Beaufort St</li>'
 	. '<li><strong>Clarkson</strong> &mdash; Sol Tank Studio, 37 Boranup Ave</li>'
@@ -33,7 +33,7 @@ $body = '<p>Yoga Paws runs weekly puppy yoga across Australia, and in Perth most
 	. '</ul>'
 	. '<p>Dates are released on the Yoga Paws Perth page and each session is booked separately; Yoga Paws says sessions are open to ages 12 and up and new dates are released each Monday, three weeks ahead. Gift cards, private parties and corporate sessions are also available.</p>'
 	. '<h3>How the puppies are looked after</h3>'
-	. '<p>Yoga Paws works with WA-based breeders and shelters and says every puppy has a mandatory 60 minutes of downtime before each session, and that studios are cleaned with veterinary-grade F10 sanitiser. Interaction is voluntary and puppies are only handled while you\'re seated.</p>';
+	. '<p>Yoga Paws works with WA-based breeders and shelters and says every puppy has a mandatory 60 minutes of downtime before each session, and that studios are cleaned with veterinary-grade F10 sanitiser. It also says interaction is always voluntary, puppies are only handled while you\'re seated, and two staff look after them throughout.</p>';
 
 $args = array(
 	'post_type'    => 'listing',
