@@ -266,15 +266,23 @@ function received_email( int $user_id, int $listing, array $in, bool $is_new ): 
 	}
 	$name = $user->display_name ?: ( $in['account_name'] ?: $user->user_login );
 
+	/*
+	 * The form only collects a name and a phone number, and a listing can't
+	 * be published without a category and a suburb (PublishGuard). So this
+	 * email asks them to fill it in -- it used to say "nothing to do", and
+	 * listings sat bare in the queue until an admin filled them in instead.
+	 */
 	$body = sprintf(
 		/* translators: 1: person name, 2: practice name */
 		__(
-			"G'day %1\$s,\n\nThanks for listing %2\$s on Oria Haven. We've got your details and they're with us now.\n\nWe check every new listing by hand, so yours will be reviewed and approved within 24 hours. You'll get another email the moment it goes live, and we'll only be in touch before then if something needs clarifying.\n\nNothing to do in the meantime.",
+			"G'day %1\$s,\n\nThanks for listing %2\$s on Oria Haven. We've got your details, and we check every new listing by hand before it goes live, usually within 24 hours.\n\nWhile we review it, please fill in your listing: your category, suburb, a short description of what you offer, and a few photos. We can only publish a listing once it has a category and a suburb, and complete listings are approved fastest. You'll get another email the moment it goes live.",
 			'oria'
 		),
 		$name,
 		$in['practice_name']
 	);
+
+	$dashboard = function_exists( '\Oria\Core\MyOria\url' ) ? \Oria\Core\MyOria\url( 'listing' ) : home_url( '/my-oria/listing/' );
 
 	if ( $is_new ) {
 		$key  = get_password_reset_key( $user );
@@ -283,15 +291,16 @@ function received_email( int $user_id, int $listing, array $in, bool $is_new ): 
 			'login'
 		);
 		$body .= sprintf(
-			/* translators: %s: set-password URL */
-			__( "\n\nOne thing you can do now: your practitioner account is ready, so set your password here and you'll be able to edit your details any time.\n%s", 'oria' ),
-			$link
+			/* translators: 1: set-password URL, 2: dashboard URL */
+			__( "\n\n1. Set your password (your practitioner account is ready):\n%1\$s\n\n2. Then fill in your listing from your dashboard:\n%2\$s", 'oria' ),
+			$link,
+			$dashboard
 		);
 	} else {
 		$body .= sprintf(
 			/* translators: %s: dashboard URL */
-			__( "\n\nIt's attached to your existing account, so it'll appear alongside your other listings here:\n%s", 'oria' ),
-			admin_url( 'edit.php?post_type=listing' )
+			__( "\n\nIt's attached to your existing account, so you can fill it in from your dashboard now:\n%s", 'oria' ),
+			$dashboard
 		);
 	}
 
