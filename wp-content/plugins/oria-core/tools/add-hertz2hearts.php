@@ -66,6 +66,7 @@ wp_set_object_terms( $id, array( 'creative', 'seniors' ), 'practice' );
 update_post_meta( $id, 'primary_practice', 'creative' );
 // Mobile across Perth: the city, not a suburb it does not have.
 wp_set_object_terms( $id, array( 'perth' ), 'area' );
+update_post_meta( $id, '_oria_mobile', '1' ); // goes to the care home: no Directions button
 update_post_meta( $id, 'claim_status', 'unclaimed' );
 
 // Logo: the music-note mark from their own site.

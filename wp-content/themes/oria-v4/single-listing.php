@@ -183,7 +183,8 @@ while ( have_posts() ) :
 		&& ! preg_match( "/^[\\p{L}\\s'.-]+(\\s+(WA|NSW|VIC|QLD|SA|TAS|NT|ACT)(\\s*\\d{4})?)?$/iu", $oria_address );
 	// Directions to a suburb alone would drop a pin in its middle; the name lets the map find the door.
 	$oria_dir_dest = $oria_street ? $oria_address : trim( $oria_title . ', ' . ( '' !== $oria_address ? $oria_address : $oria_area_name ) , ', ' );
-	$oria_dir_url  = ( '' !== $oria_address || '' !== $oria_area_name ) && 'online' !== $oria_format
+	// A service that travels to its clients (_oria_mobile) has no door to give directions to.
+	$oria_dir_url  = ( '' !== $oria_address || '' !== $oria_area_name ) && 'online' !== $oria_format && ! get_post_meta( $oria_id, '_oria_mobile', true )
 		? \Oria\Theme\map_directions_url( $oria_dir_dest )
 		: '';
 
