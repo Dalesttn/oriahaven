@@ -109,7 +109,12 @@
   "womens-circles": "experiences",
   "womens-health": "allied",
   "yoga": "yoga",
-  "yoga-nidra": "yoga"
+  "yoga-nidra": "yoga",
+  "bulk-refill": "nutrition",
+  "in-store-naturopath": "nutrition",
+  "organic-produce": "nutrition",
+  "store-cafe": "nutrition",
+  "supplements": "nutrition"
  },
  "_why": {
   "aromatherapy": "override: bodywork 3 / beauty 2 / spa 2 — spa is where people browse for it",
@@ -125,7 +130,8 @@
   "surf-therapy": "no listings yet — home named in advance",
   "womens-circles": "override: community held the tally but zero resolve under it; experiences is where the page exists",
   "shamanic-healing": "override: mind held the tally but zero listings resolve under it; energy is where the page exists",
-  "_2026-10-06": "Added homes for the 12 activity specialties the sources importer created (running, ocean swimming, creative workshops, pickleball). With no home their links fell back to /perth/{slug}/, which 404s, and specialty-sitemap.xml listed 11 of those 404s. Each home is the only category its listings carry (run-walk: 2 running-groups, 1 community). come-and-try left without a home: no listings and no single category."
+  "_2026-10-06": "Added homes for the 12 activity specialties the sources importer created (running, ocean swimming, creative workshops, pickleball). With no home their links fell back to /perth/{slug}/, which 404s, and specialty-sitemap.xml listed 11 of those 404s. Each home is the only category its listings carry (run-walk: 2 running-groups, 1 community). come-and-try left without a home: no listings and no single category.",
+  "_2026-10-13": "Added homes for the 5 health-food-store specialties (bulk refill, organic produce, supplements, store cafe, in-store naturopath). With no home their links fell back to /perth/{slug}/, which 404s, and specialty-sitemap.xml listed all 5 404s (found 13 Oct 2026). Every listing carrying them is in nutrition and the facets already resolve there. in-store-naturopath has 1 listing, so the FACET_MIN floor keeps it out of the sitemap."
  },
  "slugs": {
   "aqua-fitness": "aqua",

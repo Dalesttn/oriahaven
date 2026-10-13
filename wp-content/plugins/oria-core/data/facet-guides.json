@@ -502,6 +502,186 @@
     "sound-healing": {
       "phrase": "Sound Healing",
       "tagline": "Bowls, gongs and a place to lie down."
+    },
+    "day-spa": {
+      "phrase": "Day Spas",
+      "all_categories": true,
+      "intro": [
+        "{count} day spas in Perth are listed here, from a single treatment room in a suburban strip to hotel spas with their own pools. What makes a place a day spa rather than a massage clinic is the time: treatments are booked back to back — a massage, a facial, a body treatment — with a robe and a quiet room in between, and most sell that as a package of two hours or more.",
+        "Hotel spas sit at the top. Crown Spa Perth at Crown Towers has an Aqua Retreat with a vitality pool, sauna and steam room, and The Ritz-Carlton Spa at Elizabeth Quay has vitality pools and a sauna. Solace Day Spa in Scarborough added a bathhouse — magnesium bath, ice bath and sauna — to its treatment rooms. In the hills and the Swan Valley, Hidden Valley Eco Lodges, Amaroo Retreat & Spa and Swan Valley Retreat pair the spa with somewhere to stay, so a day can turn into a night.",
+        "A 60-minute relaxation massage at a suburban day spa costs $100 to $195, and $169 is the middle of the 15 that publish one. The hotel spas start higher: Crown from $250 an hour, and the Ritz-Carlton's shortest massage is 75 minutes for $275. Packages of two hours or more start at $160, and most sit between $260 and $450.",
+        "Read what a package holds, not just how long it is. One two-hour package on this page includes thirty minutes of massage; the rest is sauna and lounge time. Some places add a weekend surcharge — endota spa Joondalup adds 5% on Saturdays and 10% on Sundays — and package names change with the season, so the one you saw last month may be gone. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much does a day spa cost in Perth?",
+          "a": "A 60-minute relaxation massage is $100 to $195 at most suburban day spas, with $169 the middle price. Packages of two hours or more start at $160 and mostly run $260 to $450. The hotel spas cost more: Crown Spa Perth from $250 an hour, The Ritz-Carlton Spa $275 for 75 minutes. Prices were checked on each spa's own site in October 2026."
+        },
+        {
+          "q": "What's the difference between a day spa and a massage clinic?",
+          "a": "Time and setting. A massage clinic books one treatment and you leave; a day spa books several in a row, with robes, a relaxation room and often a sauna or pool between them. Massage clinics are usually cheaper per hour, and some do remedial massage you can claim on a health fund."
+        },
+        {
+          "q": "Which Perth day spas have a pool or sauna?",
+          "a": "Crown Spa Perth (vitality pool, sauna, steam room) and The Ritz-Carlton Spa (vitality pools, sauna) at the hotel end; Solace Day Spa in Scarborough (magnesium bath, ice bath, sauna); Swan Valley Retreat (sauna and ice bath); and Urban Retreat Day Spa in Rockingham and Le Beau Clinic & Spa in Kardinya, which both have a sauna."
+        },
+        {
+          "q": "Can we go as a couple?",
+          "a": "Yes, at several. Annasha Day Spa Retreat has three couples rooms, endota spa Joondalup a dual room, Le Beau Clinic & Spa couples rooms and The Ritz-Carlton Spa a couples suite. Couples massage has its own page with prices for two."
+        },
+        {
+          "q": "Are day spas open on Sundays?",
+          "a": "Some. Crown Spa Perth, endota spa Joondalup and The Ritz-Carlton Spa open on Sundays; many suburban day spas close, including Annasha, Le Beau, Manusa and Urban Retreat. Each listing shows its hours where the spa publishes them."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "bodywork",
+          "facet": "couples-massage",
+          "label": "Couples massage",
+          "line": "Two tables, one room, priced for two"
+        },
+        {
+          "category": "spa",
+          "facet": "saunas",
+          "label": "Saunas in Perth",
+          "line": "Just the heat, without the treatments"
+        },
+        {
+          "path": "/best/day-spas-perth/",
+          "label": "Best day spas in Perth",
+          "line": "Our pick of them, by what you want from the day"
+        }
+      ],
+      "description": "Compare {count} day spas in Perth: what an hour's massage and a two-hour package cost, which have pools or saunas, couples rooms and Sunday hours."
+    },
+    "couples-massage": {
+      "phrase": "Couples Massage",
+      "all_categories": true,
+      "intro": [
+        "{count} places in Perth do couples massage: two therapists, two tables, one room, usually the same treatment for both of you at the same time. Most are day spas, where it's often part of a longer package. A few are massage clinics with a double room, such as Jade Clinic in the city and Life Wellness Massage Therapy in Subiaco, which tend to be cheaper.",
+        "For a 60-minute couples massage, the published price for the two of you runs from $210 at Bali Spirit Day Spa in Ellenbrook to $390 at Amaroo Retreat & Spa in Mount Helena, and $294 is the middle of the eight that publish one. The hotel spas have couples suites but don't publish a couples price online.",
+        "Check how the price is quoted before you compare. Most places quote for the pair, but some quote per person — endota spa Joondalup's Better Together package is $310 each — and Tara Massage Therapy asks you to book a couples session as two separate bookings. Couples rooms are fewer than single rooms, so book ahead. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much is a couples massage in Perth?",
+          "a": "For 60 minutes, $210 to $390 for the two of you, with $294 the middle price. Clinics such as Jade Clinic ($220) and Life Wellness Massage Therapy ($230) are at the cheaper end; day spas such as Revive Skin Emporium ($370) and Amaroo Retreat & Spa ($390) at the top. Prices were checked on each place's own site in October 2026."
+        },
+        {
+          "q": "Is the price for two people?",
+          "a": "Usually, but not always. Most places quote the couples price for the pair. endota spa Joondalup quotes its couples package per person, and Tara Massage Therapy has you book two separate sessions. Check before you compare."
+        },
+        {
+          "q": "Do we have to go to a day spa?",
+          "a": "No. Jade Clinic in the city and Life Wellness Massage Therapy in Subiaco do couples massage as a clinic, without the package. Day spas suit a longer visit, with a facial, sauna or lounge time added."
+        },
+        {
+          "q": "Where can we have a couples massage in Perth?",
+          "a": "Day spas across the metro area, from Ellenbrook and Joondalup in the north to Kardinya and Rockingham in the south, plus retreats in the hills such as Hidden Valley Eco Lodges and Amaroo Retreat & Spa. Each listing on this page links to the place's own booking page."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "spa",
+          "facet": "day",
+          "label": "Day spas",
+          "line": "Make a couples massage into a longer day"
+        },
+        {
+          "category": "bodywork",
+          "facet": "relaxation-massage",
+          "label": "Relaxation massage",
+          "line": "On your own, for less"
+        }
+      ],
+      "description": "Compare {count} places for a couples massage in Perth: what an hour costs for two, day spa or clinic, and which quote per person, checked on each site."
+    },
+    "thai-massage": {
+      "phrase": "Thai Massage",
+      "all_categories": true,
+      "intro": [
+        "{count} places in Perth list Thai massage. It's done clothed and without oil: the therapist works with pressure and assisted stretching rather than long gliding strokes, which is why it feels nothing like a relaxation massage. Some menus also carry Thai aromatherapy massage, which does use oil, so check which one you're booking.",
+        "Jade Clinic in the city, Perth Thai Massage in Bedford, Tara Massage Therapy and Royal Silk Remedial Thai Massage in Rockingham are Thai-led clinics with long massage menus. Aurora Therapeutic Massage in Joondalup offers Thai yoga massage, with one of its therapists only.",
+        "A 60-minute Thai massage costs $90 to $130: $90 at Perth Thai Massage, $100 at Royal Silk, $119 at Aurora, $120 at Tara and $130 at Jade Clinic. Royal Silk takes $10 off massages of an hour or more booked between 8am and 2pm and adds 10% on public holidays, and Tara takes a $60 deposit with every booking. All five open on Sundays.",
+        "If you want to claim on a health fund, ask before you book — rebates depend on the therapist's registration and your cover, and not every place offers them. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much is a Thai massage in Perth?",
+          "a": "$90 to $130 for an hour, with $119 the middle price across the five places that publish one. Perth Thai Massage in Bedford is the cheapest at $90; Jade Clinic in the city charges $130. Prices were checked on each clinic's own site in October 2026."
+        },
+        {
+          "q": "What happens in a Thai massage?",
+          "a": "You stay clothed and there's no oil. The therapist uses pressure along the body and moves you through assisted stretches. Thai aromatherapy massage is different: it uses oil and long strokes, closer to a relaxation massage."
+        },
+        {
+          "q": "Is Thai yoga massage the same thing?",
+          "a": "It's a name some places use for the same style, stressing the stretching. Aurora Therapeutic Massage in Joondalup lists it, with one therapist."
+        },
+        {
+          "q": "Can I get a Thai massage on a Sunday?",
+          "a": "Yes. All five places on this page open on Sundays."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "bodywork",
+          "facet": "remedial-massage",
+          "label": "Remedial massage",
+          "line": "Claimable on most health funds"
+        },
+        {
+          "category": "bodywork",
+          "facet": "relaxation-massage",
+          "label": "Relaxation massage",
+          "line": "Oil and long strokes instead of stretching"
+        }
+      ],
+      "description": "Compare {count} places for Thai massage in Perth: what an hour costs at each, Sunday hours and booking terms, checked on each clinic's own site."
+    },
+    "lymphatic-drainage": {
+      "phrase": "Lymphatic Drainage Massage",
+      "all_categories": true,
+      "intro": [
+        "{count} places in Perth list lymphatic drainage, and they don't all mean the same thing by it. Most do it by hand: very light, slow, rhythmic strokes, much gentler than a remedial massage. Mindbody Lounge in Victoria Park uses a compression suit instead, and elsewhere in Perth you'll see roller and suction devices sold under the same name, so check which you're booking.",
+        "By hand, an hour costs $110 to $160: $110 at Aurora Therapeutic Massage in Joondalup, $115 at Life Wellness Massage Therapy in Subiaco, $130 at Fremantle Remedial Massage Clinic, $149 at Clear Mind Studio, $150 at The Neighbourhood Sauna and $160 at Your Local Healing Choice in Wembley. Le Beau Clinic & Spa in Kardinya runs 50 minutes for $179. Mindbody Lounge's compression suit is $50 for 30 minutes.",
+        "Two things to know before you book. At The Neighbourhood Sauna, lymphatic sessions are run by a visiting practitioner and are for women only, and Joondalup Drive Therapeutic Massage's shortest session is 75 minutes. Several of these clinics' websites describe what lymphatic drainage is meant to do for particular conditions or after surgery; Oria Haven doesn't repeat those claims.",
+        "Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much does lymphatic drainage massage cost in Perth?",
+          "a": "By hand, $110 to $160 for an hour, with $149 the middle price. Aurora Therapeutic Massage in Joondalup is the cheapest at $110. Machine sessions cost less: Mindbody Lounge's compression suit is $50 for 30 minutes. Prices were checked on each place's own site in October 2026."
+        },
+        {
+          "q": "Is lymphatic drainage done by hand or by machine?",
+          "a": "Both, depending on the place. Most on this page do manual lymphatic drainage, by hand. Mindbody Lounge uses a compression suit. The two are not the same session, so check the description before you book."
+        },
+        {
+          "q": "How long is a session?",
+          "a": "Usually 60 minutes, with 90-minute options at several. Le Beau Clinic & Spa runs 50 and 80 minutes, and Joondalup Drive Therapeutic Massage starts at 75."
+        },
+        {
+          "q": "Where can I get lymphatic drainage massage in Perth?",
+          "a": "Joondalup and Edgewater in the north, Subiaco and Wembley in the west, Fremantle, Victoria Park, Jandakot and Kardinya. Each listing links to the place's own booking page."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "bodywork",
+          "facet": "relaxation-massage",
+          "label": "Relaxation massage",
+          "line": "Also light, but a different technique"
+        },
+        {
+          "category": "spa",
+          "facet": "compression",
+          "label": "Compression boots",
+          "line": "The machine version, in recovery studios"
+        }
+      ],
+      "description": "Compare {count} places for lymphatic drainage massage in Perth: by hand or by machine, session length and what an hour costs, checked on each site."
     }
   }
 }

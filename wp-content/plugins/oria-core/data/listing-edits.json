@@ -431,5 +431,342 @@
     ]
    }
   }
+ },
+ {
+  "slug": "annasha-day-spa",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "bali-spirit-day-spa-ellenbrook",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/; offers couples massage (two people, one room) per its own site or booking page, checked 7 or 13 Oct 2026.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa",
+     "couples-massage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "bodhi-j-wellness-spa-wembley",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "brookleigh-day-spa-health-retreats",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "crown-spa-perth",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "endota-spa-joondalup",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/; offers couples massage (two people, one room) per its own site or booking page, checked 7 or 13 Oct 2026.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa",
+     "couples-massage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "ganesha-wellness-spa",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "holiday-massage-spa-joondalup",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "keishi-day-spa-perth",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "keturah-life-day-spa",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/; offers couples massage (two people, one room) per its own site or booking page, checked 7 or 13 Oct 2026.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa",
+     "couples-massage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "le-beau-clinic-spa-kardinya",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/; offers couples massage (two people, one room) per its own site or booking page, checked 7 or 13 Oct 2026; does manual lymphatic drainage (by hand) per its own booking page, checked 13 Oct 2026, but carried only the specialty, so the service facet /explore/perth/bodywork/lymphatic-drainage/ missed it.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa",
+     "couples-massage",
+     "lymphatic-drainage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "lush-skin-and-body",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/; offers couples massage (two people, one room) per its own site or booking page, checked 7 or 13 Oct 2026.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa",
+     "couples-massage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "manusa-organic-spa-beauty",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "modern-day-spa",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "mosman-spas",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "revive-skin-emporium-mount-hawthorn",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/; offers couples massage (two people, one room) per its own site or booking page, checked 7 or 13 Oct 2026.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa",
+     "couples-massage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "solace-day-spa-scarborough",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "soothe-massage-dayspa-nedlands",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "urban-retreat-day-spa-rockingham",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "ritz-carlton-spa-perth",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a day spa by its own description and site (checked 13 Oct 2026) with no day-spa tag, so it was missing from /explore/perth/spa/day/.",
+  "terms": {
+   "service": {
+    "add": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "aqualife-east-victoria-park",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a council aquatic centre whose 'spa' is a hot pool, not a day spa; the tag came from a bare 'spa' alias, now removed from services.json.",
+  "terms": {
+   "service": {
+    "remove": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "ardor-organics",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a hair salon with a scalp 'head spa' menu, not a day spa; it keeps head-spa.",
+  "terms": {
+   "service": {
+    "remove": [
+     "day-spa"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "swan-valley-retreat",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- offers couples massage (two people, one room) per its own site or booking page, checked 7 or 13 Oct 2026.",
+  "terms": {
+   "service": {
+    "add": [
+     "couples-massage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "amaroo-retreat-spa",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- offers couples massage (two people, one room) per its own site or booking page, checked 7 or 13 Oct 2026.",
+  "terms": {
+   "service": {
+    "add": [
+     "couples-massage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "jade-clinic-perth",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- offers couples massage (two people, one room) per its own site or booking page, checked 7 or 13 Oct 2026.",
+  "terms": {
+   "service": {
+    "add": [
+     "couples-massage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "life-wellness-massage-subiaco",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- offers couples massage (two people, one room) per its own site or booking page, checked 7 or 13 Oct 2026.",
+  "terms": {
+   "service": {
+    "add": [
+     "couples-massage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "aurora-therapeutic-massage-joondalup",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- does manual lymphatic drainage (by hand) per its own booking page, checked 13 Oct 2026, but carried only the specialty, so the service facet /explore/perth/bodywork/lymphatic-drainage/ missed it.",
+  "terms": {
+   "service": {
+    "add": [
+     "lymphatic-drainage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "bodyspace-recovery-studio",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- does manual lymphatic drainage (by hand) per its own booking page, checked 13 Oct 2026, but carried only the specialty, so the service facet /explore/perth/bodywork/lymphatic-drainage/ missed it.",
+  "terms": {
+   "service": {
+    "add": [
+     "lymphatic-drainage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "lovebeauty-skin-clinic",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- its 'lymphatic' treatment is a facial product application, not lymphatic drainage massage (own site, checked 13 Oct 2026).",
+  "terms": {
+   "specialty": {
+    "remove": [
+     "lymphatic-drainage"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "re-boot-collective",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- offers no Thai massage; its 'Taiwanese massage' line was matched by a wrong 'taiwanese massage' alias on thai-massage, now removed (own site checked 13 Oct 2026).",
+  "terms": {
+   "service": {
+    "remove": [
+     "thai-massage"
+    ]
+   }
+  }
  }
 ]

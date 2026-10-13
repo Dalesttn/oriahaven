@@ -1011,6 +1011,216 @@
         "Prices and inclusions change. Check the venue's own site before you book."
       ],
       "venues": 5
+    },
+    "day-spa": {
+      "city": "perth",
+      "checked": "2026-10-13",
+      "basis": "prices published by 23 Perth day spas on their own websites or booking pages",
+      "snapshot": "Typical hour $169",
+      "venues": 23,
+      "items": [
+        {
+          "label": "Typical 60-min massage",
+          "value": "$169",
+          "note": "Relaxation massage at the 15 suburban day spas publishing an hour. Range $100–$195.",
+          "group": "lead"
+        },
+        {
+          "label": "Typical 2-hour package",
+          "value": "$380",
+          "note": "Cheapest package of two hours or more at each of 21 spas. Range $160–$550.",
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest hour",
+          "value": "$100",
+          "note": "Holiday Massage, Joondalup. South of the river: Manusa Organic Spa, East Fremantle, $130.",
+          "links": {
+            "Holiday Massage": "holiday-massage-spa-joondalup",
+            "Manusa Organic Spa": "manusa-organic-spa-beauty"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "Hotel spas",
+          "value": "From $250",
+          "note": "Crown Spa Perth from $250 an hour; The Ritz-Carlton Spa $275 for its shortest, 75-minute massage.",
+          "links": {
+            "Crown Spa Perth": "crown-spa-perth",
+            "The Ritz-Carlton Spa": "ritz-carlton-spa-perth"
+          },
+          "group": "detail"
+        },
+        {
+          "label": "Couples rooms",
+          "value": "5",
+          "note": "Annasha Day Spa Retreat, endota spa Joondalup, Le Beau, Ganesha Wellness Spa and The Ritz-Carlton Spa say they have one.",
+          "links": {
+            "Annasha Day Spa Retreat": "annasha-day-spa",
+            "endota spa Joondalup": "endota-spa-joondalup",
+            "Le Beau": "le-beau-clinic-spa-kardinya",
+            "Ganesha Wellness Spa": "ganesha-wellness-spa"
+          },
+          "group": "detail"
+        },
+        {
+          "label": "Weekend surcharge",
+          "value": "Up to 10%",
+          "note": "endota spa Joondalup adds 5% on Saturdays and 10% on Sundays; Crown adds an unstated Friday-to-Sunday surcharge.",
+          "group": "detail"
+        }
+      ],
+      "method": [
+        "Relaxation or full-body massage prices for an hour; 50- and 75-minute menus and 'from' prices are left out of the typical figure.",
+        "Packages: the cheapest one person can book of two hours or more; seasonal offers included while bookable.",
+        "Typical means the median of the venues publishing a price.",
+        "Where a venue doesn't say something, it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ]
+    },
+    "couples-massage": {
+      "city": "perth",
+      "checked": "2026-10-13",
+      "basis": "prices published by Perth day spas and massage clinics on their own websites or booking pages",
+      "snapshot": "Typical hour for two $294",
+      "venues": 12,
+      "items": [
+        {
+          "label": "Typical hour for two",
+          "value": "$294",
+          "note": "Median of the 8 places publishing a 60-minute couples price for the pair. Range $210–$390.",
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest hour for two",
+          "value": "$210",
+          "note": "Bali Spirit Day Spa, Ellenbrook. In a clinic: Jade Clinic, Perth CBD, $220.",
+          "links": {
+            "Bali Spirit Day Spa": "bali-spirit-day-spa-ellenbrook",
+            "Jade Clinic": "jade-clinic-perth"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "South of the river",
+          "value": "$330",
+          "note": "Le Beau, Kardinya, 50 minutes for two.",
+          "links": {
+            "Le Beau": "le-beau-clinic-spa-kardinya"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "Priced per person",
+          "value": "Check",
+          "note": "endota spa Joondalup quotes its couples package per person ($310 each); Tara Massage Therapy books couples as two separate sessions.",
+          "links": {
+            "endota spa Joondalup": "endota-spa-joondalup",
+            "Tara Massage Therapy": "tara-massage-therapy"
+          },
+          "group": "detail"
+        }
+      ],
+      "method": [
+        "60-minute couples massage, total price for two people.",
+        "Packages and 'from' prices are left out of the typical figure.",
+        "Typical means the median of the venues publishing a price.",
+        "Where a venue doesn't say something, it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ]
+    },
+    "thai-massage": {
+      "city": "perth",
+      "checked": "2026-10-13",
+      "basis": "prices published by 5 Perth Thai massage clinics on their own websites or booking pages",
+      "snapshot": "Typical hour $119",
+      "venues": 5,
+      "items": [
+        {
+          "label": "Typical hour",
+          "value": "$119",
+          "note": "Median 60-minute Thai massage at 5 clinics. Range $90–$130.",
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest hour",
+          "value": "$90",
+          "note": "Perth Thai Massage, Bedford. South of the river: Royal Silk Remedial Thai Massage, Rockingham, $100.",
+          "links": {
+            "Perth Thai Massage": "perth-thai-massage-bedford",
+            "Royal Silk Remedial Thai Massage": "royal-silk-remedial-thai-massage-rockingham"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "Open Sundays",
+          "value": "5 of 5",
+          "note": "Every clinic on this page opens on Sundays.",
+          "group": "lead"
+        },
+        {
+          "label": "Off-peak price",
+          "value": "$10 off",
+          "note": "Royal Silk, for an hour or more booked 8am–2pm; it adds 10% on public holidays.",
+          "group": "detail"
+        }
+      ],
+      "method": [
+        "Standard 60-minute Thai massage; Thai aromatherapy (oil) massage left out.",
+        "Typical means the median of the venues publishing a price.",
+        "Where a venue doesn't say something, it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ]
+    },
+    "lymphatic-drainage": {
+      "city": "perth",
+      "checked": "2026-10-13",
+      "basis": "prices published by 13 Perth venues on their own websites or booking pages",
+      "snapshot": "Typical hour by hand $149",
+      "venues": 13,
+      "items": [
+        {
+          "label": "Typical hour, by hand",
+          "value": "$149",
+          "note": "Median 60-minute manual lymphatic drainage at the 7 places publishing one. Range $110–$160.",
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest by hand",
+          "value": "$110",
+          "note": "Aurora Therapeutic Massage, Joondalup. South of the river: Fremantle Remedial Massage Clinic, $130.",
+          "links": {
+            "Aurora Therapeutic Massage": "aurora-therapeutic-massage-joondalup",
+            "Fremantle Remedial Massage Clinic": "fremantle-remedial-massage-clinic"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "By machine",
+          "value": "$50",
+          "note": "Mindbody Lounge's compression suit, 30 minutes. A different session from the hands-on kind.",
+          "links": {
+            "Mindbody Lounge": "mindbody-lounge-victoria-park"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "Women only",
+          "value": "1",
+          "note": "The Neighbourhood Sauna, Fremantle, where a visiting practitioner runs the sessions.",
+          "links": {
+            "The Neighbourhood Sauna": "the-neighbourhood-sauna-fremantle"
+          },
+          "group": "detail"
+        }
+      ],
+      "method": [
+        "Manual lymphatic drainage, 60 minutes; Bodyspace's 'from' price is counted at its stated figure.",
+        "Machine and device sessions are shown separately, never mixed into the typical figure.",
+        "Typical means the median of the venues publishing a price.",
+        "Where a venue doesn't say something, it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ]
     }
   }
 }

@@ -54,6 +54,30 @@
    ]
   },
   {
+   "slug": "couples-massage",
+   "name": "Couples massage",
+   "categories": [
+    "bodywork",
+    "spa"
+   ],
+   "aliases": [
+    "couples relaxation massage",
+    "couples treatments",
+    "couples spa packages",
+    "couples packages",
+    "couples room",
+    "couples treatment rooms",
+    "massage and couples massage",
+    "couples full body massage"
+   ],
+   "note": "Two people, two tables, one room",
+   "traits": [
+    "Two tables in one room",
+    "Booked together, side by side",
+    "Often part of a spa package"
+   ]
+  },
+  {
    "slug": "deep-tissue-massage",
    "name": "Deep tissue massage",
    "categories": [
@@ -123,8 +147,8 @@
     "bodywork"
    ],
    "aliases": [
-    "taiwanese massage",
-    "traditional thai massage"
+    "traditional thai massage",
+    "thai yoga massage"
    ],
    "note": "Clothed, on a mat, with stretching",
    "traits": [
@@ -141,7 +165,8 @@
    ],
    "aliases": [
     "lymphatic massage",
-    "manual lymphatic drainage"
+    "manual lymphatic drainage",
+    "lymphatic drainage massage"
    ],
    "note": "Light, rhythmic strokes in one direction",
    "traits": [
@@ -1829,7 +1854,9 @@
    ],
    "aliases": [
     "spa treatments",
-    "spa"
+    "day spa treatments",
+    "day spa packages",
+    "spa packages"
    ],
    "traits": [
     "Treatments back to back",
