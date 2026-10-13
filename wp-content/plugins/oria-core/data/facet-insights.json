@@ -950,6 +950,67 @@
         "Prices and inclusions change. Check the venue's own site before you book."
       ],
       "venues": 46
+    },
+    "hyperbaric-oxygen": {
+      "city": "perth",
+      "checked": "2026-10-13",
+      "basis": "prices published by 5 Perth hyperbaric clinics on their own websites or booking pages",
+      "snapshot": "Typical hour $120",
+      "items": [
+        {
+          "label": "Typical casual hour",
+          "value": "$120",
+          "note": "Single 60-minute session at Element Health Centres, Hyper O2 (first visit), Studio2 HBOT and Thrive's hard-shell chamber. Range $75–$120.",
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest first hour",
+          "value": "$60",
+          "note": "Studio2 HBOT, Applecross, hard-shell at up to 2.0 ATA; $120 casual after that.",
+          "links": {
+            "Studio2 HBOT": "studio2-hbot-applecross"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest in a pack",
+          "value": "$30",
+          "note": "A session in Thrive Wellness Centre's 20-pack, soft-shell. Hard-shell packs: Thrive $55, Studio2 HBOT $85, Hyper O2 $99 (10-pack).",
+          "links": {
+            "Thrive Wellness Centre": "thrive-wellness-centre"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "Pressure",
+          "value": "1.3–2.0 ATA",
+          "note": "Hard-shell chambers. Thrive's soft-shell runs at about 1.3 and Recovery Haus's mild chamber at up to 1.35.",
+          "group": "detail"
+        },
+        {
+          "label": "GP referral",
+          "value": "Not asked for",
+          "note": "None of the five says you need one. Most screen you first with a health questionnaire or consult.",
+          "group": "detail"
+        },
+        {
+          "label": "Room for two",
+          "value": "1 chamber",
+          "note": "Thrive's hard-shell takes two people, $150 for an hour.",
+          "links": {
+            "Thrive": "thrive-wellness-centre"
+          },
+          "group": "detail"
+        }
+      ],
+      "method": [
+        "Standard session prices as each clinic publishes them; seated chambers, add-on prices and multi-treatment protocols are left out.",
+        "Typical means the most common single 60-minute price.",
+        "Pack prices are the total divided by the sessions in it.",
+        "Where a venue doesn't say something, it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ],
+      "venues": 5
     }
   }
 }

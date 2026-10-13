@@ -387,5 +387,49 @@
     ]
    }
   }
+ },
+ {
+  "slug": "intuitry-mount-lawley",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- the business employs dietitians but carried no dietetics tag, so it was missing from /explore/perth/nutrition/dietetics/. Checked on its own site, 13 Oct 2026: intuitry.com.au and /meet-the-team/ (\"Accredited Practising Dietitian\").",
+  "terms": {
+   "service": {
+    "add": [
+     "dietetics"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "nutrition-nation-claremont",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- the business employs dietitians but carried no dietetics tag, so it was missing from /explore/perth/nutrition/dietetics/. Checked on its own site, 13 Oct 2026: nutritionnation.com.au/consults (\"Every consultation is with a fully qualified Accredited Practising Dietitian\").",
+  "terms": {
+   "service": {
+    "add": [
+     "dietetics"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "nutrition-works-lathlain",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- the business employs dietitians but carried no dietetics tag, so it was missing from /explore/perth/nutrition/dietetics/. Checked on its own site, 13 Oct 2026: nutritionworks.com.au (\"Accredited Practising Dietitians\", \"Accredited Sports Dietitians\").",
+  "terms": {
+   "service": {
+    "add": [
+     "dietetics"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "wa-health-group",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- the business employs dietitians but carried no dietetics tag, so it was missing from /explore/perth/nutrition/dietetics/. Checked on its own site, 13 Oct 2026: wahealthgroup.com.au/dietetics-team and /dietetics-services (two Accredited Practising Dietitians, Canning Vale).",
+  "terms": {
+   "service": {
+    "add": [
+     "dietetics"
+    ]
+   }
+  }
  }
 ]
