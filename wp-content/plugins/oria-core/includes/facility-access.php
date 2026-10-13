@@ -356,6 +356,36 @@ function checked_label( array $row ): string {
 	return '' !== $row['checked'] ? wp_date( 'j F Y', (int) strtotime( $row['checked'] . ' 12:00:00' ) ) : '';
 }
 
+/*
+ * Freshness policy. A price checked more than STALE_DAYS ago is still shown,
+ * with its checked date, but it no longer counts for a budget filter, a
+ * price sort or an "under $50" shortcut, and tools/facility-stale.php lists
+ * it for re-checking. Four months is about how long venues hold a casual
+ * price; an undated row is stale from the start.
+ */
+const STALE_DAYS = 120;
+
+/*
+ * Offers that are one visit for one person, so their prices compare like
+ * for like. A pack, a membership, a first-visit deal or a couple's price is
+ * never compared with a single casual entry.
+ */
+const PER_VISIT = array( 'casual_visit', 'bathhouse_session', 'steam_session', 'contrast_session', 'private_session' );
+
+function is_stale( array $row ): bool {
+	$ts = '' !== (string) $row['checked'] ? strtotime( $row['checked'] . ' 12:00:00' ) : false;
+	return ! $ts || ( (int) current_time( 'timestamp' ) - $ts ) > STALE_DAYS * DAY_IN_SECONDS;
+}
+
+/** True when this offer is one visit for one person at a published price. */
+function is_per_visit( ?array $offer ): bool {
+	return null !== $offer
+		&& null !== $offer['price']
+		&& (float) $offer['price'] > 0
+		&& in_array( (string) $offer['kind'], PER_VISIT, true )
+		&& (int) $offer['people'] <= 1;
+}
+
 /** Does this row's main offer include a cold plunge or ice bath? */
 function has_cold( array $row ): bool {
 	foreach ( $row['includes'] as $f ) {
@@ -387,8 +417,16 @@ function summary( int $post_id, string $facility ): ?array {
 			static fn( string $c ): bool => '' !== $c && ! preg_match( '/^(\d+\s*\+|swimwear required|all[- ]gender)$/i', $c )
 		)
 	) : '';
+	$stale     = is_stale( $row );
+	$per_visit = is_per_visit( $main );
 	return array(
 		'price'      => $main ? $main['price'] : null,
+		// The figure a budget filter, a price sort or a shortcut may use:
+		// one visit, one person, checked within STALE_DAYS. Null otherwise,
+		// so unknown, stale and package prices never pass as cheap.
+		'compare'    => $per_visit && ! $stale ? (float) $main['price'] : null,
+		'per_visit'  => $per_visit,
+		'stale'      => $stale,
 		'price_text' => price_label( $main ),
 		'product'    => $main ? $main['product'] : '',
 		'kind'       => $main ? ( KINDS[ $main['kind'] ] ?? '' ) : '',

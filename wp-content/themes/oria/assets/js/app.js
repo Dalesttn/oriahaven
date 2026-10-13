@@ -2075,15 +2075,23 @@
        no price and no band, so it cannot pass a budget filter. */
     var FAC = window.ORIA_FACILITY || null;
     var FACIN = {};
+    /* On a facility page the price filter and sort read "compare": one
+       visit, one person, checked within the freshness window
+       (FacilityAccess\summary). A pack, a couple's price, an unknown or a
+       stale price has none, so it never passes a budget band and sorts
+       last -- the card still shows whatever the venue publishes. The bands
+       are the facility toolbar's own (directory-toolbar.php), so the counts
+       in the Price menu are counted the same way. */
+    var FAC_BANDS = { u30: "Under $30", u50: "$30 to under $50", o50: "$50 or more" };
     if (FAC) {
       (FAC.ids || []).forEach(function (id) { FACIN[id] = 1; });
       DATA.listings.forEach(function (l) {
         if (!FACIN[l.id]) return;
         var s = (FAC.sums || {})[l.id] || null;
-        var p = s && s.price > 0 ? s.price : 0;
+        var p = s && s.compare > 0 ? s.compare : 0;
         l._fac = s;
         l.priceFrom = p;
-        l.priceBand = p ? (p < 25 ? "$" : p <= 60 ? "$$" : p <= 200 ? "$$$" : "$$$$") : "";
+        l.priceBand = p ? (p < 30 ? "u30" : p < 50 ? "u50" : "o50") : "";
       });
     }
 
@@ -2720,7 +2728,7 @@
       state.aud.forEach(function (a) { if (!isLockedIntent("aud", a)) kind.push(["aud", a, audNames[a] || a]); });
       state.regions.forEach(function (r) { if (r !== locked.region) area.push(["region", r, regionNames[r] || r]); });
       state.suburbs.forEach(function (s) { area.push(["suburb", s, s]); });
-      state.price.forEach(function (p) { if (!isLockedIntent("price", p)) rest.push(["price", p, p === "Free" ? "Free" : p]); });
+      state.price.forEach(function (p) { if (!isLockedIntent("price", p)) rest.push(["price", p, p === "Free" ? "Free" : (FAC && FAC_BANDS[p]) || p]); });
       state.format.forEach(function (f) { if (!isLockedIntent("format", f)) rest.push(["format", f, f === "online" ? "Online" : "In person"]); });
       if (state.rating) rest.push(["rating", String(state.rating), state.rating + "+ rating"]);
       if (state.q) rest.push(["q", state.q, '"' + state.q + '"']);

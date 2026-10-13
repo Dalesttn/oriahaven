@@ -17,11 +17,19 @@ defined( 'ABSPATH' ) || exit;
 $oria_sums = (array) ( $args['sums'] ?? array() );
 $oria_ids  = array_map( 'intval', (array) ( $args['ids'] ?? array() ) );
 
+$oria_fname = strtolower( (string) ( \Oria\Core\FacilityAccess\FACILITIES[ (string) ( $args['facility'] ?? '' ) ] ?? __( 'Steam room', 'oria' ) ) );
+
+/*
+ * "Under $50 a visit" is strictly below $50, and reads the summary's
+ * 'compare' figure: one visit for one person, checked within the freshness
+ * window. An unknown price, a pack or a stale price never qualifies.
+ */
 $oria_tests = array(
-	'under25' => array( __( 'Under $25', 'oria' ), static fn( array $s ): bool => null !== $s['price'] && $s['price'] > 0 && $s['price'] < 25 ),
+	'under50' => array( __( 'Under $50 a visit', 'oria' ), static fn( array $s ): bool => null !== $s['compare'] && $s['compare'] < 50 ),
 	'casual'  => array( __( 'Casual entry', 'oria' ), static fn( array $s ): bool => 'yes' === $s['casual'] ),
 	'quiet'   => array( __( 'Quiet sessions', 'oria' ), static fn( array $s ): bool => '' !== (string) $s['quiet'] ),
-	'cold'    => array( __( 'Steam and cold plunge', 'oria' ), static fn( array $s ): bool => ! empty( $s['cold'] ) ),
+	/* translators: %s: facility, e.g. sauna */
+	'cold'    => array( sprintf( __( '%s and cold plunge', 'oria' ), ucfirst( $oria_fname ) ), static fn( array $s ): bool => ! empty( $s['cold'] ) ),
 );
 
 $oria_slug = static fn( int $id ): string => (string) get_post_field( 'post_name', $id );
@@ -33,7 +41,7 @@ foreach ( $oria_ids as $oria_id ) {
 $oria_counts = array_fill_keys( array_keys( $oria_tests ), 0 );
 foreach ( $oria_sums as $oria_id => $oria_s ) {
 	$oria_key = $oria_slug( (int) $oria_id );
-	$oria_payload['sums'][ $oria_key ] = array_intersect_key( $oria_s, array_flip( array( 'price', 'price_text', 'product', 'duration', 'conditions', 'access', 'includes', 'essentials', 'quiet', 'notice', 'book_url', 'source', 'checked' ) ) );
+	$oria_payload['sums'][ $oria_key ] = array_intersect_key( $oria_s, array_flip( array( 'price', 'compare', 'stale', 'price_text', 'product', 'duration', 'conditions', 'access', 'includes', 'essentials', 'quiet', 'notice', 'book_url', 'source', 'checked' ) ) );
 	foreach ( $oria_tests as $oria_t => $oria_def ) {
 		if ( $oria_def[1]( $oria_s ) ) {
 			$oria_payload['tests'][ $oria_t ][] = $oria_key;

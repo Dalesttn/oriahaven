@@ -210,9 +210,30 @@ $oria_band_labels = array(
 );
 $oria_band_n = array();
 $oria_online = 0;
+/*
+ * A facility page (the steam-room and sauna pages) prices one visit to that
+ * facility, not the venue's cheapest anything, so its bands are counted
+ * from FacilityAccess\summary()'s 'compare' figure -- the same figure
+ * app.js filters on, so the numbers in this menu match the results. Only a
+ * fresh, single-visit price counts; "under $50" means strictly below $50.
+ */
+$oria_fac_ctx = (string) ( $GLOBALS['oria_facility_ctx'] ?? '' );
+if ( '' !== $oria_fac_ctx && function_exists( '\Oria\Core\FacilityAccess\summary' ) ) {
+	$oria_band_labels = array(
+		'u30' => __( 'Under $30', 'oria' ),
+		'u50' => __( '$30 to under $50', 'oria' ),
+		'o50' => __( '$50 or more', 'oria' ),
+	);
+}
 if ( $oria_cat || $oria_guide ) {
 	foreach ( $oria_ids as $oria_lid ) {
-		$oria_b = (string) get_field( 'price_band', (int) $oria_lid );
+		if ( '' !== $oria_fac_ctx && function_exists( '\Oria\Core\FacilityAccess\summary' ) ) {
+			$oria_fs = \Oria\Core\FacilityAccess\summary( (int) $oria_lid, $oria_fac_ctx );
+			$oria_fp = $oria_fs ? $oria_fs['compare'] : null;
+			$oria_b  = null === $oria_fp ? '' : ( $oria_fp < 30 ? 'u30' : ( $oria_fp < 50 ? 'u50' : 'o50' ) );
+		} else {
+			$oria_b = (string) get_field( 'price_band', (int) $oria_lid );
+		}
 		if ( isset( $oria_band_labels[ $oria_b ] ) ) {
 			$oria_band_n[ $oria_b ] = ( $oria_band_n[ $oria_b ] ?? 0 ) + 1;
 		}
@@ -308,7 +329,7 @@ if ( isset( $oria_auds['beginners'] ) ) {
 	<details class="popover" data-popover>
 		<summary class="btn btn--ghost btn--sm"><?php esc_html_e( 'Price', 'oria' ); ?> <span aria-hidden="true">▾</span></summary>
 		<div class="popover__panel" role="group" aria-label="<?php esc_attr_e( 'Price', 'oria' ); ?>">
-			<p class="hint" style="margin:0 0 .6rem"><?php esc_html_e( 'The starting price each practice publishes.', 'oria' ); ?></p>
+			<p class="hint" style="margin:0 0 .6rem"><?php echo esc_html( '' !== $oria_fac_ctx ? __( 'One visit for one person, as each venue publishes it. Venues without a recently checked single-visit price are left out.', 'oria' ) : __( 'The starting price each practice publishes.', 'oria' ) ); ?></p>
 			<?php foreach ( $oria_band_labels as $oria_bk => $oria_bl ) : ?>
 				<?php if ( empty( $oria_band_n[ $oria_bk ] ) ) { continue; } ?>
 				<label class="check"><input type="checkbox" data-filter="price" value="<?php echo esc_attr( $oria_bk ); ?>"><span><?php echo esc_html( $oria_bl ); ?> <em><?php echo esc_html( (string) $oria_band_n[ $oria_bk ] ); ?></em></span></label>
