@@ -24,8 +24,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 const OPT_WATCHLIST = 'oria_ingest_watchlist';
 const OPT_REPORT    = 'oria_ingest_report';
 const OPT_CURSOR    = 'oria_ingest_cursor'; // where the candidate cap stopped last run.
+const OPT_REJECTED  = 'oria_ingest_rejected'; // candidates the AI ruled out: md5(url|start) => when.
 const MAX_CANDIDATES = 30;   // per run, keeps the daily AI spend tiny.
 const MAX_DAYS_OUT   = 120;  // ignore events further out than this.
+/*
+ * Wall-clock budget for the fetching part of one run. A watchlist of a
+ * hundred-plus organisers is over a thousand polite requests; on shared
+ * hosting a run that tries them all is killed half way and saves nothing.
+ * Stopping cleanly and resuming from the same source next night (the cursor
+ * below) covers the whole list over a few days instead.
+ */
+const MAX_SECONDS    = 240;
 
 /** @return array<string> */
 function watchlist(): array {
@@ -70,22 +79,57 @@ function run(): array {
 		$report['lines'][] = sprintf( 'Resuming from source %d of %d.', $cursor + 1, $count );
 	}
 
-	$seen  = 0;
+	if ( function_exists( 'set_time_limit' ) ) {
+		@set_time_limit( MAX_SECONDS + 120 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors -- some hosts disable it
+	}
+	$began = time();
+	/*
+	 * Candidates the AI ruled out, by source page and start, so mixed feeds
+	 * (council calendars, fitness browse pages) don't re-spend an AI call on
+	 * the same non-wellness event every night. Kept 120 days, the longest an
+	 * event can sit inside the window anyway.
+	 */
+	$rejected = (array) get_option( OPT_REJECTED, array() );
+	$rejected = array_filter( $rejected, static fn( $t ): bool => (int) $t > time() - MAX_DAYS_OUT * DAY_IN_SECONDS );
+	$seen  = 0; // candidates that cost an AI call: the cap counts only these.
 	$index = 0;
 	foreach ( $list as $url ) {
+		if ( time() - $began > MAX_SECONDS ) {
+			$report['lines'][] = 'Time budget reached — the next run picks up from this source.';
+			update_option( OPT_CURSOR, ( $cursor + $index ) % max( 1, $count ), false );
+			break;
+		}
 		$report['sources']++;
 		$candidates       = Fetch\collect( $url );
 		$report['found'] += count( $candidates );
 		$report['lines'][] = sprintf( '%s — %d candidate(s)', $url, count( $candidates ) );
 
 		foreach ( $candidates as $c ) {
-			if ( ++$seen > MAX_CANDIDATES ) {
+			// An event already on the site is free to recognise: it never
+			// reaches the AI and never counts against the cap. Nor does one
+			// the AI has already turned down (a council LEGO session).
+			if ( known( $c ) ) {
+				$report['dupes']++;
+				continue;
+			}
+			$rkey = md5( (string) $c['url'] . '|' . (string) $c['start'] );
+			if ( isset( $rejected[ $rkey ] ) ) {
+				continue;
+			}
+			if ( $seen >= MAX_CANDIDATES ) {
 				$report['lines'][] = 'Candidate cap reached — the next run picks up from this source.';
 				// Resume on the source that was cut short, not the one after.
 				update_option( OPT_CURSOR, ( $cursor + $index ) % max( 1, $count ), false );
 				break 2;
 			}
+			$before = (int) ( $GLOBALS['oria_ingest_ai_calls'] ?? 0 );
 			$result = process( $c );
+			// Past, too far out or interstate never reach the AI: free too.
+			$asked = (int) ( $GLOBALS['oria_ingest_ai_calls'] ?? 0 ) > $before;
+			$seen += $asked ? 1 : 0;
+			if ( $asked && 'irrelevant' === $result ) {
+				$rejected[ $rkey ] = time();
+			}
 			$report['lines'][] = sprintf( '  · %s → %s', $c['title'] ?: '(untitled)', $result );
 			if ( isset( $report[ $result ] ) ) {
 				$report[ $result ]++;
@@ -102,8 +146,56 @@ function run(): array {
 		update_option( OPT_CURSOR, 0, false );
 	}
 
+	update_option( OPT_REJECTED, $rejected, false );
 	update_option( OPT_REPORT, $report, false );
 	return $report;
+}
+
+/**
+ * Is this candidate an event we already hold, settled beyond refreshing?
+ *
+ * Same source page and same start time, and the record is not an ingest
+ * draft still open to updates (a published find, a member's event, or one a
+ * person has taken over). Such a candidate is marked as seen again and goes
+ * no further -- before this, every known event spent an AI call and a slot
+ * in the cap on every run, so a long watchlist never got past its first few
+ * sources. Drafts still take the full path, so their details keep refreshing.
+ *
+ * @param array<string, string> $c
+ */
+function known( array $c ): bool {
+	if ( '' === (string) $c['url'] || '' === (string) $c['start'] ) {
+		return false;
+	}
+	$start = local_datetime( (string) $c['start'] );
+	if ( '' === $start ) {
+		return false;
+	}
+	$ids = get_posts(
+		array(
+			'post_type'      => 'event',
+			'post_status'    => array( 'publish', 'future', 'pending' ),
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'meta_query'     => array(
+				array( 'key' => '_oria_src_url', 'value' => (string) $c['url'] ),
+				array( 'key' => 'event_start', 'value' => $start ),
+			),
+		)
+	);
+	if ( ! $ids ) {
+		return false;
+	}
+	$id = (int) $ids[0];
+	update_post_meta( $id, '_oria_verified', current_time( 'mysql' ) );
+	// An ingest event still missing its banner gets one, as the full path did.
+	if ( '' !== (string) get_post_meta( $id, '_oria_src', true ) && ! has_post_thumbnail( $id ) && '' !== (string) ( $c['image'] ?? '' ) ) {
+		$att = sideload_image( (string) $c['image'], $id );
+		if ( $att ) {
+			set_post_thumbnail( $id, $att );
+		}
+	}
+	return true;
 }
 
 /** @param array<string, string> $c
@@ -136,6 +228,7 @@ function process( array $c ): string {
 
 	// Refine: AI when configured, conservative keywords otherwise.
 	if ( AI\configured() ) {
+		$GLOBALS['oria_ingest_ai_calls'] = (int) ( $GLOBALS['oria_ingest_ai_calls'] ?? 0 ) + 1;
 		$r = AI\refine( $c );
 		if ( null !== $r && empty( $r['relevant'] ) ) {
 			return 'irrelevant';

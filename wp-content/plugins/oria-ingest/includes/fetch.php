@@ -271,17 +271,39 @@ function flatten_nodes( array $data ): array {
  */
 function event_links( string $html, string $page_url ): array {
 	$host = wp_parse_url( $page_url, PHP_URL_HOST );
-	if ( ! $host || ! preg_match_all( '#href=["\']([^"\'\s>]+)["\']#i', $html, $m ) ) {
+	if ( ! $host ) {
+		return array();
+	}
+	preg_match_all( '#href=["\']([^"\'\s>]+)["\']#i', $html, $m );
+	$hrefs = $m[1] ?? array();
+	/*
+	 * Eventbrite organiser pages list their events inside page data, not
+	 * as <a href> -- the organiser pages on the watchlist had been yielding
+	 * nothing at all. Absolute same-host URLs anywhere in the page (JSON
+	 * escapes "\/" undone) go through the same path test below.
+	 */
+	if ( preg_match_all( '#https?://' . preg_quote( $host, '#' ) . '/[^"\'\s<>\\\\]+#i', str_replace( '\\/', '/', $html ), $m2 ) ) {
+		$hrefs = array_merge( $hrefs, $m2[0] );
+	}
+	if ( ! $hrefs ) {
 		return array();
 	}
 	$links = array();
-	foreach ( array_unique( $m[1] ) as $href ) {
+	foreach ( array_unique( $hrefs ) as $href ) {
 		$abs = \WP_Http::make_absolute_url( html_entity_decode( $href ), $page_url );
 		if ( wp_parse_url( $abs, PHP_URL_HOST ) !== $host ) {
 			continue;
 		}
 		$path = (string) ( wp_parse_url( $abs, PHP_URL_PATH ) ?: '' );
-		if ( preg_match( '#/(e|event|events|host)/[^/]+#i', $path ) && ! preg_match( '#/(events?)/?$#i', $path ) ) {
+		/*
+		 * Studios name their event pages all sorts of things: Squarespace
+		 * "/whats-on/{slug}", "/workshops/{slug}", Wix "/events-details/{slug}".
+		 * A wrong guess only costs a fetch -- nothing is imported from a page
+		 * that carries no Event markup -- so the net is wide and the index
+		 * pages themselves are skipped.
+		 */
+		$sections = 'e|event|events|host|whats-on|whatson|workshops?|retreats?|events-details|event-details|ceremonies|circles|gatherings|classes-events';
+		if ( preg_match( '#/(' . $sections . ')/[^/]+#i', $path ) && ! preg_match( '#/(' . $sections . ')/?$#i', $path ) ) {
 			$links[ clean_link( strtok( $abs, '#' ) ) ] = true;
 		}
 	}
@@ -309,6 +331,11 @@ function clean_link( string $url ): string {
 		$key = strtolower( (string) $k );
 		if ( 'rec' === substr( $key, 0, 3 ) || 'utm_' === substr( $key, 0, 4 )
 			|| in_array( $key, array( 'searchid', 'eventorigin', 'fbclid', 'gclid', 'ref', 'aff' ), true ) ) {
+			unset( $q[ $k ] );
+		}
+		// Squarespace links every event twice, the page and its ?format=ical
+		// download. Both are one event; keeping both halved the follow budget.
+		if ( 'format' === $key && 'ical' === strtolower( (string) $q[ $k ] ) ) {
 			unset( $q[ $k ] );
 		}
 	}
@@ -390,15 +417,45 @@ function events_from_ics( string $ics, string $feed_url ): array {
 				? trim( str_replace( array( '\\,', '\\n', '\\;' ), array( ',', ' ', ';' ), $mm[1] ) )
 				: '';
 		};
-		$fmt = static function ( string $dt ): string {
-			$ts = strtotime( $dt );
-			return $ts ? gmdate( 'Y-m-d H:i:s', $ts ) : '';
+		/*
+		 * A DTSTART/DTEND as a naive Perth datetime, the form event_start is
+		 * stored in. Three shapes arrive: UTC ("…T093000Z", as TidyHQ sends),
+		 * zoned (";TZID=Australia/Perth:…") and floating (no zone, read as
+		 * local). Treating the first like the third stored a 5.30pm start as
+		 * 9.30am. A bare date keeps 00:00, the site's "no time published".
+		 */
+		$fmt = static function ( string $prop ) use ( $block ): string {
+			if ( ! preg_match( '/^' . $prop . '((?:;[^:]*)?):(\S+)/mi', $block, $mm ) ) {
+				return '';
+			}
+			$value  = trim( $mm[2] );
+			$local  = wp_timezone();
+			try {
+				if ( preg_match( '/^\d{8}$/', $value ) ) {
+					return substr( $value, 0, 4 ) . '-' . substr( $value, 4, 2 ) . '-' . substr( $value, 6, 2 ) . ' 00:00:00';
+				}
+				if ( 'Z' === strtoupper( substr( $value, -1 ) ) ) {
+					$dt = new \DateTimeImmutable( substr( $value, 0, -1 ), new \DateTimeZone( 'UTC' ) );
+				} elseif ( preg_match( '/TZID=([^;:]+)/', $mm[1], $tz ) ) {
+					try {
+						$zone = new \DateTimeZone( trim( $tz[1], '"' ) );
+					} catch ( \Exception $e ) {
+						$zone = $local;
+					}
+					$dt = new \DateTimeImmutable( $value, $zone );
+				} else {
+					$dt = new \DateTimeImmutable( $value, $local );
+				}
+				return $dt->setTimezone( $local )->format( 'Y-m-d H:i:s' );
+			} catch ( \Exception $e ) {
+				return '';
+			}
 		};
 		$out[] = array(
 			'title'       => sanitize_text_field( $get( 'SUMMARY' ) ),
 			'description' => sanitize_textarea_field( $get( 'DESCRIPTION' ) ),
-			'start'       => $fmt( $get( 'DTSTART' ) ),
-			'end'         => $fmt( $get( 'DTEND' ) ),
+			'start'       => $fmt( 'DTSTART' ),
+			'end'         => $fmt( 'DTEND' ),
 			'venue'       => sanitize_text_field( $get( 'LOCATION' ) ),
 			'suburb'      => '',
 			'region'      => '',
