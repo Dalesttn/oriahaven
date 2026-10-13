@@ -61,8 +61,22 @@ function shortcode( $atts ): string {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display state only.
 	$state = ( isset( $_GET['oform'] ) && $id === ( $_GET['oform_id'] ?? '' ) ) ? (string) $_GET['oform'] : '';
 
-	if ( 'sent' === $state ) {
-		return '<div class="notice" id="oform-' . esc_attr( $id ) . '">'
+	if ( 'sent' === $state || 'saved' === $state ) {
+		/*
+		 * A stored entry ('saved') carries a state marker, so the success
+		 * message fires the conversion once it renders. A claim keeps the
+		 * name the listing's claim panel already uses, told apart by
+		 * placement; every other form reports as form_submitted.
+		 */
+		$track = '';
+		if ( 'saved' === $state ) {
+			$track = sprintf(
+				' data-oria-event="%s" data-oria-placement="%s"',
+				'claim' === $id ? 'claim_completed' : 'form_submitted',
+				esc_attr( 'claim' === $id ? 'claim_page' : $id )
+			);
+		}
+		return '<div class="notice" id="oform-' . esc_attr( $id ) . '"' . $track . '>'
 			. '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;flex:none"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.2l2.4 2.4 4.6-5"/></svg>'
 			. '<span>' . esc_html( (string) $form['success'] ) . '</span></div>';
 	}

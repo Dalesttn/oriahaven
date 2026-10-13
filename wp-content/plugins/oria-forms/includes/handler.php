@@ -105,5 +105,7 @@ function handle(): void {
 	 */
 	do_action( 'oria_forms_saved', $form_id, $values, $entry_id );
 
-	back( 'sent', $form_id );
+	// 'saved', not 'sent': only a stored entry may fire a conversion event.
+	// The honeypot also lands on a success message, but as 'sent'.
+	back( 'saved', $form_id );
 }
