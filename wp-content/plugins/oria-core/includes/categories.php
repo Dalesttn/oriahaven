@@ -187,6 +187,17 @@ function depth( int $term_id ): int {
  *
  * @return array{renamed: int, created: int, reparented: int, unchanged: int, intros: int, notes: array<int, string>}
  */
+/** @return list<string> every slug some row in the plan names as a child */
+function child_slugs(): array {
+	$out = array();
+	foreach ( plan()['categories'] as $row ) {
+		foreach ( (array) ( $row['children'] ?? array() ) as $c ) {
+			$out[] = (string) $c;
+		}
+	}
+	return $out;
+}
+
 function sync(): array {
 	$out = array( 'renamed' => 0, 'created' => 0, 'reparented' => 0, 'unchanged' => 0, 'intros' => 0, 'notes' => array() );
 
@@ -209,6 +220,17 @@ function sync(): array {
 			$out['created']++;
 		} else {
 			$term_id = (int) $term->term_id;
+			/*
+			 * A row in this file is a top-level category. A term created
+			 * under some other parent first -- Pottery & Creative Workshops
+			 * began under Experiences (sources importer, Sept 2026) -- is
+			 * lifted to the top here, unless another row claims it as a
+			 * child, so the file stays the one place the tree is decided.
+			 */
+			if ( (int) $term->parent && ! in_array( $slug, child_slugs(), true ) ) {
+				wp_update_term( $term_id, Taxonomies\PRACTICE, array( 'parent' => 0 ) );
+				$out['reparented']++;
+			}
 			// Decoded, because WordPress stores "Yoga & Pilates" with an
 			// encoded ampersand and a raw comparison would rename forever.
 			if ( wp_specialchars_decode( $term->name, ENT_QUOTES ) !== $name ) {
@@ -678,6 +700,8 @@ function glyph( string $slug ): string {
 		'retreats'    => '<path d="M4 11l8-6.5L20 11"/><path d="M6.5 9.5V19h11V9.5"/><path d="M10 19v-4.5h4V19"/>',
 		'recovery'    => '<path d="M3 18V8M3 14.5h18V18M3 12.5h7.5a2 2 0 0 1 2 2"/><circle cx="6.5" cy="10.5" r="1.5"/><path d="M16 5h3l-3 3h3"/>',
 		'sound'       => '<circle cx="7" cy="12" r="2.2"/><path d="M12.5 8a5.5 5.5 0 0 1 0 8M15.8 5.2a10 10 0 0 1 0 13.6"/>',
+		// A thrown pot on the wheel head.
+		'creative-workshops' => '<path d="M9 4.5h6M9.8 4.5c0 2-2.8 3-2.8 7a5 5 0 0 0 10 0c0-4-2.8-5-2.8-7"/><path d="M5 19.5h14"/>',
 	);
 
 	$d = $paths[ $slug ] ?? '<circle cx="12" cy="12" r="7"/>';

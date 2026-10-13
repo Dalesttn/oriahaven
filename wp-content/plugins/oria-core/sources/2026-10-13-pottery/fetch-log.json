@@ -1,0 +1,244 @@
+{
+    "batch": "2026-10-13-pottery",
+    "requests": [
+        {
+            "url": "https://www.mukstudio.com.au/",
+            "at": "2026-10-13T13:50:01+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "662 chars of text"
+        },
+        {
+            "url": "https://www.mukstudio.com.au/classes",
+            "at": "2026-10-13T13:50:04+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "4372 chars of text"
+        },
+        {
+            "url": "https://www.mukstudio.com.au/faqs",
+            "at": "2026-10-13T13:50:07+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2077 chars of text"
+        },
+        {
+            "url": "https://www.houseofhobby.net/",
+            "at": "2026-10-13T13:50:09+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "8752 chars of text"
+        },
+        {
+            "url": "https://www.houseofhobby.net/workshop-calendar/pottery-wheel-basics-october-2026",
+            "at": "2026-10-13T13:50:12+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "4310 chars of text"
+        },
+        {
+            "url": "https://www.houseofhobby.net/workshop-calendar/pottery-wheel-october-25-26",
+            "at": "2026-10-13T13:50:15+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "4304 chars of text"
+        },
+        {
+            "url": "https://liennguyenceramics.com/shop/p/one-on-one-wheel-throwing-workshop",
+            "at": "2026-10-13T13:50:17+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3327 chars of text"
+        },
+        {
+            "url": "https://liennguyenceramics.com/shop/p/one-on-one-6-week-course",
+            "at": "2026-10-13T13:50:20+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3513 chars of text"
+        },
+        {
+            "url": "https://sorpottersclub.com/",
+            "at": "2026-10-13T13:50:21+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1563 chars of text"
+        },
+        {
+            "url": "https://sorpottersclub.com/classes",
+            "at": "2026-10-13T13:50:24+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3017 chars of text"
+        },
+        {
+            "url": "https://www.fromduststudio.com/",
+            "at": "2026-10-13T13:50:26+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "651 chars of text"
+        },
+        {
+            "url": "https://www.fromduststudio.com/events",
+            "at": "2026-10-13T13:50:29+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "774 chars of text"
+        },
+        {
+            "url": "https://www.fromduststudio.com/about-1",
+            "at": "2026-10-13T13:50:32+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1708 chars of text"
+        },
+        {
+            "url": "https://terraformstudio.com.au/pottery-classes-mandurah/",
+            "at": "2026-10-13T13:50:34+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2508 chars of text"
+        },
+        {
+            "url": "https://terraformstudio.com.au/shop/casual-pottery-classes/thursday-throwdowns/",
+            "at": "2026-10-13T13:50:45+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "3058 chars of text"
+        },
+        {
+            "url": "https://terraformstudio.com.au/shop/6-week-pottery-wheel-course/",
+            "at": "2026-10-13T13:51:07+00:00",
+            "state": "fetched",
+            "status": 200,
+            "final": "https://terraformstudio.com.au/shop/pottery-course/6-week-pottery-wheel-course/",
+            "note": "6772 chars of text"
+        },
+        {
+            "url": "https://earthandkla.com.au/",
+            "at": "2026-10-13T13:51:14+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "6355 chars of text"
+        },
+        {
+            "url": "https://earthandkla.com.au/guided-classes/",
+            "at": "2026-10-13T13:51:17+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1501 chars of text"
+        },
+        {
+            "url": "https://earthandkla.com.au/contact/",
+            "at": "2026-10-13T13:51:20+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "605 chars of text"
+        },
+        {
+            "url": "https://earthandkla.com.au/workshops-2/",
+            "at": "2026-10-13T13:51:23+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1686 chars of text"
+        },
+        {
+            "url": "https://www.happyhubcollective.com.au/",
+            "at": "2026-10-13T13:51:26+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "8467 chars of text"
+        },
+        {
+            "url": "https://www.happyhubcollective.com.au/about",
+            "at": "2026-10-13T13:51:30+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "6022 chars of text"
+        },
+        {
+            "url": "https://www.happyhubcollective.com.au/contact",
+            "at": "2026-10-13T13:51:33+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "942 chars of text"
+        },
+        {
+            "url": "http://www.perthstudiopotters.org.au/",
+            "at": "2026-10-13T13:51:35+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2757 chars of text"
+        },
+        {
+            "url": "http://www.perthstudiopotters.org.au/classes",
+            "at": "2026-10-13T13:51:37+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1486 chars of text"
+        },
+        {
+            "url": "https://www.notyetperfect.com/workshops",
+            "at": "2026-10-13T13:51:39+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1856 chars of text"
+        },
+        {
+            "url": "https://www.notyetperfect.com/event-details/wheel-work-workshop-beg-inter-2026-10-17-10-00",
+            "at": "2026-10-13T13:51:44+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1759 chars of text"
+        },
+        {
+            "url": "https://www.notyetperfect.com/event-details/pottery-date-night-wheel-work-2026-10-16-18-30",
+            "at": "2026-10-13T13:51:47+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1392 chars of text"
+        },
+        {
+            "url": "https://www.potteroo.com.au/",
+            "at": "2026-10-13T13:51:49+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1593 chars of text"
+        },
+        {
+            "url": "https://www.potteroo.com.au/classes",
+            "at": "2026-10-13T13:51:52+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1189 chars of text"
+        },
+        {
+            "url": "https://rockinghamceramicsstudio.org.au/",
+            "at": "2026-10-13T13:51:55+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "2527 chars of text"
+        },
+        {
+            "url": "https://rockinghamceramicsstudio.org.au/handbuilding-classes-and-workshops/",
+            "at": "2026-10-13T13:51:57+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1630 chars of text"
+        },
+        {
+            "url": "https://rockinghamceramicsstudio.org.au/wheel-throwing-classes-and-workshops/",
+            "at": "2026-10-13T13:52:00+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "1867 chars of text"
+        },
+        {
+            "url": "https://www.midlandjunctionartscentre.com.au/workshops-and-events?category=Ceramics",
+            "at": "2026-10-13T13:52:02+00:00",
+            "state": "fetched",
+            "status": 200,
+            "note": "28874 chars of text"
+        }
+    ]
+}

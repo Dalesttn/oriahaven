@@ -921,5 +921,93 @@
     ]
    }
   }
+ },
+ {
+  "slug": "canning-arts-group",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- Pottery & Creative Workshops is now a top-level category; the extra 'Retreats, Nature & Experiences' tag (left over from when pottery sat under it) is removed so the listing's eyebrow, breadcrumb and cards say pottery.",
+  "terms": {
+   "practice": {
+    "remove": [
+     "experiences"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "claymake-studio-maylands",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- Pottery & Creative Workshops is now a top-level category; the extra 'Retreats, Nature & Experiences' tag (left over from when pottery sat under it) is removed so the listing's eyebrow, breadcrumb and cards say pottery.",
+  "terms": {
+   "practice": {
+    "remove": [
+     "experiences"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "hound-ceramics-studio-fremantle",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- Pottery & Creative Workshops is now a top-level category; the extra 'Retreats, Nature & Experiences' tag (left over from when pottery sat under it) is removed so the listing's eyebrow, breadcrumb and cards say pottery.",
+  "terms": {
+   "practice": {
+    "remove": [
+     "experiences"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "perth-pottery-co-inglewood",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- Pottery & Creative Workshops is now a top-level category; the extra 'Retreats, Nature & Experiences' tag (left over from when pottery sat under it) is removed so the listing's eyebrow, breadcrumb and cards say pottery.",
+  "terms": {
+   "practice": {
+    "remove": [
+     "experiences"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "porch-ceramics-north-fremantle",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- Pottery & Creative Workshops is now a top-level category; the extra 'Retreats, Nature & Experiences' tag (left over from when pottery sat under it) is removed so the listing's eyebrow, breadcrumb and cards say pottery.",
+  "terms": {
+   "practice": {
+    "remove": [
+     "experiences"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "studio-p-mount-hawthorn",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- Pottery & Creative Workshops is now a top-level category; the extra 'Retreats, Nature & Experiences' tag (left over from when pottery sat under it) is removed so the listing's eyebrow, breadcrumb and cards say pottery.",
+  "terms": {
+   "practice": {
+    "remove": [
+     "experiences"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "walyalup-fremantle-arts-centre-fremantle",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- Pottery & Creative Workshops is now a top-level category; the extra 'Retreats, Nature & Experiences' tag (left over from when pottery sat under it) is removed so the listing's eyebrow, breadcrumb and cards say pottery.",
+  "terms": {
+   "practice": {
+    "remove": [
+     "experiences"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "winterwares-fremantle",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- Pottery & Creative Workshops is now a top-level category; the extra 'Retreats, Nature & Experiences' tag (left over from when pottery sat under it) is removed so the listing's eyebrow, breadcrumb and cards say pottery.",
+  "terms": {
+   "practice": {
+    "remove": [
+     "experiences"
+    ]
+   }
+  }
  }
 ]

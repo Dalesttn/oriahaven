@@ -15,7 +15,7 @@
     "https://www.mukstudio.com.au/faqs"
    ],
    "suburb": "O'Connor",
-   "region": "",
+   "region": "freo",
    "meeting_point": "",
    "address": "6/4 Pritchard St O’Connor WA",
    "meeting_varies": false,
@@ -98,6 +98,21 @@
      "field": "detail:Suitability",
      "url": "https://www.mukstudio.com.au/classes",
      "excerpt": "class sizes capped at 10–15 participants"
+    },
+    {
+     "field": "join",
+     "url": "https://www.mukstudio.com.au/classes",
+     "excerpt": "OCT 2026 Intro to Wheel Throwing"
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://www.mukstudio.com.au/classes",
+     "excerpt": "Pottery Classes in Perth — MUK Studio"
+    },
+    {
+     "field": "detail:Medium",
+     "url": "https://www.mukstudio.com.au/classes",
+     "excerpt": "small groups learn handbuilding and wheel throwing"
     }
    ]
   },
@@ -140,7 +155,7 @@
     },
     {
      "label": "Duration",
-     "value": "Wheel course: 5 x 3-hour Wednesday evening sessions"
+     "value": "5-week course, Wednesday nights 6pm–9pm"
     },
     {
      "label": "Firing and collection",
@@ -201,6 +216,31 @@
      "field": "flag:age",
      "url": "https://www.houseofhobby.net/workshop-calendar/pottery-wheel-basics-october-2026",
      "excerpt": "Attendees must be over 18 years of age."
+    },
+    {
+     "field": "price",
+     "url": "https://www.houseofhobby.net/workshop-calendar/pottery-wheel-basics-october-2026",
+     "excerpt": "Tickets Pay in full $495 (Save $45) Payment Plan ( 4 x $135 )"
+    },
+    {
+     "field": "join",
+     "url": "https://www.houseofhobby.net/workshop-calendar/pottery-wheel-basics-october-2026",
+     "excerpt": "1 Ticket Left! Pottery Wheel Basics: 5 Week course for beginners"
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://www.houseofhobby.net/workshop-calendar/pottery-wheel-basics-october-2026",
+     "excerpt": "Introducing our pottery wheel course, taking place over 5 weeks."
+    },
+    {
+     "field": "detail:Medium",
+     "url": "https://www.houseofhobby.net/workshop-calendar/pottery-wheel-basics-october-2026",
+     "excerpt": "This course includes: How to throw clay on the wheel"
+    },
+    {
+     "field": "detail:Duration",
+     "url": "https://www.houseofhobby.net/workshop-calendar/pottery-wheel-basics-october-2026",
+     "excerpt": "Introducing our pottery wheel course, taking place over 5 weeks."
     }
    ]
   },
@@ -212,12 +252,11 @@
    "kind": "place",
    "website": "https://liennguyenceramics.com/",
    "source_urls": [
-    "https://liennguyenceramics.com/",
     "https://liennguyenceramics.com/shop/p/one-on-one-wheel-throwing-workshop",
     "https://liennguyenceramics.com/shop/p/one-on-one-6-week-course"
    ],
    "suburb": "Noranda",
-   "region": "",
+   "region": "central",
    "meeting_point": "",
    "address": "",
    "meeting_varies": false,
@@ -267,8 +306,8 @@
    "evidence": [
     {
      "field": "name",
-     "url": "https://liennguyenceramics.com/",
-     "excerpt": "Lien Nguyen Ceramics"
+     "url": "https://liennguyenceramics.com/shop/p/one-on-one-wheel-throwing-workshop",
+     "excerpt": "Perth's One-On-One Wheel Throwing Workshop — Lien Nguyen Ceramics"
     },
     {
      "field": "activity",
@@ -309,6 +348,31 @@
      "field": "detail:Firing and collection",
      "url": "https://liennguyenceramics.com/shop/p/one-on-one-wheel-throwing-workshop",
      "excerpt": "All pieces will be ready for pickup approx. 8 weeks from workshop date."
+    },
+    {
+     "field": "join",
+     "url": "https://liennguyenceramics.com/shop/p/one-on-one-wheel-throwing-workshop",
+     "excerpt": "Dates are released 1-3 months in advance"
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://liennguyenceramics.com/shop/p/one-on-one-wheel-throwing-workshop",
+     "excerpt": "No previous pottery experience required."
+    },
+    {
+     "field": "tag:wheel-throwing",
+     "url": "https://liennguyenceramics.com/shop/p/one-on-one-wheel-throwing-workshop",
+     "excerpt": "I will guide you through the basic foundations of wheel throwing."
+    },
+    {
+     "field": "detail:Medium",
+     "url": "https://liennguyenceramics.com/shop/p/one-on-one-6-week-course",
+     "excerpt": "hand-building, wheel work, trimming and glazing of your pieces"
+    },
+    {
+     "field": "detail:Suitability",
+     "url": "https://liennguyenceramics.com/shop/p/one-on-one-6-week-course",
+     "excerpt": "Being a one-on-one course you will receive a course personally tailored to your skill level"
     }
    ]
   },
@@ -324,7 +388,7 @@
     "https://sorpottersclub.com/classes"
    ],
    "suburb": "Alfred Cove",
-   "region": "",
+   "region": "freo",
    "meeting_point": "",
    "address": "586 Canning Highway, Alfred Cove WA 6154",
    "meeting_varies": false,
@@ -403,6 +467,31 @@
      "field": "tag:hand-building",
      "url": "https://sorpottersclub.com/classes",
      "excerpt": "T4 Jane Aitken - Hand building and surface decoration 6 weeks Tuesday 9.00-12.00"
+    },
+    {
+     "field": "cost",
+     "url": "https://sorpottersclub.com/classes",
+     "excerpt": "T4 Robert Hawes - Wheel work: Beginners to Advanced - 8 weeks A$400.00"
+    },
+    {
+     "field": "join",
+     "url": "https://sorpottersclub.com/classes",
+     "excerpt": "T4 Clay Play - Wheelwork introduction with Finn Happ - Saturday morning"
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://sorpottersclub.com/classes",
+     "excerpt": "pottery classes — South of the River Potters' Club"
+    },
+    {
+     "field": "tag:wheel-throwing",
+     "url": "https://sorpottersclub.com/classes",
+     "excerpt": "Classes include wheelwork, hand building and other areas such as raku and glazing."
+    },
+    {
+     "field": "detail:Medium",
+     "url": "https://sorpottersclub.com/classes",
+     "excerpt": "Classes include wheelwork, hand building and other areas such as raku and glazing."
     }
    ]
   },
@@ -428,8 +517,8 @@
     "method": "booking",
     "url": "https://www.fromduststudio.com/events"
    },
-   "cost": "paid",
-   "price_note": "Prices not stated on the studio's own site",
+   "cost": "unknown",
+   "price_note": "",
    "price_from": 0,
    "schedule": "",
    "beginner": "unknown",
@@ -437,16 +526,11 @@
    "tags": [
     "pottery"
    ],
-   "details": [
-    {
-     "label": "Medium",
-     "value": "Clay"
-    }
-   ],
+   "details": [],
    "flags": [
-    "Public workshop bookings go through Eventbrite; prices not on own site",
     "Thin website (footer © 2023); confirm workshops are current",
-    "Upcoming dates shown: 4 Weeks of Pottery Course starting Mon 2 Nov 12 midday and Fri 6 Nov 5:30pm"
+    "Upcoming dates shown: 4 Weeks of Pottery Course starting Mon 2 Nov 12 midday and Fri 6 Nov 5:30pm",
+    "cost set to unknown: no price on the studio's own site (bookings via Eventbrite)"
    ],
    "contact": {
     "email": "",
@@ -469,14 +553,19 @@
      "excerpt": "Studio location: 1a/24 Yampi Way, Willetton"
     },
     {
-     "field": "join",
-     "url": "https://www.fromduststudio.com/events",
-     "excerpt": "Get your friends and family together and book a creative pottery experience together."
-    },
-    {
      "field": "about",
      "url": "https://www.fromduststudio.com/about-1",
      "excerpt": "Founded in Feb 2024 by husband and wife duo Cameron & Breanne Lampard"
+    },
+    {
+     "field": "join",
+     "url": "https://www.fromduststudio.com/events",
+     "excerpt": "Book a family night at From Dust Studio"
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://www.fromduststudio.com/events",
+     "excerpt": "book a creative pottery experience together"
     }
    ]
   },
@@ -484,7 +573,7 @@
    "key": "terraform-studio-mandurah",
    "category": "creative",
    "status": "candidate",
-   "name": "Terraform Studio (Get Muddy Workshops)",
+   "name": "Terraform Studio",
    "kind": "place",
    "website": "https://terraformstudio.com.au/",
    "source_urls": [
@@ -497,7 +586,7 @@
    "meeting_point": "",
    "address": "Shop 9A Smart Street Mall Mandurah, WA 6210",
    "meeting_varies": false,
-   "blurb": "A pottery studio and gallery on the Mandurah foreshore offering casual Thursday-evening wheel or hand-building classes, 3- and 6-week beginner wheel and hand-building courses, intermediate courses and one-on-one sessions.",
+   "blurb": "A pottery studio and gallery on the Mandurah foreshore offering casual Thursday-evening wheel or hand-building classes, 3- and 6-week beginner wheel and hand-building courses, intermediate courses and one-on-one wheel or hand-building sessions.",
    "join": {
     "method": "booking",
     "url": "https://terraformstudio.com.au/pottery-classes-mandurah/"
@@ -531,7 +620,8 @@
     "Mandurah is metro fringe",
     "Casual class excludes firing/glazing unless finishing service bought",
     "3-week course open to 16+; 6-week course 18+",
-    "Same business also trades as Get Muddy (getmuddy.com.au)"
+    "Same business also trades as Get Muddy (getmuddy.com.au)",
+    "Studio's pages also say 'home to Get Muddy Workshops'"
    ],
    "contact": {
     "email": "",
@@ -581,7 +671,7 @@
     {
      "field": "detail:Duration",
      "url": "https://terraformstudio.com.au/shop/casual-pottery-classes/thursday-throwdowns/",
-     "excerpt": "Duration 120 minutes"
+     "excerpt": "Booking date Start time Duration 120 minutes Number of people"
     },
     {
      "field": "detail:Firing and collection",
@@ -592,6 +682,26 @@
      "field": "tag:hand-building",
      "url": "https://terraformstudio.com.au/pottery-classes-mandurah/",
      "excerpt": "3 & 6 Week Beginner Hand Building Class"
+    },
+    {
+     "field": "join",
+     "url": "https://terraformstudio.com.au/pottery-classes-mandurah/",
+     "excerpt": "Thursday Throw Downs – Casual Pottery Classes"
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://terraformstudio.com.au/shop/casual-pottery-classes/thursday-throwdowns/",
+     "excerpt": "These casual pottery classes run every Thursday evening"
+    },
+    {
+     "field": "tag:wheel-throwing",
+     "url": "https://terraformstudio.com.au/shop/casual-pottery-classes/thursday-throwdowns/",
+     "excerpt": "We will go over all the basics to creating a vessel on the pottery wheel!"
+    },
+    {
+     "field": "detail:Medium",
+     "url": "https://terraformstudio.com.au/shop/casual-pottery-classes/thursday-throwdowns/",
+     "excerpt": "a great way to sample the pottery wheel or hand building"
     }
    ]
   },
@@ -686,6 +796,36 @@
      "field": "tag:hand-building",
      "url": "https://earthandkla.com.au/workshops-2/",
      "excerpt": "we explore both the pottery wheel, and the world of hand building"
+    },
+    {
+     "field": "join",
+     "url": "https://earthandkla.com.au/guided-classes/",
+     "excerpt": "We recommend attending 3 guided sessions for our instructor to go through each stage of the process"
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://earthandkla.com.au/guided-classes/",
+     "excerpt": "working with clay on the pottery wheel"
+    },
+    {
+     "field": "tag:wheel-throwing",
+     "url": "https://earthandkla.com.au/",
+     "excerpt": "Our workshops typically offer students a taste of the wonderful world of wheel throwing"
+    },
+    {
+     "field": "detail:Medium",
+     "url": "https://earthandkla.com.au/workshops-2/",
+     "excerpt": "we explore both the pottery wheel, and the world of hand building"
+    },
+    {
+     "field": "detail:Duration",
+     "url": "https://earthandkla.com.au/guided-classes/",
+     "excerpt": "Our 2-hour guided provides you with an in-depth understanding"
+    },
+    {
+     "field": "detail:Suitability",
+     "url": "https://earthandkla.com.au/workshops-2/",
+     "excerpt": "Our small group ceramic workshops provides an immersive and tactile experience"
     }
    ]
   },
@@ -785,6 +925,31 @@
      "field": "tag:painting-workshops",
      "url": "https://www.happyhubcollective.com.au/about",
      "excerpt": "weekday pottery painting from $89"
+    },
+    {
+     "field": "cost",
+     "url": "https://www.happyhubcollective.com.au/",
+     "excerpt": "Mug Making Pottery Workshop in Perth (Fremantle & Mobile) From $124 pp"
+    },
+    {
+     "field": "join",
+     "url": "https://www.happyhubcollective.com.au/",
+     "excerpt": "Pottery classes in Perth (Fremantle)"
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://www.happyhubcollective.com.au/",
+     "excerpt": "Each pottery workshop includes guided instruction from an experienced teacher"
+    },
+    {
+     "field": "tag:hand-building",
+     "url": "https://www.happyhubcollective.com.au/about",
+     "excerpt": "Our public handbuilding pottery, painting and floral classes are designed for complete beginners"
+    },
+    {
+     "field": "detail:Medium",
+     "url": "https://www.happyhubcollective.com.au/about",
+     "excerpt": "Choose from handbuilding pottery, floral design, ceramic painting, terrarium making and more!"
     }
    ]
   },
@@ -811,7 +976,7 @@
    },
    "cost": "paid",
    "price_note": "Fee per term: $360 for 8 sessions (firings and glazes included; clay purchased separately)",
-   "price_from": 360,
+   "price_from": 0,
    "schedule": "Mon 6–8.30pm; Tue 9.15–11.45am, 12.15–2.45pm and 3.15–5.45pm; Wed 9.30am–12pm and 6–8.30pm; Thu 6–8.30pm",
    "beginner": "yes",
    "come_alone": "unknown",
@@ -820,16 +985,12 @@
    ],
    "details": [
     {
-     "label": "Medium",
-     "value": "Clay"
-    },
-    {
      "label": "Suitability",
      "value": "Over 18s; complete beginners to experienced"
     },
     {
      "label": "Duration",
-     "value": "8 sessions per term, about 2.5 hours each"
+     "value": "8 sessions per term, 4 terms a year"
     },
     {
      "label": "Materials",
@@ -840,7 +1001,8 @@
     "Class participants must be over 18",
     "Site does not say whether classes are wheel or hand-building",
     "Clay costs extra",
-    "Booking is via a 'Register class interest' link"
+    "Booking is via a 'Register class interest' link",
+    "Course-only pricing: the 8-session term total is in the price note, not shown as a per-session price."
    ],
    "contact": {
     "email": "",
@@ -886,6 +1048,31 @@
      "field": "flag:age",
      "url": "http://www.perthstudiopotters.org.au/classes",
      "excerpt": "Class participants must be over 18 years old."
+    },
+    {
+     "field": "cost",
+     "url": "http://www.perthstudiopotters.org.au/classes",
+     "excerpt": "Fee per term: $360 for 8 sessions."
+    },
+    {
+     "field": "join",
+     "url": "http://www.perthstudiopotters.org.au/classes",
+     "excerpt": "Each class has 8 sessions per term and there are 4 terms a year."
+    },
+    {
+     "field": "tag:pottery",
+     "url": "http://www.perthstudiopotters.org.au/classes",
+     "excerpt": "We welcome potters with all levels of experience"
+    },
+    {
+     "field": "detail:Suitability",
+     "url": "http://www.perthstudiopotters.org.au/classes",
+     "excerpt": "Class participants must be over 18 years old."
+    },
+    {
+     "field": "detail:Duration",
+     "url": "http://www.perthstudiopotters.org.au/classes",
+     "excerpt": "Each class has 8 sessions per term and there are 4 terms a year."
     }
    ]
   },
@@ -925,7 +1112,7 @@
    "details": [
     {
      "label": "Medium",
-     "value": "Clay: wheel throwing and hand-building"
+     "value": "Clay: wheel throwing; a hand-building platter workshop is also listed"
     },
     {
      "label": "Duration",
@@ -958,16 +1145,6 @@
      "excerpt": "Not Yet Perfect Pottery Studio, 58 Duncraig Rd, Applecross WA 6153, Australia"
     },
     {
-     "field": "price",
-     "url": "https://www.notyetperfect.com/event-details/wheel-work-workshop-beg-inter-2026-10-17-10-00",
-     "excerpt": "Ticket type General Admission Price $179.00 +$4.48 ticket service fee"
-    },
-    {
-     "field": "cost",
-     "url": "https://www.notyetperfect.com/event-details/pottery-date-night-wheel-work-2026-10-16-18-30",
-     "excerpt": "Couple Ticket (Two guests) More info 1 ticket per couple Price $375.00"
-    },
-    {
      "field": "schedule",
      "url": "https://www.notyetperfect.com/event-details/pottery-date-night-wheel-work-2026-10-16-18-30",
      "excerpt": "16 Oct 2026, 6:30 pm – 8:30 pm"
@@ -983,14 +1160,44 @@
      "excerpt": "Whether it’s your very first time on the wheel or you’re returning to the craft"
     },
     {
-     "field": "tag:hand-building",
-     "url": "https://www.notyetperfect.com/workshops",
-     "excerpt": "Hand building Serving Platter Workshop Sat, 24 Oct"
-    },
-    {
      "field": "detail:Duration",
      "url": "https://www.notyetperfect.com/event-details/wheel-work-workshop-beg-inter-2026-10-17-10-00",
      "excerpt": "Over two hours, you’ll learn the foundations of wheel throwing"
+    },
+    {
+     "field": "price",
+     "url": "https://www.notyetperfect.com/event-details/wheel-work-workshop-beg-inter-2026-10-17-10-00",
+     "excerpt": "Price$179.00 +$4.48 ticket service fee"
+    },
+    {
+     "field": "cost",
+     "url": "https://www.notyetperfect.com/event-details/pottery-date-night-wheel-work-2026-10-16-18-30",
+     "excerpt": "1 ticket per couple Price$375.00 +$9.38 ticket service fee"
+    },
+    {
+     "field": "join",
+     "url": "https://www.notyetperfect.com/workshops",
+     "excerpt": "Wheel Work Workshop (Beg -Inter)"
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://www.notyetperfect.com/event-details/wheel-work-workshop-beg-inter-2026-10-17-10-00",
+     "excerpt": "this intimate studio session invites you to explore pottery in a relaxed and supportive space"
+    },
+    {
+     "field": "tag:wheel-throwing",
+     "url": "https://www.notyetperfect.com/event-details/wheel-work-workshop-beg-inter-2026-10-17-10-00",
+     "excerpt": "Learn the foundations of wheel throwing in a warm and welcoming ceramic studio"
+    },
+    {
+     "field": "tag:hand-building",
+     "url": "https://www.notyetperfect.com/workshops",
+     "excerpt": "Hand building Serving Platter Workshop"
+    },
+    {
+     "field": "detail:Medium",
+     "url": "https://www.notyetperfect.com/event-details/wheel-work-workshop-beg-inter-2026-10-17-10-00",
+     "excerpt": "you’ll learn the foundations of wheel throwing while shaping functional ceramic pieces by hand"
     }
    ]
   },
@@ -1017,7 +1224,7 @@
    },
    "cost": "paid",
    "price_note": "Hand building: $65 for one stand-alone class, $290 for 6 classes; throwing: $130 for 1 class (1 item), $350 for 3 classes",
-   "price_from": 65,
+   "price_from": 0,
    "schedule": "Hand building: Mon 3:15–5pm and 6–8pm, Tue/Wed 3:15–5pm, Thu 12:30–2:30pm and 3:15–5pm; throwing: Mon 5:30–7:30, Thu 12:30–2:30",
    "beginner": "unknown",
    "come_alone": "unknown",
@@ -1043,7 +1250,8 @@
    "flags": [
     "Price conflict: homepage vouchers say $75 for hand building, classes page says $65 per stand-alone class",
     "Lessons are for all ages; check which sessions suit adults",
-    "Homepage and classes page still reference a September holiday program"
+    "Homepage and classes page still reference a September holiday program",
+    "Site gives $65 and $75 for the same class, so no per-session price is shown until confirmed."
    ],
    "contact": {
     "email": "",
@@ -1089,6 +1297,31 @@
      "field": "detail:Materials",
      "url": "https://www.potteroo.com.au/",
      "excerpt": "Vouchers & classes include: 2-hour workshop & tuition, materials, glazes & firing."
+    },
+    {
+     "field": "join",
+     "url": "https://www.potteroo.com.au/classes",
+     "excerpt": "Ever wanted to try your hand at throwing on a wheel?"
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://www.potteroo.com.au/",
+     "excerpt": "Pottery vouchers available here, $75 for hand building, $130 for throwing on the wheel!"
+    },
+    {
+     "field": "tag:wheel-throwing",
+     "url": "https://www.potteroo.com.au/classes",
+     "excerpt": "Lessons include teaching on the wheel, clay, glazes & firing three items."
+    },
+    {
+     "field": "detail:Medium",
+     "url": "https://www.potteroo.com.au/",
+     "excerpt": "Pottery vouchers available here, $75 for hand building, $130 for throwing on the wheel!"
+    },
+    {
+     "field": "detail:Duration",
+     "url": "https://www.potteroo.com.au/",
+     "excerpt": "Vouchers & classes include: 2-hour workshop & tuition, materials, glazes & firing."
     }
    ]
   },
@@ -1116,7 +1349,7 @@
    },
    "cost": "paid",
    "price_note": "Beginners Handbuilding 8 x 2.5-hour lessons $395; 7-week Wheel Throwing class $520 (fees include all materials and firing)",
-   "price_from": 395,
+   "price_from": 0,
    "schedule": "Wheel throwing: Wednesdays 6–9pm; beginners hand-building: Thursdays 6.30–9.00pm",
    "beginner": "yes",
    "come_alone": "unknown",
@@ -1146,7 +1379,8 @@
    "flags": [
     "Street address not published on site; suburb inferred from studio name only",
     "Current Term 4 classes are all full; registration by email",
-    "Groups of 4+ can request their own class"
+    "Groups of 4+ can request their own class",
+    "Course-only pricing: the 8-week course total is in the price note, not shown as a per-session price."
    ],
    "contact": {
     "email": "",
@@ -1197,6 +1431,36 @@
      "field": "detail:Suitability",
      "url": "https://rockinghamceramicsstudio.org.au/wheel-throwing-classes-and-workshops/",
      "excerpt": "ALL CLASSES ARE DESIGNED FOR ADULT PARTICIPANTS"
+    },
+    {
+     "field": "join",
+     "url": "https://rockinghamceramicsstudio.org.au/",
+     "excerpt": "PLEASE FOLLOW THE LINKS BELOW FOR OUR CURRENT CLASS SCHEDULE"
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://rockinghamceramicsstudio.org.au/wheel-throwing-classes-and-workshops/",
+     "excerpt": "The complete cycle of creating pottery on the potter’s wheel will be introduced to"
+    },
+    {
+     "field": "tag:wheel-throwing",
+     "url": "https://rockinghamceramicsstudio.org.au/wheel-throwing-classes-and-workshops/",
+     "excerpt": "2026 WHEEL THROWING CLASSES and WORKSHOPS"
+    },
+    {
+     "field": "tag:hand-building",
+     "url": "https://rockinghamceramicsstudio.org.au/handbuilding-classes-and-workshops/",
+     "excerpt": "2026 HANDBUILDING CLASSES and WORKSHOPS"
+    },
+    {
+     "field": "detail:Medium",
+     "url": "https://rockinghamceramicsstudio.org.au/",
+     "excerpt": "If you are a complete beginner – we recommend commencing with an 8 week Handbuilding Class."
+    },
+    {
+     "field": "detail:Duration",
+     "url": "https://rockinghamceramicsstudio.org.au/wheel-throwing-classes-and-workshops/",
+     "excerpt": "Fees include 7 x 3 hour weekly lessons all materials and equipment and firing of your creations."
     }
    ]
   },
@@ -1222,7 +1486,7 @@
    },
    "cost": "paid",
    "price_note": "8-session wheel throwing term program $455 ($409.50 MAC Inc. members); 1/2 bag clay provided",
-   "price_from": 455,
+   "price_from": 0,
    "schedule": "Tuesdays 5:30–8:30pm; Thursdays 6–9pm; Saturdays 12–3pm (Term 4, Oct–Dec 2026)",
    "beginner": "yes",
    "come_alone": "unknown",
@@ -1255,7 +1519,8 @@
    "flags": [
     "Suitable for 18 yrs+",
     "Tuesday program: event header says 6–9pm but description says 5:30–8:30pm",
-    "Also runs kids' clay workshops; only adult wheel programs considered"
+    "Also runs kids' clay workshops; only adult wheel programs considered",
+    "Course-only pricing: the 8-session term total is in the price note, not shown as a per-session price."
    ],
    "contact": {
     "email": "",
@@ -1306,6 +1571,41 @@
      "field": "detail:Firing and collection",
      "url": "https://www.midlandjunctionartscentre.com.au/workshops-and-events?category=Ceramics",
      "excerpt": "with bisque and glaze firings included to transform your creations into stunning, kiln-fired masterpieces"
+    },
+    {
+     "field": "cost",
+     "url": "https://www.midlandjunctionartscentre.com.au/workshops-and-events?category=Ceramics",
+     "excerpt": "(8 Sessions) $455 | $409.50 MAC Inc. Members"
+    },
+    {
+     "field": "join",
+     "url": "https://www.midlandjunctionartscentre.com.au/workshops-and-events?category=Ceramics",
+     "excerpt": "Learn the art of wheel throwing with renowned ceramicist Greg Crowe."
+    },
+    {
+     "field": "tag:pottery",
+     "url": "https://www.midlandjunctionartscentre.com.au/workshops-and-events?category=Ceramics",
+     "excerpt": "you will experience the joy of hands-on pottery"
+    },
+    {
+     "field": "tag:wheel-throwing",
+     "url": "https://www.midlandjunctionartscentre.com.au/workshops-and-events?category=Ceramics",
+     "excerpt": "Learn the art of wheel throwing with renowned ceramicist Greg Crowe."
+    },
+    {
+     "field": "detail:Medium",
+     "url": "https://www.midlandjunctionartscentre.com.au/workshops-and-events?category=Ceramics",
+     "excerpt": "Learn the art of wheel throwing with renowned ceramicist Greg Crowe."
+    },
+    {
+     "field": "detail:Suitability",
+     "url": "https://www.midlandjunctionartscentre.com.au/workshops-and-events?category=Ceramics",
+     "excerpt": "Tuesdays 13 Oct - 8 Dec 2026 | 5:30-8:30pm | Suitable for 18 yrs+"
+    },
+    {
+     "field": "detail:Duration",
+     "url": "https://www.midlandjunctionartscentre.com.au/workshops-and-events?category=Ceramics",
+     "excerpt": "In this series of eight, 3-hour workshops you will learn essential pottery skills"
     }
    ]
   }

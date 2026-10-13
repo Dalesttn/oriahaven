@@ -1,0 +1,351 @@
+{
+ "batch": "2026-10-13-pottery",
+ "_note": "Every domain considered. decision: fetch = studio's own site used as evidence; discovery = used only to find candidates; manual = needs an editor; reject = ruled out, with reason.",
+ "sources": [
+  {
+   "category": "creative",
+   "domain": "mukstudio.com.au",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://www.mukstudio.com.au/",
+    "https://www.mukstudio.com.au/classes",
+    "https://www.mukstudio.com.au/faqs"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "houseofhobby.net",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://www.houseofhobby.net/",
+    "https://www.houseofhobby.net/workshop-calendar/pottery-wheel-basics-october-2026",
+    "https://www.houseofhobby.net/workshop-calendar/pottery-wheel-october-25-26"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "liennguyenceramics.com",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://liennguyenceramics.com/shop/p/one-on-one-wheel-throwing-workshop",
+    "https://liennguyenceramics.com/shop/p/one-on-one-6-week-course"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "sorpottersclub.com",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://sorpottersclub.com/",
+    "https://sorpottersclub.com/classes"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "fromduststudio.com",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://www.fromduststudio.com/",
+    "https://www.fromduststudio.com/events",
+    "https://www.fromduststudio.com/about-1"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "terraformstudio.com.au",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://terraformstudio.com.au/pottery-classes-mandurah/",
+    "https://terraformstudio.com.au/shop/casual-pottery-classes/thursday-throwdowns/",
+    "https://terraformstudio.com.au/shop/6-week-pottery-wheel-course/"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "earthandkla.com.au",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://earthandkla.com.au/",
+    "https://earthandkla.com.au/guided-classes/",
+    "https://earthandkla.com.au/contact/",
+    "https://earthandkla.com.au/workshops-2/"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "happyhubcollective.com.au",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://www.happyhubcollective.com.au/",
+    "https://www.happyhubcollective.com.au/about",
+    "https://www.happyhubcollective.com.au/contact"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "perthstudiopotters.org.au",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "http://www.perthstudiopotters.org.au/",
+    "http://www.perthstudiopotters.org.au/classes"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "notyetperfect.com",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://www.notyetperfect.com/workshops",
+    "https://www.notyetperfect.com/event-details/wheel-work-workshop-beg-inter-2026-10-17-10-00",
+    "https://www.notyetperfect.com/event-details/pottery-date-night-wheel-work-2026-10-16-18-30"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "potteroo.com.au",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://www.potteroo.com.au/",
+    "https://www.potteroo.com.au/classes"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "rockinghamceramicsstudio.org.au",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://rockinghamceramicsstudio.org.au/",
+    "https://rockinghamceramicsstudio.org.au/handbuilding-classes-and-workshops/",
+    "https://rockinghamceramicsstudio.org.au/wheel-throwing-classes-and-workshops/"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "midlandjunctionartscentre.com.au",
+   "type": "studio-site",
+   "decision": "fetch",
+   "urls": [
+    "https://www.midlandjunctionartscentre.com.au/workshops-and-events?category=Ceramics"
+   ],
+   "reason": "Studio's own site; every quoted page listed."
+  },
+  {
+   "category": "creative",
+   "domain": "classbento.com.au",
+   "type": "directory",
+   "decision": "discovery",
+   "urls": [],
+   "reason": "Used only to find candidate names; no facts taken from it."
+  },
+  {
+   "category": "creative",
+   "domain": "perthisok.com",
+   "type": "directory",
+   "decision": "discovery",
+   "urls": [],
+   "reason": "Used only to find candidate names; no facts taken from it."
+  },
+  {
+   "category": "creative",
+   "domain": "theurbanlist.com",
+   "type": "directory",
+   "decision": "discovery",
+   "urls": [],
+   "reason": "Used only to find candidate names; no facts taken from it."
+  },
+  {
+   "category": "creative",
+   "domain": "eventbrite.com.au",
+   "type": "directory",
+   "decision": "discovery",
+   "urls": [],
+   "reason": "Used only to find candidate names; no facts taken from it."
+  },
+  {
+   "category": "creative",
+   "domain": "weekendnotes.com",
+   "type": "directory",
+   "decision": "discovery",
+   "urls": [],
+   "reason": "Used only to find candidate names; no facts taken from it."
+  },
+  {
+   "category": "creative",
+   "domain": "seniorocity.com.au",
+   "type": "directory",
+   "decision": "discovery",
+   "urls": [],
+   "reason": "Used only to find candidate names; no facts taken from it."
+  },
+  {
+   "category": "creative",
+   "domain": "lessons.com.au",
+   "type": "directory",
+   "decision": "discovery",
+   "urls": [],
+   "reason": "Used only to find candidate names; no facts taken from it."
+  },
+  {
+   "category": "creative",
+   "domain": "craftshq.com.au",
+   "type": "directory",
+   "decision": "discovery",
+   "urls": [],
+   "reason": "Used only to find candidate names; no facts taken from it."
+  },
+  {
+   "category": "creative",
+   "domain": "guildfordvillagepotters.com.au",
+   "type": "studio-site",
+   "decision": "reject",
+   "urls": [
+    "https://guildfordvillagepotters.com.au/classes/"
+   ],
+   "reason": "Classes page says no classes until later in 2026 or early 2027 because of workshop renovations."
+  },
+  {
+   "category": "creative",
+   "domain": "andrewtremainceramics.com",
+   "type": "studio-site",
+   "decision": "reject",
+   "urls": [
+    "https://andrewtremainceramics.com/events-1"
+   ],
+   "reason": "Own site shows no current classes; only event listed is Margaret River Region Open Studios (outside Perth metro)."
+  },
+  {
+   "category": "creative",
+   "domain": "stackwood.net.au",
+   "type": "venue-site",
+   "decision": "reject",
+   "urls": [
+    "https://www.stackwood.net.au/calendar"
+   ],
+   "reason": "Shared maker venue in Fremantle; calendar defers to resident studios and lists no pottery classes in raw HTML."
+  },
+  {
+   "category": "creative",
+   "domain": "grahamhay.com.au",
+   "type": "artist-site",
+   "decision": "reject",
+   "urls": [
+    "https://www.grahamhay.com.au/"
+   ],
+   "reason": "Artist's site describes exhibitions and an online paper clay course; no bookable public in-person class details found."
+  },
+  {
+   "category": "creative",
+   "domain": "getmuddy.com.au",
+   "type": "studio-site",
+   "decision": "reject",
+   "urls": [],
+   "reason": "Same business as Terraform Studio (Mandurah); covered by the terraformstudio.com.au candidate."
+  },
+  {
+   "category": "creative",
+   "domain": "mundaringartscentre.com.au",
+   "type": "arts-centre",
+   "decision": "reject",
+   "urls": [
+    "https://www.mundaringartscentre.com.au/workshops-and-events?category=Ceramics"
+   ],
+   "reason": "Ceramics category lists only a past (2025) dinner event, no current classes; sister venue Midland Junction Arts Centre used instead."
+  },
+  {
+   "category": "creative",
+   "domain": "northmetrotafe.wa.edu.au",
+   "type": "tafe",
+   "decision": "reject",
+   "urls": [],
+   "reason": "Accredited TAFE course rather than a public class/workshop; not pursued."
+  },
+  {
+   "category": "creative",
+   "domain": "weteachme.com",
+   "type": "directory",
+   "decision": "discovery",
+   "urls": [],
+   "reason": "Graham Hay listing seen here; discovery only."
+  },
+  {
+   "category": "creative",
+   "domain": "claymakestudio.com.au",
+   "type": "studio-site",
+   "decision": "reject",
+   "urls": [],
+   "reason": "Already in system (ClayMake Studio)."
+  },
+  {
+   "category": "creative",
+   "domain": "studiop.net.au",
+   "type": "studio-site",
+   "decision": "reject",
+   "urls": [],
+   "reason": "Already in system (Studio P)."
+  },
+  {
+   "category": "creative",
+   "domain": "porchceramics.com",
+   "type": "studio-site",
+   "decision": "reject",
+   "urls": [],
+   "reason": "Already in system (Porch Ceramics)."
+  },
+  {
+   "category": "creative",
+   "domain": "winterwares.com.au",
+   "type": "studio-site",
+   "decision": "reject",
+   "urls": [],
+   "reason": "Already in system (Winterwares)."
+  },
+  {
+   "category": "creative",
+   "domain": "fac.org.au",
+   "type": "studio-site",
+   "decision": "reject",
+   "urls": [],
+   "reason": "Already in system (Walyalup Fremantle Arts Centre)."
+  },
+  {
+   "category": "creative",
+   "domain": "rediscovering.com.au",
+   "type": "studio-site",
+   "decision": "reject",
+   "urls": [],
+   "reason": "Already in system (Rediscover Ceramics)."
+  },
+  {
+   "category": "creative",
+   "domain": "pricklypearstudios.com.au",
+   "type": "studio-site",
+   "decision": "reject",
+   "urls": [],
+   "reason": "Already in system (Prickly Pear Studios)."
+  }
+ ]
+}
