@@ -2004,3 +2004,156 @@ html.xp-sheet-open { overflow: hidden; }
   .xp-page .oh-offer__terms > summary { display: inline-flex; align-items: center; min-height: 44px; }
   .xp-shop .shopband .btn { min-height: 44px; }
 }
+
+/* =========================================================================
+   Sessions & prices (October 2026 design brief): one featured session card
+   with a price/action panel, then quieter cards for the other ways in.
+   Markup: oria/template-parts/facility-profile.php. Laid out on the
+   component's own width, because the listing column narrows beside the rail.
+   ========================================================================= */
+.osp {
+  --osp-ink: var(--deep, #0E3B38);
+  --osp-muted: var(--text-soft, #4A5F5B);
+  --osp-accent: var(--ink, #082220);
+  --osp-accent-hover: var(--deep, #0E3B38);
+  --osp-surface: var(--surface, #fff);
+  --osp-sage: #EDF2EB;
+  --osp-line: #DCE3D9;
+  --osp-radius: 22px;
+  --osp-shadow: 0 8px 28px rgb(14 59 56 / 6%);
+  container-type: inline-size;
+  container-name: osp;
+  color: var(--osp-ink);
+}
+.osp p, .osp ul { margin: 0; }
+.osp ul { padding: 0; list-style: none; }
+
+.osp__intro { margin-bottom: clamp(1.5rem, 3vw, 2rem); }
+.osp__kicker,
+.osp__label,
+.osp__eyebrow,
+.osp__group-title {
+  font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent-text, var(--moss, #3F6E60));
+}
+.osp__kicker { margin-bottom: .5rem; }
+.osp .osp__heading { margin: 0 0 .5rem; }
+.osp__lede { max-width: 60ch; font-size: 1rem; line-height: 1.55; color: var(--osp-muted); }
+
+/* --- Main card ----------------------------------------------------------- */
+.osp__main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border: 1px solid var(--osp-line);
+  border-radius: var(--osp-radius);
+  background: var(--osp-surface);
+  box-shadow: var(--osp-shadow);
+  overflow: hidden;
+}
+.osp__main + .osp__main { margin-top: 1.25rem; }
+.osp__details { display: grid; gap: .75rem; align-content: start; padding: 1.25rem; min-width: 0; }
+.osp__notice { justify-self: start; padding: .4rem .65rem; border-radius: 8px; background: #FFF4D6; color: #5A4310; font-size: .875rem; font-weight: 600; }
+.osp__title {
+  margin: 0; font-size: clamp(1.375rem, 3.2cqi, 1.75rem); line-height: 1.15;
+  letter-spacing: -.015em; font-weight: 800; color: var(--osp-ink); overflow-wrap: anywhere;
+}
+/*
+ * Dot-separated rows that wrap cleanly: every item carries a leading dot in
+ * a fixed 1.1rem slot, the row is pulled left by that slot and clipped, so
+ * whichever item starts a line -- the first or a wrapped one -- loses its dot
+ * and no line ends on a dangling separator.
+ */
+.osp .osp__meta,
+.osp .osp__source-row { display: flex; flex-wrap: wrap; row-gap: .25rem; margin-left: -1.1rem; clip-path: inset(0 0 0 1.1rem); }
+.osp__meta li::before,
+.osp__source-row > *::before { content: "·"; display: inline-block; width: 1.1rem; text-align: center; color: #9AA89F; }
+.osp__meta { font-size: .875rem; color: var(--osp-muted); }
+.osp__facts { font-size: .9375rem; line-height: 1.5; color: var(--osp-muted); }
+
+.osp__group { display: grid; gap: .75rem; padding-top: 1.25rem; margin-top: .5rem; border-top: 1px solid var(--osp-line); }
+.osp__group + .osp__notes, .osp__notes + .osp__group { margin-top: .25rem; }
+.osp__incl { display: grid; grid-template-columns: minmax(0, 1fr); gap: .55rem 1.25rem; }
+.osp__incl li { display: flex; gap: .55rem; align-items: flex-start; font-size: 1rem; line-height: 1.4; min-width: 0; }
+.osp__incl li span { overflow-wrap: anywhere; }
+.osp__tick { flex: none; width: 1rem; height: 1rem; margin-top: .15rem; color: var(--moss, #3F6E60); }
+.osp__notes { display: grid; gap: .35rem; font-size: .9375rem; line-height: 1.5; color: var(--osp-ink); }
+.osp__notes p:first-child { font-weight: 600; }
+.osp__know { display: grid; gap: .4rem; font-size: .9375rem; line-height: 1.5; color: var(--osp-muted); }
+.osp__know li { padding-left: .9rem; position: relative; }
+.osp__know li::before { content: ""; position: absolute; left: 0; top: .65em; width: .3rem; height: .3rem; border-radius: 50%; background: #9AA89F; }
+
+/* --- Price and action panel --------------------------------------------- */
+.osp__panel {
+  display: grid; gap: .5rem; align-content: start;
+  padding: 1.25rem;
+  background: var(--osp-sage);
+  border-top: 1px solid var(--osp-line);
+}
+.osp__price {
+  font-size: clamp(2.25rem, 7cqi, 2.75rem); font-weight: 700; line-height: 1;
+  letter-spacing: -.02em; color: var(--osp-ink);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.osp__price--text { font-size: 1.25rem; line-height: 1.3; letter-spacing: 0; }
+.osp__basis { font-size: .875rem; color: var(--osp-muted); }
+.osp__cta {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 48px; margin-top: .75rem; padding: .75rem 1rem;
+  border-radius: 14px; background: var(--osp-accent); color: #fff;
+  font-weight: 700; font-size: 1rem; line-height: 1.25; text-align: center; text-decoration: none;
+  transition: background-color .15s ease;
+}
+.osp__cta:hover { background: var(--osp-accent-hover); color: #fff; }
+.osp__cta:focus-visible { outline: 3px solid var(--focus, #16544E); outline-offset: 3px; }
+.osp__dest { font-size: .8125rem; color: var(--osp-muted); text-align: center; }
+
+.osp__source {
+  padding: .85rem 1.25rem; border-top: 1px solid var(--osp-line);
+  font-size: .8125rem; color: var(--osp-muted);
+}
+.osp__source a { color: var(--osp-ink); font-weight: 600; text-underline-offset: 2px; }
+
+/* --- Other ways to visit ------------------------------------------------ */
+.osp__more { margin-top: clamp(1.75rem, 4vw, 2.25rem); }
+.osp__more-title { margin: 0 0 1rem; font-size: 1.25rem; font-weight: 800; line-height: 1.2; color: var(--osp-ink); }
+.osp__alts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+.osp__alt {
+  display: flex; flex-direction: column; gap: .5rem;
+  padding: 1.25rem; border: 1px solid var(--osp-line); border-radius: 18px;
+  background: var(--osp-surface); min-width: 0;
+}
+.osp__alt-title { margin: 0; font-size: 1.125rem; font-weight: 800; line-height: 1.25; color: var(--osp-ink); overflow-wrap: anywhere; }
+.osp__alt-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem .5rem; margin-top: .25rem; }
+.osp__alt-amount { font-size: 1.875rem; font-weight: 700; line-height: 1; letter-spacing: -.015em; font-variant-numeric: tabular-nums lining-nums; }
+.osp__alt-basis { font-size: .875rem; color: var(--osp-muted); }
+.osp__alt-unknown { font-size: 1rem; font-weight: 600; }
+.osp__alt-facts, .osp__alt-line { font-size: .9375rem; line-height: 1.5; color: var(--osp-muted); }
+.osp__alt-note { font-size: .9375rem; font-weight: 600; }
+.osp__alt-link {
+  align-self: flex-start; margin-top: auto; padding-top: .5rem;
+  font-size: .9375rem; font-weight: 700; color: var(--osp-ink);
+  text-decoration: underline; text-decoration-color: var(--osp-line); text-underline-offset: 3px;
+}
+.osp__alt-link:hover { text-decoration-color: currentColor; }
+.osp__alt-link:focus-visible, .osp__source a:focus-visible { outline: 2px solid var(--focus, #16544E); outline-offset: 3px; border-radius: 4px; }
+
+/* --- Widths ------------------------------------------------------------- */
+@container osp (min-width: 24rem) {
+  .osp__incl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container osp (min-width: 30rem) {
+  .osp__alts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .osp__details, .osp__panel { padding: 1.5rem; }
+  .osp__source { padding-inline: 1.5rem; }
+}
+@container osp (min-width: 40rem) {
+  .osp__main { grid-template-columns: minmax(0, 1fr) clamp(16rem, 38cqi, 18.5rem); }
+  .osp__details { padding: 1.75rem 2rem 2rem; }
+  .osp__panel { padding: 2rem 1.5rem; border-top: 0; border-left: 1px solid var(--osp-line); }
+  .osp__source { grid-column: 1 / -1; padding-inline: 2rem; }
+}
+/* Wide enough for three columns of inclusions beside the panel. */
+@container osp (min-width: 58rem) {
+  .osp__incl { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { .osp__cta { transition: none; } }

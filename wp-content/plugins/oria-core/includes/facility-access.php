@@ -448,6 +448,251 @@ function summary( int $post_id, string $facility ): ?array {
 	);
 }
 
+/* ------------------------------------------------------- listing profile */
+
+/** An offer's identity for de-duplication: same name, price and party size. */
+function offer_key( array $o ): string {
+	return strtolower( trim( (string) $o['product'] ) ) . '|' . ( null === $o['price'] ? '' : (string) (float) $o['price'] ) . '|' . (int) $o['people'];
+}
+
+/** "two" for 2, up to ten; digits after that. */
+function people_word( int $n ): string {
+	$w = array( 2 => 'two', 3 => 'three', 4 => 'four', 5 => 'five', 6 => 'six', 7 => 'seven', 8 => 'eight', 9 => 'nine', 10 => 'ten' );
+	return $w[ $n ] ?? (string) $n;
+}
+
+/**
+ * What an offer's price is for, in words: "per person", "total for two
+ * people", "5 sessions". A price covering more than one person always says
+ * so as a total, whatever the editor typed as the basis.
+ */
+function basis_label( array $o ): string {
+	if ( (int) $o['people'] > 1 ) {
+		/* translators: %s: number of people in words, e.g. two */
+		return sprintf( __( 'total for %s people', 'oria' ), people_word( (int) $o['people'] ) );
+	}
+	return (string) $o['basis'];
+}
+
+/**
+ * An offer's conditions as separate facts, minus what is said elsewhere on
+ * the same card: the age ("18+") becomes "Ages 18+", swimwear goes to the
+ * practical note, and a "90-minute access to…" line repeats the duration and
+ * the inclusions list.
+ *
+ * @return array{facts: list<string>, swimwear: bool}
+ */
+function condition_facts( string $conditions, ?int $duration ): array {
+	$facts = array();
+	$swim  = false;
+	foreach ( array_map( 'trim', explode( ';', $conditions ) ) as $c ) {
+		if ( '' === $c ) {
+			continue;
+		}
+		if ( preg_match( '/^swimwear required$/i', $c ) ) {
+			$swim = true;
+			continue;
+		}
+		if ( preg_match( '/^(\d+)\s*\+$/', $c, $m ) ) {
+			/* translators: %d: minimum age */
+			$facts[] = sprintf( __( 'Ages %d+', 'oria' ), (int) $m[1] );
+			continue;
+		}
+		if ( $duration && preg_match( '/^' . $duration . '[- ]?min(ute)?s?\b.*\baccess\b/i', $c ) ) {
+			continue;
+		}
+		$facts[] = ucfirst( $c );
+	}
+	return array( 'facts' => array_values( array_unique( $facts ) ), 'swimwear' => $swim );
+}
+
+/** Kinds shown as plans (bought ahead, used over time) rather than visits. */
+const PLAN_KINDS = array( 'pack', 'membership' );
+
+/**
+ * Everything a listing's "Sessions & prices" section shows, merged across
+ * its facility rows.
+ *
+ * A bathhouse is one visit whichever facility it was researched under:
+ * Ember Bath House carries a steam-room row and a sauna row, both selling
+ * the same $89 Bath House Session, and the profile used to print it twice
+ * under two headings. Rows whose main offer is the same product at the same
+ * price become one card (the most recently checked row speaks for it); every
+ * other offer appears once, however many rows list it. Nothing is deleted
+ * from the records -- this only decides what is shown.
+ *
+ * @return array{anchor: string, mains: list<array>, visits: list<array>, plans: list<array>}
+ */
+function profile( int $post_id ): array {
+	$rows = array_values(
+		array_filter(
+			rows( $post_id ),
+			static fn( array $r ): bool => in_array( $r['status'], array( 'confirmed', 'temporarily_unavailable' ), true )
+		)
+	);
+	if ( ! $rows ) {
+		return array( 'anchor' => '', 'mains' => array(), 'visits' => array(), 'plans' => array() );
+	}
+	$anchor = 'facility-' . $rows[0]['facility'];
+
+	// Most recently checked first, so the freshest record wins every tie.
+	$sorted = $rows;
+	usort( $sorted, static fn( array $a, array $b ): int => strcmp( (string) $b['checked'], (string) $a['checked'] ) );
+
+	$groups = array();
+	foreach ( $sorted as $row ) {
+		$main = main_offer( $row );
+		$key  = $main ? offer_key( $main ) : 'row-' . $row['facility'];
+		if ( ! isset( $groups[ $key ] ) ) {
+			$groups[ $key ] = array( 'row' => $row, 'main' => $main, 'facilities' => array() );
+		}
+		$groups[ $key ]['facilities'][] = FACILITIES[ $row['facility'] ] ?? $row['facility'];
+	}
+
+	$seen = array_fill_keys( array_keys( $groups ), true );
+	$alts = array();
+	foreach ( $sorted as $row ) {
+		foreach ( $row['offers'] as $o ) {
+			$k = offer_key( $o );
+			if ( isset( $seen[ $k ] ) ) {
+				continue;
+			}
+			$seen[ $k ] = true;
+			$alts[]     = array( 'offer' => $o, 'row' => $row );
+		}
+	}
+
+	$many  = count( $groups ) > 1;
+	$mains = array();
+	foreach ( $groups as $g ) {
+		$row  = $g['row'];
+		$main = $g['main'];
+		$dur  = $main ? $main['duration'] : null;
+		$cond = $main ? condition_facts( (string) $main['conditions'], $dur ) : array( 'facts' => array(), 'swimwear' => false );
+
+		if ( 'yes' === $row['casual'] ) {
+			$label = __( 'Casual entry', 'oria' );
+		} elseif ( '' !== $row['condition'] ) {
+			$label = $row['condition'];
+		} elseif ( 'no' === $row['casual'] ) {
+			$label = __( 'No casual entry', 'oria' );
+		} else {
+			$label = $main ? ( KINDS[ $main['kind'] ] ?? '' ) : '';
+		}
+		if ( $many ) {
+			$label = implode( ' · ', array_filter( array( implode( ' & ', array_unique( $g['facilities'] ) ), $label ) ) );
+		}
+
+		$meta = array();
+		if ( $dur ) {
+			/* translators: %d: minutes */
+			$meta[] = sprintf( __( '%d minutes', 'oria' ), (int) $dur );
+		}
+		if ( 'shared' === $row['setting'] ) {
+			$meta[] = __( 'Shared experience', 'oria' );
+		} elseif ( isset( SETTINGS[ $row['setting'] ] ) && ! in_array( $row['setting'], array( '', 'unknown' ), true ) ) {
+			$meta[] = SETTINGS[ $row['setting'] ];
+		}
+		if ( null !== $row['min_age'] ) {
+			/* translators: %d: minimum age */
+			$meta[] = sprintf( __( 'Ages %d+', 'oria' ), (int) $row['min_age'] );
+		}
+		$facts = array_values( array_diff( $cond['facts'], $meta ) );
+
+		// The practical note: what to bring, only what the record says.
+		$notes = array();
+		$swim  = trim( (string) $row['swimwear'] );
+		if ( preg_match( '/^required\b\s*(.*)$/i', $swim, $m ) ) {
+			$rest    = trim( $m[1], " .;,-" );
+			$notes[] = '' !== $rest
+				/* translators: %s: extra detail, e.g. "(all-gendered bath house)" */
+				? sprintf( __( 'Bring swimwear — it’s required %s.', 'oria' ), $rest )
+				: __( 'Bring swimwear — it’s required.', 'oria' );
+		} elseif ( preg_match( '/^bring/i', $swim ) ) {
+			$notes[] = ucfirst( $swim ); // Already an instruction: "Bring bathers."
+		} elseif ( '' !== $swim ) {
+			/* translators: %s: swimwear rule as published */
+			$notes[] = sprintf( __( 'Swimwear: %s', 'oria' ), $swim );
+		} elseif ( $cond['swimwear'] ) {
+			$notes[] = __( 'Bring swimwear — it’s required.', 'oria' );
+		}
+		$has_towel = (bool) preg_grep( '/towel/i', $row['includes'] );
+		if ( '' !== $row['towels'] && ! $has_towel ) {
+			/* translators: %s: towel policy as published */
+			$notes[] = sprintf( __( 'Towels: %s', 'oria' ), $row['towels'] );
+		}
+
+		$unknown = ! $main || null === $main['price'];
+		$mains[] = array(
+			'facility'  => $row['facility'],
+			'label'     => $label,
+			'title'     => $main && '' !== $main['product'] ? $main['product'] : sprintf( /* translators: %s: facility */ __( '%s access', 'oria' ), FACILITIES[ $row['facility'] ] ?? '' ),
+			'meta'      => $meta,
+			'facts'     => $facts,
+			'includes'  => $row['includes'],
+			'notes'     => $notes,
+			'essentials' => $row['essentials'],
+			'quiet'     => $row['quiet'],
+			'notice'    => notice_live( $row ) ? $row['notice'] : ( 'temporarily_unavailable' === $row['status'] ? __( 'Temporarily unavailable', 'oria' ) : '' ),
+			'price'     => $unknown ? '' : money( (float) $main['price'] ),
+			'price_alt' => $unknown ? price_label( $main ) : '',
+			'basis'     => $unknown ? '' : implode( ' · ', array_filter( array( basis_label( $main ), 'AUD' ) ) ),
+			'book_url'  => $row['book_url'],
+			'checked'   => checked_label( $row ),
+			'source'    => $row['sources'][0] ?? '',
+		);
+	}
+
+	$visits = array();
+	$plans  = array();
+	$main_dur = $mains && isset( $groups[ array_key_first( $groups ) ]['main']['duration'] ) ? $groups[ array_key_first( $groups ) ]['main']['duration'] : null;
+	foreach ( $alts as $a ) {
+		$o    = $a['offer'];
+		$cond = condition_facts( (string) $o['conditions'], $o['duration'] );
+		$det  = $cond['facts'];
+		if ( $o['duration'] && $o['duration'] !== $main_dur ) {
+			/* translators: %d: minutes */
+			array_unshift( $det, sprintf( __( '%d minutes', 'oria' ), (int) $o['duration'] ) );
+		}
+		$card = array(
+			'kind'     => KINDS[ $o['kind'] ] ?? '',
+			'title'    => (string) $o['product'],
+			'price'    => null === $o['price'] ? '' : money( (float) $o['price'] ),
+			'price_alt' => null === $o['price'] ? price_label( $o ) : '',
+			'basis'    => null === $o['price'] ? '' : basis_label( $o ),
+			'facts'    => $det,
+			'swimwear' => $cond['swimwear'],
+			'line'     => '',
+			'book_url' => (string) $a['row']['book_url'],
+		);
+		if ( in_array( $o['kind'], PLAN_KINDS, true ) ) {
+			$plans[] = $card;
+		} else {
+			$visits[] = $card;
+		}
+	}
+
+	/*
+	 * A named silent or quiet session that is also an offer belongs on that
+	 * offer's card, not repeated on the main one.
+	 */
+	foreach ( $mains as $i => $m ) {
+		if ( '' === $m['quiet'] || ! preg_match( '/\b(silent|quiet)\b/i', $m['quiet'], $w ) ) {
+			continue;
+		}
+		foreach ( $visits as $j => $v ) {
+			if ( stripos( $v['title'], $w[1] ) !== false ) {
+				$line = trim( (string) preg_replace( '/^[^;]*' . preg_quote( $v['title'], '/' ) . '[^;]*;\s*/i', '', $m['quiet'] ) );
+				$visits[ $j ]['line'] = $line !== $m['quiet'] ? ucfirst( $line ) : '';
+				$mains[ $i ]['quiet'] = $line !== $m['quiet'] ? '' : $m['quiet'];
+				break;
+			}
+		}
+	}
+
+	return array( 'anchor' => $anchor, 'mains' => $mains, 'visits' => $visits, 'plans' => $plans );
+}
+
 /* ---------------------------------------------------------------------- faq */
 
 /** "A, B and C" */
