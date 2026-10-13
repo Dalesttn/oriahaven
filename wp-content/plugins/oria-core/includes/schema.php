@@ -746,12 +746,38 @@ function event_schema( int $id ): ?array {
 	// Naive local datetimes are Perth times; say so explicitly.
 	$iso = static fn( string $dt ): string => str_replace( ' ', 'T', $dt ) . '+08:00';
 
+	/*
+	 * The deepest area term is the suburb. Regions have a parent too (the
+	 * city), so "the first term with a parent" handed Google "Northern
+	 * Suburbs" as the locality of an event in Clarkson.
+	 */
 	$suburb = '';
+	$depth  = -1;
 	foreach ( wp_get_post_terms( $id, 'area' ) as $term ) {
-		$suburb = wp_specialchars_decode( $term->name );
-		if ( $term->parent ) {
-			break;
+		$d = count( get_ancestors( $term->term_id, 'area', 'taxonomy' ) );
+		if ( $d > $depth ) {
+			$depth  = $d;
+			$suburb = wp_specialchars_decode( $term->name );
 		}
+	}
+	/*
+	 * Tagged only to a region (11 of 27 events, Oct 2026), the suburb is
+	 * often still in the venue line: "Sol Tank Studio, 37 Boranup Ave,
+	 * Clarkson, Northern Suburbs". When the line ends with the region's own
+	 * name, the part before it is the suburb -- unless it carries a number,
+	 * which makes it a street, not a place.
+	 */
+	$parts = array_values( array_filter( array_map( 'trim', explode( ',', (string) get_field( 'venue', $id ) ) ), 'strlen' ) );
+	$n     = count( $parts );
+	// The first part is the venue's own name, never a place.
+	$place = static fn( string $p ): bool => ! preg_match( '/\d|\bregion\b/i', $p ) && strlen( $p ) > 3;
+	if ( $depth < 2 && '' !== $suburb ) {
+		if ( $n >= 3 && 0 === strcasecmp( $parts[ $n - 1 ], $suburb ) && $place( $parts[ $n - 2 ] ) ) {
+			$suburb = $parts[ $n - 2 ];
+		}
+	} elseif ( '' === $suburb && $n >= 2 && $place( $parts[ $n - 1 ] ) ) {
+		// No area term at all: "John Curtin Gallery, Bentley".
+		$suburb = $parts[ $n - 1 ];
 	}
 
 	/*

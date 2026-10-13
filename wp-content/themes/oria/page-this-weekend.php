@@ -17,8 +17,6 @@ declare(strict_types=1);
 
 use function Oria\Theme\arrow;
 
-get_header();
-
 $oria_now = (int) current_time( 'timestamp' );
 
 // The Friday anchoring this weekend: today's own Friday once the weekend
@@ -77,6 +75,120 @@ $oria_later = array_map(
 		)
 	)
 );
+
+/*
+ * The page in numbers, for the search title, the description, the summary
+ * line, the FAQ and the ItemList -- all from the same events the page lists,
+ * so none of them can promise something the page doesn't show.
+ *
+ * Why it matters: "what's on in Perth this weekend" and "perth this
+ * weekend" are 5,400 searches a month each (DataWise, Oct 2026) and the
+ * results that win carry this weekend's dates and a count. A fixed title
+ * reads the same in week 40 as in week 4.
+ */
+$oria_sun   = $oria_friday + 2 * DAY_IN_SECONDS;
+$oria_range = gmdate( 'n', $oria_friday ) === gmdate( 'n', $oria_sun )
+	? gmdate( 'j', $oria_friday ) . '–' . gmdate( 'j F', $oria_sun )
+	: gmdate( 'j M', $oria_friday ) . ' – ' . gmdate( 'j M', $oria_sun );
+
+$oria_is_free = static function ( \WP_Post $p ): bool {
+	$price = trim( (string) get_field( 'price', $p->ID ) );
+	return (bool) preg_match( '/^(free\b|\$0(\.00)?$)/i', $price );
+};
+// The deepest area term is the suburb; a region has a parent (the city) too.
+$oria_place = static function ( \WP_Post $p ): string {
+	$where = '';
+	$depth = -1;
+	foreach ( wp_get_post_terms( $p->ID, 'area' ) as $t ) {
+		$d = count( get_ancestors( $t->term_id, 'area', 'taxonomy' ) );
+		if ( $d > $depth ) {
+			$depth = $d;
+			$where = \Oria\Theme\tname( $t );
+		}
+	}
+	return $where;
+};
+$oria_count = count( $oria_events );
+$oria_free  = array_values( array_filter( $oria_events, $oria_is_free ) );
+$oria_by    = array();
+foreach ( $oria_days as $oria_d => $oria_l ) {
+	$oria_by[ gmdate( 'l', (int) strtotime( $oria_d ) ) ] = array_column( $oria_l, 0 );
+}
+
+/** "Puppy Yoga (Clarkson), 5Rhythms Dance (Fremantle) and 3 more" */
+$oria_names = static function ( array $posts, int $max = 3 ) use ( $oria_place ): string {
+	$bits = array();
+	foreach ( array_slice( $posts, 0, $max ) as $p ) {
+		$name   = \Oria\Theme\ptitle( $p );
+		$where  = $oria_place( $p );
+		$bits[] = $name . ( '' !== $where && false === stripos( $name, $where ) ? ' (' . $where . ')' : '' );
+	}
+	$more = count( $posts ) - count( $bits );
+	if ( $more > 0 ) {
+		/* translators: %d: number of further events */
+		$bits[] = sprintf( _n( '%d more', '%d more', $more, 'oria' ), $more );
+	}
+	if ( count( $bits ) < 2 ) {
+		return implode( '', $bits );
+	}
+	$last = array_pop( $bits );
+	return implode( ', ', $bits ) . ' ' . __( 'and', 'oria' ) . ' ' . $last;
+};
+
+// Search title and description, ahead of get_header() so wp_head sees them.
+$oria_seo_title = sprintf( /* translators: %s: date range */ __( 'What’s On in Perth This Weekend, %s', 'oria' ), $oria_range );
+if ( ( function_exists( 'mb_strlen' ) ? mb_strlen( $oria_seo_title . ' | Oria Haven' ) : strlen( $oria_seo_title ) + 14 ) <= 61 ) {
+	$oria_seo_title .= ' | Oria Haven';
+}
+$oria_seo_desc = $oria_count
+	? sprintf(
+		/* translators: 1: count, 2: date range, 3: free sentence */
+		__( '%1$d wellness events on in Perth this weekend (%2$s): yoga, sound baths, breathwork and workshops by day, with times, suburbs and prices.%3$s', 'oria' ),
+		$oria_count,
+		$oria_range,
+		$oria_free ? ' ' . sprintf( /* translators: %d: free events */ _n( '%d is free.', '%d are free.', count( $oria_free ), 'oria' ), count( $oria_free ) ) : ''
+	)
+	: sprintf( /* translators: %s: date range */ __( 'What’s on in Perth this weekend (%s): wellness events, workshops and classes by day, plus what’s coming up next.', 'oria' ), $oria_range );
+$oria_seo_title_cb = static fn(): string => $oria_seo_title;
+$oria_seo_desc_cb  = static fn(): string => $oria_seo_desc;
+add_filter( 'wpseo_title', $oria_seo_title_cb, 99 );
+add_filter( 'wpseo_opengraph_title', $oria_seo_title_cb, 99 );
+add_filter( 'wpseo_metadesc', $oria_seo_desc_cb, 99 );
+add_filter( 'wpseo_opengraph_desc', $oria_seo_desc_cb, 99 );
+
+// The weekend's events as an ItemList, each pointing at its own page, where
+// the full Event markup lives.
+add_action(
+	'wp_head',
+	static function () use ( $oria_days, $oria_seo_title ): void {
+		$items = array();
+		$n     = 0;
+		foreach ( $oria_days as $oria_l ) {
+			foreach ( $oria_l as $pair ) {
+				$items[] = array(
+					'@type'    => 'ListItem',
+					'position' => ++$n,
+					'url'      => get_permalink( $pair[0] ),
+					'name'     => \Oria\Theme\ptitle( $pair[0] ),
+				);
+			}
+		}
+		if ( ! $items ) {
+			return;
+		}
+		$ld = array(
+			'@context'        => 'https://schema.org',
+			'@type'           => 'ItemList',
+			'name'            => $oria_seo_title,
+			'numberOfItems'   => count( $items ),
+			'itemListElement' => $items,
+		);
+		echo '<script type="application/ld+json">' . wp_json_encode( $ld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . "</script>\n"; // phpcs:ignore
+	},
+	30
+);
+
+get_header();
 
 // A light touch of place per practice, as on the pitch: 🧘 Yoga — Fremantle.
 $oria_emoji = array(
@@ -156,7 +268,6 @@ $oria_row = static function ( \WP_Post $oria_ev, int $oria_ts, bool $oria_with_d
 	<?php
 };
 
-$oria_range = gmdate( 'j', $oria_friday ) . '–' . gmdate( 'j M', $oria_friday + 2 * DAY_IN_SECONDS );
 ?>
 
 <?php
@@ -184,6 +295,28 @@ get_template_part(
 	)
 );
 ?>
+
+<?php if ( $oria_count ) : ?>
+<section class="wrap section section--top-flush">
+	<p class="wksum">
+		<?php
+		$oria_split = array();
+		foreach ( $oria_by as $oria_dn => $oria_dl ) {
+			/* translators: 1: count, 2: day name */
+			$oria_split[] = sprintf( __( '%1$d on %2$s', 'oria' ), count( $oria_dl ), $oria_dn );
+		}
+		printf(
+			/* translators: 1: count, 2: date range, 3: per-day split, 4: free sentence */
+			esc_html__( '%1$d wellness events are on in Perth this weekend (%2$s): %3$s.%4$s', 'oria' ),
+			(int) $oria_count,
+			esc_html( $oria_range ),
+			esc_html( implode( ', ', $oria_split ) ),
+			$oria_free ? ' ' . esc_html( sprintf( /* translators: %d: free events */ _n( '%d of them is free.', '%d of them are free.', count( $oria_free ), 'oria' ), count( $oria_free ) ) ) : '' // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above
+		);
+		?>
+	</p>
+</section>
+<?php endif; ?>
 
 <section class="wrap section section--top-flush">
 	<?php if ( $oria_days ) : ?>
@@ -230,6 +363,42 @@ get_template_part(
 	</div>
 </section>
 <?php endif; ?>
+
+<?php
+/*
+ * Questions people ask about a Perth weekend ("what's on this Saturday",
+ * "what's free"), answered from this weekend's own list. Rebuilt on every
+ * render, so the answers and the list above can never disagree.
+ */
+$oria_faqs = array();
+if ( $oria_count ) {
+	$oria_all    = array_merge( ...array_values( $oria_by ) );
+	$oria_faqs[] = array(
+		'q' => __( 'What’s on in Perth this weekend?', 'oria' ),
+		/* translators: 1: count, 2: date range, 3: event names */
+		'a' => sprintf( __( '%1$d wellness events are listed for this weekend (%2$s), including %3$s. Each is listed by day on this page with its time, suburb and price.', 'oria' ), $oria_count, $oria_range, $oria_names( $oria_all, 4 ) ),
+	);
+	$oria_faqs[] = array(
+		'q' => __( 'What’s free in Perth this weekend?', 'oria' ),
+		'a' => $oria_free
+			/* translators: 1: count, 2: event names */
+			? sprintf( _n( '%1$d of this weekend’s events is free: %2$s.', '%1$d of this weekend’s events are free: %2$s.', count( $oria_free ), 'oria' ), count( $oria_free ), $oria_names( $oria_free, 5 ) )
+			: __( 'None of the events listed for this weekend is free. Every event on this page shows its price, so you can compare before you go.', 'oria' ),
+	);
+	foreach ( $oria_by as $oria_dn => $oria_dl ) {
+		$oria_faqs[] = array(
+			/* translators: %s: day name */
+			'q' => sprintf( __( 'What’s on in Perth on %s?', 'oria' ), $oria_dn ),
+			'a' => $oria_names( $oria_dl, 4 ) . '.',
+		);
+	}
+}
+$oria_faqs[] = array(
+	'q' => __( 'How is this list put together?', 'oria' ),
+	'a' => __( 'It lists the wellness events in and around Perth that Oria Haven knows about for the coming Friday to Sunday: yoga, sound baths, breathwork, workshops and retreats, from organisers’ own pages and from practitioners who list with us. Past events drop off on their own, and new ones appear as they are published.', 'oria' ),
+);
+get_template_part( 'template-parts/faq', null, array( 'faqs' => $oria_faqs, 'heading' => __( 'This weekend in Perth: common questions', 'oria' ) ) );
+?>
 
 <?php $oria_feat = \Oria\Theme\featured_listings( 3 ); ?>
 <?php if ( $oria_feat ) : ?>

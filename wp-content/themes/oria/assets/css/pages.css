@@ -8713,3 +8713,6 @@ article.is-spotlit {
   .oria-shortlist__nav { flex-direction: column; align-items: stretch; gap: 4px; }
   .oria-shortlist__nav-links { margin-inline: -4px; }
 }
+
+/* /this-weekend/ summary line: the weekend in one sentence, under the hero. */
+.wksum { max-width: 62ch; margin: 0; font-size: var(--fs-body); line-height: var(--lh-body); color: var(--text-soft); }
