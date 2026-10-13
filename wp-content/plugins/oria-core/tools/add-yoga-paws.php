@@ -7,8 +7,8 @@
  * Facts from yoga-paws.com, checked 11 Oct 2026: the Perth page
  * (/perth-puppy-yoga) and the session booking pages (venues, addresses,
  * $65, 60 minutes, "suitable for all experience levels"). The 12+ age
- * limit and start times come from Patrick's email (not on the readable
- * site), so they are attributed to Yoga Paws in the copy. Google Places is
+ * limit, start times and venue rotation come from Yoga Paws by email
+ * (13 Oct 2026; not on the readable site), so they are attributed in the copy. Google Places is
  * hidden: the sessions run in other businesses' studios, so a name search
  * would match the host, not Yoga Paws. No health claims. Safe to rerun.
  *
@@ -31,7 +31,7 @@ $body = '<p>Yoga Paws runs weekly puppy yoga across Australia, and in Perth most
 	. '<li><strong>Clarkson</strong> &mdash; Sol Tank Studio, 37 Boranup Ave</li>'
 	. '<li><strong>Northbridge</strong> &mdash; Studio Northbridge, 2/1 Fitzgerald St (plan your parking)</li>'
 	. '</ul>'
-	. '<p>Dates are released on the Yoga Paws Perth page and each session is booked separately; Yoga Paws says sessions are open to ages 12 and up and new dates are released each Monday, three weeks ahead. Gift cards, private parties and corporate sessions are also available.</p>'
+	. '<p>Sessions run every weekend, with the venues rotating on a fortnightly pattern. On a session day, hour-long classes usually start at 8am, 10am, noon, 2pm and 4pm, and each is booked separately on the Yoga Paws Perth page. Yoga Paws says sessions are open to ages 12 and up and new dates are released each Monday, three weeks ahead. Gift cards, private parties and corporate sessions are also available.</p>'
 	. '<h3>How the puppies are looked after</h3>'
 	. '<p>Yoga Paws works with WA-based breeders and shelters and says every puppy has a mandatory 60 minutes of downtime before each session, and that studios are cleaned with veterinary-grade F10 sanitiser. It also says interaction is always voluntary, puppies are only handled while you\'re seated, and two staff look after them throughout.</p>';
 
@@ -71,7 +71,7 @@ wp_set_object_terms( $id, array( 'gentle-yoga' ), 'service' );
 // Inglewood and Northbridge (Central); Clarkson is not in the area tree, so its region.
 wp_set_object_terms( $id, array( 'inglewood', 'northbridge', 'central', 'north' ), 'area' );
 update_post_meta( $id, 'claim_status', 'unclaimed' );
-update_post_meta( $id, '_oria_source_note', 'yoga-paws.com checked 11 Oct 2026; age 12+ and start times from Patrick (Yoga Paws) by email' );
+update_post_meta( $id, '_oria_source_note', 'yoga-paws.com checked 11 Oct 2026; age 12+, start times and the fortnightly venue rotation confirmed by Yoga Paws by email, 13 Oct 2026' );
 
 // Photos: three of Yoga Paws' own session shots from yoga-paws.com, used
 // with their permission (via Dale), resized to webp. First one is featured.

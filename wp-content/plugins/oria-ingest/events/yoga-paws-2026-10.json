@@ -1,37 +1,39 @@
 {
-  "generated": "2026-10-11",
+  "generated": "2026-10-13",
   "city": "Perth",
-  "_note": "Yoga Paws Perth puppy yoga, October 2026. Dates, venues, addresses and the $65 price from each session's page on yoga-paws.com (checked 11 Oct 2026). Session times: the 24 Oct starts (8am, 10am, noon, 2pm, 4pm) are from Patrick at Yoga Paws by email; the site's own schedule data appears to be stored in Brisbane time, so the other dates are date-only and point to the booking page for times. 11 Oct omitted (under way). Descriptions are our own.",
+  "_note": "Yoga Paws Perth puppy yoga, October 2026. Dates, venues, addresses and the $65 price from each session's page on yoga-paws.com (checked 11 Oct 2026). Start times (8am, 10am, noon, 2pm, 4pm, each 60 minutes), the age minimum (12) and the dates were confirmed by Yoga Paws by email on 13 Oct 2026. Descriptions are our own.",
   "events": [
     {
       "title": "Puppy Yoga | Inglewood",
-      "start": "2026-10-17 00:00:00",
+      "start": "2026-10-17 08:00:00",
       "type": "yoga",
       "venue": "Inspiration Space, 1&2/885 Beaufort St",
       "suburb": "inglewood",
       "price": "$65",
       "free": false,
-      "description": "An hour of gentle, beginner-friendly floor yoga while a litter of puppies wanders the room. Several sessions through the day; choose a time on the booking page. No yoga experience needed and everything is provided.",
+      "description": "An hour of gentle, beginner-friendly floor yoga while a litter of puppies wanders the room. No yoga experience needed and everything is provided. Hour-long sessions start at 8am, 10am, noon, 2pm and 4pm; book the one that suits on the booking page.",
       "booking_url": "https://www.yoga-paws.com/service-page/puppy-yoga-october-17-inglewood",
       "source_url": "https://www.yoga-paws.com/service-page/puppy-yoga-october-17-inglewood",
       "organiser": "Yoga Paws",
       "listing_slug": "yoga-paws-perth",
-      "checked": "2026-10-11"
+      "checked": "2026-10-13",
+      "end": "2026-10-17 17:00:00"
     },
     {
       "title": "Puppy Yoga | Northbridge",
-      "start": "2026-10-18 00:00:00",
+      "start": "2026-10-18 08:00:00",
       "type": "yoga",
       "venue": "Studio Northbridge, 2/1 Fitzgerald St",
       "suburb": "northbridge",
       "price": "$65",
       "free": false,
-      "description": "Sixty minutes of relaxed floor yoga with puppies free to roam, settle beside you or climb into your lap. Several sessions through the day; choose a time on the booking page, and plan your parking.",
+      "description": "Sixty minutes of relaxed floor yoga with puppies free to roam, settle beside you or climb into your lap. Hour-long sessions start at 8am, 10am, noon, 2pm and 4pm; book the one that suits on the booking page, and plan your parking.",
       "booking_url": "https://www.yoga-paws.com/service-page/puppy-yoga-october-18-northbridge",
       "source_url": "https://www.yoga-paws.com/service-page/puppy-yoga-october-18-northbridge",
       "organiser": "Yoga Paws",
       "listing_slug": "yoga-paws-perth",
-      "checked": "2026-10-11"
+      "checked": "2026-10-13",
+      "end": "2026-10-18 17:00:00"
     },
     {
       "title": "Puppy Yoga | Clarkson",
@@ -47,7 +49,7 @@
       "source_url": "https://www.yoga-paws.com/service-page/puppy-yoga-october-24-clarkson",
       "organiser": "Yoga Paws",
       "listing_slug": "yoga-paws-perth",
-      "checked": "2026-10-11"
+      "checked": "2026-10-13"
     },
     {
       "title": "Puppy Yoga | Inglewood",
@@ -63,22 +65,23 @@
       "source_url": "https://www.yoga-paws.com/service-page/puppy-yoga-october-24-inglewood",
       "organiser": "Yoga Paws",
       "listing_slug": "yoga-paws-perth",
-      "checked": "2026-10-11"
+      "checked": "2026-10-13"
     },
     {
       "title": "Puppy Yoga | Inglewood",
-      "start": "2026-10-25 00:00:00",
+      "start": "2026-10-25 08:00:00",
       "type": "yoga",
       "venue": "Inspiration Space, 1&2/885 Beaufort St",
       "suburb": "inglewood",
       "price": "$65",
       "free": false,
-      "description": "A Sunday hour of beginner-friendly floor yoga with puppies for company. Several sessions through the day; choose a time on the booking page.",
+      "description": "A Sunday hour of beginner-friendly floor yoga with puppies for company. Hour-long sessions start at 8am, 10am, noon, 2pm and 4pm; book the one that suits on the booking page.",
       "booking_url": "https://www.yoga-paws.com/service-page/puppy-yoga-october-25-inglewood",
       "source_url": "https://www.yoga-paws.com/service-page/puppy-yoga-october-25-inglewood",
       "organiser": "Yoga Paws",
       "listing_slug": "yoga-paws-perth",
-      "checked": "2026-10-11"
+      "checked": "2026-10-13",
+      "end": "2026-10-25 17:00:00"
     }
   ]
 }
