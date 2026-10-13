@@ -262,11 +262,82 @@ function page_link( array $s ): ?array {
  * @return list<array{url: string, label: string, line: string}>
  */
 function see_also( ?array $facet, ?array $city = null ): array {
-	if ( ! applies( $facet ) || ! function_exists( '\Oria\Core\PracticesIndex\category_url' ) ) {
+	if ( ! applies( $facet ) ) {
+		return array();
+	}
+	return links( (array) ( entry( $facet )['see_also'] ?? array() ), $city );
+}
+
+/* ------------------------------------------------------------ categories */
+
+/*
+ * A whole category page can carry a guide too, keyed "cat:{slug}" -- the
+ * same shape a facet's takes, plus "title" and "h1". It is for a category
+ * that IS one modality: Pottery & Creative Workshops was its pottery facet
+ * under another address, and the two split "pottery classes perth" between
+ * them. The category takes the guide; the facet sets "merge_into_category"
+ * and hands its signal over (PracticesIndex\facet_canonical_url()).
+ */
+
+/** The guide for a whole category page, or an empty array. */
+function category_entry( ?\WP_Term $term ): array {
+	if ( ! $term instanceof \WP_Term ) {
+		return array();
+	}
+	$e = all()[ 'cat:' . $term->slug ] ?? array();
+	return is_array( $e ) ? $e : array();
+}
+
+/** @return list<string> the category guide's paragraphs, Perth-only lines kept to Perth */
+function category_intro( ?\WP_Term $term ): array {
+	$paras = array_values( array_filter( array_map( 'strval', (array) ( category_entry( $term )['intro'] ?? array() ) ), 'strlen' ) );
+	return function_exists( '\Oria\Core\Cities\keeps' )
+		? array_values( array_filter( $paras, static fn( string $p ): bool => \Oria\Core\Cities\keeps( $p ) ) )
+		: $paras;
+}
+
+/** @return list<array{q: string, a: string}> */
+function category_faqs( ?\WP_Term $term ): array {
+	$out = array();
+	foreach ( (array) ( category_entry( $term )['faq'] ?? array() ) as $qa ) {
+		if ( is_array( $qa ) && ! empty( $qa['q'] ) && ! empty( $qa['a'] ) ) {
+			$out[] = array( 'q' => (string) $qa['q'], 'a' => (string) $qa['a'] );
+		}
+	}
+	return function_exists( '\Oria\Core\Cities\localize_faqs' ) ? \Oria\Core\Cities\localize_faqs( $out ) : $out;
+}
+
+/** @return list<array{url: string, label: string, line: string}> */
+function category_see_also( ?\WP_Term $term, ?array $city = null ): array {
+	return links( (array) ( category_entry( $term )['see_also'] ?? array() ), $city );
+}
+
+/** A category guide field ("title", "h1", "description", "phrase"), or ''. */
+function category_field( ?\WP_Term $term, string $key ): string {
+	return trim( (string) ( category_entry( $term )[ $key ] ?? '' ) );
+}
+
+/** Whether this facet hands its page over to its category (see above). */
+function merges_into_category( ?array $facet ): bool {
+	return applies( $facet ) && ! empty( entry( $facet )['merge_into_category'] );
+}
+
+/**
+ * see_also rows as links: {path,label} for any on-site page, or
+ * {category,facet,label} for a facet page.
+ *
+ * @param array<int, mixed> $rows
+ * @return list<array{url: string, label: string, line: string}>
+ */
+function links( array $rows, ?array $city = null ): array {
+	if ( ! function_exists( '\Oria\Core\PracticesIndex\category_url' ) ) {
 		return array();
 	}
 	$out = array();
-	foreach ( (array) ( entry( $facet )['see_also'] ?? array() ) as $s ) {
+	foreach ( $rows as $s ) {
+		if ( ! is_array( $s ) ) {
+			continue;
+		}
 		$page = page_link( $s );
 		if ( null !== $page ) {
 			$out[] = $page + array( 'line' => (string) ( $s['line'] ?? '' ) );

@@ -333,7 +333,13 @@ if ( $oria_facet ) {
 		}
 	}
 } elseif ( $oria_term && function_exists( '\Oria\Core\Faq\for_term' ) ) {
-	$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_term );
+	// A category with its own written guide uses that guide's questions.
+	$oria_faqs = ( ! $oria_area && function_exists( '\Oria\Core\FacetGuides\category_faqs' ) )
+		? \Oria\Core\FacetGuides\category_faqs( $oria_term )
+		: array();
+	if ( ! $oria_faqs ) {
+		$oria_faqs = (array) \Oria\Core\Faq\for_term( $oria_term );
+	}
 }
 if ( $oria_fac_sums && function_exists( '\Oria\Core\FacilityAccess\faqs' ) ) {
 	$oria_faqs = array_merge( \Oria\Core\FacilityAccess\faqs( $oria_fac_sums, $oria_cin ), $oria_faqs );
@@ -346,6 +352,11 @@ if ( $oria_area ) {
 	$oria_h1 = sprintf( __( '%1$s in %2$s', 'oria' ), $oria_pname, \Oria\Theme\tname( $oria_area ) );
 }
 if ( ! $oria_facet && ! $oria_area && $oria_term ) {
+	// A category guide may lead with what people search ("Pottery classes in Perth").
+	$oria_cg_h1 = function_exists( '\Oria\Core\FacetGuides\category_field' ) ? \Oria\Core\FacetGuides\category_field( $oria_term, 'h1' ) : '';
+	if ( '' !== $oria_cg_h1 ) {
+		$oria_h1 = $oria_cg_h1;
+	}
 	// A filtered view reached by URL names what it shows: "Yoga in Fremantle".
 	$oria_qh = \Oria\Core\PracticesIndex\query_heading( $oria_term );
 	if ( '' !== $oria_qh ) {
@@ -2073,6 +2084,17 @@ $oria_fg_also  = $oria_fg_on ? \Oria\Core\FacetGuides\see_also( $oria_facet, is_
 $oria_fg_name  = $oria_fg_on
 	? ( '' !== \Oria\Core\FacetGuides\phrase( $oria_facet ) ? \Oria\Core\FacetGuides\phrase( $oria_facet ) . ' ' . sprintf( /* translators: %s: city */ __( 'in %s', 'oria' ), $oria_cin ) : (string) $oria_facet['label'] )
 	: '';
+// A whole category's own guide ("cat:{slug}" in facet-guides.json), in place
+// of its database intro -- for a category that is one modality, like pottery.
+if ( ! $oria_facet && ! $oria_area && $oria_term && function_exists( '\Oria\Core\FacetGuides\category_intro' ) ) {
+	$oria_cg_intro = \Oria\Core\FacetGuides\category_intro( $oria_term );
+	if ( $oria_cg_intro ) {
+		$oria_fg_intro = $oria_cg_intro;
+		$oria_fg_also  = \Oria\Core\FacetGuides\category_see_also( $oria_term, is_array( $oria_city ) ? $oria_city : null );
+		$oria_cg_ph    = \Oria\Core\FacetGuides\category_field( $oria_term, 'phrase' );
+		$oria_fg_name  = ( '' !== $oria_cg_ph ? $oria_cg_ph : $oria_pname ) . ' ' . sprintf( /* translators: %s: city */ __( 'in %s', 'oria' ), $oria_cin );
+	}
+}
 
 /*
  * "Yoga teaching jobs" (brief sections 62, 101): one quiet line, only when

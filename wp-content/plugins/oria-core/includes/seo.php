@@ -614,6 +614,31 @@ function listing_breadcrumbs( $crumbs ) {
 	);
 }
 
+/**
+ * A practice category's guide title or description (facet-guides.json
+ * "cat:{slug}"), {count} filled with the category's listings, or ''. Only on
+ * the whole Perth category: another city's page or a suburb combo keeps the
+ * generated line, since the guide is written about Perth.
+ */
+function category_guide_text( \WP_Term $term, string $key ): string {
+	if ( Taxonomies\PRACTICE !== $term->taxonomy || null !== combo_area()
+		|| ! function_exists( '\Oria\Core\FacetGuides\category_field' ) ) {
+		return '';
+	}
+	$text = \Oria\Core\FacetGuides\category_field( $term, $key );
+	if ( '' === $text || ! city_keeps( $text ) ) {
+		return '';
+	}
+	if ( str_contains( $text, '{count}' ) ) {
+		$ids = function_exists( '\Oria\Core\Intents\listings_in' ) ? \Oria\Core\Intents\listings_in( $term ) : array();
+		if ( function_exists( '\Oria\Core\Cities\filter_ids' ) && function_exists( '\Oria\Core\Cities\current' ) ) {
+			$ids = \Oria\Core\Cities\filter_ids( $ids, \Oria\Core\Cities\current() );
+		}
+		$text = str_replace( '{count}', (string) count( $ids ), $text );
+	}
+	return $text;
+}
+
 function seo_title( $title ) {
 	$own = page_default( 'title' );
 	if ( '' !== $own ) {
@@ -637,6 +662,11 @@ function seo_title( $title ) {
 	 */
 	$term = plain_term();
 	if ( $term && '' === term_override( $term, 'wpseo_title' ) ) {
+		// A category with its own guide may name what people search for.
+		$own = category_guide_text( $term, 'title' );
+		if ( '' !== $own ) {
+			return $own;
+		}
 		return sprintf( '%s | %s', archive_heading( $term ), get_bloginfo( 'name' ) );
 	}
 	// The event archive title now lives in Yoast's own settings, so it stays
@@ -980,6 +1010,10 @@ function seo_description( $desc ) {
 	// Perth, it is not Margaret River's meta: that falls to the line below.
 	$typed = $term ? term_override( $term, 'wpseo_desc' ) : '';
 	if ( $term && ( '' === $typed || ! city_keeps( $typed ) ) ) {
+		$own = category_guide_text( $term, 'description' );
+		if ( '' !== $own ) {
+			return $own;
+		}
 		if ( '' !== trim( (string) $term->description ) && city_keeps( (string) $term->description ) ) {
 			return wp_specialchars_decode( $term->description, ENT_QUOTES );
 		}

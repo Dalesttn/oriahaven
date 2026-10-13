@@ -1234,6 +1234,17 @@ function facet_canonical_url( \WP_Term $practice, array $facet, ?array $city = n
 	$self = category_url( $practice, $city ) . $facet['slug'] . '/';
 
 	/*
+	 * A facet that is the whole category under another name hands over to
+	 * it (facet-guides.json "merge_into_category"): /creative-workshops/pottery/
+	 * listed the same studios as /creative-workshops/ and the pair split
+	 * "pottery classes perth". robots() then noindexes the copy and the
+	 * sitemap skips it, both because the canonical is no longer itself.
+	 */
+	if ( function_exists( '\Oria\Core\FacetGuides\merges_into_category' ) && \Oria\Core\FacetGuides\merges_into_category( $facet ) ) {
+		return category_url( $practice, $city );
+	}
+
+	/*
 	 * A modality has one home, and it is not inside a category.
 	 *
 	 * /perth/{modality}/ holds every listing of the modality rather than one
