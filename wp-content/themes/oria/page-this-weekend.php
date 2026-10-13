@@ -208,6 +208,10 @@ get_template_part(
 	<?php endif; ?>
 </section>
 
+<section class="wrap section section--top-flush">
+	<?php get_template_part( 'template-parts/weekend-signup', null, array( 'source' => 'weekend' ) ); ?>
+</section>
+
 <?php if ( $oria_later ) : ?>
 <section class="wrap section section--top-flush">
 	<div class="row-between" style="margin-bottom:1rem">

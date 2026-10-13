@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const VERSION = 4;
+const VERSION = 5;
 const OPTION  = 'oria_db_version';
 
 function bootstrap(): void {
@@ -257,6 +257,12 @@ function install(): void {
 	 * is the unsubscribe link; the Klaviyo columns record the push, and a
 	 * row with no synced_at and a last_error is what the retry cron picks
 	 * up. No IP address is stored, by rule.
+	 *
+	 * lists (v5) is which emails the address asked for -- a JSON array of
+	 * 'offers' and/or 'weekend'; NULL on rows from before v5 means offers,
+	 * the only email there was. consents holds, per list, the wording they
+	 * agreed to, when, from where, and whether Klaviyo has it. Joining one
+	 * list never enrols anybody in the other.
 	 */
 	$sql[] = "CREATE TABLE {$subs} (
 		id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -267,6 +273,8 @@ function install(): void {
 		source varchar(32) NOT NULL DEFAULT '',
 		listing_id bigint(20) unsigned NOT NULL DEFAULT 0,
 		consent_text text NULL DEFAULT NULL,
+		lists varchar(64) NULL DEFAULT NULL,
+		consents longtext NULL DEFAULT NULL,
 		token varchar(64) NOT NULL,
 		klaviyo_synced_at datetime NULL DEFAULT NULL,
 		klaviyo_attempts tinyint(3) unsigned NOT NULL DEFAULT 0,

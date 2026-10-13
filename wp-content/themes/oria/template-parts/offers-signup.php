@@ -27,7 +27,7 @@ $oria_state  = sanitize_key( (string) ( $_GET['osub'] ?? '' ) ); // phpcs:ignore
 $oria_uid    = 'osub-' . wp_unique_id();
 
 wp_enqueue_script( 'oria-offers-signup', get_template_directory_uri() . '/assets/js/offers-signup.js', array(), (string) filemtime( get_theme_file_path( 'assets/js/offers-signup.js' ) ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
-wp_localize_script( 'oria-offers-signup', 'ORIA_SUB', array( 'url' => rest_url( 'oria/v1/subscribe' ) ) );
+wp_localize_script( 'oria-offers-signup', 'ORIA_SUB', array( 'url' => rest_url( 'oria/v1/subscribe' ), 'weekend' => home_url( '/this-weekend/' ) ) );
 ?>
 <div class="osub<?php echo $oria_hidden ? ' osub--after' : ''; ?>" id="offers-signup" data-osub<?php echo $oria_hidden ? ' hidden' : ''; ?>>
 	<?php if ( 'ok' === $oria_state && ! $oria_hidden ) : ?>

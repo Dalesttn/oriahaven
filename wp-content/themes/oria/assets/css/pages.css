@@ -8463,6 +8463,29 @@ article.is-spotlit {
 .osub__err { margin: 0; font-size: var(--fs-sm); color: #9b2c2c; }
 .osub__done { margin: 0; font-size: var(--fs-sm); color: var(--ink); }
 .osub__hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+/* "Your Perth weekend" signup (template-parts/weekend-signup.php): the
+   Thursday email. A sand panel, the promise beside the field on wide
+   screens, stacked on phones. Reuses the .osub form parts. */
+.wsub { display: grid; gap: var(--s-4); padding: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-xl); background: var(--sand); }
+.wsub[hidden] { display: none; }
+.wsub__intro { display: grid; gap: var(--s-2); align-content: start; }
+.wsub__intro .micro { margin: 0; }
+.wsub__h { margin: 0; text-wrap: balance; }
+.wsub__lede { margin: 0; color: var(--text-soft); font-size: var(--fs-sm); max-width: 34rem; }
+.wsub__form { align-content: start; }
+.wsub__more { font-size: var(--fs-sm); }
+.wsub__more > summary { cursor: pointer; color: var(--text-soft); text-decoration: underline; text-underline-offset: 3px; width: max-content; min-height: 32px; display: inline-flex; align-items: center; }
+.wsub__more > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-xs); }
+.wsub__prefs { display: grid; gap: var(--s-2); grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); margin-top: var(--s-2); }
+.wsub__pref { display: grid; gap: .25rem; }
+.wsub__pref > span { font-weight: 600; color: var(--ink); }
+.wsub__pref select { min-height: 44px; padding: 0 .75rem; border: 1px solid var(--line-strong); border-radius: var(--r-md); font: inherit; background: #fff; color: var(--text); }
+.wsub__pref select:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.wsub__done a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+@media (min-width: 52rem) {
+  .wsub { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: var(--s-6); padding: var(--s-6); align-items: center; }
+}
 @media (prefers-reduced-motion: no-preference) {
   .osub--after.is-shown { animation: osub-in .25s ease-out; }
   @keyframes osub-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }

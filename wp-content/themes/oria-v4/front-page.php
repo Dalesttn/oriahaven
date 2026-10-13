@@ -696,6 +696,11 @@ $oria_dd_spa = $oria_dd_ok ? get_term_by( 'slug', 'spa', 'practice' ) : false;
 </section>
 <?php endif; ?>
 
+<!-- 5b. Your Perth weekend, the Thursday email -->
+<section class="wrap xh-sec" aria-label="<?php esc_attr_e( 'Your Perth weekend email', 'oria' ); ?>">
+	<?php get_template_part( 'template-parts/weekend-signup', null, array( 'source' => 'home' ) ); ?>
+</section>
+
 <?php if ( $oria_notes ) : ?>
 <!-- 6. Oria Field Notes -->
 <section class="wrap xh-sec" aria-labelledby="xh-notes-title">

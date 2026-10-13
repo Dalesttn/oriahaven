@@ -37,17 +37,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const OPTION_LIST = 'oria_klaviyo_list';
-const CRON        = 'oria_subscribers_sync';
-const SLUG        = 'oria-subscribers';
-const SOURCES     = array( 'category', 'listing', 'offer_click', 'other' );
-const MAX_TRIES   = 6;
-const API         = 'https://a.klaviyo.com/api/';
-const REVISION    = '2024-10-15';
+const OPTION_LIST         = 'oria_klaviyo_list';
+const OPTION_WEEKEND_LIST = 'oria_klaviyo_weekend_list';
+const CRON                = 'oria_subscribers_sync';
+const SLUG                = 'oria-subscribers';
+const SOURCES             = array( 'category', 'listing', 'offer_click', 'weekend', 'home', 'other' );
+const MAX_TRIES           = 6;
+const API                 = 'https://a.klaviyo.com/api/';
+const REVISION            = '2024-10-15';
+
+/*
+ * The emails a person can ask for. Each is its own consent: signing up for
+ * one never puts anybody on the other, and a row from before lists existed
+ * is on 'offers' only, the one email there was.
+ */
+const LISTS = array( 'offers', 'weekend' );
 
 /** The wording beside the field; stored with every signup as the consent record. */
-function consent_text(): string {
+function consent_text( string $list = 'offers' ): string {
+	if ( 'weekend' === $list ) {
+		return __( 'Your Perth weekend: a few good things to do for yourself, every Thursday, from Oria Haven. Unsubscribe any time.', 'oria' );
+	}
 	return __( 'A weekly email of new Perth wellness offers, checked by Oria Haven. Unsubscribe any time.', 'oria' );
+}
+
+function clean_list( string $list ): string {
+	return in_array( $list, LISTS, true ) ? $list : 'offers';
 }
 
 function bootstrap(): void {
@@ -75,13 +90,14 @@ function api_key(): string {
 	return defined( 'ORIA_KLAVIYO_KEY' ) && is_string( ORIA_KLAVIYO_KEY ) ? trim( ORIA_KLAVIYO_KEY ) : '';
 }
 
-function list_id(): string {
-	return sanitize_text_field( (string) get_option( OPTION_LIST, '' ) );
+/** The Klaviyo list ID for one of LISTS; '' when it has not been set. */
+function list_id( string $list = 'offers' ): string {
+	return sanitize_text_field( (string) get_option( 'weekend' === $list ? OPTION_WEEKEND_LIST : OPTION_LIST, '' ) );
 }
 
-/** Both halves present: a key in wp-config and a list ID in settings. */
-function configured(): bool {
-	return '' !== api_key() && '' !== list_id();
+/** Both halves present for a list: a key in wp-config and that list's ID in settings. */
+function configured( string $list = 'offers' ): bool {
+	return '' !== api_key() && '' !== list_id( $list );
 }
 
 function settings(): void {
@@ -119,6 +135,30 @@ function settings(): void {
 		'oria_settings',
 		array( 'label_for' => OPTION_LIST )
 	);
+	register_setting(
+		'general',
+		OPTION_WEEKEND_LIST,
+		array(
+			'type'              => 'string',
+			'sanitize_callback' => static fn( $v ): string => preg_replace( '/[^A-Za-z0-9]/', '', (string) $v ) ?? '',
+			'default'           => '',
+		)
+	);
+	add_settings_field(
+		OPTION_WEEKEND_LIST,
+		__( 'Klaviyo weekend list', 'oria' ),
+		static function (): void {
+			printf(
+				'<input type="text" class="regular-text code" id="%1$s" name="%1$s" value="%2$s" placeholder="e.g. Ab12Cd"> <p class="description">%3$s</p>',
+				esc_attr( OPTION_WEEKEND_LIST ),
+				esc_attr( list_id( 'weekend' ) ),
+				esc_html__( 'A SEPARATE Klaviyo list for the "Your Perth weekend" Thursday email -- not the offers list, because people sign up for each email on its own. Until it is set, weekend signups are stored here and pushed once it is.', 'oria' )
+			);
+		},
+		'general',
+		'oria_settings',
+		array( 'label_for' => OPTION_WEEKEND_LIST )
+	);
 }
 
 /* ---------------------------------------------------------------- intake */
@@ -138,6 +178,7 @@ function routes(): void {
 				'listing'  => array( 'type' => 'integer', 'default' => 0 ),
 				'ts'       => array( 'type' => 'integer', 'default' => 0 ),
 				'website'  => array( 'type' => 'string', 'default' => '' ),
+				'list'     => array( 'type' => 'string', 'default' => 'offers' ),
 			),
 			'callback'            => __NAMESPACE__ . '\rest_subscribe',
 		)
@@ -152,7 +193,8 @@ function rest_subscribe( \WP_REST_Request $r ): \WP_REST_Response {
 		(string) $r['source'],
 		(int) $r['listing'],
 		(int) $r['ts'],
-		(string) $r['website']
+		(string) $r['website'],
+		(string) $r['list']
 	);
 	return new \WP_REST_Response( array( 'ok' => 'ok' === $result, 'state' => $result ), 'ok' === $result ? 200 : ( 'throttled' === $result ? 429 : 400 ) );
 }
@@ -169,9 +211,11 @@ function handle_form(): void {
 		(string) ( $p['sub_source'] ?? 'other' ),
 		(int) ( $p['sub_listing'] ?? 0 ),
 		(int) ( $p['oform_ts'] ?? 0 ),
-		(string) ( $p['oform_website'] ?? '' )
+		(string) ( $p['oform_website'] ?? '' ),
+		(string) ( $p['sub_list'] ?? 'offers' )
 	);
-	wp_safe_redirect( add_query_arg( 'osub', $state, $back ) . '#offers-signup' );
+	$list = clean_list( (string) ( $p['sub_list'] ?? 'offers' ) );
+	wp_safe_redirect( add_query_arg( array( 'osub' => $state, 'osub_list' => $list ), remove_query_arg( 'osub_list', $back ) ) . ( 'weekend' === $list ? '#weekend-signup' : '#offers-signup' ) );
 	exit;
 }
 
@@ -180,7 +224,8 @@ function handle_form(): void {
  * than a nonce (the pages carrying the form are cached for hours), then a
  * per-address throttle. Returns 'ok', 'invalid', 'throttled' or 'error'.
  */
-function intake( string $email, string $interest, string $suburb, string $source, int $listing, int $ts, string $honeypot ): string {
+function intake( string $email, string $interest, string $suburb, string $source, int $listing, int $ts, string $honeypot, string $list = 'offers' ): string {
+	$list = clean_list( $list );
 	if ( '' !== trim( $honeypot ) ) {
 		return 'ok'; // Bots get a quiet success.
 	}
@@ -215,7 +260,7 @@ function intake( string $email, string $interest, string $suburb, string $source
 		$suburb = mb_substr( \Oria\Core\BestOf\suburb( $listing ), 0, 64 );
 	}
 
-	$id = add( $email, $interest, $suburb, $source, $listing );
+	$id = add( $email, $interest, $suburb, $source, $listing, $list );
 	if ( 0 === $id ) {
 		return 'error';
 	}
@@ -226,22 +271,37 @@ function intake( string $email, string $interest, string $suburb, string $source
 /* --------------------------------------------------------------- storage */
 
 /**
- * Insert or refresh one address. A second signup from the same person adds
- * the new interest, re-subscribes if they had left, and keeps the original
- * consent record. Returns the row id, 0 on a database failure.
+ * Insert or refresh one address for one list. A second signup from the
+ * same person adds the new interest and the new list, with its own consent
+ * record; the lists they already had keep theirs. Somebody who had
+ * unsubscribed comes back on the list they just asked for ONLY -- leaving
+ * was a no to everything, and asking for the weekend email is not a yes to
+ * the offers one. Returns the row id, 0 on a database failure.
  */
-function add( string $email, string $interest, string $suburb, string $source, int $listing ): int {
+function add( string $email, string $interest, string $suburb, string $source, int $listing, string $list = 'offers' ): int {
 	global $wpdb;
-	$table = Db\subscribers();
-	$now   = current_time( 'mysql' );
-	$email = strtolower( $email );
+	$table   = Db\subscribers();
+	$now     = current_time( 'mysql' );
+	$email   = strtolower( $email );
+	$list    = clean_list( $list );
+	$consent = array( 'text' => consent_text( $list ), 'at' => $now, 'source' => $source, 'synced' => false );
 
 	// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$table}` WHERE email = %s", $email ), ARRAY_A );
 	if ( $row ) {
+		$returning = 'unsubscribed' === $row['status'];
+		$lists     = $returning ? array() : lists_of( $row );
+		$consents  = $returning ? array() : consents_of( $row );
 		$interests = interests_of( $row );
 		if ( '' !== $interest && ! in_array( $interest, $interests, true ) ) {
 			$interests[] = $interest;
+		}
+		if ( ! in_array( $list, $lists, true ) ) {
+			$lists[]           = $list;
+			$consents[ $list ] = $consent;
+		} else {
+			// Already on it: re-push so a changed interest or area reaches Klaviyo.
+			$consents[ $list ]['synced'] = false;
 		}
 		$wpdb->update(
 			$table,
@@ -249,14 +309,16 @@ function add( string $email, string $interest, string $suburb, string $source, i
 				'status'            => 'subscribed',
 				'interests'         => wp_json_encode( array_values( $interests ) ),
 				'suburb'            => '' !== $suburb ? $suburb : $row['suburb'],
+				'lists'             => wp_json_encode( array_values( $lists ) ),
+				'consents'          => wp_json_encode( $consents ),
 				'updated_at'        => $now,
 				'unsubscribed_at'   => null,
-				'klaviyo_synced_at' => null, // Re-push: interests changed or they came back.
+				'klaviyo_synced_at' => null,
 				'klaviyo_attempts'  => 0,
 				'last_error'        => null,
 			),
 			array( 'id' => (int) $row['id'] ),
-			array( '%s', '%s', '%s', '%s', null, null, '%d', null ),
+			array( '%s', '%s', '%s', '%s', '%s', '%s', null, null, '%d', null ),
 			array( '%d' )
 		);
 		return (int) $row['id'];
@@ -270,11 +332,13 @@ function add( string $email, string $interest, string $suburb, string $source, i
 			'suburb'       => $suburb,
 			'source'       => $source,
 			'listing_id'   => $listing,
-			'consent_text' => consent_text(),
+			'consent_text' => consent_text( $list ),
+			'lists'        => wp_json_encode( array( $list ) ),
+			'consents'     => wp_json_encode( array( $list => $consent ) ),
 			'token'        => wp_generate_password( 40, false, false ),
 			'created_at'   => $now,
 		),
-		array( '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s' )
+		array( '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s' )
 	);
 	// phpcs:enable
 	return $ok ? (int) $wpdb->insert_id : 0;
@@ -284,6 +348,42 @@ function add( string $email, string $interest, string $suburb, string $source, i
 function interests_of( array $row ): array {
 	$list = json_decode( (string) ( $row['interests'] ?? '' ), true );
 	return is_array( $list ) ? array_values( array_filter( array_map( 'strval', $list ) ) ) : array();
+}
+
+/**
+ * The emails a row asked for. A row from before v5 has no lists and was
+ * an offers signup, the only kind there was.
+ *
+ * @return list<string>
+ */
+function lists_of( array $row ): array {
+	$raw = $row['lists'] ?? null;
+	if ( null === $raw || '' === $raw ) {
+		return array( 'offers' );
+	}
+	$list = json_decode( (string) $raw, true );
+	return is_array( $list ) ? array_values( array_intersect( LISTS, array_map( 'strval', $list ) ) ) : array( 'offers' );
+}
+
+/**
+ * Per list: the consent wording, when, from where, and whether Klaviyo has
+ * it. A pre-v5 row's offers consent is rebuilt from its own columns, and
+ * counts as synced when the row was.
+ *
+ * @return array<string, array{text:string, at:string, source:string, synced:bool}>
+ */
+function consents_of( array $row ): array {
+	$out = json_decode( (string) ( $row['consents'] ?? '' ), true );
+	$out = is_array( $out ) ? $out : array();
+	if ( ! isset( $out['offers'] ) && in_array( 'offers', lists_of( $row ), true ) ) {
+		$out['offers'] = array(
+			'text'   => (string) ( $row['consent_text'] ?? '' ),
+			'at'     => (string) ( $row['created_at'] ?? '' ),
+			'source' => (string) ( $row['source'] ?? '' ),
+			'synced' => ! empty( $row['klaviyo_synced_at'] ),
+		);
+	}
+	return $out;
 }
 
 function row( int $id ): ?array {
@@ -331,7 +431,7 @@ function maybe_unsubscribe(): void {
 	echo '<main class="wrap" style="padding:4rem 0;max-width:40rem;">';
 	if ( $row ) {
 		echo '<h1 class="h2">' . esc_html__( 'You are unsubscribed', 'oria' ) . '</h1>';
-		echo '<p>' . esc_html( sprintf( /* translators: %s: email */ __( 'No more offers emails will go to %s. If that was a mistake, sign up again beside any offer.', 'oria' ), (string) $row['email'] ) ) . '</p>';
+		echo '<p>' . esc_html( sprintf( /* translators: %s: email */ __( 'No more Oria Haven emails will go to %s. If that was a mistake, sign up again on the site.', 'oria' ), (string) $row['email'] ) ) . '</p>';
 	} else {
 		echo '<h1 class="h2">' . esc_html__( 'That link has expired', 'oria' ) . '</h1>';
 		echo '<p>' . esc_html__( 'Use the unsubscribe link at the foot of the most recent email, or reply to it and we will do it by hand.', 'oria' ) . '</p>';
@@ -353,8 +453,15 @@ function push( int $id ): bool {
 	if ( ! $row || 'subscribed' !== $row['status'] ) {
 		return false;
 	}
-	if ( ! configured() ) {
-		// Not an attempt: the row waits, untouched, for the key and list to exist.
+	$consents = consents_of( $row );
+	$todo     = array();
+	foreach ( lists_of( $row ) as $list ) {
+		if ( empty( $consents[ $list ]['synced'] ) && configured( $list ) ) {
+			$todo[] = $list;
+		}
+	}
+	if ( ! $todo ) {
+		// Not an attempt: whatever is left waits, untouched, for its key and list ID.
 		return false;
 	}
 	/*
@@ -376,6 +483,7 @@ function push( int $id ): bool {
 						'oria_source'    => (string) $row['source'],
 						'oria_consent'   => (string) $row['consent_text'],
 						'oria_signed_up' => (string) $row['created_at'],
+						'oria_lists'     => lists_of( $row ),
 					),
 				),
 			),
@@ -385,39 +493,56 @@ function push( int $id ): bool {
 		note( $id, 'profile: ' . describe( $res ), false );
 		return false;
 	}
-	$res = request(
-		'profile-subscription-bulk-create-jobs',
-		array(
-			'data' => array(
-				'type'          => 'profile-subscription-bulk-create-job',
-				'attributes'    => array(
-					'custom_source' => 'Oria Haven offers signup',
-					'profiles'      => array(
-						'data' => array(
-							array(
-								'type'       => 'profile',
-								'attributes' => array(
-									'email'         => $row['email'],
-									'subscriptions' => array(
-										'email' => array( 'marketing' => array( 'consent' => 'SUBSCRIBED' ) ),
+	foreach ( $todo as $list ) {
+		$res = request(
+			'profile-subscription-bulk-create-jobs',
+			array(
+				'data' => array(
+					'type'          => 'profile-subscription-bulk-create-job',
+					'attributes'    => array(
+						'custom_source' => 'weekend' === $list ? 'Oria Haven weekend signup' : 'Oria Haven offers signup',
+						'profiles'      => array(
+							'data' => array(
+								array(
+									'type'       => 'profile',
+									'attributes' => array(
+										'email'         => $row['email'],
+										'subscriptions' => array(
+											'email' => array( 'marketing' => array( 'consent' => 'SUBSCRIBED' ) ),
+										),
 									),
 								),
 							),
 						),
 					),
+					'relationships' => array(
+						'list' => array( 'data' => array( 'type' => 'list', 'id' => list_id( $list ) ) ),
+					),
 				),
-				'relationships' => array(
-					'list' => array( 'data' => array( 'type' => 'list', 'id' => list_id() ) ),
-				),
-			),
-		)
-	);
-	if ( ! ok( $res ) ) {
-		note( $id, 'subscribe: ' . describe( $res ), false );
-		return false;
+			)
+		);
+		if ( ! ok( $res ) ) {
+			note( $id, 'subscribe ' . $list . ': ' . describe( $res ), false );
+			return false;
+		}
+		$consents[ $list ]['synced'] = true;
+		save_consents( $id, $consents );
+	}
+	// The row is synced only once every list it asked for is; one still
+	// waiting for its list ID keeps the row in the retry queue.
+	foreach ( lists_of( $row ) as $list ) {
+		if ( empty( $consents[ $list ]['synced'] ) ) {
+			return true;
+		}
 	}
 	note( $id, '', true );
 	return true;
+}
+
+function save_consents( int $id, array $consents ): void {
+	global $wpdb;
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+	$wpdb->update( Db\subscribers(), array( 'consents' => wp_json_encode( $consents ) ), array( 'id' => $id ) );
 }
 
 /** @param array|\WP_Error $res */
@@ -434,11 +559,16 @@ function describe( $res ): string {
 	return 'HTTP ' . wp_remote_retrieve_response_code( $res ) . ' ' . mb_substr( (string) wp_remote_retrieve_body( $res ), 0, 160 );
 }
 
-/** Tell Klaviyo the person left, so its sends stop too. Best effort. */
+/** Tell Klaviyo the person left every list, so its sends stop too. Best effort. */
 function klaviyo_unsubscribe( string $email ): void {
-	if ( ! configured() ) {
-		return;
+	foreach ( LISTS as $list ) {
+		if ( configured( $list ) ) {
+			klaviyo_unsubscribe_from( $email, $list );
+		}
 	}
+}
+
+function klaviyo_unsubscribe_from( string $email, string $list ): void {
 	request(
 		'profile-subscription-bulk-delete-jobs',
 		array(
@@ -447,7 +577,7 @@ function klaviyo_unsubscribe( string $email ): void {
 				'attributes'    => array(
 					'profiles' => array( 'data' => array( array( 'type' => 'profile', 'attributes' => array( 'email' => $email ) ) ) ),
 				),
-				'relationships' => array( 'list' => array( 'data' => array( 'type' => 'list', 'id' => list_id() ) ) ),
+				'relationships' => array( 'list' => array( 'data' => array( 'type' => 'list', 'id' => list_id( $list ) ) ) ),
 			),
 		)
 	);
@@ -490,7 +620,7 @@ function note( int $id, string $error, bool $synced ): void {
 /** Hourly: every subscribed row Klaviyo has not confirmed, up to MAX_TRIES. */
 function sync_pending( int $limit = 100 ): array {
 	global $wpdb;
-	if ( ! configured() ) {
+	if ( '' === api_key() ) {
 		return array( 'pushed' => 0, 'failed' => 0, 'skipped' => 'not configured' );
 	}
 	$table = Db\subscribers();
@@ -531,8 +661,12 @@ function stats(): array {
 		'week'         => (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$table}` WHERE created_at >= %s", gmdate( 'Y-m-d H:i:s', time() - WEEK_IN_SECONDS ) ) ),
 		'interests'    => array(),
 		'sources'      => array(),
+		'lists'        => array_fill_keys( LISTS, 0 ),
 	);
-	foreach ( (array) $wpdb->get_results( "SELECT interests, source FROM `{$table}` WHERE status = 'subscribed'", ARRAY_A ) as $r ) {
+	foreach ( (array) $wpdb->get_results( "SELECT interests, source, lists FROM `{$table}` WHERE status = 'subscribed'", ARRAY_A ) as $r ) {
+		foreach ( lists_of( $r ) as $l ) {
+			++$out['lists'][ $l ];
+		}
 		foreach ( interests_of( $r ) as $i ) {
 			$out['interests'][ $i ] = ( $out['interests'][ $i ] ?? 0 ) + 1;
 		}
@@ -561,7 +695,7 @@ function render(): void {
 	$sync = wp_nonce_url( admin_url( 'admin-post.php?action=oria_subscribers_sync' ), 'oria_subscribers_sync' );
 	?>
 	<div class="wrap">
-		<h1><?php esc_html_e( 'Offers subscribers', 'oria' ); ?></h1>
+		<h1><?php esc_html_e( 'Subscribers', 'oria' ); ?></h1>
 		<?php if ( isset( $_GET['synced'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 			<div class="notice notice-success"><p><?php echo esc_html( sprintf( __( 'Sync run: %s pushed, %s failed.', 'oria' ), (string) (int) ( $_GET['synced'] ?? 0 ), (string) (int) ( $_GET['failed'] ?? 0 ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?></p></div>
 		<?php endif; ?>
@@ -574,6 +708,13 @@ function render(): void {
 				?>
 			</p></div>
 		<?php endif; ?>
+		<?php if ( '' !== api_key() && ! configured( 'weekend' ) && $s['lists']['weekend'] > 0 ) : ?>
+			<div class="notice notice-warning"><p><?php esc_html_e( 'There are weekend-email signups but no Klaviyo weekend list ID. Add it under Settings → General → Oria Haven; they are stored here and pushed once it is set.', 'oria' ); ?></p></div>
+		<?php endif; ?>
+		<p>
+			<?php esc_html_e( 'Offers email:', 'oria' ); ?> <strong><?php echo esc_html( number_format_i18n( $s['lists']['offers'] ) ); ?></strong> ·
+			<?php esc_html_e( 'Your Perth weekend:', 'oria' ); ?> <strong><?php echo esc_html( number_format_i18n( $s['lists']['weekend'] ) ); ?></strong>
+		</p>
 		<p>
 			<strong><?php echo esc_html( number_format_i18n( $s['subscribed'] ) ); ?></strong> <?php esc_html_e( 'subscribed', 'oria' ); ?> ·
 			<?php echo esc_html( number_format_i18n( $s['week'] ) ); ?> <?php esc_html_e( 'in the last 7 days', 'oria' ); ?> ·
@@ -599,13 +740,14 @@ function render(): void {
 		<h2><?php esc_html_e( 'Latest 100', 'oria' ); ?></h2>
 		<table class="widefat striped">
 			<thead><tr>
-				<th><?php esc_html_e( 'Email', 'oria' ); ?></th><th><?php esc_html_e( 'Interests', 'oria' ); ?></th><th><?php esc_html_e( 'Suburb', 'oria' ); ?></th>
+				<th><?php esc_html_e( 'Email', 'oria' ); ?></th><th><?php esc_html_e( 'Lists', 'oria' ); ?></th><th><?php esc_html_e( 'Interests', 'oria' ); ?></th><th><?php esc_html_e( 'Suburb', 'oria' ); ?></th>
 				<th><?php esc_html_e( 'Source', 'oria' ); ?></th><th><?php esc_html_e( 'Status', 'oria' ); ?></th><th><?php esc_html_e( 'Klaviyo', 'oria' ); ?></th><th><?php esc_html_e( 'Signed up', 'oria' ); ?></th>
 			</tr></thead>
 			<tbody>
 			<?php foreach ( $rows as $r ) : ?>
 				<tr>
 					<td><?php echo esc_html( (string) $r['email'] ); ?></td>
+					<td><?php echo esc_html( implode( ', ', lists_of( $r ) ) ); ?></td>
 					<td><?php echo esc_html( implode( ', ', array_map( $label, interests_of( $r ) ) ) ?: '—' ); ?></td>
 					<td><?php echo esc_html( (string) $r['suburb'] ?: '—' ); ?></td>
 					<td><?php echo esc_html( (string) $r['source'] . ( (int) $r['listing_id'] ? ' · ' . wp_specialchars_decode( (string) get_post_field( 'post_title', (int) $r['listing_id'], 'raw' ) ) : '' ) ); ?></td>
@@ -628,13 +770,14 @@ function export_csv(): void {
 	global $wpdb;
 	$table = Db\subscribers();
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-	$rows = (array) $wpdb->get_results( "SELECT email, status, interests, suburb, source, consent_text, created_at, unsubscribed_at FROM `{$table}` ORDER BY created_at ASC", ARRAY_A );
+	$rows = (array) $wpdb->get_results( "SELECT email, status, lists, interests, suburb, source, consent_text, created_at, unsubscribed_at FROM `{$table}` ORDER BY created_at ASC", ARRAY_A );
 	nocache_headers();
 	header( 'Content-Type: text/csv; charset=UTF-8' );
 	header( 'Content-Disposition: attachment; filename="oria-subscribers-' . gmdate( 'Y-m-d' ) . '.csv"' );
 	$out = fopen( 'php://output', 'w' );
-	fputcsv( $out, array( 'email', 'status', 'interests', 'suburb', 'source', 'consent_text', 'created_at', 'unsubscribed_at' ) );
+	fputcsv( $out, array( 'email', 'status', 'lists', 'interests', 'suburb', 'source', 'consent_text', 'created_at', 'unsubscribed_at' ) );
 	foreach ( $rows as $r ) {
+		$r['lists']     = implode( '|', lists_of( $r ) );
 		$r['interests'] = implode( '|', interests_of( $r ) );
 		fputcsv( $out, array_values( $r ) );
 	}
