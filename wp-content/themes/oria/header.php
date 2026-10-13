@@ -120,6 +120,7 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 						printf( '<li><a href="%s">%s</a></li>', esc_url( \Oria\Core\Retreats\hub_url() ), esc_html__( 'Retreat escapes', 'oria' ) );
 					}
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
 					echo '</ul></li>';
 
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/this-weekend/' ) ), esc_html__( 'This Weekend', 'oria' ) );
@@ -232,6 +233,7 @@ if ( ! $oria_has_hero ) {
 					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( \Oria\Core\Retreats\hub_url() ), esc_html__( 'Retreat escapes', 'oria' ) );
 				}
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/this-weekend/' ) ), esc_html__( 'This Weekend', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Guides', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Best Of', 'oria' ) );
