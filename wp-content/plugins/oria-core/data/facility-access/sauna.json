@@ -1,0 +1,3112 @@
+{
+ "facility": "sauna",
+ "service_term": "",
+ "checked": "2026-10-13",
+ "batch": "2026-10-13-perth-sauna-prices",
+ "venues": [
+  {
+   "slug": "alchemy-saunas-perth",
+   "website": "https://alchemysaunas.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "shared",
+    "casual": "yes",
+    "condition": "",
+    "booking": "recommended",
+    "includes": [
+     "Traditional Finnish sauna (around 90C), 3 saunas",
+     "Ice pool",
+     "Magnesium pool",
+     "Private shower facilities"
+    ],
+    "min_age": 18,
+    "swimwear": "Swimwear or activewear",
+    "towels": "Bring two towels (one to sit on, one to dry off); towel rental membership at some venues",
+    "essentials": [
+     "Hours: 6am-10pm, 7 days (East Perth)",
+     "Sessions: 60 minutes, start on the hour",
+     "Parking: street or public carpark parking only, no dedicated parking",
+     "Book and pay via the Alchemy Saunas app; each guest needs their own account",
+     "Cancellation: drop-in credit forfeited if cancelled under 3 hours; members charged $10",
+     "Not available to pregnant guests"
+    ],
+    "quiet": "Saunas are social spaces; some venues run designated quiet sessions on a trial basis, marked in the app schedule",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://alchemysaunas.com.au/booking",
+    "rules_url": "https://alchemysaunas.com.au/faqs",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Drop-in session",
+      "kind": "casual_visit",
+      "price": 35,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "East Perth price; book and pay in advance via the app",
+      "main": true
+     },
+     {
+      "product": "Unlimited Membership",
+      "kind": "membership",
+      "price": 40,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "East Perth; sauna any day, any time at your chosen venue; 30-day notice to cancel; membership waitlist may apply",
+      "main": false
+     },
+     {
+      "product": "Off Peak Membership",
+      "kind": "membership",
+      "price": 30,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "East Perth; sauna any day between 9am and 3pm at your chosen venue",
+      "main": false
+     },
+     {
+      "product": "Passport Membership",
+      "kind": "membership",
+      "price": 60,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Unlimited access across all Alchemy venues",
+      "main": false
+     },
+     {
+      "product": "Group / private booking",
+      "kind": "couple_or_group",
+      "price": null,
+      "basis": "private sauna for a group, price not stated",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Request via the app: Schedule > Group Booking; price not published",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://alchemysaunas.com.au/",
+     "https://alchemysaunas.com.au/our-space/east-perth",
+     "https://alchemysaunas.com.au/memberships",
+     "https://alchemysaunas.com.au/booking",
+     "https://alchemysaunas.com.au/faqs"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The East Perth page (179 Claisebrook Rd) lists 'Price Per Session: $35', 'Unlimited Membership $40', 'Off Peak Membership $30' (9am-3pm) and 'Passport Membership $60', with 3 traditional saunas, ice pool, magnesium pool, 6am-10pm, 60 minutes. Membership amounts are weekly per the site's 'Sauna every day from $30/week'. The home-page FAQ says all sessions must be booked and paid in advance, but the full FAQ page says walk-ins are welcome though not guaranteed and booking ahead is recommended, so booking is set to recommended. FAQ: 18+, saunas around 90C, communal and open to everyone."
+   }
+  },
+  {
+   "slug": "melt-sauna-cold-plunge-subiaco",
+   "website": "https://meltsaunas.com",
+   "row": {
+    "status": "confirmed",
+    "setting": "shared",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Finnish sauna",
+     "Cold plunge",
+     "Shower and changing facilities",
+     "Complimentary Hosvitality drinks (matcha, cacao, deluxe drinks) with every sauna + plunge session"
+    ],
+    "min_age": null,
+    "swimwear": "",
+    "towels": "",
+    "essentials": [
+     "Hours: 5am-10pm daily",
+     "Each person must make their own booking",
+     "Session availability is limited"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://meltsaunas.com/booknow",
+    "rules_url": "",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "60 Minute - Sauna + Cold Plunge",
+      "kind": "contrast_session",
+      "price": 35,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "",
+      "main": true
+     },
+     {
+      "product": "30 minute Sauna + Cold Plunge",
+      "kind": "contrast_session",
+      "price": 25,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 30,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Melt at Dawn",
+      "kind": "contrast_session",
+      "price": 7,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "5-6am session; proceeds go to supporting frontline healthcare workers (QEII social club); bookings open 7 days before; limited places",
+      "main": false
+     },
+     {
+      "product": "Sunday Session",
+      "kind": "contrast_session",
+      "price": 35,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": null,
+      "conditions": "Sundays 8am-10am, music-infused session with live DJs",
+      "main": false
+     },
+     {
+      "product": "Buy 3, Get Your 4th Free",
+      "kind": "pack",
+      "price": 105,
+      "basis": "4 x 60-minute sauna + cold plunge sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Expires 10 January 2027",
+      "main": false
+     },
+     {
+      "product": "60 Minute - Sauna + Cold Plunge - Pack of 5",
+      "kind": "pack",
+      "price": 160,
+      "basis": "5 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Expires 12 months after purchase",
+      "main": false
+     },
+     {
+      "product": "60 Minute - Sauna + Cold Plunge - Pack of 10",
+      "kind": "pack",
+      "price": 300,
+      "basis": "10 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Expires 12 months after purchase",
+      "main": false
+     },
+     {
+      "product": "Melt Unlimited Membership",
+      "kind": "membership",
+      "price": 49,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "7 x 60-min sauna + cold plunge sessions per week plus a weekly Sunday Session pass; auto-renews weekly; pause anytime, no lock-in",
+      "main": false
+     },
+     {
+      "product": "Wellness Party",
+      "kind": "couple_or_group",
+      "price": 35,
+      "basis": "per person, 6-16 guests",
+      "people": 6,
+      "duration": 60,
+      "conditions": "60-min sauna and cold plunge with private access to one sauna; minimum 16 people for a fully private event",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://meltsaunas.com/",
+     "https://meltsaunas.com/booknow",
+     "https://meltsaunas.com/membership",
+     "https://meltsaunas.com/4-for-3sessions",
+     "https://meltsaunas.com/melt-at-dawn",
+     "https://meltsaunas.com/sunday-sessions",
+     "https://meltsaunas.com/wellness-party",
+     "https://meltsaunas.com/contact",
+     "https://go.mindbodyonline.com/book/widgets/schedules/view/965791273cf/schedule",
+     "https://clients.mindbodyonline.com/classic/ws?studioid=5738767&stype=40"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The website offers 30- or 60-minute sauna + cold plunge sessions but does not print a casual price; Melt's Mindbody online store (linked from its membership page) lists '60 Minute - Sauna + Cold Plunge $35.00', '30 minute Sauna + Cold Plunge $25.00', 'Buy 3, Get Your 4th Free $105.00', 'Pack of 5 $160.00', 'Pack of 10 $300.00', 'Melt at Dawn $7.00' and 'Sunday Session $35.00'. The membership page says 'Only $49 per week' for 7 x 60-min sessions, and the Mindbody contract confirms $49.00 every week. The Mindbody store also has 'The Morning Shift - 6am $14' and '7am $21' items that the website doesn't describe, so they are left out. Setting is inferred as shared, because a Wellness Party is what buys 'private access' to a sauna."
+   }
+  },
+  {
+   "slug": "the-neighbourhood-sauna-fremantle",
+   "website": "https://www.theneighbourhoodsauna.com",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Private infrared sauna (60C)",
+     "Cold plunge (3-8C) in Sauna and Cold Plunge sessions",
+     "Hot magnesium bath in Bath House and Magnesium Bath sessions",
+     "Ice bath in Bath House Experience",
+     "Shower",
+     "Herbal tea, water and electrolytes"
+    ],
+    "min_age": 12,
+    "swimwear": "Comfortable clothing or a swimsuit; some guests sauna nude in the private rooms",
+    "towels": "Bath towel and hand towel provided (infrared sessions)",
+    "essentials": [
+     "Arrive 10 minutes early",
+     "Cancellation: at least 6 hours notice required",
+     "Sauna and Cold Plunge available Fridays and Saturdays; Hot Magnesium Bath available Sunday to Thursday"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://theneighbourhoodsauna.as.me/?appointmentType=category:Bookings%20-%20South%20Terrace%20-%20Private%20Infrared%20Studio",
+    "rules_url": "https://www.theneighbourhoodsauna.com/contact",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "30 min Private Infrared Sauna (1 person)",
+      "kind": "private_session",
+      "price": 34,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 30,
+      "conditions": "",
+      "main": true
+     },
+     {
+      "product": "30 min Private Infrared Sauna (2 person)",
+      "kind": "couple_or_group",
+      "price": 44,
+      "basis": "per room, 2 people",
+      "people": 2,
+      "duration": 30,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "45 min Private Infrared Sauna (1 person)",
+      "kind": "private_session",
+      "price": 49,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 45,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "45 min Private Infrared Sauna (2 people)",
+      "kind": "couple_or_group",
+      "price": 59,
+      "basis": "per room, 2 people",
+      "people": 2,
+      "duration": 45,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "60 min Private Infrared Sauna (1 person)",
+      "kind": "private_session",
+      "price": 58,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "60 min Private Infrared Sauna (2 people)",
+      "kind": "couple_or_group",
+      "price": 68,
+      "basis": "per room, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Sauna and Cold Plunge (1 person)",
+      "kind": "contrast_session",
+      "price": 65,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Fridays and Saturdays",
+      "main": false
+     },
+     {
+      "product": "Sauna and Cold Plunge (2 people)",
+      "kind": "couple_or_group",
+      "price": 115,
+      "basis": "per room, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "Fridays and Saturdays",
+      "main": false
+     },
+     {
+      "product": "Hot Magnesium Bath and Infrared Sauna (1 Person)",
+      "kind": "bathhouse_session",
+      "price": 65,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Sunday to Thursday",
+      "main": false
+     },
+     {
+      "product": "Hot Magnesium Bath and Infrared Sauna (2 People)",
+      "kind": "couple_or_group",
+      "price": 115,
+      "basis": "per room, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "Sunday to Thursday",
+      "main": false
+     },
+     {
+      "product": "Bath House Experience (1 person)",
+      "kind": "bathhouse_session",
+      "price": 75,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Private infrared sauna, hot magnesium bath and ice bath",
+      "main": false
+     },
+     {
+      "product": "Bath House Experience (2 people)",
+      "kind": "couple_or_group",
+      "price": 140,
+      "basis": "per room, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "2 Weeks Warmer",
+      "kind": "intro_offer",
+      "price": 115,
+      "basis": "6 sauna sessions + 1 Bath House Experience + 1 KX Pilates class over 2 weeks",
+      "people": 1,
+      "duration": null,
+      "conditions": "South Terrace intro offer; active automatically on purchase; not refundable or transferable",
+      "main": false
+     },
+     {
+      "product": "The Angel 10-Pack - Infrared Sauna",
+      "kind": "pack",
+      "price": 222,
+      "basis": "10 infrared sauna sessions",
+      "people": 1,
+      "duration": null,
+      "conditions": "Rollover pack: renews at $222 when all 10 sessions are used",
+      "main": false
+     },
+     {
+      "product": "The Angel 10-Pack - Sauna and Soak",
+      "kind": "pack",
+      "price": 444,
+      "basis": "10 Bath House Experience or Sauna and Hot Magnesium Bath sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Rollover pack: auto-renews on card when used, unless cancelled",
+      "main": false
+     },
+     {
+      "product": "Signature Infrared Membership",
+      "kind": "membership",
+      "price": 60,
+      "basis": "per week",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Unlimited 30-min infrared saunas at South Terrace, 1 per day; minimum 3-month commitment; no rollover, non-transferable",
+      "main": false
+     },
+     {
+      "product": "Align Membership",
+      "kind": "membership",
+      "price": 99,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "Up to 4 sessions per week across all locations (30/45/60-min infrared, 60-min Bath House, 60-min magnesium bath and sauna, 60-min beachside sauna)",
+      "main": false
+     },
+     {
+      "product": "Fortnightly Align Membership",
+      "kind": "membership",
+      "price": 99,
+      "basis": "per fortnight",
+      "people": 1,
+      "duration": null,
+      "conditions": "Up to 4 sessions per fortnight across all locations",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://www.theneighbourhoodsauna.com/",
+     "https://www.theneighbourhoodsauna.com/south-terrace-infrared-sauna",
+     "https://www.theneighbourhoodsauna.com/sauna-therapies-fremantle",
+     "https://www.theneighbourhoodsauna.com/contact",
+     "https://theneighbourhoodsauna.as.me/schedule/028b6a39"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "147 South Terrace is the private infrared studio; the communal beach saunas (Leighton, Hillarys, South Beach, $20-22) are separate locations and are left out here. The Acuity booking page lists '30 min Private Infrared Sauna (1 person)' $34.00, 45 min $49.00, 60 min $58.00, 'Sauna and Cold Plunge (1 person)' $65.00 ('60-degree infrared sauna, and a 3-8 degree cold water immersion'), 'Bath House Experience (1 person)' $75.00, the '2 Weeks Warmer' intro $115 and the Angel 10-Packs $222/$444. The website shows 'ALIGN MEMBERSHIP $99 per week' and 'SIGNATURE INFRARED $60 per week'. The FAQ recommends sauna use for ages 12 and up with adult supervision, so min_age 12 is a recommendation, not a hard rule."
+   }
+  },
+  {
+   "slug": "sauna-ice-bath-booragoon",
+   "website": "https://www.saunaicebathbooragoon.com",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Traditional outdoor barrel sauna (70-80C)",
+     "Cold plunge (8-10C)",
+     "Shower",
+     "Undercover seating area"
+    ],
+    "min_age": null,
+    "swimwear": "Arrive in swimwear if you can",
+    "towels": "Bring two towels (one for the sauna, one to shower)",
+    "essentials": [
+     "Hours: Mon-Thu 7am-7pm, Fri 7am-4pm, Sat 7am-5pm, Sun closed",
+     "Exclusive use of sauna and ice bath for your booking",
+     "First-timers are shown around and guided",
+     "Bathroom available"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://saunaicebooragoon.as.me/",
+    "rules_url": "https://www.saunaicebathbooragoon.com/general-5",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Sauna and Ice Bath - 1 Person",
+      "kind": "private_session",
+      "price": 40,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Exclusive use",
+      "main": true
+     },
+     {
+      "product": "Sauna and Ice Bath - 2 People",
+      "kind": "couple_or_group",
+      "price": 70,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "Exclusive use",
+      "main": false
+     },
+     {
+      "product": "Sauna and Ice Bath - 3 People",
+      "kind": "couple_or_group",
+      "price": 90,
+      "basis": "per session, 3 people",
+      "people": 3,
+      "duration": 60,
+      "conditions": "Exclusive use",
+      "main": false
+     },
+     {
+      "product": "Sauna and Ice Bath - 1 Person (90 min)",
+      "kind": "private_session",
+      "price": 55,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 90,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Sauna and Ice Bath - 2 People (90 min)",
+      "kind": "couple_or_group",
+      "price": 100,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 90,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Sauna Session - 1 Person (30 min)",
+      "kind": "private_session",
+      "price": 25,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Sauna only",
+      "main": false
+     },
+     {
+      "product": "Sauna Session - 1 Person (60 min)",
+      "kind": "private_session",
+      "price": 35,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Sauna only",
+      "main": false
+     },
+     {
+      "product": "Sauna Session - 2 People (30 min)",
+      "kind": "couple_or_group",
+      "price": 40,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 30,
+      "conditions": "Sauna only",
+      "main": false
+     },
+     {
+      "product": "Sauna Session - 2 People (60 min)",
+      "kind": "couple_or_group",
+      "price": 55,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "Sauna only",
+      "main": false
+     },
+     {
+      "product": "Sauna Session - 3 People (60 min)",
+      "kind": "couple_or_group",
+      "price": 75,
+      "basis": "per session, 3 people",
+      "people": 3,
+      "duration": 60,
+      "conditions": "Sauna only",
+      "main": false
+     },
+     {
+      "product": "5 x Session Sauna and Ice Bath Pack - 1 Person",
+      "kind": "pack",
+      "price": 160,
+      "basis": "5 x 1-hour sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "20% discount",
+      "main": false
+     },
+     {
+      "product": "5 x Session Sauna and Ice Bath Package - 2 People",
+      "kind": "pack",
+      "price": 280,
+      "basis": "5 x 1-hour sessions for 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "20% discount",
+      "main": false
+     },
+     {
+      "product": "10 x Session Sauna and Ice Bath Package - 1 Person",
+      "kind": "pack",
+      "price": 300,
+      "basis": "10 x 1-hour sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "25% discount",
+      "main": false
+     },
+     {
+      "product": "20 x Session Sauna and Ice Bath Package - 1 Person",
+      "kind": "pack",
+      "price": 560,
+      "basis": "20 x 1-hour sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "30% discount",
+      "main": false
+     },
+     {
+      "product": "5 x Session Sauna Package - 1 Person 30 mins",
+      "kind": "pack",
+      "price": 112.5,
+      "basis": "5 x 30-min sauna-only sessions",
+      "people": 1,
+      "duration": 30,
+      "conditions": "10% discount",
+      "main": false
+     },
+     {
+      "product": "5 x Session Sauna Package - 1 Person 60 mins",
+      "kind": "pack",
+      "price": 140,
+      "basis": "5 x 60-min sauna-only sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "20% discount",
+      "main": false
+     },
+     {
+      "product": "5 x Sauna Session Package - 2 people 30 mins",
+      "kind": "pack",
+      "price": 180,
+      "basis": "5 x 30-min sauna-only sessions for 2 people",
+      "people": 2,
+      "duration": 30,
+      "conditions": "10% discount",
+      "main": false
+     },
+     {
+      "product": "5 x Session Sauna Package - 2 People 60 mins",
+      "kind": "pack",
+      "price": 220,
+      "basis": "5 x 60-min sauna-only sessions for 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "20% discount",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://www.saunaicebathbooragoon.com/",
+     "https://www.saunaicebathbooragoon.com/general-5",
+     "https://www.saunaicebathbooragoon.com/about-5",
+     "https://www.saunaicebathbooragoon.com/book",
+     "https://saunaicebooragoon.as.me/schedule/c7203049"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The website says every booking is exclusive use of the barrel sauna (70-80C) and cold plunge (8-10C), with 60-minute contrast sessions and 30/60-minute sauna-only sessions. It has no memberships, only packages. The site has no separate pricing page (the PRICING menu points to booking). The Acuity booking page lists 'Sauna and Ice Bath - 1 Person' $40.00 (60 min), 2 People $70.00, 3 People $90.00, 90-min 1 Person $55.00, 'Sauna Session - 1 Person' $25.00 (30 min) / $35.00 (60 min), and packs from $112.50 to $560.00. Hours are in the site footer."
+   }
+  },
+  {
+   "slug": "loyly-recovery-stirling",
+   "website": "https://loylyrecovery.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "shared",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Traditional Finnish sauna (around 90C) with aufguss rituals",
+     "Hot magnesium plunge pool (36C)",
+     "Cold magnesium plunge pool (8C)",
+     "Recovery lounges with complimentary refreshments",
+     "Towel hire included"
+    ],
+    "min_age": null,
+    "swimwear": "Bring your own swimwear (required)",
+    "towels": "One towel provided; BYO extra welcome",
+    "essentials": [
+     "Hours: Mon-Fri 7am-9pm, Sat-Sun 7am-8pm",
+     "Sessions capped at 12 people per hour",
+     "Bring a non-glass water bottle; thongs or sandals recommended"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://momence.com/u/loyly-recovery-gShhAM",
+    "rules_url": "https://loylyrecovery.com.au/experience/",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Recovery Session",
+      "kind": "bathhouse_session",
+      "price": 49,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Sauna, hot magnesium plunge, cold plunge, towel hire, refreshments and lounge access",
+      "main": true
+     },
+     {
+      "product": "Private Recovery Space",
+      "kind": "private_session",
+      "price": 94,
+      "basis": "per room, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Private sauna and cold plunge, towel, tea, water and speaker; no access to communal areas incl. hot magnesium plunge",
+      "main": false
+     },
+     {
+      "product": "Private Recovery Space - 2 people",
+      "kind": "couple_or_group",
+      "price": 114,
+      "basis": "per room, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "Bring a friend for an extra $20, paid on arrival",
+      "main": false
+     },
+     {
+      "product": "Private Recovery Space - 3 people",
+      "kind": "couple_or_group",
+      "price": 124,
+      "basis": "per room, 3 people",
+      "people": 3,
+      "duration": 60,
+      "conditions": "Bring two friends for an extra $30, paid on arrival",
+      "main": false
+     },
+     {
+      "product": "5 Session Pack",
+      "kind": "pack",
+      "price": 235,
+      "basis": "5 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Expires 6 months from purchase",
+      "main": false
+     },
+     {
+      "product": "10 Session Pack",
+      "kind": "pack",
+      "price": 440,
+      "basis": "10 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Expires 12 months from purchase",
+      "main": false
+     },
+     {
+      "product": "Essential Membership",
+      "kind": "membership",
+      "price": 45,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "1 x 60-min communal session weekly; additional sessions $45; 10% off Private Recovery Room",
+      "main": false
+     },
+     {
+      "product": "Signature Membership",
+      "kind": "membership",
+      "price": 65,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "3 x 60-min communal sessions weekly; 40% off additional sessions; 25% off Private Recovery Room",
+      "main": false
+     },
+     {
+      "product": "Premium Membership",
+      "kind": "membership",
+      "price": 95,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "7 x 60-min communal sessions weekly; 1 private recovery room monthly; bring a non-member twice monthly",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://loylyrecovery.com.au/",
+     "https://loylyrecovery.com.au/memberships/",
+     "https://loylyrecovery.com.au/experience/",
+     "https://loylyrecovery.com.au/contact/",
+     "https://loylyrecovery.com.au/elementor-page-2868/",
+     "https://momence.com/u/loyly-recovery-gShhAM",
+     "https://momence.com/Loyly-Recovery/membership/5-Session-Pack/677440",
+     "https://momence.com/Loyly-Recovery/membership/10-Session-Pack/842991"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The Momence booking page lists the 60-minute 'Recovery Session' at A$49 (sauna, hot magnesium plunge, cold plunge, towel hire, lounges) and 'Private Recovery Space' at A$94, plus 'Bring a friend for an extra $20 or two friends for $30'. The gift card page confirms 'Casual Session $49' and 'Private Recovery Space $94 for 1p // $114 for 2p // $124 for 3p'. The memberships page shows Essential $45, Signature $65 and Premium $95 weekly, and Momence shows the 5 Session Pack A$235.00 (6-month expiry) and 10 Session Pack A$440.00 (12-month expiry). The FAQ gives the sauna at around 90C and plunges at 36C and 8C. Momence still names the location 'Loyly Balcatta', but the website address is Stirling."
+   }
+  },
+  {
+   "slug": "zen-zone-perth",
+   "website": "https://zenzoneperth.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Infrared sauna",
+     "Ice bath"
+    ],
+    "min_age": null,
+    "swimwear": "",
+    "towels": "Towel rental is an additional $5",
+    "essentials": [
+     "Hours: 5am-9pm, by appointment only",
+     "Group bookings and venue hire by enquiry"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://www.fresha.com/book-now/zen-zone-perth-x64orkx8/all-offer?pId=1230224",
+    "rules_url": "",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "One Person Sauna & Ice Bath",
+      "kind": "private_session",
+      "price": 40,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Infrared sauna and ice bath for 1 person only",
+      "main": true
+     },
+     {
+      "product": "Two Person Sauna & Ice Bath",
+      "kind": "couple_or_group",
+      "price": 70,
+      "basis": "per session, 2 people sharing",
+      "people": 2,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Three Person Sauna & Ice Bath",
+      "kind": "couple_or_group",
+      "price": 85,
+      "basis": "per session, 3 people sharing",
+      "people": 3,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "One Person Sauna",
+      "kind": "private_session",
+      "price": 25,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Infrared sauna only",
+      "main": false
+     },
+     {
+      "product": "Two Person Sauna",
+      "kind": "couple_or_group",
+      "price": 40,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 30,
+      "conditions": "Infrared sauna only",
+      "main": false
+     },
+     {
+      "product": "5 Session Pack",
+      "kind": "pack",
+      "price": 160,
+      "basis": "5 x 1-hour sauna & ice bath sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Single person use only",
+      "main": false
+     },
+     {
+      "product": "10 Session Pack",
+      "kind": "pack",
+      "price": 300,
+      "basis": "10 x 1-hour sauna & ice bath sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Single person use only",
+      "main": false
+     },
+     {
+      "product": "20 Session Pack",
+      "kind": "pack",
+      "price": 560,
+      "basis": "20 x 1-hour sauna & ice bath sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Single person use only",
+      "main": false
+     },
+     {
+      "product": "Foundation Membership",
+      "kind": "membership",
+      "price": 49.95,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "Unlimited weekly sauna and ice bath access; limit one per customer; SOLD OUT",
+      "main": false
+     },
+     {
+      "product": "Sauna Membership",
+      "kind": "membership",
+      "price": 39.95,
+      "basis": "per week",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Unlimited weekly 30-min sauna sessions; limit one per customer",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://zenzoneperth.com.au/"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The single-page website lists casual sessions: '1 Hour One Person Sauna & Ice Bath ... $40', Two Person $70, Three Person $85, '30 Mins One Person Sauna' $25 and Two Person $40. It also lists packs of 5/10/20 x 1-hour sessions at $160/$300/$560 and 'Please note Towel Rental is an additional $5'. Memberships are Foundation $49.95 recurring weekly (sold out) and Sauna Membership $39.95 recurring weekly. The site says 'Open 5am - 9pm, By appointment only' and books via Fresha (not separately verified). Setting is private_booking because sessions are priced per 1-3 people 'only'; ice bath temperature is not stated."
+   }
+  },
+  {
+   "slug": "mindbody-lounge-victoria-park",
+   "website": "https://www.mindbodylounge.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Infrared sauna (Sunlighten)",
+     "Whole body cryotherapy"
+    ],
+    "min_age": null,
+    "swimwear": "Optional: most people wear swimwear, gym shorts and a singlet, or nothing, as the room is private",
+    "towels": "Provided",
+    "essentials": [
+     "Parking: free parking nearby"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://momence.com/Mindbody-Lounge/appointment-reservation/271005?boardId=207376",
+    "rules_url": "https://www.mindbodylounge.com.au/infrared-sauna",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Infrared Sauna",
+      "kind": "private_session",
+      "price": 50,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 45,
+      "conditions": "Book online",
+      "main": true
+     },
+     {
+      "product": "Infrared Sauna 20min",
+      "kind": "private_session",
+      "price": 25,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 20,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Infrared Sauna for 2",
+      "kind": "couple_or_group",
+      "price": 75,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 45,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Warmth Ritual Pack (Lymphatic Drain + Red Light Therapy + Infrared Sauna)",
+      "kind": "treatment_bundle",
+      "price": 140,
+      "basis": "single pack, 1 visit (1.5 hours)",
+      "people": 1,
+      "duration": 90,
+      "conditions": "Double pack $240, Triple pack $300",
+      "main": false
+     },
+     {
+      "product": "Me Time Pack (Lymphatic Drainage + Hydrogen Inhaler, Red Light Therapy, Infrared Sauna, Whole Body Cryo)",
+      "kind": "treatment_bundle",
+      "price": 199,
+      "basis": "single pack, 1 visit (1 hr 45 min)",
+      "people": 1,
+      "duration": 105,
+      "conditions": "Double pack $339, Triple pack $429",
+      "main": false
+     },
+     {
+      "product": "Session Credit Pack",
+      "kind": "pack",
+      "price": 400,
+      "basis": "10 sessions, any service",
+      "people": 1,
+      "duration": null,
+      "conditions": "Use across every therapy; 20 sessions $700, 50 sessions $1,650",
+      "main": false
+     },
+     {
+      "product": "Contrast membership",
+      "kind": "membership",
+      "price": 69.95,
+      "basis": "per week (4 sessions per week)",
+      "people": 1,
+      "duration": null,
+      "conditions": "Infrared Sauna & Whole Body Cryo, Compression Boots, BrainTap w/ Massage, 30% off any other therapy; weekly direct debit, no lock-in, cancel any time",
+      "main": false
+     },
+     {
+      "product": "Cutting Edge membership",
+      "kind": "membership",
+      "price": 89.95,
+      "basis": "per week (3 sessions per week)",
+      "people": 1,
+      "duration": null,
+      "conditions": "Every therapy offered; 40% off additional sessions; weekly direct debit, no lock-in",
+      "main": false
+     },
+     {
+      "product": "Full Recovery membership",
+      "kind": "membership",
+      "price": 149.95,
+      "basis": "per week (6 sessions per week)",
+      "people": 1,
+      "duration": null,
+      "conditions": "Every therapy offered; weekly direct debit, no lock-in",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://www.mindbodylounge.com.au/",
+     "https://www.mindbodylounge.com.au/infrared-sauna",
+     "https://www.mindbodylounge.com.au/services",
+     "https://www.mindbodylounge.com.au/memberships",
+     "https://momence.com/Mindbody-Lounge/appointment-reservation/271005?boardId=207376"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The official Momence booking board lists \"Infrared Sauna\" at $50 (45 min), \"Infrared Sauna 20min\" at $25 and \"Infrared Sauna for 2\" at $75 (45 min). The website memberships page lists Contrast at $69.95 per week (4 sessions a week, Infrared Sauna & Whole Body Cryo), Cutting Edge at $89.95/wk and Full Recovery at $149.95/wk. The home page lists the Warmth Ritual Pack ($140), the Me Time Pack ($199) and a 10-session credit pack ($400). The sauna FAQ says each session is completely private and towels are provided. The site does not state opening hours."
+   }
+  },
+  {
+   "slug": "peak-performance-institute-perth",
+   "website": "https://ppiperth.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "unknown",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Infrared sauna (Found Space; standard temperature 64C)",
+     "Ice bath"
+    ],
+    "min_age": null,
+    "swimwear": "",
+    "towels": "",
+    "essentials": [
+     "Hours: Mon-Fri 6:30am-6:30pm, Sat 6:30am-12:30pm, Sun closed"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://perth-allied-health.au1.cliniko.com/bookings?business_id=1405401777414604463",
+    "rules_url": "",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "2 Person Infrared Sauna (45 Mins)",
+      "kind": "couple_or_group",
+      "price": null,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 45,
+      "conditions": "Price not published; usually 64 degrees, other temperatures on request",
+      "main": false
+     },
+     {
+      "product": "Wellness Package (PT session + Sauna + Ice bath)",
+      "kind": "treatment_bundle",
+      "price": null,
+      "basis": "per package",
+      "people": 1,
+      "duration": null,
+      "conditions": "Price not published",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://ppiperth.com.au/",
+     "https://ppiperth.com.au/our-services/infra-red-sauna/",
+     "https://ppiperth.com.au/our-services/ice-bath/",
+     "https://perth-allied-health.au1.cliniko.com/bookings?business_id=1405401777414604463"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The website's Infra-Red Sauna and Ice Bath pages describe the services but publish no prices. Under \"Ice Bath/Sauna\", the linked Cliniko booking page lists only \"2 Person Infrared Sauna (45 Mins)\", with no price and a note that the standard sauna temperature is 64 degrees. A \"Wellness Package\" (PT session, sauna, ice bath) is listed there without a price too. No single-person sauna price is published, so no offer is marked main. The private_booking setting is inferred from the appointment-only booking."
+   }
+  },
+  {
+   "slug": "rhema-wellness-studio",
+   "website": "https://www.rhemawellness.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Infrared sauna",
+     "Complimentary electrolytes"
+    ],
+    "min_age": null,
+    "swimwear": "",
+    "towels": "Provided, with showers, soap and shampoo",
+    "essentials": [
+     "Cancellation: 24 hours' notice required; 50% fee within 24 hours"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://www.rhemawellness.com.au/book-now/",
+    "rules_url": "https://www.rhemawellness.com.au/terms-conditions/",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Infrared Sauna 30 Minute Session",
+      "kind": "private_session",
+      "price": 25,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Complimentary electrolytes included",
+      "main": true
+     },
+     {
+      "product": "Infrared Sauna 30 Minute Session (2 people)",
+      "kind": "couple_or_group",
+      "price": 45,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 30,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Infrared Sauna 30 Minute Sessions - 3 Sessions",
+      "kind": "pack",
+      "price": 69,
+      "basis": "3 sessions",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Save $6.00",
+      "main": false
+     },
+     {
+      "product": "Infrared Sauna 30 Minute Sessions - 10 Sessions",
+      "kind": "pack",
+      "price": 200,
+      "basis": "10 sessions",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Save $50.00",
+      "main": false
+     },
+     {
+      "product": "Infrared Sauna 45 Minute Session",
+      "kind": "private_session",
+      "price": 35,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 45,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Infrared Sauna 45 Minute Session (2 people)",
+      "kind": "couple_or_group",
+      "price": 60,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 45,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Infrared Sauna 45 Minute Sessions - 3 Sessions",
+      "kind": "pack",
+      "price": 99,
+      "basis": "3 sessions",
+      "people": 1,
+      "duration": 45,
+      "conditions": "Save $6.00",
+      "main": false
+     },
+     {
+      "product": "Infrared Sauna 45 Minute Sessions - 10 Sessions",
+      "kind": "pack",
+      "price": 300,
+      "basis": "10 sessions",
+      "people": 1,
+      "duration": 45,
+      "conditions": "Save $50.00",
+      "main": false
+     },
+     {
+      "product": "Indulge (60 min Float + 45 min Sauna)",
+      "kind": "treatment_bundle",
+      "price": 95,
+      "basis": "per package, 1 person",
+      "people": 1,
+      "duration": 105,
+      "conditions": "Save $35",
+      "main": false
+     },
+     {
+      "product": "Express (30 min Float + 30 min Sauna)",
+      "kind": "treatment_bundle",
+      "price": 70,
+      "basis": "per package, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Save $15",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://www.rhemawellness.com.au/",
+     "https://www.rhemawellness.com.au/infrared-sauna/",
+     "https://www.rhemawellness.com.au/salt-light/",
+     "https://www.rhemawellness.com.au/faqs/",
+     "https://www.rhemawellness.com.au/terms-conditions/",
+     "https://www.rhemawellness.com.au/about-us/",
+     "https://www.rhemawellness.com.au/book-now/"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The Infrared Sauna page's \"Pricing & Packages\" section lists 30-minute sessions at $25.00 for 1 person, $45.00 for 2 people, $69.00 for 3 sessions and $200.00 for 10. It lists 45-minute sessions at $35.00 for 1 person, $60.00 for 2 people, $99.00 for 3 and $300.00 for 10. The Salt & Light page lists Indulge at $95 (60 min float + 45 min sauna) and Express at $70 (30 min float + 30 min sauna). The home page says \"Appointments are essential\" and sessions are in private rooms. The menu's Fire & Ice Therapy page returns 404, so no ice-bath or contrast price is published. Opening hours are not stated."
+   }
+  },
+  {
+   "slug": "surskin-west-leederville",
+   "website": "https://surskin.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Infrared sauna (cedar, up to 75C)",
+     "Ice bath (3-7C)",
+     "Cold flash shower"
+    ],
+    "min_age": null,
+    "swimwear": "",
+    "towels": "",
+    "essentials": [],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://momence.com/Henosis-x-Surskin/appointment-reservation/79326?boardId=55170",
+    "rules_url": "",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Sauna Sweat Session 30min (Private Room)",
+      "kind": "private_session",
+      "price": 35,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 30,
+      "conditions": "35-minute booking slot; followed by a cold flash shower",
+      "main": true
+     },
+     {
+      "product": "Sauna Sweat Session 30min For Two People (Private Room)",
+      "kind": "couple_or_group",
+      "price": 50,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 30,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Sauna Session For One - Private room with bathroom (50min)",
+      "kind": "private_session",
+      "price": 55,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 50,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Sauna Session For Two - Private room with bathroom (60min)",
+      "kind": "couple_or_group",
+      "price": 65,
+      "basis": "per room, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Sauna Session For up to 3 known people - Private room with bathroom (1hr 20min)",
+      "kind": "couple_or_group",
+      "price": 85,
+      "basis": "per room, up to 3 people",
+      "people": 3,
+      "duration": 80,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Infrared Sauna & Ice bath experience for One - Private room with bathroom",
+      "kind": "contrast_session",
+      "price": 77.5,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Guided 3-7 degree ice bath plus infrared sauna",
+      "main": false
+     },
+     {
+      "product": "Infrared Sauna & Ice bath Experience for Two - Private Room with Bathroom",
+      "kind": "couple_or_group",
+      "price": 120,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 90,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Group Ice Bath & Sauna Experience (6 people)",
+      "kind": "couple_or_group",
+      "price": 210,
+      "basis": "per group, up to 6 people",
+      "people": 6,
+      "duration": 120,
+      "conditions": "Exclusive use of the sauna and ice bath facilities, with supported ice bathing",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://www.surskin.com.au/wellness/infrared-sauna",
+     "https://www.surskin.com.au/wellness/ice-plunge",
+     "https://momence.com/Henosis-x-Surskin/appointment-reservation/79326?boardId=55170",
+     "https://momence.com/appointments/appointment-reservation/79326?boardId=54775"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The Infrared Sauna page lists \"Sauna Sweat Session (Private Room) – A$35\", For Two at A$50, and Sauna Sessions in a private room with bathroom at A$55 (1), A$65 (2) and A$85 (up to 3). It lists the \"Infrared Sauna & Ice Bath Experience\" at A$77.50 for one and A$120 for two, and a Group experience (up to 6) at A$210. The official Momence boards give the same prices plus durations of 35 (30-min sweat), 50, 60, 80, 60, 90 and 120 min. Service descriptions mention a cedar sauna up to 75 degrees and a 3-7 degree ice bath. The site does not state opening hours."
+   }
+  },
+  {
+   "slug": "ember-bath-house",
+   "website": "https://www.emberbathhouse.com",
+   "row": {
+    "status": "confirmed",
+    "setting": "shared",
+    "casual": "yes",
+    "condition": "",
+    "booking": "recommended",
+    "includes": [
+     "Finnish sauna (90C)",
+     "Hot mineral bath (38C)",
+     "Cold bath (10C)",
+     "Steam room (45C)",
+     "Tea",
+     "Towel",
+     "Robe",
+     "Locker"
+    ],
+    "min_age": 18,
+    "swimwear": "Required (all-gendered bath house)",
+    "towels": "Towel and robe provided",
+    "essentials": [
+     "Hours: Mon 11am-6pm; Tue 7:30am-7:30pm; Wed 7:30am-8pm; Thu-Fri 6am-8pm; Sat-Sun 7:30am-8pm",
+     "Not suitable for those who are pregnant",
+     "Groups of 6 or more: contact the venue",
+     "Cancellation: under 48 hrs loses the deposit; no-show charged 100%"
+    ],
+    "quiet": "Numbers limited to keep it calm with soft chatter; dedicated Silent Sessions available",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://www.fresha.com/book-now/ember-bathhouse-dwxbw7ni/services?lid=996221&share=true&pId=943892",
+    "rules_url": "https://www.emberbathhouse.com/general-9",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Bath House Session",
+      "kind": "bathhouse_session",
+      "price": 89,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 90,
+      "conditions": "90-minute access to hot mineral bath, ice bath, sauna and steam room; 18+",
+      "main": true
+     },
+     {
+      "product": "Bath House Silent Session",
+      "kind": "bathhouse_session",
+      "price": 89,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 90,
+      "conditions": "For those seeking a silent retreat",
+      "main": false
+     },
+     {
+      "product": "Bath House for Two",
+      "kind": "couple_or_group",
+      "price": 178,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 90,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "5 Bundle Pack",
+      "kind": "pack",
+      "price": 392,
+      "basis": "5 sessions",
+      "people": 1,
+      "duration": 90,
+      "conditions": "Valid 1 year; one person only",
+      "main": false
+     },
+     {
+      "product": "10 Bundle Pack",
+      "kind": "pack",
+      "price": 756,
+      "basis": "10 sessions",
+      "people": 1,
+      "duration": 90,
+      "conditions": "Valid 2 years; one person only",
+      "main": false
+     },
+     {
+      "product": "Monthly Bather",
+      "kind": "membership",
+      "price": 76,
+      "basis": "per month",
+      "people": 1,
+      "duration": 90,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Bi-Weekly Bather",
+      "kind": "membership",
+      "price": 142,
+      "basis": "per month (2 sessions per 4 weeks)",
+      "people": 1,
+      "duration": 90,
+      "conditions": "Plus 10% off spa treatments and retail products",
+      "main": false
+     },
+     {
+      "product": "Weekly Bather",
+      "kind": "membership",
+      "price": 267,
+      "basis": "per month",
+      "people": 1,
+      "duration": 90,
+      "conditions": "Plus 10% off spa treatments and retail products",
+      "main": false
+     },
+     {
+      "product": "Frequent Bather",
+      "kind": "membership",
+      "price": 498,
+      "basis": "per month (8 sessions per 4 weeks)",
+      "people": 1,
+      "duration": 90,
+      "conditions": "Twice a week; plus 10% off spa treatments and retail products",
+      "main": false
+     },
+     {
+      "product": "Bath House + Hammam",
+      "kind": "treatment_bundle",
+      "price": 259,
+      "basis": "per person",
+      "people": 1,
+      "duration": 135,
+      "conditions": "90 min bath house then hammam ritual; single bookings by email or phone, groups of 2-3 online",
+      "main": false
+     },
+     {
+      "product": "Bath House + Massage (60min)",
+      "kind": "treatment_bundle",
+      "price": 229,
+      "basis": "per person",
+      "people": 1,
+      "duration": null,
+      "conditions": "90 min bath house + 60 min massage; 90 min massage $269; for two $458/$538",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://www.emberbathhouse.com/",
+     "https://www.emberbathhouse.com/bath-house",
+     "https://www.emberbathhouse.com/memberships-packs",
+     "https://www.emberbathhouse.com/bh-massage-packages",
+     "https://www.emberbathhouse.com/general-9"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The Bath House page offers 90-minute access to the hot mineral bath, ice bath, sauna and steam room, with towel, robe and tea, at \"BATH HOUSE SESSION $89\". The Silent Session is also $89 and \"BATH HOUSE FOR TWO\" is $178. The venue is all-gendered, swimwear is required and it is 18+. The Memberships page lists the 5 Bundle Pack at $392 (valid 1 year) and the 10 Bundle Pack at $756 (valid 2 years). It also lists Monthly Bather at $76, Bi-Weekly at $142, Weekly at $267 and Frequent at $498, all monthly. The Packages page lists Bath House + Hammam at $259 and Bath House + Massage at $229/269. The Fresha booking page was not separately cross-checked."
+   }
+  },
+  {
+   "slug": "my-recovery-club-harrisdale",
+   "website": "https://myrecoveryclub.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "shared",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Traditional sauna (custom-built 10-person Finnish)",
+     "Ice bath (Odin, 0-15C adjustable)",
+     "Normatec compression boots",
+     "Kineon red light therapy",
+     "Mobility/stretch zone",
+     "Massage guns"
+    ],
+    "min_age": null,
+    "swimwear": "",
+    "towels": "Towel hire $5 (if you forget your towel)",
+    "essentials": [
+     "Hours: Mon 2-6pm; Tue 8-11am & 2-6pm; Wed closed; Thu 2-6pm; Fri 8-11am & 2-6pm; Sat 8am-12pm; Sun closed",
+     "Showers: private and open showers",
+     "Session: 1 hour open access to the whole club",
+     "Sauna not recommended in pregnancy"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://beeliarandsouthernriverchiro.au1.cliniko.com/bookings?business_id=1267154465706739412&practitioner_id=1517727961577423929&appointment_type_id=1512761624916657433",
+    "rules_url": "https://myrecoveryclub.com.au/membership-terms-and-conditions/",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Casual Recovery Pass",
+      "kind": "casual_visit",
+      "price": 29,
+      "basis": "per visit, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "For non-members; one hour of open access to the sauna, ice baths, red light, compression boots and stretch zone. Described as for returning guests who prefer a one-off visit.",
+      "main": true
+     },
+     {
+      "product": "Recovery Club Membership",
+      "kind": "membership",
+      "price": 19,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Unlimited one-hour sessions per week; week-to-week, minimum 4 weeks; 30 days written notice to cancel after minimum term.",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://myrecoveryclub.com.au/",
+     "https://myrecoveryclub.com.au/become-a-my-recovery-club-member/",
+     "https://myrecoveryclub.com.au/sauna-perth/",
+     "https://myrecoveryclub.com.au/ice-bath-perth/",
+     "https://myrecoveryclub.com.au/contact-us/",
+     "https://myrecoveryclub.com.au/book-online/",
+     "https://myrecoveryclub.com.au/membership-terms-and-conditions/",
+     "https://beeliarandsouthernriverchiro.au1.cliniko.com/bookings?business_id=1267154465706739412&practitioner_id=1517727961577423929&appointment_type_id=1512761624916657433"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "Membership page lists 'Recovery Club Membership $19 per week, Unlimited sessions p/week' and 'Casual Recovery Pass $29 per visit, 1 session' (sauna, ice baths, red light, Normatec, stretching). The venue's Cliniko booking page lists 'Recovery Casual Pass Non-members $29.00' with 1 hour of open access. Sauna page describes a custom-built 10-person traditional sauna; ice bath page says Odin baths 15-0C and towels for hire $5. T&Cs: weekly membership with a 4-week minimum; members under 18 have special conditions (no minimum age stated)."
+   }
+  },
+  {
+   "slug": "active-wellness-spa-east-victoria-park",
+   "website": "https://www.activewellnessspa.com/",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Infrared pod (Tera Orb: full-spectrum infrared, red light, PEMF, terahertz)",
+     "ActiveRoll lymphatic roller"
+    ],
+    "min_age": 18,
+    "swimwear": "Underwear, bathers or activewear in the Tera Orb ('less is better')",
+    "towels": "Bring your own: a hand towel for the Tera Orb seat and another to wipe down",
+    "essentials": [
+     "Hours: 24/7, unstaffed, check in with the app",
+     "Parking: ample free parking (East Vic Park, 1/207 Bank Street)",
+     "Private room per booking; each booking is for one person; 3 treatment rooms",
+     "All sessions pre-paid; 4-hour reschedule/cancellation policy",
+     "Not suitable in pregnancy, heart conditions, electronic/metal implants"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://aws.gymmasteronline.com/portal/book/service?serviceid=913035",
+    "rules_url": "https://www.activewellnessspa.com/tips-faqs",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Casual Single Session 60 mins",
+      "kind": "private_session",
+      "price": 89,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Tera Orb and/or ActiveRoll in a private room",
+      "main": true
+     },
+     {
+      "product": "Casual Single Session 30 mins",
+      "kind": "private_session",
+      "price": 59,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Tera Orb and/or ActiveRoll",
+      "main": false
+     },
+     {
+      "product": "Casual Single Session 45 mins",
+      "kind": "private_session",
+      "price": 79,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 45,
+      "conditions": "Tera Orb and/or ActiveRoll",
+      "main": false
+     },
+     {
+      "product": "Casual Single Session 90 mins",
+      "kind": "private_session",
+      "price": 99,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 90,
+      "conditions": "Tera Orb and/or ActiveRoll",
+      "main": false
+     },
+     {
+      "product": "1 Week Unlimited",
+      "kind": "pack",
+      "price": 129,
+      "basis": "7 days unlimited sessions",
+      "people": 1,
+      "duration": null,
+      "conditions": "1 person only, cannot be shared",
+      "main": false
+     },
+     {
+      "product": "Intro Offer (code Welcome29)",
+      "kind": "intro_offer",
+      "price": 29,
+      "basis": "first session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "First session only; 30 min ActiveRoll and 30 min Tera Orb; limited spots",
+      "main": false
+     },
+     {
+      "product": "1 Month Unlimited New Client Intro",
+      "kind": "intro_offer",
+      "price": 99,
+      "basis": "28 days unlimited",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Limited intro offer for first-time visitors only; unlimited 60-min sessions",
+      "main": false
+     },
+     {
+      "product": "6 Pack 30 mins",
+      "kind": "pack",
+      "price": 350,
+      "basis": "6 sessions",
+      "people": 1,
+      "duration": 30,
+      "conditions": "3 months expiry; shareable with 1 nominated person",
+      "main": false
+     },
+     {
+      "product": "6 Pack 45 mins",
+      "kind": "pack",
+      "price": 400,
+      "basis": "6 sessions",
+      "people": 1,
+      "duration": 45,
+      "conditions": "3 months expiry; shareable with 1 nominated person",
+      "main": false
+     },
+     {
+      "product": "6 Pack 60 mins",
+      "kind": "pack",
+      "price": 450,
+      "basis": "6 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "3 months expiry; shareable with 1 nominated person",
+      "main": false
+     },
+     {
+      "product": "6 Pack 90 mins",
+      "kind": "pack",
+      "price": 500,
+      "basis": "6 sessions",
+      "people": 1,
+      "duration": 90,
+      "conditions": "3 months expiry; shareable with 1 nominated person",
+      "main": false
+     },
+     {
+      "product": "Weekly Unlimited Membership 30 mins",
+      "kind": "membership",
+      "price": 29,
+      "basis": "per week",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Once a day; no lock-in, 30 days written notice; 1 person only",
+      "main": false
+     },
+     {
+      "product": "Weekly Unlimited Membership 45 mins",
+      "kind": "membership",
+      "price": 39,
+      "basis": "per week",
+      "people": 1,
+      "duration": 45,
+      "conditions": "Once a day; no lock-in, 30 days written notice; 1 person only",
+      "main": false
+     },
+     {
+      "product": "Weekly Unlimited Membership 60 mins",
+      "kind": "membership",
+      "price": 49,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Once a day; no lock-in, 30 days written notice; 1 person only",
+      "main": false
+     },
+     {
+      "product": "Weekly Unlimited Membership 90 mins",
+      "kind": "membership",
+      "price": 59,
+      "basis": "per week",
+      "people": 1,
+      "duration": 90,
+      "conditions": "Once a day; no lock-in, 30 days written notice; 1 person only",
+      "main": false
+     },
+     {
+      "product": "Shared Unlimited (2 people) 30 mins",
+      "kind": "membership",
+      "price": 39,
+      "basis": "per week, 2 people",
+      "people": 2,
+      "duration": 30,
+      "conditions": "Shared with 1 nominated person; 1 session a day per person; book separate rooms",
+      "main": false
+     },
+     {
+      "product": "Shared Unlimited (2 people) 45 mins",
+      "kind": "membership",
+      "price": 49,
+      "basis": "per week, 2 people",
+      "people": 2,
+      "duration": 45,
+      "conditions": "Shared with 1 nominated person; 1 session a day per person",
+      "main": false
+     },
+     {
+      "product": "Shared Unlimited (2 people) 60 mins",
+      "kind": "membership",
+      "price": 59,
+      "basis": "per week, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "Shared with 1 nominated person; 1 session a day per person",
+      "main": false
+     },
+     {
+      "product": "Shared Unlimited (2 people) 90 mins",
+      "kind": "membership",
+      "price": 69,
+      "basis": "per week, 2 people",
+      "people": 2,
+      "duration": 90,
+      "conditions": "Shared with 1 nominated person; 1 session a day per person",
+      "main": false
+     },
+     {
+      "product": "Annual Unlimited Membership",
+      "kind": "membership",
+      "price": 999,
+      "basis": "per year",
+      "people": 1,
+      "duration": null,
+      "conditions": "Advertised as a SALE",
+      "main": false
+     },
+     {
+      "product": "FIFO Membership 60 mins",
+      "kind": "membership",
+      "price": 29,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Unlimited 60-min sessions when in Perth; for FIFO rosters; 1 person",
+      "main": false
+     },
+     {
+      "product": "FIFO Membership 90 mins",
+      "kind": "membership",
+      "price": 39,
+      "basis": "per week",
+      "people": 1,
+      "duration": 90,
+      "conditions": "Unlimited 90-min sessions; for FIFO rosters",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://www.activewellnessspa.com/",
+     "https://www.activewellnessspa.com/pricing",
+     "https://www.activewellnessspa.com/memberships",
+     "https://www.activewellnessspa.com/teraorb",
+     "https://www.activewellnessspa.com/introoffer29",
+     "https://www.activewellnessspa.com/intromonth",
+     "https://www.activewellnessspa.com/tips-faqs",
+     "https://www.activewellnessspa.com/whattoexpect",
+     "https://www.activewellnessspa.com/fifomemberships",
+     "https://www.activewellnessspa.com/annual-memberships-sale"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "Pricing page: casual 'Single session 30 mins $59 / 45 mins $79 / 60 mins $89 / 90 mins $99' and '1 Week Unlimited $129'; weekly unlimited $29/$39/$49/$59 (30-90 mins), shared $39-$69; 6 packs $350-$500 with 3 months expiry. Intro pages: '1 Month Unlimited $99' for first-time visitors and 'Only $29 for 1st session' (code Welcome29). The heat product is the Tera Orb infrared pod in a private room alongside an ActiveRoll, not a traditional sauna. FAQ: 18+, bring towels, 24/7 app access, free parking."
+   }
+  },
+  {
+   "slug": "henosis-co-west-leederville",
+   "website": "https://www.henosisandco.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Infrared sauna (cedar, up to 75C, private room)",
+     "Ice bath (3-7C)",
+     "Cold flash shower"
+    ],
+    "min_age": null,
+    "swimwear": "",
+    "towels": "",
+    "essentials": [
+     "Shower before using the facilities and before every ice bath",
+     "Guided ice bath available for first-timers"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://www.fresha.com/a/henosis-west-leederville-8-cambridge-street-x065k0jd/booking?employeeId=all",
+    "rules_url": "",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Sauna Session For One (Sauna Sessions 50min, Private Room)",
+      "kind": "private_session",
+      "price": 55,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 50,
+      "conditions": "Private room",
+      "main": true
+     },
+     {
+      "product": "Sauna Sweat Session 30min (Private Room)",
+      "kind": "private_session",
+      "price": 35,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Private room",
+      "main": false
+     },
+     {
+      "product": "Sauna Session For Two (1hr)",
+      "kind": "couple_or_group",
+      "price": 65,
+      "basis": "per room, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Sauna Session For upto 3 known people (1hr 20min)",
+      "kind": "couple_or_group",
+      "price": 85,
+      "basis": "per room, up to 3 people",
+      "people": 3,
+      "duration": 80,
+      "conditions": "Known people only",
+      "main": false
+     },
+     {
+      "product": "Infrared Sauna & Ice bath experience for one",
+      "kind": "contrast_session",
+      "price": 77.5,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Private room; guided ice bath on request",
+      "main": false
+     },
+     {
+      "product": "Infrared Sauna & Ice bath experience for Two",
+      "kind": "couple_or_group",
+      "price": 120,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 90,
+      "conditions": "Includes wellness greeting and magnesium drink",
+      "main": false
+     },
+     {
+      "product": "6 x Sauna Sweat Sessions (30min)",
+      "kind": "pack",
+      "price": 189,
+      "basis": "6 sessions",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Valid 3 months",
+      "main": false
+     },
+     {
+      "product": "5 Pack Infrared Sauna (50 min sauna)",
+      "kind": "pack",
+      "price": 220,
+      "basis": "5 sessions",
+      "people": 1,
+      "duration": 50,
+      "conditions": "Valid 1 month",
+      "main": false
+     },
+     {
+      "product": "10 Pack Infrared Sauna (50min session)",
+      "kind": "pack",
+      "price": 380,
+      "basis": "10 sessions",
+      "people": 1,
+      "duration": 50,
+      "conditions": "Valid 2 months",
+      "main": false
+     },
+     {
+      "product": "20 Pack Infrared Sauna (50 min sauna)",
+      "kind": "pack",
+      "price": 720,
+      "basis": "20 sessions",
+      "people": 1,
+      "duration": 50,
+      "conditions": "Valid 3 months",
+      "main": false
+     },
+     {
+      "product": "6x Sauna & Ice Bath for One",
+      "kind": "pack",
+      "price": 408,
+      "basis": "6 sessions",
+      "people": 1,
+      "duration": null,
+      "conditions": "Valid 3 months; charged once at purchase",
+      "main": false
+     },
+     {
+      "product": "10x Sauna & Ice Bath for One",
+      "kind": "pack",
+      "price": 697.5,
+      "basis": "10 sessions",
+      "people": 1,
+      "duration": null,
+      "conditions": "Valid 4 months; charged once at purchase",
+      "main": false
+     },
+     {
+      "product": "20x Sauna & Ice Bath for One",
+      "kind": "pack",
+      "price": 1240,
+      "basis": "20 sessions",
+      "people": 1,
+      "duration": null,
+      "conditions": "Valid 6 months; charged once at purchase",
+      "main": false
+     },
+     {
+      "product": "2 Sauna Sessions a Week (30 minute sessions)",
+      "kind": "membership",
+      "price": 45,
+      "basis": "per week",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Recurring, renews weekly until cancelled",
+      "main": false
+     },
+     {
+      "product": "3 Sauna Sessions a week (1 hours session)",
+      "kind": "membership",
+      "price": 95,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Recurring, renews weekly until cancelled",
+      "main": false
+     },
+     {
+      "product": "Wellness Ritual For Two (Sauna & Icebath with Holistic Facial)",
+      "kind": "treatment_bundle",
+      "price": 600,
+      "basis": "per booking, 2 people",
+      "people": 2,
+      "duration": 150,
+      "conditions": "Includes facial/treatment with SURSKIN",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://henosisandco.com.au/",
+     "https://henosisandco.com.au/sauna-and-ice/",
+     "https://henosisandco.com.au/memberships/",
+     "https://www.fresha.com/a/henosis-west-leederville-8-cambridge-street-x065k0jd/booking?employeeId=all",
+     "https://www.fresha.com/a/henosis-west-leederville-8-cambridge-street-x065k0jd"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The Sauna & Ice page links to the venue's Fresha booking, which lists 'Sauna Sweat Session 30min (Private Room) A$35', 'Sauna Session For One' 50 min A$55, 'For Two (1hr)' A$65, 'For upto 3 known people' A$85, and 'Infrared Sauna & Ice bath experience for one' A$77.50 (1 hr) / 'for Two' A$120 (1 hr 30). Memberships page lists sauna packs ($189 for 6x30min; $220/$380/$720 for 5/10/20x50min), sauna & ice packs ($408/$697.50/$1,240) and weekly sauna memberships ($45, $95). Ice bath 3-7 degrees; sauna up to 75C. Hours left out: Fresha (6:30am-8pm) and the site's schema (9am-5pm) disagree."
+   }
+  },
+  {
+   "slug": "recovery-haus-innaloo",
+   "website": "https://recoveryhaus.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "shared",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Traditional sauna (up to 95C)",
+     "Ice bath (3 magnesium baths at 5, 8 and 12C)",
+     "Infrared sauna (private room, 1-3 people, booked separately)"
+    ],
+    "min_age": null,
+    "swimwear": "Bring swimwear",
+    "towels": "Contrast: bring 2 towels (one to sit on, one to dry). Infrared sauna: towels provided",
+    "essentials": [
+     "Hours: Mon-Fri 6am-9:30pm; Sat-Sun 7am-6pm (outside hours by appointment)",
+     "Contrast sessions are 60 min in a communal Group Contrast Area, booked by time slot",
+     "Contrast area can be booked privately for groups (minimum 10 participants)"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://recoveryhaus.com.au/bookings/",
+    "rules_url": "https://recoveryhaus.com.au/contrast-therapy/",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Contrast Therapy (Sauna and Magnesium & Ice Baths)",
+      "kind": "contrast_session",
+      "price": 35,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Single session; expires 1 month after purchase; communal group setting",
+      "main": true
+     },
+     {
+      "product": "Infrared Sauna",
+      "kind": "private_session",
+      "price": 45,
+      "basis": "per session",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Single session; private room for 1-3 people; expires 1 month after purchase",
+      "main": false
+     },
+     {
+      "product": "Fire & Ice (Infrared Sauna + Cryotherapy)",
+      "kind": "treatment_bundle",
+      "price": 67.5,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": null,
+      "conditions": "Expires 1 month after purchase",
+      "main": false
+     },
+     {
+      "product": "Unlimited Contrast, Compression & Roller | 14 Days",
+      "kind": "intro_offer",
+      "price": 99,
+      "basis": "14 days unlimited",
+      "people": 1,
+      "duration": null,
+      "conditions": "Intro offer; expires 14 days after first booking",
+      "main": false
+     },
+     {
+      "product": "Contrast Therapy 5 Pack",
+      "kind": "pack",
+      "price": 150,
+      "basis": "5 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Expires 3 months after purchase; shareable between 2 profiles",
+      "main": false
+     },
+     {
+      "product": "Contrast Therapy 10 Pack",
+      "kind": "pack",
+      "price": 250,
+      "basis": "10 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Expires 3 months after purchase; shareable between 2 profiles",
+      "main": false
+     },
+     {
+      "product": "Contrast Therapy 20 Pack",
+      "kind": "pack",
+      "price": 450,
+      "basis": "20 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Expires 3 months after purchase; shareable between 2 profiles",
+      "main": false
+     },
+     {
+      "product": "7 Day Pass Unlimited Contrast & Cryo",
+      "kind": "pack",
+      "price": 150,
+      "basis": "7 days unlimited",
+      "people": 1,
+      "duration": null,
+      "conditions": "Expires 7 days after first booking",
+      "main": false
+     },
+     {
+      "product": "Contrast 1 session per fortnight",
+      "kind": "membership",
+      "price": 26,
+      "basis": "every 2 weeks",
+      "people": 1,
+      "duration": 60,
+      "conditions": "6 weeks commitment",
+      "main": false
+     },
+     {
+      "product": "Contrast 1 session per week",
+      "kind": "membership",
+      "price": 22,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "6 weeks commitment",
+      "main": false
+     },
+     {
+      "product": "Contrast 2 sessions per week",
+      "kind": "membership",
+      "price": 35,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "6 weeks commitment",
+      "main": false
+     },
+     {
+      "product": "Contrast 3 sessions per week",
+      "kind": "membership",
+      "price": 45,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "6 weeks commitment",
+      "main": false
+     },
+     {
+      "product": "Contrast & Recovery Lounge 1 per week",
+      "kind": "membership",
+      "price": 32,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "6 weeks commitment",
+      "main": false
+     },
+     {
+      "product": "Unlimited Contrast",
+      "kind": "membership",
+      "price": 60,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "The venue gives both \"no lock-in\" and a 6-week commitment, so ask before you buy. Includes unlimited 10-min RollStar sessions",
+      "main": false
+     },
+     {
+      "product": "Unlimited Contrast & Unlimited Recovery Lounge",
+      "kind": "membership",
+      "price": 80,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "No lock-in",
+      "main": false
+     },
+     {
+      "product": "Silver 5 Pack (credits usable on infrared sauna)",
+      "kind": "pack",
+      "price": 200,
+      "basis": "5 credits",
+      "people": 1,
+      "duration": null,
+      "conditions": "Silver credits cover infrared sauna, cryotherapy and others; expires 3 months",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://recoveryhaus.com.au/",
+     "https://recoveryhaus.com.au/contrast-therapy/",
+     "https://recoveryhaus.com.au/infrared-sauna/",
+     "https://recoveryhaus.com.au/packages/",
+     "https://recoveryhaus.com.au/offers/",
+     "https://recoveryhaus.com.au/bookings/",
+     "https://recoveryhaus.com.au/group-bookings/"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "Packages page (Hapana purchase widget) lists 'Contrast Therapy | Sauna and Magnesium & Ice Baths ... $35.00' single session, 'Infrared Sauna ... $45.00', Contrast 5/10/20 packs $150/$250/$450, contrast memberships $22-$45/wk, 'Unlimited Contrast' $60/wk and the 14-day intro $99 (also on the Offers page). The bookings widget shows 'Contrast Therapy | 60 mins | Group Contrast Area' slots and 'Infrared Sauna | 30 mins'. Contrast page: communal traditional sauna up to 95C and three magnesium ice baths at 5, 8 and 12 degrees; bring swimwear and 2 towels. The packages FAQ says Unlimited Contrast has no lock-in, but the widget shows '6 weeks commitment'."
+   }
+  },
+  {
+   "slug": "modern-ritual-contrast",
+   "website": "https://www.modernritualyoga.com",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "16+ with a parent present (sauna); no children at the studio",
+    "booking": "required",
+    "includes": [
+     "Infrared sauna (private room, fits 2)",
+     "Ice bath (around 10C)"
+    ],
+    "min_age": 16,
+    "swimwear": "Bathers recommended (private room, wear what you are comfortable in)",
+    "towels": "",
+    "essentials": [
+     "Parking: in front of the studio, along the alley, beside the building; free 2-hour street parking",
+     "Showers: shower and toilet on site; shower before using the sauna/ice bath",
+     "Arrive 15 minutes early",
+     "Cancellation: 8 hours notice; late cancel $30 fee",
+     "Not advised in pregnancy"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://www.modernritualyoga.com/contrast-recovery#contrast-recovery-bookings",
+    "rules_url": "https://www.modernritualyoga.com/faqs",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Casual Session",
+      "kind": "private_session",
+      "price": 69,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "60 min infrared sauna & ice bath; valid 1 month",
+      "main": true
+     },
+     {
+      "product": "Bring a buddy",
+      "kind": "couple_or_group",
+      "price": 30,
+      "basis": "add-on per session, 1 extra person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Add-on to any contrast session; sauna and bath fit two",
+      "main": false
+     },
+     {
+      "product": "3 Session Pack",
+      "kind": "pack",
+      "price": 180,
+      "basis": "3 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Valid 3 months; shareable with family & friends",
+      "main": false
+     },
+     {
+      "product": "10 Session Pack",
+      "kind": "pack",
+      "price": 500,
+      "basis": "10 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Valid 6 months; shareable with family & friends",
+      "main": false
+     },
+     {
+      "product": "Recovery Membership",
+      "kind": "membership",
+      "price": 85,
+      "basis": "per month",
+      "people": 1,
+      "duration": 60,
+      "conditions": "2 sessions per month; 20% off additional sessions; monthly autopay",
+      "main": false
+     },
+     {
+      "product": "Rest + Restore Intro Offer",
+      "kind": "intro_offer",
+      "price": 75,
+      "basis": "2 weeks unlimited yoga + 2 mini contrast sessions",
+      "people": 1,
+      "duration": null,
+      "conditions": "First-time customers only (buying a casual class first voids it); mainly a yoga bundle; length of the mini contrast sessions not stated",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://www.modernritualyoga.com/",
+     "https://www.modernritualyoga.com/contrast-recovery",
+     "https://www.modernritualyoga.com/pricing",
+     "https://www.modernritualyoga.com/faqs"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "Pricing page 'Contrast Recovery Pricing': 'Casual Session $69' (60 min infrared sauna & ice bath), '3 Session Pack $180', '10 Session Pack $500', 'Recovery Membership $85 per month' (2/month), 'Bring a buddy +$30 /session'. The Rest + Restore Intro Offer ($75) bundles 2 weeks unlimited yoga with 2 mini contrast sessions. FAQ: the contrast room is private, sauna and bath fit two, ice bath around 10 degrees, bathers recommended, 16+ with a parent present. Yoga memberships with contrast perks (e.g. Ritual + Restore $180/month) were left out as yoga products."
+   }
+  },
+  {
+   "slug": "reform-and-restore-studio",
+   "website": "https://reformandrestorestudio.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Infrared sauna (Sunlighten mPulse full-spectrum with red light)",
+     "Ice bath (Alpine, as low as 3C)"
+    ],
+    "min_age": null,
+    "swimwear": "",
+    "towels": "",
+    "essentials": [
+     "Private access to the whole Recovery Lounge per booking"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://momence.com/appointments/appointment-reservation/47247",
+    "rules_url": "",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "1 Fire & Ice Private",
+      "kind": "private_session",
+      "price": 69,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Ice bath + infrared sauna",
+      "main": true
+     },
+     {
+      "product": "2 Fire & Ice (2 Person)",
+      "kind": "couple_or_group",
+      "price": 89,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "2 Fire & Ice (3 Person)",
+      "kind": "couple_or_group",
+      "price": 109,
+      "basis": "per session, 3 people",
+      "people": 3,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "3 Pack Contrast Therapy",
+      "kind": "pack",
+      "price": 149,
+      "basis": "3 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "3 x 60 min sessions",
+      "main": false
+     },
+     {
+      "product": "5 Pack Contrast Therapy",
+      "kind": "pack",
+      "price": 229,
+      "basis": "5 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "5 x 60 min sessions",
+      "main": false
+     },
+     {
+      "product": "1 Person Infrared Sauna 45 mins",
+      "kind": "private_session",
+      "price": 49,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 45,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "1 Person Infrared Sauna 60 mins",
+      "kind": "private_session",
+      "price": 59,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "2 Person Infrared Sauna 45 mins",
+      "kind": "couple_or_group",
+      "price": 79,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 45,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "2 Person Infrared Sauna 60 mins",
+      "kind": "couple_or_group",
+      "price": 89,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Reform & Restore Weekly",
+      "kind": "membership",
+      "price": 79,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "Unlimited reformer Pilates + 1x contrast therapy per week",
+      "main": false
+     },
+     {
+      "product": "Reform & Restore Elite",
+      "kind": "membership",
+      "price": 89,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "Unlimited reformer Pilates + 2x contrast therapy per week",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://reformandrestorestudio.com.au/",
+     "https://reformandrestorestudio.com.au/pricing/",
+     "https://reformandrestorestudio.com.au/contrast-therapy-scarborough/",
+     "https://reformandrestorestudio.com.au/infrared-sauna-scarborough/",
+     "https://reformandrestorestudio.com.au/ice-bath-scarborough/"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "Pricing page 'Contrast Therapy, Ice Bath + Infrared Sauna (60 mins)': '1 Fire & Ice Private 60 Minute Session $69', 2 person $89, 3 person $109, 3 pack $149, 5 pack $229; infrared sauna only $49 (45 min) / $59 (60 min) for 1 person, $79 / $89 for 2. The contrast page says each booking gives private access to the whole Recovery Lounge (Sunlighten mPulse sauna, Alpine ice bath); the ice bath page says it reaches as low as 3C. The home page 'Book a Contrast Therapy Session' button links to the Momence appointment page used as book_url. Weekly Pilates + contrast memberships are included because they carry contrast sessions."
+   }
+  },
+  {
+   "slug": "re-boot-collective",
+   "website": "https://re-bootcollective.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "unknown",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Infrared sauna",
+     "Steam hot rock sauna (infrared + steam combo)",
+     "Ice bath (8-10C)"
+    ],
+    "min_age": null,
+    "swimwear": "",
+    "towels": "",
+    "essentials": [
+     "Hours: Mon-Fri 6am-10pm, Sat-Sun 8am-7pm; members self-serve 5am-10pm, 7 days",
+     "Wellness cafe with seated red light therapy"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://clients.mindbodyonline.com/classic/ws?studioid=5751344&",
+    "rules_url": "",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Infrared sauna session",
+      "kind": "casual_visit",
+      "price": null,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": null,
+      "conditions": "No casual price published",
+      "main": true
+     },
+     {
+      "product": "All In One Membership",
+      "kind": "membership",
+      "price": 49.99,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "Open access to the gym and wellness lounge; self-serve 5am-10pm, 7 days",
+      "main": false
+     },
+     {
+      "product": "Unlimited Wellness ONLY",
+      "kind": "membership",
+      "price": 57.0,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "52-week contract that auto-renews; unlimited infrared saunas, infrared and hot rock combo sauna, compression and red light",
+      "main": false
+     },
+     {
+      "product": "Re-Boot Life Style Membership",
+      "kind": "membership",
+      "price": 93.0,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "52-week contract that auto-renews; unlimited saunas plus 3 small-group PT sessions a week, compression, red light and a body scan",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://re-bootcollective.com.au/",
+     "https://re-bootcollective.com.au/memberships/",
+     "https://re-bootcollective.com.au/recovery-wellness/",
+     "https://re-bootcollective.com.au/wellness/",
+     "https://re-bootcollective.com.au/our-services/",
+     "https://clients.mindbodyonline.com/classic/ws?studioid=5751344&stype=40"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The Memberships page lists an 'All In One Membership $49.99 per week' covering open access to the gym and wellness lounge. In the Mindbody online store, 'Unlimited Wellness ONLY' is $57.00 every week for 52 weeks and 'Re-Boot Life Style Membership' is $93.00 every week; the only single-visit item under 'Infrared Saunas' is 'Ice Bath 10 DEG $20.00'. No casual sauna session price is published. The site calls the space a 'private calming sanctuary', and the steam hot rock sauna is 'perfect for solo relaxation'. Ice bath temperature is stated two ways: 8-10C on Our Services and 6 degrees on the older Recovery & Wellness page."
+   }
+  },
+  {
+   "slug": "locked-in-recovery",
+   "website": "https://lockedinrecoveryandperformance.com",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Traditional sauna",
+     "Infrared sauna",
+     "Ice bath"
+    ],
+    "min_age": null,
+    "swimwear": "",
+    "towels": "",
+    "essentials": [
+     "Hours: Mon-Fri 6am-8pm, Sat-Sun 7am-8pm",
+     "Parking and showers available"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://www.fresha.com/a/locked-in-recovery-performance-warwick-30-eddington-road-x97794v6",
+    "rules_url": "",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Single Session / Solo Sauna & Ice",
+      "kind": "contrast_session",
+      "price": 45,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Private session; a full hour of sauna plus ice bath.",
+      "main": true
+     },
+     {
+      "product": "Two Person Session / Duo Sauna & Ice (2ppl)",
+      "kind": "couple_or_group",
+      "price": 80,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Quadruple Sauna & Ice (4ppl)",
+      "kind": "couple_or_group",
+      "price": 120,
+      "basis": "per session, up to 4 people",
+      "people": 4,
+      "duration": 60,
+      "conditions": "",
+      "main": false
+     },
+     {
+      "product": "Solo Sauna (60min)",
+      "kind": "private_session",
+      "price": 35,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Sauna only, no ice bath",
+      "main": false
+     },
+     {
+      "product": "Duo Sauna (60 min)",
+      "kind": "couple_or_group",
+      "price": 60,
+      "basis": "per session, 2 people",
+      "people": 2,
+      "duration": 60,
+      "conditions": "Sauna only, no ice bath",
+      "main": false
+     },
+     {
+      "product": "Solo Sauna & Ice + Normatec boots",
+      "kind": "treatment_bundle",
+      "price": 60,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 90,
+      "conditions": "Includes Normatec compression boots",
+      "main": false
+     },
+     {
+      "product": "5 Session Pack",
+      "kind": "pack",
+      "price": 200,
+      "basis": "5 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Five contrast therapy sessions to use within 3 months.",
+      "main": false
+     },
+     {
+      "product": "Weekly Membership",
+      "kind": "membership",
+      "price": 50,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Up to 3 sessions weekly.",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://lockedinrecoveryandperformance.com/",
+     "https://www.fresha.com/a/locked-in-recovery-performance-warwick-30-eddington-road-x97794v6"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The website pricing section lists 'Single Session $45' (a full hour of sauna plus ice bath), 'Two Person Session $80', '5 Session Pack $200' (use within 3 months) and 'Weekly Membership $50' (up to 3 sessions weekly), and describes sessions as 'in a private setting'. The Fresha booking page agrees: Solo Sauna & Ice 1 hr A$45 and Duo Sauna & Ice (2ppl) A$80. Fresha also lists Quadruple Sauna & Ice (4ppl) A$120, Solo Sauna (60min) A$35, Duo Sauna (60 min) A$60 and Solo Sauna & Ice + Normatec boots 1 hr 30 min A$60. Ice bath temperature is not stated."
+   }
+  },
+  {
+   "slug": "ultimate-recovery-lounge",
+   "website": "https://ultimaterecoverylounge.com",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Full-spectrum infrared sauna",
+     "Ice bath (Odin, can reach 0C)",
+     "Private shower"
+    ],
+    "min_age": null,
+    "swimwear": "Underwear or bathers in the sauna; bathers for the plunge",
+    "towels": "Luxury laundered towels provided for each session; you may bring your own.",
+    "essentials": [
+     "Location: Wanneroo",
+     "Staffed hours: Tue, Thu, Fri, Sat, Sun 9.30am-2.30pm; appointments outside staffed hours by contacting them",
+     "Sessions are 60 minutes; arrive early",
+     "Cancellation: within 12 hours incurs a 50% charge; under 1 hour notice or no-show is charged in full",
+     "Under-18s must be supervised by an adult"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://ultimaterecoverylounge.com/booking/",
+    "rules_url": "https://ultimaterecoverylounge.com/rules-faq/",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Ice bath and infrared sauna private recovery room",
+      "kind": "contrast_session",
+      "price": 99,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Private room. Extra persons $30pp; up to 4 people.",
+      "main": true
+     },
+     {
+      "product": "Extra person (recovery room)",
+      "kind": "couple_or_group",
+      "price": 30,
+      "basis": "per extra person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Add-on to a recovery room booking; up to 4 people in total.",
+      "main": false
+     },
+     {
+      "product": "Session Packs - 5 x Sauna Sessions",
+      "kind": "pack",
+      "price": 300,
+      "basis": "5 sessions",
+      "people": 1,
+      "duration": null,
+      "conditions": "Private infrared sauna sessions.",
+      "main": false
+     },
+     {
+      "product": "Session Packs - 5 x Recovery Room Sessions",
+      "kind": "pack",
+      "price": 350,
+      "basis": "5 sessions",
+      "people": 1,
+      "duration": null,
+      "conditions": "Sauna + ice bath in a private recovery room.",
+      "main": false
+     },
+     {
+      "product": "Weekly Membership - up to 3 x Recovery Room sessions",
+      "kind": "membership",
+      "price": 99,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "Minimum 3-month commitment; additional guests $30 per person per visit; cannot be combined with other offers.",
+      "main": false
+     },
+     {
+      "product": "Weekly Membership - 1 x Recovery Room session",
+      "kind": "membership",
+      "price": 65,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "Minimum 3-month commitment.",
+      "main": false
+     },
+     {
+      "product": "Monthly Membership - 1 x Recovery Room session",
+      "kind": "membership",
+      "price": 70,
+      "basis": "per month",
+      "people": 1,
+      "duration": null,
+      "conditions": "Minimum 3-month commitment.",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://ultimaterecoverylounge.com/",
+     "https://ultimaterecoverylounge.com/booking/",
+     "https://ultimaterecoverylounge.com/membership/",
+     "https://ultimaterecoverylounge.com/rules-faq/",
+     "https://ultimaterecoverylounge.com/full-spectrum-infrared-sauna/",
+     "https://ultimaterecoverylounge.com/odin-ice-bath/"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The Booking page lists 'Ice bath and infrared sauna PRIVATE RECOVERY ROOM 60 MINS $99*', with extra persons at $30pp and up to 4 people. The Membership and Booking pages list 5 x Sauna Sessions $300.00, 5 x Recovery Room Sessions $350.00, weekly memberships at $99.00 (up to 3 sessions) and $65.00 (1 session), and a Monthly Membership at $70.00, all with a minimum 3-month commitment. The FAQ says rooms are 'completely private' and sessions are 60 minutes. No single sauna-only casual price is published. The membership plugin's payment line says 'USD', which looks like a plugin default; the plan prices themselves are shown in $."
+   }
+  },
+  {
+   "slug": "recovery-lab-jolimont",
+   "website": "https://recoverylab.com.au/find-a-lab-jolimont/",
+   "row": {
+    "status": "confirmed",
+    "setting": "private_booking",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Infrared sauna (private suite, 50-65C)",
+     "Ice bath (8-10C, semi-private)",
+     "Private shower and change rooms"
+    ],
+    "min_age": null,
+    "swimwear": "Light activewear or swimmers.",
+    "towels": "Fresh towels supplied if needed, at an extra charge.",
+    "essentials": [
+     "Parking: street parking on Jersey Street",
+     "Hours: Mon-Wed 10am-2pm and 4pm-8pm; Thu 10am-8pm; Fri 10am-6pm; Sat 9am-4pm; Sun 10am-5pm",
+     "BYO water"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://recoverylab.com.au/booking-jolimont/",
+    "rules_url": "https://recoverylab.com.au/find-a-lab-jolimont/",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Casual Session 60 Minutes",
+      "kind": "casual_visit",
+      "price": 55,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Any of 5 core modalities, including infrared sauna; not available for ice bath.",
+      "main": true
+     },
+     {
+      "product": "Casual Session 20/30 Minute",
+      "kind": "casual_visit",
+      "price": 30,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 30,
+      "conditions": "Any of 5 core modalities for 30 minutes; ice bath sessions are 20 minutes only.",
+      "main": false
+     },
+     {
+      "product": "10 Day Experience",
+      "kind": "intro_offer",
+      "price": 79,
+      "basis": "10 consecutive days, up to 4 x 30-min sessions",
+      "people": 1,
+      "duration": 30,
+      "conditions": "First-time guests only; one per person; covers NuCalm, infrared sauna, compression, ice bath and Compex.",
+      "main": false
+     },
+     {
+      "product": "Restore Membership",
+      "kind": "membership",
+      "price": 49,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "Compression, cold water therapy and infrared sauna; 14 days cancellation notice; minimum 1 month term; no joining fee.",
+      "main": false
+     },
+     {
+      "product": "Recharge Membership",
+      "kind": "membership",
+      "price": 69,
+      "basis": "per week",
+      "people": 1,
+      "duration": null,
+      "conditions": "All modalities, 4 modalities per session; 14 days cancellation notice; minimum 1 month term; no joining fee.",
+      "main": false
+     },
+     {
+      "product": "10 session pack",
+      "kind": "pack",
+      "price": 250,
+      "basis": "10 sessions",
+      "people": 1,
+      "duration": null,
+      "conditions": "Full terms not stated",
+      "main": false
+     },
+     {
+      "product": "7 day pass",
+      "kind": "pack",
+      "price": 99,
+      "basis": "7 days",
+      "people": 1,
+      "duration": null,
+      "conditions": "Inclusions not stated",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://recoverylab.com.au/find-a-lab-jolimont/",
+     "https://recoverylab.com.au/booking-jolimont/",
+     "https://recoverylab.com.au/recovery-modalities-infrared-sauna/",
+     "https://recoverylab.com.au/recovery-modalities-contrast-experience/"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The Jolimont booking page lists 'Casual Session 20/30 Minute $30' and 'Casual Session 60 Minutes $55' for any of 5 core modalities (60-min not available for ice bath). It also lists Recharge Membership $69 per week, Restore Membership $49 per week (includes infrared sauna) and the '10 day experience Purchase - $79', limited to first-time guests. The Jolimont page says the infrared saunas are fully private and the ice baths are 8-10C in a semi-private space. The network's 'Contrast Experience' (private 60-min sauna plus ice bath for up to 4) is 'Only Available at selected recovery labs', has no published price and is not confirmed for Jolimont, so it is excluded."
+   }
+  },
+  {
+   "slug": "reclab-wembley",
+   "website": "https://www.reclab.com.au",
+   "row": {
+    "status": "confirmed",
+    "setting": "shared",
+    "casual": "yes",
+    "condition": "",
+    "booking": "required",
+    "includes": [
+     "Traditional (Finnish) sauna",
+     "Steam room",
+     "Hot plunge pool (magnesium)",
+     "Ice bath plunge pools"
+    ],
+    "min_age": null,
+    "swimwear": "Bring bathers.",
+    "towels": "Bring a towel ('No towel, no dip').",
+    "essentials": [
+     "Location: Wembley WA",
+     "Showers, lockers and change rooms",
+     "Cancellation: 24 hours notice required; later cancellations or no-shows are charged in full",
+     "Arrive at least 5 minutes before your booking"
+    ],
+    "quiet": "",
+    "accessibility": "",
+    "accessibility_url": "",
+    "book_url": "https://www.reclab.com.au/book-now/",
+    "rules_url": "https://www.reclab.com.au/pre-dip-info/",
+    "notice": "",
+    "notice_until": "",
+    "offers": [
+     {
+      "product": "Casual Contrast Session",
+      "kind": "contrast_session",
+      "price": 42,
+      "basis": "per session, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Casual 60-min entry to the contrast area for non-members: hot and cold plunge pools, traditional sauna and steam room.",
+      "main": true
+     },
+     {
+      "product": "5 Pack - Contrast Sessions",
+      "kind": "pack",
+      "price": 195,
+      "basis": "5 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Not pausable, transferable or refundable; 12 month expiry.",
+      "main": false
+     },
+     {
+      "product": "10 Pack - Contrast Sessions",
+      "kind": "pack",
+      "price": 375,
+      "basis": "10 sessions",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Not pausable, transferable or refundable; 12 month expiry.",
+      "main": false
+     },
+     {
+      "product": "Super human Day pass",
+      "kind": "treatment_bundle",
+      "price": 99,
+      "basis": "per day, 1 person",
+      "people": 1,
+      "duration": 60,
+      "conditions": "1 x 60-min contrast, 1 x 20-min red light therapy and 1 x 30-min compression boots; valid for a day.",
+      "main": false
+     },
+     {
+      "product": "7 Day Pass",
+      "kind": "intro_offer",
+      "price": 99,
+      "basis": "7 days unlimited",
+      "people": 1,
+      "duration": null,
+      "conditions": "New members only; unlimited access to hot and cold plunge pools, steam room, sauna and compression boots.",
+      "main": false
+     },
+     {
+      "product": "FIFO RNR Pass",
+      "kind": "concession",
+      "price": 89,
+      "basis": "7 days",
+      "people": 1,
+      "duration": null,
+      "conditions": "Proof of FIFO work required on arrival; limited time offer.",
+      "main": false
+     },
+     {
+      "product": "The Enthusiast",
+      "kind": "membership",
+      "price": 49,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "3 x 60-min contrast sessions per week; 2 month minimum; 2 weeks notice to cancel; unused sessions expire weekly; membership waitlist in place.",
+      "main": false
+     },
+     {
+      "product": "The True Believer",
+      "kind": "membership",
+      "price": 79,
+      "basis": "per week",
+      "people": 1,
+      "duration": 60,
+      "conditions": "Unlimited 60-min contrast sessions plus unlimited 30-min compression boots; 2 month minimum; membership waitlist in place.",
+      "main": false
+     }
+    ],
+    "sources": [
+     "https://www.reclab.com.au/",
+     "https://www.reclab.com.au/memberships/",
+     "https://www.reclab.com.au/special-offers/",
+     "https://www.reclab.com.au/pre-dip-info/",
+     "https://www.reclab.com.au/facilities/",
+     "https://www.reclab.com.au/terms-conditions/",
+     "https://www.reclab.com.au/book-now/"
+    ],
+    "checked": "2026-10-13",
+    "evidence": "The pricing page lists 'Casual Contrast $42', a 60-min casual entry to the contrast area covering hot and cold plunge pools, traditional sauna and steam room. It also lists 5 Pack $195 and 10 Pack $375 (12 month expiry) and the Super human Day pass $99. Memberships are The Enthusiast at $49 per week (3 x 60-min) and The True Believer at $79 per week (unlimited); the page says a membership waitlist is in place, and the 7 Day Pass $99 is for new members only. The Special Offers page adds the FIFO RNR Pass at $89 for 7 days with proof of FIFO work. The facility uses full pool-sized shared plunge pools; ice bath temperature and opening hours are not stated on the pages checked."
+   }
+  }
+ ]
+}

@@ -180,7 +180,7 @@
       "website": "https://www.reclab.com.au",
       "row": {
         "status": "confirmed",
-        "setting": "unknown",
+        "setting": "shared",
         "casual": "yes",
         "condition": "",
         "booking": "required",
@@ -197,79 +197,49 @@
         "quiet": "",
         "accessibility": "",
         "accessibility_url": "",
-        "book_url": "https://www.reclab.com.au/memberships/",
+        "book_url": "https://www.reclab.com.au/book-now/",
         "rules_url": "https://www.reclab.com.au/memberships/",
         "notice": "",
         "notice_until": "",
         "offers": [
           {
             "product": "Casual Contrast Session",
-            "kind": "casual_visit",
-            "price": 39.5,
-            "basis": "per person",
+            "kind": "contrast_session",
+            "price": 42,
+            "basis": "per session, 1 person",
             "people": 1,
             "duration": 60,
-            "conditions": "",
+            "conditions": "Casual 60-min entry to the contrast area for non-members: hot and cold plunge pools, traditional sauna and steam room.",
             "main": true
           },
           {
-            "product": "Morning Contrast Session",
-            "kind": "casual_visit",
-            "price": 19.5,
-            "basis": "per person",
-            "people": 1,
-            "duration": 60,
-            "conditions": "7-9am Mon-Fri; description says $19, booking slots show A$19.50",
-            "main": false
-          },
-          {
             "product": "5 Pack - Contrast Sessions",
-            "kind": "casual_visit",
-            "price": 179,
+            "kind": "pack",
+            "price": 195,
             "basis": "5 sessions",
             "people": 1,
             "duration": 60,
-            "conditions": "12-month expiry; not pausable/transferable/refundable",
+            "conditions": "Not pausable, transferable or refundable; 12 month expiry.",
             "main": false
           },
           {
             "product": "10 Pack - Contrast Sessions",
-            "kind": "casual_visit",
-            "price": 349,
+            "kind": "pack",
+            "price": 375,
             "basis": "10 sessions",
             "people": 1,
             "duration": 60,
-            "conditions": "12-month expiry; not pausable/transferable/refundable",
+            "conditions": "Not pausable, transferable or refundable; 12 month expiry.",
             "main": false
           },
           {
-            "product": "Super Human Day Pass",
+            "product": "Super human Day pass",
             "kind": "treatment_bundle",
             "price": 99,
-            "basis": "per person, valid one day",
+            "basis": "per day, 1 person",
             "people": 1,
             "duration": 60,
-            "conditions": "Includes 1 x 60-min contrast, 20-min red light, 30-min compression boots",
-            "main": false
-          },
-          {
-            "product": "The Enthusiast",
-            "kind": "membership",
-            "price": 49,
-            "basis": "per week",
-            "people": 1,
-            "duration": 60,
-            "conditions": "3 x 60-min sessions per week; 2-month minimum; membership waitlist",
-            "main": false
-          },
-          {
-            "product": "The True Believer",
-            "kind": "membership",
-            "price": 79,
-            "basis": "per week",
-            "people": 1,
-            "duration": 60,
-            "conditions": "Unlimited sessions + compression boots; 2-month minimum",
+            "conditions": "1 x 60-min contrast, 1 x 20-min red light therapy and 1 x 30-min compression boots; valid for a day.",
             "main": false
           },
           {
@@ -279,16 +249,51 @@
             "basis": "7 days unlimited",
             "people": 1,
             "duration": null,
-            "conditions": "New members only",
+            "conditions": "New members only; unlimited access to hot and cold plunge pools, steam room, sauna and compression boots.",
+            "main": false
+          },
+          {
+            "product": "FIFO RNR Pass",
+            "kind": "concession",
+            "price": 89,
+            "basis": "7 days",
+            "people": 1,
+            "duration": null,
+            "conditions": "Proof of FIFO work required on arrival; limited time offer.",
+            "main": false
+          },
+          {
+            "product": "The Enthusiast",
+            "kind": "membership",
+            "price": 49,
+            "basis": "per week",
+            "people": 1,
+            "duration": 60,
+            "conditions": "3 x 60-min contrast sessions per week; 2 month minimum; 2 weeks notice to cancel; unused sessions expire weekly; membership waitlist in place.",
+            "main": false
+          },
+          {
+            "product": "The True Believer",
+            "kind": "membership",
+            "price": 79,
+            "basis": "per week",
+            "people": 1,
+            "duration": 60,
+            "conditions": "Unlimited 60-min contrast sessions plus unlimited 30-min compression boots; 2 month minimum; membership waitlist in place.",
             "main": false
           }
         ],
         "sources": [
+          "https://www.reclab.com.au/",
           "https://www.reclab.com.au/memberships/",
-          "https://www.reclab.com.au"
+          "https://www.reclab.com.au/special-offers/",
+          "https://www.reclab.com.au/pre-dip-info/",
+          "https://www.reclab.com.au/facilities/",
+          "https://www.reclab.com.au/terms-conditions/",
+          "https://www.reclab.com.au/book-now/"
         ],
-        "checked": "2026-09-28",
-        "evidence": "Casual 60-min contrast $39.50, 5-pack $179, 10-pack $349, day pass $99, memberships $49 and $79 per week, 7-day new-member pass $99; all include hot/cold plunge, sauna and steam room; embedded booking calendar for Reclab Wembley shows timed 60-min slots. Reclab is in Wembley and its facility includes a steam room."
+        "checked": "2026-10-13",
+        "evidence": "The pricing page lists 'Casual Contrast $42', a 60-min casual entry to the contrast area covering hot and cold plunge pools, traditional sauna and steam room. It also lists 5 Pack $195 and 10 Pack $375 (12 month expiry) and the Super human Day pass $99. Memberships are The Enthusiast at $49 per week (3 x 60-min) and The True Believer at $79 per week (unlimited); the page says a membership waitlist is in place, and the 7 Day Pass $99 is for new members only. The Special Offers page adds the FIFO RNR Pass at $89 for 7 days with proof of FIFO work. The facility uses full pool-sized shared plunge pools; ice bath temperature and opening hours are not stated on the pages checked. Re-checked 13 Oct 2026: casual price up from $39.50 to $42, packs from $179/$349 to $195/$375; the $19.50 morning session is no longer listed."
       }
     },
     {

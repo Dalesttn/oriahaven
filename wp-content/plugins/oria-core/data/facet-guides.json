@@ -333,7 +333,10 @@
           "q": "Where can I do a sauna and ice bath together?",
           "a": "Most dedicated sauna studios have a cold plunge or ice bath too. The places set up to alternate the two in one session are listed under Ice bath & sauna together (contrast therapy)."
         }
-      ]
+      ],
+      "facility": "sauna",
+      "name": "Saunas",
+      "description": "Compare {count} saunas in Perth: what one visit costs, how long you get, private or shared, and whether there's a cold plunge, checked on each venue's own website."
     },
     "cryotherapy": {
       "phrase": "Cryotherapy",
@@ -412,6 +415,67 @@
           "line": "For cold therapy"
         }
       ]
+    },
+    "hyperbaric-oxygen": {
+      "phrase": "Hyperbaric Oxygen Therapy",
+      "all_categories": true,
+      "intro": [
+        "{count} places in Perth run a hyperbaric chamber, and they are not all the same machine. A hard-shell chamber is a sealed capsule you lie in while it is pressurised, usually to between 1.3 and 2.0 atmospheres (ATA). Hyper O2 in Kardinya and Studio2 HBOT in Applecross run hard-shell chambers only. Thrive Wellness Centre has both: a one-person soft-shell chamber at about 1.3 ATA and a hard-shell chamber big enough for two. Recovery Haus in Innaloo sells what it calls mild HBOT, up to 1.35 ATA, and Element Health Centres in Claremont has a lie-down chamber and a seated one.",
+        "A session is an hour or ninety minutes at most places, and thirty or sixty minutes at Recovery Haus. Oxygen usually comes through a mask or nasal cannula; at Thrive the mask is optional and charged as an extra. Before the first session most clinics take you through a health questionnaire or a short consult.",
+        "A casual hour costs $100 to $120 at four of the five, and $75 in Recovery Haus's milder chamber. Some first sessions are cheaper — Studio2 HBOT charges $60 for a first hour. Packs bring the price down a long way: Thrive's 20-session soft-shell pack works out at $30 a session and its hard-shell pack at $55, against $85 at Studio2 HBOT and $99 for ten at Hyper O2. Prices change, so check the clinic's own site before you book.",
+        "These are private wellness clinics, not hospital units. Several of their websites describe what a chamber is meant to do for particular conditions; Oria Haven doesn't repeat those claims, and none of the five publishes a Medicare rebate. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much does hyperbaric oxygen therapy cost in Perth?",
+          "a": "A single 60-minute session is $100 to $120 at most Perth clinics, and $75 in Recovery Haus's mild chamber. Studio2 HBOT charges $60 for a first hour. In packs it falls to $30 a session in Thrive's soft-shell chamber, $55 in its hard-shell one, $85 at Studio2 HBOT and $99 at Hyper O2. Prices were checked on each clinic's own site in October 2026."
+        },
+        {
+          "q": "What is the difference between a hard-shell and a soft-shell chamber?",
+          "a": "Pressure, mainly. The hard-shell chambers in Perth run at 1.3 to 2.0 ATA. Thrive's soft-shell chamber runs at about 1.3 ATA, and Recovery Haus's mild chamber at up to 1.35. Soft-shell and mild sessions are the cheaper ones."
+        },
+        {
+          "q": "Do I need a referral?",
+          "a": "None of the five clinics says you need a GP referral. Most screen you first with a health questionnaire or a consult, and Thrive says it may refer you to your GP after reviewing yours."
+        },
+        {
+          "q": "How long is a session?",
+          "a": "Usually 60 or 90 minutes. Recovery Haus sells 30 and 60-minute sessions."
+        },
+        {
+          "q": "Can two people go in together?",
+          "a": "At Thrive Wellness Centre, yes: its hard-shell chamber takes two, at $150 for an hour. Studio2 HBOT has two one-person chambers you can book side by side, and Hyper O2 lets a friend book at the same time."
+        },
+        {
+          "q": "Is it covered by Medicare?",
+          "a": "None of the five clinics on this page publishes a Medicare rebate. If you have private health cover, ask your fund what it pays for, and before you book rather than after."
+        },
+        {
+          "q": "Where can I try a hyperbaric chamber in Perth?",
+          "a": "Element Health Centres in Claremont, Hyper O2 in Kardinya, Recovery Haus in Innaloo, Studio2 HBOT in Applecross and Thrive Wellness Centre all list one. Each listing links to the clinic's own booking page."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "spa",
+          "facet": "red-light-therapy",
+          "label": "Red light therapy",
+          "line": "Often sold in the same clinics, sometimes in one pack"
+        },
+        {
+          "category": "spa",
+          "facet": "cryotherapy",
+          "label": "Cryotherapy",
+          "line": "The other chamber in Perth's recovery studios"
+        },
+        {
+          "category": "spa",
+          "facet": "infrared-sauna",
+          "label": "Infrared saunas",
+          "line": "Heat rather than pressure"
+        }
+      ],
+      "description": "Compare {count} hyperbaric chambers in Perth: hard or soft shell, pressure, session length and what an hour costs, checked on each clinic's own site."
     },
     "float-therapy": {
       "phrase": "Float Tanks",

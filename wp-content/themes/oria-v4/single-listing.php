@@ -320,12 +320,18 @@ while ( have_posts() ) :
 	 * review brief): the first confirmed Facility access row with a price,
 	 * named for what it buys -- "$39.50 per person · Casual Contrast
 	 * Session, 60 min access". Passes and memberships stay in the price
-	 * section below, labelled as what they are.
+	 * section below, labelled as what they are. "Casual" is the row's own
+	 * casual flag plus a fresh one-visit price (summary's 'compare'); the
+	 * access line also carries "shared" or "18+", so it is not matched as text.
 	 */
 	if ( function_exists( '\Oria\Core\FacilityAccess\rows' ) && function_exists( '\Oria\Core\FacilityAccess\summary' ) ) {
-		foreach ( \Oria\Core\FacilityAccess\rows( (int) $oria_id ) as $oria_far ) {
+		// Two rows (a venue's sauna and steam room) can price the same
+		// session; the most recently checked one speaks for the venue.
+		$oria_fa_rows = \Oria\Core\FacilityAccess\rows( (int) $oria_id );
+		usort( $oria_fa_rows, static fn( array $a, array $b ): int => strcmp( (string) ( $b['checked'] ?? '' ), (string) ( $a['checked'] ?? '' ) ) );
+		foreach ( $oria_fa_rows as $oria_far ) {
 			$oria_fas = \Oria\Core\FacilityAccess\summary( (int) $oria_id, (string) ( $oria_far['facility'] ?? '' ) );
-			if ( $oria_fas && ! empty( $oria_fas['price'] ) && '' !== (string) ( $oria_fas['price_text'] ?? '' ) && 'Casual entry' === (string) ( $oria_fas['access'] ?? '' ) ) {
+			if ( $oria_fas && null !== ( $oria_fas['compare'] ?? null ) && 'yes' === (string) ( $oria_fas['casual'] ?? '' ) && '' !== (string) ( $oria_fas['price_text'] ?? '' ) ) {
 				$oria_price_txt = trim( (string) $oria_fas['price_text'] . ( '' !== (string) ( $oria_fas['product'] ?? '' ) ? ' · ' . $oria_fas['product'] : '' ) . ( '' !== (string) ( $oria_fas['duration'] ?? '' ) ? ', ' . $oria_fas['duration'] : '' ) );
 				break;
 			}
