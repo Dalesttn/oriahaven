@@ -1468,53 +1468,75 @@
     "cat:creative-workshops": {
       "city": "perth",
       "checked": "2026-10-13",
-      "basis": "prices published by 8 Perth pottery studios on their own websites or booking pages",
-      "snapshot": "Taster classes from $80",
-      "venues": 8,
+      "basis": "prices published by 21 Perth pottery studios, clubs and arts centres on their own websites or booking pages",
+      "snapshot": "Typical taster $120",
+      "venues": 21,
       "items": [
         {
-          "label": "One-off taster",
-          "value": "From $80",
-          "note": "Three hours on the wheel at ClayMake, Maylands. Six studios run a taster; range $80–$149.",
+          "label": "Typical taster",
+          "value": "$120",
+          "note": "Median one-off session at the 15 studios publishing one. Range $75–$179.",
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest taster",
+          "value": "$75",
+          "note": "Terraform Studio, Mandurah (firing $25 a piece extra). In the metro area: ClayMake, Maylands, $80 for three hours on the wheel.",
           "links": {
+            "Terraform Studio": "terraform-studio-mandurah",
             "ClayMake": "claymake-studio-maylands"
           },
           "group": "lead"
         },
         {
-          "label": "Beginner course",
-          "value": "$310–$600",
-          "note": "Four to eight weekly classes. Cheapest by the hour: Canning Arts Group, $345 for 24 hours (clay and firing extra), and Fremantle Arts Centre, $394 with clay included.",
-          "links": {
-            "Canning Arts Group": "canning-arts-group",
-            "Fremantle Arts Centre": "walyalup-fremantle-arts-centre-fremantle"
-          },
+          "label": "Typical course",
+          "value": "$395",
+          "note": "Four to eight weekly classes, median of 17 studios. Range $290–$999.",
           "group": "lead"
         },
         {
-          "label": "Ready to collect",
-          "value": "2–6 weeks",
-          "note": "Pieces are dried, fired and glazed after the class.",
-          "group": "lead"
+          "label": "Cheapest by the hour",
+          "value": "$14–$20",
+          "note": "Community clubs: Canning Arts Group, Fremantle Arts Centre, South of the River Potters’ Club, Perth Studio Potters, Midland Junction Arts Centre, Rockingham Ceramics Studio.",
+          "links": {
+            "Canning Arts Group": "canning-arts-group",
+            "South of the River Potters’ Club": "south-of-the-river-potters-club-alfred-cove",
+            "Perth Studio Potters": "perth-studio-potters-cottesloe"
+          },
+          "group": "detail"
+        },
+        {
+          "label": "For two",
+          "value": "From $254",
+          "note": "From Dust Studio’s Me + Friend session; Terraform’s Wine & Wheels $329; Not Yet Perfect’s couple ticket $375.",
+          "links": {
+            "From Dust Studio": "from-dust-studio-willetton",
+            "Not Yet Perfect": "not-yet-perfect-applecross"
+          },
+          "group": "detail"
+        },
+        {
+          "label": "Pottery painting",
+          "value": "$98",
+          "note": "Happy Hub Collective, Fremantle: the only paint-your-own studio on this page.",
+          "links": {
+            "Happy Hub Collective": "happy-hub-collective-fremantle"
+          },
+          "group": "detail"
         },
         {
           "label": "Open studio",
-          "value": "From $39/week",
-          "note": "Studio P, three-month minimum. ClayMake $105 a month; Hound Ceramics $220 a month.",
+          "value": "From $29/week",
+          "note": "Terraform Studio; Studio P $39 a week. Drop-in sessions $45 at Not Yet Perfect and Happy Hub Collective.",
           "links": {
             "Studio P": "studio-p-mount-hawthorn"
           },
           "group": "detail"
-        },
-        {
-          "label": "Booked out",
-          "value": "Weeks ahead",
-          "note": "On 13 October Studio P’s intro workshops were sold out to late November and Porch Ceramics’ October courses were full.",
-          "group": "detail"
         }
       ],
       "method": [
-        "One-off taster and beginner course prices as each studio publishes them; private bookings and kids’ classes are left out.",
+        "One-off taster and beginner course prices as each studio publishes them; one-on-one tuition, private bookings and kids’ classes are left out of the typical figures.",
+        "Per-hour figures divide a course price by its published hours of classes.",
         "Where a studio doesn't say something, it is counted as not stated -- never as no.",
         "Prices, inclusions and availability change. Check the studio’s own site before you book."
       ]
