@@ -69,6 +69,8 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 				<span class="osearch osearch--nav" id="navSearchList" data-oria-search-panel hidden></span>
 			</span>
 
+			<?php // The account moved out of the main menu (Phase 4); it lives here, beside the business links. ?>
+			<a class="topbar__link" href="<?php echo esc_url( is_user_logged_in() ? home_url( '/my-oria/' ) : home_url( '/my-oria/login/' ) ); ?>"><?php echo esc_html( is_user_logged_in() ? __( 'My Oria', 'oria' ) : __( 'Sign in', 'oria' ) ); ?></a>
 			<a class="topbar__link" href="<?php echo esc_url( home_url( '/claim/' ) ); ?>"><?php esc_html_e( 'Claim your business', 'oria' ); ?></a>
 
 			<a class="topbar__cta" href="<?php echo esc_url( home_url( '/list-your-practice/' ) ); ?>">
@@ -94,80 +96,65 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 				'menu_class'     => 'nav__links',
 				'fallback_cb'    => static function (): void {
 					// Sensible default until a menu is assigned in the admin.
+					/*
+					 * Five items (Phase 4, approved by Dale 13 Oct 2026):
+					 * Explore, This Weekend, Guides, Saved, For businesses.
+					 * Nothing was removed, only moved -- every old destination is
+					 * one level down here or in the footer, and every URL still
+					 * works. Each parent is a real link; a dropdown is never the
+					 * only way past it. The markup matches WordPress's own walker
+					 * (menu-item-has-children, ul.sub-menu) so CSS and JS work
+					 * the same whether this fallback or an admin menu renders.
+					 * Offers joins once the offers hub exists (Phase 5).
+					 */
+					$oria_saved = is_user_logged_in() ? home_url( '/my-oria/saved/' ) : home_url( '/saved/' );
 					echo '<ul class="nav__links">';
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Explore', 'oria' ) );
-					/*
-					 * Experiences carries a submenu. The markup matches what WordPress's
-					 * own walker emits for a nested menu item -- menu-item-has-children
-					 * on the li, ul.sub-menu inside -- so the CSS and the JS enhancement
-					 * work the same whether this fallback renders or an admin-built menu
-					 * does. The parent stays a real link to /practices/; opening the
-					 * panel is never the only way past it.
-					 */
+
 					echo '<li class="menu-item-has-children">';
-					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( function_exists( '\Oria\Core\PracticesIndex\url' ) ? \Oria\Core\PracticesIndex\url() : home_url( '/practices/' ) ), esc_html__( 'Experiences', 'oria' ) );
+					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Explore', 'oria' ) );
 					echo '<ul class="sub-menu">';
-					/*
-					 * Ask first: describing what you want is the shortest way in,
-					 * and browsing is what the rest of this list is for.
-					 *
-					 * "Wellness map" replaced "All experiences", which pointed at
-					 * PracticesIndex\url() -- the very same URL as its own parent
-					 * above it. The dropdown was carrying a duplicate link, and the
-					 * index is still one click away through that parent, so this
-					 * cost an entry point that was never really there.
-					 */
+					printf( '<li><a href="%s">%s</a></li>', esc_url( function_exists( '\Oria\Core\PracticesIndex\url' ) ? \Oria\Core\PracticesIndex\url() : home_url( '/practices/' ) ), esc_html__( 'All experiences', 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/ask/' ) ), esc_html__( 'Ask Oria', 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/wellness-map/' ) ), esc_html__( 'Wellness map', 'oria' ) );
-					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );
-					// Only once there is something to compare: an empty commercial page never reaches the menu.
 					if ( function_exists( '\Oria\Core\Retreats\published' ) && \Oria\Core\Retreats\published() ) {
 						printf( '<li><a href="%s">%s</a></li>', esc_url( \Oria\Core\Retreats\hub_url() ), esc_html__( 'Retreat escapes', 'oria' ) );
 					}
 					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
-					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
 					echo '</ul></li>';
-					/*
-					 * Discover: what to do at home, as opposed to Explore, which is
-					 * where to go. Two children now that the apps hub exists. The
-					 * parent still points at a real page rather than nowhere -- a top
-					 * level item is never a dead end -- and the apps hub is the
-					 * better destination of the two, being an index rather than a
-					 * single subject.
-					 */
+
+					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/this-weekend/' ) ), esc_html__( 'This Weekend', 'oria' ) );
+
 					echo '<li class="menu-item-has-children">';
-					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( get_post_type_archive_link( 'wellness_app' ) ?: home_url( '/apps/' ) ), esc_html__( 'Discover', 'oria' ) );
+					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Guides', 'oria' ) );
 					echo '<ul class="sub-menu">';
+					printf( '<li><a href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Best Of', 'oria' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( "What's On calendar", 'oria' ) );
 					printf( '<li><a href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'wellness_app' ) ?: home_url( '/apps/' ) ), esc_html__( 'Apps', 'oria' ) );
-					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Singing bowls', 'oria' ) );
-					// Wellness Trends: only once one is published, so the menu never
-					// sends anyone to an empty hub.
 					if ( function_exists( '\Oria\Core\Trends\published' ) && \Oria\Core\Trends\published() ) {
 						printf( '<li><a href="%s">%s</a></li>', esc_url( \Oria\Core\Trends\hub_url() ), esc_html__( 'Wellness Trends', 'oria' ) );
 					}
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Singing bowls', 'oria' ) );
 					echo '</ul></li>';
-					// Best Of: the editors' shortlists. A hub, not a dropdown, until
-					// there are enough guides for a second level to earn its place.
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Best Of', 'oria' ) );
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( "What's On", 'oria' ) );
-					// Work in Wellness: jobs, shifts, practitioners, and the employer's way in.
+
+					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( $oria_saved ), esc_html__( 'Saved', 'oria' ) );
+
+					echo '<li class="menu-item-has-children">';
+					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( home_url( '/claim/' ) ), esc_html__( 'For businesses', 'oria' ) );
+					echo '<ul class="sub-menu">';
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/claim/' ) ), esc_html__( 'Claim your listing', 'oria' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/list-your-practice/' ) ), esc_html__( 'List your practice', 'oria' ) );
 					if ( function_exists( '\Oria\Core\Work\list_url' ) ) {
-						echo '<li class="menu-item-has-children">';
-						printf( '<a class="nav__link" href="%s">%s</a>', esc_url( \Oria\Core\Work\list_url( 'jobs' ) ), esc_html__( 'Work', 'oria' ) );
-						echo '<ul class="sub-menu">';
+						printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/my-oria/recruit-post/?type=job' ) ), esc_html__( 'Post a job or shift', 'oria' ) );
 						printf( '<li><a href="%s">%s</a></li>', esc_url( \Oria\Core\Work\list_url( 'jobs' ) ), esc_html__( 'Find wellness jobs', 'oria' ) );
 						printf( '<li><a href="%s">%s</a></li>', esc_url( \Oria\Core\Work\list_url( 'shifts' ) ), esc_html__( 'Find casual shifts', 'oria' ) );
 						printf( '<li><a href="%s">%s</a></li>', esc_url( \Oria\Core\Work\list_url( 'pros' ) ), esc_html__( 'Browse practitioners', 'oria' ) );
 						printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/my-oria/work-edit/' ) ), esc_html__( 'Create practitioner profile', 'oria' ) );
-						printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/my-oria/recruit-post/?type=job' ) ), esc_html__( 'Post a job', 'oria' ) );
-						printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/my-oria/recruit-post/?type=shift' ) ), esc_html__( 'Post a shift', 'oria' ) );
-						echo '</ul></li>';
 					}
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
-					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
-					// My Oria: the account. A guest is sent to sign in; the page
-					// cache only ever holds the guest version, which is correct.
-					printf( '<li><a class="nav__link nav__me" href="%s">%s</a></li>', esc_url( is_user_logged_in() ? home_url( '/my-oria/' ) : home_url( '/my-oria/login/' ) ), esc_html__( 'My Oria', 'oria' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( '/websites/' ) ), esc_html__( 'Website help', 'oria' ) );
+					echo '</ul></li>';
+
 					echo '</ul>';
 				},
 			)
@@ -234,37 +221,40 @@ if ( ! $oria_has_hero ) {
 			'container'      => 'div',
 			'container_class' => 'drawer__links',
 			'fallback_cb'    => static function (): void {
+				// The same five, with their children shown indented underneath:
+				// on a phone an accordion hiding a few items is a tap that buys nothing.
 				echo '<div class="drawer__links">';
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'listing' ) ?: home_url( '/directory/' ) ), esc_html__( 'Explore', 'oria' ) );
-				printf( '<a href="%s">%s</a>', esc_url( function_exists( '\Oria\Core\PracticesIndex\url' ) ? \Oria\Core\PracticesIndex\url() : home_url( '/practices/' ) ), esc_html__( 'Experiences', 'oria' ) );
-				// On a phone the children are simply shown, indented, under their
-				// parent: an accordion hiding a few items is a tap that buys nothing.
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( function_exists( '\Oria\Core\PracticesIndex\url' ) ? \Oria\Core\PracticesIndex\url() : home_url( '/practices/' ) ), esc_html__( 'All experiences', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/ask/' ) ), esc_html__( 'Ask Oria', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/wellness-map/' ) ), esc_html__( 'Wellness map', 'oria' ) );
-				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );
 				if ( function_exists( '\Oria\Core\Retreats\published' ) && \Oria\Core\Retreats\published() ) {
 					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( \Oria\Core\Retreats\hub_url() ), esc_html__( 'Retreat escapes', 'oria' ) );
 				}
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
-				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
-				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'wellness_app' ) ?: home_url( '/apps/' ) ), esc_html__( 'Discover', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( home_url( '/this-weekend/' ) ), esc_html__( 'This Weekend', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Guides', 'oria' ) );
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Best Of', 'oria' ) );
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/journeys/' ) ), esc_html__( 'Wellness Journeys', 'oria' ) );
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( "What's On calendar", 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( get_post_type_archive_link( 'wellness_app' ) ?: home_url( '/apps/' ) ), esc_html__( 'Apps', 'oria' ) );
-				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Singing bowls', 'oria' ) );
 				if ( function_exists( '\Oria\Core\Trends\published' ) && \Oria\Core\Trends\published() ) {
 					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( \Oria\Core\Trends\hub_url() ), esc_html__( 'Wellness Trends', 'oria' ) );
 				}
-				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Best Of', 'oria' ) );
-				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'event' ) ?: home_url( '/events/' ) ), esc_html__( "What's On", 'oria' ) );
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/singing-bowls/' ) ), esc_html__( 'Singing bowls', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( is_user_logged_in() ? home_url( '/my-oria/saved/' ) : home_url( '/saved/' ) ), esc_html__( 'Saved', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( home_url( '/claim/' ) ), esc_html__( 'For businesses', 'oria' ) );
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/claim/' ) ), esc_html__( 'Claim your listing', 'oria' ) );
 				if ( function_exists( '\Oria\Core\Work\list_url' ) ) {
-					printf( '<a href="%s">%s</a>', esc_url( \Oria\Core\Work\list_url( 'jobs' ) ), esc_html__( 'Work in wellness', 'oria' ) );
+					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/my-oria/recruit-post/?type=job' ) ), esc_html__( 'Post a job or shift', 'oria' ) );
 					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( \Oria\Core\Work\list_url( 'jobs' ) ), esc_html__( 'Find wellness jobs', 'oria' ) );
 					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( \Oria\Core\Work\list_url( 'shifts' ) ), esc_html__( 'Find casual shifts', 'oria' ) );
 					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( \Oria\Core\Work\list_url( 'pros' ) ), esc_html__( 'Browse practitioners', 'oria' ) );
-					printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/my-oria/recruit-post/?type=job' ) ), esc_html__( 'Post a job or shift', 'oria' ) );
 				}
-				printf( '<a href="%s">%s</a>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );
+				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/websites/' ) ), esc_html__( 'Website help', 'oria' ) );
+				printf( '<a href="%s">%s</a>', esc_url( is_user_logged_in() ? home_url( '/my-oria/' ) : home_url( '/my-oria/login/' ) ), esc_html( is_user_logged_in() ? __( 'My Oria', 'oria' ) : __( 'Sign in', 'oria' ) ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/about/' ) ), esc_html__( 'About', 'oria' ) );
-				printf( '<a href="%s">%s</a>', esc_url( is_user_logged_in() ? home_url( '/my-oria/' ) : home_url( '/my-oria/login/' ) ), esc_html__( 'My Oria', 'oria' ) );
 				echo '</div>';
 			},
 		)
