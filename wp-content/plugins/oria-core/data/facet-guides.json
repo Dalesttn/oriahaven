@@ -889,6 +889,45 @@
         }
       ],
       "description": "Compare {count} places for Bowen therapy in Perth: what a session involves, how long it runs and what it costs where published, checked on each practice's site."
+    },
+    "pottery": {
+      "phrase": "Pottery Classes",
+      "intro": [
+        "{count} studios in Perth teach pottery to adults, and the first choice is wheel or hand-building. On the wheel you throw a pot on a spinning wheel, which is harder than it looks and the part most people come to try. Hand-building means pinching, coiling and slab work at a table: slower, and more forgiving. Most studios here teach both.",
+        "The easiest start is a one-off taster, $80 to $149 for a single session. ClayMake in Maylands runs three hours on the wheel for $80, Studio P in Mount Hawthorn an introductory wheel workshop for $95, Perth Pottery Co a 90-minute sip-and-pot for $95, Porch Ceramics a two-hour group wheel lesson for $120, Winterwares a make-a-mug class for $145 and Hound Ceramics three hours on the wheel for $149. What you make is fired and ready to collect two to six weeks later; most include glazing, but ClayMake’s casual session includes a bisque firing only.",
+        "To learn properly, a course of four to eight weekly classes costs $310 to $600. The cheapest by the hour are the community courses: Canning Arts Group’s eight three-hour classes for $345 ($310 for members, with clay and firing extra) and Fremantle Arts Centre’s eight-week wheel course for $394, a bag of clay included. Private studios charge more per hour but include materials and firing.",
+        "Book well ahead. On 13 October, Studio P’s intro workshops were sold out until the end of November, Porch Ceramics’ October courses were full and most of Fremantle Arts Centre’s ceramics classes had sold out. Some studios set a minimum age: 16 at Hound Ceramics and for ClayMake’s membership, 18 at Fremantle Arts Centre."
+      ],
+      "faq": [
+        {
+          "q": "How much is a pottery class in Perth?",
+          "a": "A one-off taster is $80 to $149: $80 for three hours on the wheel at ClayMake in Maylands, $95 at Studio P and Perth Pottery Co, $120 at Porch Ceramics, $145 at Winterwares and $149 at Hound Ceramics. Beginner courses of four to eight weeks cost $310 to $600. Prices were checked on each studio’s own site in October 2026."
+        },
+        {
+          "q": "Should I start on the wheel or with hand-building?",
+          "a": "The wheel is what most beginners want to try, and most tasters here are wheel sessions. Hand-building (pinching, coiling, slabs) is slower and more forgiving, and suits a relaxed one-off such as Winterwares’ make-a-mug class. Most studios teach both."
+        },
+        {
+          "q": "How long until I get my pottery back?",
+          "a": "Two to six weeks, because pieces are dried, fired and glazed after the class. Studio P and Winterwares say about three weeks, ClayMake about two (bisque firing only), and Hound Ceramics and Perth Pottery Co about six."
+        },
+        {
+          "q": "Are there pottery classes for couples in Perth?",
+          "a": "None of the studios on this page publishes a class priced for two. Book two places in a taster session; the group sessions at Porch Ceramics, Perth Pottery Co and Winterwares suit a pair."
+        },
+        {
+          "q": "Can I use a pottery studio on my own?",
+          "a": "Yes, with a membership once you can throw. Studio P’s is $39 a week (three-month minimum), ClayMake’s $105 a month or $15 to drop in for up to two hours, and Hound Ceramics’ $220 a month."
+        }
+      ],
+      "see_also": [
+        {
+          "path": "/explore/perth/creative-workshops/",
+          "label": "All creative workshops",
+          "line": "Painting and other hands-on classes"
+        }
+      ],
+      "description": "Compare {count} pottery classes in Perth: one-off wheel tasters from $80, beginner courses, what’s included and how far ahead they book out, checked on each studio’s site."
     }
   }
 }

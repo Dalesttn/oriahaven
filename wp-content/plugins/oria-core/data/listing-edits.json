@@ -872,5 +872,54 @@
   "fields": {
    "website": "https://www.perthdietitian.com.au/"
   }
+ },
+ {
+  "slug": "bodyscape-wellness-spa",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- its studio teaches prenatal classes (its own listing text: 'vinyasa, yin, prenatal and foundation classes') but carried only the specialty, so /explore/perth/yoga/pregnancy/ (which counts the service) missed it.",
+  "terms": {
+   "service": {
+    "add": [
+     "pregnancy-yoga"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "tamara-yoga-claremont",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- runs pregnancy yoga courses ('Pregnancy & kids yoga') with no pregnancy-yoga tag.",
+  "terms": {
+   "service": {
+    "add": [
+     "pregnancy-yoga"
+    ]
+   },
+   "specialty": {
+    "add": [
+     "pregnancy-yoga"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "annasha-day-spa",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- offers prenatal spa treatments, not yoga classes; the pregnancy-yoga specialty was wrong.",
+  "terms": {
+   "specialty": {
+    "remove": [
+     "pregnancy-yoga"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "perth-doula-services",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- a doula service (birth support), not a yoga class; the pregnancy-yoga specialty was wrong.",
+  "terms": {
+   "specialty": {
+    "remove": [
+     "pregnancy-yoga"
+    ]
+   }
+  }
  }
 ]
