@@ -8716,3 +8716,23 @@ article.is-spotlit {
 
 /* /this-weekend/ summary line: the weekend in one sentence, under the hero. */
 .wksum { max-width: 62ch; margin: 0; font-size: var(--fs-body); line-height: var(--lh-body); color: var(--text-soft); }
+
+/* The weekend billboard (page-this-weekend.php): a deep panel, the count set
+   huge, one tile per day, a gold stamp for free events. */
+.wkboard { position: relative; display: grid; gap: var(--s-5); padding: clamp(1.5rem, 4vw, 3rem); border-radius: var(--r-2xl); background: var(--deep); color: var(--text-on-deep); overflow: hidden; }
+.wkboard::after { content: ""; position: absolute; inset: auto -10% -60% auto; width: 60%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(201, 162, 75, .18), transparent 70%); pointer-events: none; }
+.wkboard__lead { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--s-2) var(--s-4); }
+.wkboard__kicker { flex-basis: 100%; margin: 0; font-size: var(--fs-micro); font-weight: 700; letter-spacing: var(--tr-micro, .12em); text-transform: uppercase; color: var(--gold); }
+.wkboard__big { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: .1em .3em; line-height: .9; }
+.wkboard__num { font-size: clamp(5rem, 16vw, 10rem); font-weight: 700; letter-spacing: -.05em; font-variant-numeric: tabular-nums; color: #fff; }
+.wkboard__word { font-family: var(--font-edit); font-style: italic; font-size: clamp(1.6rem, 4.5vw, 3rem); color: var(--text-on-deep); }
+.wkboard__free { margin: 0 0 .6rem; padding: .45rem 1rem; border-radius: var(--r-pill); background: var(--gold); color: var(--deep); font-size: var(--fs-sm); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; transform: rotate(-3deg); }
+.wkboard__days { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(4.75rem, 1fr)); gap: var(--s-2); }
+.wkboard__day { display: grid; gap: .15rem; min-height: 44px; padding: var(--s-3) var(--s-4); border: 1px solid rgba(255, 255, 255, .16); border-radius: var(--r-lg); color: #fff; text-decoration: none; transition: background var(--t-fast, .15s) ease, border-color var(--t-fast, .15s) ease; }
+.wkboard__day:hover { background: rgba(255, 255, 255, .07); border-color: rgba(255, 255, 255, .35); }
+.wkboard__day:focus-visible { outline: 2px solid var(--focus-on-deep, #fff); outline-offset: 2px; }
+.wkboard__daynum { font-size: clamp(2rem, 6vw, 3rem); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.wkboard__dayname { font-size: var(--fs-micro); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-on-deep-soft); }
+.wkboard__caption { position: relative; margin: 0; max-width: 62ch; font-size: var(--fs-sm); color: var(--text-on-deep-soft); }
+.wkday { scroll-margin-top: 1rem; }
+@media (prefers-reduced-motion: reduce) { .wkboard__day { transition: none; } }

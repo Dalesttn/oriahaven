@@ -298,23 +298,50 @@ get_template_part(
 
 <?php if ( $oria_count ) : ?>
 <section class="wrap section section--top-flush">
-	<p class="wksum">
-		<?php
-		$oria_split = array();
-		foreach ( $oria_by as $oria_dn => $oria_dl ) {
-			/* translators: 1: count, 2: day name */
-			$oria_split[] = sprintf( __( '%1$d on %2$s', 'oria' ), count( $oria_dl ), $oria_dn );
-		}
-		printf(
-			/* translators: 1: count, 2: date range, 3: per-day split, 4: free sentence */
-			esc_html__( '%1$d wellness events are on in Perth this weekend (%2$s): %3$s.%4$s', 'oria' ),
-			(int) $oria_count,
-			esc_html( $oria_range ),
-			esc_html( implode( ', ', $oria_split ) ),
-			$oria_free ? ' ' . esc_html( sprintf( /* translators: %d: free events */ _n( '%d of them is free.', '%d of them are free.', count( $oria_free ), 'oria' ), count( $oria_free ) ) ) : '' // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above
-		);
-		?>
-	</p>
+	<?php
+	/*
+	 * The weekend at a glance, as a billboard: the count as the headline,
+	 * one tile per day (each a jump to that day's list), and a stamp when
+	 * something is free. The full sentence stays underneath as the caption
+	 * -- it is the line search engines and AI answers quote.
+	 */
+	$oria_split = array();
+	foreach ( $oria_by as $oria_dn => $oria_dl ) {
+		/* translators: 1: count, 2: day name */
+		$oria_split[] = sprintf( __( '%1$d on %2$s', 'oria' ), count( $oria_dl ), $oria_dn );
+	}
+	?>
+	<div class="wkboard">
+		<div class="wkboard__lead">
+			<p class="wkboard__kicker"><?php echo esc_html( sprintf( /* translators: %s: date range */ __( 'This weekend · %s', 'oria' ), $oria_range ) ); ?></p>
+			<p class="wkboard__big" aria-hidden="true"><span class="wkboard__num"><?php echo esc_html( (string) (int) $oria_count ); ?></span> <span class="wkboard__word"><?php echo esc_html( _n( 'wellness event', 'wellness events', (int) $oria_count, 'oria' ) ); ?></span></p>
+			<?php if ( $oria_free ) : ?>
+				<p class="wkboard__free" aria-hidden="true"><?php echo esc_html( sprintf( /* translators: %d: free events */ _n( '%d free', '%d free', count( $oria_free ), 'oria' ), count( $oria_free ) ) ); ?></p>
+			<?php endif; ?>
+		</div>
+		<ul class="wkboard__days" aria-label="<?php esc_attr_e( 'Events by day', 'oria' ); ?>">
+			<?php foreach ( $oria_by as $oria_dn => $oria_dl ) : ?>
+				<li>
+					<a class="wkboard__day" href="#wk-<?php echo esc_attr( sanitize_title( (string) $oria_dn ) ); ?>">
+						<span class="wkboard__daynum"><?php echo esc_html( (string) count( $oria_dl ) ); ?></span>
+						<span class="wkboard__dayname"><?php echo esc_html( (string) $oria_dn ); ?></span>
+					</a>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+		<p class="wkboard__caption">
+			<?php
+			printf(
+				/* translators: 1: count, 2: date range, 3: per-day split, 4: free sentence */
+				esc_html__( '%1$d wellness events are on in Perth this weekend (%2$s): %3$s.%4$s', 'oria' ),
+				(int) $oria_count,
+				esc_html( $oria_range ),
+				esc_html( implode( ', ', $oria_split ) ),
+				$oria_free ? ' ' . esc_html( sprintf( /* translators: %d: free events */ _n( '%d of them is free.', '%d of them are free.', count( $oria_free ), 'oria' ), count( $oria_free ) ) ) : '' // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above
+			);
+			?>
+		</p>
+	</div>
 </section>
 <?php endif; ?>
 
@@ -323,7 +350,7 @@ get_template_part(
 		<div class="stack-lg">
 			<?php foreach ( $oria_days as $oria_day => $oria_list ) : ?>
 				<div>
-					<h2 class="h3 wkday">
+					<h2 class="h3 wkday" id="wk-<?php echo esc_attr( sanitize_title( gmdate( 'l', (int) strtotime( $oria_day ) ) ) ); ?>">
 						<?php echo esc_html( gmdate( 'l', (int) strtotime( $oria_day ) ) ); ?>
 						<span class="wkday__date"><?php echo esc_html( gmdate( 'j F', (int) strtotime( $oria_day ) ) ); ?></span>
 					</h2>
