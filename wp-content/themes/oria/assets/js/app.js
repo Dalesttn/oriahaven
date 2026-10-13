@@ -2059,6 +2059,22 @@
     asList(DATA.specialties).forEach(function (s) { specNames[s.id] = s.name; });
     asList(DATA.services).forEach(function (s) { svcNames[s.id] = s.name; });
     asList(DATA.audiences).forEach(function (a) { audNames[a.id] = a.name; });
+    /* Twins: a specialty and a service with the same name ("Remedial
+       massage" is both). The toolbar shows one checkbox for the pair
+       (directory-toolbar.php keeps whichever kind reaches more listings),
+       so ticking it must find listings tagged with EITHER term -- matching
+       only the kept one silently dropped every listing that carried just
+       the other. Built from the names, so aligning two labels is enough to
+       join a pair. */
+    var TWIN_SPEC = {}, TWIN_SVC = {};
+    (function () {
+      var byName = {};
+      Object.keys(specNames).forEach(function (id) { byName[String(specNames[id]).toLowerCase()] = id; });
+      Object.keys(svcNames).forEach(function (id) {
+        var spec = byName[String(svcNames[id]).toLowerCase()];
+        if (spec) { TWIN_SPEC[spec] = id; TWIN_SVC[id] = spec; }
+      });
+    })();
     DATA.regions.forEach(function (r) {
       regionNames[r.id] = r.name;
       r.suburbs.forEach(function (s) { suburbRegion[s.toLowerCase()] = r.id; });
@@ -2356,8 +2372,12 @@
       if (locked.city && l.city !== locked.city) return false;
       if (locked.suburb && l.suburb !== locked.suburb) return false;
       if (state.suburbs.length && state.suburbs.indexOf(l.suburb) === -1) return false;
-      if (state.spec.length && !(l.spec || []).some(function (s) { return state.spec.indexOf(s) > -1; })) return false;
-      if (state.svc.length && !(l.svc || []).some(function (s) { return state.svc.indexOf(s) > -1; })) return false;
+      if (state.spec.length && !state.spec.some(function (s) {
+        return (l.spec || []).indexOf(s) > -1 || (TWIN_SPEC[s] && (l.svc || []).indexOf(TWIN_SPEC[s]) > -1);
+      })) return false;
+      if (state.svc.length && !state.svc.some(function (s) {
+        return (l.svc || []).indexOf(s) > -1 || (TWIN_SVC[s] && (l.spec || []).indexOf(TWIN_SVC[s]) > -1);
+      })) return false;
       if (state.aud.length && !(l.aud || []).some(function (a) { return state.aud.indexOf(a) > -1; })) return false;
       if (state.price.length && state.price.indexOf(l.priceBand) === -1) return false;
       if (state.format.length) {
