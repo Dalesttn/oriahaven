@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 const META_STATS = '_oria_stats';
 const KEEP_DAYS  = 90;
-const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'offer', 'reel', 'next', 'cal', 'save', 'apply', 'empview' );
+const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'offer', 'offerview', 'reel', 'next', 'cal', 'save', 'apply', 'empview' );
 
 /**
  * Which counters each kind of page may carry. Trends to Try reuse the same
@@ -29,7 +29,11 @@ const TYPES      = array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'o
  * A listing never takes a trend's counter, or the other way round.
  */
 const TYPES_FOR = array(
-	PostTypes\LISTING => array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq' ),
+	// 'offer' (a click through to an offer) was added to TYPES on 3 Oct but
+	// never allowed here, so every offer click on a listing was dropped by
+	// the endpoint. 'offerview' is an offer card seen on screen, at most
+	// once per card per page view -- the pilot's offer views.
+	PostTypes\LISTING => array( 'view', 'web', 'tel', 'mail', 'book', 'dir', 'enq', 'offer', 'offerview' ),
 	PostTypes\TREND   => array( 'view', 'reel', 'next' ),
 	// An event answers a different question: did anyone look, did they go
 	// on to the organiser, and did they intend to turn up (calendar, save).
@@ -261,6 +265,7 @@ function render_metabox( \WP_Post $post ): void {
 		'enq'  => __( 'Enquiries received', 'oria' ),
 		'dir'  => __( 'Directions', 'oria' ),
 		'offer' => __( 'Offer clicks', 'oria' ),
+		'offerview' => __( 'Offer views', 'oria' ),
 	);
 	echo '<div class="oria-perf__grid">';
 	foreach ( $cells as $type => $label ) {

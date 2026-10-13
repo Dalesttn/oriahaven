@@ -105,7 +105,7 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					 * only way past it. The markup matches WordPress's own walker
 					 * (menu-item-has-children, ul.sub-menu) so CSS and JS work
 					 * the same whether this fallback or an admin menu renders.
-					 * Offers joins once the offers hub exists (Phase 5).
+					 * Offers (Phase 5) shows while the hub has a live offer.
 					 */
 					$oria_saved = is_user_logged_in() ? home_url( '/my-oria/saved/' ) : home_url( '/saved/' );
 					echo '<ul class="nav__links">';
@@ -124,6 +124,10 @@ $oria_img = esc_url( get_template_directory_uri() . '/assets/img' );
 					echo '</ul></li>';
 
 					printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( home_url( '/this-weekend/' ) ), esc_html__( 'This Weekend', 'oria' ) );
+					// Offers: only while there is at least one live offer, so the menu never sends anyone to an empty page.
+					if ( function_exists( '\Oria\Core\OffersHub\published' ) && \Oria\Core\OffersHub\published() ) {
+						printf( '<li><a class="nav__link" href="%s">%s</a></li>', esc_url( \Oria\Core\OffersHub\url() ), esc_html__( 'Offers', 'oria' ) );
+					}
 
 					echo '<li class="menu-item-has-children">';
 					printf( '<a class="nav__link" href="%s">%s</a>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Guides', 'oria' ) );
@@ -235,6 +239,9 @@ if ( ! $oria_has_hero ) {
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/' ) ), esc_html__( 'Compare experiences', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/compare/build/' ) ), esc_html__( 'Build your session', 'oria' ) );
 				printf( '<a href="%s">%s</a>', esc_url( home_url( '/this-weekend/' ) ), esc_html__( 'This Weekend', 'oria' ) );
+				if ( function_exists( '\Oria\Core\OffersHub\published' ) && \Oria\Core\OffersHub\published() ) {
+					printf( '<a href="%s">%s</a>', esc_url( \Oria\Core\OffersHub\url() ), esc_html__( 'Offers', 'oria' ) );
+				}
 				printf( '<a href="%s">%s</a>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Guides', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( get_post_type_archive_link( 'best_of' ) ?: home_url( '/best/' ) ), esc_html__( 'Best Of', 'oria' ) );
 				printf( '<a class="drawer__sub" href="%s">%s</a>', esc_url( home_url( '/journal/' ) ), esc_html__( 'Journal', 'oria' ) );

@@ -290,9 +290,25 @@ function picks( array $choose = array(), ?array $w = null ): array {
 			$rejected[] = sprintf( 'Offer on listing #%d is not live with a checked date', $offer_id );
 		}
 	}
+	/*
+	 * A paid promotion ticked for the newsletter takes the offer slot -- the
+	 * editor's own --offer choice still wins -- and is labelled "Promoted
+	 * offer", with the footer saying so. Only tick 'newsletter' on a
+	 * promotion when this send is actually planned and authorised.
+	 */
+	$promoted = false;
+	if ( ! $offer && function_exists( '\Oria\Core\Offers\promotion' ) ) {
+		foreach ( $offers as $row ) {
+			if ( \Oria\Core\Offers\promotion( (int) $row['id'], 'newsletter' ) ) {
+				$offer    = $row;
+				$promoted = true;
+				break;
+			}
+		}
+	}
 	$offer = $offer ?? ( $offers[0] ?? null );
 	if ( $offer ) {
-		$picks[] = array( 'kind' => 'offer', 'id' => (int) $offer['id'], 'slot' => __( 'A checked offer', 'oria' ), 'key' => 'offer', 'chosen' => (int) $offer['id'] === $offer_id, 'offer' => $offer['offer'] );
+		$picks[] = array( 'kind' => 'offer', 'id' => (int) $offer['id'], 'slot' => $promoted ? __( 'Promoted offer', 'oria' ) : __( 'A checked offer', 'oria' ), 'key' => $promoted ? 'offer-promoted' : 'offer', 'chosen' => (int) $offer['id'] === $offer_id, 'offer' => $offer['offer'], 'promoted' => $promoted );
 	} else {
 		$missing[] = 'A checked offer: no live offer with a checked date';
 	}
@@ -370,6 +386,16 @@ function facts( array $pick ): array {
 
 /* ---------------------------------------------------------------- render */
 
+/** Whether any pick in this draft is a paid promotion. */
+function has_promoted( array $built ): bool {
+	foreach ( (array) $built['picks'] as $p ) {
+		if ( ! empty( $p['promoted'] ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
 /** The email body: inline-styled, single column, readable at 320px. */
 function html( array $built ): string {
 	$picks = $built['picks'];
@@ -407,7 +433,7 @@ function html( array $built ): string {
 	}
 
 	$out .= '<p style="border-top:1px solid ' . $line . ';padding-top:16px;margin:0 0 8px;font-size:15px"><a href="' . esc_url( tag( home_url( '/this-weekend/' ), $f, 'all' ) ) . '" style="color:' . $ink . '">' . esc_html__( 'Everything on in Perth this weekend', 'oria' ) . ' &rarr;</a></p>';
-	$out .= '<p style="margin:0 0 16px;font-size:12px;color:' . $faint . '">' . esc_html__( 'Picked by Oria Haven; nobody pays to be in this email. Times and prices are the organisers’ to change, so check the booking page before you go.', 'oria' ) . '</p>';
+	$out .= '<p style="margin:0 0 16px;font-size:12px;color:' . $faint . '">' . esc_html( has_promoted( $built ) ? __( 'Picked by Oria Haven, except the promoted offer, which the business paid to place here and which we checked like the rest. Times and prices are the organisers’ to change, so check the booking page before you go.', 'oria' ) : __( 'Picked by Oria Haven; nobody pays to be in this email. Times and prices are the organisers’ to change, so check the booking page before you go.', 'oria' ) ) . '</p>';
 	// Klaviyo fills this tag with the recipient's own unsubscribe link.
 	$out .= '<p style="margin:0 0 24px;font-size:12px;color:' . $faint . '">' . esc_html__( 'You asked for this at oriahaven.com.au.', 'oria' ) . ' {% unsubscribe %}</p>';
 	return $out . '</div>';
@@ -430,7 +456,7 @@ function text( array $built ): string {
 		$out .= '  ' . tag( $x['url'], $f, (string) $pick['key'] ) . "\n";
 	}
 	$out .= "\n" . __( 'Everything on this weekend:', 'oria' ) . ' ' . tag( home_url( '/this-weekend/' ), $f, 'all' ) . "\n";
-	$out .= __( 'Picked by Oria Haven; nobody pays to be in this email. Check the booking page before you go.', 'oria' ) . "\n";
+	$out .= ( has_promoted( $built ) ? __( 'Picked by Oria Haven, except the promoted offer, which the business paid to place here. Check the booking page before you go.', 'oria' ) : __( 'Picked by Oria Haven; nobody pays to be in this email. Check the booking page before you go.', 'oria' ) ) . "\n";
 	return $out . '{% unsubscribe %}' . "\n";
 }
 

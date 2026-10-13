@@ -4145,6 +4145,30 @@
       } catch (err) { /* counting must never break a tap */ }
     });
 
+    /* Offer views: an offer card (template-parts/offer-card.php) counts once
+       per page view when at least half of it is on screen -- a card folded
+       inside a closed <details> is not rendered, so it is not seen until
+       somebody opens it. Site counter only ('offerview'); impressions would
+       swamp GA4, and the counter is what the promotions report reads. */
+    (function () {
+      var cards = document.querySelectorAll("[data-offer-view]");
+      if (!cards.length || !window.ORIA_TRACK || !navigator.sendBeacon || !window.IntersectionObserver) return;
+      var seen = {};
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          var id = parseInt(en.target.getAttribute("data-offer-view"), 10) || 0;
+          io.unobserve(en.target);
+          if (!id || seen[id]) return;
+          seen[id] = 1;
+          try {
+            navigator.sendBeacon(ORIA_TRACK.url, new Blob([JSON.stringify({ id: id, type: "offerview" })], { type: "application/json" }));
+          } catch (err) { /* counting must never break the page */ }
+        });
+      }, { threshold: 0.5 });
+      cards.forEach(function (c) { io.observe(c); });
+    })();
+
     /* Retreat affiliate links. The link itself is an ordinary anchor that
        works with or without this. What is reported is the offer id and
        where the card was -- never the tracking URL, never anything about

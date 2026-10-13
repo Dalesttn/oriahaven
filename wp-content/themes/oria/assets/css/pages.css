@@ -8531,6 +8531,29 @@ article.is-spotlit {
 .oh-offer-card__terms p { margin: .3rem 0 0; }
 .oh-offer-card__terms ul { margin: .3rem 0 0; padding-left: 1rem; display: grid; gap: .15rem; }
 .oh-offer-card__src { margin: .1rem 0 0; font-size: var(--fs-xs); color: #667166; }
+/* A price never breaks inside itself ("$22 / 0"); the basis beside it wraps instead. */
+.oh-offer-card__price { white-space: nowrap; }
+.oh-offer-card__promo { margin: 0 0 .2rem; font-size: var(--fs-micro, .7rem); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--featured, #8a6a1f); }
+.oh-offer-card--promoted { box-shadow: inset 0 0 0 1px var(--gold, #c9a24b); }
+.oh-offer-card__code { margin: .1rem 0 0; font-size: var(--fs-sm); color: var(--ink); }
+
+/* /offers/ hub (oria-offers.php) */
+.oh-offers-hub { display: grid; gap: var(--s-5); }
+.oh-offers-hub__head { display: grid; gap: var(--s-2); max-width: 46rem; }
+.oh-offers-hub__head .micro { margin: 0; }
+.oh-offers-hub__title { margin: 0; font-size: var(--fs-h1); line-height: var(--lh-tight); text-wrap: balance; }
+.oh-offers-hub__lede { margin: 0; color: var(--text-soft); }
+.oh-offers-hub__chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.oh-offers-hub__chip { display: inline-flex; align-items: center; gap: .4rem; min-height: 44px; padding: 0 1rem; border: 1px solid var(--line-strong); border-radius: var(--r-pill); color: var(--ink); text-decoration: none; font-size: var(--fs-sm); background: #fff; }
+.oh-offers-hub__chip span { color: var(--text-faint); }
+.oh-offers-hub__chip[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+.oh-offers-hub__chip[aria-current="page"] span { color: rgba(255,255,255,.75); }
+.oh-offers-hub__chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.oh-offers-hub__promo { display: grid; gap: var(--s-3); padding: var(--s-4); border-radius: var(--r-xl); background: var(--sand); }
+.oh-offers-hub__band-head { display: grid; gap: .25rem; }
+.oh-offers-hub__band-head h2, .oh-offers-hub__band-head p { margin: 0; }
+.oh-offers-hub__band-head p { color: var(--text-soft); font-size: var(--fs-sm); }
+.oh-offers-hub__empty { margin: 0; }
 
 .oh-offer-card--signup { grid-template-rows: auto auto auto auto 1fr; align-content: start; gap: .4rem; padding: 1.25rem; border-color: var(--deep); background: var(--deep); color: #F5EFE0; }
 .oh-offer-card--signup .micro { margin: 0; color: var(--gold-soft); }

@@ -71,10 +71,22 @@ function bootstrap(): void {
 	add_action( CRON, __NAMESPACE__ . '\sweep' );
 }
 
+/**
+ * Daily at 00:05 Perth time, so an offer that ended yesterday is gone (and
+ * its cached pages purged) minutes after midnight rather than whenever the
+ * site first happened to schedule the event. An event already scheduled at
+ * another time of day is moved once.
+ */
 function schedule(): void {
-	if ( ! wp_next_scheduled( CRON ) ) {
-		wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', CRON );
+	$next   = wp_next_scheduled( CRON );
+	$target = strtotime( wp_date( 'Y-m-d', time() + DAY_IN_SECONDS ) . ' 00:05:00 ' . wp_timezone_string() );
+	if ( $next && wp_date( 'H:i', $next ) === '00:05' ) {
+		return;
 	}
+	if ( $next ) {
+		wp_unschedule_event( $next, CRON );
+	}
+	wp_schedule_event( (int) $target, 'daily', CRON );
 }
 
 /** The live offer on one listing, or null. Theme\active_offer() is the one rule. */
@@ -145,7 +157,14 @@ function sweep(): array {
 			update_field( $f, '', $id );
 		}
 		delete_post_meta( $id, META );
+		do_action( 'litespeed_purge_post', $id );
 		$done[] = $id;
+	}
+	if ( $done ) {
+		// Category pages and the hub carry these cards too.
+		do_action( 'litespeed_purge_url', home_url( '/offers/' ) );
+		// Category pages carry offer cards too, and an offer ending is rare: purge all.
+		do_action( 'litespeed_purge_all' );
 	}
 	update_option( OPTION, array( 'at' => $today, 'cleared' => $done ), false );
 	return $done;
