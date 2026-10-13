@@ -17,73 +17,68 @@
      "rows": {
       "steps": {
        "3": {
-        "title": "Keep your details right",
-        "text": "Update your address, phone, website and prices on the free plan. The Claimed plan opens up the description, timetable, photos and booking link."
+        "title": "Make it yours",
+        "text": "Once you're verified, edit everything on your profile yourself: description, services, prices, hours, photos, offers and your booking link. It's all free."
        },
        "4": {
-        "title": "Receive the enquiries",
-        "text": "Enquiries come straight to your inbox. The Claimed plan also shows how many people viewed your profile, called, or clicked through to your site."
+        "title": "See what it sends you",
+        "text": "Enquiries come straight to your inbox, and your dashboard shows how many people viewed your profile, called, or clicked through to your site."
        }
       }
      }
     },
     {
      "layout": "pricing",
-     "match": "Free to be listed. Paid to make it yours.",
+     "match": "",
      "set": {
-      "heading": "Claiming is free. The paid plans add what you can do with it.",
-      "sub": "Every practice gets a free listing, written and checked by us. Claim it at no cost to keep your details current and receive enquiries. The Claimed and Featured plans add editing, photos, analytics and reach. Cancel any time — your listing returns to the free plan with everything you added kept."
+      "heading": "Claiming is free. Featured is the one paid plan.",
+      "sub": "Every practice gets a listing written and checked by us. Claim it at no cost and it's yours to run: edit every detail, add photos and offers, and see your numbers. Featured adds reach on top. Cancel any time and your listing stays claimed, with everything you added kept."
      },
-     "rows": {
-      "tiers": {
-       "1": {
+     "replace": {
+      "tiers": [
+       {
         "tier_label": "Free",
         "amount": "$0",
-        "suffix": "/ forever",
-        "blurb": "Written and checked by us. Claim it at no cost.",
-        "features": "Profile written and checked by us\nClaim it and keep your address, phone and prices current\nEnquiries straight to your inbox\nGoogle rating and reviews\nFound in every search and category page\nOne practitioner profile",
-        "cta_label": "Find your listing",
-        "cta_url": "/directory/",
-        "style": "default"
-       },
-       "2": {
-        "tier_label": "Claimed plan",
-        "amount": "$29",
-        "suffix": "/ month",
-        "blurb": "Everything free, plus full control of your profile.",
-        "features": "Edit every field yourself\nBooking link, timetable and packages\nUp to 4 gallery photos\nYour email shown on your profile\nSpecial offers on your profile and cards\nOpening hours and social links\nPerformance analytics\nVerified badge and date",
+        "suffix": "forever",
+        "blurb": "Claim it, and it's yours to run.",
+        "features": "Edit every field yourself, including the description\nServices, prices, hours and your booking link\nUp to 10 gallery photos\nYour email shown on your profile\nSpecial offers on your profile and cards\nSocial links and the Verified badge\nPerformance analytics: views, calls and clicks",
         "cta_label": "Start your claim",
         "cta_url": "#claimform",
         "style": "now"
        },
-       "3": {
-        "tier_label": "Featured plan",
-        "amount": "$79",
+       {
+        "tier_label": "Featured",
+        "amount": "$30",
         "suffix": "/ month",
-        "blurb": "Grow with the directory.",
-        "features": "Everything in the Claimed plan\nRun workshops & events — photos and booking links\nUnlimited gallery photos\nGold Featured badge\nPriority placement in directory and categories\nFeatured spots on the home and workshops pages",
+        "blurb": "Be seen first.",
+        "features": "Everything in Free\nRun workshops & events on What's On, with photos and booking links\nUnlimited gallery photos\nGold Featured badge\nPriority placement in the directory and category pages\nFeatured spots on the home and workshops pages",
         "cta_label": "Claim, then upgrade",
         "cta_url": "#claimform",
         "style": "default"
        }
-      }
+      ]
      }
     },
     {
      "layout": "faq",
      "match": "Before you ask.",
-     "rows": {
-      "items": {
-       "2": {
-        "answer": "No. The free listing stays free, and so does claiming it. The paid plans are optional and add editing, photos, analytics and placement on top."
-       }
-      }
-     },
-     "add_rows": {
+     "replace": {
       "items": [
        {
+        "question": "Why is my practice listed without me agreeing to it?",
+        "answer": "Because a directory with nothing in it helps nobody. We build listings from information you've already made public, write an original description, and mark it unclaimed until you take it over. One email removes it the same day."
+       },
+       {
+        "question": "Will you ever charge for the free listing?",
+        "answer": "No. The listing stays free, and so does claiming it and running it: editing, photos, offers and analytics are all included. The one paid plan, Featured, is optional and adds events and priority placement."
+       },
+       {
         "question": "Does claiming my listing cost anything?",
-        "answer": "No. Claiming is free and always will be. A claimed listing on the free plan lets you keep your address, phone, website and prices current and receive enquiries. The Claimed plan, $29 a month, is optional and adds full editing, photos and analytics."
+        "answer": "No. Claiming is free and always will be, and so is everything you do with it afterwards: your description, hours, services, prices, photos, booking link, offers and analytics. No card is needed. The one paid plan, Featured at $30 a month, is optional and adds events, unlimited photos and priority placement."
+       },
+       {
+        "question": "Do you take a cut of bookings?",
+        "answer": "No. We link out to your own booking system and take nothing."
        }
       ]
      }
@@ -160,12 +155,12 @@
      "rows": {
       "steps": {
        "3": {
-        "title": "Keep your details right",
-        "text": "Update your address, phone, website and prices on the free plan. The Claimed plan opens up the description, timetable, photos and booking link."
+        "title": "Make it yours",
+        "text": "Once you're verified, edit everything on your profile yourself: description, services, prices, hours, photos, offers and your booking link. It's all free."
        },
        "4": {
-        "title": "Receive the enquiries",
-        "text": "Enquiries come straight to your inbox. The Claimed plan also shows how many people viewed your profile, called, or clicked through to your site."
+        "title": "See what it sends you",
+        "text": "Enquiries come straight to your inbox, and your dashboard shows how many people viewed your profile, called, or clicked through to your site."
        }
       }
      }
@@ -176,7 +171,7 @@
      "rows": {
       "items": {
        "1": {
-        "answer": "No. Browsing, searching and contacting a practice is free and always will be. Practitioners can claim their listing for free too. The Claimed plan ($29 a month) and Featured plan ($79 a month) are optional and add editing, photos, analytics and placement."
+        "answer": "No. Browsing, searching and contacting a practice is free and always will be. Practitioners can claim and run their listing for free too. The one paid plan, Featured at $30 a month, is optional and adds events and priority placement."
        },
        "4": {
         "answer": "Perth and Margaret River, for now. The platform is built to add other places later."

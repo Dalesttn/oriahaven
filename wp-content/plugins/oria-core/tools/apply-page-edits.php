@@ -133,6 +133,38 @@ foreach ( $data['pages'] as $page ) {
 			}
 		}
 
+		// --- whole repeaters replaced -------------------------------------
+		// For a list whose length changes (three price cards becoming two):
+		// row-number edits plus a delete would hit a different row on a
+		// second run, so the list is written whole and compared whole.
+		// Only for repeaters of plain text -- never one holding a form.
+		foreach ( (array) ( $edit['replace'] ?? array() ) as $rep => $new_rows ) {
+			$count   = (int) get_post_meta( $post->ID, $meta . $rep, true );
+			$current = array();
+			for ( $j = 0; $j < $count; $j++ ) {
+				$one = array();
+				foreach ( array_keys( (array) ( $new_rows[0] ?? array() ) ) as $field ) {
+					$one[ $field ] = trim( (string) get_post_meta( $post->ID, "{$meta}{$rep}_{$j}_{$field}", true ) );
+				}
+				$current[] = $one;
+			}
+			$wanted = array_map( static fn( $r ) => array_map( static fn( $v ) => trim( (string) $v ), (array) $r ), (array) $new_rows );
+			if ( $current === $wanted ) {
+				continue;
+			}
+			$changes++;
+			printf(
+				"  %-12s replace %s\n      before: %s\n      after:  %s\n",
+				$layout,
+				$rep,
+				implode( ' | ', array_map( static fn( $r ) => $short( implode( ' ', array_slice( $r, 0, 2 ) ) ), $current ) ) ?: '(empty)',
+				implode( ' | ', array_map( static fn( $r ) => $short( implode( ' ', array_slice( $r, 0, 2 ) ) ), $wanted ) )
+			);
+			if ( $apply ) {
+				update_sub_field( array( 'sections', $n, $rep ), array_values( (array) $new_rows ), $post->ID );
+			}
+		}
+
 		// --- new repeater rows -------------------------------------------
 		foreach ( (array) ( $edit['add_rows'] ?? array() ) as $rep => $new_rows ) {
 			$count = (int) get_post_meta( $post->ID, $meta . $rep, true );

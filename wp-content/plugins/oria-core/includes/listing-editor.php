@@ -905,10 +905,11 @@ function plan( int $listing ): array {
 		}
 	}
 
+	// Claiming is free, so the only thing ever offered is Featured.
 	$upgrade = '';
-	if ( Tiers\CLAIMED !== $tier && Tiers\FEATURED !== $tier
+	if ( Tiers\FEATURED !== $tier
 		&& function_exists( '\Oria\Core\Billing\configured' ) && \Oria\Core\Billing\configured() ) {
-		$upgrade = \Oria\Core\Billing\pay_url( 'claimed', $listing, (string) wp_get_current_user()->user_email );
+		$upgrade = \Oria\Core\Billing\pay_url( 'featured', $listing, (string) wp_get_current_user()->user_email );
 	}
 
 	return array(
@@ -918,7 +919,7 @@ function plan( int $listing ): array {
 		'team'    => Tiers\team_limit( $listing ),
 		'locked'  => $locked,
 		'upgrade' => $upgrade,
-		'next'    => Tiers\CLAIMED === $tier ? (string) Tiers\FEATURED : ( Tiers\FEATURED === $tier ? '' : (string) Tiers\CLAIMED ),
+		'next'    => Tiers\FEATURED === $tier ? '' : (string) Tiers\FEATURED,
 	);
 }
 

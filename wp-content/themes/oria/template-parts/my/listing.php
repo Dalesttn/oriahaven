@@ -180,7 +180,7 @@ $oria_thumb = $oria_logo && wp_attachment_is_image( $oria_logo )
 			<h2 class="mylcard__h"><?php esc_html_e( 'The last 30 days', 'oria' ); ?></h2>
 
 			<?php if ( ! Tiers\allows( $oria_listing, 'analytics' ) ) : ?>
-				<p class="mylperf__none"><?php esc_html_e( 'See how many people find your profile, and what they do next, on the Claimed plan.', 'oria' ); ?></p>
+				<p class="mylperf__none"><?php esc_html_e( 'Your numbers appear here once your claim is approved. Claiming is free.', 'oria' ); ?></p>
 			<?php elseif ( $oria_views < 10 ) : ?>
 				<p class="mylperf__none"><?php esc_html_e( 'Your numbers will appear here once people start finding your profile. In the meantime, the list beside this is the fastest way to help them.', 'oria' ); ?></p>
 			<?php else : ?>

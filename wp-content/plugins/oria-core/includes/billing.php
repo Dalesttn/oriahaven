@@ -1,16 +1,17 @@
 <?php
 /**
- * Stripe billing for claimed and featured listings — Payment Links in,
- * webhooks out, no SDK and no card data anywhere near this site.
+ * Stripe billing for Featured listings — Payment Links in, webhooks out,
+ * no SDK and no card data anywhere near this site.
  *
  * The flow:
- *   1. Two recurring Payment Links live in Stripe (Claimed, Featured).
- *   2. The claim-approval email appends ?client_reference_id=L{id}-{tier}
- *      to each link, so Stripe tells us which listing was paid for.
+ *   1. One recurring Payment Link lives in Stripe: Featured. Claiming is
+ *      free (tiers.php), so approval alone makes a listing Claimed.
+ *   2. Upgrade links append ?client_reference_id=L{id}-featured, so Stripe
+ *      tells us which listing was paid for.
  *   3. Stripe calls /wp-json/oria/v1/stripe. checkout.session.completed
  *      activates the listing (claim_status = tier, verified_at = today);
- *      a cancelled or unpaid subscription lapses it back to unclaimed —
- *      which switches off every paid surface through the ownership rules.
+ *      a cancelled or unpaid subscription drops it back to Claimed (free)
+ *      when it has an owner, which switches off the Featured surfaces.
  *
  * Webhook authenticity is proven with Stripe's signing scheme (HMAC-SHA256
  * over "timestamp.payload"), verified by hand — twenty lines beats a
@@ -69,10 +70,16 @@ function link_for( string $tier ): string {
 	return opt( 'featured' === $tier ? 'stripe_link_featured' : 'stripe_link_claimed' );
 }
 
-/** Billing is live once both links and the webhook secret exist. */
+/**
+ * Billing is live once the Featured link and the webhook secret exist.
+ *
+ * Featured is the only paid plan. The Claimed link is no longer required
+ * or offered anywhere: claiming is free, so a site with only a Featured
+ * link is fully configured. A payment that still arrives on an old Claimed
+ * link is honoured by the webhook all the same.
+ */
 function configured(): bool {
 	return '' !== webhook_secret()
-		&& '' !== link_for( 'claimed' )
 		&& '' !== link_for( 'featured' );
 }
 
@@ -245,7 +252,7 @@ function activate( array $session ): void {
 	);
 }
 
-/** A dead subscription → back to unclaimed; the paid wall does the rest. */
+/** A dead subscription → back to the free Claimed plan; the paid wall does the rest. */
 function lapse( string $subscription_id ): void {
 	if ( '' === $subscription_id ) {
 		return;
@@ -266,17 +273,20 @@ function lapse( string $subscription_id ): void {
 	}
 	$listing_id = (int) $posts[0];
 
+	// Claiming is free, so an owner keeps the Claimed plan; only a listing
+	// nobody owns goes back to unclaimed.
+	$owned = (int) get_post_meta( $listing_id, 'claimed_by', true ) > 0;
 	if ( function_exists( 'update_field' ) ) {
-		update_field( 'claim_status', 'unclaimed', $listing_id );
+		update_field( 'claim_status', $owned ? 'claimed' : 'unclaimed', $listing_id );
 	}
 	delete_post_meta( $listing_id, '_stripe_subscription_id' );
 
 	owner_mail(
 		$listing_id,
-		__( 'Your listing subscription has ended — Oria Haven', 'oria' ),
+		__( 'Your Featured subscription has ended — Oria Haven', 'oria' ),
 		sprintf(
 			/* translators: 1: listing title, 2: login url */
-			__( "The subscription for \"%1\$s\" has ended, so the listing is now on the free plan. It still shows as claimed by you, everything you added is kept, and nothing you added has been deleted, and you can keep your services, hours, prices, contact details and four photos up to date any time.\n\nLog in to manage it — or restart a plan from there to bring back your booking link, offers, timetable and the rest of your photos:\n%2\$s", 'oria' ),
+			__( "The Featured subscription for \"%1\$s\" has ended, so the listing is back on the free plan. It is still claimed by you and nothing you added has been deleted: you can keep editing your description, services, hours, prices, booking link, offers and up to ten photos any time, for free.\n\nWhat stops is the Featured extras: events on What's On, priority placement and photos beyond ten. Log in to manage the listing, or go Featured again from there:\n%2\$s", 'oria' ),
 			get_post_field( 'post_title', $listing_id, 'raw' ),
 			wp_login_url()
 		)
@@ -409,8 +419,8 @@ function bullet_list( array $features ): string {
 
 /**
  * The right nudge for where the owner is on the ladder, styled to be
- * unmissable: unpaid owners see both plans side by side; Claimed owners
- * see what Featured would add. Featured owners see nothing.
+ * unmissable: owners who are not Featured see what Featured would add;
+ * Featured owners see a way to manage or cancel.
  */
 function activation_notice(): void {
 	if ( ! configured() || ! Ownership\is_practitioner() ) {
@@ -445,48 +455,20 @@ function activation_notice(): void {
 	$gold_btn   = 'display:inline-block;background:#C9A24B;color:#082220;text-decoration:none;font-weight:600;font-size:14px;padding:12px 28px;border-radius:999px;';
 	$ghost_btn  = 'display:inline-block;background:transparent;color:#FFFFFF;border:1px solid #3F6E60;text-decoration:none;font-weight:600;font-size:14px;padding:11px 26px;border-radius:999px;';
 
-	if ( 'claimed' === $tier ) {
-		$featured = \Oria\Core\Tiers\summary( 'featured' );
-		echo $wrap_open // phpcs:ignore WordPress.Security.EscapeOutput -- built above from static strings.
-			. '<span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#C9A24B;font-weight:700;">'
-			. esc_html( sprintf( __( 'Featured · %s/month', 'oria' ), $featured['price'] ) ) . '</span>'
-			. '<h2 style="margin:8px 0 4px;color:#FFFFFF;font-size:22px;letter-spacing:-0.3px;">' . esc_html__( 'Ready to grow? Go Featured.', 'oria' ) . '</h2>'
-			. '<p style="margin:0;color:#A9C2B7;font-size:13px;">' . esc_html__( 'Your listing is claimed and live. Featured puts it in front of more people — and unlocks events.', 'oria' ) . '</p>'
-			. bullet_list( $featured['features'] ) // phpcs:ignore WordPress.Security.EscapeOutput
-			. '<p style="margin:20px 0 0;"><a href="' . esc_url( pay_url( 'featured', $listing, $email ) ) . '" style="' . $gold_btn . '">' // phpcs:ignore WordPress.Security.EscapeOutput
-			. esc_html__( 'Upgrade to Featured', 'oria' ) . ' &rarr;</a>'
-			. ( $has_billing
-				? ' <a href="' . esc_url( portal_url() ) . '" style="' . $ghost_btn . 'margin-left:10px;">' . esc_html__( 'Manage billing or cancel', 'oria' ) . '</a>'
-				: '' )
-			. '</p>'
-			. $wrap_close; // phpcs:ignore WordPress.Security.EscapeOutput
-		return;
-	}
-
-	$claimed  = \Oria\Core\Tiers\summary( 'claimed' );
+	// Claiming is free, so every owner who is not Featured is offered the
+	// one thing left to buy. There is no Claimed plan to activate.
 	$featured = \Oria\Core\Tiers\summary( 'featured' );
-	$card     = 'flex:1;min-width:280px;background:rgba(255,255,255,0.06);border:1px solid rgba(169,194,183,0.25);border-radius:12px;padding:20px 22px;';
-
-	echo $wrap_open // phpcs:ignore WordPress.Security.EscapeOutput
-		. '<h2 style="margin:0 0 4px;color:#FFFFFF;font-size:22px;letter-spacing:-0.3px;">' . esc_html__( 'Your claim is approved — choose a plan to unlock everything.', 'oria' ) . '</h2>'
-		. '<p style="margin:0 0 18px;color:#A9C2B7;font-size:13px;">' . esc_html__( 'Your listing is yours to correct for nothing — your services, hours, prices, amenities, parking and contact details. A plan is for what happens next: a booking link, offers, more photos and the numbers behind it. Everything you add is kept, even if you cancel.', 'oria' ) . '</p>'
-		. '<div style="display:flex;gap:16px;flex-wrap:wrap;">'
-
-		. '<div style="' . $card . '">'
-		. '<b style="font-size:15px;">' . esc_html( $claimed['label'] ) . '</b>'
-		. '<span style="float:right;color:#C8D9CF;">' . esc_html( $claimed['price'] ) . esc_html__( '/mo', 'oria' ) . '</span>'
-		. bullet_list( $claimed['features'] ) // phpcs:ignore WordPress.Security.EscapeOutput
-		. '<p style="margin:16px 0 0;"><a href="' . esc_url( pay_url( 'claimed', $listing, $email ) ) . '" style="' . $ghost_btn . '">' // phpcs:ignore WordPress.Security.EscapeOutput
-		. esc_html__( 'Activate Claimed', 'oria' ) . '</a></p></div>'
-
-		. '<div style="' . $card . 'border-color:#C9A24B;">'
-		. '<b style="font-size:15px;">' . esc_html( $featured['label'] ) . '</b>'
-		. '<span style="margin-left:8px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#C9A24B;font-weight:700;">' . esc_html__( 'Best for growth', 'oria' ) . '</span>'
-		. '<span style="float:right;color:#C8D9CF;">' . esc_html( $featured['price'] ) . esc_html__( '/mo', 'oria' ) . '</span>'
+	echo $wrap_open // phpcs:ignore WordPress.Security.EscapeOutput -- built above from static strings.
+		. '<span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#C9A24B;font-weight:700;">'
+		. esc_html( sprintf( __( 'Featured · %s/month', 'oria' ), $featured['price'] ) ) . '</span>'
+		. '<h2 style="margin:8px 0 4px;color:#FFFFFF;font-size:22px;letter-spacing:-0.3px;">' . esc_html__( 'Ready to grow? Go Featured.', 'oria' ) . '</h2>'
+		. '<p style="margin:0;color:#A9C2B7;font-size:13px;">' . esc_html__( 'Your listing is claimed and free to run. Featured is optional: it puts the listing in front of more people and unlocks events.', 'oria' ) . '</p>'
 		. bullet_list( $featured['features'] ) // phpcs:ignore WordPress.Security.EscapeOutput
-		. '<p style="margin:16px 0 0;"><a href="' . esc_url( pay_url( 'featured', $listing, $email ) ) . '" style="' . $gold_btn . '">' // phpcs:ignore WordPress.Security.EscapeOutput
-		. esc_html__( 'Go Featured', 'oria' ) . ' &rarr;</a></p></div>'
-
-		. '</div>'
+		. '<p style="margin:20px 0 0;"><a href="' . esc_url( pay_url( 'featured', $listing, $email ) ) . '" style="' . $gold_btn . '">' // phpcs:ignore WordPress.Security.EscapeOutput
+		. esc_html__( 'Upgrade to Featured', 'oria' ) . ' &rarr;</a>'
+		. ( $has_billing
+			? ' <a href="' . esc_url( portal_url() ) . '" style="' . $ghost_btn . 'margin-left:10px;">' . esc_html__( 'Manage billing or cancel', 'oria' ) . '</a>'
+			: '' )
+		. '</p>'
 		. $wrap_close; // phpcs:ignore WordPress.Security.EscapeOutput
 }

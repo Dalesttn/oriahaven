@@ -322,8 +322,8 @@ class Command {
 				'steps'           => array(
 					array( 'title' => 'Find your profile', 'text' => "Search your business name. If it's here, it'll be marked unclaimed." ),
 					array( 'title' => "Verify it's you", 'text' => 'We email the address on your website, or call the number on your Google listing.' ),
-					array( 'title' => "Keep your details right", 'text' => "Update your address, phone, website and prices on the free plan. The Claimed plan opens up the description, timetable, photos and booking link." ),
-					array( 'title' => "Receive the enquiries", 'text' => "Enquiries come straight to your inbox. The Claimed plan also shows how many people viewed your profile, called, or clicked through to your site." ),
+					array( 'title' => "Make it yours", 'text' => "Once you're verified, edit everything on your profile yourself: description, services, prices, hours, photos, offers and your booking link. It's all free." ),
+					array( 'title' => "See what it sends you", 'text' => "Enquiries come straight to your inbox, and your dashboard shows how many people viewed your profile, called, or clicked through to your site." ),
 				),
 			),
 			array(
@@ -377,8 +377,8 @@ class Command {
 				'steps'         => array(
 					array( 'title' => 'Find your profile', 'text' => 'Search your business name in the directory. Unclaimed profiles carry a grey badge.' ),
 					array( 'title' => "Verify it's you", 'text' => 'We email the address published on your own website, or call the number on your Google Business Profile.' ),
-					array( 'title' => "Keep your details right", 'text' => "Update your address, phone, website and prices on the free plan. The Claimed plan opens up the description, timetable, photos and booking link." ),
-					array( 'title' => "Receive the enquiries", 'text' => "Enquiries come straight to your inbox. The Claimed plan also shows how many people viewed your profile, called, or clicked through to your site." ),
+					array( 'title' => "Make it yours", 'text' => "Once you're verified, edit everything on your profile yourself: description, services, prices, hours, photos, offers and your booking link. It's all free." ),
+					array( 'title' => "See what it sends you", 'text' => "Enquiries come straight to your inbox, and your dashboard shows how many people viewed your profile, called, or clicked through to your site." ),
 				),
 			),
 			array(
@@ -400,7 +400,7 @@ class Command {
 				'heading'       => 'Before you ask.',
 				'items'         => array(
 					array( 'question' => 'Why is my practice listed without me agreeing to it?', 'answer' => "Because a directory with nothing in it helps nobody. We build listings from information you've already made public, write an original description, and mark it unclaimed until you take it over. One email removes it the same day." ),
-					array( 'question' => 'Will you ever charge for the free listing?', 'answer' => "No. The free listing stays free, and so does claiming it. The paid plans are optional and add editing, photos, analytics and placement on top." ),
+					array( 'question' => 'Will you ever charge for the free listing?', 'answer' => "No. The listing stays free, and so does claiming it and running it: editing, photos, offers and analytics are all included. The one paid plan, Featured, is optional and adds events and priority placement." ),
 					array( 'question' => "Does claiming my listing cost anything?", 'answer' => "No. Claiming is free and always will be, and so is everything you do with it afterwards - your hours, services, prices, photos, booking link, offers and analytics. The one paid plan, Featured at \$30 a month, is optional and adds events, unlimited photos and priority placement." ),
 					array( 'question' => 'Do you take a cut of bookings?', 'answer' => 'No. We link out to your own booking system and take nothing.' ),
 				),
@@ -409,10 +409,9 @@ class Command {
 				'acf_fc_layout' => 'pricing',
 				'background'    => 'sand',
 				'eyebrow'       => 'What it costs',
-				'heading'       => "Claiming is free. The paid plans add what you can do with it.",
-				'sub'           => "Every practice gets a free listing, written and checked by us. Claim it at no cost to keep your details current and receive enquiries. The Claimed and Featured plans add editing, photos, analytics and reach. Cancel any time — your listing returns to the free plan with everything you added kept.",
+				'heading'       => "Claiming is free. Featured is the one paid plan.",
+				'sub'           => "Every practice gets a listing written and checked by us. Claim it at no cost and it's yours to run: edit every detail, add photos and offers, and see your numbers. Featured adds reach on top. Cancel any time and your listing stays claimed, with everything you added kept.",
 				'tiers'         => array(
-					array( 'tier_label' => "Free", 'amount' => "\$0", 'suffix' => "/ forever", 'blurb' => "Written and checked by us. Claim it at no cost.", 'features' => "Profile written and checked by us\nClaim it and keep your address, phone and prices current\nEnquiries straight to your inbox\nGoogle rating and reviews\nFound in every search and category page\nOne practitioner profile", 'cta_label' => "Find your listing", 'cta_url' => "/directory/", 'style' => "default" ),
 					array( 'tier_label' => "Free", 'amount' => "\$0", 'suffix' => "forever", 'blurb' => "Claim it, and it is yours to run.", 'features' => "Edit every field yourself\nBooking link, timetable and packages\nUp to 10 gallery photos\nYour email shown on your profile\nSpecial offers on your profile and cards\nOpening hours and social links\nPerformance analytics\nVerified badge and date", 'cta_label' => "Start your claim", 'cta_url' => "#claimform", 'style' => "now" ),
 					array( 'tier_label' => "Featured", 'amount' => "\$30", 'suffix' => "/ month", 'blurb' => "Be seen first.", 'features' => "Everything in Free\nRun workshops & events — photos and booking links\nUnlimited gallery photos\nGold Featured badge\nPriority placement in directory and categories\nFeatured spots on the home and workshops pages", 'cta_label' => "Claim, then upgrade", 'cta_url' => "#claimform", 'style' => "default" ),
 				),

@@ -335,27 +335,27 @@ function handle_decision(): void {
 	/*
 	 * Approval links the owner to the listing, and costs nothing.
 	 *
-	 * With billing configured the owner lands on the free plan: claimed_by
-	 * is theirs and tiers.php decides what that lets them edit -- address,
-	 * contact details, prices, format. A paid tier switches on only when a
-	 * payment lands (the webhook stamps status and the verified date).
-	 * Without billing -- dev and free mode -- approval itself activates the
-	 * Claimed tier, and approval is verification.
+	 * Claiming is free (tiers.php), so approval itself activates the Claimed
+	 * plan whether or not Stripe billing is configured, and approval is
+	 * verification. Billing only ever sells Featured on top. This used to
+	 * leave billing-on owners "on the free plan until a payment lands",
+	 * which kept them out of the Claimed plan they had been told was free
+	 * and offered it back to them for $29 a month.
 	 */
-	$today = current_time( 'Y-m-d' );
-	$free  = ! \Oria\Core\Billing\configured();
+	$today   = current_time( 'Y-m-d' );
+	$keep_ft = 'featured' === (string) get_post_meta( $listing_id, 'claim_status', true );
 	if ( function_exists( 'update_field' ) ) {
 		update_field( 'claimed_by', (int) $user_id, $listing_id );
-		if ( $free ) {
+		if ( ! $keep_ft ) {
 			update_field( 'claim_status', 'claimed', $listing_id );
-			update_field( 'verified_at', $today, $listing_id );
 		}
+		update_field( 'verified_at', $today, $listing_id );
 	} else {
 		update_post_meta( $listing_id, 'claimed_by', (int) $user_id );
-		if ( $free ) {
+		if ( ! $keep_ft ) {
 			update_post_meta( $listing_id, 'claim_status', 'claimed' );
-			update_post_meta( $listing_id, 'verified_at', $today );
 		}
+		update_post_meta( $listing_id, 'verified_at', $today );
 	}
 
 	/*
@@ -370,11 +370,8 @@ function handle_decision(): void {
 	 */
 	\Oria\Core\Audit\note(
 		$listing_id,
-		$free
-			/* translators: %s: the new owner's name */
-			? sprintf( __( 'Claim approved. %s owns this listing and holds the Claimed tier, because billing is not configured.', 'oria' ), $name )
-			/* translators: %s: the new owner's name */
-			: sprintf( __( 'Claim approved. %s owns this listing, on the free plan until a payment lands.', 'oria' ), $name ),
+		/* translators: %s: the new owner's name */
+		sprintf( __( 'Claim approved. %s owns this listing on the free Claimed plan.', 'oria' ), $name ),
 		get_current_user_id()
 	);
 
@@ -417,9 +414,7 @@ function approved_body( int $listing_id, string $name, bool $new_account = false
 		/* translators: %s: login url */
 		: sprintf( __( "\n\nSign in with your existing account to manage it:\n%s", 'oria' ), wp_login_url() );
 
-	$body .= $billing
-		? __( "\n\nOn the free plan you can keep your address, phone, email, website, prices and session format up to date yourself. If anything else on the listing looks wrong, reply to this email and we'll fix it for you.", 'oria' )
-		: __( "\n\nYou can edit your description, services, photos, hours and contact details whenever you like. If anything looks wrong, reply to this email and we'll sort it out.", 'oria' );
+	$body .= __( "\n\nYou can edit your description, services, prices, hours, photos, booking link and contact details whenever you like, and see how many people view and contact you. If anything looks wrong, reply to this email and we'll sort it out.", 'oria' );
 
 	/*
 	 * The Pass, said once, to somebody who has just proved they own the

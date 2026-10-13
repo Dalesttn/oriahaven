@@ -225,16 +225,15 @@ function metabox( \WP_Post $post ): void {
 }
 
 function render_metabox( \WP_Post $post ): void {
-	// Performance stats are a Claimed-plan surface: free-plan owners see
-	// what they're missing, not the numbers.
+	// Performance stats come free with a claim. An owner whose listing is
+	// not on the Claimed plan yet (a claim still being set up) is told so,
+	// never sold it: claiming costs nothing.
 	if ( \Oria\Core\Ownership\is_practitioner() && ! \Oria\Core\Tiers\allows( $post->ID, 'analytics' ) ) {
-		$pay = function_exists( '\Oria\Core\Billing\pay_url' )
-			? \Oria\Core\Billing\pay_url( 'claimed', $post->ID, (string) wp_get_current_user()->user_email )
-			: '';
+		$pay = '';
 		echo '<div class="oria-perf__hero" style="text-align:center;padding:22px 16px;">';
 		echo '<div style="font-size:26px;line-height:1;">&#128274;</div>';
 		echo '<div class="oria-perf__hero-label" style="margin-top:10px;">' . esc_html__( 'Performance stats', 'oria' ) . '</div>';
-		echo '<p style="margin:6px 0 0;font-size:12px;color:#C8D9CF;line-height:1.5;">' . esc_html__( 'Profile views, website clicks, calls and booking clicks — see exactly what your listing sends you. Included in the Claimed plan.', 'oria' ) . '</p>';
+		echo '<p style="margin:6px 0 0;font-size:12px;color:#C8D9CF;line-height:1.5;">' . esc_html__( 'Profile views, website clicks, calls and booking clicks — see exactly what your listing sends you. Free once your claim is approved.', 'oria' ) . '</p>';
 		if ( '' !== $pay ) {
 			echo '<p style="margin:14px 0 2px;"><a href="' . esc_url( $pay ) . '" style="display:inline-block;background:#C9A24B;color:#082220;text-decoration:none;font-weight:600;font-size:13px;padding:9px 22px;border-radius:999px;">' . esc_html__( 'Upgrade to view', 'oria' ) . '</a></p>';
 		}

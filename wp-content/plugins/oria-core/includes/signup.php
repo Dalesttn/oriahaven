@@ -399,28 +399,17 @@ function live_body( \WP_Post $post, \WP_User $owner ): string {
 }
 
 /**
- * The two paid plans as plain text, with activation links when Stripe is
- * configured. Without billing set up the prices and features still show —
- * a dev environment shouldn't silently drop the pitch — but the email
- * points at a conversation instead of a dead link.
+ * The one paid plan as plain text, with an activation link when Stripe is
+ * configured. Claiming is free, so Featured is all there is to offer.
+ * Without billing set up the price and features still show — a dev
+ * environment shouldn't silently drop the pitch — but the email points at
+ * a conversation instead of a dead link.
  */
 function upgrade_block( int $listing_id, string $email ): string {
-	$claimed  = \Oria\Core\Tiers\summary( 'claimed' );
 	$featured = \Oria\Core\Tiers\summary( 'featured' );
 	$bullets  = static fn( array $t ): string => '• ' . implode( "\n• ", $t['features'] );
 
-	$out = "\n\n" . __( "WANT MORE FROM IT?\nTwo optional plans, cancel any time — the listing simply returns to its free form and everything you've added is kept.", 'oria' );
-
-	$out .= sprintf(
-		"\n\n%s — %s/month\n%s",
-		strtoupper( $claimed['label'] ),
-		$claimed['price'],
-		$bullets( $claimed )
-	);
-	$claimed_url = \Oria\Core\Billing\pay_url( 'claimed', $listing_id, $email );
-	if ( '' !== $claimed_url ) {
-		$out .= sprintf( "\n%s %s", __( 'Activate:', 'oria' ), $claimed_url );
-	}
+	$out = "\n\n" . __( "WANT MORE FROM IT?\nOne optional plan, cancel any time — the listing stays claimed and free, and everything you've added is kept.", 'oria' );
 
 	$out .= sprintf(
 		"\n\n%s — %s/month\n%s",
@@ -433,8 +422,8 @@ function upgrade_block( int $listing_id, string $email ): string {
 		$out .= sprintf( "\n%s %s", __( 'Activate:', 'oria' ), $featured_url );
 	}
 
-	if ( '' === $claimed_url && '' === $featured_url ) {
-		$out .= "\n\n" . __( 'Reply to this email if either sounds useful and we\'ll set it up.', 'oria' );
+	if ( '' === $featured_url ) {
+		$out .= "\n\n" . __( 'Reply to this email if it sounds useful and we\'ll set it up.', 'oria' );
 	}
 
 	return $out;
