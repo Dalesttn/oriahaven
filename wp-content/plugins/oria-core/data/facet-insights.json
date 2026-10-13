@@ -1221,6 +1221,195 @@
         "Where a venue doesn't say something, it is counted as not stated -- never as no.",
         "Prices and inclusions change. Check the venue's own site before you book."
       ]
+    },
+    "dietetics": {
+      "city": "perth",
+      "checked": "2026-10-13",
+      "basis": "fees published by 14 Perth dietitian practices on their own websites or booking pages",
+      "snapshot": "Typical first consult $210",
+      "venues": 14,
+      "items": [
+        {
+          "label": "Typical first consult",
+          "value": "$210",
+          "note": "Median of the 11 practices publishing an initial consultation fee. Range $160–$320.",
+          "group": "lead"
+        },
+        {
+          "label": "Typical follow-up",
+          "value": "$115",
+          "note": "Median of 11. Range $95–$220.",
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest first consult",
+          "value": "$160",
+          "note": "Nutrition Works, Lathlain. North of the river: Nutrition IQ, West Perth, $190.",
+          "links": {
+            "Nutrition Works": "nutrition-works-lathlain",
+            "Nutrition IQ": "nutrition-iq-west-perth"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "Medicare referrals",
+          "value": "9 of 14",
+          "note": "Say they take GP care-plan referrals; several also take eating-disorder plan referrals.",
+          "group": "detail"
+        },
+        {
+          "label": "Telehealth",
+          "value": "12 of 14",
+          "note": "Offer consults by video or phone.",
+          "group": "detail"
+        }
+      ],
+      "method": [
+        "Standard initial and follow-up dietitian consultations; where a practice charges by dietitian seniority, the lowest is used.",
+        "PROmotion Health is left out of the figures: its dietetic bookings go to Nutrition Nation.",
+        "Typical means the median of the venues publishing a price.",
+        "Where a venue doesn't say something, it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ]
+    },
+    "reiki": {
+      "city": "perth",
+      "checked": "2026-10-13",
+      "basis": "prices published by 20 Perth reiki practitioners on their own websites or booking pages",
+      "snapshot": "Typical hour $111",
+      "venues": 20,
+      "items": [
+        {
+          "label": "Typical hour",
+          "value": "$111",
+          "note": "Median of the 7 places publishing a 60-minute reiki-only session. Range $100–$130.",
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest hour",
+          "value": "$100",
+          "note": "BioSoul Naturopathy, Kalamunda, and Happy Mind Body and Soul, South Fremantle.",
+          "links": {
+            "BioSoul Naturopathy": "biosoul-naturopathy-kalamunda",
+            "Happy Mind Body and Soul": "happy-mind-body-soul"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "Distance reiki",
+          "value": "9",
+          "note": "Practitioners offering remote sessions at an agreed time.",
+          "group": "lead"
+        },
+        {
+          "label": "Longer sessions",
+          "value": "$150–$180",
+          "note": "90 to 105 minutes, often with a consultation added.",
+          "group": "detail"
+        },
+        {
+          "label": "Level 1 course",
+          "value": "$200–$495",
+          "note": "Where a course price is published; length and inclusions vary.",
+          "group": "detail"
+        }
+      ],
+      "method": [
+        "Reiki-only sessions for the typical figure; blended energy-healing sessions are left out.",
+        "Typical means the median of the venues publishing a price.",
+        "Where a venue doesn't say something, it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ]
+    },
+    "herbal-medicine": {
+      "city": "perth",
+      "checked": "2026-10-13",
+      "basis": "fees published by 22 Perth herbal medicine practices on their own websites or booking pages",
+      "snapshot": "Typical first consult $115",
+      "venues": 22,
+      "items": [
+        {
+          "label": "Typical first consult",
+          "value": "$115",
+          "note": "Median of the 15 Perth practices publishing an initial consultation fee. Range $50–$245.",
+          "group": "lead"
+        },
+        {
+          "label": "Chinese medicine",
+          "value": "About $70",
+          "note": "Median first consult at 5 TCM clinics; naturopaths' median is about $140.",
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest first consult",
+          "value": "$50",
+          "note": "A herbal consult at Baolin Acupuncture, Perth CBD. South of the river: TCM Health Care, Leeming, $70.",
+          "links": {
+            "Baolin Acupuncture": "baolin-acupuncture-chinese-medicine",
+            "TCM Health Care": "tcm-health-care-leeming"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "Herbs extra",
+          "value": "6 say so",
+          "note": "A week's Chinese herbal formula is about $25–$60 where published; naturopathic remedies about $65–$120.",
+          "group": "detail"
+        }
+      ],
+      "method": [
+        "Consultation fees only; herbs and remedies are shown separately.",
+        "Practices based outside Perth, or consulting Perth clients only online, are left out of the figures.",
+        "Typical means the median of the venues publishing a price.",
+        "Where a venue doesn't say something, it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ]
+    },
+    "barre": {
+      "city": "perth",
+      "checked": "2026-10-13",
+      "basis": "prices published by 5 Perth studios running barre, on their own websites or booking pages",
+      "snapshot": "Typical class $35",
+      "venues": 5,
+      "items": [
+        {
+          "label": "Typical casual class",
+          "value": "$35",
+          "note": "Median of 5 studios. Range $28–$39.",
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest class",
+          "value": "$28",
+          "note": "Pilates Fit Perth, Coogee.",
+          "links": {
+            "Pilates Fit Perth": "pilates-fit-perth-coogee"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "Intro offers",
+          "value": "From $59",
+          "note": "Two weeks at Empower Pilates Studio or Pilates Fit Perth; $79 for 21 days at Revere Pilates Studio.",
+          "links": {
+            "Empower Pilates Studio": "empower-pilates-studio-ellenbrook",
+            "Revere Pilates Studio": "revere-pilates"
+          },
+          "group": "detail"
+        },
+        {
+          "label": "Same price as Pilates",
+          "value": "5 of 5",
+          "note": "Every studio charges barre at its standard class price.",
+          "group": "detail"
+        }
+      ],
+      "method": [
+        "Casual (drop-in) class price; Revere publishes no single drop-in, so its five-pack price per class is used.",
+        "Typical means the median of the venues publishing a price.",
+        "Where a venue doesn't say something, it is counted as not stated -- never as no.",
+        "Prices and inclusions change. Check the venue's own site before you book."
+      ]
     }
   }
 }

@@ -682,6 +682,213 @@
         }
       ],
       "description": "Compare {count} places for lymphatic drainage massage in Perth: by hand or by machine, session length and what an hour costs, checked on each site."
+    },
+    "dietetics": {
+      "phrase": "Dietitians",
+      "intro": [
+        "{count} dietitians and dietitian practices in Perth are listed here. A dietitian is not the same as a nutritionist: an Accredited Practising Dietitian holds a university degree in dietetics and is credentialed by Dietitians Australia, and that credential is what lets them see you under a Medicare care plan.",
+        "Most specialise. Dietetic Gut Clinic works only on gut problems with FODMAP-trained dietitians; Nutrition Nation in Claremont focuses on fertility, PCOS and endometriosis; Intuitry takes a non-diet approach to eating-disorder recovery; Perth Performance Nutrition and Nutrition Works lean towards sport; and Katie Lenhoff Nutrition works mainly in kidney and heart nutrition. Twelve of the fourteen offer telehealth, so what a practice specialises in matters more than where it is.",
+        "A first consultation costs $160 to $320, and $210 is the middle of the 11 practices that publish one. Follow-ups are shorter and cheaper, $95 to $220 and typically about $115. Under a GP care plan, Medicare pays a rebate towards a limited number of allied health visits a year; nine practices here say they take those referrals, several take eating-disorder plan referrals too, and most list private health fund rebates.",
+        "Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much does a dietitian cost in Perth?",
+          "a": "A first consultation is $160 to $320, with $210 the middle price across the 11 practices that publish one. Follow-ups typically cost about $115. Nutrition Works in Lathlain is the cheapest first visit at $160. Prices were checked on each practice's own site or booking page in October 2026."
+        },
+        {
+          "q": "What's the difference between a dietitian and a nutritionist?",
+          "a": "An Accredited Practising Dietitian has a university degree in dietetics and is credentialed by Dietitians Australia. That credential is what Medicare and most health funds recognise. Nutritionist is a broader title with no single required qualification, so check what any practitioner holds before you book."
+        },
+        {
+          "q": "Can I see a dietitian on Medicare?",
+          "a": "With a care plan from your GP, Medicare pays a rebate towards a limited number of allied health visits a year, which can include a dietitian. Nine practices on this page say they take those referrals. You usually still pay a gap."
+        },
+        {
+          "q": "Can I see a dietitian online?",
+          "a": "Yes. Twelve of the fourteen practices on this page offer telehealth consults."
+        },
+        {
+          "q": "Which Perth dietitians work with PCOS, IBS or low FODMAP?",
+          "a": "PCOS is the most common specialty named, by eleven practices. For IBS and low FODMAP, Dietetic Gut Clinic works on nothing else, and ten other practices here name it too. Each listing shows the specialties the practice publishes."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "nutrition",
+          "facet": "sports-nutrition",
+          "label": "Sports nutrition",
+          "line": "For training and competition"
+        },
+        {
+          "category": "nutrition",
+          "facet": "gut-health",
+          "label": "Gut health",
+          "line": "Dietitians and nutritionists who focus on digestion"
+        }
+      ],
+      "description": "Compare {count} dietitians in Perth: what a first consult costs, who takes Medicare care-plan referrals, telehealth, and who specialises in PCOS, IBS or sport."
+    },
+    "reiki": {
+      "phrase": "Reiki",
+      "all_categories": true,
+      "intro": [
+        "{count} places in Perth offer reiki. In a session you lie clothed on a table in a quiet room while the practitioner rests their hands lightly on or just above you, usually for about an hour. Many combine it with other energy work, crystals or a short talk beforehand, so a session sold as energy healing may include reiki rather than be only reiki.",
+        "An hour of reiki costs $100 to $130 at most places, and $111 is the middle of the seven that publish a reiki-only hour. Longer sessions of 90 to 105 minutes, often with a consultation added, run $150 to $180. Nine practitioners also offer distance reiki, done remotely at an agreed time.",
+        "Several teach as well as treat. Level 1 courses on this page cost $200 to $495, a wide spread that reflects how long each course runs and what it includes. Most practitioners work alone, so there are fewer appointment times than at a clinic; several open on Saturdays.",
+        "Some of these practitioners' websites describe what their work does for particular conditions; Oria Haven doesn't repeat those claims. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much is a reiki session in Perth?",
+          "a": "$100 to $130 for an hour at most places, with $111 the middle price. Longer sessions of 90 to 105 minutes cost $150 to $180. BioSoul Naturopathy in Kalamunda and Happy Mind Body and Soul in South Fremantle charge $100 for an hour. Prices were checked on each practitioner's own site in October 2026."
+        },
+        {
+          "q": "What happens in a reiki session?",
+          "a": "You lie clothed on a treatment table while the practitioner places their hands lightly on or just above you, in a quiet room, usually for about an hour. Some begin with a short talk and some add crystals or other energy work."
+        },
+        {
+          "q": "What is distance reiki?",
+          "a": "A session done remotely at an agreed time, without you in the room. Nine practitioners on this page offer it."
+        },
+        {
+          "q": "Can I learn reiki in Perth?",
+          "a": "Yes. Several practitioners here teach reiki courses; Level 1 costs $200 to $495 where a price is published, and the spread reflects how long each course runs."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "energy",
+          "facet": "sound-healing",
+          "label": "Sound healing",
+          "line": "Another quiet, lying-down session"
+        },
+        {
+          "category": "energy",
+          "facet": "kinesiology",
+          "label": "Kinesiology",
+          "line": "Often offered by the same practitioners"
+        }
+      ],
+      "description": "Compare {count} reiki practitioners in Perth: what an hour costs, longer sessions, distance reiki and Level 1 courses, checked on each practitioner's site."
+    },
+    "herbal-medicine": {
+      "phrase": "Herbal Medicine",
+      "intro": [
+        "{count} practitioners in Perth prescribe herbal medicine, from three traditions: naturopaths, who mostly use Western herbs alongside diet advice; Chinese medicine practitioners, usually alongside acupuncture; and Ayurvedic practitioners. The tradition shapes the consultation as much as the herbs, so it's worth choosing that first.",
+        "A first consultation costs $50 to $245, and $115 is the middle of the 15 Perth practices that publish one. The traditions sit at different prices: Chinese medicine clinics charge least for the consult, about $70 for a first visit; naturopaths about $140; Ayurvedic practitioners $99 to $245. Follow-ups cost $30 to $125.",
+        "The herbs are usually extra. Six clinics say so outright: a week's Chinese herbal formula is about $25 to $60 at the two TCM clinics that publish it, and Cottesloe Naturopathic Clinic quotes about $65 to $120 for remedies. Ask what a typical prescription costs before you book. If you take prescription medicine, tell both the practitioner and your GP before you start.",
+        "Some of these practitioners' websites describe what their work does for particular conditions; Oria Haven doesn't repeat those claims. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much does a herbalist or naturopath cost in Perth?",
+          "a": "A first consultation is $50 to $245, with $115 the middle price across 15 practices. Chinese medicine clinics are cheapest for the consult, about $70; naturopaths about $140. Herbs are usually charged on top. Prices were checked on each practice's own site in October 2026."
+        },
+        {
+          "q": "Are the herbs included in the consultation fee?",
+          "a": "Usually not. Six clinics on this page say herbs or remedies are charged separately, from about $25 a week for a Chinese herbal formula to $65 to $120 for naturopathic remedies. Ask before you book."
+        },
+        {
+          "q": "What's the difference between naturopathic and Chinese herbal medicine?",
+          "a": "The tradition. Naturopaths mostly prescribe Western herbs, often with diet and lifestyle advice. Chinese medicine practitioners prescribe formulas from the Chinese pharmacopoeia, usually alongside acupuncture. Ayurveda is a third, Indian tradition."
+        },
+        {
+          "q": "Can I claim herbal medicine on my health fund?",
+          "a": "Many practices here list private health fund rebates, but cover depends on your fund, your level of extras and the practitioner's registration. Check with your fund before you book."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "natural",
+          "facet": "acupuncture",
+          "label": "Acupuncture",
+          "line": "Often in the same Chinese medicine clinics"
+        },
+        {
+          "category": "natural",
+          "facet": "naturopathy",
+          "label": "Naturopathy",
+          "line": "Herbs as part of a wider consult"
+        }
+      ],
+      "description": "Compare {count} herbal medicine practitioners in Perth: naturopath, Chinese medicine or Ayurveda, what a first consult costs and whether herbs are extra."
+    },
+    "barre": {
+      "phrase": "Barre Classes",
+      "all_categories": true,
+      "intro": [
+        "{count} studios in Perth run barre classes. Barre borrows from ballet: small, repeated movements holding a ballet barre, often with light hand weights, in a 45 to 50-minute class. Every studio on this page is a Pilates studio that runs barre on its timetable alongside Pilates, not a barre-only studio.",
+        "A casual barre class costs $28 to $39, and at every studio here it's the same price as their other classes: $28 at Pilates Fit Perth in Coogee, $30 at Essence Pilates in South Perth, about $35 in a five-pack at Revere Pilates Studio, $38 at Empower Pilates Studio in Ellenbrook and $39 at Self Love Club Pilates Studio in Como. Intro offers are the cheaper way in: $59 for two weeks at Empower and Pilates Fit, $79 for 21 days at Revere, $99 at Essence and Self Love Club.",
+        "Barre is usually one or two classes a week at each studio, not a daily fixture, so check the timetable before buying a pass for it. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much is a barre class in Perth?",
+          "a": "$28 to $39 casual, with $35 the middle price. Pilates Fit Perth in Coogee is the cheapest at $28. Intro offers start at $59 for two weeks. Prices were checked on each studio's own site in October 2026."
+        },
+        {
+          "q": "Is barre the same as Pilates?",
+          "a": "No, though every studio here teaches both. Barre takes its movements from ballet and uses a ballet barre; Pilates uses a mat or a reformer machine. At these studios a barre class costs the same as a Pilates one."
+        },
+        {
+          "q": "How often are barre classes on?",
+          "a": "Usually once or twice a week at each studio. Check the studio's timetable before you buy a pass for barre."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "fitness",
+          "facet": "reformer",
+          "label": "Reformer Pilates",
+          "line": "At the same studios"
+        },
+        {
+          "category": "fitness",
+          "facet": "mat-pilates",
+          "label": "Mat Pilates",
+          "line": "Often the same price as barre"
+        }
+      ],
+      "description": "Compare {count} barre classes in Perth: what a casual class and an intro offer cost, how long classes run and how often, checked on each studio's own site."
+    },
+    "bowen-therapy": {
+      "phrase": "Bowen Therapy",
+      "all_categories": true,
+      "intro": [
+        "{count} places in Perth offer Bowen therapy. It's a gentle hands-on technique: the practitioner makes small rolling moves over muscle and connective tissue, with short pauses between sets when they step back or leave the room. You stay lightly clothed, and sessions run 30 to 60 minutes.",
+        "Only two publish a price: $89 for 30 minutes at Pure Health and Wellness Clinic in Bassendean, and $110 for an hour at Silverdale Holistic Therapy in Lesmurdie, where a first session is $150. Perth Bowen Clinic and Sharon's Reflexology & Bowen Therapy take bookings online without a published price, and Joondalup Drive Therapeutic Massage offers 45-minute sessions.",
+        "Some of these practitioners' websites describe what their work does for particular conditions; Oria Haven doesn't repeat those claims. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much is Bowen therapy in Perth?",
+          "a": "Where it's published, $89 for 30 minutes at Pure Health and Wellness Clinic and $110 for an hour at Silverdale Holistic Therapy, with a $150 first session there. Checked on each practice's own site in October 2026."
+        },
+        {
+          "q": "What happens in a Bowen session?",
+          "a": "You lie on a table, lightly clothed, while the practitioner makes small rolling moves over muscle, then pauses — sometimes leaving the room for a minute or two — before the next set. Sessions run 30 to 60 minutes."
+        },
+        {
+          "q": "Can I claim Bowen therapy on my health fund?",
+          "a": "It depends on your fund and the practitioner. Pure Health and Wellness Clinic says it accepts all major health funds across its services; ask whether that covers Bowen before you book."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "bodywork",
+          "facet": "remedial-massage",
+          "label": "Remedial massage",
+          "line": "Firmer hands-on work, often claimable"
+        },
+        {
+          "category": "bodywork",
+          "facet": "reflexology",
+          "label": "Reflexology",
+          "line": "Another gentle hands-on therapy"
+        }
+      ],
+      "description": "Compare {count} places for Bowen therapy in Perth: what a session involves, how long it runs and what it costs where published, checked on each practice's site."
     }
   }
 }

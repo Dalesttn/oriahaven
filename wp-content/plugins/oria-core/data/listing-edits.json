@@ -768,5 +768,109 @@
     ]
    }
   }
+ },
+ {
+  "slug": "energise-natural-health",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- offers no reiki on its own site or booking page (checked 13 Oct 2026), so it should not appear on the reiki page.",
+  "terms": {
+   "service": {
+    "remove": [
+     "reiki"
+    ]
+   },
+   "specialty": {
+    "remove": [
+     "reiki"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "greenhaus-studio-claremont",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- offers no reiki on its own site or booking page (checked 13 Oct 2026), so it should not appear on the reiki page.",
+  "terms": {
+   "service": {
+    "remove": [
+     "reiki"
+    ]
+   },
+   "specialty": {
+    "remove": [
+     "reiki"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "mpg-pilates-mandurah",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- its timetable is mat and anti-gravity classes only, no barre (own site, checked 13 Oct 2026).",
+  "terms": {
+   "service": {
+    "remove": [
+     "barre"
+    ]
+   },
+   "specialty": {
+    "remove": [
+     "barre"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "the-pilates-warehouse-joondalup",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- barre is mentioned only in its FAQ; every scheduled class is reformer (own site and booking page, checked 13 Oct 2026).",
+  "terms": {
+   "service": {
+    "remove": [
+     "barre"
+    ]
+   },
+   "specialty": {
+    "remove": [
+     "barre"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "ellenbrook-pilates",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- no current barre class can be confirmed (site dated 2020, booking link dead); website added, found 13 Oct 2026.",
+  "fields": {
+   "website": "https://ellenbrookpilates.com.au/"
+  },
+  "terms": {
+   "service": {
+    "remove": [
+     "barre"
+    ]
+   },
+   "specialty": {
+    "remove": [
+     "barre"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "empower-pilates-studio-ellenbrook",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- listing had no website; its own site found 13 Oct 2026.",
+  "fields": {
+   "website": "https://www.empowerpilatesstudios.com.au/"
+  }
+ },
+ {
+  "slug": "perth-dexa-scan-subiaco",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- website pointed at /vo2max/, which is only offered at the CBD clinic; the Subiaco page is the right one (checked 13 Oct 2026).",
+  "fields": {
+   "website": "https://perthdexascan.com.au/subiaco/"
+  }
+ },
+ {
+  "slug": "essence-of-eating-fremantle",
+  "requested_by": "Oria Haven, 13 Oct 2026 -- essenceofeating.com.au has an expired security certificate and its pages redirect to perthdietitian.com.au, the same business (checked 13 Oct 2026).",
+  "fields": {
+   "website": "https://www.perthdietitian.com.au/"
+  }
  }
 ]

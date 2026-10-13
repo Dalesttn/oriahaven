@@ -722,6 +722,27 @@ function seo_title( $title ) {
 					$tries[] = sprintf( '%s — %s', $name, $suburb );
 				}
 			}
+
+			/*
+			 * The rating goes first when there is one worth showing. Listing
+			 * pages rank mostly for the business's own name -- "perth
+			 * ayurveda reviews", "ember bath house reviews" -- at positions
+			 * 5-10 behind the business's own site, and took almost no clicks
+			 * (GSC, Oct 2026): the searcher wants the reviews, and a title
+			 * that says "Massage & Bodywork in Subiaco" doesn't offer them.
+			 */
+			$stars = rating_phrase( (int) get_the_ID() );
+			if ( '' !== $stars ) {
+				$rated = array();
+				if ( '' !== $suburb && ! $repeats ) {
+					$rated[] = sprintf( '%s, %s: %s', $name, $suburb, $stars );
+				}
+				$rated[] = sprintf( '%s: %s', $name, $stars );
+				// Shorter forms for long names: "4.6★ (39 reviews)", then "4.6★".
+				$rated[] = sprintf( '%s: %s', $name, (string) preg_replace( '/ from ([\d,]+) .*$/u', ' ($1 reviews)', $stars ) );
+				$rated[] = sprintf( '%s: %s', $name, strtok( $stars, ' ' ) );
+				$tries   = array_merge( $rated, $tries );
+			}
 			$tries[] = $name;
 
 			foreach ( $tries as $try ) {
@@ -777,6 +798,30 @@ function category_name( int $id ): string {
 	return $practice instanceof \WP_Term ? wp_specialchars_decode( $practice->name ) : '';
 }
 
+/**
+ * "4.8★ from 158 Google reviews" for a listing's search title, or ''.
+ *
+ * Only from 4.0 and five reviews up. The title is the business's shopfront
+ * in someone else's search results; a 2.2 in it would do the business harm
+ * for a handful of reviews, and the full rating is on the page either way.
+ * Google ratings say so -- they are Google's, not ours.
+ */
+function rating_phrase( int $id ): string {
+	if ( ! function_exists( '\Oria\Theme\effective_rating' ) ) {
+		return '';
+	}
+	$r = \Oria\Theme\effective_rating( $id );
+	if ( (float) $r['rating'] < 4.0 || (int) $r['count'] < 5 ) {
+		return '';
+	}
+	return sprintf(
+		'%s★ from %s %s',
+		number_format( (float) $r['rating'], 1 ),
+		number_format( (int) $r['count'] ),
+		'google' === $r['source'] ? 'Google reviews' : 'reviews'
+	);
+}
+
 /** Just the suburb for a listing, for titles too long to carry the category. */
 /* What a search result shows before it truncates. */
 const TITLE_MAX = 61;
@@ -807,7 +852,15 @@ function entity_description( int $id ): string {
 	if ( '' === $text ) {
 		return 'listing' === get_post_type( $id ) ? listing_fallback_description( $id ) : '';
 	}
-	return snippet( wp_specialchars_decode( $text, ENT_QUOTES ) );
+	$text = wp_specialchars_decode( $text, ENT_QUOTES );
+	// Lead with the rating, for the same "…reviews" searches the title serves.
+	if ( 'listing' === get_post_type( $id ) ) {
+		$stars = rating_phrase( $id );
+		if ( '' !== $stars ) {
+			$text = sprintf( 'Rated %s. %s', str_replace( '★ from', ' from', $stars ), $text );
+		}
+	}
+	return snippet( $text );
 }
 
 /**
