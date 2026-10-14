@@ -11,6 +11,7 @@ get_header();
 
 // phpcs:disable WordPress.Security.NonceVerification.Recommended -- display state only.
 $oria_done   = isset( $_GET['signup'] ) && 'done' === $_GET['signup'];
+$oria_check  = isset( $_GET['signup'] ) && 'check' === $_GET['signup'];
 $oria_errors = array_filter( explode( ',', sanitize_text_field( wp_unslash( (string) ( $_GET['e'] ?? '' ) ) ) ) );
 $oria_key    = sanitize_key( (string) ( $_GET['k'] ?? '' ) );
 // phpcs:enable
@@ -36,6 +37,9 @@ $oria_error_text = array(
 	'photo_type'     => __( 'Photos must be image files — JPEG, PNG or WebP.', 'oria' ),
 	'photo_upload'   => __( 'One of the photos failed to upload — please try again.', 'oria' ),
 	'server'         => __( 'Something went wrong on our side — please try again in a minute.', 'oria' ),
+	'account_email_domain' => __( "That email address can't receive mail (or is a temporary inbox). Please use an address you check — it's where your listing updates and enquiries go.", 'oria' ),
+	'throttled'      => __( 'Too many sign-ups from here just now. Please try again in an hour.', 'oria' ),
+	'link'           => __( 'That confirmation link has expired or was already used. Fill in the form again and we\'ll send a fresh one.', 'oria' ),
 );
 
 $oria_practices = get_terms( array( 'taxonomy' => 'practice', 'hide_empty' => false ) );
@@ -98,7 +102,12 @@ $oria_plans = array(
 ?>
 
 <section class="wrap section section--top-flush">
-	<?php if ( $oria_done ) : ?>
+	<?php if ( $oria_check ) : ?>
+		<div class="card" style="max-width:44rem"><div class="card__body">
+			<h2 class="h3"><?php esc_html_e( 'Check your email to finish', 'oria' ); ?></h2>
+			<p style="margin-top:.6rem;color:var(--text-soft)"><?php esc_html_e( "We've sent you a link to confirm your email address. Click it and we'll set up your account and your listing straight away. The link works for 48 hours; if it hasn't arrived in a few minutes, check your spam folder.", 'oria' ); ?></p>
+		</div></div>
+	<?php elseif ( $oria_done ) : ?>
 		<div class="card" style="max-width:44rem"><div class="card__body">
 			<h2 class="h3"><?php esc_html_e( "You're registered 🎉", 'oria' ); ?></h2>
 			<p style="margin-top:.6rem;color:var(--text-soft)"><?php esc_html_e( "Check your inbox — there is a link in there to set your password. Once you are in, your dashboard is where you choose your category and suburb and add the address, services, prices, hours and photos. Your listing is reviewed and published within 24 hours.", 'oria' ); ?></p>

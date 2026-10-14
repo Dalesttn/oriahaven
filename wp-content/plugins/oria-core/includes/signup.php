@@ -34,6 +34,18 @@ const MAX_SERVICES = 5;
 const MAX_IMAGES   = 4;
 const MAX_BYTES    = 5 * 1024 * 1024;
 const MIMES        = array( 'image/jpeg', 'image/png', 'image/webp' );
+/** How long a "confirm your email" link stays valid. */
+const CONFIRM_HOURS = 48;
+/** Confirmation emails an hour from one visitor. */
+const THROTTLE = 3;
+/** Throwaway-inbox services: a listing owner needs an address that lasts. */
+const DISPOSABLE = array(
+	'mailinator.com', 'guerrillamail.com', 'guerrillamail.net', 'sharklasers.com', 'grr.la', '10minutemail.com', '10minutemail.net',
+	'tempmail.com', 'temp-mail.org', 'temp-mail.io', 'tempmailo.com', 'tempail.com', 'throwawaymail.com', 'yopmail.com', 'yopmail.net',
+	'getnada.com', 'nada.email', 'dispostable.com', 'maildrop.cc', 'mailnesia.com', 'trashmail.com', 'trashmail.de', 'fakeinbox.com',
+	'mintemail.com', 'mohmal.com', 'emailondeck.com', 'spamgourmet.com', 'mailcatch.com', 'moakt.com', 'tmail.ws', 'burnermail.io',
+	'mail.tm', 'mailpoof.com', 'inboxkitten.com', 'fakemail.net', 'discard.email', 'emailfake.com', 'luxusmail.org', 'tempr.email',
+);
 
 function bootstrap(): void {
 	// Signed in or not, the submission is processed. It used to bounce
@@ -43,6 +55,9 @@ function bootstrap(): void {
 	add_action( 'admin_post_nopriv_oria_signup', __NAMESPACE__ . '\handle' );
 	add_action( 'admin_post_oria_signup', __NAMESPACE__ . '\handle' );
 	add_action( 'transition_post_status', __NAMESPACE__ . '\live_email', 10, 3 );
+	// The link in the "confirm your email" message. Logged out by definition.
+	add_action( 'admin_post_nopriv_oria_signup_confirm', __NAMESPACE__ . '\confirm' );
+	add_action( 'admin_post_oria_signup_confirm', __NAMESPACE__ . '\confirm' );
 }
 
 function page_url(): string {
@@ -88,6 +103,114 @@ function handle(): void {
 		bounce( $errors, $in );
 	}
 
+	/*
+	 * A visitor confirms their email BEFORE anything is created. Bots were
+	 * registering with made-up addresses: every submission built an account
+	 * and a pending listing and emailed the admin, whatever the address. Now
+	 * the submission waits (CONFIRM_HOURS) and only the link in the
+	 * confirmation email creates the account, the listing and the admin
+	 * email -- an address nobody reads never gets that far, and nothing is
+	 * left behind to clean up. Somebody already signed in has a confirmed
+	 * email, so their second listing is created straight away as before.
+	 */
+	if ( $existing > 0 ) {
+		create( $in, $existing );
+	}
+	if ( ! deliverable( $in['account_email'] ) ) {
+		bounce( array( 'account_email_domain' ), $in );
+	}
+	if ( ! throttle_ok( $in['account_email'] ) ) {
+		bounce( array( 'throttled' ), $in );
+	}
+	$token = wp_generate_password( 32, false );
+	set_transient( 'oria_signup_pending_' . $token, $in, CONFIRM_HOURS * HOUR_IN_SECONDS );
+	confirm_email( $in, $token );
+	wp_safe_redirect( add_query_arg( 'signup', 'check', page_url() ) );
+	exit;
+}
+
+/**
+ * The link from the confirmation email: the stored submission becomes the
+ * account and the pending listing. One use; an expired or reused link says
+ * so rather than failing silently.
+ */
+function confirm(): void {
+	$token = preg_replace( '/[^A-Za-z0-9]/', '', (string) ( $_GET['t'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- the token is the credential.
+	$in    = '' !== $token ? get_transient( 'oria_signup_pending_' . $token ) : false;
+	if ( ! is_array( $in ) ) {
+		bounce( array( 'link' ) );
+	}
+	delete_transient( 'oria_signup_pending_' . $token );
+	// Somebody may have registered that address in the meantime.
+	if ( email_exists( (string) $in['account_email'] ) ) {
+		bounce( array( 'account_exists' ), $in );
+	}
+	create( $in, 0 );
+}
+
+/**
+ * Whether an address can receive mail at all: its domain has a mail server
+ * (or at least resolves), and it is not a known throwaway-inbox service.
+ * Deliberately lenient beyond that -- a real practice on an unusual domain
+ * must never be turned away.
+ */
+function deliverable( string $email ): bool {
+	$domain = strtolower( (string) substr( strrchr( $email, '@' ), 1 ) );
+	if ( '' === $domain ) {
+		return false;
+	}
+	if ( in_array( $domain, DISPOSABLE, true ) ) {
+		return false;
+	}
+	if ( function_exists( 'checkdnsrr' ) ) {
+		return checkdnsrr( $domain . '.', 'MX' ) || checkdnsrr( $domain . '.', 'A' );
+	}
+	return true;
+}
+
+/**
+ * At most THROTTLE confirmation emails an hour from one visitor, and three a
+ * day to one address -- so the form cannot be used to flood somebody's
+ * inbox. Keyed by hashes: no IP address or email is stored in the clear.
+ */
+function throttle_ok( string $email ): bool {
+	$ip_key   = 'oria_su_ip_' . md5( (string) ( $_SERVER['REMOTE_ADDR'] ?? '' ) . wp_salt() );
+	$mail_key = 'oria_su_em_' . md5( strtolower( $email ) . wp_salt() );
+	$ip_n     = (int) get_transient( $ip_key );
+	$mail_n   = (int) get_transient( $mail_key );
+	if ( $ip_n >= THROTTLE || $mail_n >= 3 ) {
+		return false;
+	}
+	set_transient( $ip_key, $ip_n + 1, HOUR_IN_SECONDS );
+	set_transient( $mail_key, $mail_n + 1, DAY_IN_SECONDS );
+	return true;
+}
+
+/** "Confirm your email to finish listing X." */
+function confirm_email( array $in, string $token ): void {
+	$link = add_query_arg( array( 'action' => 'oria_signup_confirm', 't' => $token ), admin_url( 'admin-post.php' ) );
+	send(
+		(string) $in['account_email'],
+		/* translators: %s: practice name */
+		sprintf( __( 'Confirm your email to list %s on Oria Haven', 'oria' ), (string) $in['practice_name'] ),
+		__( 'One click to finish', 'oria' ),
+		sprintf(
+			/* translators: 1: name, 2: practice name, 3: link, 4: hours */
+			__( "Hi %1\$s,\n\nThanks for listing %2\$s on Oria Haven. Please confirm this is your email address, and we'll set up your account and your listing:\n\n%3\$s\n\nThe link works for %4\$d hours. If you didn't ask to be listed, ignore this email: nothing has been created and you won't hear from us again.", 'oria' ),
+			(string) $in['account_name'],
+			(string) $in['practice_name'],
+			$link,
+			CONFIRM_HOURS
+		)
+	);
+}
+
+/**
+ * The account and the pending listing, and the two emails. Never returns.
+ *
+ * @param int $existing The signed-in owner's user id, or 0 for a new account.
+ */
+function create( array $in, int $existing ): void {
 	// --- The listing (pending: "approved within 24 hours"). --------------
 	$listing = wp_insert_post(
 		array(
