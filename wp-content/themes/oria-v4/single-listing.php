@@ -2031,7 +2031,10 @@ while ( have_posts() ) :
 	 * own band(); hidden when fewer than two products match, which is the
 	 * same "no padding a shelf" rule the category pages follow. */
 	$oria_prods = function_exists( '\Oria\Shop\Render\auto_products' ) ? \Oria\Shop\Render\auto_products( 3 ) : array();
-	$oria_shop  = count( $oria_prods ) >= 2 && function_exists( '\Oria\Shop\Render\band' ) ? \Oria\Shop\Render\band( $oria_prods ) : '';
+	$oria_shop  = count( $oria_prods ) >= 2 && function_exists( '\Oria\Shop\Render\band' )
+		// A gym's visitors train; "your practice" is yoga and meditation talk.
+		? \Oria\Shop\Render\band( $oria_prods, \Oria\Theme\is_gym( (int) $oria_id ) ? __( 'Products to support your training', 'oria' ) : '' )
+		: '';
 	?>
 	<?php if ( '' !== $oria_shop ) : ?>
 		<section class="wrap xp-shop" aria-label="<?php esc_attr_e( 'Products', 'oria' ); ?>"><?php echo $oria_shop; // phpcs:ignore WordPress.Security.EscapeOutput ?></section>
