@@ -345,8 +345,15 @@ function output(): void {
 		$graph = listing_schema( get_the_ID() );
 		$faq   = listing_faq_schema( (int) get_the_ID() );
 		if ( $graph && $faq ) {
-			// Same @graph, so the page stays one JSON-LD block.
-			$graph['@graph'][] = $faq;
+			/*
+			 * One JSON-LD block, with the business and its FAQ as SIBLINGS in
+			 * a top-level @graph. They used to be nested ("@graph" inside the
+			 * business node), which in JSON-LD makes the FAQ a named graph
+			 * belonging to the business -- not a FAQPage most parsers read.
+			 */
+			$context = $graph['@context'] ?? 'https://schema.org';
+			unset( $graph['@context'], $faq['@context'] );
+			$graph = array( '@context' => $context, '@graph' => array( $graph, $faq ) );
 		}
 	} elseif ( is_singular( 'event' ) ) {
 		$graph = event_schema( get_the_ID() );
@@ -521,11 +528,20 @@ function listing_schema( int $id ): ?array {
 		return null;
 	}
 
+	/*
+	 * The suburb is the DEEPEST area term. Since the area tree gained a city
+	 * level (city > region > suburb), "the first term with a parent" was
+	 * often the region, so addressLocality read "Perth Central" for a West
+	 * Perth gym. A listing filed under a region only gets no locality
+	 * rather than a region pretending to be one.
+	 */
 	$suburb = '';
+	$depth  = 1;
 	foreach ( wp_get_post_terms( $id, 'area' ) as $term ) {
-		if ( $term->parent ) {
+		$d = count( get_ancestors( $term->term_id, 'area', 'taxonomy' ) );
+		if ( $d > $depth ) {
+			$depth  = $d;
 			$suburb = wp_specialchars_decode( $term->name );
-			break;
 		}
 	}
 
