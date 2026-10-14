@@ -1502,6 +1502,7 @@ function words( int $post_id ): array {
 			'share'        => __( 'Share this spot', 'oria' ),
 			'similar'      => __( 'Nearby spots', 'oria' ),
 			'noun'         => __( 'spot', 'oria' ),
+			'who'          => '',
 			'contactless'  => '1',
 		);
 	}
@@ -1517,6 +1518,26 @@ function words( int $post_id ): array {
 			'share'        => __( 'Share this group', 'oria' ),
 			'similar'      => __( 'Similar groups', 'oria' ),
 			'noun'         => __( 'group', 'oria' ),
+			'who'          => __( 'organiser', 'oria' ),
+			'contactless'  => '',
+		);
+	}
+	/*
+	 * A gym is a gym. "Practice" reads as a clinic, and a boxing gym or a
+	 * strength studio called "the practice" sounds like a physio. Decided
+	 * per listing (is_gym()), because the Fitness category also holds
+	 * Pilates, barre and yoga studios, which keep the practice wording.
+	 */
+	if ( is_gym( $post_id ) ) {
+		return array(
+			'contact_head' => __( 'Book a first session', 'oria' ),
+			'claim_head'   => __( 'Do you run this gym?', 'oria' ),
+			'enquiry_note' => __( 'Enquiries go straight to the gym', 'oria' ),
+			'share'        => __( 'Share this gym', 'oria' ),
+			'similar'      => __( 'Similar gyms', 'oria' ),
+			'noun'         => __( 'gym', 'oria' ),
+			'who'          => __( 'gym', 'oria' ),
+			'book'         => __( 'Book a class or session', 'oria' ),
 			'contactless'  => '',
 		);
 	}
@@ -1528,6 +1549,8 @@ function words( int $post_id ): array {
 			'share'        => __( 'Share this practice', 'oria' ),
 			'similar'      => __( 'Similar practices', 'oria' ),
 			'noun'         => __( 'practice', 'oria' ),
+			'who'          => __( 'practice', 'oria' ),
+			'book'         => __( 'Book a practitioner', 'oria' ),
 			'contactless'  => '',
 		);
 	}
@@ -1544,8 +1567,60 @@ function words( int $post_id ): array {
 		'share'        => __( 'Share this place', 'oria' ),
 		'similar'      => __( 'Similar places', 'oria' ),
 		'noun'         => __( 'business', 'oria' ),
+		'who'          => __( 'business', 'oria' ),
 		'contactless'  => '',
 	);
+}
+
+/**
+ * Whether a listing is a gym, for the words its page uses (words()).
+ *
+ * Fitness has to be its primary category (or its only one, beside Senior
+ * Wellness). Then any of: its name says gym, fitness, boxing, CrossFit, F45
+ * or strength; its description calls it a gym; it offers boxing,
+ * functional or group fitness, CrossFit or weightlifting; or it offers both
+ * strength training and personal training. Not a gym, whatever else
+ * matches: an aquatic or leisure centre, and a martial-arts academy whose
+ * name does not say gym or boxing. A Pilates, barre or yoga studio matches
+ * none of it and keeps the practice wording.
+ */
+function is_gym( int $post_id ): bool {
+	static $memo = array();
+	if ( isset( $memo[ $post_id ] ) ) {
+		return $memo[ $post_id ];
+	}
+	$cats    = wp_get_post_terms( $post_id, 'practice', array( 'fields' => 'slugs' ) );
+	$cats    = is_wp_error( $cats ) ? array() : $cats;
+	$primary = (string) get_post_meta( $post_id, 'primary_practice', true );
+	$fitness = 'fitness' === $primary || ( '' === $primary && array( 'fitness' ) === array_values( array_diff( $cats, array( 'seniors' ) ) ) );
+	if ( ! $fitness ) {
+		return $memo[ $post_id ] = false;
+	}
+	$title = html_entity_decode( get_the_title( $post_id ), ENT_QUOTES, 'UTF-8' );
+	$about = wp_strip_all_tags( (string) get_post_field( 'post_excerpt', $post_id ) );
+	$terms = array();
+	foreach ( array( 'service', 'specialty' ) as $tax ) {
+		$t     = wp_get_post_terms( $post_id, $tax, array( 'fields' => 'slugs' ) );
+		$terms = array_merge( $terms, is_wp_error( $t ) ? array() : $t );
+	}
+	// A studio named for Pilates, yoga or barre is a studio, whatever its blurb says about a gym.
+	if ( preg_match( '/\b(pilates|yoga|barre)\b/i', $title ) ) {
+		return $memo[ $post_id ] = false;
+	}
+	if ( preg_match( '/\b(aquatic|leisure|swimming pool)\b/i', $title . ' ' . $about ) ) {
+		return $memo[ $post_id ] = false;
+	}
+	$named = (bool) preg_match( '/\b(gym|fitness|boxing|crossfit|f45|strength)\b/i', $title );
+	if ( in_array( 'martial-arts', $terms, true ) && ! preg_match( '/\b(gym|boxing)\b/i', $title ) ) {
+		return $memo[ $post_id ] = false;
+	}
+	if ( $named || preg_match( '/\bgym\b/i', $about ) ) {
+		return $memo[ $post_id ] = true;
+	}
+	if ( array_intersect( array( 'boxing', 'functional-fitness', 'group-fitness', 'crossfit', 'weightlifting', 'gym' ), $terms ) ) {
+		return $memo[ $post_id ] = true;
+	}
+	return $memo[ $post_id ] = in_array( 'strength-training', $terms, true ) && in_array( 'personal-training', $terms, true );
 }
 
 /**

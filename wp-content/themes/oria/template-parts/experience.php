@@ -124,8 +124,12 @@ if ( '' !== $ex_verified && 'unclaimed' !== $ex_status ) {
 		/* translators: %s: date */
 		: sprintf( __( 'Collected from the organiser’s public pages%s and not yet individually reviewed. Check current details with them before you go.', 'oria' ), '' !== $ex_date ? ' ' . sprintf( __( 'on %s', 'oria' ), $ex_date ) : '' );
 } else {
-	$ex_src_sum  = __( 'From public sources · not yet confirmed by the practice', 'oria' );
-	$ex_src_body = __( 'Gathered from public sources such as the practice’s website and Google listing, and checked by hand when it was listed. Check current session details with the practice before you go.', 'oria' );
+	$ex_who      = function_exists( '\Oria\Theme\words' ) && $ex_id ? (string) ( \Oria\Theme\words( $ex_id )['who'] ?? '' ) : '';
+	$ex_who      = '' !== $ex_who ? $ex_who : __( 'practice', 'oria' );
+	/* translators: %s: practice, gym or business */
+	$ex_src_sum  = sprintf( __( 'From public sources · not yet confirmed by the %s', 'oria' ), $ex_who );
+	/* translators: %s: practice, gym or business */
+	$ex_src_body = sprintf( __( 'Gathered from public sources such as the %1$s’s website and Google listing, and checked by hand when it was listed. Check current session details with the %1$s before you go.', 'oria' ), $ex_who );
 }
 
 $ex_one   = 1 === count( $ex_acts );

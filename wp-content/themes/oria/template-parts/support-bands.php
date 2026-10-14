@@ -56,8 +56,9 @@ if ( ! $oria_products && ! $oria_apps ) {
 			echo \Oria\Theme\support_head( // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside
 				array(
 					'id'    => 'supband-shop',
-					'title' => __( 'Products to support your practice', 'oria' ),
-					'desc'  => __( 'Useful things for your practice at home, chosen by hand.', 'oria' ),
+					// "Your practice" is the visitor's own (yoga, meditation); for fitness it is training.
+					'title' => ( $oria_term instanceof WP_Term && 'fitness' === $oria_term->slug ) ? __( 'Products to support your training', 'oria' ) : __( 'Products to support your practice', 'oria' ),
+					'desc'  => ( $oria_term instanceof WP_Term && 'fitness' === $oria_term->slug ) ? __( 'Useful things for training at home, chosen by hand.', 'oria' ) : __( 'Useful things for your practice at home, chosen by hand.', 'oria' ),
 					'url'   => home_url( '/shop/' ),
 					'label' => __( 'Shop all', 'oria' ),
 					'aria'  => __( 'Shop all wellness products', 'oria' ),

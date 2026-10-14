@@ -184,7 +184,8 @@ if ( 'link' === $oria_cl_mode ) {
 		<?php // The listing is named, never searched for: they arrived from it. ?>
 		<p class="odlg__for"><?php echo esc_html( $oria_cl_name ); ?></p>
 
-		<p class="odlg__intro"><?php esc_html_e( 'Verify your connection to this practice and take control of the information shown here. Claiming is free and no card is required.', 'oria' ); ?></p>
+		<?php $oria_cl_who = (string) ( $oria_cl_words['who'] ?? '' ) ?: __( 'practice', 'oria' ); ?>
+		<p class="odlg__intro"><?php echo esc_html( sprintf( /* translators: %s: practice, gym or business */ __( 'Verify your connection to this %s and take control of the information shown here. Claiming is free and no card is required.', 'oria' ), $oria_cl_who ) ); ?></p>
 
 		<?php
 		/*
@@ -195,7 +196,7 @@ if ( 'link' === $oria_cl_mode ) {
 		 */
 		?>
 		<ul class="odlg__gets">
-			<li><?php esc_html_e( 'Update practice details, services and contact information', 'oria' ); ?></li>
+			<li><?php echo esc_html( sprintf( /* translators: %s: practice, gym or business */ __( 'Update %s details, services and contact information', 'oria' ), $oria_cl_who ) ); ?></li>
 			<li><?php esc_html_e( 'Add or improve photos and profile content', 'oria' ); ?></li>
 			<li><?php esc_html_e( 'Keep the listing accurate for people deciding where to go', 'oria' ); ?></li>
 			<li><?php esc_html_e( 'See how many people found your profile and what they did next', 'oria' ); ?></li>

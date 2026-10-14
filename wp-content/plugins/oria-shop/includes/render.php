@@ -288,5 +288,9 @@ function card( array $p ): string {
 
 /** Automatic band for templates: resolves context, renders, or ''. */
 function auto_band( string $heading = '' ): string {
+	// A gym's visitors train; "your practice" is yoga and meditation talk.
+	if ( '' === $heading && is_singular( 'listing' ) && function_exists( '\Oria\Theme\is_gym' ) && \Oria\Theme\is_gym( (int) get_the_ID() ) ) {
+		$heading = __( 'Products to support your training', 'oria' );
+	}
 	return band( auto_products(), $heading );
 }

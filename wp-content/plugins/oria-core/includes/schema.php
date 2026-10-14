@@ -248,7 +248,8 @@ function listing_faq( int $id ): array {
 		}
 		$out[] = array(
 			'q' => sprintf( __( 'How do I book with %s?', 'oria' ), $name ),
-			'a' => sprintf( __( 'Directly with the practice, %s. Oria Haven takes no bookings for it and no commission on them.', 'oria' ), implode( __( ' or ', 'oria' ), $bits ) ),
+			/* translators: 1: practice, gym or business, 2: how to book */
+			'a' => sprintf( __( 'Directly with the %1$s, %2$s. Oria Haven takes no bookings for it and no commission on them.', 'oria' ), ( function_exists( '\Oria\Theme\words' ) ? (string) ( \Oria\Theme\words( $id )['who'] ?? '' ) : '' ) ?: __( 'practice', 'oria' ), implode( __( ' or ', 'oria' ), $bits ) ),
 		);
 	}
 

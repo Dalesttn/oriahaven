@@ -386,7 +386,7 @@ while ( have_posts() ) :
 	$oria_bring = trim( (string) get_field( 'what_to_bring', $oria_id ) );
 	$oria_mins  = (int) get_field( 'duration_min', $oria_id );
 	$oria_kinds = array(
-		'practice' => __( 'Book a practitioner', 'oria' ),
+		'practice' => (string) ( $oria_words['book'] ?? __( 'Book a practitioner', 'oria' ) ),
 		'place'    => __( 'Book a room or a slot', 'oria' ),
 		'spot'     => __( 'Turn up, nothing to book', 'oria' ),
 	);
@@ -659,8 +659,8 @@ while ( have_posts() ) :
 					echo esc_html(
 						$oria_verified
 							/* translators: %s: date */
-							? sprintf( __( 'Managed by the practice. Details confirmed by the owner on %s.', 'oria' ), mysql2date( 'j F Y', $oria_verified ) )
-							: __( 'Managed by the practice.', 'oria' )
+							? sprintf( /* translators: 1: practice, gym or business, 2: date */ __( 'Managed by the %1$s. Details confirmed by the owner on %2$s.', 'oria' ), ( $oria_words['who'] ?? __( 'practice', 'oria' ) ), mysql2date( 'j F Y', $oria_verified ) )
+							: sprintf( /* translators: %s: practice, gym or business */ __( 'Managed by the %s.', 'oria' ), ( $oria_words['who'] ?? __( 'practice', 'oria' ) ) )
 					);
 				}
 				?>
@@ -967,7 +967,7 @@ while ( have_posts() ) :
 							<h3 class="h3 xp-sub__title"><?php esc_html_e( "What they're good at", 'oria' ); ?></h3>
 							<div class="prose xp-prose"><?php echo wp_kses_post( wpautop( esc_html( $oria_good_for ) ) ); ?></div>
 							<?php if ( $oria_claimed_by ) : ?>
-								<p class="hint"><?php esc_html_e( 'Told to us by the practice.', 'oria' ); ?></p>
+								<p class="hint"><?php echo esc_html( sprintf( /* translators: %s: practice, gym or business */ __( 'Told to us by the %s.', 'oria' ), ( $oria_words['who'] ?? __( 'practice', 'oria' ) ) ) ); ?></p>
 							<?php endif; ?>
 						</div>
 					<?php endif; ?>
@@ -1078,7 +1078,7 @@ while ( have_posts() ) :
 									<li><span class="chip"><?php echo esc_html( $oria_cf['label'] ); ?></span></li>
 								<?php endforeach; ?>
 							</ul>
-							<p class="hint"><?php esc_html_e( 'Told to us by the practice. Reasons people book in — not a statement about what treatment achieves.', 'oria' ); ?></p>
+							<p class="hint"><?php echo esc_html( sprintf( /* translators: %s: practice, gym or business */ __( 'Told to us by the %s. Reasons people book in — not a statement about what treatment achieves.', 'oria' ), ( $oria_words['who'] ?? __( 'practice', 'oria' ) ) ) ); ?></p>
 						</div>
 					<?php endif; ?>
 
@@ -1090,7 +1090,7 @@ while ( have_posts() ) :
 									<li><span class="chip"><?php echo esc_html( $oria_rn['label'] ); ?></span></li>
 								<?php endforeach; ?>
 							</ul>
-							<p class="hint"><?php esc_html_e( 'Told to us by the practice.', 'oria' ); ?></p>
+							<p class="hint"><?php echo esc_html( sprintf( /* translators: %s: practice, gym or business */ __( 'Told to us by the %s.', 'oria' ), ( $oria_words['who'] ?? __( 'practice', 'oria' ) ) ) ); ?></p>
 						</div>
 					<?php endif; ?>
 				</div>
@@ -1119,7 +1119,7 @@ while ( have_posts() ) :
 				<?php $oria_sec++; ?>
 				<section class="xp-sec" id="timetable" aria-labelledby="xp-s<?php echo (int) $oria_sec; ?>">
 					<h2 class="h2 xp-sec__title" id="xp-s<?php echo (int) $oria_sec; ?>"><?php esc_html_e( 'Weekly timetable', 'oria' ); ?></h2>
-					<p class="xp-sec__hint"><?php esc_html_e( 'Published by the practice. Public holidays excepted — check before you travel.', 'oria' ); ?></p>
+					<p class="xp-sec__hint"><?php echo esc_html( sprintf( /* translators: %s: practice, gym or business */ __( 'Published by the %s. Public holidays excepted — check before you travel.', 'oria' ), ( $oria_words['who'] ?? __( 'practice', 'oria' ) ) ) ); ?></p>
 					<?php get_template_part( 'template-parts/listing-week', null, array( 'sessions' => $oria_week ) ); ?>
 				</section>
 			<?php endif; ?>
@@ -1220,7 +1220,7 @@ while ( have_posts() ) :
 							</div>
 						<?php endforeach; ?>
 					</div>
-					<p class="hint" style="margin-top:.6rem"><?php esc_html_e( 'Told to us by the practice.', 'oria' ); ?></p>
+					<p class="hint" style="margin-top:.6rem"><?php echo esc_html( sprintf( /* translators: %s: practice, gym or business */ __( 'Told to us by the %s.', 'oria' ), ( $oria_words['who'] ?? __( 'practice', 'oria' ) ) ) ); ?></p>
 				</section>
 			<?php endif; ?>
 
@@ -1300,7 +1300,7 @@ while ( have_posts() ) :
 											<li><?php echo esc_html( $oria_hb ); ?></li>
 										<?php endforeach; ?>
 									</ul>
-									<p class="hint"><?php esc_html_e( 'Hours from the practice — worth a check before a special trip.', 'oria' ); ?></p>
+									<p class="hint"><?php echo esc_html( sprintf( /* translators: %s: practice, gym or business */ __( 'Hours from the %s — worth a check before a special trip.', 'oria' ), ( $oria_words['who'] ?? __( 'practice', 'oria' ) ) ) ); ?></p>
 								<?php else : ?>
 									<p class="xp-loc__v xp-loc__today">
 										<span data-xp-today-long><?php echo esc_html( '' !== $oria_today ? sprintf( /* translators: %s: today's hours */ __( 'Today: %s', 'oria' ), $oria_today ) : __( 'Hours for today not listed', 'oria' ) ); ?></span>
@@ -1385,7 +1385,7 @@ while ( have_posts() ) :
 							<blockquote class="xp-pick__why"><p>&ldquo;<?php echo esc_html( (string) $oria_lead_pick['reason'] ); ?>&rdquo;</p></blockquote>
 						<?php endif; ?>
 						<?php if ( $oria_png ) : ?>
-							<a class="xp-pick__seal" href="<?php echo esc_url( $oria_png ); ?>" download><?php esc_html_e( 'Run this practice? Download the seal for your website', 'oria' ); ?></a>
+							<a class="xp-pick__seal" href="<?php echo esc_url( $oria_png ); ?>" download><?php echo esc_html( sprintf( /* translators: %s: practice, gym or business */ __( 'Run this %s? Download the seal for your website', 'oria' ), ( $oria_words['who'] ?? __( 'practice', 'oria' ) ) ) ); ?></a>
 						<?php endif; ?>
 					</figure>
 					<?php if ( $oria_more_pick ) : ?>
@@ -1618,7 +1618,7 @@ while ( have_posts() ) :
 					<?php if ( 'sent' === $oria_lead_state ) : ?>
 						<div class="notice" role="status">
 							<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;flex:none" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.2l2.4 2.4 4.6-5"/></svg>
-							<span><b><?php esc_html_e( 'Enquiry sent.', 'oria' ); ?></b> <?php esc_html_e( 'It went straight to the practice — check your email for a copy.', 'oria' ); ?></span>
+							<span><b><?php esc_html_e( 'Enquiry sent.', 'oria' ); ?></b> <?php echo esc_html( sprintf( /* translators: %s: practice, gym or business */ __( 'It went straight to the %s — check your email for a copy.', 'oria' ), ( $oria_words['who'] ?? __( 'practice', 'oria' ) ) ) ); ?></span>
 						</div>
 					<?php else : ?>
 						<form class="xp-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" data-oria-event="enquiry_started">
@@ -1640,7 +1640,7 @@ while ( have_posts() ) :
 								<input class="input" type="tel" name="lead_phone" autocomplete="tel"></label>
 							<label class="field"><span class="field__label"><?php esc_html_e( 'Message', 'oria' ); ?></span>
 								<textarea class="textarea" name="lead_notes" style="min-height:96px" maxlength="600" required placeholder="<?php esc_attr_e( 'e.g. availability, prices, what a first visit looks like — please don\'t include medical details', 'oria' ); ?>"></textarea></label>
-							<button class="btn btn--dark xp-tap" type="submit"><?php esc_html_e( 'Send to the practice', 'oria' ); ?></button>
+							<button class="btn btn--dark xp-tap" type="submit"><?php echo esc_html( sprintf( /* translators: %s: practice, gym or business */ __( 'Send to the %s', 'oria' ), ( $oria_words['who'] ?? __( 'practice', 'oria' ) ) ) ); ?></button>
 						</form>
 					<?php endif; ?>
 					<?php if ( '' !== $oria_words['enquiry_note'] ) : ?>
