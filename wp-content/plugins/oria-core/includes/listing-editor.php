@@ -1572,13 +1572,15 @@ function notify_review( int $listing, array $labels, int $user ): void {
 	$who = get_userdata( $user );
 	wp_mail(
 		$to,
-		sprintf( __( '[Oria] %s proposed a change', 'oria' ), get_the_title( $listing ) ),
+		sprintf( __( '[Oria] %s proposed a change', 'oria' ), html_entity_decode( get_the_title( $listing ), ENT_QUOTES, 'UTF-8' ) ),
 		sprintf(
-			"%s (%s) changed: %s\n\n%s",
+			// The review screen, not the edit link: get_edit_post_link() checks the
+			// current user, who is the owner here, and came back empty.
+			"%s (%s) changed: %s\n\nThe listing shows the old value until you approve it. Check it and approve or decline:\n%s\n",
 			$who ? $who->display_name : __( 'An owner', 'oria' ),
 			$who ? $who->user_email : '',
 			implode( ', ', $labels ),
-			get_edit_post_link( $listing, 'raw' )
+			\Oria\Core\ListingReview\page_url()
 		)
 	);
 }
