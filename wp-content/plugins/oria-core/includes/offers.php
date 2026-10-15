@@ -32,6 +32,10 @@ const OPTION = 'oria_offers_last_sweep';
 const FIELDS = array( 'offer_title', 'offer_text', 'offer_until', 'offer_source', 'offer_checked' );
 /** One JSON meta beside the ACF fields: the structured part the listing card shows. See extra_from(). */
 const META   = '_offer_extra';
+/** What an offer can be for, in /offers/ terms (offers.json `activities`). Also the /offers/{activity}/ slugs. */
+const ACTIVITIES = array( 'yoga', 'pilates', 'spa', 'sauna', 'massage', 'fitness', 'beauty' );
+/** offers.json `format`: pass (set days), pack (set sessions), single visit, package (several treatments, one visit), discount. */
+const FORMATS = array( 'pass', 'pack', 'single', 'package', 'discount' );
 
 /**
  * The structured part of an offer row, exactly as stated: kind (e.g.
@@ -55,6 +59,34 @@ function extra_from( array $row ): array {
 		if ( $list ) {
 			$out[ $k ] = array_slice( $list, 0, $max );
 		}
+	}
+	/*
+	 * The fields the /offers/ filters read (see offers.json _about). Only
+	 * known values survive, so a typo drops out rather than inventing a
+	 * filter option. amount stays absent when the row says null: "price
+	 * varies" is the absence of a number, never zero.
+	 */
+	// Present-but-empty is a statement ("none of the seven", e.g. a retreat):
+	// kept, so the hub does not fall back to guessing from the listing.
+	if ( array_key_exists( 'activities', $row ) ) {
+		$out['activities'] = array_values( array_intersect( array_map( 'strval', (array) $row['activities'] ), ACTIVITIES ) );
+	}
+	if ( in_array( (string) ( $row['format'] ?? '' ), FORMATS, true ) ) {
+		$out['format'] = (string) $row['format'];
+	}
+	// 0 is a real price (a free trial); null or absent is "price varies".
+	if ( isset( $row['amount'] ) && is_numeric( $row['amount'] ) && (float) $row['amount'] >= 0 ) {
+		$out['amount'] = round( (float) $row['amount'], 2 );
+	}
+	if ( in_array( (string) ( $row['audience'] ?? '' ), array( 'new', 'anyone' ), true ) ) {
+		$out['audience'] = (string) $row['audience'];
+	}
+	if ( isset( $row['days'] ) && (int) $row['days'] > 0 ) {
+		$out['days'] = (int) $row['days'];
+	}
+	$renewal = trim( (string) ( $row['renewal'] ?? '' ) );
+	if ( '' !== $renewal ) {
+		$out['renewal'] = mb_substr( $renewal, 0, 160 );
 	}
 	return $out;
 }

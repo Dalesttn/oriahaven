@@ -8499,6 +8499,8 @@ article.is-spotlit {
 .oh-category-offers__head .micro { margin: 0 0 .35rem; color: #7A5A12; }
 .oh-category-offers__title { margin: 0; font-size: clamp(1.7rem, 3.2cqi, 2.25rem); line-height: 1.1; letter-spacing: -0.02em; color: #173A30; text-wrap: balance; }
 .oh-category-offers__desc { margin: .5rem 0 0; color: var(--text-soft); }
+.oh-category-offers__all { margin: .5rem 0 0; font-weight: 700; }
+.oh-category-offers__all a { color: var(--deep); text-decoration: underline; text-underline-offset: 3px; }
 .oh-category-offers__count { margin: .35rem 0 0; font-size: var(--fs-xs); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #667166; }
 .oh-category-offers__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.1rem; }
 .oh-category-offers__grid--1 { grid-template-columns: repeat(2, minmax(0, 1fr)); }

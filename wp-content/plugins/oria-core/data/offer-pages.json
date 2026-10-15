@@ -1,0 +1,111 @@
+{
+ "_about": "The /offers/ hub and its /offers/{activity}/ pages (OffersHub). Copy only: which offers appear comes from offers.json. Placeholders are filled from the page's own live offers: {count} offers, {priced} how many of them publish a fixed price, {min}/{max} lowest and highest fixed upfront price, {dmin}/{dmax} shortest and longest pass in days. A sentence or FAQ whose placeholder has no value is dropped, never printed half-filled. 'index' pages are indexable and in the sitemap only while they have at least min_index live offers; below that they stay up (noindex) with an honest empty state. Keep claims to what the cards themselves show; no studio names here, because offers change monthly.",
+ "min_index": 4,
+ "hub": {
+  "title": "Perth Wellness Offers & Intro Deals | Oria Haven",
+  "h1": "Wellness offers in Perth",
+  "description": "Compare {count} current intro passes, first-visit deals and wellness specials in Perth, each checked on the business’s own site, with prices and conditions upfront.",
+  "intro": "Compare intro passes, first-visit deals and wellness specials across Perth. Each one is checked on the business’s own website, with the price, what’s included and who can buy it upfront.",
+  "guide_title": "How to choose an offer",
+  "guide": [
+   {"h": "Read what you pay upfront", "p": "The large price on each card is what you pay to start. Where an offer is a percentage or a buy-one-get-one, the total depends on what you book, so the card says “Price varies” instead of guessing."},
+   {"h": "Check who can buy it", "p": "Most intro offers are for new customers only, once per person. The line under the price says so when the business does; where it says nothing, ask before you buy."},
+   {"h": "Know when a pass starts", "p": "Day passes run either from your first visit or from the day you buy. The terms on each card say which when the business states it."},
+   {"h": "Look at the end date and the source", "p": "Every card shows when we last checked the offer on the business’s site, and its end date if there is one. Offers come off this page the day after they end."}
+  ],
+  "faq": [
+   {"q": "Where do these offers come from?", "a": "Each offer is read on the business’s own website or the booking page it links to, never from deal sites or social media. The card links to that page and shows the date we checked it."},
+   {"q": "Are any of these offers paid placements?", "a": "Businesses can pay to have an offer promoted. A promoted offer is always labelled “Promoted” on its card. Everything else is ordered by us, and no business pays to be included."},
+   {"q": "How often is this page updated?", "a": "Offers are re-checked every month, and an offer with an end date comes off the page the day after it ends. If something has changed, use “Report a problem” on the card."},
+   {"q": "What does “Price varies” mean?", "a": "The offer is a discount or a buy-one-get-one, so what you pay depends on what you book. We don’t work out a price the business hasn’t published."}
+  ]
+ },
+ "pages": {
+  "yoga": {
+   "label": "Yoga", "noun": "yoga intro offers", "index": true,
+   "title": "Yoga Intro Offers Perth: Compare Passes | Oria Haven",
+   "h1": "Yoga intro offers in Perth",
+   "description": "Compare {count} yoga intro passes from Perth studios, from {min}: pass length, classes included and who can buy one, each checked on the studio’s own site.",
+   "intro": "Most Perth yoga studios welcome new students with an intro pass: a set number of days of classes for one price, sold once per person. Compare {count} current passes by price, length and what’s included.",
+   "guide_title": "Before you buy a yoga intro pass",
+   "guide": [
+    {"h": "When the days start", "p": "Some passes count from your first class, others from the day you buy. The terms on each card say which when the studio does; if a card doesn’t, ask before you pay, so the clock doesn’t start before you can use it."},
+    {"h": "Who can buy one", "p": "Intro passes are almost always for students new to that studio, once per person. Some add conditions, such as where you live. The line under the price shows them."},
+    {"h": "What to bring", "p": "Check whether mat and towel hire are included, especially at hot yoga studios, where you’ll want both every class."},
+    {"h": "When the pass ends", "p": "Check what you’ll pay afterwards (a class pack, casual rate or membership) and whether anything renews by itself. Where a card doesn’t mention it, ask the studio."}
+   ],
+   "faq": [
+    {"q": "How much is a yoga intro pass in Perth?", "a": "The {priced} passes here with a published price cost from {min} to {max}, checked on each studio’s own site."},
+    {"q": "How long do yoga intro passes last?", "a": "From {dmin} to {dmax} days for the passes on this page."},
+    {"q": "Can I use an intro pass if I’ve been to the studio before?", "a": "Usually not. Studios sell intro passes to new students, once per person, and most say so in their terms."}
+   ],
+   "links": [
+    {"label": "Yoga studios in Perth", "practice": "yoga"}
+   ]
+  },
+  "pilates": {
+   "label": "Pilates", "noun": "Pilates intro offers", "index": true,
+   "title": "Pilates Intro Offers Perth: Compare Trials | Oria Haven",
+   "h1": "Pilates intro offers in Perth",
+   "description": "Compare {count} Pilates intro offers in Perth, from {min}: reformer trial passes and class packs, with what’s included and who can buy them.",
+   "intro": "Reformer studios usually start new clients on a short unlimited pass or a small pack of classes. Compare {count} current Pilates offers by upfront price, pass length and conditions.",
+   "guide_title": "Before you book a Pilates trial",
+   "guide": [
+    {"h": "Pass or pack", "p": "A pass gives you a set number of days; a pack gives you a set number of classes. If you can only get to two classes a week, a pack may suit better than a short pass."},
+    {"h": "Book early", "p": "Reformer classes have a fixed number of machines, so popular times fill. Look at the timetable before you buy, so the trial runs in a week you can use."},
+    {"h": "New clients only", "p": "Trials are for clients new to that studio, and most can be bought once. The line under the price shows the studio’s condition."},
+    {"h": "After the trial", "p": "Check what classes cost afterwards and whether anything renews by itself. Where a card doesn’t mention it, ask the studio."}
+   ],
+   "faq": [
+    {"q": "How much is a Pilates intro offer in Perth?", "a": "The {priced} offers here with a published price cost from {min} to {max} upfront, checked on each studio’s own site."},
+    {"q": "Do Pilates intro passes include reformer classes?", "a": "Most offers here are from reformer studios; the inclusions on each card say which classes the offer covers."}
+   ],
+   "links": [
+    {"label": "Pilates studios in Perth", "practice": "fitness", "facet": "reformer"}
+   ]
+  },
+  "spa": {
+   "label": "Spa", "noun": "spa specials", "index": true,
+   "title": "Spa Specials Perth: Compare Packages | Oria Haven",
+   "h1": "Spa specials in Perth",
+   "description": "Compare {count} day spa specials in Perth: packages and first-visit discounts, with the treatments included, weekday conditions and end dates.",
+   "intro": "Day spa specials are usually a package of several treatments for one price, or a discount on a set menu, often limited to weekdays. Compare {count} current specials by price, what’s included and when you can book.",
+   "guide_title": "Before you book a spa special",
+   "guide": [
+    {"h": "What’s in the package", "p": "Packages differ more than their names suggest. Read the inclusions on each card: a package may not include a hands-on massage even when it sounds like it."},
+    {"h": "Weekdays and public holidays", "p": "Many specials are for weekdays only and exclude public holidays. The condition line under the price shows it."},
+    {"h": "Codes and combining", "p": "Some specials need a code when you book online; most can’t be combined with other offers or vouchers."}
+   ],
+   "faq": [
+    {"q": "How much are spa packages in Perth?", "a": "The {priced} specials here with a fixed price cost from {min} to {max}, checked on each spa’s own site."},
+    {"q": "Can I use a spa special on the weekend?", "a": "Check the condition on each card: several specials are for Monday to Friday only."}
+   ],
+   "links": [
+    {"label": "Day spas in Perth", "practice": "spa"}
+   ]
+  },
+  "sauna": {
+   "label": "Sauna & recovery", "noun": "sauna and recovery offers", "index": true,
+   "title": "Sauna & Recovery Deals Perth | Oria Haven",
+   "h1": "Sauna and recovery offers in Perth",
+   "description": "Compare {count} sauna, cold plunge and float offers in Perth: intro passes, session packs and specials, with what’s included and who can buy them.",
+   "intro": "Recovery studios (infrared and traditional saunas, cold plunges, float tanks and compression) sell intro passes, session packs and seasonal specials. Compare {count} current offers by upfront price and what’s included.",
+   "guide_title": "Before you buy a recovery pass",
+   "guide": [
+    {"h": "Which sessions are covered", "p": "A pass may cover every modality at the studio or only some. The inclusions on each card list what the business says the offer covers."},
+    {"h": "Private or shared", "p": "Some studios book private rooms, others shared spaces. If it matters to you, check the studio’s booking page before you buy."},
+    {"h": "Booking each visit", "p": "Even with a pass, most studios ask you to book each session, and popular times fill."}
+   ],
+   "faq": [
+    {"q": "How much is a sauna intro pass in Perth?", "a": "The {priced} offers here with a fixed price cost from {min} to {max} upfront, checked on each studio’s own site."},
+    {"q": "Do these offers include ice baths?", "a": "Some do. The inclusions on each card list the sessions the business says the offer covers."}
+   ],
+   "links": [
+    {"label": "Saunas and recovery in Perth", "practice": "recovery"}
+   ]
+  },
+  "massage": {"label": "Massage", "noun": "massage offers", "index": false},
+  "fitness": {"label": "Fitness", "noun": "fitness offers", "index": false},
+  "beauty": {"label": "Beauty", "noun": "beauty offers", "index": false}
+ }
+}

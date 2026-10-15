@@ -52,6 +52,14 @@ $oria_tile = in_array( $oria_n, array( 1, 2, 5 ), true );
 		<h2 class="oh-category-offers__title" id="oh-cat-offers-title"><?php echo esc_html( $oria_head ); ?></h2>
 		<p class="oh-category-offers__desc"><?php echo esc_html( $oria_desc ); ?></p>
 		<p class="oh-category-offers__count"><?php echo esc_html( sprintf( /* translators: 1: count, 2: category */ _n( '%1$s %2$s offer', '%1$s %2$s offers', $oria_n, 'oria' ), number_format_i18n( $oria_n ), $oria_cl ) ); ?></p>
+		<?php
+		// The full comparison lives on /offers/{activity}/, when that page has earned indexing.
+		$oria_act = defined( '\Oria\Core\OffersHub\LEGACY_TYPES' ) ? ( \Oria\Core\OffersHub\LEGACY_TYPES[ $oria_cat ] ?? '' ) : '';
+		if ( '' !== $oria_act && \Oria\Core\OffersHub\indexable( $oria_act ) ) :
+			$oria_noun = (string) ( \Oria\Core\OffersHub\page( $oria_act )['noun'] ?? 'offers' );
+			?>
+			<p class="oh-category-offers__all"><a href="<?php echo esc_url( \Oria\Core\OffersHub\url( $oria_act ) ); ?>" data-oria-event="category_offers_compare"><?php echo esc_html( sprintf( /* translators: %s: e.g. "yoga intro offers" */ __( 'Compare all Perth %s', 'oria' ), $oria_noun ) ); ?></a></p>
+		<?php endif; ?>
 	</div>
 
 	<?php
