@@ -100,6 +100,7 @@ require_once ORIA_CORE_DIR . 'includes/day-designer.php';
 require_once ORIA_CORE_DIR . 'includes/offers.php';
 require_once ORIA_CORE_DIR . 'includes/offer-promotions.php';
 require_once ORIA_CORE_DIR . 'includes/offers-hub.php';
+require_once ORIA_CORE_DIR . 'includes/offers-import.php';
 require_once ORIA_CORE_DIR . 'includes/subscribers.php';
 require_once ORIA_CORE_DIR . 'includes/llms.php';
 require_once ORIA_CORE_DIR . 'includes/email-preview.php';
