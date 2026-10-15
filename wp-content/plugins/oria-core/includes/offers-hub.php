@@ -86,6 +86,10 @@ const FORMAT_LABELS = array(
 	'package'  => 'Treatment package',
 	'discount' => 'Discount',
 );
+/** Only offered when at least two offers state weekend use; never inferred. */
+const WHEN = array(
+	'weekend' => 'Weekends (stated)',
+);
 const SORTS = array(
 	'recommended' => 'Recommended',
 	'price'       => 'Lowest upfront price',
@@ -180,11 +184,12 @@ function label( string $activity ): string {
  * placeholder has no value comes back '' so the caller drops it whole.
  */
 function fill( string $text, array $rows ): string {
-	$amounts = array_values( array_filter( array_map( static fn( array $r ) => $r['amount'], $rows ), 'is_float' ) );
+	// Paid prices only: a free trial belongs in its own sentence, not at the bottom of a price range.
+	$amounts = array_values( array_filter( array_map( static fn( array $r ) => $r['amount'], $rows ), static fn( $a ): bool => is_float( $a ) && $a > 0 ) );
 	$days    = array_values( array_filter( array_map( static fn( array $r ) => $r['days'], $rows ) ) );
 	$vals    = array(
 		'{count}' => $rows ? (string) count( $rows ) : null,
-		// How many of them publish a fixed price: the honest denominator for {min}/{max}.
+		// How many of them publish a paid price: the honest denominator for {min}/{max}.
 		'{priced}' => count( $amounts ) > 1 ? (string) count( $amounts ) : null,
 		'{min}'   => $amounts ? money( min( $amounts ) ) : null,
 		'{max}'   => count( $amounts ) > 1 ? money( max( $amounts ) ) : null,
@@ -257,6 +262,7 @@ function rows(): array {
 			'format'    => (string) ( $x['format'] ?? '' ),
 			'audience'  => (string) ( $x['audience'] ?? '' ),
 			'days'      => (int) ( $x['days'] ?? 0 ),
+			'weekend'   => isset( $x['weekend'] ) ? (bool) $x['weekend'] : null,
 			'promo'     => function_exists( '\Oria\Core\Offers\promotion' ) ? (array) Offers\promotion( $id, 'hub' ) : array(),
 		);
 		if ( $row['promo'] ) {
@@ -349,7 +355,7 @@ function indexable( string $activity ): bool {
 /**
  * The filters in this request, validated against what exists.
  *
- * @return array{area:string, budget:string, who:string, format:string, sort:string}
+ * @return array{area:string, budget:string, who:string, format:string, when:string, sort:string}
  */
 function filters(): array {
 	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only GET filters.
@@ -359,6 +365,7 @@ function filters(): array {
 		'budget' => $get( 'budget' ),
 		'who'    => $get( 'who' ),
 		'format' => $get( 'format' ),
+		'when'   => $get( 'when' ),
 		'sort'   => $get( 'sort' ),
 	);
 	// phpcs:enable
@@ -370,6 +377,9 @@ function filters(): array {
 	}
 	if ( ! isset( FORMAT_LABELS[ $f['format'] ] ) ) {
 		$f['format'] = '';
+	}
+	if ( ! isset( WHEN[ $f['when'] ] ) ) {
+		$f['when'] = '';
 	}
 	if ( ! isset( SORTS[ $f['sort'] ] ) || 'recommended' === $f['sort'] ) {
 		$f['sort'] = '';
@@ -400,7 +410,8 @@ function matches( array $r, array $f ): bool {
 	return ( '' === $f['area'] || $r['area'] === $f['area'] )
 		&& ( '' === $f['budget'] || budget_band( $r['amount'] ) === $f['budget'] )
 		&& ( '' === $f['who'] || who_key( $r['audience'] ) === $f['who'] )
-		&& ( '' === $f['format'] || $r['format'] === $f['format'] );
+		&& ( '' === $f['format'] || $r['format'] === $f['format'] )
+		&& ( '' === $f['when'] || true === $r['weekend'] );
 }
 
 /** Sort a set of rows. Unknown prices and end dates go last, never first. */
@@ -425,10 +436,14 @@ function sorted( array $rows, string $sort ): array {
  * The filter options this set of rows can actually answer, with counts --
  * an option that would always return nothing is not offered.
  *
- * @return array{area:array<string,string>, budget:array<string,string>, who:array<string,string>, format:array<string,string>}
+ * @return array{area:array<string,string>, budget:array<string,string>, who:array<string,string>, format:array<string,string>, when:array<string,string>}
  */
 function options( array $rows ): array {
-	$o = array( 'area' => array(), 'budget' => array(), 'who' => array(), 'format' => array() );
+	$o = array( 'area' => array(), 'budget' => array(), 'who' => array(), 'format' => array(), 'when' => array() );
+	$weekend = count( array_filter( $rows, static fn( array $r ): bool => true === $r['weekend'] ) );
+	if ( $weekend >= 2 ) {
+		$o['when'] = WHEN;
+	}
 	foreach ( $rows as $r ) {
 		if ( '' !== $r['area'] ) {
 			$o['area'][ $r['area'] ] = $r['area_name'];
@@ -447,13 +462,16 @@ function options( array $rows ): array {
 }
 
 /**
- * Transparent picks for the unfiltered hub: each is a stated, checkable
- * criterion, worked out from the live offers. Never a promoted offer.
+ * Transparent picks for an unfiltered page: each is a stated, checkable
+ * criterion, worked out from that page's live offers. Never a promoted
+ * offer. Needs six offers to choose from; a pick whose criterion nothing
+ * meets (no dated offer, no pass) is simply not made, and fewer than two
+ * picks show nothing.
  *
  * @return list<array{label:string, why:string, row:array}>
  */
-function picks(): array {
-	$pool = array_values( array_filter( rows(), static fn( array $r ): bool => ! $r['promo'] ) );
+function picks( ?array $rows = null ): array {
+	$pool = array_values( array_filter( $rows ?? rows(), static fn( array $r ): bool => ! $r['promo'] ) );
 	if ( count( $pool ) < 6 ) {
 		return array();
 	}
@@ -480,7 +498,7 @@ function picks(): array {
 	usort( $dated, static fn( array $a, array $b ): int => strcmp( (string) $a['offer']['until'], (string) $b['offer']['until'] ) );
 	$take( $dated, __( 'Ends soonest', 'oria' ), __( 'The dated offer closest to its end date.', 'oria' ) );
 
-	return count( $out ) >= 3 ? $out : array();
+	return count( $out ) >= 2 ? $out : array();
 }
 
 /* ------------------------------------------------------------------ serve */
@@ -503,7 +521,7 @@ function legacy_redirect(): void {
 		return;
 	}
 	$type = sanitize_key( wp_unslash( (string) $_GET['type'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$keep = array_intersect_key( filters(), array_flip( array( 'area', 'budget', 'who', 'format', 'sort' ) ) );
+	$keep = array_intersect_key( filters(), array_flip( array( 'area', 'budget', 'who', 'format', 'when', 'sort' ) ) );
 	$to   = url( LEGACY_TYPES[ $type ] ?? '' );
 	wp_safe_redirect( add_query_arg( array_filter( $keep ), $to ), 301 );
 	exit;

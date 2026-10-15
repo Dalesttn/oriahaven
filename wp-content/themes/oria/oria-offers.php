@@ -38,7 +38,7 @@ $oria_place = '' !== $oria_act ? 'offers_' . $oria_act : 'hub';
 $oria_label = '' !== $oria_act ? Hub\label( $oria_act ) : '';
 $oria_noun  = (string) ( $oria_page['noun'] ?? __( 'offers', 'oria' ) );
 $oria_any   = (bool) array_filter( array_diff_key( $oria_f, array( 'sort' => 1 ) ) );
-$oria_picks = '' === $oria_act ? Hub\picks() : array();
+$oria_picks = Hub\picks( $oria_all );
 $oria_intro = Hub\fill( (string) ( $oria_page['intro'] ?? '' ), $oria_all );
 
 $oria_filter_names = array(
@@ -46,6 +46,7 @@ $oria_filter_names = array(
 	'budget' => __( 'Budget', 'oria' ),
 	'who'    => __( 'Who can buy', 'oria' ),
 	'format' => __( 'Offer type', 'oria' ),
+	'when'   => __( 'When', 'oria' ),
 );
 $oria_active = array();
 foreach ( $oria_filter_names as $oria_k => $oria_n ) {
@@ -147,7 +148,7 @@ get_header();
 					</div>
 					<div class="ofx-form__fields">
 						<?php foreach ( $oria_filter_names as $oria_k => $oria_n ) : ?>
-							<?php if ( count( $oria_opts[ $oria_k ] ) < 2 && '' === $oria_f[ $oria_k ] ) { continue; } ?>
+							<?php if ( count( $oria_opts[ $oria_k ] ) < ( 'when' === $oria_k ? 1 : 2 ) && '' === $oria_f[ $oria_k ] ) { continue; } ?>
 							<div class="ofx-field">
 								<label for="ofx-<?php echo esc_attr( $oria_k ); ?>"><?php echo esc_html( $oria_n ); ?></label>
 								<select id="ofx-<?php echo esc_attr( $oria_k ); ?>" name="<?php echo esc_attr( $oria_k ); ?>" data-ofx-filter="<?php echo esc_attr( $oria_k ); ?>">
@@ -197,7 +198,7 @@ get_header();
 
 		<?php if ( $oria_picks ) : ?>
 			<aside class="ofx-picks" aria-labelledby="ofx-picks-title" data-ofx-picks<?php echo $oria_any ? ' hidden' : ''; ?>>
-				<h2 class="ofx-picks__title" id="ofx-picks-title"><?php esc_html_e( 'Three to start with', 'oria' ); ?></h2>
+				<h2 class="ofx-picks__title" id="ofx-picks-title"><?php echo esc_html( 3 === count( $oria_picks ) ? __( 'Three to start with', 'oria' ) : __( 'Two to start with', 'oria' ) ); ?></h2>
 				<ol class="ofx-picks__list">
 					<?php foreach ( $oria_picks as $oria_p ) : ?>
 						<?php $oria_pr = $oria_p['row']; ?>
@@ -271,11 +272,22 @@ get_header();
 			</div>
 		<?php endif; ?>
 
+		<?php if ( '' !== $oria_act ) : ?>
+			<?php get_template_part( 'template-parts/offers/calculator', null, array( 'rows' => $oria_all ) ); ?>
+		<?php endif; ?>
+
 		<?php if ( '' !== $oria_act && count( $oria_all ) > 1 ) : ?>
 			<?php get_template_part( 'template-parts/offers/compare-table', null, array( 'rows' => $oria_rows, 'noun' => $oria_noun, 'place' => $oria_place ) ); ?>
 		<?php endif; ?>
 
 		<?php get_template_part( 'template-parts/offers/guide', null, array( 'page' => $oria_page, 'rows' => $oria_all, 'activity' => $oria_act ) ); ?>
+
+		<?php
+		// A long page asks once more at the end, where the inline form is far behind.
+		if ( count( $oria_all ) > 9 ) {
+			get_template_part( 'template-parts/offers/signup', null, array( 'interest' => $oria_act, 'end' => true ) );
+		}
+		?>
 	</div>
 
 	<div class="ofx-tray" data-ofx-tray hidden>

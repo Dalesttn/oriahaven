@@ -324,3 +324,22 @@ html.ofx-lock, html.ofx-lock body { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .ofx *, .ofx *::before, .ofx *::after { transition: none !important; animation: none !important; }
 }
+
+/* ---------------------------------------------------------------- cost per visit (phase 2) */
+.ofx-calc { display: grid; gap: 16px; }
+.ofx-calc .ofx-section__title { margin: 0; }
+.ofx-calc__lede { margin: 8px 0 0; color: var(--ofx-muted); max-width: 44rem; }
+.ofx-calc__control { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 16px 20px; background: var(--ofx-sage); border-radius: var(--ofx-radius); }
+.ofx-calc__control label { font-weight: 700; }
+.ofx-calc__control input[type="range"] { flex: 1 1 12rem; min-height: 44px; accent-color: var(--ofx-ink); cursor: pointer; }
+.ofx-calc__control output { min-width: 5.5rem; font-family: var(--font-edit); font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.ofx-calc__table { min-width: 560px !important; }
+.ofx-calc__table th, .ofx-calc__table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--ofx-border); vertical-align: top; }
+.ofx-calc__table thead th { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ofx-muted); background: #FBFAF6; }
+.ofx-calc__table tbody tr:last-child > * { border-bottom: 0; }
+.ofx-calc__table tbody th a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.ofx-calc__table tbody th span { display: block; font-weight: 500; font-size: .8125rem; color: var(--ofx-muted); }
+.ofx-calc__each { font-weight: 700; font-variant-numeric: tabular-nums; }
+.ofx-calc__note { margin: 0; font-size: .8125rem; color: var(--ofx-muted); }
+.ofx-calc__table { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+.ofx-signup--end { margin-top: 8px; }

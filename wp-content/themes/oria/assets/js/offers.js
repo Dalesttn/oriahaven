@@ -32,7 +32,7 @@
   var emptyText = root.querySelector("[data-ofx-empty-text]");
   var applyBtn = root.querySelector("[data-ofx-apply]");
   var place = root.getAttribute("data-place") || "hub";
-  var KEYS = ["area", "budget", "who", "format"];
+  var KEYS = ["area", "budget", "who", "format", "when"];
   var MOBILE = window.matchMedia("(max-width: 759px)");
 
   if (!form || !grid) return;
@@ -69,7 +69,8 @@
     return (!s.area || c.getAttribute("data-area") === s.area) &&
       (!s.budget || c.getAttribute("data-budget") === s.budget) &&
       (!s.who || c.getAttribute("data-who") === s.who) &&
-      (!s.format || c.getAttribute("data-format") === s.format);
+      (!s.format || c.getAttribute("data-format") === s.format) &&
+      (!s.when || c.getAttribute("data-weekend") === "1");
   }
   function countFor(s) {
     return cards.filter(function (c) { return matches(c, s); }).length;
@@ -201,7 +202,7 @@
       (next || openBtn && !openBtn.hidden && openBtn || field(k) || sortSel).focus();
     } else if (clear) {
       e.preventDefault();
-      var c = { area: "", budget: "", who: "", format: "", sort: applied.sort };
+      var c = { area: "", budget: "", who: "", format: "", when: "", sort: applied.sort };
       write(c);
       apply(c, "clear");
     } else if (reset) {
@@ -210,7 +211,7 @@
       if (root.classList.contains("is-sheet")) {
         applyBtn.textContent = "Show " + total + " offers";
       } else {
-        apply(Object.assign({}, applied, { area: "", budget: "", who: "", format: "" }), "reset");
+        apply(Object.assign({}, applied, { area: "", budget: "", who: "", format: "", when: "" }), "reset");
       }
     }
   });
@@ -262,6 +263,26 @@
   }
   mode();
   if (MOBILE.addEventListener) MOBILE.addEventListener("change", mode);
+
+  /* ---- Cost per visit (activity pages): price / visits, flagged past the pass length. */
+  var calc = root.querySelector("[data-ofx-calc]");
+  if (calc) {
+    var range = calc.querySelector("[data-ofx-calc-input]");
+    var out = calc.querySelector("[data-ofx-calc-out]");
+    var calcUsed = false;
+    range.addEventListener("input", function () {
+      var v = parseInt(range.value, 10) || 1;
+      out.textContent = v === 1 ? "1 visit" : v + " visits";
+      calc.querySelectorAll("[data-ofx-calc-row]").forEach(function (tr) {
+        var amt = parseFloat(tr.getAttribute("data-amount"));
+        var days = parseInt(tr.getAttribute("data-days"), 10);
+        tr.querySelector("[data-ofx-calc-each]").textContent = v > days ? "More visits than days in the pass" : "$" + (amt / v).toFixed(2);
+      });
+    });
+    range.addEventListener("change", function () {
+      if (!calcUsed) { calcUsed = true; push("offers_calc_use", { visits: parseInt(range.value, 10) || 0 }); }
+    });
+  }
 
   /* ---- Compare: up to three, no account. */
   var tray = root.querySelector("[data-ofx-tray]");

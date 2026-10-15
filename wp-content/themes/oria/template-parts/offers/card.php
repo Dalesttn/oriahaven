@@ -58,7 +58,7 @@ $oria_eager = ! empty( $args['eager'] );
 	data-ofx-card data-id="<?php echo (int) $oria_lid; ?>" data-rank="<?php echo (int) ( $oria_r['rank'] ?? 0 ); ?>"
 	data-area="<?php echo esc_attr( (string) $oria_r['area'] ); ?>" data-budget="<?php echo esc_attr( Hub\budget_band( null === $oria_amt ? null : (float) $oria_amt ) ); ?>"
 	data-amount="<?php echo null === $oria_amt ? '' : esc_attr( (string) $oria_amt ); ?>" data-who="<?php echo esc_attr( Hub\who_key( (string) $oria_r['audience'] ) ); ?>"
-	data-format="<?php echo esc_attr( (string) $oria_r['format'] ); ?>" data-checked="<?php echo esc_attr( $oria_chk ); ?>" data-until="<?php echo esc_attr( $oria_until ); ?>"
+	data-format="<?php echo esc_attr( (string) $oria_r['format'] ); ?>" data-weekend="<?php echo true === ( $oria_r['weekend'] ?? null ) ? '1' : ''; ?>" data-checked="<?php echo esc_attr( $oria_chk ); ?>" data-until="<?php echo esc_attr( $oria_until ); ?>"
 	data-offer-view="<?php echo (int) $oria_lid; ?>" data-offer-place="<?php echo esc_attr( $oria_place ); ?>"<?php echo ! empty( $args['hidden'] ) ? ' hidden' : ''; ?>>
 	<article class="ofx-card__in" aria-labelledby="<?php echo esc_attr( $oria_hid ); ?>">
 		<div class="ofx-card__media">

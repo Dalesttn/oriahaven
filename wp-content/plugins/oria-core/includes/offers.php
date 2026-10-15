@@ -84,6 +84,10 @@ function extra_from( array $row ): array {
 	if ( isset( $row['days'] ) && (int) $row['days'] > 0 ) {
 		$out['days'] = (int) $row['days'];
 	}
+	// Stated either way, or absent: never inferred from opening hours.
+	if ( isset( $row['weekend'] ) && is_bool( $row['weekend'] ) ) {
+		$out['weekend'] = $row['weekend'];
+	}
 	$renewal = trim( (string) ( $row['renewal'] ?? '' ) );
 	if ( '' !== $renewal ) {
 		$out['renewal'] = mb_substr( $renewal, 0, 160 );

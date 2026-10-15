@@ -1,5 +1,5 @@
 {
- "_about": "Advertised offers read from each business's own site. One row per listing. valid_until is the end date the site states, or empty when it states none (Offers\\sweep removes a row the day after it ends; re-check undated rows monthly). The structured fields (kind, price, basis, includes, eligibility, terms) are what the listing card shows -- only state what the site states; price is a display string, never computed. Set removed:true to clear a row. Filter fields, also only from what the site states: activities (any of yoga, pilates, spa, sauna, massage, fitness, beauty -- what the offer is for, not everything the venue does; [] when it is none of them, e.g. a retreat); format (pass = access for a set number of days, pack = a set number of sessions or classes, single = one visit or treatment, package = several treatments in one visit, discount = money or percent off, or buy-x-get-y); amount (the AUD total payable up front for the offer as stated, 0 for free, or null when it depends on what is booked -- never computed from a percentage); audience (new = the site restricts it to new or first-time customers, anyone = the site says anyone can buy it, empty = not stated); days (for a pass, the number of days it runs, as stated); renewal (only if the site states what happens after the offer, e.g. a membership it rolls into). Applied by tools/apply-offers.php or Listings > Offers import.",
+ "_about": "Advertised offers read from each business's own site. One row per listing. valid_until is the end date the site states, or empty when it states none (Offers\\sweep removes a row the day after it ends; re-check undated rows monthly). The structured fields (kind, price, basis, includes, eligibility, terms) are what the listing card shows -- only state what the site states; price is a display string, never computed. Set removed:true to clear a row. Filter fields, also only from what the site states: activities (any of yoga, pilates, spa, sauna, massage, fitness, beauty -- what the offer is for, not everything the venue does; [] when it is none of them, e.g. a retreat); format (pass = access for a set number of days, pack = a set number of sessions or classes, single = one visit or treatment, package = several treatments in one visit, discount = money or percent off, or buy-x-get-y); amount (the AUD total payable up front for the offer as stated, 0 for free, or null when it depends on what is booked -- never computed from a percentage); audience (new = the site restricts it to new or first-time customers, anyone = the site says anyone can buy it, empty = not stated); days (for a pass, the number of days it runs, as stated); weekend (true only when the site says it can be used at weekends, false when it says weekdays only, absent otherwise); renewal (only if the site states what happens after the offer, e.g. a membership it rolls into). Applied by tools/apply-offers.php or Listings > Offers import.",
  "offers": [
   {
    "category": "spa",
@@ -226,6 +226,7 @@
    "format": "package",
    "amount": 119,
    "audience": "",
+   "weekend": false,
    "valid_until": "",
    "source_url": "https://ganeshawellnessspa.com.au/current-special",
    "checked": "2026-10-15"
@@ -659,6 +660,7 @@
    "format": "discount",
    "amount": null,
    "audience": "",
+   "weekend": false,
    "valid_until": "2026-11-30",
    "source_url": "https://endotaspa.com.au/pages/spa/joondalup",
    "checked": "2026-10-03"
@@ -771,6 +773,7 @@
    "amount": 99,
    "audience": "new",
    "days": 28,
+   "weekend": true,
    "valid_until": "",
    "source_url": "https://www.activewellnessspa.com/intromonth",
    "checked": "2026-10-15"
@@ -885,6 +888,7 @@
    "format": "single",
    "amount": 45,
    "audience": "new",
+   "weekend": true,
    "valid_until": "",
    "source_url": "https://pilatesfit.com.au/what-we-offer/private-pilates/",
    "checked": "2026-10-15"

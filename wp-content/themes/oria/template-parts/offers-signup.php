@@ -6,7 +6,8 @@
  * category slug) and listing travel as hidden fields so the list can be
  * segmented later; the consent sentence is the one stored with the row.
  *
- * $args: source ('category' | 'listing' | 'offer_click'), interest (practice
+ * $args: id (element id, default offers-signup -- give a second form on one
+ *        page its own), source ('category' | 'listing' | 'offer_click'), interest (practice
  *        slug), listing (int), suburb (string), hidden (bool -- rendered
  *        collapsed, shown by the script after an offer click).
  *
@@ -29,7 +30,7 @@ $oria_uid    = 'osub-' . wp_unique_id();
 wp_enqueue_script( 'oria-offers-signup', get_template_directory_uri() . '/assets/js/offers-signup.js', array(), (string) filemtime( get_theme_file_path( 'assets/js/offers-signup.js' ) ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
 wp_localize_script( 'oria-offers-signup', 'ORIA_SUB', array( 'url' => rest_url( 'oria/v1/subscribe' ), 'weekend' => home_url( '/this-weekend/' ) ) );
 ?>
-<div class="osub<?php echo $oria_hidden ? ' osub--after' : ''; ?>" id="offers-signup" data-osub<?php echo $oria_hidden ? ' hidden' : ''; ?>>
+<div class="osub<?php echo $oria_hidden ? ' osub--after' : ''; ?>" id="<?php echo esc_attr( sanitize_html_class( (string) ( $args['id'] ?? 'offers-signup' ) ) ); ?>" data-osub<?php echo $oria_hidden ? ' hidden' : ''; ?>>
 	<?php if ( 'ok' === $oria_state && ! $oria_hidden ) : ?>
 		<p class="osub__done"><strong><?php esc_html_e( 'You’re on the list.', 'oria' ); ?></strong> <?php esc_html_e( 'The next offers email comes out this week.', 'oria' ); ?></p>
 	<?php else : ?>
