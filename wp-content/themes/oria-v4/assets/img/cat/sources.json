@@ -1,0 +1,254 @@
+{
+ "_about": "Where each category / sub-page hero photo came from (oria-practice-v2.php reads {name}-1600.webp and -900.webp; f-{facet} files are sub-page heroes, tried before the category's). All free licences that need no credit; recorded so any one can be traced or swapped. Added 15 Oct 2026 unless noted.",
+ "photos": {
+  "f-acupuncture": {
+   "source": "https://www.pexels.com/photo/8313189/",
+   "licence": "Pexels licence"
+  },
+  "f-aqua": {
+   "source": "https://www.pexels.com/photo/27368850/",
+   "licence": "Pexels licence"
+  },
+  "f-assisted-stretching": {
+   "source": "https://www.pexels.com/photo/3763864/",
+   "licence": "Pexels licence"
+  },
+  "f-ayurveda": {
+   "source": "https://www.pexels.com/photo/20689437/",
+   "licence": "Pexels licence"
+  },
+  "f-barre": {
+   "source": "https://www.pexels.com/photo/3902519/",
+   "licence": "Pexels licence"
+  },
+  "f-body-composition-scan": {
+   "source": "https://www.pexels.com/photo/12599543/",
+   "licence": "Pexels licence"
+  },
+  "f-bulk-refill": {
+   "source": "https://www.pexels.com/photo/4198969/",
+   "licence": "Pexels licence"
+  },
+  "f-chiropractic": {
+   "source": "https://www.pexels.com/photo/5794033/",
+   "licence": "Pexels licence"
+  },
+  "f-cold-plunge": {
+   "source": "https://www.pexels.com/photo/14815629/",
+   "licence": "Pexels licence"
+  },
+  "f-contrast-therapy": {
+   "source": "https://www.pexels.com/photo/39237330/",
+   "licence": "Pexels licence"
+  },
+  "f-counselling": {
+   "source": "https://www.pexels.com/photo/6255607/",
+   "licence": "Pexels licence"
+  },
+  "f-couples-massage": {
+   "source": "https://www.pexels.com/photo/7365427/",
+   "licence": "Pexels licence"
+  },
+  "f-cryotherapy": {
+   "source": "https://www.pexels.com/photo/15814247/",
+   "licence": "Pexels licence"
+  },
+  "f-cupping": {
+   "source": "https://www.pexels.com/photo/8313238/",
+   "licence": "Pexels licence"
+  },
+  "f-dance": {
+   "source": "https://www.pexels.com/photo/5935969/",
+   "licence": "Pexels licence"
+  },
+  "f-day": {
+   "source": "https://www.pexels.com/photo/18120171/",
+   "licence": "Pexels licence"
+  },
+  "f-dry-needling": {
+   "source": "https://www.pexels.com/photo/8139344/",
+   "licence": "Pexels licence"
+  },
+  "f-equine-therapy": {
+   "source": "https://www.pexels.com/photo/7882338/",
+   "licence": "Pexels licence"
+  },
+  "f-float-therapy": {
+   "source": "https://images.unsplash.com/photo-1605158743762-f887b36eef11",
+   "licence": "Unsplash licence"
+  },
+  "f-functional-fitness": {
+   "source": "https://www.pexels.com/photo/4804337/",
+   "licence": "Pexels licence"
+  },
+  "f-functional-testing": {
+   "source": "https://www.pexels.com/photo/6629386/",
+   "licence": "Pexels licence"
+  },
+  "f-head": {
+   "source": "https://www.pexels.com/photo/7755447/",
+   "licence": "Pexels licence"
+  },
+  "f-hyperbaric-oxygen": {
+   "source": "https://images.unsplash.com/photo-1765830403209-a5eceac4c198",
+   "licence": "Unsplash licence"
+  },
+  "f-infrared-sauna": {
+   "source": "https://www.pexels.com/photo/36077602/",
+   "licence": "Pexels licence"
+  },
+  "f-iridology": {
+   "source": "https://www.pexels.com/photo/1458422/",
+   "licence": "Pexels licence"
+  },
+  "f-lactation": {
+   "source": "https://www.pexels.com/photo/27175921/",
+   "licence": "Pexels licence"
+  },
+  "f-lactation-consulting": {
+   "source": "https://www.pexels.com/photo/27175921/",
+   "licence": "Pexels licence"
+  },
+  "f-lashes-and-brows": {
+   "source": "https://www.pexels.com/photo/8554941/",
+   "licence": "Pexels licence"
+  },
+  "f-life-coaching": {
+   "source": "https://www.pexels.com/photo/9065264/",
+   "licence": "Pexels licence"
+  },
+  "f-martial-arts": {
+   "source": "https://www.pexels.com/photo/7045577/",
+   "licence": "Pexels licence"
+  },
+  "f-mobility": {
+   "source": "https://www.pexels.com/photo/6922183/",
+   "licence": "Pexels licence"
+  },
+  "f-mobility-training": {
+   "source": "https://www.pexels.com/photo/6922183/",
+   "licence": "Pexels licence"
+  },
+  "f-music-therapy": {
+   "source": "https://www.pexels.com/photo/6957381/",
+   "licence": "Pexels licence"
+  },
+  "f-nails": {
+   "source": "https://www.pexels.com/photo/7446914/",
+   "licence": "Pexels licence"
+  },
+  "f-orthotics": {
+   "source": "https://www.pexels.com/photo/3913024/",
+   "licence": "Pexels licence"
+  },
+  "f-outdoor-fitness": {
+   "source": "https://www.pexels.com/photo/6150627/",
+   "licence": "Pexels licence"
+  },
+  "f-parenting-support": {
+   "source": "https://www.pexels.com/photo/4934166/",
+   "licence": "Pexels licence"
+  },
+  "f-performance-testing": {
+   "source": "https://www.pexels.com/photo/8460228/",
+   "licence": "Pexels licence"
+  },
+  "f-podiatry": {
+   "source": "https://www.pexels.com/photo/5619447/",
+   "licence": "Pexels licence"
+  },
+  "f-postnatal-care": {
+   "source": "https://www.pexels.com/photo/27176787/",
+   "licence": "Pexels licence"
+  },
+  "f-pregnancy-massage": {
+   "source": "https://www.pexels.com/photo/19666196/",
+   "licence": "Pexels licence"
+  },
+  "f-red-light-therapy": {
+   "source": "https://www.pexels.com/photo/7216285/",
+   "licence": "Pexels licence"
+  },
+  "f-reflexology": {
+   "source": "https://www.pexels.com/photo/5240641/",
+   "licence": "Pexels licence"
+  },
+  "f-reiki": {
+   "source": "https://www.pexels.com/photo/6998270/",
+   "licence": "Pexels licence"
+  },
+  "f-smoothies-juice": {
+   "source": "https://www.pexels.com/photo/11009201/",
+   "licence": "Pexels licence"
+  },
+  "f-social-groups": {
+   "source": "https://www.pexels.com/photo/6838616/",
+   "licence": "Pexels licence"
+  },
+  "f-speech-pathology": {
+   "source": "https://www.pexels.com/photo/8537196/",
+   "licence": "Pexels licence"
+  },
+  "f-sports": {
+   "source": "https://www.pexels.com/photo/5646002/",
+   "licence": "Pexels licence"
+  },
+  "f-steam-room": {
+   "source": "https://www.pexels.com/photo/34097625/",
+   "licence": "Pexels licence"
+  },
+  "f-store-cafe": {
+   "source": "https://www.pexels.com/photo/38975846/",
+   "licence": "Pexels licence"
+  },
+  "f-strength-training": {
+   "source": "https://www.pexels.com/photo/3837781/",
+   "licence": "Pexels licence"
+  },
+  "f-stretch-therapy": {
+   "source": "https://www.pexels.com/photo/3763864/",
+   "licence": "Pexels licence"
+  },
+  "f-supplements": {
+   "source": "https://www.pexels.com/photo/7615571/",
+   "licence": "Pexels licence"
+  },
+  "f-tai-chi": {
+   "source": "https://www.pexels.com/photo/8461248/",
+   "licence": "Pexels licence"
+  },
+  "f-thai-massage": {
+   "source": "https://www.pexels.com/photo/14254022/",
+   "licence": "Pexels licence"
+  },
+  "f-vo2-max-testing": {
+   "source": "https://www.pexels.com/photo/8460228/",
+   "licence": "Pexels licence"
+  },
+  "f-walking-groups": {
+   "source": "https://www.pexels.com/photo/29835821/",
+   "licence": "Pexels licence"
+  },
+  "f-waxing": {
+   "source": "https://www.pexels.com/photo/15764070/",
+   "licence": "Pexels licence"
+  },
+  "recovery": {
+   "source": "https://www.pexels.com/photo/3807626/",
+   "licence": "Pexels licence"
+  },
+  "smoothies-juice": {
+   "source": "https://www.pexels.com/photo/11009201/",
+   "licence": "Pexels licence"
+  },
+  "sound": {
+   "source": "same photo as f-sound-healing",
+   "licence": "Pexels licence"
+  },
+  "f-sound-healing": {
+   "source": "https://www.pexels.com/photo/6252173/",
+   "licence": "Pexels licence",
+   "added": "2026-10-07"
+  }
+ }
+}
