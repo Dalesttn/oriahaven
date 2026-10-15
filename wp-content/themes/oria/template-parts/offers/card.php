@@ -136,19 +136,27 @@ $oria_eager = ! empty( $args['eager'] );
 			<?php
 			$oria_bits = array();
 			if ( '' !== $oria_chk ) {
-				/* translators: %s: date */
-				$oria_bits[] = sprintf( __( 'Checked %s', 'oria' ), mysql2date( 'j M Y', $oria_chk ) );
+				// We check the advertised ones; an owner's offer is dated by their last update.
+				$oria_bits[] = $oria_adv
+					/* translators: %s: date */
+					? sprintf( __( 'Checked %s', 'oria' ), mysql2date( 'j M Y', $oria_chk ) )
+					/* translators: %s: date */
+					: sprintf( __( 'Updated %s', 'oria' ), mysql2date( 'j M Y', $oria_chk ) );
 			}
 			/* translators: %s: date */
 			$oria_bits[] = '' !== $oria_until ? sprintf( __( 'Ends %s', 'oria' ), mysql2date( 'j M Y', $oria_until ) ) : __( 'No end date stated', 'oria' );
-			$oria_bits[] = $oria_adv ? __( 'Source: their website', 'oria' ) : __( 'From the owner', 'oria' );
+			$oria_bits[] = $oria_adv ? __( 'Source: their website', 'oria' ) : __( 'Added by the business', 'oria' );
 			echo esc_html( implode( ' · ', $oria_bits ) );
 			?>
 		</p>
 
 		<div class="ofx-card__actions">
-			<?php if ( $oria_adv ) : ?>
-				<a class="ofx-card__go" href="<?php echo esc_url( \Oria\Theme\outbound( (string) $oria_o['source'], 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer" data-oria-place="<?php echo esc_attr( $oria_place ); ?>" data-oria-id="<?php echo (int) $oria_lid; ?>"><?php esc_html_e( 'View offer', 'oria' ); ?><span class="ofx-card__ext"> <?php esc_html_e( 'on their site', 'oria' ); ?></span><span class="sr-only"> <?php esc_html_e( '(opens in a new tab)', 'oria' ); ?></span><svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14"><path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+			<?php
+			// The business's own page for the offer: the one we read it on, or the link the owner gave.
+			$oria_go = $oria_adv ? (string) $oria_o['source'] : (string) ( $oria_x['link'] ?? '' );
+			?>
+			<?php if ( '' !== $oria_go ) : ?>
+				<a class="ofx-card__go" href="<?php echo esc_url( \Oria\Theme\outbound( $oria_go, 'offer' ) ); ?>" rel="nofollow noopener" target="_blank" data-oria-track="offer" data-oria-place="<?php echo esc_attr( $oria_place ); ?>" data-oria-id="<?php echo (int) $oria_lid; ?>"><?php esc_html_e( 'View offer', 'oria' ); ?><span class="ofx-card__ext"> <?php esc_html_e( 'on their site', 'oria' ); ?></span><span class="sr-only"> <?php esc_html_e( '(opens in a new tab)', 'oria' ); ?></span><svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14"><path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 			<?php else : ?>
 				<a class="ofx-card__go" href="<?php echo esc_url( (string) get_permalink( $oria_lid ) ); ?>"><?php esc_html_e( 'View offer', 'oria' ); ?></a>
 			<?php endif; ?>

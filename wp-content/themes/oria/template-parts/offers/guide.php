@@ -90,7 +90,8 @@ foreach ( Hub\activities() as $oria_c ) {
 	<section class="ofx-method" id="ofx-method" aria-labelledby="ofx-method-title">
 		<h2 class="ofx-method__title" id="ofx-method-title"><?php esc_html_e( 'How we check offers', 'oria' ); ?></h2>
 		<ul>
-			<li><?php esc_html_e( 'Every offer is read on the business’s own website, or the booking page it links to. Never deal sites, review sites or social media.', 'oria' ); ?></li>
+			<li><?php esc_html_e( 'Most offers are read on the business’s own website, or the booking page it links to. Never deal sites, review sites or social media.', 'oria' ); ?></li>
+			<li><?php esc_html_e( 'Offers marked “Added by the business” come from the business itself, through its listing. We check a business’s first offer before it appears, and the card shows when it was last updated.', 'oria' ); ?></li>
 			<li><?php esc_html_e( 'Prices, inclusions and conditions are as the business states them. We don’t work out savings or prices it hasn’t published.', 'oria' ); ?></li>
 			<li><?php esc_html_e( 'Each card shows the date we last checked it. Offers are re-checked every month, and dated ones come off the day after they end.', 'oria' ); ?></li>
 			<li><?php esc_html_e( 'Promoted offers are paid placements and are always labelled. Nobody pays to be included or for where they appear otherwise.', 'oria' ); ?></li>
@@ -109,5 +110,5 @@ foreach ( Hub\activities() as $oria_c ) {
 		</nav>
 	<?php endif; ?>
 
-	<p class="ofx-biz"><?php printf( wp_kses( __( 'Run a Perth wellness business with an offer on? <a href="%s">Claim your free listing</a> and add it yourself.', 'oria' ), array( 'a' => array( 'href' => array() ) ) ), esc_url( home_url( '/claim/' ) ) ); ?></p>
+	<p class="ofx-biz"><?php printf( wp_kses( __( 'Run a Perth wellness business with an offer on? <a href="%s" data-oria-event="offers_add_click">Add your offer</a>. It’s free.', 'oria' ), array( 'a' => array( 'href' => array(), 'data-oria-event' => array() ) ) ), esc_url( home_url( '/offers/add/' ) ) ); ?></p>
 </div>

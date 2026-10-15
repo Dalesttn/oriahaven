@@ -58,6 +58,8 @@ $oria_next = $oria_keys[ $oria_at + 1 ] ?? '';
 		<p class="myflash myflash--ok" role="status"><?php esc_html_e( 'Saved. Your profile is updated.', 'oria' ); ?></p>
 	<?php elseif ( 'review' === $oria_done ) : ?>
 		<p class="myflash myflash--wait" role="status"><?php esc_html_e( 'Saved. We will check that change before it goes live -- your listing stays exactly as it is in the meantime.', 'oria' ); ?></p>
+	<?php elseif ( 'offer' === $oria_done ) : ?>
+		<p class="myflash myflash--wait" role="status"><?php esc_html_e( 'Saved. We check a business’s first offer before it goes live, and we’ll email you when it does. Everything else you changed is already live.', 'oria' ); ?></p>
 	<?php elseif ( 'none' === $oria_done ) : ?>
 		<p class="myflash" role="status"><?php esc_html_e( 'Nothing had changed, so there was nothing to save.', 'oria' ); ?></p>
 	<?php endif; ?>
@@ -111,6 +113,12 @@ $oria_next = $oria_keys[ $oria_at + 1 ] ?? '';
 				<p class="myedit__blurb"><?php echo esc_html( $oria_sec['blurb'] ); ?></p>
 			</header>
 
+			<?php
+			// A section may carry a part drawn above its fields (the offer's status, for one).
+			if ( ! empty( $oria_sec['part'] ) ) {
+				get_template_part( (string) $oria_sec['part'], null, array( 'listing' => $oria_listing ) );
+			}
+			?>
 			<div class="myedit__fields">
 				<?php foreach ( $oria_sec['fields'] as $oria_field ) : ?>
 					<?php

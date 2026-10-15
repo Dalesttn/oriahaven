@@ -436,13 +436,76 @@ function sections(): array {
 			),
 		),
 
+		/*
+		 * The offer, asked the way the /offers/ cards show it, so an owner's
+		 * offer filters and compares like the ones we research
+		 * (OwnerOffers; the structure fields are stored in _offer_extra, not
+		 * ACF). A listing's first offer is checked before it shows.
+		 */
 		'offers' => array(
 			'label' => __( 'Offers and social', 'oria' ),
-			'blurb' => __( 'An offer shows on your profile and on every card you appear in.', 'oria' ),
+			'blurb' => __( 'An offer shows on your profile, on every card you appear in, and on Oria Haven’s offers pages. We check a business’s first offer before it goes live.', 'oria' ),
 			'icon'  => 'offers',
+			'part'  => 'template-parts/my/offer-status',
 			'fields' => array(
-				array( 'name' => 'offer_title', 'type' => 'text', 'label' => __( 'Offer', 'oria' ), 'placeholder' => __( 'First class free', 'oria' ) ),
-				array( 'name' => 'offer_text', 'type' => 'textarea', 'rows' => 3, 'label' => __( 'What it includes', 'oria' ), 'help' => __( 'Any conditions worth knowing before they arrive.', 'oria' ) ),
+				array( 'name' => 'offer_title', 'type' => 'text', 'max' => 60, 'label' => __( 'Your offer, in one line', 'oria' ), 'placeholder' => __( '14 days of unlimited classes for $39', 'oria' ), 'help' => __( 'Up to 60 characters. Leave it empty and save to take your offer down.', 'oria' ) ),
+				array(
+					'name'    => 'offer_format',
+					'type'    => 'radios',
+					'label'   => __( 'What kind of offer is it?', 'oria' ),
+					'choices' => array(
+						'pass'     => __( 'A pass for a set number of days', 'oria' ),
+						'pack'     => __( 'A set number of classes or sessions', 'oria' ),
+						'single'   => __( 'One visit or treatment', 'oria' ),
+						'package'  => __( 'Several treatments in one visit', 'oria' ),
+						'discount' => __( 'Money or percent off, or 2-for-1', 'oria' ),
+					),
+				),
+				array( 'name' => 'offer_amount', 'type' => 'money', 'label' => __( 'Upfront price', 'oria' ), 'help' => __( 'What somebody pays to start. Type 0 if it is free. Leave it empty for a discount, or if the price depends on what they book.', 'oria' ) ),
+				array( 'name' => 'offer_price', 'type' => 'text', 'max' => 20, 'label' => __( 'Or the discount, as you advertise it', 'oria' ), 'placeholder' => __( '20% off', 'oria' ), 'help' => __( 'Only for a discount or 2-for-1, e.g. "20% off" or "2 for 1".', 'oria' ) ),
+				array( 'name' => 'offer_basis', 'type' => 'text', 'max' => 60, 'label' => __( 'The price is for', 'oria' ), 'placeholder' => __( '14-day pass', 'oria' ) ),
+				array( 'name' => 'offer_days', 'type' => 'number', 'unit' => __( 'days', 'oria' ), 'label' => __( 'For a pass: how many days it runs', 'oria' ) ),
+				array(
+					'name'    => 'offer_activities',
+					'type'    => 'checks',
+					'label'   => __( 'What is the offer for?', 'oria' ),
+					'help'    => __( 'Pick what the offer itself covers. Leave them all unticked and we use your listing’s category.', 'oria' ),
+					'choices' => array(
+						'yoga'    => __( 'Yoga', 'oria' ),
+						'pilates' => __( 'Pilates', 'oria' ),
+						'spa'     => __( 'Spa', 'oria' ),
+						'sauna'   => __( 'Sauna and recovery', 'oria' ),
+						'massage' => __( 'Massage', 'oria' ),
+						'fitness' => __( 'Fitness', 'oria' ),
+						'beauty'  => __( 'Beauty', 'oria' ),
+					),
+				),
+				array( 'name' => 'offer_includes', 'type' => 'textarea', 'rows' => 3, 'label' => __( 'What’s included', 'oria' ), 'placeholder' => __( "Unlimited classes\nMat and towel hire", 'oria' ), 'help' => __( 'One per line, up to three. Shown as ticks on the card.', 'oria' ) ),
+				array(
+					'name'    => 'offer_audience',
+					'type'    => 'radios',
+					'label'   => __( 'Who can buy it?', 'oria' ),
+					'choices' => array(
+						'new'    => __( 'New customers only', 'oria' ),
+						'anyone' => __( 'Anyone', 'oria' ),
+						''       => __( 'Rather not say', 'oria' ),
+					),
+				),
+				array( 'name' => 'offer_eligibility', 'type' => 'text', 'max' => 80, 'label' => __( 'Conditions, in a line', 'oria' ), 'placeholder' => __( 'New students · once per person', 'oria' ), 'help' => __( 'Shown under the price, so nobody is surprised at the desk.', 'oria' ) ),
+				array( 'name' => 'offer_text', 'type' => 'textarea', 'rows' => 3, 'max' => 220, 'label' => __( 'A little more detail', 'oria' ), 'help' => __( 'Up to 220 characters. What it is and how to claim it. We can’t publish claims about what a treatment does for a health condition.', 'oria' ) ),
+				array( 'name' => 'offer_terms', 'type' => 'textarea', 'rows' => 4, 'label' => __( 'Terms', 'oria' ), 'placeholder' => __( "Starts from your first class\nNon-transferable", 'oria' ), 'help' => __( 'One per line, up to eight. Anything somebody should know before they pay.', 'oria' ) ),
+				array(
+					'name'    => 'offer_weekend',
+					'type'    => 'radios',
+					'label'   => __( 'Can it be used at weekends?', 'oria' ),
+					'choices' => array(
+						'yes' => __( 'Yes', 'oria' ),
+						'no'  => __( 'Weekdays only', 'oria' ),
+						''    => __( 'Rather not say', 'oria' ),
+					),
+				),
+				array( 'name' => 'offer_renewal', 'type' => 'text', 'max' => 160, 'label' => __( 'What happens when it ends?', 'oria' ), 'placeholder' => __( 'Moves to $48 a week; cancel any time', 'oria' ), 'help' => __( 'Only if it rolls into a membership or anything else people should know.', 'oria' ) ),
+				array( 'name' => 'offer_link', 'type' => 'url', 'label' => __( 'Link to buy or book it', 'oria' ), 'placeholder' => 'https://', 'help' => __( 'A page on your own website or your booking system where this offer is.', 'oria' ) ),
 				array( 'name' => 'offer_until', 'type' => 'date', 'label' => __( 'Runs until', 'oria' ), 'help' => __( 'We stop showing the offer after this date, so nobody turns up expecting something that has ended.', 'oria' ) ),
 				array( 'name' => 'instagram_url', 'type' => 'url', 'label' => __( 'Instagram', 'oria' ), 'placeholder' => 'https://instagram.com/' ),
 				array( 'name' => 'facebook_url', 'type' => 'url', 'label' => __( 'Facebook', 'oria' ), 'placeholder' => 'https://facebook.com/' ),
@@ -664,6 +727,10 @@ function key_for( string $name ): string {
  * twice over.
  */
 function value( int $listing, string $name ) {
+	// The offer's structure lives in one JSON meta, not ACF (OwnerOffers).
+	if ( function_exists( '\Oria\Core\OwnerOffers\is_field' ) && \Oria\Core\OwnerOffers\is_field( $name ) ) {
+		return \Oria\Core\OwnerOffers\read( $listing, $name );
+	}
 	// The long description is the post body, which has no ACF field at all.
 	if ( 'listing_body' === $name ) {
 		return (string) get_post_field( 'post_content', $listing, 'raw' );
@@ -689,6 +756,10 @@ function value( int $listing, string $name ) {
 
 /** Write one field the same way, so the proxies fire. */
 function write( int $listing, string $name, $value ): void {
+	if ( function_exists( '\Oria\Core\OwnerOffers\is_field' ) && \Oria\Core\OwnerOffers\is_field( $name ) ) {
+		\Oria\Core\OwnerOffers\put( $listing, $name, $value );
+		return;
+	}
 	if ( 'listing_body' === $name ) {
 		wp_update_post( array( 'ID' => $listing, 'post_content' => (string) $value ) );
 		return;
@@ -1303,6 +1374,12 @@ function handle_save(): void {
 
 	$written = array();
 	$held    = array();
+	// The offer travels as one thing (OwnerOffers): held whole for a first
+	// offer, and stamped as the owner's once written.
+	$offer_group   = function_exists( '\Oria\Core\OwnerOffers\group' ) ? \Oria\Core\OwnerOffers\group() : array();
+	$offer_hold    = $offer_group && \Oria\Core\OwnerOffers\needs_review( $listing );
+	$offer_posted  = array();
+	$offer_written = false;
 
 	foreach ( $section['fields'] as $field ) {
 		$name = $field['name'];
@@ -1347,6 +1424,10 @@ function handle_save(): void {
 		if ( 'repeater' === $field['type'] ) {
 			$value = drop_row( $name, $value );
 		}
+		if ( $offer_hold && in_array( $name, $offer_group, true ) ) {
+			$offer_posted[ $name ] = $value;
+			continue;
+		}
 		$was   = value( $listing, $name );
 
 		if ( same( $was, $value ) ) {
@@ -1362,6 +1443,26 @@ function handle_save(): void {
 
 		write( $listing, $name, $value );
 		$written[] = $field['label'];
+		if ( in_array( $name, $offer_group, true ) ) {
+			$offer_written = true;
+		}
+	}
+
+	$offer_held = false;
+	if ( $offer_posted ) {
+		if ( '' === trim( (string) ( $offer_posted['offer_title'] ?? '' ) ) ) {
+			// Taking an offer down never waits for us.
+			if ( '' !== trim( (string) value( $listing, 'offer_title' ) ) ) {
+				\Oria\Core\OwnerOffers\clear( $listing );
+				$written[] = __( 'Offer removed', 'oria' );
+			}
+			delete_post_meta( $listing, \Oria\Core\OwnerOffers\PENDING );
+		} elseif ( \Oria\Core\OwnerOffers\differs( $listing, $offer_posted ) ) {
+			\Oria\Core\OwnerOffers\hold( $listing, $offer_posted, $user );
+			$offer_held = true;
+		}
+	} elseif ( $offer_written ) {
+		\Oria\Core\OwnerOffers\after_write( $listing );
 	}
 
 	if ( $written || $held ) {
@@ -1384,7 +1485,7 @@ function handle_save(): void {
 	// PortalWatch emails the directory about it (portal-watch.php).
 	do_action( 'oria_listing_owner_saved', $listing, (string) $section['label'], $written, $held, $user );
 
-	$state = $held ? 'review' : ( $written ? 'ok' : 'none' );
+	$state = $offer_held ? 'offer' : ( $held ? 'review' : ( $written ? 'ok' : 'none' ) );
 
 	// The public page is cached; an owner who saves and then looks at their
 	// listing should see the change, not the copy from before they started.

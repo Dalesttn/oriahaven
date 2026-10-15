@@ -104,7 +104,13 @@ get_header();
 			<?php endif; ?>
 			<p class="ofx-hero__meta">
 				<span><?php echo esc_html( sprintf( /* translators: %d: number of offers */ _n( '%d current offer', '%d current offers', count( $oria_all ), 'oria' ), count( $oria_all ) ) ); ?></span>
-				<span><?php esc_html_e( 'Checked on each business’s own site', 'oria' ); ?></span>
+				<span>
+					<?php
+					// True of every card, or it says which way each one came.
+					$oria_owned = (bool) array_filter( $oria_all, static fn( array $r ): bool => empty( $r['offer']['advertised'] ) );
+					echo esc_html( $oria_owned ? __( 'Checked on the business’s own site, or added by the business', 'oria' ) : __( 'Checked on each business’s own site', 'oria' ) );
+					?>
+				</span>
 				<a href="#ofx-method"><?php esc_html_e( 'How we check', 'oria' ); ?></a>
 			</p>
 		</header>

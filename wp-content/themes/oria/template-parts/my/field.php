@@ -33,6 +33,13 @@ $type  = (string) $f['type'];
 // raw, the category dropdown offered one option reading "practices".
 $f['choices'] = Ed\choices_for( $f );
 $val   = Ed\value( $listing, $name );
+// An offer waiting to be checked is what the owner sent: show that, not the live one.
+if ( function_exists( '\Oria\Core\OwnerOffers\pending' ) ) {
+	$oria_pend = \Oria\Core\OwnerOffers\pending( $listing );
+	if ( isset( $oria_pend['fields'] ) && array_key_exists( $name, (array) $oria_pend['fields'] ) ) {
+		$val = $oria_pend['fields'][ $name ];
+	}
+}
 $open  = Ed\editable( $listing, $name );
 $id    = 'f-' . $name;
 $descs = array();

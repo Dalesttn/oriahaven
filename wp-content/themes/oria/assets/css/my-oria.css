@@ -1075,3 +1075,14 @@
 .mylhelp__p { margin: 0; max-width: 56ch; line-height: 1.55; }
 .mylhelp__note { margin: 6px 0 0; font-size: var(--fs-xs); color: var(--app-faint); }
 .mylhelp__go { min-height: 44px; }
+
+/* The offer's status and rules, above the offer fields (template-parts/my/offer-status.php). */
+.myoffer { display: grid; gap: var(--s-3); margin-bottom: var(--s-5); }
+.myoffer__state { margin: 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-sm); background: var(--sand-2); }
+.myoffer__state p { margin: 0 0 var(--s-2); }
+.myoffer__state--wait { background: var(--app-amber-soft, #FBF3DF); border: 1px solid var(--app-amber, #A8741A); }
+.myoffer__state--live { background: var(--app-sage, #E7EDE4); }
+.myoffer__state a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.myoffer__rules { padding: var(--s-3) var(--s-4); border: 1px solid var(--line); border-radius: var(--r-sm); background: #fff; }
+.myoffer__rules summary { min-height: 44px; display: flex; align-items: center; font-weight: 700; cursor: pointer; }
+.myoffer__rules ul { margin: 0 0 var(--s-2); padding-left: 1.1rem; display: grid; gap: var(--s-1); color: var(--text-soft); }

@@ -96,7 +96,8 @@
   transition: background-color var(--ofx-ease), color var(--ofx-ease);
 }
 .ofx-form__apply:hover, .ofx-btn:hover { background: #0F2A23; }
-.ofx-btn--light { background: #fff; color: var(--ofx-ink); border-color: #fff; }
+.ofx .ofx-btn { color: #fff; }
+.ofx-btn--light, .ofx .ofx-btn--light { background: #fff; color: var(--ofx-ink); border-color: #fff; }
 .ofx-btn--light:hover { background: var(--ofx-sage); }
 .ofx-bar__count { margin: 0 0 0 auto; align-self: center; font-size: .9375rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 .ofx-bar__open { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--ofx-ink); border-radius: 999px; background: var(--ofx-surface); color: var(--ofx-ink); font: inherit; font-weight: 700; cursor: pointer; }
@@ -343,3 +344,17 @@ html.ofx-lock, html.ofx-lock body { overflow: hidden; }
 .ofx-calc__note { margin: 0; font-size: .8125rem; color: var(--ofx-muted); }
 .ofx-calc__table { width: 100%; border-collapse: collapse; font-size: .9375rem; }
 .ofx-signup--end { margin-top: 8px; }
+
+/* ---------------------------------------------------------------- /offers/add/ (owner-offers.php) */
+.ofx-add { display: grid; gap: 32px; align-items: start; }
+@media (min-width: 960px) { .ofx-add { grid-template-columns: minmax(0, 1fr) 22rem; gap: 48px; } }
+.ofx-add__ctas { margin: 8px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.ofx-add__alt { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.ofx-add__exlabel { margin: 0 0 8px; font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ofx-muted); }
+.ofx-grid--one { grid-template-columns: minmax(0, 1fr) !important; }
+.ofx-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 16px; counter-reset: ofx-step; }
+.ofx-steps li { position: relative; padding: 20px 20px 20px 64px; border-radius: var(--ofx-radius); background: var(--ofx-surface); border: 1px solid var(--ofx-border); counter-increment: ofx-step; }
+.ofx-steps li::before { content: counter(ofx-step); position: absolute; left: 20px; top: 18px; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 999px; background: var(--ofx-ink); color: #fff; font-weight: 700; }
+.ofx-steps h3 { margin: 0 0 6px; font-size: 1.0625rem; }
+.ofx-steps p { margin: 0; color: #2D4A41; }
+.ofx-add__list { margin: 0; padding-left: 18px; display: grid; gap: 6px; color: #2D4A41; }
