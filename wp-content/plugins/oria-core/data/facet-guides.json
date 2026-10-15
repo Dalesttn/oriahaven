@@ -54,7 +54,9 @@
           "q": "Where can I do an ice bath and sauna together?",
           "a": "Most places on this page pair the plunge with a sauna. The ones set up for alternating the two in one session are also listed under Ice bath & sauna together (contrast therapy)."
         }
-      ]
+      ],
+      "title": "Ice Baths & Cold Plunges in Perth: Compare {count} Places & Prices",
+      "description": "Compare {count} ice baths and cold plunges in Perth, from recovery studios to bathhouses: shared or private, session prices and what's included."
     },
     "contrast-therapy": {
       "phrase": "Ice Bath & Sauna (Contrast Therapy)",
@@ -84,7 +86,7 @@
         }
       ],
       "intro": [
-        "Contrast sessions alternate heat and cold in one booking: a sauna or hot plunge, then an ice bath or cold plunge, repeated in rounds. {count} places in Perth say on their own websites that they run sessions this way.",
+        "A sauna and an ice bath in one visit is what the recovery studios call contrast therapy. Sessions alternate heat and cold in one booking: a sauna or hot plunge, then an ice bath or cold plunge, repeated in rounds. {count} places in Perth say on their own websites that they run sessions this way.",
         "The format varies more than the name suggests. Some rooms are booked privately for an hour for one or two people; one suburban studio opens from 5am to 9pm, early enough for before work; a dedicated recovery centre pairs a magnesium hot plunge with cold plunge pools; and a beachside operator runs communal hour-long sessions where, at some sites, the cold water is the ocean.",
         "Where prices are published, a private one-hour session is $45 for one and $80 for two at one studio, and thirty minutes in an infrared sauna starts at $25 at another. Packs and memberships bring the per-visit cost down at most places.",
         "Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
@@ -106,7 +108,10 @@
           "q": "Can I book privately or as a group?",
           "a": "Both exist. Some places book the room privately for one or two people, several take group bookings or can be hired outright, and others run communal sessions at set times."
         }
-      ]
+      ],
+      "title": "Sauna & Ice Bath in Perth: Compare {count} Places & Prices",
+      "h1": "Sauna and ice bath in Perth",
+      "description": "Compare {count} places in Perth to do a sauna and ice bath in one session: private or shared, session length and price, checked on each venue's site."
     },
     "traditional-sauna": {
       "phrase": "Traditional Saunas",
@@ -414,11 +419,19 @@
         },
         {
           "category": "spa",
+          "facet": "contrast-therapy",
+          "label": "Sauna and ice bath in Perth",
+          "line": "Heat and cold in one session"
+        },
+        {
+          "category": "spa",
           "facet": "infrared-sauna",
           "label": "Infrared saunas",
           "line": "Often in the same recovery studios"
         }
-      ]
+      ],
+      "title": "Cryotherapy in Perth: Compare {count} Places & Prices",
+      "description": "Compare {count} places for whole-body cryotherapy in Perth, including Perth Cryo in Currambine: session prices, packs and what to expect."
     },
     "red-light-therapy": {
       "phrase": "Red Light Therapy",

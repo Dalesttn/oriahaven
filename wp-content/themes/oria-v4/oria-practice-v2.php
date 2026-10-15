@@ -346,6 +346,14 @@ if ( $oria_fac_sums && function_exists( '\Oria\Core\FacilityAccess\faqs' ) ) {
 }
 
 $oria_h1 = $oria_facet ? (string) $oria_facet['label'] : sprintf( __( '%1$s in %2$s', 'oria' ), $oria_pname, $oria_cin );
+if ( $oria_facet && ! $oria_area && function_exists( '\Oria\Core\FacetGuides\entry' ) && \Oria\Core\FacetGuides\applies( $oria_facet ) ) {
+	// A facet guide may lead with the words people search ("Sauna and ice bath
+	// in Perth" on the contrast therapy page), as category guides can.
+	$oria_fg_h1 = trim( (string) ( \Oria\Core\FacetGuides\entry( $oria_facet )['h1'] ?? '' ) );
+	if ( '' !== $oria_fg_h1 ) {
+		$oria_h1 = $oria_fg_h1;
+	}
+}
 if ( $oria_area ) {
 	// "Sleep & Recovery in Currambine" — the suburb is the whole point of
 	// the page, so it replaces Perth rather than sitting beside it.
