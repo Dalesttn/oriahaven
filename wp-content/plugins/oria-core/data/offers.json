@@ -14,7 +14,7 @@
    "terms": ["First-time floaters only", "One per person; non-transferable", "Buy and book online"],
    "valid_until": "",
    "source_url": "https://beyondrest.com.au/location-perth",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "spa",
@@ -29,7 +29,7 @@
    "terms": ["First-time guests only", "One per person", "Ten days of access to all modalities", "Buy via the Recovery Lab app or booking link"],
    "valid_until": "",
    "source_url": "https://recoverylab.com.au/find-a-lab-jolimont/",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "spa",
@@ -59,22 +59,50 @@
    "terms": ["Pay for three sessions; the fourth is free", "Limited-time offer, no end date given", "Buy through the offer page; each person books individually"],
    "valid_until": "",
    "source_url": "https://meltsaunas.com/4-for-3sessions",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "spa",
    "listing": "reclab-wembley",
    "title": "7-day unlimited Reclab pass for $99",
-   "details": "Seven consecutive days of unlimited access to Reclab's hot and cold plunge pools, steam room, sauna and compression boots for $99 (a single casual session is $39.50). Claim via the special offers page.",
+   "details": "Seven days of unlimited access to Reclab's hot and cold plunge pools, steam room, sauna and compression boots for $99 (a single 60-minute casual contrast session is $42). Claim via the special offers page.",
    "kind": "7-day pass",
    "price": "$99",
    "basis": "7 consecutive days",
    "includes": ["Hot & cold plunge pools", "Steam room & sauna", "Compression boots"],
    "eligibility": "",
-   "terms": ["Seven consecutive days", "A single casual session is $39.50", "Claim via the special offers page"],
+   "terms": ["Seven days of unlimited access", "A single 60-minute casual contrast session is $42", "Claim via the special offers page"],
    "valid_until": "",
    "source_url": "https://www.reclab.com.au/special-offers/",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "spa",
+   "listing": "lush-skin-and-body",
+   "title": "Spring promotion: Lymphatic Flow Ritual",
+   "details": "Lush Skin and Body in Mount Hawthorn has a spring promotion on its 90-minute Lymphatic Flow Ritual, a full face and body treatment with massage and a facial.",
+   "kind": "Seasonal special",
+   "price": "$240",
+   "basis": "90-minute face and body ritual",
+   "includes": ["Dry body brushing and relaxation massage", "Restorative facial", "Facial cupping and gua sha"],
+   "eligibility": "Everyone",
+   "valid_until": "",
+   "source_url": "https://www.lushskinbody.com.au/perth-promotions",
+   "checked": "2026-10-15",
+   "note": "Listed under 'Spring Promotions'; no end date stated. Same page also lists a Skin Reboot at $199 and a Firming Intro at $299."
+  },
+  {
+   "category": "spa",
+   "listing": "recovery-haus-innaloo",
+   "title": "14 days unlimited for $99",
+   "details": "Recovery Haus in Innaloo has an unlimited intro offer: 14 days of access to its sauna, magnesium hot and ice baths, compression boots and rollers for $99.",
+   "kind": "Intro pass",
+   "price": "$99",
+   "basis": "14 days unlimited",
+   "includes": ["Traditional sauna", "Magnesium hot bath and ice bath", "Compression boots and RollStar rollers"],
+   "valid_until": "",
+   "source_url": "https://recoveryhaus.com.au/offers/",
+   "checked": "2026-10-15"
   },
 
   {
@@ -90,7 +118,7 @@
    "terms": ["Packages are valid for 12 months from the date of purchase", "Buy at the clinic", "Regular 60-minute massage is $130"],
    "valid_until": "",
    "source_url": "https://www.fremantlemassage.com.au/#prices",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "bodywork",
@@ -105,13 +133,13 @@
    "terms": ["Starts between 8am and 2pm", "Massages of 60 minutes or longer", "Public-holiday surcharge applies", "Also: buy 10 gift certificates, get an 11th free"],
    "valid_until": "",
    "source_url": "https://royalsilkthaimassage.com.au",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "bodywork",
    "listing": "modern-day-spa",
    "title": "10% off your first appointment booked online",
-   "details": "New clients save 10% on their first visit to Modern Day Spa, Nedlands, by booking online and entering code BOOKONLINE10 at checkout. Applies to massage, facial and body treatments.",
+   "details": "New clients save 10% on their first visit to Modern Day Spa, Claremont, by booking online and entering code BOOKONLINE10 at checkout. Applies to massage, facial and body treatments.",
    "kind": "First visit",
    "price": "10% off",
    "basis": "your first appointment",
@@ -120,7 +148,7 @@
    "terms": ["First appointment only", "Book online and enter code BOOKONLINE10 at checkout"],
    "valid_until": "",
    "source_url": "https://moderndayspa.com.au",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "bodywork",
@@ -135,7 +163,7 @@
    "terms": ["Special packages are not combined with other offers", "Two other 90-minute specials (Ocean Breeze, Galvanic Facial) also $120", "Book via the website or phone"],
    "valid_until": "",
    "source_url": "https://holidayspa.com.au/special-offer",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "bodywork",
@@ -150,7 +178,53 @@
    "terms": ["Monday to Friday, 8am to 5pm", "Not valid with any other voucher or discount", "No hands-on massage in this package"],
    "valid_until": "",
    "source_url": "https://ganeshawellnessspa.com.au/current-special",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "bodywork",
+   "listing": "4-life-sports-remedial-massage-mandurah",
+   "title": "$20 off your first one-hour massage",
+   "details": "4 Life Sports & Remedial Massage in Mandurah takes $20 off a new client's first one-hour massage, which starts with a history and assessment.",
+   "kind": "New-client special",
+   "price": "$20 off",
+   "basis": "initial 1-hour massage",
+   "includes": ["Health history and assessment", "Massage style of your choice", "Recommendations for ongoing care"],
+   "eligibility": "New clients only",
+   "terms": ["Print the offer page and bring it to the clinic", "No further discounts apply", "Cannot be combined with other offers, including preferred provider discounts"],
+   "valid_until": "",
+   "source_url": "https://4lifemassage.com.au/4lifemassage/new-patients/",
+   "checked": "2026-10-15",
+   "note": "Offer amount and inclusions are shown in the image on the page (SPECIAL-OFFER-1-724x1024.png)."
+  },
+  {
+   "category": "bodywork",
+   "listing": "bali-spirit-day-spa-ellenbrook",
+   "title": "October special: 45-minute reflexology or botanical facial",
+   "details": "Bali Spirit Day Spa in Ellenbrook is running an October special on a 45-minute Spring Reset reflexology session with a foot cleanse, and a 45-minute botanical facial.",
+   "kind": "Seasonal special",
+   "basis": "45-minute reflexology or 45-minute facial",
+   "includes": ["Foot cleanse and sole massage with the reflexology", "Shoulder, neck and head massage with the facial"],
+   "eligibility": "Everyone",
+   "terms": ["Specials are not valid with vouchers", "Book online, by phone or by email"],
+   "valid_until": "2026-10-31",
+   "source_url": "https://www.balispiritdayspa.com.au/promotions/",
+   "checked": "2026-10-15",
+   "note": "year inferred; end date taken from 'October Special'. No price is stated on the site."
+  },
+  {
+   "category": "bodywork",
+   "listing": "the-pilates-klinik-joondalup",
+   "title": "Half-price first private session",
+   "details": "The Pilates Klinik in Joondalup offers a first one-hour private introduction and assessment session at half price, $55 instead of $110.",
+   "kind": "Intro offer",
+   "price": "$55",
+   "basis": "60-minute private introduction and assessment session",
+   "includes": ["Studio tour", "Strength, mobility and balance check", "Reformer introduction and a plan for next steps"],
+   "eligibility": "First session · new clients",
+   "terms": ["Regular price $110", "One-on-one session with a senior instructor", "Book by text after claiming", "Limited spots"],
+   "valid_until": "",
+   "source_url": "https://thepilatesklinik.com.au/get-started/",
+   "checked": "2026-10-15"
   },
 
   {
@@ -166,7 +240,7 @@
    "terms": ["First-time visitors only", "Perth residents only", "14 consecutive days from your first visit", "Non-transferable, non-refundable, no suspensions", "Buy online and arrive 15 minutes early"],
    "valid_until": "",
    "source_url": "https://theyogagarageperth.com.au/",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "yoga",
@@ -181,7 +255,7 @@
    "terms": ["New Horizon Yoga students only", "One use per person", "21 days start at your first class", "Arrive 10 minutes early"],
    "valid_until": "",
    "source_url": "https://www.horizonyoga.com.au/intro-offer",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "yoga",
@@ -196,7 +270,7 @@
    "terms": ["Can be purchased once only", "14 days from first use", "No suspensions or extensions", "Excludes courses, workshops and events"],
    "valid_until": "",
    "source_url": "https://yogahubperth.com.au/pricing/",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "yoga",
@@ -211,13 +285,13 @@
    "terms": ["First-time visitors to the studio only", "Mat and towel hire included", "Book online or arrive 15 minutes before your first class"],
    "valid_until": "",
    "source_url": "https://www.hotforyoga.com.au/",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "yoga",
    "listing": "yoga-corner-duncraig",
    "title": "30 days of unlimited classes for $59, new students",
-   "details": "New students get 30 days of unlimited drop-in classes (Vinyasa Slow Flow, Yin, Yin/Yang, Gentle, Restore & Relax) at Yoga Corner, Duncraig, for $59. Buy through the new-students page; courses are separate.",
+   "details": "New students get 30 days of unlimited drop-in classes (Vinyasa Slow Flow, Yin, Yin/Yang, Gentle, Restore & Relax) at Yoga Corner, Balcatta, for $59. Buy through the new-students page; courses are separate.",
    "kind": "New student special",
    "price": "$59",
    "basis": "30-day pass",
@@ -226,7 +300,52 @@
    "terms": ["New students only", "30 days of unlimited drop-in classes", "Courses, such as the beginners course, are separate"],
    "valid_until": "",
    "source_url": "https://www.yogacornerperth.com/newstudents",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "yoga",
+   "listing": "airspace-leederville",
+   "title": "14-day trial of unlimited group classes",
+   "details": "AirSpace in Leederville offers new students a 14-day trial with unlimited group classes, including AirYoga orientation sessions before your first aerial class.",
+   "kind": "Intro trial",
+   "basis": "2 weeks unlimited group classes",
+   "includes": ["Unlimited group classes for 14 days", "AirYoga orientation sessions"],
+   "eligibility": "New students",
+   "terms": ["Runs for 14 days", "Group classes only", "Book through the Get Started page"],
+   "valid_until": "",
+   "source_url": "https://www.airspaceperth.com.au/programs/get-started",
+   "checked": "2026-10-15",
+   "note": "No trial price shown on the site; homepage headline also says 'Get your first class for free'."
+  },
+  {
+   "category": "yoga",
+   "listing": "awakened-wellness-retreats",
+   "title": "Early bird: save $300 on the Embody Her retreat",
+   "details": "Awakened Wellness's Embody Her women's weekend retreat at Wilder Retreat, Donnelly Lakes (19-21 Feb 2027) is $300 off every room type when booked by 31 December 2026.",
+   "kind": "Early bird",
+   "price": "Save $300",
+   "basis": "3-day weekend retreat, 2 nights",
+   "includes": ["2 nights' accommodation and all meals", "Yoga, somatic dance and breathwork sessions", "One 60-minute massage"],
+   "eligibility": "Women · bookings by 31 Dec 2026",
+   "terms": ["Early bird pricing ends 31 December 2026", "Private ensuite room $1699 (regular $1999)", "Shared room with 2 or 3 people $1299 (regular $1599)", "Retreat runs 19-21 February 2027", "Limited to 12 places", "Payment plans on request"],
+   "valid_until": "2026-12-31",
+   "source_url": "https://awakenedwellnessretreats.com.au/new-products/awakened-wellness-weekender-retreat-march-22nd-24th-2024-4rcgx",
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "yoga",
+   "listing": "bodyscape-wellness-spa",
+   "title": "Two weeks of unlimited yoga for $69",
+   "details": "Bodyscape's intro offer gives first-time visitors 14 days of unlimited access to more than 20 weekly classes for $69. An $89 version adds one infrared sauna session.",
+   "kind": "Intro offer",
+   "price": "$69",
+   "basis": "2 weeks unlimited classes",
+   "includes": ["Unlimited classes for 14 days", "Over 20 classes a week", "$89 option adds one infrared sauna"],
+   "eligibility": "First-time visitors · once only",
+   "terms": ["Starts from the date of your first class", "First-time visitors only, once only", "Sauna in the $89 option must be used within the two weeks", "Email the studio to redeem the sauna session"],
+   "valid_until": "",
+   "source_url": "https://bodyscape.com.au/pricing/",
+   "checked": "2026-10-15"
   },
 
   {
@@ -242,7 +361,7 @@
    "terms": ["New members to the facility only", "Not available if you have used another trial or pass", "Limited time, no end date given", "Claim via the Momence link on the website"],
    "valid_until": "",
    "source_url": "https://competitiveboxing.com.au/index.php?option=com_sppagebuilder&view=page&id=64",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "fitness",
@@ -257,7 +376,7 @@
    "terms": ["Only available to new members", "Expires 14 days after your first class", "Buy via the booking link on the homepage"],
    "valid_until": "",
    "source_url": "https://elementpilates.com.au/",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "fitness",
@@ -272,22 +391,22 @@
    "terms": ["New clients only", "Buy through the booking link on the homepage"],
    "valid_until": "",
    "source_url": "https://www.proactivepilates.com.au",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "fitness",
    "listing": "strong-pilates-rockingham",
-   "title": "STRONG Experience: 10 days unlimited for $29.50",
-   "details": "The STRONG Experience intro pass gives unlimited reformer-based sessions for 10 days at STRONG Pilates Rockingham for $29.50, advertised as half price. Buy via the booking section of the location page.",
+   "title": "STRONG Experience: 10 days unlimited for $59",
+   "details": "The STRONG Experience intro pass gives unlimited reformer-based sessions for 10 days at STRONG Pilates Rockingham for $59. Buy via the booking section of the location page.",
    "kind": "STRONG Experience",
-   "price": "$29.50",
+   "price": "$59",
    "basis": "10-day pass",
    "includes": ["Unlimited sessions", "Reformer-based classes"],
    "eligibility": "",
-   "terms": ["Unlimited sessions for 10 days", "Advertised as 50% off", "Buy via the booking section of the location page"],
+   "terms": ["Unlimited sessions for 10 days", "Must be activated within 90 days of purchase", "Expires 10 days from first booking", "Buy via the booking section of the location page"],
    "valid_until": "",
    "source_url": "https://strongpilates.com.au/location/rockingham/",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "fitness",
@@ -302,7 +421,54 @@
    "terms": ["New students only", "Available once per new student", "14-day term", "Buy through the studio's booking link"],
    "valid_until": "",
    "source_url": "https://flyinghighaerialartsstudios.com.au/",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "fitness",
+   "listing": "ati-martial-arts-malaga",
+   "title": "Free trial martial arts class",
+   "details": "ATI Martial Arts Malaga offers a free trial class across its programs, from Little Dragons for ages 3-6 to adult taekwondo, Brazilian jiu-jitsu, kickboxing and boxing.",
+   "kind": "Free trial",
+   "price": "Free",
+   "basis": "trial class",
+   "includes": ["Kids, teen and adult programs", "Taekwondo, BJJ, kickboxing, boxing"],
+   "eligibility": "New students",
+   "terms": ["Register through the free trial form on the site"],
+   "valid_until": "",
+   "source_url": "https://www.atimartialarts.com.au/locations/malaga/",
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "fitness",
+   "listing": "best-body-bassendean",
+   "title": "Reformer Pilates at $12 a class for 6 weeks",
+   "details": "Best Body's Strong by Christmas offer: two reformer Pilates classes a week for $24 a week ($12 a class) for the first six weeks, then $48 a week. New members who start by 13 November.",
+   "kind": "New-member special",
+   "price": "$24/week",
+   "basis": "2 reformer classes a week for 6 weeks",
+   "includes": ["2 reformer Pilates classes a week", "$12 a class for the first 6 weeks"],
+   "eligibility": "New members only",
+   "terms": ["New members only", "Must start by 13 November", "Reverts to $48 a week after 6 weeks", "No lock-in; cancel with 7 days' notice", "Refund if it's not for you after the first week"],
+   "valid_until": "2026-11-13",
+   "source_url": "https://bestbody.com.au",
+   "checked": "2026-10-15",
+   "note": "year inferred"
+  },
+  {
+   "category": "fitness",
+   "listing": "chinese-kungfu-taichi-academy",
+   "title": "Two introductory classes for $35",
+   "details": "The Chinese Kung Fu & Tai Chi Academy in Balcatta runs a no-obligation introductory program of two classes of your choice for $35, paid on the day.",
+   "kind": "Intro offer",
+   "price": "$35",
+   "basis": "two introductory classes",
+   "includes": ["Two classes of your choice", "Kung fu, tai chi or qigong", "T-shirt to train in"],
+   "eligibility": "New students · no obligation",
+   "terms": ["Pay on the day", "Book the first class online; second is booked at the academy", "Chat with an instructor after the second class"],
+   "valid_until": "",
+   "source_url": "https://chinesekungfu.com.au/book-a-class/",
+   "checked": "2026-10-15",
+   "note": "FAQ page still quotes $25; the booking page states $35."
   },
 
   {
@@ -363,7 +529,7 @@
    "terms": ["Bundle of three sessions $597", "Limited bundles available", "T&Cs apply", "Book via the clinic's booking link"],
    "valid_until": "",
    "source_url": "https://serendipitymedispa.com.au/specials/",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
   },
   {
    "category": "beauty",
@@ -378,7 +544,222 @@
    "terms": ["First visit only", "Reserve online through the studio's booking page"],
    "valid_until": "",
    "source_url": "https://reda-andco.com/pages/light-therapy",
-   "checked": "2026-10-03"
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "beauty",
+   "listing": "la-belle-peau-north-perth",
+   "title": "Half off your first tattoo removal session",
+   "details": "La Belle Peau Skincare Clinic in North Perth offers a free consultation and 50% off the first laser tattoo removal session.",
+   "kind": "First visit",
+   "price": "50% off",
+   "basis": "first laser tattoo removal session",
+   "includes": ["Free consultation"],
+   "eligibility": "First session",
+   "valid_until": "",
+   "source_url": "https://labellepeau.com.au",
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "beauty",
+   "listing": "le-beau-clinic-spa-kardinya",
+   "title": "Free SkinCoach session for first-time clients",
+   "details": "Le Beau Clinic & Spa in Kardinya gives first-time clients a complimentary SkinCoach session to talk through skin concerns and plan a treatment program.",
+   "kind": "New-client special",
+   "price": "Free",
+   "basis": "SkinCoach session",
+   "includes": ["Discussion of skin concerns and goals", "Individual treatment program"],
+   "eligibility": "First-time clients and clients on programs",
+   "valid_until": "",
+   "source_url": "https://www.day-spa-perth.com.au",
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "beauty",
+   "listing": "oxford-beauty-clinic-leederville",
+   "title": "Free $10 voucher for first-time visitors",
+   "details": "Oxford Beauty Clinic in Leederville gives first-time visitors a free $10 gift voucher to use on services.",
+   "kind": "New-client special",
+   "price": "$10 voucher",
+   "basis": "credit towards a service",
+   "eligibility": "First-time visitors",
+   "terms": ["Valid on services only"],
+   "valid_until": "",
+   "source_url": "https://www.oxfordbeautyclinic.com.au/",
+   "checked": "2026-10-15"
+  },
+
+  {
+   "category": "longevity",
+   "listing": "active-wellness-spa-east-victoria-park",
+   "title": "28 days of unlimited sessions for $99, new clients",
+   "details": "First-time visitors to Active Wellness Spa (East Victoria Park and Osborne Park) get 28 days of unlimited 60-minute self-guided sessions in a private room for $99. Join online and book through the app.",
+   "kind": "Intro offer",
+   "price": "$99",
+   "basis": "28 days unlimited",
+   "includes": ["Unlimited 60-minute sessions", "ActiveRoll & Tera Orb private room", "24/7 access, both studios"],
+   "eligibility": "First-time visitors only",
+   "terms": ["Limited intro offer for first-time visitors only", "Unlimited sessions for 28 days", "Sessions run 60 minutes and are booked in the app", "Join online"],
+   "valid_until": "",
+   "source_url": "https://www.activewellnessspa.com/intromonth",
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "longevity",
+   "listing": "studio2-hbot-applecross",
+   "title": "Half price first hyperbaric session: 1 hour $60",
+   "details": "Studio2 HBOT in Applecross offers 50% off your first session in a hard hyperbaric chamber: one hour for $60 (casual rate $120), or 90 minutes for $90 (casual rate $160).",
+   "kind": "Intro offer",
+   "price": "$60",
+   "basis": "first 1-hour session",
+   "includes": ["Hard-chamber session", "1.3 to 2.0 ATA", "90-minute option $90"],
+   "eligibility": "First session only",
+   "terms": ["50% off your first session", "1-hour intro $60; casual rate $120", "1.5-hour intro $90; casual rate $160", "Prices include GST", "Book the intro session online"],
+   "valid_until": "",
+   "source_url": "https://www.studio2hbot.com.au/pricing",
+   "checked": "2026-10-15"
+  },
+
+  {
+   "category": "mind",
+   "listing": "charleyoga",
+   "title": "Soft Start Yoga Program for new students",
+   "details": "Charleyoga in Applecross runs a Soft Start program for people new to the studio: a term of group classes with a one-on-one onboarding session and a welcome gift pack.",
+   "kind": "New-client special",
+   "basis": "term block of group classes for new students",
+   "includes": ["Personalised onboarding session in week one", "Welcome pack with grip socks and yoga strap", "On-demand video library access"],
+   "eligibility": "New Charleyoga students",
+   "terms": ["Limited intake spaces", "Screened for fit, so booked by enquiry rather than online", "Attend in person or by livestream"],
+   "valid_until": "",
+   "source_url": "https://charleyoga.com.au/soft-start-program/",
+   "checked": "2026-10-15",
+   "note": "No price stated on the page"
+  },
+  {
+   "category": "mind",
+   "listing": "choy-lee-fut-perth",
+   "title": "One-month trial for new students",
+   "details": "Choy Lee Fut Kung Fu & Lohan Qigong offers a one-month trial to anyone thinking of starting qigong or kung fu training with Sifu James Lui.",
+   "kind": "Trial",
+   "basis": "one month of trial training",
+   "includes": ["Qigong and kung fu classes at Brentwood or South Perth"],
+   "eligibility": "New students",
+   "terms": ["Contact Sifu James Lui first (0412 568 823 or email)", "An interview is arranged before starting", "Wear comfortable clothing and sport shoes while trialling"],
+   "valid_until": "",
+   "source_url": "https://choyleefutwa.com/Page/ClassesAndFees.html",
+   "checked": "2026-10-15",
+   "note": "Page does not say whether the trial month is free or what it costs"
+  },
+
+  {
+   "category": "natural",
+   "listing": "cottesloe-naturopathic-clinic",
+   "title": "10% off your first naturopathy consultation",
+   "details": "Cottesloe Naturopathic Clinic is giving 10% off the initial naturopathic or homeopathic consultation for a limited time to people who found the clinic through its website.",
+   "kind": "New-client special",
+   "price": "10% off",
+   "basis": "initial consultation (up to one hour, normally $120)",
+   "includes": ["Initial naturopathic or homeopathic consultation"],
+   "eligibility": "New patients who come via the website",
+   "terms": ["Limited time, no end date given", "Mention the website or tick the box on the patient form at the first visit", "Remedies are charged separately"],
+   "valid_until": "",
+   "source_url": "https://www.cottnat.com.au/programs-and-offers/",
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "natural",
+   "listing": "pure-health-wellness-clinic",
+   "title": "Free 15-minute health assessment",
+   "details": "Pure Health and Wellness Clinic is running a limited-time free health assessment: a 15-minute, no-obligation session with its naturopathy team.",
+   "kind": "First visit",
+   "price": "Free",
+   "basis": "15-minute health assessment",
+   "includes": ["15-minute session"],
+   "eligibility": "One per person",
+   "terms": ["Limited time, no end date given", "Subject to availability", "No obligation"],
+   "valid_until": "",
+   "source_url": "https://www.purehealthandwellness.com.au",
+   "checked": "2026-10-15"
+  },
+
+  {
+   "category": "family",
+   "listing": "pilates-fit-perth-coogee",
+   "title": "$45 private intro Pilates session",
+   "details": "Pilates Fit Perth in Coogee offers a 30-minute private introductory consultation for $45 for people new to its studio.",
+   "kind": "Intro offer",
+   "price": "$45",
+   "basis": "30-minute private intro session",
+   "includes": ["One-on-one session with a Pilates practitioner", "A personalised plan to start from"],
+   "eligibility": "New clients",
+   "terms": ["Private, one-on-one session", "Early morning, mid-morning, evening and weekend times"],
+   "valid_until": "",
+   "source_url": "https://pilatesfit.com.au/what-we-offer/private-pilates/",
+   "checked": "2026-10-15"
+  },
+
+  {
+   "category": "allied",
+   "listing": "manna-wellness",
+   "title": "5 reformer classes for $55",
+   "details": "Manna Wellness in Guildford and Darlington offers new clients five reformer Pilates classes for $55, valid for 21 days.",
+   "kind": "Intro offer",
+   "price": "$55",
+   "basis": "5 reformer Pilates classes",
+   "includes": ["5 reformer classes", "Use at Guildford or Darlington studios"],
+   "eligibility": "New clients only",
+   "terms": ["Valid for 21 days", "Intro offer becomes free if you start a membership before it ends"],
+   "valid_until": "",
+   "source_url": "https://www.mannawellness.com.au/reformer-pilates-intro-offer-perth",
+   "checked": "2026-10-15"
+  },
+  {
+   "category": "allied",
+   "listing": "perth-physiotherapy-and-pilates-innaloo",
+   "title": "20% off your first session",
+   "details": "Perth Physiotherapy and Pilates in Innaloo is offering 20% off a first session with its new team, booked through its Cliniko page.",
+   "kind": "New-client special",
+   "price": "20% off",
+   "basis": "first session",
+   "includes": ["First session with the new team"],
+   "eligibility": "New clients",
+   "terms": ["Book through the linked online booking page"],
+   "valid_until": "",
+   "source_url": "https://perthphysiotherapyandpilates.com.au",
+   "checked": "2026-10-15"
+  },
+
+  {
+   "category": "experiences",
+   "listing": "brookleigh-day-spa-health-retreats",
+   "title": "Spring day spa specials from $219",
+   "details": "Brookleigh Day Spa in Upper Swan is running a set of spring packages, starting with the 75-minute Spring Essence of a back massage and wildflower facial for $219.",
+   "kind": "Seasonal special",
+   "price": "$219",
+   "basis": "75-minute Spring Essence package",
+   "includes": ["Back massage", "Heritage Healer Wildflower Facial", "Refreshment in the spa garden"],
+   "eligibility": "All guests",
+   "terms": ["Specials are limited and change seasonally", "Can be bought as a gift voucher", "Other spring packages listed at $275, $355 and $599"],
+   "valid_until": "",
+   "source_url": "https://www.brookleighbeautyandspa.com.au/swan-valley-day-spa-specials",
+   "checked": "2026-10-15"
+  },
+
+  {
+   "category": "seniors",
+   "listing": "extension-fitness-perth",
+   "title": "Free first strength session for over-50s",
+   "details": "Extension Fitness invites middle-aged and older adults to get in touch and claim a free strength coaching session.",
+   "kind": "Free trial",
+   "price": "Free",
+   "basis": "one strength coaching session",
+   "includes": ["Session with a strength coach"],
+   "eligibility": "New clients · aimed at adults over 50",
+   "terms": ["Claim by getting in touch"],
+   "valid_until": "",
+   "source_url": "https://www.extensionfitness.com.au/seniors-strength-and-fitness-perth",
+   "checked": "2026-10-15",
+   "note": "Page gives no session length or other conditions."
   }
  ]
 }
