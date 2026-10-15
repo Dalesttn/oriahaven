@@ -1688,6 +1688,17 @@ function title( $title ) {
 			return $own;
 		}
 		/*
+		 * A facet guide may write its own title (facet-guides.json "title",
+		 * {count} filled with this page's count), for a page whose searchers
+		 * want something the generic "— N Places" shape cannot say, such as
+		 * "Compare … Places & Prices". Only where a guide sets one.
+		 */
+		$guided = function_exists( '\Oria\Core\FacetGuides\entry' ) && \Oria\Core\FacetGuides\applies( $f ) ? trim( (string) ( \Oria\Core\FacetGuides\entry( $f )['title'] ?? '' ) ) : '';
+		$term   = get_queried_object();
+		if ( '' !== $guided && $term instanceof \WP_Term ) {
+			return str_replace( '{count}', (string) facet_count( $term, $f ), $guided ) . ' | ' . get_bloginfo( 'name' );
+		}
+		/*
 		 * A service or specialty facet names the same thing the
 		 * /perth/{term}/ specialty page does, and both shipped the identical
 		 * title -- "Infrared sauna in Perth" on two indexed, self-canonical

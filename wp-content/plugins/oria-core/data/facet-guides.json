@@ -75,6 +75,12 @@
           "path": "/journal/sauna-prices-perth/",
           "label": "What a sauna costs in Perth",
           "line": "Prices from 31 venues, checked October 2026"
+        },
+        {
+          "category": "spa",
+          "facet": "steam-room",
+          "label": "Steam rooms in Perth",
+          "line": "Humid heat, from leisure centres to bathhouses"
         }
       ],
       "intro": [
@@ -132,6 +138,12 @@
           "facet": "contrast-therapy",
           "label": "Ice bath & sauna together",
           "line": "Places with both, for contrast sessions"
+        },
+        {
+          "category": "spa",
+          "facet": "steam-room",
+          "label": "Steam rooms in Perth",
+          "line": "Humid heat, from leisure centres to bathhouses"
         }
       ],
       "intro": [
@@ -202,6 +214,12 @@
           "facet": "contrast-therapy",
           "label": "Ice bath & sauna together",
           "line": "Places with both, for contrast sessions"
+        },
+        {
+          "category": "spa",
+          "facet": "steam-room",
+          "label": "Steam rooms in Perth",
+          "line": "Humid heat, from leisure centres to bathhouses"
         }
       ],
       "intro": [
@@ -258,16 +276,33 @@
       "intro": [
         "Compare what a steam room visit costs, what it includes and who can go, at the places Oria Haven lists. Each card and the table below show the standard adult visit that includes the steam room, as the venue publishes it, with the day it was checked.",
         "Steam rooms in Perth usually come with something larger: a leisure centre's pool and wellness entry, a bathhouse session with saunas and cold pools, a hotel spa's retreat area, or a recovery centre's timed session. A few day spas sell steam on its own. How you get in -- a casual ticket, a treatment, a membership -- differs as much as the price.",
-        "A steam room is humid heat at a lower temperature than a sauna's dry heat. It is not the same as a steam shower, or water poured on a sauna's stones; the places here have a steam room. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+        "A steam room (some places call it a steam sauna) is humid heat at a lower temperature than a sauna's dry heat. It is not the same as a steam shower, or water poured on a sauna's stones; the places here have a steam room. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
       ],
       "faq": [
         {
           "q": "What's the difference between a steam room and a sauna?",
           "a": "A steam room fills with humid, wet heat at a lower temperature; a sauna is drier and hotter, though water poured on the stones adds steam. Saunas are listed on Saunas in Perth."
+        },
+        {
+          "q": "How much does a steam room cost in Perth?",
+          "a": "At a leisure centre the steam room comes with the pools, spa or sauna for one casual entry: Aqualife in East Victoria Park lists $8.20 for adult swim entry with the steam room and spa, Cannington Leisureplex $13 for its adult wellness suite and Beatty Park $18.50 for spa, sauna and steam with pool access. Recovery studios and bathhouses charge more for a timed session with hot and cold pools: Recwell in Wangara $39, Reclab in Wembley $42, Merse Wellness in Osborne Park $59.95 and Ember Bath House $89 for 90 minutes. Revive Skin Emporium sells a 30-minute steam room session for $45. These are the prices each venue published when we checked in September 2026; the table above shows the date for each."
+        },
+        {
+          "q": "What do you wear in a steam room?",
+          "a": "Swimwear, at the places that say. Ember Bath House requires it, Merse Wellness recommends it, and Crown Spa asks for swimwear or the robes and towels it provides in its shared Aqua Retreat. Rules differ, so check the venue's own page before you go."
+        },
+        {
+          "q": "How old do you have to be to use a steam room?",
+          "a": "It depends on the venue. Beatty Park and Cannington Leisureplex sell their steam room entry to adults 16 and over, Merse Wellness takes 16 and 17-year-olds with an adult, Crown Spa's minimum is 16 and Ember Bath House is 18 and over. Aqualife says age restrictions apply without stating them."
+        },
+        {
+          "q": "Is there a steam room with a sauna and ice bath in Perth?",
+          "a": "Yes. Ember Bath House and Merse Wellness sell bathhouse sessions that include saunas, hot pools and an ice bath as well as the steam room, and Reclab in Wembley and Recwell in Wangara include it in their hot-and-cold contrast sessions."
         }
       ],
       "name": "Steam rooms",
-      "description": "Compare {count} steam rooms in Perth: what a visit costs, what it includes and who can go, checked on each venue's own website."
+      "description": "Compare {count} steam rooms in Perth, from leisure-centre wellness suites to bathhouses: price per visit, what's included, age limits and swimwear rules.",
+      "title": "Steam Rooms in Perth: Compare {count} Places & Prices"
     },
     "acupuncture": {
       "phrase": "Acupuncture",
@@ -287,6 +322,12 @@
           "path": "/journal/sauna-prices-perth/",
           "label": "What a sauna costs in Perth",
           "line": "Prices from 31 venues, checked October 2026"
+        },
+        {
+          "category": "spa",
+          "facet": "steam-room",
+          "label": "Steam rooms in Perth",
+          "line": "Humid heat, from leisure centres to bathhouses"
         },
         {
           "category": "spa",
@@ -551,6 +592,12 @@
           "path": "/best/day-spas-perth/",
           "label": "Best day spas in Perth",
           "line": "Our pick of them, by what you want from the day"
+        },
+        {
+          "category": "spa",
+          "facet": "steam-room",
+          "label": "Steam rooms in Perth",
+          "line": "Humid heat, from leisure centres to bathhouses"
         }
       ],
       "description": "Compare {count} day spas in Perth: what an hour's massage and a two-hour package cost, which have pools or saunas, couples rooms and Sunday hours."
