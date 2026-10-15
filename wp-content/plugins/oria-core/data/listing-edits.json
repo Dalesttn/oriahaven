@@ -1009,5 +1009,80 @@
     ]
    }
   }
+ },
+ {
+  "slug": "brazilian-butterfly-fremantle",
+  "requested_by": "Oria Haven, 15 Oct 2026 -- listing said almost nothing and was banded Free; rewritten from the salon's own page (brazilianbutterfly.com/salon/fremantle, read 15 Oct 2026): services, sample prices, location, booking. Its own site gives Mon-Wed 9-5, Thu 9-8, Fri 9-7, Sat 9-5; Google's hours differ (Mon closed) -- confirm with the salon.",
+  "excerpt": "A waxing salon on High Street in Fremantle, part of a national chain: Brazilian, bikini and body waxing, men's waxing, brows, lashes, spray tans and IPL. A full Brazilian is $75 and a standard bikini wax $44. Beyond waxing it does brow lamination ($69), lash lifts and tints, full-body spray tans ($50), IPL hair reduction (a consultation with a patch test is $49) and skin treatments such as microdermabrasion and peels. It is near the Market Street corner, a short walk from Fremantle Station, with street parking nearby; booking is online or by phone.",
+  "fields": {
+   "price_from": 44,
+   "price_band": "$$$"
+  },
+  "services": [
+   "Waxing",
+   "Brazilian waxing",
+   "Bikini waxing",
+   "Leg, arm and underarm waxing",
+   "Men's waxing",
+   "Brow lamination",
+   "Lash lift",
+   "Spray tan",
+   "IPL hair reduction",
+   "Microdermabrasion and peels"
+  ]
+ },
+ {
+  "slug": "nollamara-tennis-club-pickleball",
+  "requested_by": "Oria Haven, 15 Oct 2026 -- banded Free, but visitors pay a $10 fee (its own listing text).",
+  "fields": {
+   "price_from": 10,
+   "price_band": "$"
+  }
+ },
+ {
+  "slug": "baldivis-indoor-sports-complex",
+  "requested_by": "Oria Haven, 15 Oct 2026 -- banded Free, but the sessions are pay-on-arrival with no published price; band cleared to unknown rather than Free.",
+  "fields": {
+   "price_band": ""
+  }
+ },
+ {
+  "slug": "divine-intention",
+  "requested_by": "Oria Haven, 15 Oct 2026 -- banded Free with no information at all on the listing; band cleared to unknown rather than claim it is free.",
+  "fields": {
+   "price_band": ""
+  }
+ },
+ {
+  "slug": "la-belle-peau-north-perth",
+  "requested_by": "Oria Haven, 15 Oct 2026 -- a skin clinic with no waxing on its menu (own site, checked 15 Oct 2026); off the waxing page.",
+  "terms": {
+   "service": {
+    "remove": [
+     "waxing"
+    ]
+   },
+   "specialty": {
+    "remove": [
+     "waxing"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "lovebeauty-skin-clinic",
+  "requested_by": "Oria Haven, 15 Oct 2026 -- hair removal is IPL and laser only, no waxing (own site, checked 15 Oct 2026); off the waxing page.",
+  "terms": {
+   "service": {
+    "remove": [
+     "waxing"
+    ]
+   },
+   "specialty": {
+    "remove": [
+     "waxing"
+    ]
+   }
+  }
  }
 ]

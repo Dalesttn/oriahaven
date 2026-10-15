@@ -942,6 +942,54 @@
         }
       ],
       "see_also": []
+    },
+    "waxing": {
+      "phrase": "Waxing & Brazilian Wax",
+      "intro": [
+        "{count} salons, spas and beauty clinics in Perth list waxing. Most do the full menu (Brazilian and bikini, legs, arms, underarms, brows and face), and a handful are built around it, Brazilian Butterfly on Fremantle’s High Street most of all. Several use hot or hard wax for the Brazilian and bikini line and strip wax for legs: Bali Spirit Day Spa and Bare Skin and Beauty in Ellenbrook and Serendipity Medi Spa in Canning Vale all say so.",
+        "A full Brazilian costs $55 to $80 at the salons that publish a price, and $75 is the most common. The cheapest are Manusa Organic Spa & Beauty in East Fremantle ($55) and, north of the river, Oxford Beauty Clinic in Leederville and Bali Spirit in Ellenbrook ($60 each). A standard bikini wax runs $25 to $49, a brow wax $20 to $37, and a full leg about $68. A first Brazilian costs more at some salons: Serendipity charges $79 for a first visit.",
+        "Men’s waxing is on most menus but priced separately: a back wax is $45 at Oxford Beauty Clinic to $67 at Brazilian Butterfly, and a chest $40 to $65. Brazilian Butterfly is the only salon here publishing a men’s Brazilian, at $140.",
+        "The salons’ own advice on getting ready is consistent: let hair grow to about the length of a grain of rice (Brazilian Butterfly says 5mm to 1cm), exfoliate gently a day or two before, and wear loose cotton clothing to the appointment. Late nights are mostly on Wednesday and Thursday; for a Sunday wax, Bali Spirit opens 10 to 4 and endota spa Joondalup 11 to 5, with a 10% Sunday surcharge at endota."
+      ],
+      "faq": [
+        {
+          "q": "How much is a Brazilian wax in Perth?",
+          "a": "A full Brazilian costs $55 to $80 at the salons that publish a price, and $75 is the most common. Manusa Organic Spa & Beauty in East Fremantle charges $55; Oxford Beauty Clinic in Leederville and Bali Spirit in Ellenbrook $60. Prices were checked on each salon’s own site or booking page in October 2026."
+        },
+        {
+          "q": "What is a Brazilian wax?",
+          "a": "Perth salons use it for the full intimate wax, front to back, with nothing left: Brazilian Butterfly calls it “Take it All Off” and Bali Spirit “everything gone”. A bikini wax covers less, and is priced lower. Names vary, so check the description on the salon’s menu."
+        },
+        {
+          "q": "How long does hair need to be for a Brazilian wax?",
+          "a": "About the length of a grain of rice. Brazilian Butterfly asks for 5mm to 1cm and Serendipity Medi Spa about a quarter of an inch."
+        },
+        {
+          "q": "How do I prepare for a wax?",
+          "a": "The salons publishing advice say to exfoliate gently a day or two before (Brazilian Butterfly, Serendipity Medi Spa, endota spa), skip moisturiser on the day, and wear loose cotton clothing to the appointment."
+        },
+        {
+          "q": "Where can men get waxed in Perth?",
+          "a": "Most salons on this page wax men. Back waxes run $45 (Oxford Beauty Clinic) to $67 (Brazilian Butterfly), chest waxes $40 to $65; Bare Skin and Beauty, Essence of Lily, Serendipity Medi Spa and endota spa Joondalup all publish men’s prices. Brazilian Butterfly is the only one publishing a men’s Brazilian, at $140."
+        },
+        {
+          "q": "Can I get waxed on a Sunday in Perth?",
+          "a": "At a few places. Bali Spirit Day Spa in Ellenbrook opens 10 to 4 and endota spa Joondalup 11 to 5 (with a 10% Sunday surcharge). Most salons are closed on Sundays but open late on Wednesday or Thursday."
+        },
+        {
+          "q": "Where can I get waxed in Fremantle?",
+          "a": "Brazilian Butterfly on High Street, plus A Touch of Sass, Manusa Organic Spa & Beauty and Pamper Face and Body nearby in East and South Fremantle."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "beauty",
+          "facet": "lashes-and-brows",
+          "label": "Lashes & brows",
+          "line": "Brow lamination, lash lifts and tints"
+        }
+      ],
+      "description": "Compare {count} waxing salons in Perth: a full Brazilian from $55 (most charge $75), bikini, brows, legs and men’s waxing, plus late nights and Sundays."
     }
   }
 }

@@ -1540,6 +1540,62 @@
         "Where a studio doesn't say something, it is counted as not stated -- never as no.",
         "Prices, inclusions and availability change. Check the studio’s own site before you book."
       ]
+    },
+    "waxing": {
+      "city": "perth",
+      "checked": "2026-10-15",
+      "basis": "prices published by 15 Perth salons on their own websites or booking pages",
+      "snapshot": "Typical Brazilian $75",
+      "venues": 15,
+      "items": [
+        {
+          "label": "Typical Brazilian",
+          "value": "$75",
+          "note": "The most common price for a full Brazilian; range $55–$80 at 10 salons publishing one.",
+          "group": "lead"
+        },
+        {
+          "label": "Cheapest Brazilian",
+          "value": "$55",
+          "note": "Manusa Organic Spa & Beauty, East Fremantle. North of the river: Oxford Beauty Clinic, Leederville, and Bali Spirit Day Spa, Ellenbrook, $60.",
+          "links": {
+            "Manusa Organic Spa & Beauty": "manusa-organic-spa-beauty",
+            "Oxford Beauty Clinic": "oxford-beauty-clinic-leederville",
+            "Bali Spirit Day Spa": "bali-spirit-day-spa-ellenbrook"
+          },
+          "group": "lead"
+        },
+        {
+          "label": "Bikini · brows · full leg",
+          "value": "$36 · $31 · $68",
+          "note": "Typical prices across the salons publishing each.",
+          "group": "lead"
+        },
+        {
+          "label": "Men’s back",
+          "value": "$45–$67",
+          "note": "Oxford Beauty Clinic to Brazilian Butterfly; chest $40–$65. Men’s Brazilian $140 at Brazilian Butterfly only.",
+          "links": {
+            "Brazilian Butterfly": "brazilian-butterfly-fremantle"
+          },
+          "group": "detail"
+        },
+        {
+          "label": "Open Sundays",
+          "value": "2",
+          "note": "Bali Spirit Day Spa (10–4) and endota spa Joondalup (11–5, 10% surcharge).",
+          "links": {
+            "endota spa Joondalup": "endota-spa-joondalup"
+          },
+          "group": "detail"
+        }
+      ],
+      "method": [
+        "Standard prices as each salon publishes them; 'from' prices and first-visit prices are left out of the typical figures.",
+        "Typical means the median, or for the Brazilian the most common price.",
+        "Where a salon doesn't say something, it is counted as not stated -- never as no.",
+        "Prices change. Check the salon’s own site before you book."
+      ]
     }
   }
 }
