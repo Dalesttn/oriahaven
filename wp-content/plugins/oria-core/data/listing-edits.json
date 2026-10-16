@@ -1084,5 +1084,39 @@
     ]
    }
   }
+ },
+ {
+  "slug": "ember-bath-house",
+  "requested_by": "Oria Haven, 16 Oct 2026 -- the venue is a bathhouse by name and sells a 'Bath House Session' (emberbathhouse.com/bath-house, checked 13 Oct 2026); for the Perth bathhouses page.",
+  "terms": {
+   "service": {
+    "add": [
+     "bathhouse"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "merse-wellness-osborne-park",
+  "requested_by": "Oria Haven, 16 Oct 2026 -- sells a 'Bathhouse Immerse Yourself' session (merse.com.au/bathhouse/, checked 28 Sep 2026); for the Perth bathhouses page.",
+  "terms": {
+   "service": {
+    "add": [
+     "bathhouse"
+    ]
+   }
+  }
+ },
+ {
+  "slug": "the-neighbourhood-sauna-fremantle",
+  "requested_by": "Oria Haven, 16 Oct 2026 -- its booking page sells a 'Bath House Experience' (private infrared sauna, hot magnesium bath and ice bath) and a 'Sauna and Cold Plunge' session, checked 13 Oct 2026; for the Perth bathhouses page.",
+  "terms": {
+   "service": {
+    "add": [
+     "bathhouse",
+     "ice-bath"
+    ]
+   }
+  }
  }
 ]

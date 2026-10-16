@@ -6,6 +6,12 @@
       "see_also": [
         {
           "category": "spa",
+          "facet": "bathhouse",
+          "label": "Bathhouses in Perth",
+          "line": "Sauna, hot and ice baths in one circuit"
+        },
+        {
+          "category": "spa",
           "facet": "contrast-therapy",
           "label": "Ice bath & sauna together",
           "line": "Places that pair the cold with heat, for contrast sessions"
@@ -61,6 +67,12 @@
     "contrast-therapy": {
       "phrase": "Ice Bath & Sauna (Contrast Therapy)",
       "see_also": [
+        {
+          "category": "spa",
+          "facet": "bathhouse",
+          "label": "Bathhouses in Perth",
+          "line": "Sauna, hot and ice baths in one circuit"
+        },
         {
           "category": "spa",
           "facet": "cold-plunge",
@@ -267,6 +279,12 @@
       "see_also": [
         {
           "category": "spa",
+          "facet": "bathhouse",
+          "label": "Bathhouses in Perth",
+          "line": "Sauna, hot and ice baths in one circuit"
+        },
+        {
+          "category": "spa",
           "facet": "saunas",
           "label": "Saunas in Perth",
           "line": "Dry heat, traditional and infrared"
@@ -323,6 +341,12 @@
     "saunas": {
       "phrase": "Saunas",
       "see_also": [
+        {
+          "category": "spa",
+          "facet": "bathhouse",
+          "label": "Bathhouses in Perth",
+          "line": "Sauna, hot and ice baths in one circuit"
+        },
         {
           "path": "/journal/sauna-prices-perth/",
           "label": "What a sauna costs in Perth",
@@ -1050,6 +1074,70 @@
         }
       ],
       "description": "Compare {count} waxing salons in Perth: a full Brazilian from $55 (most charge $75), bikini, brows, legs and men’s waxing, plus late nights and Sundays."
+    },
+    "bathhouse": {
+      "phrase": "Bathhouses",
+      "title": "Bathhouses in Perth: Compare {count} Places & Prices",
+      "h1": "Bathhouses in Perth",
+      "description": "Compare {count} bathhouses in Perth, from Ember in Osborne Park to Scarborough and Fremantle: saunas, hot and ice baths, prices and who can go.",
+      "intro": [
+        "A bathhouse in Perth is a circuit of heat and water in one booking: a sauna, a hot mineral or magnesium bath, an ice bath and, at some, a steam room. {count} places here sell one, and the biggest difference between them is how many people you share it with.",
+        "Ember Bath House in Osborne Park is the large communal one: 90 minutes with a Finnish sauna, steam room, hot mineral bath and ice bath for $89, with a towel, robe and tea. It is all-gender, swimwear is required and it's 18 and over. Merse Wellness, also in Osborne Park, sells a 60-minute bathhouse session for $59.95, with magnesium pools, infrared and hot rock saunas, a steam room and an ice bath; 16 and 17-year-olds can go with an adult.",
+        "Two are smaller. Solace Day Spa on the Scarborough Esplanade runs its bathhouse by the hour for up to four guests at a time, $69 a session, or $259 to have it to yourselves for up to six. The Neighbourhood Sauna on South Terrace, Fremantle, books its Bath House Experience as a private room with an infrared sauna, hot magnesium bath and ice bath, $75 for one or $140 for two.",
+        "Prices are as each venue published them when we checked in September and October 2026. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
+      ],
+      "faq": [
+        {
+          "q": "How much is a bathhouse in Perth?",
+          "a": "A session costs $59.95 for an hour at Merse Wellness, $69 at Solace Day Spa, $75 at The Neighbourhood Sauna and $89 for 90 minutes at Ember Bath House, as each published it when we checked in October 2026. All four sell multi-visit packs, and Ember, Merse and The Neighbourhood Sauna also sell memberships."
+        },
+        {
+          "q": "What's included at Ember Bath House?",
+          "a": "Ninety minutes with a Finnish sauna, steam room, hot mineral bath and ice bath, with a towel, robe and tea, for $89. It is all-gender, swimwear is required and it's 18 and over. Ember also runs a silent session at the same price, sessions for two at $178, and packages that add a massage or a hammam ritual."
+        },
+        {
+          "q": "Is there a bathhouse in Osborne Park?",
+          "a": "Two. Ember Bath House on Donovan Street is the larger communal bathhouse, and Merse Wellness sells a 60-minute bathhouse session with magnesium pools, saunas, a steam room and an ice bath."
+        },
+        {
+          "q": "Can I book a private bathhouse in Perth?",
+          "a": "Yes. The Neighbourhood Sauna's Bath House Experience in Fremantle is a private room for one or two people, and Solace Day Spa in Scarborough sells a private bathhouse session for up to six for $259. Solace's standard sessions take at most four guests."
+        },
+        {
+          "q": "What do you wear to a bathhouse?",
+          "a": "Swimwear at Ember Bath House, where it's required, and at Merse Wellness, which recommends it and hires towels for $4.95. In The Neighbourhood Sauna's private rooms, comfortable clothing or a swimsuit is fine. Check each venue's own page before you go."
+        },
+        {
+          "q": "How old do you have to be to go to a bathhouse?",
+          "a": "Ember Bath House is 18 and over. Merse Wellness takes 16 and 17-year-olds with an adult, and The Neighbourhood Sauna's minimum age is 12. Solace doesn't state one on its bathhouse page."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "spa",
+          "facet": "contrast-therapy",
+          "label": "Sauna and ice bath in Perth",
+          "line": "Heat and cold in one session"
+        },
+        {
+          "category": "spa",
+          "facet": "steam-room",
+          "label": "Steam rooms in Perth",
+          "line": "Humid heat, from leisure centres to bathhouses"
+        },
+        {
+          "category": "spa",
+          "facet": "saunas",
+          "label": "Saunas in Perth",
+          "line": "Dry heat, traditional and infrared"
+        },
+        {
+          "category": "spa",
+          "facet": "cold-plunge",
+          "label": "Ice baths & cold plunges",
+          "line": "Cold water on its own"
+        }
+      ]
     }
   }
 }

@@ -1118,7 +1118,13 @@ function service_url( string $service_slug ): string {
 		return '';
 	}
 
-	return category_url( $term ) . $facet['slug'] . '/';
+	/*
+	 * The page that is indexed, not the one built from the slug: the ice
+	 * bath service's own address is a noindexed twin of /spa/cold-plunge/,
+	 * and every listing with an ice bath was linking there, spending its
+	 * internal link on a page search engines are told to drop.
+	 */
+	return facet_canonical_url( $term, $facet );
 }
 
 /**
