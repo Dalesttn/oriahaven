@@ -82,9 +82,16 @@ function serve(): void {
 		set_transient( CACHE_KEY, $body, 12 * HOUR_IN_SECONDS );
 	}
 
+	count_read();
+
 	while ( ob_get_level() > 0 ) {
 		ob_end_clean();
 	}
+	// Never page-cached (LiteSpeed) or edge-cached (Hostinger CDN): a cached
+	// copy would be served without running count_read(), and the body is
+	// already kept as a transient, so building it is cheap.
+	do_action( 'litespeed_control_set_nocache', 'llms.txt read counter' );
+	nocache_headers();
 	status_header( 200 );
 	// text/plain so it opens in a browser rather than downloading; the
 	// content is markdown either way, which is what the spec asks for.
@@ -92,6 +99,66 @@ function serve(): void {
 	header( 'X-Robots-Tag: noindex' );
 	echo $body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	exit;
+}
+
+/*
+ * Who reads llms.txt. Search Console cannot say -- Google does not use the
+ * file -- so each fetch is counted here by reader: one row per Perth day,
+ * one counter per family below, kept READS_DAYS days. Nothing about the
+ * reader is stored beyond the family name: no IP, no full user agent.
+ * Read it with: wp eval-file wp-content/plugins/oria-core/tools/llms-reads.php
+ */
+const READS_OPTION = 'oria_llms_reads';
+const READS_DAYS   = 90;
+
+/** The user-agent families worth telling apart, first match wins. */
+function reader_family( string $ua ): string {
+	$map = array(
+		'GPTBot'             => 'GPTBot (OpenAI training)',
+		'OAI-SearchBot'      => 'OAI-SearchBot (ChatGPT search)',
+		'ChatGPT-User'       => 'ChatGPT-User (ChatGPT, on request)',
+		'ClaudeBot'          => 'ClaudeBot (Anthropic)',
+		'Claude-SearchBot'   => 'Claude-SearchBot (Claude search)',
+		'Claude-User'        => 'Claude-User (Claude, on request)',
+		'PerplexityBot'      => 'PerplexityBot',
+		'Perplexity-User'    => 'Perplexity-User (on request)',
+		'Google-Extended'    => 'Google-Extended',
+		'Googlebot'          => 'Googlebot',
+		'bingbot'            => 'Bingbot',
+		'Applebot'           => 'Applebot',
+		'meta-externalagent' => 'Meta AI',
+		'Bytespider'         => 'Bytespider (ByteDance)',
+		'CCBot'              => 'CCBot (Common Crawl)',
+		'Amazonbot'          => 'Amazonbot',
+		'DuckAssistBot'      => 'DuckAssistBot',
+		'cohere'             => 'Cohere',
+		'MistralAI'          => 'Mistral',
+	);
+	foreach ( $map as $needle => $label ) {
+		if ( false !== stripos( $ua, $needle ) ) {
+			return $label;
+		}
+	}
+	if ( preg_match( '/bot|crawler|spider|fetch|python|curl|wget|httpx|axios|node/i', $ua ) ) {
+		return 'Other bot or script';
+	}
+	return 'Browser (a person)';
+}
+
+/** Add one to today's count for this reader's family. Best effort. */
+function count_read(): void {
+	$family = reader_family( (string) ( $_SERVER['HTTP_USER_AGENT'] ?? '' ) );
+	$day    = current_time( 'Y-m-d' );
+	$reads  = get_option( READS_OPTION, array() );
+	$reads  = is_array( $reads ) ? $reads : array();
+	$reads[ $day ][ $family ] = (int) ( $reads[ $day ][ $family ] ?? 0 ) + 1;
+	$cutoff = wp_date( 'Y-m-d', time() - READS_DAYS * DAY_IN_SECONDS );
+	foreach ( array_keys( $reads ) as $d ) {
+		if ( $d < $cutoff ) {
+			unset( $reads[ $d ] );
+		}
+	}
+	update_option( READS_OPTION, $reads, false );
 }
 
 /** One markdown list item. */
