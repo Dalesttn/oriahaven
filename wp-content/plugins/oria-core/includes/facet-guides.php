@@ -284,6 +284,16 @@ function category_entry( ?\WP_Term $term ): array {
 	if ( ! $term instanceof \WP_Term ) {
 		return array();
 	}
+	/*
+	 * Category guides are written about Perth's studios ("Hot For Yoga in
+	 * Jandakot"), and only some of their lines say "Perth", so the per-line
+	 * filter below could not keep them off /explore/margaret-river/yoga/,
+	 * which shipped the Perth H1 and studios. Perth only.
+	 */
+	if ( function_exists( '\Oria\Core\Cities\current' ) && function_exists( '\Oria\Core\Cities\default_city' )
+		&& ( \Oria\Core\Cities\current()['slug'] ?? '' ) !== ( \Oria\Core\Cities\default_city()['slug'] ?? '' ) ) {
+		return array();
+	}
 	$e = all()[ 'cat:' . $term->slug ] ?? array();
 	return is_array( $e ) ? $e : array();
 }

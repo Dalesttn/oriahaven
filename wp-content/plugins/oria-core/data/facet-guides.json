@@ -1138,6 +1138,81 @@
           "line": "Cold water on its own"
         }
       ]
+    },
+    "cat:yoga": {
+      "title": "Yoga Classes & Studios in Perth: {count} Compared | Oria Haven",
+      "h1": "Yoga classes and studios in Perth",
+      "phrase": "Yoga classes",
+      "description": "Compare {count} yoga studios in Perth: hot, vinyasa, yin, pregnancy and beginners' classes, with intro passes from $39 checked on each studio's site.",
+      "intro": [
+        "{count} yoga studios and teachers in Perth are listed here, from timetabled studios to weekly classes in community halls. Fremantle and the southern suburbs have the most, then central Perth, with a handful each in the northern and western suburbs and the hills.",
+        "Yin and vinyasa are the most common styles. For heat, four studios run hot classes: The Yoga Garage in Scarborough, which lists Bikram alongside hot vinyasa and yin, Hot For Yoga in Jandakot, Flow Hot Yoga & Pilates in Wangara and The Studio Perth in East Victoria Park. AirSpace in Leederville teaches aerial yoga, with orientation sessions before your first aerial class.",
+        "For pregnancy yoga, Small Blessings Yoga in Beaconsfield, Bloom Yoga Studio in Kingsley, Yoga Corner in Duncraig, Tamara Yoga in Claremont, The Yoga Space in West Perth and Bodyscape in Nedlands list prenatal classes. Tamara Yoga, Bloom Yoga Studio and Kookaburra Yoga in Bedfordale run yoga teacher training.",
+        "The easiest way to start is an intro pass for new students: The Yoga Garage and Yogahub in Mount Hawthorn advertise 14 days for $39, Hot For Yoga 25 days for $49, Horizon Yoga in Cottesloe 21 days and Yoga Corner 30 days for $59 each, and Bodyscape 14 days for $69, as each studio published them when checked in October 2026. Most can be bought once per person."
+      ],
+      "faq": [
+        {
+          "q": "How much is a yoga class in Perth?",
+          "a": "Most studios sell intro passes, class packs and memberships rather than one class price. The intro passes listed here cost $39 to $69 for 14 to 30 days of classes, as each studio published them in October 2026; after that, check each studio's own timetable and price list."
+        },
+        {
+          "q": "Where can I do hot yoga in Perth?",
+          "a": "Four studios here run hot classes: The Yoga Garage in Scarborough, Hot For Yoga in Jandakot, Flow Hot Yoga & Pilates in Wangara and The Studio Perth in East Victoria Park."
+        },
+        {
+          "q": "Is there Bikram yoga in Perth?",
+          "a": "The Yoga Garage in Scarborough lists Bikram classes alongside hot vinyasa, yin and hot core Pilates, and its intro pass covers all of them."
+        },
+        {
+          "q": "Where can I try aerial yoga in Perth?",
+          "a": "AirSpace in Leederville teaches aerial yoga. New students can take a 14-day trial of unlimited group classes, which includes orientation sessions before the first aerial class."
+        },
+        {
+          "q": "Where can I do pregnancy yoga in Perth?",
+          "a": "Small Blessings Yoga in Beaconsfield, Bloom Yoga Studio in Kingsley, Yoga Corner in Duncraig, Tamara Yoga in Claremont, The Yoga Space in West Perth and Bodyscape in Nedlands list prenatal classes. If you're unsure whether yoga suits you in pregnancy, ask your midwife or GP first."
+        },
+        {
+          "q": "Where can I do yoga teacher training in Perth?",
+          "a": "Tamara Yoga in Claremont, Bloom Yoga Studio in Kingsley and Kookaburra Yoga in Bedfordale run teacher training. Course length, accreditation and dates are on each studio's own site."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "yoga",
+          "facet": "hot-room",
+          "label": "Hot yoga in Perth",
+          "line": "Heated rooms and Bikram"
+        },
+        {
+          "category": "yoga",
+          "facet": "beginners",
+          "label": "Yoga for beginners",
+          "line": "Courses and gentle classes"
+        },
+        {
+          "category": "yoga",
+          "facet": "pregnancy",
+          "label": "Pregnancy yoga",
+          "line": "Prenatal classes"
+        },
+        {
+          "category": "yoga",
+          "facet": "yin",
+          "label": "Yin yoga",
+          "line": "Slow, long holds"
+        },
+        {
+          "category": "yoga",
+          "facet": "fremantle",
+          "label": "Yoga in Fremantle",
+          "line": "The most studios of any area"
+        },
+        {
+          "path": "/offers/yoga/",
+          "label": "Yoga intro offers in Perth",
+          "line": "Passes from $39, compared"
+        }
+      ]
     }
   }
 }

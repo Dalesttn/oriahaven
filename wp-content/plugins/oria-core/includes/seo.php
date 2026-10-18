@@ -1083,6 +1083,13 @@ function seo_description( $desc ) {
 	}
 	// Category and area archives, same gap as the title above.
 	$term = plain_term();
+	// A category guide's description (facet-guides.json "cat:{slug}") is
+	// written with the page's search data and outranks an older line typed
+	// into Yoast; the yoga term's typed line was hiding its guide.
+	$guided = $term ? category_guide_text( $term, 'description' ) : '';
+	if ( '' !== $guided && city_keeps( $guided ) ) {
+		return $guided;
+	}
 	// A description typed in Yoast wins -- on its own city. Written about
 	// Perth, it is not Margaret River's meta: that falls to the line below.
 	$typed = $term ? term_override( $term, 'wpseo_desc' ) : '';
