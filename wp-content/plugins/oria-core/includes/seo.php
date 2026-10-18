@@ -764,6 +764,18 @@ function seo_title( $title ) {
 			$stars = rating_phrase( (int) get_the_ID() );
 			if ( '' !== $stars ) {
 				$rated = array();
+				/*
+				 * "Nutrition Nation, Dietitian in Claremont: 5.0★ (28 reviews)".
+				 * A name that doesn't say what the business is ranked only for
+				 * the name: the page drew "dietician claremont" impressions at
+				 * position 60 with no "dietitian" anywhere in its title.
+				 */
+				$noun = title_noun( (int) get_the_ID(), $name );
+				if ( '' !== $noun && '' !== $suburb && ! $repeats ) {
+					$short   = (string) preg_replace( '/ from ([\d,]+) .*$/u', ' ($1 reviews)', $stars );
+					$rated[] = sprintf( '%s, %s in %s: %s', $name, $noun, $suburb, $stars );
+					$rated[] = sprintf( '%s, %s in %s: %s', $name, $noun, $suburb, $short );
+				}
 				if ( '' !== $suburb && ! $repeats ) {
 					$rated[] = sprintf( '%s, %s: %s', $name, $suburb, $stars );
 				}
@@ -855,6 +867,71 @@ function rating_phrase( int $id ): string {
 /** Just the suburb for a listing, for titles too long to carry the category. */
 /* What a search result shows before it truncates. */
 const TITLE_MAX = 61;
+
+/**
+ * Practitioner services, the noun a searcher types for each, and the stem
+ * that means a business name already says it. In priority order.
+ */
+const TITLE_NOUNS = array(
+	'dietetics'            => array( 'Dietitian', 'dieti|dietet|dietic' ),
+	'naturopathy'          => array( 'Naturopath', 'naturopath' ),
+	'physiotherapy'        => array( 'Physio', 'physio' ),
+	'chiropractic'         => array( 'Chiropractor', 'chiro' ),
+	'osteopathy'           => array( 'Osteopath', 'osteo' ),
+	'acupuncture'          => array( 'Acupuncturist', 'acupunct' ),
+	'podiatry'             => array( 'Podiatrist', 'podiat|foot|feet' ),
+	'myotherapy'           => array( 'Myotherapist', 'myother' ),
+	'speech-pathology'     => array( 'Speech Pathologist', 'speech' ),
+	'occupational-therapy' => array( 'Occupational Therapist', 'occupational|\bot\b' ),
+	'exercise-physiology'  => array( 'Exercise Physiologist', 'physiolog' ),
+	'hypnotherapy'         => array( 'Hypnotherapist', 'hypno' ),
+	'kinesiology'          => array( 'Kinesiologist', 'kinesiolog' ),
+	'counselling'          => array( 'Counsellor', 'counsel|psycholog|therap' ),
+	'doula-support'        => array( 'Doula', 'doula' ),
+	'lactation-consulting' => array( 'Lactation Consultant', 'lactation' ),
+);
+
+/**
+ * What a listing is, in one searchable noun ("Dietitian"), or ''.
+ *
+ * Only when it is safe to say: the listing carries the service, its primary
+ * category is one the service belongs to (services.json), the name doesn't
+ * already say it, and it isn't a multidisciplinary clinic -- three or more
+ * of these services means any one noun would mislabel it.
+ */
+function title_noun( int $id, string $name ): string {
+	static $cats = null;
+	if ( null === $cats ) {
+		$cats = array();
+		$raw  = is_readable( ORIA_CORE_DIR . 'data/services.json' ) ? json_decode( (string) file_get_contents( ORIA_CORE_DIR . 'data/services.json' ), true ) : array();
+		foreach ( (array) ( isset( $raw['services'] ) ? $raw['services'] : $raw ) as $s ) {
+			if ( is_array( $s ) && ! empty( $s['slug'] ) ) {
+				$cats[ (string) $s['slug'] ] = (array) ( $s['categories'] ?? array() );
+			}
+		}
+	}
+	$primary = \Oria\Core\Categories\primary_for( $id );
+	if ( ! $primary instanceof \WP_Term ) {
+		return '';
+	}
+	$have = (array) wp_get_post_terms( $id, 'service', array( 'fields' => 'slugs' ) );
+	$hits = array_values( array_intersect( array_keys( TITLE_NOUNS ), $have ) );
+	if ( ! $hits || count( $hits ) >= 3 ) {
+		return '';
+	}
+	// A name that already names any of its practices says what it is ("Aligned & Centred Acupuncture").
+	foreach ( $hits as $slug ) {
+		if ( preg_match( '/' . TITLE_NOUNS[ $slug ][1] . '/i', $name ) ) {
+			return '';
+		}
+	}
+	foreach ( $hits as $slug ) {
+		if ( in_array( $primary->slug, $cats[ $slug ] ?? array(), true ) ) {
+			return TITLE_NOUNS[ $slug ][0];
+		}
+	}
+	return '';
+}
 
 function listing_suburb( int $id ): string {
 	foreach ( wp_get_post_terms( $id, 'area' ) as $term ) {

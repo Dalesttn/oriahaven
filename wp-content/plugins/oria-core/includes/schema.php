@@ -559,11 +559,26 @@ function listing_schema( int $id ): ?array {
 	}
 
 	$address = (string) get_field( 'address', $id );
+	/*
+	 * The address field is written for people and some carry notes --
+	 * "9 Leura Ave, Claremont WA 6010 (PROmotion Health; also Applecross &
+	 * Wembley rooms)", "Perth WA (venues across the metro)" -- which went
+	 * into streetAddress whole. Structured data gets the street alone: the
+	 * notes dropped, the postcode moved to its own field, and no street at
+	 * all where what is left has no number in it.
+	 */
+	$street   = trim( (string) preg_replace( array( '/\s*\([^)]*\)/', '/\s*;.*$/s' ), '', $address ) );
+	$postcode = preg_match( '/\b(\d{4})\s*$/', $street, $pm ) ? $pm[1] : '';
+	$street   = trim( (string) preg_replace( '/,?\s*[A-Za-z .\'-]*\s*\b(WA|VIC|NSW|QLD|SA|TAS|ACT|NT)\s*\d{0,4}\s*$/', '', $street ), " ,\t" );
+	if ( ! preg_match( '/\d/', $street ) ) {
+		$street = '';
+	}
 	if ( '' !== $address || '' !== $suburb ) {
 		$out['address'] = array_filter(
 			array(
 				'@type'           => 'PostalAddress',
-				'streetAddress'   => $address,
+				'streetAddress'   => $street,
+				'postalCode'      => $postcode,
 				'addressLocality' => $suburb,
 				// The listing's own state: a Melbourne studio is not in WA.
 				'addressRegion'   => function_exists( '\Oria\Core\Cities\state_code' ) ? \Oria\Core\Cities\state_code( \Oria\Core\Cities\of_post( (int) $id ) ) : 'WA',
