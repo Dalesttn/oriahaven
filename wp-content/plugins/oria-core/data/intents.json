@@ -275,11 +275,12 @@
             "intent": "hot-room",
             "live": true,
             "frame": {
-                "h1": "Hot yoga in Perth",
-                "title": "Hot yoga in Perth: heated studios and what to expect | Oria Haven",
-                "description": "Perth yoga studios that run heated rooms — from warm slow flow to hot sequences — listed where the studio publishes it. Counted live from the directory.",
-                "opener": "\"Hot\" covers a wide range in Perth. A warm slow flow and a forty-degree sequence are different afternoons, and the temperature is usually on the studio's own timetable — where it is, we list it.",
+                "h1": "Hot yoga and Bikram in Perth",
+                "title": "Hot Yoga & Bikram in Perth: Studios & Intro Offers | Oria Haven",
+                "description": "Compare Perth's hot yoga and Bikram studios in Wangara, Jandakot, Scarborough and East Victoria Park: heated classes, intro passes from $39 and mat hire.",
+                "opener": "Four studios in Perth run hot yoga. Three teach Bikram, the set sequence of postures in a heated room: The Yoga Garage in Scarborough, Hot For Yoga in Jandakot and Flow Hot Yoga & Pilates in Wangara, which runs it at 38 degrees. The Studio Perth runs hot classes at East Victoria Park, Joondalup and Butler. Flow and The Studio Perth also teach reformer Pilates, and The Yoga Garage hot core Pilates.",
                 "worth_knowing": [
+                    "The easiest way in is an intro pass for new students: The Yoga Garage sells 14 days of unlimited classes for $39, Hot For Yoga 25 days for $49 with mat and towel hire free for first-timers, and The Studio Perth's Joondalup and Butler studios a twenty-day unlimited intro for $89, as each published it in October 2026.",
                     "Heated classes are harder work than the same sequence at room temperature, which is worth a second thought for a first class. Studios generally ask you to bring water and a towel, and most hire mats for a few dollars so you are not carrying a wet one home.",
                     "A heated timetable often includes one or two unheated or cooler classes a week — a Sunday community class, a beginners' hour. If the heat is the thing putting you off, look for those first."
                 ],
@@ -295,6 +296,14 @@
                     {
                         "q": "How hot are the rooms?",
                         "a": "It depends on the style — warm slow flow classes sit well below a hot sequence. Studios that publish a temperature have it on their timetable, and the listing notes it where we have seen it."
+                    },
+                    {
+                        "q": "Where can I do Bikram yoga in Perth?",
+                        "a": "Three studios here teach the Bikram sequence: The Yoga Garage in Scarborough, Hot For Yoga in Jandakot and Flow Hot Yoga & Pilates in Wangara. The Yoga Garage and Flow run it alongside hot vinyasa and other classes; Hot For Yoga is a Bikram studio."
+                    },
+                    {
+                        "q": "How much is hot yoga in Perth?",
+                        "a": "New students can start on an intro pass: 14 days of unlimited classes for $39 at The Yoga Garage, 25 days for $49 at Hot For Yoga, and twenty days for $89 at The Studio Perth's northern studios, as each published it in October 2026. After that, each studio sells packs and memberships."
                     },
                     {
                         "q": "What should I bring to a hot class?",

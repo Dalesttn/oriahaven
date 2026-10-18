@@ -1205,7 +1205,65 @@
           "category": "yoga",
           "facet": "fremantle",
           "label": "Yoga in Fremantle",
-          "line": "The most studios of any area"
+          "line": "YOGALAB, Yogaveda and studios nearby"
+        },
+        {
+          "path": "/offers/yoga/",
+          "label": "Yoga intro offers in Perth",
+          "line": "Passes from $39, compared"
+        }
+      ]
+    },
+    "yoga@fremantle": {
+      "title": "Yoga in Fremantle: Studios, Classes & Prices",
+      "h1": "Yoga in Fremantle",
+      "phrase": "Yoga",
+      "description": "Yoga in Fremantle, East and North Fremantle: YOGALAB on High Street, Yogaveda, Fremantle Yoga Centre and Loop Yoga, with styles, courses and prices.",
+      "intro": [
+        "In Fremantle itself, YOGALAB on High Street calls its 200-square-metre room the largest yoga studio in Western Australia, and Yogaveda Wellness Centre has run daily classes, from gentle to dynamic, alongside an Ayurvedic clinic since 2008. Lakshmi Ayurveda, in a Fremantle cottage, teaches yoga classes beside its Ayurvedic treatments, and Oversoul Studio on Wood Street runs a weekly stretch class and monthly yoga and sound bath events.",
+        "Two of the area's best-known studios sit just over the suburb line. Fremantle Yoga Centre on Petra Street, East Fremantle, one of Perth's longest-standing studios, teaches vinyasa, hatha, beginners, therapy yoga, restorative yin and mum-and-bubs classes. Loop Yoga in North Fremantle runs from power yoga and sculpt Pilates to yin, restorative and yoga nidra with live crystal bowls; drop-ins are $32 and memberships start at $39 a week.",
+        "New to yoga: Yogaveda runs six-week beginner courses from $126 prepaid, and Fremantle Yoga Centre has beginners' classes on its timetable. For pregnancy yoga, Small Blessings Yoga in nearby Beaconsfield teaches pregnancy and postnatal yoga in ten-week courses that follow the school terms."
+      ],
+      "faq": [
+        {
+          "q": "Where can I do yoga in Fremantle?",
+          "a": "In Fremantle: YOGALAB on High Street, Yogaveda Wellness Centre, Lakshmi Ayurveda and Oversoul Studio on Wood Street. Close by: Fremantle Yoga Centre in East Fremantle and Loop Yoga in North Fremantle."
+        },
+        {
+          "q": "Is there a beginners' yoga course in Fremantle?",
+          "a": "Yogaveda Wellness Centre runs six-week beginner courses from $126 prepaid, and Fremantle Yoga Centre in East Fremantle has beginners' classes on its timetable."
+        },
+        {
+          "q": "How much is a yoga class in Fremantle?",
+          "a": "Loop Yoga in North Fremantle lists drop-in classes at $32 and memberships from $39 a week, and Yogaveda's six-week beginner course is $126 prepaid. Other studios publish their prices on their own timetables."
+        },
+        {
+          "q": "Is there pregnancy yoga near Fremantle?",
+          "a": "Small Blessings Yoga in Beaconsfield teaches pregnancy and postnatal yoga, and Fremantle Yoga Centre in East Fremantle runs mum-and-bubs classes."
+        },
+        {
+          "q": "Where can I do yoga nidra in Fremantle?",
+          "a": "Yogaveda Wellness Centre runs Friday-evening yoga nidra and deep-restore sessions, and Loop Yoga in North Fremantle holds yoga nidra inside a live crystal-bowl sound session."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "yoga",
+          "facet": "freo",
+          "label": "Yoga across Fremantle and the south",
+          "line": "East and North Fremantle, Applecross and more"
+        },
+        {
+          "category": "yoga",
+          "facet": "hot-room",
+          "label": "Hot yoga and Bikram in Perth",
+          "line": "Four heated studios"
+        },
+        {
+          "category": "yoga",
+          "facet": "pregnancy",
+          "label": "Pregnancy yoga",
+          "line": "Prenatal classes"
         },
         {
           "path": "/offers/yoga/",

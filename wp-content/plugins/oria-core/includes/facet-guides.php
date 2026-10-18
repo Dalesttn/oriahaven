@@ -55,6 +55,19 @@ function all(): array {
  */
 function entry( array $facet ): array {
 	$all = all();
+	/*
+	 * An area page ("/yoga/fremantle/") has a guide only as "{category}@{area}"
+	 * ("yoga@fremantle"), never by the bare area slug, which every category's
+	 * Fremantle page shares. Perth only, like the category guides.
+	 */
+	if ( 'area' === (string) ( $facet['key'] ?? '' ) ) {
+		$term = get_queried_object();
+		if ( ! $term instanceof \WP_Term || ! perth() ) {
+			return array();
+		}
+		$e = $all[ $term->slug . '@' . (string) ( $facet['slug'] ?? '' ) ] ?? null;
+		return is_array( $e ) ? $e : array();
+	}
 	foreach ( array( (string) ( $facet['slug'] ?? '' ), (string) ( $facet['value'] ?? '' ) ) as $k ) {
 		if ( '' !== $k && isset( $all[ $k ] ) && is_array( $all[ $k ] ) ) {
 			return $all[ $k ];
@@ -81,9 +94,19 @@ function all_categories( ?array $facet ): bool {
 	return $facet && ! empty( entry( $facet )['all_categories'] );
 }
 
-/** Only service and specialty facets have guides of their own. */
+/** Service and specialty facets have guides; an area page only where one is written for its category. */
 function applies( ?array $facet ): bool {
-	return is_array( $facet ) && in_array( (string) ( $facet['key'] ?? '' ), array( 'svc', 'spec' ), true );
+	if ( ! is_array( $facet ) ) {
+		return false;
+	}
+	$key = (string) ( $facet['key'] ?? '' );
+	return in_array( $key, array( 'svc', 'spec' ), true ) || ( 'area' === $key && (bool) entry( $facet ) );
+}
+
+/** Whether this is the default city, where the Perth-written guides belong. */
+function perth(): bool {
+	return ! function_exists( '\Oria\Core\Cities\current' ) || ! function_exists( '\Oria\Core\Cities\default_city' )
+		|| ( \Oria\Core\Cities\current()['slug'] ?? '' ) === ( \Oria\Core\Cities\default_city()['slug'] ?? '' );
 }
 
 /**
@@ -290,8 +313,7 @@ function category_entry( ?\WP_Term $term ): array {
 	 * filter below could not keep them off /explore/margaret-river/yoga/,
 	 * which shipped the Perth H1 and studios. Perth only.
 	 */
-	if ( function_exists( '\Oria\Core\Cities\current' ) && function_exists( '\Oria\Core\Cities\default_city' )
-		&& ( \Oria\Core\Cities\current()['slug'] ?? '' ) !== ( \Oria\Core\Cities\default_city()['slug'] ?? '' ) ) {
+	if ( ! perth() ) {
 		return array();
 	}
 	$e = all()[ 'cat:' . $term->slug ] ?? array();

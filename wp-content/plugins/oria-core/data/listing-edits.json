@@ -1118,5 +1118,16 @@
     ]
    }
   }
+ },
+ {
+  "slug": "unearth-remedy-fremantle",
+  "requested_by": "Oria Haven, 18 Oct 2026 -- monthly breathwork sessions held in a room at Spanda Yoga; not a yoga studio, so off the yoga pages (stays under breathwork).",
+  "terms": {
+   "practice": {
+    "remove": [
+     "yoga"
+    ]
+   }
+  }
  }
 ]

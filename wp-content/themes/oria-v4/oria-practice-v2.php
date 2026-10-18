@@ -346,7 +346,9 @@ if ( $oria_fac_sums && function_exists( '\Oria\Core\FacilityAccess\faqs' ) ) {
 }
 
 $oria_h1 = $oria_facet ? (string) $oria_facet['label'] : sprintf( __( '%1$s in %2$s', 'oria' ), $oria_pname, $oria_cin );
-if ( $oria_facet && ! $oria_area && function_exists( '\Oria\Core\FacetGuides\entry' ) && \Oria\Core\FacetGuides\applies( $oria_facet ) ) {
+$oria_fg_h1 = '';
+// An area page counts too where its category has a guide for it ("yoga@fremantle").
+if ( $oria_facet && function_exists( '\Oria\Core\FacetGuides\entry' ) && \Oria\Core\FacetGuides\applies( $oria_facet ) ) {
 	// A facet guide may lead with the words people search ("Sauna and ice bath
 	// in Perth" on the contrast therapy page), as category guides can.
 	$oria_fg_h1 = trim( (string) ( \Oria\Core\FacetGuides\entry( $oria_facet )['h1'] ?? '' ) );
@@ -354,7 +356,7 @@ if ( $oria_facet && ! $oria_area && function_exists( '\Oria\Core\FacetGuides\ent
 		$oria_h1 = $oria_fg_h1;
 	}
 }
-if ( $oria_area ) {
+if ( $oria_area && '' === $oria_fg_h1 ) {
 	// "Sleep & Recovery in Currambine" — the suburb is the whole point of
 	// the page, so it replaces Perth rather than sitting beside it.
 	$oria_h1 = sprintf( __( '%1$s in %2$s', 'oria' ), $oria_pname, \Oria\Theme\tname( $oria_area ) );
@@ -2086,7 +2088,7 @@ $oria_intro_html = ( is_string( $oria_intro ) && '' !== trim( $oria_intro ) && $
 	? (string) \Oria\Core\PracticesIndex\rewrite_content_links( (string) $oria_intro, $oria_term )
 	: '';
 // A service or specialty facet's own guide and neighbours, where written.
-$oria_fg_on    = $oria_facet && ! $oria_area && function_exists( '\Oria\Core\FacetGuides\intro' );
+$oria_fg_on    = $oria_facet && function_exists( '\Oria\Core\FacetGuides\intro' ) && ( ! $oria_area || \Oria\Core\FacetGuides\applies( $oria_facet ) );
 $oria_fg_intro = $oria_fg_on ? \Oria\Core\FacetGuides\intro( $oria_facet ) : array();
 $oria_fg_also  = $oria_fg_on ? \Oria\Core\FacetGuides\see_also( $oria_facet, is_array( $oria_city ) ? $oria_city : null ) : array();
 $oria_fg_name  = $oria_fg_on
