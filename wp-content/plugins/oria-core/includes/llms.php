@@ -267,11 +267,14 @@ function guided_pages(): array {
 			}
 			$url = \Oria\Core\PracticesIndex\facet_canonical_url( $term, $facet );
 			// Only the page that is the facet's own home, with enough listings to be indexed.
+			// The editor's Listings > Facet pages setting wins, as in PracticesIndex\robots().
+			$n        = \Oria\Core\PracticesIndex\facet_count( $term, $facet );
+			$override = function_exists( '\Oria\Core\FacetIndex\state' ) ? \Oria\Core\FacetIndex\state( $url ) : '';
 			if ( trailingslashit( $url ) !== trailingslashit( \Oria\Core\PracticesIndex\category_url( $term ) . $facet['slug'] )
-				|| \Oria\Core\PracticesIndex\facet_count( $term, $facet ) < \Oria\Core\PracticesIndex\FACET_MIN ) {
+				|| 'noindex' === $override || $n < 1
+				|| ( $n < \Oria\Core\PracticesIndex\FACET_MIN && 'index' !== $override ) ) {
 				continue;
 			}
-			$n    = \Oria\Core\PracticesIndex\facet_count( $term, $facet );
 			$note = str_replace( '{count}', (string) $n, (string) ( $g['description'] ?? '' ) );
 			$name = (string) ( $g['h1'] ?? ( '' !== (string) ( $g['phrase'] ?? '' ) ? $g['phrase'] . ' in Perth' : $facet['label'] ) );
 			$add( $name, $url, $note );

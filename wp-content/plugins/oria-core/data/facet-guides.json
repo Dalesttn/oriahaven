@@ -1271,6 +1271,64 @@
           "line": "Passes from $39, compared"
         }
       ]
+    },
+    "yoga@west-perth": {
+      "title": "Yoga in West Perth: The Yoga Space & Studios Nearby",
+      "h1": "Yoga in West Perth",
+      "phrase": "Yoga",
+      "description": "Yoga in West Perth: The Yoga Space on Colin Street, plus studios a suburb away in the CBD, West Leederville and Shenton Park, with styles and prices.",
+      "intro": [
+        "West Perth's own yoga studio is The Yoga Space at 6/79 Colin Street, teaching Ashtanga, vinyasa, yin and pregnancy yoga, in person and online, since 2005. Newcomers start with a three-week unlimited introduction, which lets you try each style across the timetable before choosing one.",
+        "A suburb away there is more choice. In the CBD, Energy Cntr Yoga on Stirling Street runs vinyasa, hatha, slow flow, yin and power flow in a room for 35, with casual classes at $28. In West Leederville, Vitality House's public studio on Southport Street runs warmed vinyasa, slow flow and power yoga and yin, at $27 a class or $59 for 14 days unlimited. Yoga West, upstairs on Onslow Road in Shenton Park, teaches Iyengar from Foundations upwards, at $30 a class or $85 for a newcomer's first month.",
+        "For something different, AirSpace on Newcastle Street, Leederville, is the home of AirYoga, its aerial hammock class, with drop-ins at $39."
+      ],
+      "faq": [
+        {
+          "q": "Where can I do yoga in West Perth?",
+          "a": "The Yoga Space at 6/79 Colin Street is West Perth's yoga studio, teaching Ashtanga, vinyasa, yin and pregnancy yoga in person and online. Nearby are Energy Cntr Yoga in the CBD, Vitality House in West Leederville and Yoga West in Shenton Park."
+        },
+        {
+          "q": "Is there a beginners' option for yoga near West Perth?",
+          "a": "The Yoga Space runs a three-week unlimited introduction for newcomers. Yoga West in Shenton Park has Foundations classes you can join at any time, and newcomers can take a month of unlimited classes for $85."
+        },
+        {
+          "q": "How much is a yoga class near West Perth?",
+          "a": "Published casual prices nearby run from $27 a class at Vitality House in West Leederville to $28 at Energy Cntr Yoga in the CBD and $30 at Yoga West in Shenton Park. Intro offers include 14 days unlimited for $59 at Vitality House. Prices checked October 2026."
+        },
+        {
+          "q": "Is there hot or heated yoga near West Perth?",
+          "a": "Vitality House in West Leederville runs warmed vinyasa, slow flow and power yoga. For fully heated rooms and Bikram, see the hot yoga page; the nearest are further out."
+        },
+        {
+          "q": "Can I do yoga online with a West Perth studio?",
+          "a": "Yes. The Yoga Space on Colin Street teaches online as well as in person, so you can keep up when you can't get to the studio."
+        }
+      ],
+      "see_also": [
+        {
+          "category": "yoga",
+          "facet": "central",
+          "label": "Yoga across central Perth",
+          "line": "Every inner-city studio, from Mount Hawthorn to South Perth"
+        },
+        {
+          "category": "yoga",
+          "facet": "perth-cbd",
+          "label": "Yoga in the Perth CBD",
+          "line": "Lunchtime and after-work classes"
+        },
+        {
+          "category": "yoga",
+          "facet": "hot-room",
+          "label": "Hot yoga and Bikram in Perth",
+          "line": "Heated studios compared"
+        },
+        {
+          "path": "/offers/yoga/",
+          "label": "Yoga intro offers in Perth",
+          "line": "Passes from $39, compared"
+        }
+      ]
     }
   }
 }

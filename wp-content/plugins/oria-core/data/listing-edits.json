@@ -1129,5 +1129,27 @@
     ]
    }
   }
+ },
+ {
+  "slug": "vitality-house-west-leederville",
+  "requested_by": "Oria Haven, 19 Oct 2026 -- Vitality House also runs a public class studio open to non-members: warmed vinyasa, slow flow and power yoga, yin, breathwork, mat and reformer Pilates; studio class $27, 14 days unlimited $59 (vitalityhouse.com.au/studio and momence.com/u/open-classes-lzj8DT, classes dated 21-23 Oct 2026, checked 19 Oct 2026). For the West Perth / inner-west yoga pages.",
+  "terms": {
+   "practice": {
+    "add": [
+     "yoga",
+     "fitness"
+    ]
+   },
+   "service": {
+    "add": [
+     "yoga",
+     "vinyasa-yoga",
+     "hot-yoga",
+     "yin-yoga",
+     "breathwork",
+     "pilates"
+    ]
+   }
+  }
  }
 ]
