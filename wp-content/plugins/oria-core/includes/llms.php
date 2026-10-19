@@ -208,6 +208,105 @@ function tname( \WP_Term $term ): string {
 	return function_exists( 'Oria\Theme\tname' ) ? \Oria\Theme\tname( $term ) : wp_specialchars_decode( $term->name, ENT_QUOTES );
 }
 
+/**
+ * Every indexable page that carries a written guide or price comparison:
+ * category guides ("cat:yoga"), service/specialty guides ("steam-room"),
+ * area guides ("yoga@fremantle"), hand-framed intent pages (hot yoga) and
+ * the offers pages. Taken live from the same registries the pages render
+ * from, so a new guide appears here without anyone editing this file, and
+ * a page that falls below its listing floor (and so goes noindex) drops
+ * out.
+ *
+ * @return list<array{name: string, url: string, note: string}>
+ */
+function guided_pages(): array {
+	$out  = array();
+	$seen = array();
+	$add  = static function ( string $name, string $url, string $note ) use ( &$out, &$seen ): void {
+		$key = trailingslashit( $url );
+		if ( '' === $url || isset( $seen[ $key ] ) ) {
+			return;
+		}
+		$seen[ $key ] = true;
+		$out[]        = array( 'name' => $name, 'url' => $url, 'note' => html_entity_decode( $note, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+	};
+	$guides = function_exists( '\Oria\Core\FacetGuides\all' ) ? \Oria\Core\FacetGuides\all() : array();
+	$pi     = '\Oria\Core\PracticesIndex\\';
+	if ( ! $guides || ! function_exists( $pi . 'resolve_facet' ) ) {
+		return $out;
+	}
+	$practices = get_terms( array( 'taxonomy' => Taxonomies\PRACTICE, 'hide_empty' => true ) );
+	$practices = is_wp_error( $practices ) ? array() : $practices;
+
+	foreach ( $guides as $key => $g ) {
+		if ( ! is_array( $g ) ) {
+			continue;
+		}
+		$key = (string) $key;
+		// A whole category's guide.
+		if ( str_starts_with( $key, 'cat:' ) ) {
+			$term = get_term_by( 'slug', substr( $key, 4 ), Taxonomies\PRACTICE );
+			if ( $term instanceof \WP_Term ) {
+				$note = str_replace( '{count}', (string) (int) $term->count, (string) ( $g['description'] ?? '' ) );
+				$add( (string) ( $g['h1'] ?? tname( $term ) . ' in Perth' ), \Oria\Core\PracticesIndex\category_url( $term ), $note );
+			}
+			continue;
+		}
+		// An area guide ("yoga@fremantle"), or a service/specialty guide on its home category.
+		$cands = $practices;
+		$slug  = $key;
+		if ( str_contains( $key, '@' ) ) {
+			list( $cat, $slug ) = explode( '@', $key, 2 );
+			$term  = get_term_by( 'slug', $cat, Taxonomies\PRACTICE );
+			$cands = $term instanceof \WP_Term ? array( $term ) : array();
+		}
+		foreach ( $cands as $term ) {
+			$facet = \Oria\Core\PracticesIndex\resolve_facet( $term, $slug );
+			if ( ! $facet ) {
+				continue;
+			}
+			$url = \Oria\Core\PracticesIndex\facet_canonical_url( $term, $facet );
+			// Only the page that is the facet's own home, with enough listings to be indexed.
+			if ( trailingslashit( $url ) !== trailingslashit( \Oria\Core\PracticesIndex\category_url( $term ) . $facet['slug'] )
+				|| \Oria\Core\PracticesIndex\facet_count( $term, $facet ) < \Oria\Core\PracticesIndex\FACET_MIN ) {
+				continue;
+			}
+			$n    = \Oria\Core\PracticesIndex\facet_count( $term, $facet );
+			$note = str_replace( '{count}', (string) $n, (string) ( $g['description'] ?? '' ) );
+			$name = (string) ( $g['h1'] ?? ( '' !== (string) ( $g['phrase'] ?? '' ) ? $g['phrase'] . ' in Perth' : $facet['label'] ) );
+			$add( $name, $url, $note );
+			break;
+		}
+	}
+
+	// Hand-framed intent pages (intents.json), where publishable.
+	if ( function_exists( '\Oria\Core\IntentPages\registry' ) && function_exists( '\Oria\Core\IntentPages\facts' ) ) {
+		foreach ( (array) ( \Oria\Core\IntentPages\registry()['pages'] ?? array() ) as $p ) {
+			if ( empty( \Oria\Core\IntentPages\facts( $p )['publishable'] ) ) {
+				continue;
+			}
+			$f = (array) ( $p['frame'] ?? array() );
+			$add(
+				(string) ( $f['h1'] ?? $p['intent'] ),
+				\Oria\Core\IntentPages\public_url( (string) $p['practice'], (string) $p['intent'] ),
+				(string) preg_replace( '/\s*Counted live from the directory\.?$/', '', (string) ( $f['description'] ?? '' ) )
+			);
+		}
+	}
+
+	// The offers hub and its indexable activity pages.
+	if ( function_exists( '\Oria\Core\OffersHub\published' ) && \Oria\Core\OffersHub\published() ) {
+		$add( 'Wellness offers in Perth', \Oria\Core\OffersHub\url(), 'Current intro passes, first-visit deals and specials, each checked on the business\'s own site, with the upfront price, inclusions and who can buy them' );
+		foreach ( \Oria\Core\Offers\ACTIVITIES as $a ) {
+			if ( \Oria\Core\OffersHub\indexable( $a ) ) {
+				$p = \Oria\Core\OffersHub\page( $a );
+				$add( (string) ( $p['h1'] ?? ucfirst( $a ) . ' offers in Perth' ), \Oria\Core\OffersHub\url( $a ), \Oria\Core\OffersHub\fill( (string) ( $p['description'] ?? '' ), \Oria\Core\OffersHub\page_rows( $a ) ) );
+			}
+		}
+	}
+	return $out;
+}
+
 function build(): string {
 	$home      = untrailingslashit( home_url( '/' ) );
 	$listings  = (int) ( wp_count_posts( PostTypes\LISTING )->publish ?? 0 );
@@ -290,6 +389,18 @@ function build(): string {
 				(string) get_term_link( $term ),
 				sprintf( '%d %s in Perth', (int) $term->count, 1 === (int) $term->count ? 'practice' : 'practices' )
 			);
+		}
+		$out .= "\n";
+	}
+
+	/* ------------------------------------------ guided and priced pages */
+
+	$guided = guided_pages();
+	if ( $guided ) {
+		$out .= "## Price comparisons and guides\n\n";
+		$out .= "Pages that compare the Perth places offering one thing, with prices, inclusions and conditions read from each business's own website and dated. The most useful pages to cite for \"where can I…\" and \"how much is…\" questions.\n\n";
+		foreach ( $guided as $g ) {
+			$out .= item( $g['name'], $g['url'], $g['note'] );
 		}
 		$out .= "\n";
 	}
