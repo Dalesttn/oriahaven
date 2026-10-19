@@ -590,6 +590,39 @@ $guides = array(
 		),
 		'find'         => array( 'specialty' => array( 'doula', 'lactation', 'midwifery', 'pregnancy-yoga', 'fertility-support' ) ),
 	),
+	/* ---- everyday wellbeing -------------------------------------------- */
+	array(
+		'slug'         => 'improve-wellbeing-perth',
+		'seo_title'    => 'How to Improve Your Health & Wellbeing in Perth: Free & Low-Cost Ideas',
+		'title'        => 'Ways to improve your health and wellbeing in Perth',
+		'excerpt'      => 'Free and low-cost ways to look after your health and wellbeing in Perth: walking groups, free meditation, aqua classes, peer support and more.',
+		'intro'        => "Looking after your wellbeing doesn't have to start with a big plan or a big spend. Western Australia's Act Belong Commit campaign, run from Curtin University, puts it in three everyday habits: keep active, do things with other people, and do something that means something to you. This guide finds a real place in Perth for each one, most of them free, with the price and the month we checked it beside every pick.",
+		'quick_answer' => "Start with what's free: a Heart Foundation walking group or the Rise and Run Club at Cottesloe for moving with other people, and free guided meditation at Dhammaloka in Nollamara for quiet. Add an aqua class at Beatty Park from \$12 or an early sauna and cold plunge at Melt in Subiaco from \$7. For something new, try a casual weekend class at Claymake Studio in Maylands. For support, GROW runs peer groups across Perth, and a dietitian such as Nutrition Nation takes Medicare care-plan referrals. Australia's guidelines suggest adults aim for 150 to 300 minutes of moderate activity a week, plus muscle strengthening on two days.",
+		'category'     => 'social',
+		'practice'     => 'community',
+		'featured'     => false,
+		'award'        => 'oria_pick',
+		'reviewed'     => '2026-10-19',
+		'method'       => "We grouped the guide around the three habits in WA's Act Belong Commit campaign (keep active, belong, do something meaningful) and Australia's Physical Activity and Sedentary Behaviour Guidelines, then picked places in the directory that make each habit easy to start: free or low cost, open to newcomers, with a regular time you can turn up to. Prices come from each organisation's own published list, with the month we checked it. We describe what each place offers; we make no claims about what it will do for your health.",
+		'faq'          => array(
+			array( 'question' => 'What are simple ways to improve your wellbeing in Perth?', 'answer' => "Move most days, spend regular time with other people, and do something you find meaningful. In Perth that can be a free Heart Foundation walking group or run club, free guided meditation at Dhammaloka, an aqua class at a council pool, a weekend pottery class, or a peer support group such as GROW. All of them are in this guide." ),
+			array( 'question' => 'How much exercise do adults need each week?', 'answer' => "Australia's Physical Activity and Sedentary Behaviour Guidelines suggest adults aged 18 to 64 aim for 150 to 300 minutes of moderate activity, or 75 to 150 minutes of vigorous activity, or a mix, each week, with muscle-strengthening activity on at least two days. They also say any activity is better than none, and to break up long periods of sitting." ),
+			array( 'question' => 'What is Act Belong Commit?', 'answer' => "A Western Australian mental health promotion campaign, run from Curtin University, built on three everyday habits: Act (keep physically, mentally, socially and spiritually active), Belong (do things with others, such as joining a club or group) and Commit (do something meaningful, such as volunteering, learning something new or taking on a challenge). Its website has a free activity finder for WA." ),
+			array( 'question' => 'What free wellbeing activities are there in Perth?', 'answer' => "Heart Foundation walking groups, The Perth Walking Group and the Rise and Run Club at Cottesloe are free to join. Dhammaloka in Nollamara runs free guided meditation several times a week, and MeditationHQ holds a free Saturday sunrise meditation at Bathers Beach, Fremantle." ),
+			array( 'question' => 'Where can I meet people and feel less isolated in Perth?', 'answer' => "Walking and run clubs are the easiest start because you can just turn up. GROW runs weekly peer support groups for mental wellbeing around Perth and online, and The Men's Table organises monthly dinners for small groups of men, starting with a one-off Entree dinner." ),
+			array( 'question' => 'Can I see a dietitian on Medicare in Perth?', 'answer' => "Yes, with a referral. A GP can set up a care plan that gives Medicare rebates for some allied health sessions, including dietitians. Nutrition Nation in Claremont, for example, accepts Medicare care-plan referrals and also consults by telehealth. Ask your GP whether you're eligible." ),
+			array( 'question' => 'What if I need to talk to someone now?', 'answer' => 'Lifeline is available 24 hours a day on 13 11 14. For ongoing support, your GP is the place to start, and can refer you to a psychologist or counsellor. The places in this guide complement that care; they do not replace it.' ),
+		),
+		'links'        => array(
+			array( 'label' => 'Wellness under $50 in Perth', 'url' => home_url( '/best/wellness-under-50-perth/' ) ),
+			array( 'label' => 'Best places to relax in Perth', 'url' => home_url( '/best/places-to-relax-perth/' ) ),
+			array( 'label' => 'Best yoga for beginners in Perth', 'url' => home_url( '/best/yoga-for-beginners-perth/' ) ),
+			array( 'label' => 'Community and social wellbeing in Perth', 'url' => home_url( '/explore/perth/community/' ) ),
+			array( 'label' => 'Pottery classes in Perth', 'url' => home_url( '/explore/perth/creative-workshops/' ) ),
+			array( 'label' => 'Wellness offers in Perth', 'url' => home_url( '/offers/' ) ),
+		),
+		'find'         => array( 'practice' => array( 'community' ) ),
+	),
 );
 
 /* ------------------------------------------------------------- candidates */

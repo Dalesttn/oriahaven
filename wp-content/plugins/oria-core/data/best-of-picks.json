@@ -1727,6 +1727,130 @@
 					"lead_badge": false
 				}
 			]
+		},
+		{
+			"slug": "improve-wellbeing-perth",
+			"category": "social",
+			"choose": [
+				{
+					"listing": "heart-foundation-walking-perth",
+					"when": "you want to move more and not do it alone"
+				},
+				{
+					"listing": "dhammaloka-buddhist-centre",
+					"when": "you want quiet, and want it free"
+				},
+				{
+					"listing": "beatty-park-aqua",
+					"when": "you want exercise that's gentle on the joints"
+				},
+				{
+					"listing": "claymake-studio-maylands",
+					"when": "you want to learn something new with your hands"
+				},
+				{
+					"listing": "grow-wa",
+					"when": "you'd like to talk things through with people who understand"
+				},
+				{
+					"listing": "nutrition-nation-claremont",
+					"when": "you want help with what you eat, on a GP care plan"
+				}
+			],
+			"picks": [
+				{
+					"listing": "rise-and-run-club-cottesloe",
+					"award": "oria_pick",
+					"award_label": "Act and belong",
+					"spotlight": "Best free start",
+					"fact": "Free",
+					"best_for": "An early start by the beach",
+					"price_note": "Free to join",
+					"reason": "A free run and walk club on the grass opposite il Lido at Cottesloe, Fridays at 6am, every second Sunday at 7am and the last Wednesday of the month at 5.30pm. Groups go out for fifteen to thirty minutes and turn back, so the distance fits whoever comes, and walkers and dogs are as welcome as runners. The monthly evening session ends with dinner.",
+					"highlights": "Free, Runners and walkers, Dogs welcome, Cottesloe",
+					"lead_badge": true
+				},
+				{
+					"listing": "heart-foundation-walking-perth",
+					"award": "oria_pick",
+					"award_label": "Act: keep moving",
+					"spotlight": "Best social run",
+					"fact": "Free",
+					"best_for": "Moving more, with company",
+					"price_note": "Free to join",
+					"reason": "Volunteer-led walking groups that meet every week across the Perth metro, run under the Heart Foundation's national walking program. You join online, pick the group nearest you and turn up; there's no cost, no equipment, and every pace is welcome. Walking counts towards the 150 to 300 minutes of moderate activity a week that Australia's guidelines suggest.",
+					"highlights": "Free, Weekly groups, All paces, Across Perth"
+				},
+				{
+					"listing": "dhammaloka-buddhist-centre",
+					"award": "best_value",
+					"award_label": "Act: a quiet mind",
+					"spotlight": "Best free meditation",
+					"fact": "Free",
+					"best_for": "Learning to sit quietly",
+					"price_note": "Free — price checked September 2026",
+					"reason": "The Buddhist Society of WA's centre in Nollamara, fifteen minutes north of the CBD, runs free guided meditation several times a week, with a four-week introduction course starting on the first Saturday of each month. Newcomers are expected rather than merely tolerated.",
+					"highlights": "Free guided meditation, Four-week intro course, Nollamara"
+				},
+				{
+					"listing": "beatty-park-aqua",
+					"award": "best_budget_pick",
+					"award_label": "Act: gentle exercise",
+					"spotlight": "Best gentle exercise",
+					"fact": "From $12",
+					"best_for": "Exercise that's easy on the joints",
+					"price_note": "Aqua classes from $12 — price checked September 2026",
+					"reason": "The City of Vincent's pool in North Perth runs one of Perth's biggest aqua timetables, from Aqua 4 All and Aqua Balance to Aqua HIIT and Deep Aqua, plus a 40-minute Stretch & Flex class. Casual entry means you can try a class without buying a pack.",
+					"highlights": "Aqua classes, Stretch & Flex, Casual entry, North Perth"
+				},
+				{
+					"listing": "melt-sauna-cold-plunge-subiaco",
+					"award": "best_budget_pick",
+					"award_label": "Act: rest and recover",
+					"spotlight": "Best low-cost reset",
+					"fact": "From $7",
+					"best_for": "A quiet half hour before work",
+					"price_note": "$25 for 30 min, early sessions from $7 — price checked September 2026",
+					"reason": "A Forrest Street room in Subiaco running sauna and cold plunge in thirty- or sixty-minute blocks, with numbers capped so it stays quiet. Thirty minutes is $25, and the 5am session is $7.",
+					"highlights": "Sauna and cold plunge, Capped numbers, 5am from $7, Subiaco"
+				},
+				{
+					"listing": "claymake-studio-maylands",
+					"award": "beginner_friendly",
+					"award_label": "Commit: learn something new",
+					"spotlight": "Best new skill",
+					"best_for": "Doing something with your hands",
+					"reason": "An open-access ceramics studio in Maylands running casual wheel and hand-building classes every weekend, with no course to sign up to first. Learning a craft is one of the 'commit' habits in WA's Act Belong Commit campaign: something absorbing, done for its own sake.",
+					"highlights": "Weekend classes, No commitment, Wheel and hand-building, Maylands"
+				},
+				{
+					"listing": "grow-wa",
+					"award": "oria_pick",
+					"award_label": "Belong: peer support",
+					"spotlight": "Best peer support",
+					"best_for": "Talking things through",
+					"reason": "Peer-run support groups for mental wellbeing that meet weekly for two hours, followed by refreshments, with members keeping in touch between meetings. Groups run face to face around Perth and online as eGrow, and a free-call line puts you in touch with the nearest one.",
+					"highlights": "Weekly groups, Peer-run, Online option, Across Perth"
+				},
+				{
+					"listing": "the-mens-table-wa",
+					"award": "oria_pick",
+					"award_label": "Belong: a regular table",
+					"spotlight": "Best for men",
+					"best_for": "A monthly dinner and real conversation",
+					"reason": "A national non-profit that brings together tables of eight to twelve men for a monthly dinner and honest conversation. New members start with an Entree, a one-off dinner that shows how a table works, held at venues around Perth.",
+					"highlights": "Monthly dinners, Tables of 8–12, Entree dinner to start, Perth"
+				},
+				{
+					"listing": "nutrition-nation-claremont",
+					"award": "oria_pick",
+					"award_label": "Act: eat well",
+					"spotlight": "Best dietitian on a care plan",
+					"best_for": "Help with what you eat",
+					"reason": "A team of dietitians consulting from Claremont, with rooms in Applecross and Wembley and telehealth Australia-wide. With a GP care plan, Medicare rebates apply, and private health rebates are available too. Areas include gut health and IBS (Monash low-FODMAP trained), diabetes, heart health, PCOS and fertility.",
+					"highlights": "Dietitians, Medicare with a GP plan, Telehealth, Claremont"
+				}
+			]
 		}
 	]
 }
