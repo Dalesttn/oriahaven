@@ -1151,5 +1151,117 @@
     ]
    }
   }
+ },
+ {
+  "slug": "craigie-leisure-centre",
+  "requested_by": "Oria Haven, 20 Oct 2026 -- finishes the steam-room research draft (batch 2026-09-28-steam-rooms; steam room, prices and rules from the venue's own pages, checked 28 Sep 2026, see data/facility-access/steam-room.json). Street address and place from Google Places (pinned 20 Oct 2026), coordinates Nominatim (ODbL). Published so the Perth steam rooms page covers the north and south suburbs.",
+  "excerpt": "The leisure centre on Whitfords Avenue, Craigie, with a spa lounge holding a spa, a sauna and a steam room kept at 45 to 50 degrees. The lounge is an extra-charge area paid at reception: a single entry is $14.50, or $130.50 for ten visits. Prices checked September 2026.",
+  "meta": {
+   "address": "751 Whitfords Avenue, Craigie WA 6025",
+   "google_place_id": "ChIJGXJr2Y2sMioRBl36s7z6c9w",
+   "geo_lat": "-31.7950648",
+   "geo_lng": "115.7632102",
+   "geo_precision": "street",
+   "join_url": "https://craigieleisurecentre.com.au/visit/prices",
+   "_oria_places_ok": "1",
+   "_oria_review": "reviewed"
+  },
+  "status": "publish"
+ },
+ {
+  "slug": "kwinana-recquatic",
+  "requested_by": "Oria Haven, 20 Oct 2026 -- finishes the steam-room research draft (batch 2026-09-28-steam-rooms; steam room, prices and rules from the venue's own pages, checked 28 Sep 2026, see data/facility-access/steam-room.json). Street address and place from Google Places (pinned 20 Oct 2026), coordinates Nominatim (ODbL). Published so the Perth steam rooms page covers the north and south suburbs.",
+  "excerpt": "Kwinana's council leisure centre on Robbos Way, where the spa and steam room are open to people 16 and over. A Spa, Steam Room and Swim casual entry is $13.40, or $11.30 concession, at the rates the centre published from 20 July 2026.",
+  "meta": {
+   "address": "Skerne Street & Robbos Way, Kwinana WA 6167",
+   "google_place_id": "ChIJo04HStyaMioRBdDtvkzx8ZY",
+   "geo_lat": "-32.2424050",
+   "geo_lng": "115.8130300",
+   "geo_precision": "address",
+   "join_url": "https://recquatic.com.au/swim/our-pools",
+   "_oria_places_ok": "1",
+   "_oria_review": "reviewed"
+  },
+  "status": "publish"
+ },
+ {
+  "slug": "aqua-jetty-warnbro",
+  "requested_by": "Oria Haven, 20 Oct 2026 -- finishes the steam-room research draft (batch 2026-09-28-steam-rooms; steam room, prices and rules from the venue's own pages, checked 28 Sep 2026, see data/facility-access/steam-room.json). Street address and place from Google Places (pinned 20 Oct 2026), coordinates Nominatim (ODbL). Published so the Perth steam rooms page covers the north and south suburbs.",
+  "excerpt": "The City of Rockingham's aquatic centre on Warnbro Sound Avenue, with a spa, sauna and steam room alongside its pools. Spa, sauna and steam entry is $11.80 at full price (checked September 2026). The centre closes on Good Friday and Christmas Day.",
+  "meta": {
+   "address": "87 Warnbro Sound Avenue, Warnbro WA 6169",
+   "google_place_id": "ChIJNfR-mwmEMioRKq1WD7LJUqk",
+   "geo_lat": "-32.3433396",
+   "geo_lng": "115.7596536",
+   "geo_precision": "address",
+   "join_url": "https://rockingham.wa.gov.au/facilities-and-recreation/aqua-jetty/aquatics",
+   "_oria_places_ok": "1",
+   "_oria_review": "reviewed"
+  },
+  "status": "publish"
+ },
+ {
+  "slug": "bayswater-waves",
+  "requested_by": "Oria Haven, 20 Oct 2026 -- finishes the steam-room research draft (batch 2026-09-28-steam-rooms; steam room, prices and rules from the venue's own pages, checked 28 Sep 2026, see data/facility-access/steam-room.json). Street address and place from Google Places (pinned 20 Oct 2026), coordinates Nominatim (ODbL). Published so the Perth steam rooms page covers the north and south suburbs.",
+  "excerpt": "The City of Bayswater's aquatic centre on the corner of Broun Avenue and Priestley Street, Embleton, with a sauna and a steam room kept at 38 degrees beside its pools. Both are for over-16s, who wear a spa band to use them. The price list wasn't readable online when we checked, so ask at reception.",
+  "meta": {
+   "address": "Corner Broun Avenue & Priestley Street, Embleton WA 6062",
+   "google_place_id": "ChIJEaCAnYSwMioRyLtTMNDzM58",
+   "geo_lat": "-31.8978263",
+   "geo_lng": "115.9103206",
+   "geo_precision": "address",
+   "join_url": "https://bayswaterrec.wa.gov.au/bayswater-waves/the-pools/",
+   "_oria_places_ok": "1",
+   "_oria_review": "reviewed"
+  },
+  "status": "publish"
+ },
+ {
+  "slug": "riverton-leisureplex",
+  "requested_by": "Oria Haven, 20 Oct 2026 -- finishes the steam-room research draft (batch 2026-09-28-steam-rooms; steam room, prices and rules from the venue's own pages, checked 28 Sep 2026, see data/facility-access/steam-room.json). Street address and place from Google Places (pinned 20 Oct 2026), coordinates Nominatim (ODbL). Published so the Perth steam rooms page covers the north and south suburbs.",
+  "excerpt": "The City of Canning's leisureplex on Riley Road, Riverton, where a Wellness Suite for over-16s holds a program pool, spa, sauna and steam room. Casual Wellness Suite entry is $13 for adults and $10.40 concession (checked September 2026).",
+  "meta": {
+   "address": "67 Riley Road, Riverton WA 6148",
+   "google_place_id": "ChIJmWpip6m9MioRIns6_ghPBu4",
+   "geo_lat": "-32.0379572",
+   "geo_lng": "115.9025756",
+   "geo_precision": "address",
+   "join_url": "https://www.canning.wa.gov.au/sport-and-fitness/leisureplexes/prices-and-memberships/",
+   "_oria_places_ok": "1",
+   "_oria_review": "reviewed"
+  },
+  "status": "publish"
+ },
+ {
+  "slug": "armadale-fitness-aquatic-centre",
+  "requested_by": "Oria Haven, 20 Oct 2026 -- finishes the steam-room research draft (batch 2026-09-28-steam-rooms; steam room, prices and rules from the venue's own pages, checked 28 Sep 2026, see data/facility-access/steam-room.json). Street address and place from Google Places (pinned 20 Oct 2026), coordinates Nominatim (ODbL). Published so the Perth steam rooms page covers the north and south suburbs.",
+  "excerpt": "The City of Armadale's fitness and aquatic centre on Champion Drive, Seville Grove. Its Wellness Suite has a sauna, a steam room and a spa, with casual entry at $12 (checked September 2026).",
+  "meta": {
+   "address": "60 Champion Drive, Seville Grove WA 6112",
+   "google_place_id": "ChIJy50hB4OUMioRNy4veGPLB8o",
+   "geo_lat": "-32.1330379",
+   "geo_lng": "116.0044255",
+   "geo_precision": "street",
+   "join_url": "https://active.armadale.wa.gov.au/fees-charges",
+   "_oria_places_ok": "1",
+   "_oria_review": "reviewed"
+  },
+  "status": "publish"
+ },
+ {
+  "slug": "leisurefit-booragoon",
+  "requested_by": "Oria Haven, 20 Oct 2026 -- finishes the steam-room research draft (batch 2026-09-28-steam-rooms; steam room, prices and rules from the venue's own pages, checked 28 Sep 2026, see data/facility-access/steam-room.json). Street address and place from Google Places (pinned 20 Oct 2026), coordinates Nominatim (ODbL). Published so the Perth steam rooms page covers the north and south suburbs.",
+  "excerpt": "The City of Melville's LeisureFit centre on Marmion Street, Booragoon. Its Recovery Hub of spa, sauna and steam rooms, kept at 40 degrees, is for over-16s: $14 an adult visit, $18.30 with a swim and $12.60 concession (checked September 2026). The hub has a weekly Wednesday cleaning closure, so check times before you go.",
+  "meta": {
+   "address": "521 Marmion Street, Booragoon WA 6154",
+   "google_place_id": "ChIJN70yAh-jMioReyxyTz6HJcY",
+   "geo_lat": "-32.0370965",
+   "geo_lng": "115.8328120",
+   "geo_precision": "street",
+   "join_url": "https://www.melvillecity.com.au/things-to-do/leisurefit-recreation-centres/memberships-and-casual-prices/casual-pricing",
+   "_oria_places_ok": "1",
+   "_oria_review": "reviewed"
+  },
+  "status": "publish"
  }
 ]

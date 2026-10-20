@@ -9,8 +9,10 @@
  * and the script shows each field's value before and after.
  *
  * Supported per listing: title (the business's own name), excerpt (the
- * description), ACF fields, the services list, and taxonomy terms to add or
- * remove. The slug never changes, so links keep working. Listings are found by slug.
+ * description), ACF fields, plain post meta ("meta"), the services list,
+ * taxonomy terms to add or remove, and "status": "publish" to publish a
+ * reviewed draft (never the reverse). The slug never changes, so links keep
+ * working. Listings are found by slug.
  *
  * SAFETY
  *   Dry run is the default and writes nothing. --apply writes.
@@ -123,6 +125,26 @@ foreach ( $edits as $e ) {
 			if ( $apply ) {
 				wp_set_object_terms( $post->ID, $add, $tax, true );
 			}
+		}
+	}
+
+	// --- plain post meta (research flags such as _oria_review, _oria_places_ok) --
+	foreach ( (array) ( $e['meta'] ?? array() ) as $key => $value ) {
+		$before = get_post_meta( $post->ID, (string) $key, true );
+		if ( (string) $before === (string) $value ) {
+			continue;
+		}
+		printf( "  %-12s %s -> %s\n", $key, $show( $before ), $show( $value ) );
+		if ( $apply ) {
+			update_post_meta( $post->ID, (string) $key, $value );
+		}
+	}
+
+	// --- publish a reviewed draft. Only ever draft/pending -> publish; never unpublishes. --
+	if ( 'publish' === ( $e['status'] ?? '' ) && in_array( $post->post_status, array( 'draft', 'pending' ), true ) ) {
+		printf( "  status       %s -> publish\n", $post->post_status );
+		if ( $apply ) {
+			wp_update_post( array( 'ID' => $post->ID, 'post_status' => 'publish' ) );
 		}
 	}
 

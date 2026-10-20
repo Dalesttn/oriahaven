@@ -298,6 +298,7 @@
       ],
       "intro": [
         "Compare what a steam room visit costs, what it includes and who can go, at the places Oria Haven lists. Each card and the table below show the standard adult visit that includes the steam room, as the venue publishes it, with the day it was checked.",
+        "Steam rooms are spread across Perth, and most are at council leisure centres, where a casual wellness or spa entry costs about $12 to $15. In the north, Craigie Leisure Centre and Recwell in Wangara. Closer in, Beatty Park in North Perth, Revive Skin Emporium in Mount Hawthorn, Reclab in Wembley, Ember Bath House and Merse Wellness in Osborne Park, and Crown Spa in Burswood. To the east and south-east, Bayswater Waves in Embleton, Aqualife in East Victoria Park, Cannington and Riverton Leisureplexes, and the Armadale Fitness and Aquatic Centre in Seville Grove. South of the river, LeisureFit Booragoon, Kwinana Recquatic and Aqua Jetty in Warnbro.",
         "Steam rooms in Perth usually come with something larger: a leisure centre's pool and wellness entry, a bathhouse session with saunas and cold pools, a hotel spa's retreat area, or a recovery centre's timed session. A few day spas sell steam on its own. How you get in -- a casual ticket, a treatment, a membership -- differs as much as the price.",
         "A steam room (some places call it a steam sauna) is humid heat at a lower temperature than a sauna's dry heat. It is not the same as a steam shower, or water poured on a sauna's stones; the places here have a steam room. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
       ],
@@ -308,7 +309,11 @@
         },
         {
           "q": "How much does a steam room cost in Perth?",
-          "a": "At a leisure centre the steam room comes with the pools, spa or sauna for one casual entry: Aqualife in East Victoria Park lists $8.20 for adult swim entry with the steam room and spa, Cannington Leisureplex $13 for its adult wellness suite and Beatty Park $18.50 for spa, sauna and steam with pool access. Recovery studios and bathhouses charge more for a timed session with hot and cold pools: Recwell in Wangara $39, Reclab in Wembley $42, Merse Wellness in Osborne Park $59.95 and Ember Bath House $89 for 90 minutes. Revive Skin Emporium sells a 30-minute steam room session for $45. These are the prices each venue published when we checked in September 2026; the table above shows the date for each."
+          "a": "Cheapest at a council leisure centre, where the steam room comes with a spa, sauna or pool entry: Aqualife in East Victoria Park lists $8.20 for adult swim entry with the steam room and spa, Aqua Jetty in Warnbro $11.80, Armadale $12, Cannington and Riverton $13, Kwinana Recquatic $13.40, LeisureFit Booragoon $14, Craigie $14.50 and Beatty Park $18.50. Recovery studios and bathhouses charge more for a timed session with hot and cold pools: Recwell in Wangara $39, Reclab in Wembley $42, Merse Wellness in Osborne Park $59.95 and Ember Bath House $89 for 90 minutes. Revive Skin Emporium sells a 30-minute steam room session for $45. These are the prices each venue published when we checked in September 2026; the table above shows the date for each."
+        },
+        {
+          "q": "Where is the nearest steam room to me in Perth?",
+          "a": "North: Craigie Leisure Centre and Recwell in Wangara. Inner suburbs: Beatty Park in North Perth, Revive Skin Emporium in Mount Hawthorn, Reclab in Wembley, Ember Bath House and Merse Wellness in Osborne Park, and Crown Spa in Burswood. East and south-east: Bayswater Waves in Embleton, Aqualife in East Victoria Park, Cannington and Riverton Leisureplexes and Armadale's aquatic centre in Seville Grove. South: LeisureFit Booragoon, Kwinana Recquatic and Aqua Jetty in Warnbro. The map above shows each one."
         },
         {
           "q": "What do you wear in a steam room?",
@@ -321,11 +326,19 @@
         {
           "q": "Is there a steam room with a sauna and ice bath in Perth?",
           "a": "Yes. Ember Bath House and Merse Wellness sell bathhouse sessions that include saunas, hot pools and an ice bath as well as the steam room, and Reclab in Wembley and Recwell in Wangara include it in their hot-and-cold contrast sessions."
+        },
+        {
+          "q": "Is there a hammam or Turkish bath in Perth?",
+          "a": "Ember Bath House in Osborne Park sells a Bath House + Hammam package: its 90-minute bath house session with the steam room, sauna, hot mineral bath and ice bath, followed by a hammam ritual, for $259 (checked October 2026). The other places here have a steam room rather than a full hammam."
+        },
+        {
+          "q": "Can I use a steam room without a membership?",
+          "a": "Yes, at most places here. Every leisure centre on this page sells a casual spa or wellness entry, and the bathhouses and recovery studios sell single sessions. Crown Spa is the exception: its steam room comes with a spa treatment of 60 minutes or longer."
         }
       ],
       "name": "Steam rooms",
-      "description": "Compare {count} steam rooms in Perth, from leisure-centre wellness suites to bathhouses: price per visit, what's included, age limits and swimwear rules.",
-      "title": "Steam Rooms in Perth: Compare {count} Places & Prices"
+      "description": "Compare {count} steam rooms across Perth, from $8.20 leisure-centre entry to bathhouses: price per visit, suburb, age limits and swimwear rules.",
+      "title": "Steam Rooms in Perth: {count} Near You, Prices Compared"
     },
     "acupuncture": {
       "phrase": "Acupuncture",
