@@ -338,9 +338,17 @@ add_action(
 		foreach ( (array) apply_filters( 'oria_preload_fonts', array( 'manrope-normal-latin', 'newsreader-italic-latin' ) ) as $font ) {
 			$path = "{$dir}/assets/fonts/{$font}.woff2";
 			if ( file_exists( $path ) ) {
+				/*
+				 * Exactly the URL fonts.css asks for -- no ?v= version. A
+				 * preload only counts if the stylesheet requests the same URL;
+				 * with the query string the browser treated them as two files,
+				 * downloaded each font twice and warned that the preload went
+				 * unused. (fonts.css is itself versioned, and these files never
+				 * change name.)
+				 */
 				printf(
 					'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
-					esc_url( "{$uri}/assets/fonts/{$font}.woff2?v=" . filemtime( $path ) )
+					esc_url( "{$uri}/assets/fonts/{$font}.woff2" )
 				);
 			}
 		}
