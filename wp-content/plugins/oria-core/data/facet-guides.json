@@ -298,7 +298,7 @@
       ],
       "intro": [
         "Compare what a steam room visit costs, what it includes and who can go, at the places Oria Haven lists. Each card and the table below show the standard adult visit that includes the steam room, as the venue publishes it, with the day it was checked.",
-        "Steam rooms are spread across Perth, and most are at council leisure centres, where a casual wellness or spa entry costs about $12 to $15. In the north, Craigie Leisure Centre and Recwell in Wangara. Closer in, Beatty Park in North Perth, Revive Skin Emporium in Mount Hawthorn, Reclab in Wembley, Ember Bath House and Merse Wellness in Osborne Park, and Crown Spa in Burswood. To the east and south-east, Bayswater Waves in Embleton, Aqualife in East Victoria Park, Cannington and Riverton Leisureplexes, and the Armadale Fitness and Aquatic Centre in Seville Grove. South of the river, LeisureFit Booragoon, Kwinana Recquatic and Aqua Jetty in Warnbro.",
+        "Steam rooms are spread across Perth, and most are at council leisure centres, where a casual wellness or spa entry costs about $12 to $15. In the north, Craigie Leisure Centre and Recwell in Wangara. Closer in, Beatty Park in North Perth, Revive Skin Emporium in Mount Hawthorn, Reclab in Wembley, Ember Bath House and Merse Wellness in Osborne Park, and Crown Spa in Burswood. To the east and south-east, Bayswater Waves in Embleton, Aqualife in East Victoria Park, Cannington and Riverton Leisureplexes, and the Armadale Fitness and Aquatic Centre in Seville Grove. South of the river, LeisureFit Booragoon, Kwinana Recquatic and Aqua Jetty in Warnbro, and on the coast, Alchemy Saunas in East Fremantle.",
         "Steam rooms in Perth usually come with something larger: a leisure centre's pool and wellness entry, a bathhouse session with saunas and cold pools, a hotel spa's retreat area, or a recovery centre's timed session. A few day spas sell steam on its own. How you get in -- a casual ticket, a treatment, a membership -- differs as much as the price.",
         "A steam room (some places call it a steam sauna) is humid heat at a lower temperature than a sauna's dry heat. It is not the same as a steam shower, or water poured on a sauna's stones; the places here have a steam room. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
       ],
@@ -309,11 +309,11 @@
         },
         {
           "q": "How much does a steam room cost in Perth?",
-          "a": "Cheapest at a council leisure centre, where the steam room comes with a spa, sauna or pool entry: Aqualife in East Victoria Park lists $8.20 for adult swim entry with the steam room and spa, Aqua Jetty in Warnbro $11.80, Armadale $12, Cannington and Riverton $13, Kwinana Recquatic $13.40, LeisureFit Booragoon $14, Craigie $14.50 and Beatty Park $18.50. Recovery studios and bathhouses charge more for a timed session with hot and cold pools: Recwell in Wangara $39, Reclab in Wembley $42, Merse Wellness in Osborne Park $59.95 and Ember Bath House $89 for 90 minutes. Revive Skin Emporium sells a 30-minute steam room session for $45. These are the prices each venue published when we checked in September 2026; the table above shows the date for each."
+          "a": "Cheapest at a council leisure centre, where the steam room comes with a spa, sauna or pool entry: Aqualife in East Victoria Park lists $8.20 for adult swim entry with the steam room and spa, Aqua Jetty in Warnbro $11.80, Armadale $12, Cannington and Riverton $13, Kwinana Recquatic $13.40, LeisureFit Booragoon $14, Craigie $14.50 and Beatty Park $18.50. Recovery studios and bathhouses charge more for a timed session with hot and cold pools: Alchemy Saunas in East Fremantle $35 for an hour with saunas and a magnesium pool, Recwell in Wangara $39, Reclab in Wembley $42, Merse Wellness in Osborne Park $59.95 and Ember Bath House $89 for 90 minutes. Revive Skin Emporium sells a 30-minute steam room session for $45. These are the prices each venue published when we checked in September and October 2026; the table above shows the date for each."
         },
         {
           "q": "Where is the nearest steam room to me in Perth?",
-          "a": "North: Craigie Leisure Centre and Recwell in Wangara. Inner suburbs: Beatty Park in North Perth, Revive Skin Emporium in Mount Hawthorn, Reclab in Wembley, Ember Bath House and Merse Wellness in Osborne Park, and Crown Spa in Burswood. East and south-east: Bayswater Waves in Embleton, Aqualife in East Victoria Park, Cannington and Riverton Leisureplexes and Armadale's aquatic centre in Seville Grove. South: LeisureFit Booragoon, Kwinana Recquatic and Aqua Jetty in Warnbro. The map above shows each one."
+          "a": "North: Craigie Leisure Centre and Recwell in Wangara. Inner suburbs: Beatty Park in North Perth, Revive Skin Emporium in Mount Hawthorn, Reclab in Wembley, Ember Bath House and Merse Wellness in Osborne Park, and Crown Spa in Burswood. East and south-east: Bayswater Waves in Embleton, Aqualife in East Victoria Park, Cannington and Riverton Leisureplexes and Armadale's aquatic centre in Seville Grove. South: LeisureFit Booragoon, Kwinana Recquatic and Aqua Jetty in Warnbro, and Alchemy Saunas in East Fremantle. The map above shows each one."
         },
         {
           "q": "What do you wear in a steam room?",
@@ -325,7 +325,7 @@
         },
         {
           "q": "Is there a steam room with a sauna and ice bath in Perth?",
-          "a": "Yes. Ember Bath House and Merse Wellness sell bathhouse sessions that include saunas, hot pools and an ice bath as well as the steam room, and Reclab in Wembley and Recwell in Wangara include it in their hot-and-cold contrast sessions."
+          "a": "Yes. Ember Bath House and Merse Wellness sell bathhouse sessions that include saunas, hot pools and an ice bath as well as the steam room, Alchemy Saunas in East Fremantle includes three saunas, a magnesium pool and an ice pool in its $35 hour, and Reclab in Wembley and Recwell in Wangara include it in their hot-and-cold contrast sessions."
         },
         {
           "q": "Is there a hammam or Turkish bath in Perth?",
@@ -1100,17 +1100,17 @@
       "phrase": "Bathhouses",
       "title": "Bathhouses in Perth: Compare {count} Places & Prices",
       "h1": "Bathhouses in Perth",
-      "description": "Compare {count} bathhouses in Perth, from Ember in Osborne Park to Scarborough and Fremantle: saunas, hot and ice baths, prices and who can go.",
+      "description": "Compare {count} bathhouses in Perth, from Osborne Park to East Fremantle, Scarborough and Fremantle: saunas, hot and ice baths, prices and who can go.",
       "intro": [
-        "A bathhouse in Perth is a circuit of heat and water in one booking: a sauna, a hot mineral or magnesium bath, an ice bath and, at some, a steam room. {count} places here sell one, and the biggest difference between them is how many people you share it with.",
-        "Ember Bath House in Osborne Park is the large communal one: 90 minutes with a Finnish sauna, steam room, hot mineral bath and ice bath for $89, with a towel, robe and tea. It is all-gender, swimwear is required and it's 18 and over. Merse Wellness, also in Osborne Park, sells a 60-minute bathhouse session for $59.95, with magnesium pools, infrared and hot rock saunas, a steam room and an ice bath; 16 and 17-year-olds can go with an adult.",
+        "A bathhouse (or bath house) in Perth is a circuit of heat and water in one booking: a sauna, a hot mineral or magnesium bath, an ice bath and, at some, a steam room. {count} places here sell one, and the biggest difference between them is how many people you share it with.",
+        "Ember Bath House in Osborne Park is the large communal one: 90 minutes with a Finnish sauna, steam room, hot mineral bath and ice bath for $89, with a towel, robe and tea. It is all-gender, swimwear is required and it's 18 and over. Merse Wellness, also in Osborne Park, sells a 60-minute bathhouse session for $59.95, with magnesium pools, infrared and hot rock saunas, a steam room and an ice bath; 16 and 17-year-olds can go with an adult. Alchemy Saunas in East Fremantle, beneath the old Royal George Hotel on Duke Street, is the third large shared one: three traditional saunas, a steam room, a magnesium pool and an ice pool, $35 for 60 minutes, 18 and over, swimwear or activewear.",
         "Two are smaller. Solace Day Spa on the Scarborough Esplanade runs its bathhouse by the hour for up to four guests at a time, $69 a session, or $259 to have it to yourselves for up to six. The Neighbourhood Sauna on South Terrace, Fremantle, books its Bath House Experience as a private room with an infrared sauna, hot magnesium bath and ice bath, $75 for one or $140 for two.",
         "Prices are as each venue published them when we checked in September and October 2026. Oria Haven is a directory, not a health service. If you have a health concern, or you're pregnant or unsure, speak with your GP or a registered practitioner before you book."
       ],
       "faq": [
         {
           "q": "How much is a bathhouse in Perth?",
-          "a": "A session costs $59.95 for an hour at Merse Wellness, $69 at Solace Day Spa, $75 at The Neighbourhood Sauna and $89 for 90 minutes at Ember Bath House, as each published it when we checked in October 2026. All four sell multi-visit packs, and Ember, Merse and The Neighbourhood Sauna also sell memberships."
+          "a": "A session costs $35 for an hour at Alchemy Saunas East Fremantle, $59.95 for an hour at Merse Wellness, $69 at Solace Day Spa, $75 at The Neighbourhood Sauna and $89 for 90 minutes at Ember Bath House, as each published it when we checked in October 2026. Ember, Merse, Solace and The Neighbourhood Sauna sell multi-visit packs, and Alchemy, Ember, Merse and The Neighbourhood Sauna sell memberships."
         },
         {
           "q": "What's included at Ember Bath House?",
@@ -1121,16 +1121,20 @@
           "a": "Two. Ember Bath House on Donovan Street is the larger communal bathhouse, and Merse Wellness sells a 60-minute bathhouse session with magnesium pools, saunas, a steam room and an ice bath."
         },
         {
+          "q": "Is there a bathhouse in Fremantle?",
+          "a": "Two. Alchemy Saunas East Fremantle on Duke Street is a large shared bathhouse with three saunas, a steam room, a magnesium pool and an ice pool, $35 for an hour. The Neighbourhood Sauna on South Terrace, Fremantle, books its Bath House Experience as a private room for one or two."
+        },
+        {
           "q": "Can I book a private bathhouse in Perth?",
           "a": "Yes. The Neighbourhood Sauna's Bath House Experience in Fremantle is a private room for one or two people, and Solace Day Spa in Scarborough sells a private bathhouse session for up to six for $259. Solace's standard sessions take at most four guests."
         },
         {
           "q": "What do you wear to a bathhouse?",
-          "a": "Swimwear at Ember Bath House, where it's required, and at Merse Wellness, which recommends it and hires towels for $4.95. In The Neighbourhood Sauna's private rooms, comfortable clothing or a swimsuit is fine. Check each venue's own page before you go."
+          "a": "Swimwear at Ember Bath House, where it's required, and at Merse Wellness, which recommends it and hires towels for $4.95. Alchemy Saunas asks for swimwear or activewear, and in The Neighbourhood Sauna's private rooms, comfortable clothing or a swimsuit is fine. Check each venue's own page before you go."
         },
         {
           "q": "How old do you have to be to go to a bathhouse?",
-          "a": "Ember Bath House is 18 and over. Merse Wellness takes 16 and 17-year-olds with an adult, and The Neighbourhood Sauna's minimum age is 12. Solace doesn't state one on its bathhouse page."
+          "a": "Ember Bath House and Alchemy Saunas are 18 and over (at Alchemy, even with an adult). Merse Wellness takes 16 and 17-year-olds with an adult, and The Neighbourhood Sauna's minimum age is 12. Solace doesn't state one on its bathhouse page."
         }
       ],
       "see_also": [

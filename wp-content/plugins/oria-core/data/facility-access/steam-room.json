@@ -1276,6 +1276,89 @@
           }
         ]
       }
+    },
+    {
+      "slug": "alchemy-saunas-east-fremantle",
+      "website": "https://alchemysaunas.com.au/our-space/east-fremantle",
+      "row": {
+        "status": "confirmed",
+        "setting": "shared",
+        "casual": "yes",
+        "condition": "",
+        "booking": "recommended",
+        "includes": [
+          "Steam room",
+          "3 traditional saunas",
+          "Magnesium pool",
+          "Ice pool",
+          "Ice showers",
+          "Private shower facilities"
+        ],
+        "min_age": 18,
+        "swimwear": "Swimwear or activewear",
+        "towels": "Bring two towels (one to sit on, one to dry off)",
+        "essentials": [
+          "Hours: 5am-9pm (East Fremantle)",
+          "Sessions: 60 minutes, start on the hour",
+          "Book and pay via the Alchemy Saunas app; each guest needs their own account"
+        ],
+        "quiet": "",
+        "accessibility": "",
+        "accessibility_url": "",
+        "book_url": "https://alchemysaunas.com.au/booking",
+        "rules_url": "https://alchemysaunas.com.au/faqs",
+        "notice": "",
+        "notice_until": "",
+        "offers": [
+          {
+            "product": "Drop-in session",
+            "kind": "casual_visit",
+            "price": 35,
+            "basis": "per session, 1 person",
+            "people": 1,
+            "duration": 60,
+            "conditions": "East Fremantle; saunas, steam room, magnesium and ice pools",
+            "main": true
+          },
+          {
+            "product": "Unlimited Membership",
+            "kind": "membership",
+            "price": 40,
+            "basis": "per week",
+            "people": 1,
+            "duration": 60,
+            "conditions": "East Fremantle; any day, any time at your chosen venue",
+            "main": false
+          },
+          {
+            "product": "Off Peak Membership",
+            "kind": "membership",
+            "price": 30,
+            "basis": "per week",
+            "people": 1,
+            "duration": 60,
+            "conditions": "East Fremantle; any day between 9am and 3pm",
+            "main": false
+          },
+          {
+            "product": "Passport Membership",
+            "kind": "membership",
+            "price": 60,
+            "basis": "per week",
+            "people": 1,
+            "duration": 60,
+            "conditions": "Unlimited access across all Alchemy venues",
+            "main": false
+          }
+        ],
+        "sources": [
+          "https://alchemysaunas.com.au/our-space/east-fremantle",
+          "https://alchemysaunas.com.au/memberships",
+          "https://alchemysaunas.com.au/faqs"
+        ],
+        "checked": "2026-10-29",
+        "evidence": "The East Fremantle page (34 Duke St) lists '3 traditional saunas', 'ice pool, magnesium pool, steam room', ice showers and private showers, 'Price Per Session: $35', Unlimited Membership $40, Off Peak Membership $30, Passport Membership $60, 'Available from: 5am to 9pm', sessions of 60 minutes. Membership amounts are weekly per the site's 'Sauna every day from $30/week'. FAQ: 18+ even with an adult; swimwear or activewear; bring two towels and a water bottle."
+      }
     }
   ]
 }
