@@ -332,12 +332,20 @@
           "a": "Ember Bath House in Osborne Park sells a Bath House + Hammam package: its 90-minute bath house session with the steam room, sauna, hot mineral bath and ice bath, followed by a hammam ritual, for $259 (checked October 2026). The other places here have a steam room rather than a full hammam."
         },
         {
-          "q": "Can I use a steam room without a membership?",
-          "a": "Yes, at most places here. Every leisure centre on this page sells a casual spa or wellness entry, and the bathhouses and recovery studios sell single sessions. Crown Spa is the exception: its steam room comes with a spa treatment of 60 minutes or longer."
+          "q": "Is a steam sauna the same as a steam room or a steam shower?",
+          "a": "A steam sauna is another name some venues use for a steam room: a tiled room you sit in, filled with humid heat. A steam shower is a shower cubicle with a steam generator, usually in a home or hotel bathroom. Every place on this page has a steam room, not a steam shower."
+        },
+        {
+          "q": "How long should you stay in a steam room?",
+          "a": "Follow the guidance the venue gives, and leave to cool down and drink water if you feel dizzy, faint or unwell. A timed booking sets the length of the whole visit rather than your time in the steam: Revive Skin Emporium's steam session is 30 minutes, and Ember Bath House's 90-minute session is shared across its saunas, pools and steam room."
+        },
+        {
+          "q": "Who should check with a doctor before using a steam room?",
+          "a": "Speak with your GP before you go if you're pregnant, have a heart or blood pressure condition, or take medication that affects how you cope with heat, and skip it after alcohol or when you're unwell. Oria Haven is a directory, not a health service, and the minimum age is set by each venue (see the age question above)."
         }
       ],
       "name": "Steam rooms",
-      "description": "Compare {count} steam rooms across Perth, from $8.20 leisure-centre entry to bathhouses: price per visit, suburb, age limits and swimwear rules.",
+      "description": "Compare {count} steam rooms (steam saunas) across Perth, from $8.20 leisure-centre entry to bathhouses: price per visit, suburb, age limits and swimwear rules.",
       "title": "Steam Rooms in Perth: {count} Near You, Prices Compared"
     },
     "acupuncture": {

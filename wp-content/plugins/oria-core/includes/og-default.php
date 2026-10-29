@@ -29,6 +29,42 @@ function bootstrap(): void {
 	// After Share's 20, so listings keep their own treatment untouched.
 	add_filter( 'wpseo_frontend_presentation', __NAMESPACE__ . '\presentation_image', 30 );
 	add_filter( 'wpseo_twitter_image', __NAMESPACE__ . '\twitter_image', 30 );
+	// After Seo's schema_own_ids (60), which settles the #primaryimage id.
+	add_filter( 'wpseo_schema_graph', __NAMESPACE__ . '\schema_primary_image', 70 );
+}
+
+/**
+ * On a term page Yoast takes the page's primary image from the first post
+ * in the loop, so the steam-room page announced a sound-healing photo from
+ * Wangara. Point it at the same card the page shares as instead.
+ *
+ * @param mixed $graph
+ * @return mixed
+ */
+function schema_primary_image( $graph ) {
+	if ( ! is_array( $graph ) || ! applies() || ! is_tax() ) {
+		return $graph;
+	}
+	$url = card_url();
+	if ( ! $url ) {
+		return $graph;
+	}
+	foreach ( $graph as &$node ) {
+		if ( ! is_array( $node ) ) {
+			continue;
+		}
+		$id = (string) ( $node['@id'] ?? '' );
+		if ( 'ImageObject' === ( $node['@type'] ?? '' ) && '#primaryimage' === substr( $id, -13 ) ) {
+			$node['url']        = $url;
+			$node['contentUrl'] = $url;
+			$node['width']      = Share\FORMATS['card'][0];
+			$node['height']     = Share\FORMATS['card'][1];
+		} elseif ( isset( $node['thumbnailUrl'] ) ) {
+			$node['thumbnailUrl'] = $url;
+		}
+	}
+	unset( $node );
+	return $graph;
 }
 
 /**
@@ -79,6 +115,22 @@ function card_spec(): array {
 	}
 
 	$obj = get_queried_object();
+
+	// A facet page (/explore/perth/spa/steam-room/) is queried as its
+	// category, so without this every facet under Spa shared the one
+	// "Spa & Recovery" card. It carries its own heading and count instead.
+	if ( $obj instanceof \WP_Term && function_exists( '\Oria\Core\PracticesIndex\facet' ) ) {
+		$f = \Oria\Core\PracticesIndex\facet();
+		if ( null !== $f && '' !== (string) $f['label'] ) {
+			$count = \Oria\Core\PracticesIndex\facet_count( $obj, $f );
+			return array(
+				'key'  => 'facet-' . $obj->slug . '-' . $f['slug'],
+				'name' => (string) $f['label'],
+				/* translators: %d: number of listed places */
+				'meta' => sprintf( _n( '%d listed place', '%d listed places', $count, 'oria' ), $count ),
+			);
+		}
+	}
 
 	if ( $obj instanceof \WP_Term ) {
 		$count = (int) $obj->count;
