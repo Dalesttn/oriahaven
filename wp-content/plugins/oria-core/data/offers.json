@@ -18,7 +18,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://beyondrest.com.au/location-perth",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "spa",
@@ -38,7 +38,7 @@
    "days": 10,
    "valid_until": "",
    "source_url": "https://recoverylab.com.au/find-a-lab-jolimont/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "spa",
@@ -57,7 +57,9 @@
    "audience": "",
    "valid_until": "2026-10-31",
    "source_url": "https://saltfloatstudio.com.au",
-   "checked": "2026-10-03"
+   "checked": "2026-10-03",
+   "removed": true,
+   "note": "ended 2026-10-31"
   },
   {
    "category": "spa",
@@ -76,7 +78,7 @@
    "audience": "",
    "valid_until": "",
    "source_url": "https://meltsaunas.com/4-for-3sessions",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "spa",
@@ -96,7 +98,7 @@
    "days": 7,
    "valid_until": "",
    "source_url": "https://www.reclab.com.au/special-offers/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "spa",
@@ -114,7 +116,7 @@
    "audience": "anyone",
    "valid_until": "",
    "source_url": "https://www.lushskinbody.com.au/perth-promotions",
-   "checked": "2026-10-15",
+   "checked": "2026-11-01",
    "note": "Listed under 'Spring Promotions'; no end date stated. Same page also lists a Skin Reboot at $199 and a Firming Intro at $299."
   },
   {
@@ -128,7 +130,7 @@
    "includes": ["Traditional sauna", "Magnesium hot bath and ice bath", "Compression boots and RollStar rollers"],
    "valid_until": "",
    "source_url": "https://recoveryhaus.com.au/offers/",
-   "checked": "2026-10-15",
+   "checked": "2026-11-01",
    "activities": ["sauna"],
    "format": "pass",
    "amount": 99,
@@ -152,7 +154,7 @@
    "audience": "",
    "valid_until": "",
    "source_url": "https://www.fremantlemassage.com.au/#prices",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "bodywork",
@@ -171,7 +173,7 @@
    "audience": "",
    "valid_until": "",
    "source_url": "https://royalsilkthaimassage.com.au",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "bodywork",
@@ -190,7 +192,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://moderndayspa.com.au",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "bodywork",
@@ -209,7 +211,7 @@
    "audience": "",
    "valid_until": "",
    "source_url": "https://holidayspa.com.au/special-offer",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "bodywork",
@@ -229,7 +231,7 @@
    "weekend": false,
    "valid_until": "",
    "source_url": "https://ganeshawellnessspa.com.au/current-special",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "bodywork",
@@ -247,8 +249,8 @@
    "amount": null,
    "audience": "new",
    "valid_until": "",
-   "source_url": "https://4lifemassage.com.au/4lifemassage/new-patients/",
-   "checked": "2026-10-15",
+   "source_url": "https://4lifemassage.com.au/new-patients/",
+   "checked": "2026-11-01",
    "note": "Offer amount and inclusions are shown in the image on the page (SPECIAL-OFFER-1-724x1024.png)."
   },
   {
@@ -268,7 +270,8 @@
    "valid_until": "2026-10-31",
    "source_url": "https://www.balispiritdayspa.com.au/promotions/",
    "checked": "2026-10-15",
-   "note": "year inferred; end date taken from 'October Special'. No price is stated on the site."
+   "note": "ended 2026-10-31",
+   "removed": true
   },
   {
    "category": "bodywork",
@@ -286,8 +289,8 @@
    "amount": 55,
    "audience": "new",
    "valid_until": "",
-   "source_url": "https://thepilatesklinik.com.au/get-started/",
-   "checked": "2026-10-15"
+   "source_url": "https://www.thepilatesklinik.com.au/get-started/",
+   "checked": "2026-11-01"
   },
   {
    "category": "yoga",
@@ -307,7 +310,7 @@
    "days": 14,
    "valid_until": "",
    "source_url": "https://theyogagarageperth.com.au/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "yoga",
@@ -327,7 +330,7 @@
    "days": 21,
    "valid_until": "",
    "source_url": "https://www.horizonyoga.com.au/intro-offer",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "yoga",
@@ -347,7 +350,7 @@
    "days": 14,
    "valid_until": "",
    "source_url": "https://yogahubperth.com.au/pricing/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "yoga",
@@ -367,7 +370,7 @@
    "days": 25,
    "valid_until": "",
    "source_url": "https://www.hotforyoga.com.au/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "yoga",
@@ -387,7 +390,7 @@
    "days": 30,
    "valid_until": "",
    "source_url": "https://www.yogacornerperth.com/newstudents",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "yoga",
@@ -405,8 +408,8 @@
    "audience": "new",
    "days": 14,
    "valid_until": "",
-   "source_url": "https://www.airspaceperth.com.au/programs/get-started",
-   "checked": "2026-10-15",
+   "source_url": "https://www.airspaceperth.com.au/",
+   "checked": "2026-11-01",
    "note": "No trial price shown on the site; homepage headline also says 'Get your first class for free'."
   },
   {
@@ -446,7 +449,7 @@
    "days": 14,
    "valid_until": "",
    "source_url": "https://bodyscape.com.au/pricing/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "fitness",
@@ -466,7 +469,7 @@
    "days": 14,
    "valid_until": "",
    "source_url": "https://competitiveboxing.com.au/index.php?option=com_sppagebuilder&view=page&id=64",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "fitness",
@@ -486,7 +489,7 @@
    "days": 14,
    "valid_until": "",
    "source_url": "https://elementpilates.com.au/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "fitness",
@@ -505,7 +508,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://www.proactivepilates.com.au",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "fitness",
@@ -525,7 +528,7 @@
    "days": 10,
    "valid_until": "",
    "source_url": "https://strongpilates.com.au/location/rockingham/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "fitness",
@@ -545,7 +548,7 @@
    "days": 14,
    "valid_until": "",
    "source_url": "https://flyinghighaerialartsstudios.com.au/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "fitness",
@@ -564,7 +567,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://www.atimartialarts.com.au/locations/malaga/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "fitness",
@@ -604,7 +607,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://chinesekungfu.com.au/book-a-class/",
-   "checked": "2026-10-15",
+   "checked": "2026-11-01",
    "note": "FAQ page still quotes $25; the booking page states $35."
   },
   {
@@ -624,7 +627,9 @@
    "audience": "",
    "valid_until": "2026-10-31",
    "source_url": "https://skinwellnessclinic.com.au/specials",
-   "checked": "2026-10-03"
+   "checked": "2026-10-03",
+   "removed": true,
+   "note": "ended 2026-10-31"
   },
   {
    "category": "beauty",
@@ -643,7 +648,9 @@
    "audience": "",
    "valid_until": "2026-10-31",
    "source_url": "https://www.cultcosmetica.com.au/pages/specials",
-   "checked": "2026-10-03"
+   "checked": "2026-10-03",
+   "removed": true,
+   "note": "ended 2026-10-31"
   },
   {
    "category": "beauty",
@@ -682,7 +689,7 @@
    "audience": "",
    "valid_until": "",
    "source_url": "https://serendipitymedispa.com.au/specials/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "beauty",
@@ -701,7 +708,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://reda-andco.com/pages/light-therapy",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "beauty",
@@ -719,7 +726,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://labellepeau.com.au",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "beauty",
@@ -737,7 +744,7 @@
    "audience": "",
    "valid_until": "",
    "source_url": "https://www.day-spa-perth.com.au",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "beauty",
@@ -755,7 +762,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://www.oxfordbeautyclinic.com.au/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "longevity",
@@ -776,7 +783,7 @@
    "weekend": true,
    "valid_until": "",
    "source_url": "https://www.activewellnessspa.com/intromonth",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "longevity",
@@ -795,7 +802,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://www.studio2hbot.com.au/pricing",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "mind",
@@ -813,7 +820,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://charleyoga.com.au/soft-start-program/",
-   "checked": "2026-10-15",
+   "checked": "2026-11-01",
    "note": "No price stated on the page"
   },
   {
@@ -832,7 +839,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://choyleefutwa.com/Page/ClassesAndFees.html",
-   "checked": "2026-10-15",
+   "checked": "2026-11-01",
    "note": "Page does not say whether the trial month is free or what it costs"
   },
   {
@@ -852,7 +859,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://www.cottnat.com.au/programs-and-offers/",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "natural",
@@ -871,7 +878,7 @@
    "audience": "",
    "valid_until": "",
    "source_url": "https://www.purehealthandwellness.com.au",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "family",
@@ -890,8 +897,8 @@
    "audience": "new",
    "weekend": true,
    "valid_until": "",
-   "source_url": "https://pilatesfit.com.au/what-we-offer/private-pilates/",
-   "checked": "2026-10-15"
+   "source_url": "https://pilatesfit.com.au/private-pilates",
+   "checked": "2026-11-01"
   },
   {
    "category": "allied",
@@ -910,7 +917,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://www.mannawellness.com.au/reformer-pilates-intro-offer-perth",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "allied",
@@ -929,7 +936,7 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://perthphysiotherapyandpilates.com.au",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "experiences",
@@ -948,7 +955,7 @@
    "audience": "anyone",
    "valid_until": "",
    "source_url": "https://www.brookleighbeautyandspa.com.au/swan-valley-day-spa-specials",
-   "checked": "2026-10-15"
+   "checked": "2026-11-01"
   },
   {
    "category": "seniors",
@@ -967,8 +974,325 @@
    "audience": "new",
    "valid_until": "",
    "source_url": "https://www.extensionfitness.com.au/seniors-strength-and-fitness-perth",
-   "checked": "2026-10-15",
+   "checked": "2026-11-01",
    "note": "Page gives no session length or other conditions."
+  },
+
+  {
+   "category": "yoga",
+   "listing": "the-yoga-room-and-pilates-scarborough",
+   "title": "Half price for two months on a community membership",
+   "details": "Use the code WELCOME50 at checkout to get the first two months of a community membership at 50% off. The studio says the offer runs until 16 November.",
+   "kind": "Seasonal promotion",
+   "price": "50% off",
+   "basis": "first two months of a community membership",
+   "includes": ["Over 60 classes a week"],
+   "eligibility": "Community memberships",
+   "terms": ["Promo code WELCOME50 at checkout", "Community memberships have a six-month minimum commitment", "Cancel after the initial term with 14 days' notice", "Further T&Cs apply"],
+   "activities": ["yoga", "pilates"],
+   "format": "discount",
+   "amount": null,
+   "audience": "",
+   "valid_until": "2026-11-16",
+   "source_url": "https://www.theyogaroomandpilates.com.au/pricing",
+   "checked": "2026-11-01",
+   "note": "year inferred"
+  },
+  {
+   "category": "yoga",
+   "listing": "tamara-yoga-claremont",
+   "title": "Two weeks of unlimited classes for $69",
+   "details": "New students get unlimited access to every studio and live online class for their first two weeks, starting from the date of the first class.",
+   "kind": "Intro offer",
+   "price": "$69",
+   "basis": "two weeks unlimited classes",
+   "includes": ["Claremont studio classes", "Live online classes"],
+   "eligibility": "New students only",
+   "terms": ["Two weeks start from the date of your first class"],
+   "activities": ["yoga"],
+   "format": "pass",
+   "amount": 69,
+   "audience": "new",
+   "days": 14,
+   "valid_until": "",
+   "source_url": "https://tamarayoga.com/intro-offer/",
+   "checked": "2026-11-01"
+  },
+  {
+   "category": "yoga",
+   "listing": "energy-cntr-yoga-perth-cbd",
+   "title": "Introductory offer: 30 days for $79",
+   "details": "First-time students at the Stirling Street studio can start with a one-month introductory pass for $79.",
+   "kind": "Intro offer",
+   "price": "$79",
+   "basis": "one month (30 days) of classes",
+   "includes": [],
+   "eligibility": "New students only",
+   "terms": ["New students only, first timers", "Valid for one month"],
+   "activities": ["yoga"],
+   "format": "pass",
+   "amount": 79,
+   "audience": "new",
+   "days": 30,
+   "valid_until": "",
+   "source_url": "https://energycntryoga.com.au/membership-pricing/",
+   "checked": "2026-11-01"
+  },
+
+  {
+   "category": "fitness",
+   "listing": "hills-pilates-house",
+   "title": "Two weeks of unlimited classes for $75",
+   "details": "New members can take unlimited reformer and mat classes for two weeks at the Kalamunda studio for $75, starting from the date of purchase.",
+   "kind": "Intro offer",
+   "price": "$75",
+   "basis": "two weeks unlimited classes",
+   "includes": ["Unlimited classes for two weeks"],
+   "eligibility": "New members only",
+   "terms": ["New members only", "Two weeks to use from purchase date"],
+   "activities": ["pilates"],
+   "format": "pass",
+   "amount": 75,
+   "audience": "new",
+   "days": 14,
+   "valid_until": "",
+   "source_url": "https://www.hillspilateshouse.com.au/pricing",
+   "checked": "2026-11-01"
+  },
+  {
+   "category": "fitness",
+   "listing": "studio-forte-malaga",
+   "title": "Five reformer classes for $65",
+   "details": "The new members intro at Studio Fortè in Malaga gives five reformer Pilates classes for $65, to be used within 14 days.",
+   "kind": "Intro pack",
+   "price": "$65",
+   "basis": "five reformer classes",
+   "includes": ["5 reformer Pilates classes"],
+   "eligibility": "New members",
+   "terms": ["Sold as a new members intro", "14-day expiry"],
+   "activities": ["pilates"],
+   "format": "pack",
+   "amount": 65,
+   "audience": "new",
+   "valid_until": "",
+   "source_url": "https://studioforte.com.au/",
+   "checked": "2026-11-01"
+  },
+  {
+   "category": "fitness",
+   "listing": "perth-hills-pilates",
+   "title": "Four-class intro pass with a sauna and ice bath session",
+   "details": "An intro pass of four reformer classes plus one Sanctuary session (sauna and ice bath) for $90, usable at both studios within four weeks. An eight-class version is $160.",
+   "kind": "Intro offer",
+   "price": "$90",
+   "basis": "four classes plus one Sanctuary session",
+   "includes": ["4 classes", "1 Sanctuary session (sauna and ice bath)", "Access to both studios"],
+   "eligibility": "No restriction stated",
+   "terms": ["4-week expiry", "Usable at Mahogany Creek and Kalamunda", "Bought via Introductory Offers in the app store", "8-class version $160"],
+   "activities": ["pilates", "sauna"],
+   "format": "pack",
+   "amount": 90,
+   "audience": "",
+   "valid_until": "",
+   "source_url": "https://www.perthhillspilates.com.au/pricing.html",
+   "checked": "2026-11-01"
+  },
+
+  {
+   "category": "bodywork",
+   "listing": "the-neighbourhood-sauna-fremantle",
+   "title": "2 Weeks Warmer intro offer at South Terrace",
+   "details": "A two-week introduction to the South Terrace studio: six sauna sessions, a Bath House Experience and a KX Pilates class, with an optional onboarding chat.",
+   "kind": "Intro offer",
+   "price": "$115",
+   "basis": "two weeks: six sauna sessions plus extras",
+   "includes": ["6 sauna sessions", "1 Bath House Experience", "1 complimentary KX Pilates class"],
+   "eligibility": "No restriction stated",
+   "terms": ["Active automatically once purchased", "Not refundable or transferable", "Optional 30-minute onboarding chat included", "South Terrace studio"],
+   "activities": ["sauna"],
+   "format": "pass",
+   "amount": 115,
+   "audience": "",
+   "days": 14,
+   "valid_until": "",
+   "source_url": "https://www.theneighbourhoodsauna.com/south-terrace-infrared-sauna",
+   "checked": "2026-11-01",
+   "note": "price from the studio's Acuity booking page"
+  },
+  {
+   "category": "bodywork",
+   "listing": "revive-skin-emporium-mount-hawthorn",
+   "title": "Spring Hydration Express Facial",
+   "details": "A 30-minute seasonal express facial listed on the spa's specials page: double cleanse, microdermabrasion and a hydrating masque.",
+   "kind": "Seasonal special",
+   "price": "$110",
+   "basis": "30-minute express facial",
+   "includes": ["Double cleanse", "Microdermabrasion", "Hydrating masque"],
+   "eligibility": "Everyone",
+   "terms": ["Allow 30 minutes"],
+   "activities": ["beauty"],
+   "format": "single",
+   "amount": 110,
+   "audience": "",
+   "valid_until": "",
+   "source_url": "https://reviveskinemporium.com.au/products/regular-microdermabrasion",
+   "checked": "2026-11-01"
+  },
+  {
+   "category": "bodywork",
+   "listing": "hidden-valley-eco-lodges-day-spa",
+   "title": "Spring Getaway midweek lodge stay",
+   "details": "An overnight midweek stay in a private eco lodge with its own jacuzzi, plus a bottle of wine and a cheese platter. Runs Monday to Thursday through November 2026.",
+   "kind": "Seasonal package",
+   "price": "From $595",
+   "basis": "one-night midweek stay in an eco lodge",
+   "includes": ["Overnight stay in a private eco lodge with jacuzzi", "Bottle of red, white or sparkling wine", "Cheese platter"],
+   "eligibility": "New reservations only",
+   "terms": ["Monday to Thursday only", "Book through Reception by phone or email, not online", "Mention the Spring Getaway when booking", "Subject to availability", "Terms and conditions apply"],
+   "activities": [],
+   "format": "package",
+   "amount": null,
+   "audience": "",
+   "valid_until": "2026-11-30",
+   "source_url": "https://hiddenvalleyeco.com.au/promotions/",
+   "checked": "2026-11-01"
+  },
+
+  {
+   "category": "mind",
+   "listing": "sound-healing-perth",
+   "title": "Intro offer: 3 sound sessions for $89",
+   "details": "Newcomers can try three sound sessions for $89, to be used within 21 days. Booked through the studio's Momence page.",
+   "kind": "Intro offer",
+   "price": "$89",
+   "basis": "three sessions",
+   "includes": ["3 sound healing sessions"],
+   "eligibility": "Promoted to people new to the studio",
+   "terms": ["Valid for 21 days"],
+   "activities": [],
+   "format": "pack",
+   "amount": 89,
+   "audience": "",
+   "valid_until": "",
+   "source_url": "https://momence.com/Sound-Healing-Perth/membership/%F0%9F%8C%BF-Intro-Offer-%E2%80%A2-3-Sessions-%E2%80%A2-%2489-(Valid-for-21-days)/732573",
+   "checked": "2026-11-01"
+  },
+
+  {
+   "category": "spa",
+   "listing": "mosman-spas",
+   "title": "Summer Signature Facial special",
+   "details": "A seasonal peel-and-LED facial listed in the spa's Specials range at $145 for one treatment, with a course of four listed at $396.",
+   "kind": "Seasonal special",
+   "price": "$145.00",
+   "basis": "one Summer Signature Facial",
+   "includes": ["Double cleanse and exfoliation", "Customised double peel and hydrating mask", "LED light, hand and arm massage, moisturiser and SPF"],
+   "eligibility": "No restriction stated",
+   "terms": ["Sold through the spa's online shop under Specials", "Course of four listed separately at $396.00"],
+   "activities": ["beauty"],
+   "format": "single",
+   "amount": 145,
+   "audience": "",
+   "valid_until": "",
+   "source_url": "https://mosmanspas.com.au/products/summer-signature-facial-x-1",
+   "checked": "2026-11-01"
+  },
+  {
+   "category": "spa",
+   "listing": "merse-wellness-osborne-park",
+   "title": "Restore Me bathhouse package",
+   "details": "An Osborne Park package pairing the bathhouse with the Rejuvenate Lounge and salt room in one visit for $99.95, which the site says saves $25.",
+   "kind": "Package deal",
+   "price": "$99.95",
+   "basis": "bathhouse, Rejuvenate Lounge and salt room in one visit",
+   "includes": ["Bathhouse session", "Rejuvenate Lounge", "Salt room"],
+   "eligibility": "No restriction stated",
+   "terms": ["Osborne Park location only", "Site states a saving of $25"],
+   "activities": ["spa"],
+   "format": "package",
+   "amount": 99.95,
+   "audience": "",
+   "valid_until": "",
+   "source_url": "https://www.mersewellness.com.au/osborne-park-offers/",
+   "checked": "2026-11-01"
+  },
+  {
+   "category": "spa",
+   "listing": "henosis-co-west-leederville",
+   "title": "Intro month of unlimited classes for $75",
+   "details": "An intro offer of one month of unlimited classes for $75, covering the Yin & Sound, sound healing and meditation sessions on the studio timetable.",
+   "kind": "Intro pass",
+   "price": "$75",
+   "basis": "one month of unlimited classes",
+   "includes": ["Yin & Sound (Mon)", "Restorative Sound Healing (Tue)", "Presence-based meditation (Wed and Sat)"],
+   "eligibility": "No restriction stated",
+   "terms": ["Charged once at time of purchase", "Unlimited classes for one month"],
+   "activities": [],
+   "format": "pass",
+   "amount": 75,
+   "audience": "",
+   "valid_until": "",
+   "source_url": "https://henosisandco.com.au/memberships/",
+   "checked": "2026-11-01"
+  },
+
+  {
+   "category": "beauty",
+   "listing": "sante-skin-south-fremantle",
+   "title": "Skin needling with LED and sheet mask added",
+   "details": "Skin needling for the face and neck booked with Georgia comes with LED light therapy and a Rejuran sheet mask at no extra cost, until 30 November.",
+   "kind": "Monthly special",
+   "price": "$350",
+   "basis": "face and neck skin needling, 90 minutes",
+   "includes": ["Skin needling, face and neck", "LED light therapy", "Rejuran sheet mask"],
+   "eligibility": "Appointments booked with Georgia",
+   "terms": ["Skin needling appointments with Georgia only", "Ends 30 November"],
+   "activities": ["beauty"],
+   "format": "package",
+   "amount": 350,
+   "audience": "",
+   "valid_until": "2026-11-30",
+   "source_url": "https://bookings.gettimely.com/santeskinptyltd/book",
+   "checked": "2026-11-01",
+   "note": "year inferred"
+  },
+  {
+   "category": "beauty",
+   "listing": "beaute-boudoir-mount-lawley",
+   "title": "Limited-edition spring facial ritual",
+   "details": "A 45-minute seasonal treatment for spring: a facial ritual with exfoliation, a mask, and a neck, décolletage and scalp massage while the mask sets.",
+   "kind": "Seasonal package",
+   "price": "$199",
+   "basis": "45-minute seasonal treatment",
+   "includes": ["Facial ritual with exfoliation", "Mask", "Neck, décolletage and scalp massage"],
+   "eligibility": "Everyone",
+   "terms": ["Limited edition for spring", "Booked online through the salon's Timely page"],
+   "activities": ["beauty"],
+   "format": "package",
+   "amount": 199,
+   "audience": "",
+   "valid_until": "",
+   "source_url": "https://bookings.gettimely.com/beautboudoir/bb/book",
+   "checked": "2026-11-01"
+  },
+  {
+   "category": "beauty",
+   "listing": "glamour-nail-bar-subiaco",
+   "title": "School ball nails special",
+   "details": "School ball students can book soft gel nail extensions with colour on the toes for $150, or a gel manicure with colour on the toes for $120.",
+   "kind": "Seasonal special",
+   "price": "$150",
+   "basis": "soft gel nail extensions and colour on toes, 90 minutes",
+   "includes": ["Soft gel nail extensions", "Colour on toes", "Gel manicure option at $120"],
+   "eligibility": "School ball students only",
+   "terms": ["For school ball students only", "Book under School Ball Special Offer on the Subiaco booking page"],
+   "activities": ["beauty"],
+   "format": "package",
+   "amount": 150,
+   "audience": "",
+   "valid_until": "",
+   "source_url": "https://bookings.gettimely.com/glamournailbar/bb/book",
+   "checked": "2026-11-01"
   }
  ]
 }
