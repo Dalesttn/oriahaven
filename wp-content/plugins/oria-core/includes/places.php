@@ -19,7 +19,8 @@
  * uploads/oria-gphotos/ (download_photos(), run by tools/places-download.php)
  * and served from there. Nothing here calls Google for a photo any more,
  * except that download. Dale accepted the terms risk of keeping the copies.
- * Rating, hours and reviews still come from the cached record as before.
+ * Reviews are frozen too (never fetched again, see reviews_for()); rating
+ * and hours still refresh from Google every CACHE_DAYS.
  */
 
 declare(strict_types=1);
@@ -33,10 +34,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* v5: the record gained the opening hours; the new key retires older
    cache entries cleanly, and the warm cron walks every listing onto it. */
 const META_CACHE   = '_oria_places_v5';
-/* Reviews live in their own row with their own timestamp: they are fetched
-   on a profile view rather than on every refresh, so they expire on their
-   own clock. Same 29-day ceiling -- Google's caching rule applies to them
-   exactly as it does to the rest of the record. */
+/* Reviews live in their own row with their own timestamp. Frozen since
+   2026-11-02: never fetched again, see reviews_for(). */
 const META_REVIEWS = '_oria_places_reviews_v1';
 const CACHE_DAYS   = 29;
 const MAX_PHOTOS   = 3;
@@ -211,76 +210,34 @@ function photos_for( int $post_id, int $width = 1200 ): array {
 }
 
 /**
- * The place's top Google reviews (up to five, as the API supplies them).
+ * The place's top Google reviews (up to five, as the API supplied them).
+ *
+ * FROZEN 2026-11-02 (Dale, cost): reviews are Google's priciest field, so
+ * the ones already saved are shown as they are and are never fetched again;
+ * a listing with none saved shows none. Google's "2 weeks ago" was true on
+ * the day it was fetched, so once the record is past CACHE_DAYS the age is
+ * dropped rather than shown wrong (the template then just says "on Google").
  *
  * @return array<int, array{author: string, author_uri: string, avatar: string, rating: float, when: string, text: string}>
  */
 function reviews_for( int $post_id ): array {
-	if ( ! enabled() || hidden( $post_id ) ) {
+	if ( hidden( $post_id ) ) {
 		return array();
 	}
 
 	$cache = get_post_meta( $post_id, META_REVIEWS, true );
-	if ( is_array( $cache ) && isset( $cache['ts'] )
-		&& ( time() - (int) $cache['ts'] ) < CACHE_DAYS * DAY_IN_SECONDS ) {
-		return (array) ( $cache['items'] ?? array() );
-	}
-
-	/*
-	 * The main record is asked for first because it carries the place-name
-	 * check: reviews belonging to a business we matched wrongly must never
-	 * reach the page, and resolving it also fills in a missing place ID.
-	 */
-	$record = data_for( $post_id );
-	if ( null === $record ) {
+	if ( ! is_array( $cache ) || ! isset( $cache['ts'] ) ) {
 		return array();
 	}
 
-	$place_id = function_exists( 'get_field' ) ? trim( (string) get_field( 'google_place_id', $post_id ) ) : '';
-	if ( '' === $place_id || get_transient( 'oria_places_rev_backoff_' . $post_id ) ) {
-		return array();
+	$items = (array) ( $cache['items'] ?? array() );
+	if ( ( time() - (int) $cache['ts'] ) >= CACHE_DAYS * DAY_IN_SECONDS ) {
+		foreach ( $items as &$item ) {
+			$item['when'] = '';
+		}
+		unset( $item );
 	}
-
-	$items = fetch_reviews( $place_id );
-	if ( null === $items ) {
-		set_transient( 'oria_places_rev_backoff_' . $post_id, 1, DAY_IN_SECONDS );
-		return array();
-	}
-
-	update_post_meta( $post_id, META_REVIEWS, array( 'items' => $items, 'ts' => time() ) );
 	return $items;
-}
-
-/**
- * One Details call for review text alone.
- *
- * Kept apart from fetch() on purpose. Reviews are the priciest field Google
- * sells, and the daily warm walks every listing whether or not anyone reads
- * it -- so the warm gets everything else, and this runs only when somebody
- * actually opens a profile. Null means the call failed, which is not the
- * same as a place with no reviews (an empty array).
- *
- * @return array<int, array<string, mixed>>|null
- */
-function fetch_reviews( string $place_id ): ?array {
-	$response = wp_remote_get(
-		sprintf( DETAILS_URL, rawurlencode( $place_id ) ),
-		array(
-			'timeout' => 8,
-			'headers' => array(
-				'X-Goog-Api-Key'   => server_key(),
-				'X-Goog-FieldMask' => 'reviews',
-			),
-		)
-	);
-
-	$body = decode( $response );
-	if ( null === $body ) {
-		return null;
-	}
-
-	$packed = pack( $body );
-	return (array) ( $packed['reviews'] ?? array() );
 }
 
 /**
