@@ -13,6 +13,13 @@
  * The lookup (server key) happens in PHP; the actual image bytes are fetched
  * by the visitor's browser straight from Google (browser key in the media
  * URL), so nothing is ever copied into the media library.
+ *
+ * CHANGED 2026-11-02, Dale's decision: the weekly re-resolving of photo URIs
+ * cost too much in Google Cloud, so photos are now downloaded ONCE into
+ * uploads/oria-gphotos/ (download_photos(), run by tools/places-download.php)
+ * and served from there. Nothing here calls Google for a photo any more,
+ * except that download. Dale accepted the terms risk of keeping the copies.
+ * Rating, hours and reviews still come from the cached record as before.
  */
 
 declare(strict_types=1);
@@ -32,17 +39,16 @@ const META_CACHE   = '_oria_places_v5';
    exactly as it does to the rest of the record. */
 const META_REVIEWS = '_oria_places_reviews_v1';
 const CACHE_DAYS   = 29;
-/*
- * The photo URIs Google hands back are short-lived: they started returning
- * 403 somewhere between two and four weeks old (found 2026-09-27 on Sound
- * Healing Perth, whose hero went blank at 26 days). The record keeps its
- * 29 days; the URIs are re-resolved from the stored photo names after 7.
- */
-const URI_DAYS     = 7;
 const MAX_PHOTOS   = 3;
 const SEARCH_URL   = 'https://places.googleapis.com/v1/places:searchText';
 const DETAILS_URL  = 'https://places.googleapis.com/v1/places/%s';
 const MEDIA_URL    = 'https://places.googleapis.com/v1/%s/media';
+/* The downloaded copies: files under uploads/PHOTO_DIR, listed in META_LOCAL
+   as {files: [[full, card], ...], attributions: [...], at: time}. */
+const PHOTO_DIR    = 'oria-gphotos';
+const META_LOCAL   = '_oria_gphotos';
+const FULL_WIDTH   = 1200;
+const CARD_WIDTH   = 640;
 
 function opt( string $name ): string {
 	return function_exists( 'get_field' ) ? (string) ( get_field( $name, 'option' ) ?: '' ) : '';
@@ -125,11 +131,7 @@ function data_for( int $post_id, bool $may_fetch = true ): ?array {
 			return null;
 		}
 
-		if ( $may_fetch && uris_stale( $cache ) ) {
-			$cache = refresh_uris( $post_id, $cache, $place_id );
-		}
-
-		return $cache;
+		return with_local( $post_id, $cache );
 	}
 
 	if ( ! $may_fetch ) {
@@ -147,72 +149,49 @@ function data_for( int $post_id, bool $may_fetch = true ): ?array {
 		return null;
 	}
 
-	$fresh['uris_ts'] = time();
 	update_post_meta( $post_id, META_CACHE, $fresh );
-	return $fresh;
-}
-
-/** Whether a record's photo URIs are older than Google keeps them working. */
-function uris_stale( array $cache ): bool {
-	if ( empty( $cache['names'] ) ) {
-		return false; // no photos to refresh
-	}
-	$ts = (int) ( $cache['uris_ts'] ?? $cache['ts'] ?? 0 );
-	return ( time() - $ts ) >= URI_DAYS * DAY_IN_SECONDS;
+	return with_local( $post_id, $fresh );
 }
 
 /**
- * New URIs for the photos a record already names -- one media call per
- * photo, no Place Details call. If Google no longer recognises the names,
- * the whole record is fetched again. A failure backs off for a day, and the
- * old record is returned either way: the page's image fallback covers a URI
- * that has died, which is better than no record at all.
+ * A record's photos, swapped for the downloaded copies. Google URIs are
+ * never handed out any more: a listing with no copies gets no photos.
  */
-function refresh_uris( int $post_id, array $cache, string $place_id ): array {
-	if ( get_transient( 'oria_places_uri_backoff_' . $post_id ) ) {
-		return $cache;
-	}
-	$key = server_key();
-	if ( '' === $key ) {
-		return $cache;
-	}
-
-	$next = with_uris( $cache, $key );
-	if ( ! empty( $next['uris'] ) ) {
-		$next['uris_ts'] = time();
-		update_post_meta( $post_id, META_CACHE, $next );
-		return $next;
-	}
-
-	if ( '' !== $place_id ) {
-		$fresh = fetch( $post_id, $place_id );
-		if ( null !== $fresh && ! empty( $fresh['uris'] ) ) {
-			$fresh['uris_ts'] = time();
-			update_post_meta( $post_id, META_CACHE, $fresh );
-			return $fresh;
-		}
-	}
-
-	set_transient( 'oria_places_uri_backoff_' . $post_id, 1, DAY_IN_SECONDS );
+function with_local( int $post_id, array $cache ): array {
+	$local                 = local_photos( $post_id );
+	$cache['uris']         = $local['full'];
+	$cache['attributions'] = $local['attributions'];
 	return $cache;
 }
 
 /**
- * The first photo for a listing CARD. Cached data is free; uncached listings
- * may trigger at most a couple of live fetches per pageview, so a directory
- * of 150 listings warms itself gradually instead of hanging one visitor on
- * hundreds of API calls. Profile views (photos_for) always fetch.
+ * The downloaded copies of a listing's Google photos.
+ *
+ * @return array{full: string[], card: string[], attributions: array}
  */
-function card_photo( int $post_id ): string {
-	static $fetch_budget = 2;
-
-	$cache = data_for( $post_id, false );
-	if ( ( null === $cache || uris_stale( $cache ) ) && $fetch_budget > 0 ) {
-		--$fetch_budget;
-		$cache = data_for( $post_id, true ) ?? $cache;
+function local_photos( int $post_id ): array {
+	$out  = array( 'full' => array(), 'card' => array(), 'attributions' => array() );
+	$meta = get_post_meta( $post_id, META_LOCAL, true );
+	if ( ! is_array( $meta ) || empty( $meta['files'] ) ) {
+		return $out;
 	}
+	$up   = wp_upload_dir( null, false );
+	$base = trailingslashit( $up['baseurl'] ) . PHOTO_DIR . '/';
+	foreach ( (array) $meta['files'] as $pair ) {
+		$out['full'][] = $base . $pair[0];
+		$out['card'][] = $base . ( $pair[1] ?? $pair[0] );
+	}
+	$out['attributions'] = (array) ( $meta['attributions'] ?? array() );
+	return $out;
+}
 
-	return $cache ? (string) ( $cache['uris'][0] ?? '' ) : '';
+/** The first photo for a listing CARD: the downloaded copy, or ''. */
+function card_photo( int $post_id ): string {
+	// The downloaded copy only: a card never calls Google.
+	if ( hidden( $post_id ) ) {
+		return '';
+	}
+	return (string) ( local_photos( $post_id )['card'][0] ?? '' );
 }
 
 /**
@@ -221,10 +200,14 @@ function card_photo( int $post_id ): string {
  * @return array{urls: string[], attributions: array<int, array{name: string, uri: string}>}
  */
 function photos_for( int $post_id, int $width = 1200 ): array {
-	$cache = data_for( $post_id );
-	return $cache
-		? build( $cache, $width )
-		: array( 'urls' => array(), 'attributions' => array() );
+	if ( hidden( $post_id ) ) {
+		return array( 'urls' => array(), 'attributions' => array() );
+	}
+	$local = local_photos( $post_id );
+	return array(
+		'urls'         => array_slice( $width <= CARD_WIDTH ? $local['card'] : $local['full'], 0, MAX_PHOTOS ),
+		'attributions' => $local['attributions'],
+	);
 }
 
 /**
@@ -379,35 +362,16 @@ function build( array $cache, int $width ): array {
 }
 
 /**
- * Exchange a photo resource name for its short-term public image URI.
- * skipHttpRedirect makes the endpoint answer with JSON instead of a 302,
- * and the URI it returns is key-less.
- */
-function resolve_photo_uri( string $name, string $key ): string {
-	$response = wp_remote_get(
-		add_query_arg(
-			array(
-				'maxWidthPx'       => 1600,
-				'skipHttpRedirect' => 'true',
-			),
-			sprintf( MEDIA_URL, $name )
-		),
-		array(
-			'timeout' => 8,
-			'headers' => array( 'X-Goog-Api-Key' => $key ),
-		)
-	);
-	$body = decode( $response );
-	return is_array( $body ) ? (string) ( $body['photoUri'] ?? '' ) : '';
-}
-
-/**
  * Resolve the place (if needed) and pull its photo references.
  *
  * @return array{names: string[], attributions: array<int, array{name: string, uri: string}>, ts: int}|null
  */
-function fetch( int $post_id, string $place_id ): ?array {
+function fetch( int $post_id, string $place_id, bool $photos = false ): ?array {
 	$key = server_key();
+	// Photo names are asked for only by download_photos(); a routine refresh
+	// (rating, hours) leaves them out.
+	$search_mask  = 'places.id,places.displayName,places.rating,places.userRatingCount,places.googleMapsUri,places.regularOpeningHours' . ( $photos ? ',places.photos' : '' );
+	$details_mask = 'displayName,rating,userRatingCount,googleMapsUri,regularOpeningHours' . ( $photos ? ',photos' : '' );
 
 	if ( '' === $place_id ) {
 		$query = (string) get_post_field( 'post_title', $post_id, 'raw' );
@@ -428,7 +392,7 @@ function fetch( int $post_id, string $place_id ): ?array {
 					// No places.reviews: review text is an Atmosphere field and
 					// prices the whole call a tier higher. reviews_for() asks
 					// for it separately, and only when a profile is rendered.
-					'X-Goog-FieldMask' => 'places.id,places.displayName,places.photos,places.rating,places.userRatingCount,places.googleMapsUri,places.regularOpeningHours',
+					'X-Goog-FieldMask' => $search_mask,
 				),
 				'body'    => (string) wp_json_encode(
 					array(
@@ -495,7 +459,7 @@ function fetch( int $post_id, string $place_id ): ?array {
 			update_field( 'google_place_id', $place_id, $post_id );
 		}
 
-		return with_uris( pack( $match ), $key );
+		return pack( $match );
 	}
 
 	// Known place ID: details call.
@@ -508,7 +472,7 @@ function fetch( int $post_id, string $place_id ): ?array {
 				// displayName here too: the warm() job refreshes forty records a
 				// day through this path, so every existing record picks up a
 				// name within ten days and becomes checkable.
-				'X-Goog-FieldMask' => 'displayName,photos,rating,userRatingCount,googleMapsUri,regularOpeningHours',
+				'X-Goog-FieldMask' => $details_mask,
 			),
 		)
 	);
@@ -518,19 +482,146 @@ function fetch( int $post_id, string $place_id ): ?array {
 		return null;
 	}
 
-	return with_uris( pack( $body ), $key );
+	return pack( $body );
 }
 
-/** Resolve every photo name in a packed record to its key-less URI. */
-function with_uris( array $record, string $key ): array {
-	$record['uris'] = array();
-	foreach ( (array) $record['names'] as $name ) {
-		$uri = resolve_photo_uri( (string) $name, $key );
-		if ( '' !== $uri ) {
-			$record['uris'][] = $uri;
-		}
+/**
+ * Download a listing's Google photos (up to MAX_PHOTOS) into
+ * uploads/oria-gphotos/ and record them, so they are served from the site
+ * from then on. Free when the old cached links still answer; otherwise one
+ * Details call and one media call per photo, once.
+ *
+ * Follows the same rules as the display ever did: a hidden listing, or a
+ * record whose Google name doesn't match the listing (unless an editor
+ * pinned it), gets nothing.
+ *
+ * @param bool $lookup Ask Google for current photo names when the cached
+ *                     links have expired (one Details or Text Search call).
+ * @return array{status: string, saved: int}
+ */
+function download_photos( int $post_id, bool $lookup = true, bool $dry = false ): array {
+	if ( hidden( $post_id ) ) {
+		return array( 'status' => 'hidden', 'saved' => 0 );
 	}
-	return $record;
+	$have = get_post_meta( $post_id, META_LOCAL, true );
+	if ( is_array( $have ) && ! empty( $have['files'] ) ) {
+		return array( 'status' => 'done already', 'saved' => 0 );
+	}
+
+	$place_id = function_exists( 'get_field' ) ? trim( (string) get_field( 'google_place_id', $post_id ) ) : '';
+	$cache    = get_post_meta( $post_id, META_CACHE, true );
+	$cache    = is_array( $cache ) ? $cache : array();
+	$pinned   = '' !== $place_id && '1' === (string) get_post_meta( $post_id, '_oria_places_ok', true );
+	$claimed  = (string) ( $cache['place_name'] ?? '' );
+	$title    = (string) get_post_field( 'post_title', $post_id, 'raw' );
+	if ( '' !== $claimed && ! $pinned && ! name_matches( $title, $claimed ) ) {
+		return array( 'status' => 'name mismatch: ' . $claimed, 'saved' => 0 );
+	}
+
+	if ( $dry ) {
+		return array( 'status' => empty( $cache['names'] ) ? ( $lookup ? 'would look up' : 'no photo names cached' ) : 'would download ' . count( $cache['names'] ), 'saved' => 0 );
+	}
+
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	$up  = wp_upload_dir();
+	$dir = trailingslashit( $up['basedir'] ) . PHOTO_DIR;
+	wp_mkdir_p( $dir );
+	$ext  = wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) ) ? 'webp' : 'jpg';
+	$mime = 'webp' === $ext ? 'image/webp' : 'image/jpeg';
+
+	/*
+	 * First the links the old weekly refresh cached, which cost nothing while
+	 * they still answer. Google also retires photo NAMES after a few weeks
+	 * ("The photo resource in the request is invalid"), so when those fail the
+	 * place is looked up once for current names and each is fetched -- one
+	 * Details call plus one media call per photo.
+	 */
+	$files = save_photos( $post_id, (array) ( $cache['uris'] ?? array() ), array(), $dir, $ext, $mime );
+	if ( ! $files ) {
+		if ( ! $lookup ) {
+			return array( 'status' => 'cached links expired', 'saved' => 0 );
+		}
+		if ( '' === server_key() ) {
+			return array( 'status' => 'no server key', 'saved' => 0 );
+		}
+		$fresh = fetch( $post_id, $place_id, true );
+		if ( null === $fresh ) {
+			return array( 'status' => 'lookup failed or no match', 'saved' => 0 );
+		}
+		if ( '' !== $fresh['place_name'] && ! $pinned && ! name_matches( $title, $fresh['place_name'] ) ) {
+			return array( 'status' => 'name mismatch: ' . $fresh['place_name'], 'saved' => 0 );
+		}
+		unset( $cache['uris'] );
+		$cache = array_merge( $cache, $fresh );
+		update_post_meta( $post_id, META_CACHE, $cache );
+		if ( empty( $cache['names'] ) ) {
+			return array( 'status' => 'Google has no photos', 'saved' => 0 );
+		}
+		$urls = array_map(
+			static fn( $n ): string => add_query_arg( array( 'maxWidthPx' => 1600 ), sprintf( MEDIA_URL, (string) $n ) ),
+			(array) $cache['names']
+		);
+		$files = save_photos( $post_id, $urls, array( 'X-Goog-Api-Key' => server_key() ), $dir, $ext, $mime );
+	}
+
+	if ( ! $files ) {
+		return array( 'status' => 'download failed', 'saved' => 0 );
+	}
+	update_post_meta(
+		$post_id,
+		META_LOCAL,
+		array(
+			'files'        => $files,
+			'attributions' => (array) ( $cache['attributions'] ?? array() ),
+			'place_name'   => (string) ( $cache['place_name'] ?? '' ),
+			'at'           => time(),
+		)
+	);
+	return array( 'status' => 'saved', 'saved' => count( $files ) );
+}
+
+/**
+ * Fetch each image URL and save it at two widths. Stops at the first URL
+ * that fails, so a dead set of links costs one request, not three.
+ *
+ * @param string[] $urls
+ * @return array<int, array{0: string, 1: string}> file names, full and card
+ */
+function save_photos( int $post_id, array $urls, array $headers, string $dir, string $ext, string $mime ): array {
+	$files = array();
+	foreach ( array_slice( array_values( $urls ), 0, MAX_PHOTOS ) as $i => $url ) {
+		$r = wp_remote_get( (string) $url, array( 'timeout' => 20, 'headers' => $headers ) );
+		if ( is_wp_error( $r ) || 200 !== (int) wp_remote_retrieve_response_code( $r ) ) {
+			break;
+		}
+		$bytes = (string) wp_remote_retrieve_body( $r );
+		if ( strlen( $bytes ) < 1000 ) {
+			break;
+		}
+		$tmp = wp_tempnam( 'oria-gphoto' );
+		file_put_contents( $tmp, $bytes ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		$stem = $post_id . '-' . ( $i + 1 );
+		$pair = array();
+		foreach ( array( FULL_WIDTH => '', CARD_WIDTH => '-sm' ) as $w => $suffix ) {
+			$ed = wp_get_image_editor( $tmp );
+			if ( is_wp_error( $ed ) ) {
+				break;
+			}
+			$ed->resize( $w, null );
+			$ed->set_quality( 80 );
+			$saved = $ed->save( $dir . '/' . $stem . $suffix . '.' . $ext, $mime );
+			if ( is_wp_error( $saved ) ) {
+				break;
+			}
+			$pair[] = basename( (string) $saved['path'] );
+		}
+		wp_delete_file( $tmp );
+		if ( 2 !== count( $pair ) ) {
+			break;
+		}
+		$files[] = $pair;
+	}
+	return $files;
 }
 
 /** @param array|\WP_Error $response */
@@ -696,11 +787,10 @@ function bootstrap(): void {
 }
 
 /*
- * 80 a day: photo URIs now need refreshing weekly, so the daily warm has to
- * reach roughly a seventh of the warm-worthy listings every night for
- * visitors not to pay for the refresh themselves.
+ * 40 a day: photos are downloaded copies now, so only the 29-day record
+ * (rating, hours) needs refreshing.
  */
-function warm( int $budget = 80 ): array {
+function warm( int $budget = 40 ): array {
 	$fresh = 0;
 	$had   = 0;
 	if ( ! enabled() ) {
@@ -727,10 +817,9 @@ function warm( int $budget = 80 ): array {
 		}
 		$cache = get_post_meta( (int) $id, META_CACHE, true );
 		if ( is_array( $cache ) && isset( $cache['ts'] )
-			&& ( time() - (int) $cache['ts'] ) < ( CACHE_DAYS - 2 ) * DAY_IN_SECONDS
-			&& ! uris_stale( $cache ) ) {
+			&& ( time() - (int) $cache['ts'] ) < ( CACHE_DAYS - 2 ) * DAY_IN_SECONDS ) {
 			++$had;
-			continue; // record and photo URIs both comfortably fresh
+			continue; // record comfortably fresh
 		}
 		if ( $budget <= 0 ) {
 			break;
