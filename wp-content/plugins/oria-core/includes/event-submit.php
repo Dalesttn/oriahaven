@@ -389,13 +389,18 @@ function flag_duplicate( int $id, array $in, string $start ): void {
 }
 
 function notify( int $id, array $in ): void {
-	if ( ! function_exists( '\Oria\Core\Signup\send' ) ) {
+	/*
+	 * Leads\send(), not Signup\send(): these bodies are HTML, and
+	 * Signup\send() escapes its body as plain text -- which mailed the
+	 * <p> and <a href> tags out as visible text (Dale, 2 Nov 2026).
+	 */
+	if ( ! function_exists( '\Oria\Core\Leads\send' ) ) {
 		return;
 	}
 	$edit = admin_url( 'post.php?post=' . $id . '&action=edit' );
 	$dupe = (int) get_post_meta( $id, '_oria_possible_dupe', true );
 
-	Signup\send(
+	\Oria\Core\Leads\send(
 		(string) get_option( 'admin_email' ),
 		sprintf( '[Oria Haven] Event submitted: %s', $in['title'] ),
 		__( 'An event is waiting for review', 'oria' ),
@@ -408,10 +413,11 @@ function notify( int $id, array $in ): void {
 			$dupe ? '<p><strong>' . esc_html__( 'Possibly already on the site — check before publishing.', 'oria' ) . '</strong></p>' : '',
 			esc_url( $edit ),
 			esc_html__( 'Review it', 'oria' )
-		)
+		),
+		(string) $in['email'] // Reply-To: answer the submitter straight from the email.
 	);
 
-	Signup\send(
+	\Oria\Core\Leads\send(
 		$in['email'],
 		__( 'Thanks — your event is with us', 'oria' ),
 		__( 'Event received', 'oria' ),
