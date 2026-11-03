@@ -173,7 +173,6 @@ function create( int $listing_id, string $name, string $email, string $phone, st
 	update_post_meta( $request_id, '_name', $name );
 	update_post_meta( $request_id, '_email', $email );
 	update_post_meta( $request_id, '_phone', $phone );
-	update_post_meta( $request_id, '_role', $role );
 	update_post_meta( $request_id, '_note', $note );
 	update_post_meta( $request_id, '_status', 'pending' );
 	update_post_meta( $request_id, '_source', $source );
@@ -302,20 +301,36 @@ function handle_decision(): void {
 		exit;
 	}
 
-	// ---- approve ----
+	$status = approve( $request_id );
+	wp_safe_redirect( add_query_arg( 'oria_decided', $status, $back ) );
+	exit;
+}
+
+/**
+ * Approve a pending request: owner account (made if needed, with core's
+ * set-password email), listing linked and marked claimed and verified,
+ * audit note, approval email. Shared by the admin button and
+ * tools/claim-listing.php, so a claim made by hand is the same as one made
+ * through the queue.
+ *
+ * @return string 'approved', 'taken' (a paid owner already holds it), 'stale'
+ *                (not pending) or 'error'.
+ */
+function approve( int $request_id ): string {
+	if ( 'pending' !== (string) get_post_meta( $request_id, '_status', true ) ) {
+		return 'stale';
+	}
 	$listing_id = (int) get_post_meta( $request_id, '_listing_id', true );
 	$email      = (string) get_post_meta( $request_id, '_email', true );
 	$name       = (string) get_post_meta( $request_id, '_name', true );
 
 	if ( ! get_post( $listing_id ) ) {
-		wp_safe_redirect( add_query_arg( 'oria_decided', 'error', $back ) );
-		exit;
+		return 'error';
 	}
 
 	$current_owner = (int) get_post_meta( $listing_id, 'claimed_by', true );
 	if ( $current_owner && Ownership\is_paid( $listing_id ) ) {
-		wp_safe_redirect( add_query_arg( 'oria_decided', 'taken', $back ) );
-		exit;
+		return 'taken';
 	}
 
 	$user        = get_user_by( 'email', $email );
@@ -326,8 +341,7 @@ function handle_decision(): void {
 	} else {
 		$user_id = new_owner_account( $email, $name );
 		if ( ! $user_id ) {
-			wp_safe_redirect( add_query_arg( 'oria_decided', 'error', $back ) );
-			exit;
+			return 'error';
 		}
 		$new_account = true;
 	}
@@ -383,8 +397,7 @@ function handle_decision(): void {
 	// later turns out to be wrong, that the account can simply be moved.
 	update_post_meta( $request_id, '_new_account', $new_account ? '1' : '0' );
 
-	wp_safe_redirect( add_query_arg( 'oria_decided', 'approved', $back ) );
-	exit;
+	return 'approved';
 }
 
 /**
@@ -461,6 +474,17 @@ function send_approved( string $email, int $listing_id, string $name, bool $new_
  */
 function new_owner_account( string $email, string $name ): int {
 	$username = sanitize_user( (string) strstr( $email, '@', true ), true );
+	/*
+	 * A shared inbox's local part makes a poor login: admin@ became
+	 * "admin322", which reads like a site administrator and is the first
+	 * name password-guessing bots try. The owner's name serves instead.
+	 * (They can sign in with the email address either way.)
+	 */
+	$generic = array( 'admin', 'info', 'hello', 'contact', 'enquiries', 'enquiry', 'bookings', 'booking', 'reception', 'office', 'mail', 'team', 'support', 'sales', 'accounts' );
+	if ( in_array( strtolower( $username ), $generic, true ) ) {
+		$from_name = sanitize_user( strtolower( (string) preg_replace( '/[^a-z0-9]/i', '', remove_accents( $name ) ) ), true );
+		$username  = '' !== $from_name ? $from_name : $username;
+	}
 	if ( '' === $username || username_exists( $username ) ) {
 		$username = sanitize_user( $username . wp_rand( 100, 999 ), true );
 	}
