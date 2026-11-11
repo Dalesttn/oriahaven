@@ -496,6 +496,20 @@ function live_email( string $new, string $old, ?\WP_Post $post = null ): void {
 		return;
 	}
 
+	/*
+	 * Approval puts the owner on the free Claimed plan, as a claim approval
+	 * does. Sign-ups were left with no claim_status, so Tiers read them as
+	 * unclaimed and the owner missed the editing, photos and analytics they
+	 * had been told were free (found on Flutter Bomb, 11 Nov 2026).
+	 * Featured is never touched.
+	 */
+	if ( ! in_array( (string) get_post_meta( $post->ID, 'claim_status', true ), array( 'claimed', 'featured' ), true ) ) {
+		update_post_meta( $post->ID, 'claim_status', 'claimed' );
+	}
+	if ( ! get_post_meta( $post->ID, 'verified_at', true ) ) {
+		update_post_meta( $post->ID, 'verified_at', current_time( 'Y-m-d' ) );
+	}
+
 	send( $owner->user_email, __( 'Your listing is live on Oria Haven', 'oria' ), __( "You're live", 'oria' ), live_body( $post, $owner ) );
 }
 
