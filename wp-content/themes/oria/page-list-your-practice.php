@@ -30,6 +30,8 @@ $oria_error_text = array(
 	'format'         => __( 'Pick a format from the list.', 'oria' ),
 	'account_name'   => __( 'Your name is required for the account.', 'oria' ),
 	'account_email'  => __( "Your account email doesn't look like an email address.", 'oria' ),
+	'account_email_free' => __( "Please sign up with your business email address (for example you@yourpractice.com.au). We don't accept Gmail, Outlook, Hotmail, Yahoo or iCloud addresses for listings.", 'oria' ),
+	'account_email_free_signed_in' => __( "You're signed in with a personal email address. Listings need a business email: change your account email to one at your practice's domain in My Oria, then submit again.", 'oria' ),
 	'account_exists' => __( 'There\'s already an account with that email — log in instead, or use the claim form if your practice is already listed.', 'oria' ),
 	'authorised'     => __( 'Please confirm you\'re authorised to manage this practice.', 'oria' ),
 	'photo_count'    => __( 'Up to four photos on the free plan.', 'oria' ),
@@ -142,9 +144,9 @@ $oria_plans = array(
 					<input class="input" type="tel" name="phone" autocomplete="tel" value="<?php echo $oria_v( 'phone' ); ?>"></label>
 			</div>
 
-			<label class="field"><span class="field__label"><?php esc_html_e( 'Email', 'oria' ); ?></span>
+			<label class="field"><span class="field__label"><?php esc_html_e( 'Business email', 'oria' ); ?></span>
 				<input class="input" type="email" name="account_email" required autocomplete="email" value="<?php echo $oria_v( 'account_email' ); ?>">
-				<span class="field__help"><?php esc_html_e( 'We send your password here. It is also how you sign in.', 'oria' ); ?></span></label>
+				<span class="field__help"><?php esc_html_e( "Your practice's own address, not Gmail, Outlook or similar. We send your password here, and it is how you sign in.", 'oria' ); ?></span></label>
 
 			<label class="check" style="align-items:flex-start"><input type="checkbox" name="authorised" value="1" required>
 				<span style="font-size:.875rem"><?php esc_html_e( "I'm authorised to manage this practice's information.", 'oria' ); ?></span></label>

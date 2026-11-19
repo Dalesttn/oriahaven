@@ -47,6 +47,26 @@ const DISPOSABLE = array(
 	'mail.tm', 'mailpoof.com', 'inboxkitten.com', 'fakemail.net', 'discard.email', 'emailfake.com', 'luxusmail.org', 'tempr.email',
 );
 
+/*
+ * Free webmail. A listing owner signs up with the business's own address --
+ * Dale's rule from 19 Nov 2026, after a Gmail sign-up duplicated a listing
+ * we already had. A business email ties the account to the practice, and
+ * it is what the "is this really them" check at approval leans on.
+ * ISP addresses (bigpond, iinet, optusnet...) are deliberately NOT here:
+ * plenty of small practices genuinely run on them.
+ */
+const FREEMAIL = array(
+	'gmail.com', 'googlemail.com', 'hotmail.com', 'hotmail.com.au', 'outlook.com', 'outlook.com.au', 'live.com', 'live.com.au',
+	'msn.com', 'yahoo.com', 'yahoo.com.au', 'ymail.com', 'rocketmail.com', 'icloud.com', 'me.com', 'mac.com', 'aol.com',
+	'protonmail.com', 'proton.me', 'pm.me', 'gmx.com', 'gmx.net', 'mail.com', 'yandex.com', 'zohomail.com', 'tutanota.com', 'fastmail.com',
+);
+
+/** Whether an address is on the business's own domain rather than free webmail. */
+function business_email( string $email ): bool {
+	$domain = strtolower( (string) substr( (string) strrchr( $email, '@' ), 1 ) );
+	return '' !== $domain && ! in_array( $domain, FREEMAIL, true );
+}
+
 function bootstrap(): void {
 	// Signed in or not, the submission is processed. It used to bounce
 	// logged-in users straight to wp-admin, which silently binned a
@@ -301,9 +321,15 @@ function validate( array $in, bool $has_account = false ): array {
 		}
 		if ( ! is_email( $in['account_email'] ) ) {
 			$errors[] = 'account_email';
+		} elseif ( ! business_email( $in['account_email'] ) ) {
+			$errors[] = 'account_email_free';
 		} elseif ( email_exists( $in['account_email'] ) ) {
 			$errors[] = 'account_exists';
 		}
+	} elseif ( ! business_email( (string) wp_get_current_user()->user_email ) ) {
+		// Signed in with a personal account (a member who signed up to save
+		// favourites, say): the listing would hang off that Gmail address.
+		$errors[] = 'account_email_free_signed_in';
 	}
 	if ( ! $in['authorised'] ) {
 		$errors[] = 'authorised';
