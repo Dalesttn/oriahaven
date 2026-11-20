@@ -737,6 +737,17 @@ if ( function_exists( '\Oria\Core\EventCollections\all' ) ) {
 }
 ?>
 
+<?php
+// 4b. Live music from GigWave, the sister site -- nothing at all when the
+// feed is down or empty, so the section is buffered and dropped with it.
+ob_start();
+get_template_part( 'template-parts/live-music', null, array( 'placement' => 'whats_on' ) );
+$oria_live = trim( (string) ob_get_clean() );
+if ( '' !== $oria_live ) :
+	?>
+<section class="wo-section wo-section--tight"><div class="wo-wrap"><?php echo $oria_live; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in the part ?></div></section>
+<?php endif; ?>
+
 <?php if ( count( $oria_near ) >= 3 || count( $oria_colls ) >= 2 ) : ?>
 <!-- 5. Quiet ways onward -->
 <section class="wo-section wo-section--onward">

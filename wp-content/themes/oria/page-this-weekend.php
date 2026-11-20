@@ -368,6 +368,19 @@ get_template_part(
 	<?php endif; ?>
 </section>
 
+<?php
+/*
+ * Live music from GigWave, the sister site. Prints nothing when the feed
+ * is down or empty, so the wrapper is buffered and dropped with it.
+ */
+ob_start();
+get_template_part( 'template-parts/live-music', null, array( 'placement' => 'this_weekend' ) );
+$oria_live = trim( (string) ob_get_clean() );
+if ( '' !== $oria_live ) :
+	?>
+<section class="wrap section section--top-flush"><?php echo $oria_live; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in the part ?></section>
+<?php endif; ?>
+
 <section class="wrap section section--top-flush">
 	<?php get_template_part( 'template-parts/weekend-signup', null, array( 'source' => 'weekend' ) ); ?>
 </section>

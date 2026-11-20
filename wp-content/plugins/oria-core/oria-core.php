@@ -70,6 +70,7 @@ require_once ORIA_CORE_DIR . 'includes/area-context.php';
 require_once ORIA_CORE_DIR . 'includes/event-collections.php';
 require_once ORIA_CORE_DIR . 'includes/event-ics.php';
 require_once ORIA_CORE_DIR . 'includes/weekender.php';
+require_once ORIA_CORE_DIR . 'includes/gigwave-feed.php';
 require_once ORIA_CORE_DIR . 'includes/event-share.php';
 require_once ORIA_CORE_DIR . 'includes/dna.php';
 require_once ORIA_CORE_DIR . 'includes/faq.php';
