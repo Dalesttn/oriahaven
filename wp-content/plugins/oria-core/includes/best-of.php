@@ -31,7 +31,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 const POST_TYPE = PostTypes\BEST_OF;
 const PATH      = 'best';
 const REWRITE_V = '1';
-const INDEX_KEY = 'oria_best_of_index';
+/* Bump the suffix to force a rebuild on production: its object cache is not
+   reachable from WP-CLI, so a CLI meta edit can't clear the old copy
+   (found 23 Nov 2026 on a pick-reason correction). */
+const INDEX_KEY = 'oria_best_of_index_v2';
 
 /** Award slug => label. Add here, not in the field, so labels stay one list. */
 const AWARDS = array(
