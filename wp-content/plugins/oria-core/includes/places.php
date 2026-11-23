@@ -106,27 +106,7 @@ function data_for( int $post_id, bool $may_fetch = true ): ?array {
 		&& isset( $cache['ts'], $cache['names'] )
 		&& ( time() - (int) $cache['ts'] ) < CACHE_DAYS * DAY_IN_SECONDS ) {
 
-		/*
-		 * A record written before the match check existed can still be the
-		 * wrong business. Once it carries a place_name -- which every record
-		 * does after one refresh -- it can be judged, and a mismatch is
-		 * withheld rather than shown.
-		 *
-		 * Records with no place_name pass through: that is absence of
-		 * evidence, and suppressing 338 listings' photos on a field that was
-		 * never populated would be the larger fault.
-		 */
-		$claimed = (string) ( $cache['place_name'] ?? '' );
-		/*
-		 * A place an editor pinned and confirmed (tools/places-pin.php, or the
-		 * "Places ok" box) is a human decision, not a guess: PlayTennis Perth
-		 * plays at "Mount Lawley Tennis Club", and the name check hid that
-		 * correct place's photos after the first view. The check still guards
-		 * every automatic match.
-		 */
-		$pinned = '' !== $place_id && '1' === (string) get_post_meta( $post_id, '_oria_places_ok', true );
-		if ( '' !== $claimed && ! $pinned
-			&& ! name_matches( (string) get_post_field( 'post_title', $post_id, 'raw' ), $claimed ) ) {
+		if ( ! record_matches( $post_id, $cache ) ) {
 			return null;
 		}
 
@@ -150,6 +130,33 @@ function data_for( int $post_id, bool $may_fetch = true ): ?array {
 
 	update_post_meta( $post_id, META_CACHE, $fresh );
 	return with_local( $post_id, $fresh );
+}
+
+/**
+ * Whether a cached record is this listing's business.
+ *
+ * A record written before the match check existed can still be the wrong
+ * business. Once it carries a place_name -- which every record does after
+ * one refresh -- it can be judged, and a mismatch is withheld rather than
+ * shown. Records with no place_name pass through: that is absence of
+ * evidence, and suppressing 338 listings' photos on a field that was never
+ * populated would be the larger fault.
+ *
+ * A place an editor pinned and confirmed (tools/places-pin.php, or the
+ * "Places ok" box) is a human decision, not a guess: PlayTennis Perth plays
+ * at "Mount Lawley Tennis Club", and the name check hid that correct place's
+ * photos after the first view. The check still guards every automatic match.
+ */
+function record_matches( int $post_id, array $record ): bool {
+	$claimed = (string) ( $record['place_name'] ?? '' );
+	if ( '' === $claimed ) {
+		return true;
+	}
+	$place_id = function_exists( 'get_field' ) ? trim( (string) get_field( 'google_place_id', $post_id ) ) : '';
+	if ( '' !== $place_id && '1' === (string) get_post_meta( $post_id, '_oria_places_ok', true ) ) {
+		return true;
+	}
+	return name_matches( (string) get_post_field( 'post_title', $post_id, 'raw' ), $claimed );
 }
 
 /**
@@ -222,6 +229,19 @@ function photos_for( int $post_id, int $width = 1200 ): array {
  */
 function reviews_for( int $post_id ): array {
 	if ( hidden( $post_id ) ) {
+		return array();
+	}
+
+	/*
+	 * The same name check data_for() applies. Before the freeze the reviews
+	 * went through data_for() first; the frozen read skipped it, so a listing
+	 * matched to the wrong business showed that business's reviews (Light
+	 * Divine carried Colleen Pearce's, 23 Nov 2026). The record is judged at
+	 * any age, and no record means no reviews: another business's reputation
+	 * is the one thing never to show by default.
+	 */
+	$record = get_post_meta( $post_id, META_CACHE, true );
+	if ( ! is_array( $record ) || ! record_matches( $post_id, $record ) ) {
 		return array();
 	}
 
